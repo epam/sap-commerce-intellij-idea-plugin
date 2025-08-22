@@ -1,0 +1,31 @@
+{
+  "templates" : [
+    {
+      "name": "Enabled SOLR loggers",
+      "loggers": [
+        {
+          "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",
+          "effectiveLevel": "DEBUG"
+        }
+      ]
+    },
+    {
+      "name": "Disabled SOLR loggers",
+      "loggers": [
+        {
+          "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",
+          "effectiveLevel": "OFF"
+        }
+      ]
+    },
+    {
+      "name": "FlexibleSearch loggers",
+      "loggers": [
+        {
+          "identifier": "de.hybris.platform.jalo.flexiblesearch",
+          "effectiveLevel": "DEBUG"
+        }
+      ]
+    }
+  ]
+}

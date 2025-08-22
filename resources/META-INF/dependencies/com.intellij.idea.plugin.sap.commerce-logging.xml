@@ -41,5 +41,7 @@
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.ErrorLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.FatalLoggerAction"/>
         </group>
+
+        <group id="sap.cx.loggers.toolwindow.menu" popup="true" searchable="false" class="com.intellij.idea.plugin.hybris.tools.logging.actions.CxLoggersContextMenuActionGroup"/>
     </actions>
 </idea-plugin>

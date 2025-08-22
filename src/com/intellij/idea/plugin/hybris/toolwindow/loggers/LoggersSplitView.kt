@@ -28,7 +28,8 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTre
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateGroupNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateItemNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
 import com.intellij.idea.plugin.hybris.ui.addMouseListener
 import com.intellij.idea.plugin.hybris.ui.addTreeModelListener
@@ -40,6 +41,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +62,7 @@ class LoggersSplitView(
         firstComponent = JBScrollPane(tree)
         secondComponent = loggersStateView.view
 
-        //PopupHandler.installPopupMenu(tree, "action.group.id", "place")
+        PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
@@ -132,8 +134,11 @@ class LoggersSplitView(
                     ?.let { loggersStateView.renderLoggers(it) }
                     ?: loggersStateView.renderFetchLoggers()
 
-                is BundledLoggersTemplateLoggersOptionsNode -> loggersStateView.renderNoLoggerTemplates()
+                is BundledLoggersTemplateGroupNode -> loggersStateView.renderNoLoggerTemplates()
                 is CustomLoggersTemplateLoggersOptionsNode -> loggersStateView.renderNoLoggerTemplates()
+                is BundledLoggersTemplateItemNode -> {
+                    node.loggers.associateBy { it.name }.let { loggersStateView.renderLoggersTemplate(it)}
+                }
                 else -> loggersStateView.renderNothingSelected()
             }
         }

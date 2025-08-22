@@ -27,7 +27,9 @@ import java.nio.file.Files
  */
 enum class ExtensionResource(val fqn: String) {
 
-    CX_LOGGERS_STATE("cx-loggers-state.groovy");
+    CX_LOGGERS_STATE("cx-loggers-state.groovy"),
+    UPDATE_CX_LOGGERS_STATE("update-loggers-state.groovy"),
+    CX_LOGGERS_BUNDLED("cx-loggers-state.groovy");
 
     val content: String
         get() = ExtensionsService.getInstance().findResource(this)
