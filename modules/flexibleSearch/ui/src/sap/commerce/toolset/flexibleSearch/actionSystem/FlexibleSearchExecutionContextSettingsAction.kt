@@ -28,7 +28,7 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.actionSystem.ExecutionContextSettingsAction
+import sap.commerce.toolset.exec.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.project.PropertyService

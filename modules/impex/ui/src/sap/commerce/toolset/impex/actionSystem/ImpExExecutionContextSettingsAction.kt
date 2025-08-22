@@ -26,7 +26,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.actionSystem.ExecutionContextSettingsAction
+import sap.commerce.toolset.exec.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import javax.swing.LayoutFocusTraversalPolicy

@@ -23,7 +23,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.exec.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx

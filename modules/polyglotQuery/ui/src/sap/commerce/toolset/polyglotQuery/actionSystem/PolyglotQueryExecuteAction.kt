@@ -28,7 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.exec.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext

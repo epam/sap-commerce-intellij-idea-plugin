@@ -24,7 +24,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.exec.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
