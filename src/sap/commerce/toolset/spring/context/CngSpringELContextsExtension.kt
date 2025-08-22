@@ -34,8 +34,7 @@ import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.contextProviders.SpringElContextsExtension
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
-import sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+import sap.commerce.toolset.cockpitNG.CockpitNGConstants
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Labels
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Preview
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.AbstractAction
@@ -55,15 +54,15 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
         return when {
             context is XmlText
                 && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION || tag.localName == Labels.SHORT_LABEL)
-                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
+                && tag.namespace == CockpitNGConstants.Namespace.CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
 
             context is XmlAttributeValue
                 && context.parentOfType<XmlAttribute>()?.localName == Preview.URL_QUALIFIER
-                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
+                && tag.namespace == CockpitNGConstants.Namespace.CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
 
             context is XmlAttributeValue
                 && context.parentOfType<XmlAttribute>()?.localName == AbstractAction.VISIBLE
-                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG -> process(context, project)
+                && tag.namespace == CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG -> process(context, project)
 
             else -> mutableListOf()
         }

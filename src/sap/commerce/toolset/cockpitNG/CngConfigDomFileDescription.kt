@@ -39,81 +39,45 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes
         ?.mapNotNull { it.value }
-        ?.any { it == HybrisConstants.SCHEMA_COCKPIT_NG_CONFIG }
+        ?.any { it == CockpitNGConstants.Namespace.CONFIG }
         ?: false
 
     override fun initializeFileDescription() {
         super.initializeFileDescription()
         registerNamespacePolicy(
             HybrisConstants.COCKPIT_NG_NAMESPACE_KEY,
-            NAMESPACE_COCKPIT_NG_CONFIG,
-            NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS,
-            NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA,
-            NAMESPACE_COCKPIT_NG_COMPONENT_DYNAMIC_FORMS,
-            NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW,
-            NAMESPACE_COCKPIT_NG_COMPONENT_LIST_VIEW,
-            NAMESPACE_COCKPIT_NG_COMPONENT_GRID_VIEW,
-            NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW,
-            NAMESPACE_COCKPIT_NG_COMPONENT_VALUE_CHOOSER,
-            NAMESPACE_COCKPIT_NG_COMPONENT_QUICK_LIST,
-            NAMESPACE_COCKPIT_NG_COMPONENT_TREE_COLLECTION,
-            NAMESPACE_COCKPIT_NG_CONFIG_ADVANCED_SEARCH,
-            NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_SEARCH,
-            NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG,
-            NAMESPACE_COCKPIT_NG_CONFIG_PERSPECTIVE_CHOOSER,
-            NAMESPACE_COCKPIT_NG_CONFIG_REFINE_BY,
-            NAMESPACE_COCKPIT_NG_CONFIG_AVAILABLE_LOCALES,
-            NAMESPACE_COCKPIT_NG_CONFIG_DASHBOARD,
-            NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST,
-            NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH,
-            NAMESPACE_COCKPIT_NG_CONFIG_GRID_VIEW,
-            NAMESPACE_COCKPIT_NG_CONFIG_COMMON,
-            NAMESPACE_COCKPIT_NG_CONFIG_NOTIFICATIONS,
-            NAMESPACE_COCKPIT_NG_CONFIG_DRAG_AND_DROP,
-            NAMESPACE_COCKPIT_NG_CONFIG_EXPLORER_TREE,
-            NAMESPACE_COCKPIT_NG_CONFIG_EXTENDED_SPLIT_LAYOUT,
-            NAMESPACE_COCKPIT_NG_CONFIG_COLLECTION_BROWSER,
-            NAMESPACE_COCKPIT_NG_CONFIG_DEEP_LINK,
-            NAMESPACE_COCKPIT_NG_CONFIG_VIEW_SWITCHER,
-            NAMESPACE_COCKPIT_NG_CONFIG_LINKS,
-            NAMESPACE_COCKPIT_NG_SPRING,
-            NAMESPACE_COCKPIT_NG_TEST,
+            CockpitNGConstants.Namespace.CONFIG,
+            CockpitNGConstants.Namespace.CONFIG_HYBRIS,
+            CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA,
+            CockpitNGConstants.Namespace.COMPONENT_DYNAMIC_FORMS,
+            CockpitNGConstants.Namespace.COMPONENT_SUMMARY_VIEW,
+            CockpitNGConstants.Namespace.COMPONENT_LIST_VIEW,
+            CockpitNGConstants.Namespace.COMPONENT_GRID_VIEW,
+            CockpitNGConstants.Namespace.COMPONENT_COMPARE_VIEW,
+            CockpitNGConstants.Namespace.COMPONENT_VALUE_CHOOSER,
+            CockpitNGConstants.Namespace.COMPONENT_QUICK_LIST,
+            CockpitNGConstants.Namespace.COMPONENT_TREE_COLLECTION,
+            CockpitNGConstants.Namespace.CONFIG_ADVANCED_SEARCH,
+            CockpitNGConstants.Namespace.CONFIG_SIMPLE_SEARCH,
+            CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG,
+            CockpitNGConstants.Namespace.CONFIG_PERSPECTIVE_CHOOSER,
+            CockpitNGConstants.Namespace.CONFIG_REFINE_BY,
+            CockpitNGConstants.Namespace.CONFIG_AVAILABLE_LOCALES,
+            CockpitNGConstants.Namespace.CONFIG_DASHBOARD,
+            CockpitNGConstants.Namespace.CONFIG_SIMPLE_LIST,
+            CockpitNGConstants.Namespace.CONFIG_FULLTEXT_SEARCH,
+            CockpitNGConstants.Namespace.CONFIG_GRID_VIEW,
+            CockpitNGConstants.Namespace.CONFIG_COMMON,
+            CockpitNGConstants.Namespace.CONFIG_NOTIFICATIONS,
+            CockpitNGConstants.Namespace.CONFIG_DRAG_AND_DROP,
+            CockpitNGConstants.Namespace.CONFIG_EXPLORER_TREE,
+            CockpitNGConstants.Namespace.CONFIG_EXTENDED_SPLIT_LAYOUT,
+            CockpitNGConstants.Namespace.CONFIG_COLLECTION_BROWSER,
+            CockpitNGConstants.Namespace.CONFIG_DEEP_LINK,
+            CockpitNGConstants.Namespace.CONFIG_VIEW_SWITCHER,
+            CockpitNGConstants.Namespace.CONFIG_LINKS,
+            CockpitNGConstants.Namespace.SPRING,
+            CockpitNGConstants.Namespace.TEST,
         )
-    }
-
-    @Deprecated("Use CockpitNGConstants")
-    companion object {
-        const val NAMESPACE_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS = "http://www.hybris.com/cockpit/config/hybris"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA = "http://www.hybris.com/cockpitng/component/editorArea"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_DYNAMIC_FORMS = "http://www.hybris.com/cockpitng/component/dynamicForms"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW = "http://www.hybris.com/cockpitng/component/summaryview"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_LIST_VIEW = "http://www.hybris.com/cockpitng/component/listView"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_GRID_VIEW = "http://www.hybris.com/cockpitng/component/gridView"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW = "http://www.hybris.com/cockpitng/component/compareview"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_VALUE_CHOOSER = "http://www.hybris.com/cockpitng/component/valuechooser"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_QUICK_LIST = "http://www.hybris.com/cockpitng/component/quick-list"
-        const val NAMESPACE_COCKPIT_NG_COMPONENT_TREE_COLLECTION = "http://www.hybris.com/cockpitng/component/treeCollection"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_ADVANCED_SEARCH = "http://www.hybris.com/cockpitng/config/advancedsearch"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_SEARCH = "http://www.hybris.com/cockpitng/config/simplesearch"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG = "http://www.hybris.com/cockpitng/config/wizard-config"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_PERSPECTIVE_CHOOSER = "http://www.hybris.com/cockpitng/config/perspectiveChooser"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_REFINE_BY = "http://www.hybris.com/cockpitng/config/refineBy"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_AVAILABLE_LOCALES = "http://www.hybris.com/cockpitng/config/availableLocales"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_DASHBOARD = "http://www.hybris.com/cockpitng/config/dashboard"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST = "http://www.hybris.com/cockpitng/config/simplelist"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH = "http://www.hybris.com/cockpitng/config/fulltextsearch"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_GRID_VIEW = "http://www.hybris.com/cockpitng/config/gridView"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_COMMON = "http://www.hybris.com/cockpitng/config/common"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_NOTIFICATIONS = "http://www.hybris.com/cockpitng/config/notifications"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_DRAG_AND_DROP = "http://www.hybris.com/cockpitng/component/dragAndDrop"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_EXPLORER_TREE = "http://www.hybris.com/cockpitng/config/explorertree"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_EXTENDED_SPLIT_LAYOUT = "http://www.hybris.com/cockpitng/config/extendedsplitlayout"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_COLLECTION_BROWSER = "http://www.hybris.com/cockpitng/config/collectionbrowser"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_DEEP_LINK = "http://www.hybris.com/cockpitng/config/deeplink"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_VIEW_SWITCHER = "http://www.hybris.com/cockpitng/config/viewSwitcher"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_LINKS = "http://www.hybris.com/cockpitng/config/links"
-        const val NAMESPACE_COCKPIT_NG_SPRING = "http://www.hybris.com/cockpitng/spring"
-        const val NAMESPACE_COCKPIT_NG_TEST = "http://www.hybris.com/cockpit/test"
     }
 }

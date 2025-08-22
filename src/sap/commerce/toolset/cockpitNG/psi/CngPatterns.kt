@@ -22,7 +22,7 @@ import com.intellij.patterns.DomPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
-import sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription
+import sap.commerce.toolset.cockpitNG.CockpitNGConstants
 import sap.commerce.toolset.cockpitNG.model.config.Config
 import sap.commerce.toolset.cockpitNG.model.config.Context
 import sap.commerce.toolset.cockpitNG.model.config.MergeAttrTypeKnown
@@ -38,40 +38,40 @@ object CngPatterns {
     private val cngWidgetsFile = DomPatterns.inDomFile(Widgets::class.java)
 
     val I18N_PROPERTY = XmlPatterns.or(
-        attributeValue("label", "attribute", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+        attributeValue("label", "attribute", "editorArea", CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("name", "section", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+        attributeValue("name", "section", "editorArea", CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("description", "section", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+        attributeValue("description", "section", "editorArea", CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("name", "essentialSection", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+        attributeValue("name", "essentialSection", "editorArea", CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("name", "tab", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+        attributeValue("name", "tab", "editorArea", CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("name", "panel", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
-            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-
-        attributeValue("label", "step", "flow", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG)
-            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("sublabel", "step", "flow", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG)
-            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("label", "custom", "flow", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG)
+        attributeValue("name", "panel", "editorArea", CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
 
-        attributeValue("label", "column", "list-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST)
+        attributeValue("label", "step", "flow", CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("sublabel", "step", "flow", CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("label", "custom", "flow", CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
 
-        attributeValue("label", "data-quality-group", "summary-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW)
-            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("label", "custom-attribute", "summary-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW)
-            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
-        attributeValue("name", "section", "summary-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW)
+        attributeValue("label", "column", "list-view", CockpitNGConstants.Namespace.CONFIG_SIMPLE_LIST)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
 
-        attributeValue("label", "option", "value-chooser", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_VALUE_CHOOSER)
+        attributeValue("label", "data-quality-group", "summary-view", CockpitNGConstants.Namespace.COMPONENT_SUMMARY_VIEW)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("label", "custom-attribute", "summary-view", CockpitNGConstants.Namespace.COMPONENT_SUMMARY_VIEW)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("name", "section", "summary-view", CockpitNGConstants.Namespace.COMPONENT_SUMMARY_VIEW)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
 
-        attributeValue("name", "section", "compare-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW)
+        attributeValue("label", "option", "value-chooser", CockpitNGConstants.Namespace.COMPONENT_VALUE_CHOOSER)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+
+        attributeValue("name", "section", "compare-view", CockpitNGConstants.Namespace.COMPONENT_COMPARE_VIEW)
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
     )
 
@@ -109,7 +109,7 @@ object CngPatterns {
             "class",
             "column",
             "list-view",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_LIST_VIEW
+            CockpitNGConstants.Namespace.COMPONENT_LIST_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -118,7 +118,7 @@ object CngPatterns {
             "class",
             "custom-section",
             "summary-view",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW
+            CockpitNGConstants.Namespace.COMPONENT_SUMMARY_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -127,7 +127,7 @@ object CngPatterns {
             "class",
             "custom-attribute",
             "summary-view",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW
+            CockpitNGConstants.Namespace.COMPONENT_SUMMARY_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -136,7 +136,7 @@ object CngPatterns {
             "class",
             "customSection",
             "editorArea",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+            CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -145,7 +145,7 @@ object CngPatterns {
             "class",
             "customPanel",
             "editorArea",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+            CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -154,7 +154,7 @@ object CngPatterns {
             "class",
             "customTab",
             "editorArea",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+            CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
@@ -165,7 +165,7 @@ object CngPatterns {
             "editor",
             "field",
             "advanced-search",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_ADVANCED_SEARCH
+            CockpitNGConstants.Namespace.CONFIG_ADVANCED_SEARCH
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -174,7 +174,7 @@ object CngPatterns {
             "editor",
             "attribute",
             "editorArea",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+            CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -183,7 +183,7 @@ object CngPatterns {
             "editor",
             "property",
             "flow",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+            CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -192,7 +192,7 @@ object CngPatterns {
             "editor",
             "property",
             "editors",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
+            CockpitNGConstants.Namespace.CONFIG_HYBRIS
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -201,7 +201,7 @@ object CngPatterns {
             "editor",
             "attribute",
             "compare-view",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW
+            CockpitNGConstants.Namespace.COMPONENT_COMPARE_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -210,7 +210,7 @@ object CngPatterns {
             "editor",
             "field",
             "fulltext-search",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH
+            CockpitNGConstants.Namespace.CONFIG_FULLTEXT_SEARCH
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
@@ -221,7 +221,7 @@ object CngPatterns {
             "qualifier",
             "column",
             "list-view",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_LIST_VIEW
+            CockpitNGConstants.Namespace.COMPONENT_LIST_VIEW
         )
             .inside(
                 XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)
@@ -233,7 +233,7 @@ object CngPatterns {
             "qualifier",
             "attribute",
             "editorArea",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+            CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -242,7 +242,7 @@ object CngPatterns {
             "name",
             "field",
             "advanced-search",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_ADVANCED_SEARCH
+            CockpitNGConstants.Namespace.CONFIG_ADVANCED_SEARCH
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -251,7 +251,7 @@ object CngPatterns {
             "name",
             "sort-field",
             "advanced-search",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_ADVANCED_SEARCH
+            CockpitNGConstants.Namespace.CONFIG_ADVANCED_SEARCH
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -260,7 +260,7 @@ object CngPatterns {
             "name",
             "field",
             "simple-search",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_SEARCH
+            CockpitNGConstants.Namespace.CONFIG_SIMPLE_SEARCH
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -269,7 +269,7 @@ object CngPatterns {
             "name",
             "sort-field",
             "simple-search",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_SEARCH
+            CockpitNGConstants.Namespace.CONFIG_SIMPLE_SEARCH
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -278,7 +278,7 @@ object CngPatterns {
             "qualifier",
             "attribute",
             "compare-view",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW
+            CockpitNGConstants.Namespace.COMPONENT_COMPARE_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -293,18 +293,18 @@ object CngPatterns {
                             .inside(
                                 XmlPatterns.or(
                                     XmlPatterns.xmlTag()
-                                        .withNamespace(CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH)
+                                        .withNamespace(CockpitNGConstants.Namespace.CONFIG_FULLTEXT_SEARCH)
                                         .withLocalName("fulltext-search")
                                         .andNot(
                                             XmlPatterns.xmlTag()
-                                                .withNamespace(CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH)
+                                                .withNamespace(CockpitNGConstants.Namespace.CONFIG_FULLTEXT_SEARCH)
                                                 .withLocalName("fulltext-search")
                                                 .withChild(
                                                     XmlPatterns.xmlTag().withLocalName("preferred-search-strategy")
                                                 )
                                         ),
                                     XmlPatterns.xmlTag()
-                                        .withNamespace(CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH)
+                                        .withNamespace(CockpitNGConstants.Namespace.CONFIG_FULLTEXT_SEARCH)
                                         .withLocalName("fulltext-search")
                                         .withChild(
                                             XmlPatterns.xmlTag().withLocalName("preferred-search-strategy")
@@ -324,7 +324,7 @@ object CngPatterns {
         "qualifier",
         "property",
         "property-list",
-        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+        CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG
     )
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
@@ -334,7 +334,7 @@ object CngPatterns {
             "qualifier",
             "property",
             "content",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+            CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
@@ -343,7 +343,7 @@ object CngPatterns {
             "property",
             "assign",
             "prepare",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+            CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
@@ -353,7 +353,7 @@ object CngPatterns {
         "type",
         "initialize",
         "prepare",
-        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+        CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG
     )
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
@@ -362,7 +362,7 @@ object CngPatterns {
         "root",
         "property-list",
         "content",
-        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+        CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG
     )
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
@@ -403,7 +403,7 @@ object CngPatterns {
             "type",
             "property",
             "content",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+            CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG
         )
             .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
@@ -413,7 +413,7 @@ object CngPatterns {
             "code",
             "type-node",
             "explorer-tree",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_EXPLORER_TREE
+            CockpitNGConstants.Namespace.CONFIG_EXPLORER_TREE
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)

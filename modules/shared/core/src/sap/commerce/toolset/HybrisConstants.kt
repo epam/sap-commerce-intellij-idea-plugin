@@ -361,7 +361,6 @@ object HybrisConstants {
     const val COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX = "SPRING_BEAN_"
 
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
-    const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
 
     const val SCHEMA_BUSINESS_PROCESS = "http://www.hybris.de/xsd/processdefinition"
 
