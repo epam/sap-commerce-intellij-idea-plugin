@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.psi.event
+package sap.commerce.toolset.meta.event
 
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -43,17 +43,16 @@ import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
  * Psi Tree Change Listener is required to reset Meta Cache before invocation of the Inspections.
  * AsyncFileListener will be invoked after in-project Psi Modifications and after Inspection Rules in other files.
  */
-@Deprecated("Use module specific implementation.")
-class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListener {
+class MetaSystemPsiTreeChangeListener(private val project: Project) : PsiTreeChangeListener {
 
     init {
         if (project.isNotHybrisProject) throw ExtensionNotApplicableException.create()
     }
 
     private val domManager by lazy { DomManager.getDomManager(project) }
-    private val tsModificationTracker by lazy { TSModificationTracker.getInstance(project) }
-    private val bsModificationTracker by lazy { BSModificationTracker.getInstance(project) }
-    private val cngModificationTracker by lazy { CngModificationTracker.getInstance(project) }
+    private val tsModificationTracker by lazy { TSModificationTracker.Companion.getInstance(project) }
+    private val bsModificationTracker by lazy { BSModificationTracker.Companion.getInstance(project) }
+    private val cngModificationTracker by lazy { CngModificationTracker.Companion.getInstance(project) }
 
     override fun beforeChildAddition(event: PsiTreeChangeEvent) = doChange(event)
     override fun beforeChildRemoval(event: PsiTreeChangeEvent) = doChange(event)

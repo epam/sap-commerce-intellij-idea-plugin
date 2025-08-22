@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.vfs.event
+package sap.commerce.toolset.meta.event
 
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -37,11 +37,10 @@ import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
  * Limitation due performance restrictions:
  *
  * For CockpitNG changes only modification of already tracked files is supported (rename, remove, move, etc.)
- * Anyway, any modification to file itself will trigger corresponding PsiTree change which will be tracked by {@see sap.commerce.toolset.psi.event.PsiTreeChangeListener}
+ * Anyway, any modification to file itself will trigger corresponding PsiTree change which will be tracked by {@see sap.commerce.toolset.meta.event.PsiTreeChangeListener}
  * It means, that crete/move without modification of the file content may not always re-trigger cache re-evaluation.
  */
-@Deprecated("Move to meta & customize via EP")
-class MetaSystemsAsyncFileListener : AsyncFileListener {
+class MetaSystemFileListener : AsyncFileListener {
 
     private fun mapToTracker(fileName: String, fqn: String, project: Project, trackedCngModels: Set<String>) = when {
         fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> TSModificationTracker.getInstance(project) to fileName
