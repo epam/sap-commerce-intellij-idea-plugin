@@ -296,6 +296,7 @@ object HybrisConstants {
     const val CLASS_FQN_CNG_COLLECTION_BROWSER_MOLD_STRATEGY = "com.hybris.cockpitng.widgets.collectionbrowser.mold.CollectionBrowserMoldStrategy"
     const val CLASS_FQN_FLEXIBLE_SEARCH_QUERY = "de.hybris.platform.servicelayer.search.FlexibleSearchQuery"
     const val CLASS_FQN_CODE_GENERATOR = "de.hybris.bootstrap.codegenerator.CodeGenerator"
+    const val CLASS_FQN_UNIT_TEST = "de.hybris.bootstrap.annotations.UnitTest"
     const val CLASS_NAME_FLEXIBLE_SEARCH_QUERY = "FlexibleSearchQuery"
 
     val CLASS_FQN_IMPEX_TRANSLATORS = arrayOf(

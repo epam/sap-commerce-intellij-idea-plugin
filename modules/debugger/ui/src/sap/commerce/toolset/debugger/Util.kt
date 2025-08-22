@@ -22,32 +22,55 @@ import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.MessageType
+import com.intellij.openapi.ui.popup.Balloon
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
+import java.awt.MouseInfo
 
-fun createRendererName(className: String) = "${HybrisConstants.DEBUG_MODEL_RENDERER_PREFIX} ${className.substringAfterLast('.')}"
+internal fun createRendererName(className: String) = "${HybrisConstants.DEBUG_MODEL_RENDERER_PREFIX} ${className.substringAfterLast('.')}"
+
+internal fun getMeta(project: Project, classNameFqn: String): TSGlobalMetaItem? {
+    val typeCode = classNameFqn.toTypeCode()
+
+    val meta = TSMetaModelAccess.getInstance(project).findMetaItemByName(typeCode)
+
+    if (meta == null) notifyError("The item type $typeCode is not present in the *items.xml files.")
+
+    return meta
+}
+
+internal fun findClass(project: Project, classNameFqn: String): PsiClass? {
+    val psiClass = DebuggerUtils.findClass(classNameFqn, project, GlobalSearchScope.allScope(project))
+
+    if (psiClass == null) {
+        val typeCode = classNameFqn.toTypeCode()
+        notifyError("The class for the item type $typeCode was not found. Rebuild the project and try again.")
+    }
+
+    return psiClass
+}
 
 @Deprecated("migrate to coroutine")
-fun refreshInfos(
+internal fun refreshInfos(
     childrenRenderer: EnumerationChildrenRenderer,
     project: Project,
-    className: String,
+    classNameFqn: String,
     fireRenderersChanged: Boolean = false
 ) {
     application.runReadAction {
         val debuggerUtils = DebuggerUtils.getInstance()
-        val typeCode = className
-            .substringAfterLast(".")
-            .substringBeforeLast(HybrisConstants.MODEL_SUFFIX)
-        val metaAccess = TSMetaModelAccess.Companion.getInstance(project)
-        val meta = metaAccess.findMetaItemByName(typeCode) ?: return@runReadAction
-        // TODO: add an indicator that
-        val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project)) ?: return@runReadAction
+        val meta = getMeta(project, classNameFqn) ?: return@runReadAction
+        val psiClass = findClass(project, classNameFqn) ?: return@runReadAction
+        val metaAccess = TSMetaModelAccess.getInstance(project)
 
         val infos = psiClass.allFields
             .filterNot { it.name.startsWith("_") }
@@ -96,3 +119,22 @@ private fun createChildInfo(
         else -> EnumerationChildrenRenderer.ChildInfo(attributeName, this, false)
     }
 }
+
+private fun notifyError(errorMessage: String) {
+    application.invokeLater {
+        val mouseLoc = MouseInfo.getPointerInfo()?.location ?: return@invokeLater
+        val balloon = JBPopupFactory.getInstance()
+            .createHtmlTextBalloonBuilder(errorMessage, MessageType.ERROR, null)
+            .setFadeoutTime(5000)
+            .setHideOnClickOutside(true)
+            .setHideOnKeyOutside(true)
+            .setCloseButtonEnabled(false)
+            .createBalloon()
+
+        balloon.show(RelativePoint.fromScreen(mouseLoc), Balloon.Position.above)
+    }
+}
+
+private fun String.toTypeCode() = this
+    .substringAfterLast('.')
+    .removeSuffix(HybrisConstants.MODEL_SUFFIX)

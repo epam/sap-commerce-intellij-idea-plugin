@@ -32,21 +32,19 @@ import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.OrderEnumerator
 import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
-import java.util.*
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisConstants.PROPERTY_PLATFORMHOME
 import sap.commerce.toolset.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
-import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisJUnitExtension : RunConfigurationExtension() {
 
     override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
         if (configuration !is JUnitConfiguration) false
-        else ProjectSettings.getInstance(configuration.project)
-            .isHybrisProject()
+        else WorkspaceSettings.getInstance(configuration.project).hybrisProject
 
     private fun updateSapCXJVMProperties(project: Project, params: JavaParameters) {
         val vmParameters = params.vmParametersList
@@ -79,18 +77,14 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         enhanceClassPath(params, project)
     }
 
-    private fun isPureUnitTest(configuration: JUnitConfiguration, project: Project): Boolean {
-        val runClass = configuration.runClass ?: return false
-        val psiClass = JavaPsiFacade.getInstance(project)
-            .findClass(runClass, GlobalSearchScope.allScope(project)) ?: return false
-
-        return hasSpecificAnnotation(psiClass, "de.hybris.bootstrap.annotations.UnitTest")
-    }
-
-    private fun hasSpecificAnnotation(psiClass: PsiClass, annotationFQN: String): Boolean {
-        return psiClass.annotations.any { it.qualifiedName == annotationFQN }
-    }
-
+    private fun isPureUnitTest(configuration: JUnitConfiguration, project: Project) = configuration.runClass
+        ?.let {
+            JavaPsiFacade.getInstance(project)
+                .findClass(it, GlobalSearchScope.allScope(project))
+        }
+        ?.annotations
+        ?.any { it.qualifiedName == HybrisConstants.CLASS_FQN_UNIT_TEST }
+        ?: false
 
     private fun enhanceClassPath(params: JavaParameters, project: Project) {
         val classPathEntries = HashSet<String>()

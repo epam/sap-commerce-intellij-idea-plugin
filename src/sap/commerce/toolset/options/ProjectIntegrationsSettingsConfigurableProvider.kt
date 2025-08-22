@@ -37,7 +37,6 @@ import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.ui.RemoteHacInstancesListPanel
 import sap.commerce.toolset.ui.RemoteInstancesListPanel
 import sap.commerce.toolset.ui.RemoteSolrInstancesListPanel
@@ -52,7 +51,6 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
         "Integrations", "hybris.project.integrations.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
         private val ccv2DeveloperSettings = CCv2DeveloperSettings.getInstance(project)
 
         @Volatile

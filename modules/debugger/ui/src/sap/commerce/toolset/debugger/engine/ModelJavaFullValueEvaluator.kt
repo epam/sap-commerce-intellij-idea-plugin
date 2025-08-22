@@ -39,8 +39,8 @@ class ModelJavaFullValueEvaluator(evaluationContext: EvaluationContextImpl, priv
     override fun evaluate(callback: XFullValueEvaluationCallback) {
         val value = valueDescriptor.value
         val project = valueDescriptor.project
-        val className = value.type().name()
-        val rendererName = createRendererName(className)
+        val classNameFqn = value.type().name()
+        val rendererName = createRendererName(classNameFqn)
 
         if (DumbService.Companion.isDumb(project)) {
             Notifications.Companion.create(
@@ -56,12 +56,12 @@ class ModelJavaFullValueEvaluator(evaluationContext: EvaluationContextImpl, priv
 
         val renderer = NodeRendererSettings.getInstance().getAllRenderers(project)
             .filterIsInstance<CompoundReferenceRenderer>()
-            .find { it.name == rendererName && it.className == className }
+            .find { it.name == rendererName && it.className == classNameFqn }
             ?: return
         val childrenRenderer = renderer.childrenRenderer
 
         if (childrenRenderer is EnumerationChildrenRenderer) {
-            refreshInfos(childrenRenderer, project, className, true)
+            refreshInfos(childrenRenderer, project, classNameFqn, true)
         }
 
         callback.evaluated("")

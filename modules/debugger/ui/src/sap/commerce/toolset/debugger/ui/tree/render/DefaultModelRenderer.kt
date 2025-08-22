@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.debugger.ui.tree.render
+package sap.commerce.toolset.debugger.ui.tree.render
 
 import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.engine.FullValueEvaluatorProvider
@@ -28,19 +28,19 @@ import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.NodeRenderer
 import com.intellij.debugger.ui.tree.render.ValueIconRenderer
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.debugger.TypeRendererUtils
-import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.application
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Type
 import com.sun.jdi.Value
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.debugger.createRendererName
+import sap.commerce.toolset.debugger.findClass
+import sap.commerce.toolset.debugger.getMeta
+import sap.commerce.toolset.i18n
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 
@@ -66,23 +66,14 @@ class DefaultModelRenderer : CompoundRendererProvider() {
                 override fun evaluate(callback: XFullValueEvaluationCallback) {
                     val value = valueDescriptor.value
                     val project = valueDescriptor.project
-                    val className = value.type().name()
+                    val classNameFqn = value.type().name()
 
                     application.runReadAction {
-                        val typeCode = TypeRendererUtils.toTypeCode(className)
-                        val metaAccess = TSMetaModelAccess.getInstance(project)
-                        val meta = metaAccess.findMetaItemByName(typeCode)
+                        val meta = getMeta(project, classNameFqn)
+                        val psiClass = findClass(project, classNameFqn)
 
-                        if (meta == null) {
-                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_TS_MISSING)
-                            return@runReadAction
-                        }
-
-                        val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
-                        if (psiClass == null) {
-                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_CLASS_NOT_FOUND)
-                            return@runReadAction
-                        }
+                        // ensure that both meta and psiClass are available
+                        if (meta == null || psiClass == null) return@runReadAction
                     }
 
                     if (DumbService.isDumb(project)) {
@@ -97,12 +88,12 @@ class DefaultModelRenderer : CompoundRendererProvider() {
                         return
                     }
 
-                    val rendererName = ModelRenderer.createRendererName(className)
+                    val rendererName = createRendererName(classNameFqn)
 
                     NodeRendererSettings.getInstance().getAllRenderers(project)
                         .filterIsInstance<CompoundReferenceRenderer>()
-                        .find { it.name == rendererName && it.className == className }
-                        ?: createCompoundReferenceRenderer(value, project, rendererName, className)
+                        .find { it.name == rendererName && it.className == classNameFqn }
+                        ?: createCompoundReferenceRenderer(value, project, rendererName, classNameFqn)
 
                     callback.evaluated("")
                 }

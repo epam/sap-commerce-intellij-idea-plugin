@@ -72,8 +72,8 @@
             <option value="$PROJECT_DIR$/modules/shared/ui" />
             <option value="$PROJECT_DIR$/modules/solr/core" />
             <option value="$PROJECT_DIR$/modules/solr/exec" />
-            <option value="$PROJECT_DIR$/modules/spring" />
-            <option value="$PROJECT_DIR$/modules/terminal" />
+            <option value="$PROJECT_DIR$/modules/spring/core" />
+            <option value="$PROJECT_DIR$/modules/terminal/core" />
             <option value="$PROJECT_DIR$/modules/typeSystem/core" />
             <option value="$PROJECT_DIR$/modules/typeSystem/ui" />
           </set>

@@ -40,7 +40,6 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
-import java.io.BufferedReader
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -153,6 +152,9 @@ class PropertyService(private val project: Project) {
         .inSmartMode(project)
         .submit(AppExecutorUtil.getAppExecutorService())
 
+    fun getPlatformHome(): String? = findPlatformRootDirectory(project)
+        ?.path
+
     private fun findAllIProperties() = cachedProperties.value
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
@@ -173,9 +175,6 @@ class PropertyService(private val project: Project) {
                     }
             }
     }
-
-    private fun getPlatformHome(): String? = findPlatformRootDirectory(project)
-        ?.path
 
     private fun replacePlaceholder(result: LinkedHashMap<String, String>, key: String, visitedProperties: MutableSet<String>) {
 
