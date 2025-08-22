@@ -58,11 +58,11 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
             it is YCustomRegularModuleDescriptor
                 || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
         }
-        .mapNotNull { ModuleManager.Companion.getInstance(project).findModuleByName(it.ideaModuleName()) }
+        .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
         .mapNotNull { configure(it) }
 
     override fun onStartup(project: Project) {
-        val projectSettings = ProjectSettings.Companion.getInstance(project)
+        val projectSettings = ProjectSettings.getInstance(project)
         val compilingXml = File(
             FileUtilRt.toSystemDependentName(
                 project.basePath + "/" + projectSettings.hybrisDirectory

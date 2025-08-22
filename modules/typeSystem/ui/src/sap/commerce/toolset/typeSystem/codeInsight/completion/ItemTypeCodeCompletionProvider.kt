@@ -37,7 +37,7 @@ open class ItemTypeCodeCompletionProvider : CompletionProvider<CompletionParamet
     ) {
         val project = parameters.editor.project ?: return
         val resultCaseInsensitive = result.caseInsensitive()
-        TSMetaModelAccess.Companion.getInstance(project).getAllOf(TSMetaType.META_ITEM, TSMetaType.META_ENUM)
+        TSMetaModelAccess.getInstance(project).getAllOf(TSMetaType.META_ITEM, TSMetaType.META_ENUM)
             .mapNotNull {
                 when (it) {
                     is TSGlobalMetaItem -> TSLookupElementFactory.build(it)

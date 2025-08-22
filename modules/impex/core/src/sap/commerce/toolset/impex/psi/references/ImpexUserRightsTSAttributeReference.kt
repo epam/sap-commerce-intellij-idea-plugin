@@ -46,7 +46,7 @@ open class ImpexUserRightsTSAttributeReference : TSReferenceBase<PsiElement>, Hi
 
     override fun getVariants() = getType()
         ?.let {
-            TSCompletionService.Companion.getInstance(element.project)
+            TSCompletionService.getInstance(element.project)
                 .getCompletions(
                     it,
                     TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
@@ -73,7 +73,7 @@ open class ImpexUserRightsTSAttributeReference : TSReferenceBase<PsiElement>, Hi
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexUserRightsTSAttributeReference> { ref ->
             val project = ref.project
-            val metaModelAccess = TSMetaModelAccess.Companion.getInstance(project)
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
             val featureName = ref.value
             val type = ref.getType()
             val result: Array<ResolveResult> = metaModelAccess.findMetaClassifierByName(type)
@@ -105,7 +105,7 @@ open class ImpexUserRightsTSAttributeReference : TSReferenceBase<PsiElement>, Hi
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
                 result,
-                TSModificationTracker.Companion.getInstance(project)
+                TSModificationTracker.getInstance(project)
             )
         }
 

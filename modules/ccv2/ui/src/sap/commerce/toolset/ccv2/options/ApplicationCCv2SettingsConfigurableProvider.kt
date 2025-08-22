@@ -38,7 +38,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
         "CCv2", "[y] SAP Commerce Cloud CCv2 configuration."
     ) {
 
-        private val ccv2ProjectSettings = CCv2ProjectSettings.Companion.getInstance()
+        private val ccv2ProjectSettings = CCv2ProjectSettings.getInstance()
         private var originalCCv2Token: String? = ""
         private var originalCCv2Subscriptions = ccv2ProjectSettings.ccv2Subscriptions
             .map { it.toDto() }

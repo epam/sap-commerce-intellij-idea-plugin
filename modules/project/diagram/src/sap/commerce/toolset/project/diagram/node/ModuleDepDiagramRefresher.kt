@@ -49,7 +49,7 @@ object ModuleDepDiagramRefresher {
         val allModules = ModuleManager.getInstance(model.project).modules
         ProjectSettings.getInstance(model.project)
 
-        if (ModuleDepDiagramVisibilityManager.Companion.ALL_MODULES == visibilityLevel) {
+        if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
                 .filter {
                     val descriptor = YFacetConstants.getModuleSettings(it).type
@@ -59,7 +59,7 @@ object ModuleDepDiagramRefresher {
         val customExtModules = allModules
             .filter { isCustomExtension(YFacetConstants.getModuleSettings(it).type) }
 
-        if (ModuleDepDiagramVisibilityManager.Companion.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
+        if (ModuleDepDiagramVisibilityManager.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
 
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }

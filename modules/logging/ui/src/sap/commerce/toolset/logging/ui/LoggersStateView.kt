@@ -96,7 +96,7 @@ class LoggersStateView(
                         .apply { border = null }
 
                     cell(dataScrollPane)
-                        .align(Align.Companion.FILL)
+                        .align(Align.FILL)
                         .visibleIf(showDataPanel)
                 }
                     .resizableRow()
@@ -134,7 +134,7 @@ class LoggersStateView(
 
     private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
         .visibleIf(property)
-        .align(Align.Companion.CENTER)
+        .align(Align.CENTER)
         .resizableColumn()
 
     private fun noLoggersView() = panel {
@@ -146,7 +146,7 @@ class LoggersStateView(
                 )
                     .showCloseButton(false)
             )
-                .align(Align.Companion.CENTER)
+                .align(Align.CENTER)
                 .resizableColumn()
         }.resizableRow()
     }

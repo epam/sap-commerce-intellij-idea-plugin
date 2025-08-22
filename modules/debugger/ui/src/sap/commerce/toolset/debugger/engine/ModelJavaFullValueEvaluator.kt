@@ -42,8 +42,8 @@ class ModelJavaFullValueEvaluator(evaluationContext: EvaluationContextImpl, priv
         val classNameFqn = value.type().name()
         val rendererName = createRendererName(classNameFqn)
 
-        if (DumbService.Companion.isDumb(project)) {
-            Notifications.Companion.create(
+        if (DumbService.isDumb(project)) {
+            Notifications.create(
                 NotificationType.INFORMATION,
                 IdeBundle.message("progress.performing.indexing.tasks"),
                 i18n("hybris.notification.debug.dumb.mode.content")

@@ -28,6 +28,6 @@ class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Gr
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
 
-        GroovyExecutionClient.Companion.getInstance(project).connectionContext = GroovyReplicaAwareContext.Companion.auto()
+        GroovyExecutionClient.getInstance(project).connectionContext = GroovyReplicaAwareContext.auto()
     }
 }

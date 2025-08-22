@@ -51,9 +51,9 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
     }
 
     private val domManager by lazy { DomManager.getDomManager(project) }
-    private val tsModificationTracker by lazy { TSModificationTracker.Companion.getInstance(project) }
-    private val bsModificationTracker by lazy { BSModificationTracker.Companion.getInstance(project) }
-    private val cngModificationTracker by lazy { CngModificationTracker.Companion.getInstance(project) }
+    private val tsModificationTracker by lazy { TSModificationTracker.getInstance(project) }
+    private val bsModificationTracker by lazy { BSModificationTracker.getInstance(project) }
+    private val cngModificationTracker by lazy { CngModificationTracker.getInstance(project) }
 
     override fun beforeChildAddition(event: PsiTreeChangeEvent) = doChange(event)
     override fun beforeChildRemoval(event: PsiTreeChangeEvent) = doChange(event)

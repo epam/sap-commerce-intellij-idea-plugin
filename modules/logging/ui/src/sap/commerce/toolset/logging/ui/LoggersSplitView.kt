@@ -64,11 +64,11 @@ class LoggersSplitView(
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
-        val activeConnection = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val activeConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         updateTree(activeConnection)
 
         with(project.messageBus.connect(this)) {
-            subscribe(RemoteConnectionListener.Companion.TOPIC, object : RemoteConnectionListener {
+            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
                 override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) {
                     updateTree(remoteConnection)
                 }
@@ -76,7 +76,7 @@ class LoggersSplitView(
                 override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = tree.update()
             })
 
-            subscribe(CxLoggersStateListener.Companion.TOPIC, object : CxLoggersStateListener {
+            subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
                 override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettingsState) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
@@ -90,7 +90,7 @@ class LoggersSplitView(
     }
 
     private fun updateTree(settings: RemoteConnectionSettingsState) {
-        val connections = RemoteConnectionService.Companion.getInstance(project)
+        val connections = RemoteConnectionService.getInstance(project)
             .getRemoteConnections(RemoteConnectionType.Hybris)
             .associateWith { (it == settings) }
         tree.update(connections)
@@ -118,7 +118,7 @@ class LoggersSplitView(
                     ?.pathData(LoggersHacConnectionNode::class)
                     ?.let {
                         e.consume()
-                        CxLoggerAccess.Companion.getInstance(project).fetch(it.connectionSettings)
+                        CxLoggerAccess.getInstance(project).fetch(it.connectionSettings)
                     }
             }
         })
@@ -128,7 +128,7 @@ class LoggersSplitView(
             if (project.isDisposed) return@launch
 
             when (node) {
-                is LoggersHacConnectionNode -> CxLoggerAccess.Companion.getInstance(project).state(node.connectionSettings).get()
+                is LoggersHacConnectionNode -> CxLoggerAccess.getInstance(project).state(node.connectionSettings).get()
                     ?.let { loggersStateView.renderLoggers(it) }
                     ?: loggersStateView.renderFetchLoggers()
 

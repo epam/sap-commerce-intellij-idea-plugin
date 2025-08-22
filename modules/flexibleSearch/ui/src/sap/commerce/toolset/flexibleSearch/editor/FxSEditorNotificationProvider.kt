@@ -41,7 +41,7 @@ abstract class FxSEditorNotificationProvider : EditorNotificationProvider, DumbA
         if (!project.isHybrisProject) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, FlexibleSearchFileType)) return null
 
-        val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        val developerSettings = DeveloperSettings.getInstance(project)
         val fxsSettings = developerSettings.flexibleSearchSettings
         if (!shouldCollect(fxsSettings)) return null
 

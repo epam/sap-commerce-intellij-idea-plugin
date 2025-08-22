@@ -113,7 +113,7 @@ class CCv2ReplicaSelectionDialog(
                     .showCloseButton(false)
             )
                 .customize(UnscaledGaps(12, 12, 12, 12))
-                .align(Align.Companion.CENTER)
+                .align(Align.CENTER)
         }
 
         row {
@@ -142,7 +142,7 @@ class CCv2ReplicaSelectionDialog(
                 override fun actionPerformed(e: AnActionEvent) {
                     ccv2SubscriptionsComboBoxModel.refresh()
                     ccv2TreeTable.resetTree()
-                    CCv2Service.Companion.getInstance(project).resetCache()
+                    CCv2Service.getInstance(project).resetCache()
                 }
             })
                 .enabledIf(editable)
@@ -150,7 +150,7 @@ class CCv2ReplicaSelectionDialog(
 
         row {
             scrollCell(ccv2TreeTable)
-                .align(Align.Companion.FILL)
+                .align(Align.FILL)
         }
             .resizableRow()
     }

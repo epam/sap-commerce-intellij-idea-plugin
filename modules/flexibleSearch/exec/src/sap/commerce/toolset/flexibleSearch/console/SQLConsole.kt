@@ -66,7 +66,7 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
         content = content,
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         queryMode = QueryMode.SQL,
-        settings = FlexibleSearchExecutionContext.Companion.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }

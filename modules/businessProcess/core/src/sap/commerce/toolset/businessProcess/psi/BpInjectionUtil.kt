@@ -38,7 +38,7 @@ fun tryInject(
         ?.takeIf { it.name == "script" }
         ?.getAttribute("type")
         ?.value
-        ?.let { ScriptType.Companion.byName(it) }
+        ?.let { ScriptType.byName(it) }
 
     if (scriptType == targetScriptType) {
         val cdataOpen = "<![CDATA["

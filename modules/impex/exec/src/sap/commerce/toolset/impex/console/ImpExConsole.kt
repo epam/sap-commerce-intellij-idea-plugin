@@ -84,7 +84,7 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
 
     override fun currentExecutionContext(content: String) = ImpExExecutionContext(
         content = content,
-        settings = ImpExExecutionContext.Companion.DEFAULT_SETTINGS.modifiable()
+        settings = ImpExExecutionContext.DEFAULT_SETTINGS.modifiable()
             .apply {
                 validationMode = importModeComboBox.selectedItem as ImpExExecutionContext.ValidationMode
                 maxThreads = maxThreadsSpinner.value.toString().toInt()

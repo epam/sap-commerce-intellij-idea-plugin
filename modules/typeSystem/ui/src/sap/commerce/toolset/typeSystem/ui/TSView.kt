@@ -46,7 +46,7 @@ import java.io.Serial
 class TSView(private val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
-    private val mySettings = TSViewSettings.Companion.getInstance(project)
+    private val mySettings = TSViewSettings.getInstance(project)
     private val myTreePane = TSTreePanel(project)
 
     override fun dispose() {
@@ -57,12 +57,12 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
         installToolbar()
 
         when {
-            DumbService.Companion.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+            DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
                 add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
                 setContent(this)
             }
 
-            !TSMetaModelStateService.Companion.getInstance(project).initialized() -> setContentInitializing()
+            !TSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
 
             else -> refreshContent(ChangeType.FULL)
         }
@@ -86,12 +86,12 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(TSViewSettingsListener.Companion.TOPIC, object : TSViewSettingsListener {
+            subscribe(TSViewSettingsListener.TOPIC, object : TSViewSettingsListener {
                 override fun settingsChanged(changeType: ChangeType) {
                     refreshContent(changeType)
                 }
             })
-            subscribe(TSMetaModelChangeListener.Companion.TOPIC, object : TSMetaModelChangeListener {
+            subscribe(TSMetaModelChangeListener.TOPIC, object : TSMetaModelChangeListener {
                 override fun onChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshContent(globalMetaModel, ChangeType.FULL)
                 }
@@ -101,7 +101,7 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun refreshContent(changeType: ChangeType) {
         try {
-            refreshContent(TSMetaModelStateService.Companion.state(project), changeType)
+            refreshContent(TSMetaModelStateService.state(project), changeType)
         } catch (_: Throwable) {
             setContentInitializing()
         }

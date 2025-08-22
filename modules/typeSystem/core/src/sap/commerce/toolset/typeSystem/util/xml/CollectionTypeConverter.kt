@@ -39,6 +39,6 @@ class CollectionTypeConverter : AbstractTSConverterBase<CollectionType>(Collecti
     override fun createLookupElement(dom: CollectionType?) = dom
         ?.module
         ?.project
-        ?.let { TSMetaModelAccess.Companion.getInstance(it).findMetaCollectionByName(dom.code.stringValue) }
+        ?.let { TSMetaModelAccess.getInstance(it).findMetaCollectionByName(dom.code.stringValue) }
         ?.let { TSLookupElementFactory.build(it) }
 }

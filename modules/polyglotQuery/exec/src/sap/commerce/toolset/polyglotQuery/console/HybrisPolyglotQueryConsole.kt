@@ -54,7 +54,7 @@ class HybrisPolyglotQueryConsole(
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
         queryMode = QueryMode.PolyglotQuery,
-        settings = FlexibleSearchExecutionContext.Companion.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }

@@ -40,7 +40,7 @@ class BSCompletionService(private val project: Project) {
         return properties + levelMappings
     }
 
-    fun getCompletions(vararg types: BSMetaType) = with(BSMetaModelAccess.Companion.getInstance(project)) {
+    fun getCompletions(vararg types: BSMetaType) = with(BSMetaModelAccess.getInstance(project)) {
         types
             .map { metaType ->
                 when (metaType) {

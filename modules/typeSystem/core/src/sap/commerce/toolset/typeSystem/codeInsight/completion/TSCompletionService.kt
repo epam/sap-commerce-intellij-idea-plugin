@@ -50,7 +50,7 @@ class TSCompletionService(private val project: Project) {
         0, *types
     )
 
-    fun getCompletions(vararg types: TSMetaType) = with(TSMetaModelAccess.Companion.getInstance(project)) {
+    fun getCompletions(vararg types: TSMetaType) = with(TSMetaModelAccess.getInstance(project)) {
         types
             .map { metaType ->
                 when (metaType) {
@@ -87,7 +87,7 @@ class TSCompletionService(private val project: Project) {
     fun getItemAttributeMetaTypeCompletions() = getMetaTypeCompletions { TSMetaHelper.isItemAttributeMetaType(it) }
     fun getRelationElementMetaTypeCompletions() = getMetaTypeCompletions { TSMetaHelper.isRelationElementMetaType(it) }
 
-    private fun getMetaTypeCompletions(filterByMetaType: (TSGlobalMetaItem) -> Boolean) = TSMetaModelAccess.Companion.getInstance(project)
+    private fun getMetaTypeCompletions(filterByMetaType: (TSGlobalMetaItem) -> Boolean) = TSMetaModelAccess.getInstance(project)
         .getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
         .filter(filterByMetaType)
         .mapNotNull { TSLookupElementFactory.build(it) }
@@ -97,14 +97,14 @@ class TSCompletionService(private val project: Project) {
         referenceItemTypeName: String?,
         inlineTypeName: String?
     ): List<LookupElement> {
-        val completion = DeveloperSettings.Companion.getInstance(project).impexSettings.completion
+        val completion = DeveloperSettings.getInstance(project).impexSettings.completion
         if (!completion.showInlineTypes) return emptyList()
 
         val referenceItemTypeName = referenceItemTypeName ?: return emptyList()
         val suffix = if (inlineTypeName == null && completion.addCommaAfterInlineType) "."
         else ""
 
-        return TSMetaModelAccess.Companion.getInstance(project).findMetaItemByName(referenceItemTypeName)
+        return TSMetaModelAccess.getInstance(project).findMetaItemByName(referenceItemTypeName)
             ?.hierarchy
             ?.mapNotNull {
                 TSLookupElementFactory.build(it, suffix)
@@ -118,7 +118,7 @@ class TSCompletionService(private val project: Project) {
     /**
      * See: https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/2fb5a2a780c94325b4a48ff62b36ab23.html#using-header-abbreviations
      */
-    fun getHeaderAbbreviationCompletions(project: Project) = PropertyService.Companion.getInstance(project)
+    fun getHeaderAbbreviationCompletions(project: Project) = PropertyService.getInstance(project)
         .findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
         .mapNotNull { it.value }
         .mapNotNull { abbreviation ->
@@ -133,7 +133,7 @@ class TSCompletionService(private val project: Project) {
     private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
         if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()
 
-        val metaService = TSMetaModelAccess.Companion.getInstance(project)
+        val metaService = TSMetaModelAccess.getInstance(project)
         return types
             .firstNotNullOfOrNull { metaType ->
                 when (metaType) {

@@ -48,7 +48,7 @@ import java.nio.charset.StandardCharsets
 class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext, LoggingExecutionResult>(project, coroutineScope) {
 
     override suspend fun execute(context: LoggingExecutionContext): LoggingExecutionResult {
-        val settings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
@@ -71,7 +71,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             val loggerModels = Jsoup
                 .parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
                 .getElementsByTag("body").text()
-                .let { Json.Default.parseToJsonElement(it) }
+                .let { Json.parseToJsonElement(it) }
                 .jsonObject["loggers"]
                 ?.jsonArray
                 ?.mapNotNull {
@@ -81,7 +81,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
                     val psiElementPointer = getPsiElementPointer(project, name)
                     val icon = getIcon(project, name)
 
-                    CxLoggerModel.Companion.of(name, effectiveLevel, parentName, false, icon, psiElementPointer)
+                    CxLoggerModel.of(name, effectiveLevel, parentName, false, icon, psiElementPointer)
                 }
 
             return LoggingExecutionResult(

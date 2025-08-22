@@ -42,7 +42,7 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
         val xmlAttributeValue = PsiTreeUtil.getParentOfType(element, XmlAttributeValue::class.java) ?: return null
         val xmlFile = element.containingFile as? XmlFile ?: return null
         if (xmlAttributeValue.value == HybrisConstants.EXTENSION_NAME_PLATFORM) return null
-        val descriptor = ProjectSettings.Companion.getInstance(xmlFile.project).getAvailableExtensions()[xmlAttributeValue.value]
+        val descriptor = ProjectSettings.getInstance(xmlFile.project).getAvailableExtensions()[xmlAttributeValue.value]
             ?: return null
         if (descriptor.type != ModuleDescriptorType.OOTB && descriptor.type != ModuleDescriptorType.CUSTOM) return null
         val parentTagName = PsiTreeUtil.getParentOfType(xmlAttributeValue, XmlTag::class.java)?.localName

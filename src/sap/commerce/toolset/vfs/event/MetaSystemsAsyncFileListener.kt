@@ -44,18 +44,18 @@ import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 class MetaSystemsAsyncFileListener : AsyncFileListener {
 
     private fun mapToTracker(fileName: String, fqn: String, project: Project, trackedCngModels: Set<String>) = when {
-        fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> TSModificationTracker.Companion.getInstance(project) to fileName
-        fileName.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> BSModificationTracker.Companion.getInstance(project) to fileName
+        fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> TSModificationTracker.getInstance(project) to fileName
+        fileName.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> BSModificationTracker.getInstance(project) to fileName
         // in case of the CockpitNG FQN is being tracked
-        trackedCngModels.contains(fqn) -> CngModificationTracker.Companion.getInstance(project) to fqn
+        trackedCngModels.contains(fqn) -> CngModificationTracker.getInstance(project) to fqn
         else -> null
     }
 
     override fun prepareChange(events: List<VFileEvent>) = ProjectManager.getInstance().openProjects
-        .filterNot { DumbService.Companion.isDumb(it) }
+        .filterNot { DumbService.isDumb(it) }
         .filter { it.isHybrisProject }
         .mapNotNull { project ->
-            val trackedCngModels by lazy { CngMetaModelStateService.Companion.getInstance(project).getTrackedModels() }
+            val trackedCngModels by lazy { CngMetaModelStateService.getInstance(project).getTrackedModels() }
 
             events
                 .map { event ->

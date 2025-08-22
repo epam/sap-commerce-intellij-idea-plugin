@@ -75,7 +75,7 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
                 headerLine.fullHeaderType
                     ?.headerTypeName
                     ?.text
-                    ?.let { TypeDependantInjection.Companion.of(it) }
+                    ?.let { TypeDependantInjection.of(it) }
                     ?.let { tryInjectAnotherColumnTypeDependant(valueLine, headerLine, injectionPlacesRegistrar, host, expression, quoteLength, it) }
             }
             ?: injectSimple(injectionPlacesRegistrar, host, expression, quoteLength)
@@ -113,7 +113,7 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
             ?.computeValue()
             ?: return injectSimple(injectionPlacesRegistrar, host, expression, quoteLength = quoteLength)
 
-        val alias = DeveloperSettings.Companion.getInstance(host.project)
+        val alias = DeveloperSettings.getInstance(host.project)
             .flexibleSearchSettings
             .fallbackToTableNameIfNoAliasProvided
             .takeIf { it }

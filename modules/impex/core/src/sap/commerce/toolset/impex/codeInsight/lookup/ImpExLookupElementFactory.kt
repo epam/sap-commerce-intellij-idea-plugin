@@ -66,13 +66,13 @@ object ImpExLookupElementFactory {
     fun buildMode(mode: String) = LookupElementBuilder.create("$mode ")
         .withPresentableText(mode)
         .withIcon(HybrisIcons.ImpEx.MODE)
-        .withInsertHandler(AutoPopupInsertHandler.Companion.INSTANCE)
+        .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
     private fun build(element: PsiElement, modifierName: String, completionSettings: ImpExCompletionSettingsState) =
         if (completionSettings.addEqualsAfterModifier && !hasAssignValueLeaf(element))
             LookupElementBuilder.create("$modifierName=")
                 .withPresentableText(modifierName)
-                .withInsertHandler(AutoPopupInsertHandler.Companion.INSTANCE)
+                .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
         else LookupElementBuilder.create(modifierName)
             .withPresentableText(modifierName)
 

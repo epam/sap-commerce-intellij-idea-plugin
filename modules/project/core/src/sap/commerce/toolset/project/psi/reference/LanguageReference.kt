@@ -39,7 +39,7 @@ class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(o
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { getValidResults(it) }
 
-    override fun getVariants() = PropertyService.Companion.getInstance(element.project)
+    override fun getVariants() = PropertyService.getInstance(element.project)
         .getLanguages()
         .map { LookupElementFactory.buildLanguage(it) }
         .toTypedArray()
@@ -48,7 +48,7 @@ class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(o
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, LanguageReference>>("HYBRIS_LANGUAGE_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, LanguageReference> { ref ->
-            val result: Array<ResolveResult> = PropertyService.Companion.getInstance(ref.element.project)
+            val result: Array<ResolveResult> = PropertyService.getInstance(ref.element.project)
                 .findMacroProperty(HybrisConstants.PROPERTY_LANG_PACKS)
                 ?.let {
                     val property = it as? PsiElement

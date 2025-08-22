@@ -31,7 +31,7 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = GroovyExecutionClient.Companion.getInstance(project).connectionContext
+        val replicaContexts = GroovyExecutionClient.getInstance(project).connectionContext
             .takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
             ?.replicaContexts
             ?: emptyList()

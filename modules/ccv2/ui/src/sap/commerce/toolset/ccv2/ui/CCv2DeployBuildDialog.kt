@@ -76,7 +76,7 @@ class CCv2DeployBuildDialog(
         modeComboBox.isEnabled = false
         strategyComboBox.isEnabled = false
 
-        CCv2Service.Companion.getInstance(project).fetchEnvironments(
+        CCv2Service.getInstance(project).fetchEnvironments(
             subscriptions = subscriptions,
             onCompleteCallback = {
                 environments = it
@@ -212,7 +212,7 @@ class CCv2DeployBuildDialog(
             trackCheckBox.isSelected
         )
 
-        CCv2Service.Companion.getInstance(project).deployBuild(project, subscription, build, deploymentRequest)
+        CCv2Service.getInstance(project).deployBuild(project, subscription, build, deploymentRequest)
     }
 
     override fun getStyle() = DialogStyle.COMPACT

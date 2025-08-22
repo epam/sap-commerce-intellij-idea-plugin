@@ -35,7 +35,7 @@ class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
         val project = parameters.editor.project ?: return
         val resultCaseInsensitive = result.caseInsensitive()
 
-        TSCompletionService.Companion.getInstance(project)
+        TSCompletionService.getInstance(project)
             .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
             .forEach { resultCaseInsensitive.addElement(it) }
     }

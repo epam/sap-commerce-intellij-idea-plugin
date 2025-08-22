@@ -78,7 +78,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     open fun printDefaultText() = setInputText("")
 
     override fun dispose() {
-        LineStatusTrackerManager.Companion.getInstance(project).releaseTrackerFor(editorDocument, consoleEditor)
+        LineStatusTrackerManager.getInstance(project).releaseTrackerFor(editorDocument, consoleEditor)
         super.dispose()
     }
 
@@ -128,7 +128,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     protected fun printHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
-        val activeConnectionSettings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(remoteConnectionType)
+        val activeConnectionSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(remoteConnectionType)
         print("[HOST] ", ConsoleViewContentType.SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
             ?.let { name -> print("($name) ", ConsoleViewContentType.LOG_INFO_OUTPUT) }

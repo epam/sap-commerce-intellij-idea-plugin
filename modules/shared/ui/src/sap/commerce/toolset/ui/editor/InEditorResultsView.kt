@@ -57,7 +57,7 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
                         .showCloseButton(false)
                         .setIcon(AnimatedIcon.Default.INSTANCE)
                 )
-                    .align(Align.Companion.FILL)
+                    .align(Align.FILL)
                     .resizableColumn()
             }.topGap(TopGap.SMALL)
         }
@@ -96,7 +96,7 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
                         EditorNotificationPanel.Status.Info,
                     ).showCloseButton(false)
                 )
-                    .align(Align.Companion.FILL)
+                    .align(Align.FILL)
                     .resizableColumn()
             }.topGap(TopGap.SMALL)
         }
@@ -112,7 +112,7 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
                         EditorNotificationPanel.Status.Error,
                     ).showCloseButton(false)
                 )
-                    .align(Align.Companion.FILL)
+                    .align(Align.FILL)
                     .resizableColumn()
             }.topGap(TopGap.SMALL)
         }
@@ -131,7 +131,7 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
                                 putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
                             }
                         )
-                            .align(Align.Companion.FILL)
+                            .align(Align.FILL)
                             .resizableColumn()
                     }
                 }.topGap(TopGap.SMALL)

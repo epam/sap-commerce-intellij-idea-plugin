@@ -50,7 +50,7 @@ class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>
         }
     }
 
-    override fun initSettings(project: Project) = DeveloperSettings.Companion.getInstance(project)
+    override fun initSettings(project: Project) = DeveloperSettings.getInstance(project)
         .bpSettings
         .folding
 
@@ -58,9 +58,9 @@ class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>
         is XmlTag -> when (psi.localName) {
             Action.TRANSITION -> fold(psi, Transition.NAME, Transition.TO, Action.TRANSITION, tablify = getCachedFoldingSettings(psi)?.tablifyActionTransitions)
 
-            Process.END -> fold(psi, NavigableElement.Companion.ID, End.STATE, Process.END, "[end]    ", tablify = getCachedFoldingSettings(psi)?.tablifyEnds)
+            Process.END -> fold(psi, NavigableElement.ID, End.STATE, Process.END, "[end]    ", tablify = getCachedFoldingSettings(psi)?.tablifyEnds)
 
-            Case.CHOICE -> fold(psi, NavigableElement.Companion.ID, Choice.THEN, Case.CHOICE, "[choice] ", tablify = getCachedFoldingSettings(psi)?.tablifyCaseChoices)
+            Case.CHOICE -> fold(psi, NavigableElement.ID, Choice.THEN, Case.CHOICE, "[choice] ", tablify = getCachedFoldingSettings(psi)?.tablifyCaseChoices)
 
             Wait.TIMEOUT -> "[timeout] wait for " +
                 BpHelper.parseDuration(psi.getAttributeValue(Timeout.DELAY) ?: "?") +
@@ -71,7 +71,7 @@ class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>
                 psi.getAttributeValue(Case.EVENT) +
                 TYPE_SEPARATOR +
                 (psi.subTags
-                    .map { it.getAttributeValue(NavigableElement.Companion.ID) }
+                    .map { it.getAttributeValue(NavigableElement.ID) }
                     .joinToString()
                     .takeIf { it.isNotBlank() }
                     ?: "n/a")
@@ -79,10 +79,10 @@ class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>
             Wait.EVENT -> "[event] " + psi.value.trimmedText
 
             Process.ACTION -> "[action] " +
-                psi.getAttributeValue(NavigableElement.Companion.ID)
+                psi.getAttributeValue(NavigableElement.ID)
 
             Process.WAIT -> "[wait]   " +
-                psi.getAttributeValue(NavigableElement.Companion.ID)
+                psi.getAttributeValue(NavigableElement.ID)
 
             else -> FALLBACK_PLACEHOLDER
         }

@@ -35,7 +35,7 @@ class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) 
 ) {
 
     override fun onCompletion(newState: BSGlobalMetaModel) {
-        project.messageBus.syncPublisher(BSMetaModelChangeListener.Companion.TOPIC).onChanged(newState)
+        project.messageBus.syncPublisher(BSMetaModelChangeListener.TOPIC).onChanged(newState)
     }
 
     override suspend fun create(metaModelsToMerge: Collection<BSMetaModel>): BSGlobalMetaModel = BSGlobalMetaModel().also {

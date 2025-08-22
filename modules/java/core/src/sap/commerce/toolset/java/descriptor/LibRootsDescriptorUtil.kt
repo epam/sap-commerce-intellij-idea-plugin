@@ -62,7 +62,7 @@ internal fun addBackofficeRootProjectLibrary(
         val libraryModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         if (addJarDirectory) libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
         else libraryModel.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
-        if (sourcesDirRoot != null && ApplicationSettings.Companion.getInstance().withStandardProvidedSources) {
+        if (sourcesDirRoot != null && ApplicationSettings.getInstance().withStandardProvidedSources) {
             libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(sourcesDirRoot), true, OrderRootType.SOURCES)
         }
     }
@@ -399,7 +399,7 @@ private fun getLibraryDescriptors(descriptor: PlatformModuleDescriptor) = listOf
 private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
     ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
 
-private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettings.Companion.getInstance().withStandardProvidedSources) {
+private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettings.getInstance().withStandardProvidedSources) {
     val rootDescriptor = if (descriptor is YSubModuleDescriptor) descriptor.owner
     else descriptor
 

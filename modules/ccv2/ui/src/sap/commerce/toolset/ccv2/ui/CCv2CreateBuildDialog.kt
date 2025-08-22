@@ -156,7 +156,7 @@ class CCv2CreateBuildDialog(
 
         val buildRequest = CCv2BuildRequest(subscription, name, branch, trackBuild, deploymentRequests)
 
-        CCv2Service.Companion.getInstance(project).createBuild(buildRequest)
+        CCv2Service.getInstance(project).createBuild(buildRequest)
     }
 
     override fun getStyle() = DialogStyle.COMPACT
@@ -180,7 +180,7 @@ class CCv2CreateBuildDialog(
             AnimatedIcon.Default.INSTANCE
         )
 
-        CCv2Service.Companion.getInstance(project).fetchEnvironments(
+        CCv2Service.getInstance(project).fetchEnvironments(
             subscriptions = listOf(subscription),
             onCompleteCallback = { environments ->
                 val environmentsPanel = getEnvironmentsPanel(environments, subscription)

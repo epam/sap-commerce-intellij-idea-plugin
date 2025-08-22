@@ -27,7 +27,7 @@ class DeploymentTypeCodeConverter : ResolvingConverter<String>() {
     override fun fromString(s: String?, context: ConvertContext) = s
 
     override fun getVariants(context: ConvertContext): MutableCollection<out String> = context.project
-        ?.let { TSMetaModelAccess.Companion.getInstance(it).getNextAvailableTypeCode() }
+        ?.let { TSMetaModelAccess.getInstance(it).getNextAvailableTypeCode() }
         ?.toString()
         ?.let { mutableListOf(it) }
         ?: mutableListOf()

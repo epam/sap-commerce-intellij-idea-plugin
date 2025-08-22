@@ -72,7 +72,7 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
 
     private fun getProblemHighlightType(file: PsiFile) = HighlightDisplayKey.find(shortName)
         ?.let {
-            val profile = ProjectInspectionProfileManager.Companion.getInstance(file.project).currentProfile
+            val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile
             InspectionProfileWrapper(profile).getErrorLevel(it, file)
         }
         ?: defaultLevel

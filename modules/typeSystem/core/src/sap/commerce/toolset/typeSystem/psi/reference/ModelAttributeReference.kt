@@ -80,7 +80,7 @@ class ModelAttributeReference(
     private fun findSetter(psiClass: PsiClass, name: String) = psiClass.findMethodsByName("set${StringUtil.capitalize(name)}", checkSuperClasses)
         .firstOrNull()
 
-    private fun isBooleanProperty(itemName: String, name: String) = TSMetaModelAccess.Companion.getInstance(element.project)
+    private fun isBooleanProperty(itemName: String, name: String) = TSMetaModelAccess.getInstance(element.project)
         .findMetaItemByName(itemName)
         ?.allAttributes
         ?.get(name)

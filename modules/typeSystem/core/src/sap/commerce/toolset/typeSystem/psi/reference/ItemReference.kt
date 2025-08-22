@@ -44,7 +44,7 @@ open class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(elem
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { getValidResults(it) }
 
-    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.Companion.getInstance(element.project)
+    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
         .getCompletions(TSMetaType.META_ITEM)
         .toTypedArray()
 
@@ -53,7 +53,7 @@ open class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(elem
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ItemReference> { ref ->
             val project = ref.project
-            val metaModelAccess = TSMetaModelAccess.Companion.getInstance(project)
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
 
             val name = ref.value
             val result: Array<ResolveResult> = metaModelAccess.findMetaItemByName(name)
@@ -64,7 +64,7 @@ open class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(elem
 
             CachedValueProvider.Result.create(
                 result,
-                TSModificationTracker.Companion.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

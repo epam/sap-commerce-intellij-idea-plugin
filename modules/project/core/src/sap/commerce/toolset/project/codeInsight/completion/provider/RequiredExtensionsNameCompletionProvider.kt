@@ -41,7 +41,7 @@ class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider
                 ?.filter { it.isNotBlank() }
                 ?.map { it.lowercase() } ?: emptyList()
 
-        return ProjectSettings.Companion.getInstance(project)
+        return ProjectSettings.getInstance(project)
                 .getAvailableExtensions()
                 .entries
                 .filterNot { currentNames.contains(it.key) }

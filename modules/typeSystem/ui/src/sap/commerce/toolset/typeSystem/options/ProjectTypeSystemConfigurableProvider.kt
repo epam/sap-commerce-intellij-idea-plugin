@@ -43,11 +43,11 @@ class ProjectTypeSystemConfigurableProvider(private val project: Project) : Conf
         i18n("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val developerSettings = DeveloperSettings.getInstance(project)
         private val tsMutableSettings = developerSettings.typeSystemSettings.mutable()
         private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable()
 
-        private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.Companion.getInstance(project)
+        private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.getInstance(project)
         private val excludedTypeNamesPane = ToolbarDecorator.createDecorator(excludedTypeNamesTable)
             .disableUpDownActions()
             .setPanelBorder(JBUI.Borders.empty())
@@ -140,7 +140,7 @@ class ProjectTypeSystemConfigurableProvider(private val project: Project) : Conf
                         .onApply { tsDiagramMutableSettings.excludedTypeNames = getNewTypeNames() }
                         .onReset { excludedTypeNamesTable.updateModel(tsDiagramMutableSettings) }
                         .onIsModified { tsDiagramMutableSettings.excludedTypeNames != getNewTypeNames() }
-                        .align(Align.Companion.FILL)
+                        .align(Align.FILL)
                 }
             }
         }

@@ -45,7 +45,7 @@ import sap.commerce.toolset.typeSystem.psi.reference.result.RelationResolveResul
 class AclTSTargetTypeReference(owner: PsiElement, soft: Boolean = false, rangeInElement: TextRange? = null) :
     TSReferenceBase<PsiElement>(owner, soft, rangeInElement), HighlightedReference {
 
-    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.Companion.getInstance(element.project)
+    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
         .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
         .toTypedArray()
 
@@ -66,7 +66,7 @@ class AclTSTargetTypeReference(owner: PsiElement, soft: Boolean = false, rangeIn
             val lookingForName = ref.value
             val project = ref.project
 
-            val results: Array<ResolveResult> = TSMetaModelAccess.Companion.getInstance(project).findMetaClassifierByName(lookingForName)
+            val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
                 ?.let {
                     when (it) {
                         is TSGlobalMetaItem -> it.declarations.map { meta -> ItemResolveResult(meta) }
@@ -81,7 +81,7 @@ class AclTSTargetTypeReference(owner: PsiElement, soft: Boolean = false, rangeIn
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
                 results,
-                TSModificationTracker.Companion.getInstance(project)
+                TSModificationTracker.getInstance(project)
             )
         }
     }

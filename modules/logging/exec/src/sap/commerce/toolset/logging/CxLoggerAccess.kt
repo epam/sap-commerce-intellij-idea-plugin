@@ -53,13 +53,13 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     val stateInitialized: Boolean
         get() {
-            val server = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+            val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
             return state(server).initialized
         }
 
     init {
         with(project.messageBus.connect(this)) {
-            subscribe(RemoteConnectionListener.Companion.TOPIC, object : RemoteConnectionListener {
+            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
                 override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) = refresh()
                 override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = clearState(remoteConnection)
             })
@@ -67,23 +67,23 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     }
 
     fun logger(loggerIdentifier: String): CxLoggerModel? {
-        val server = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         return if (stateInitialized) state(server).get(loggerIdentifier) else null
     }
 
     fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecutionResult) -> Unit = { _, _ -> }) {
-        val server = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val context = LoggingExecutionContext(
             executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName()}]...",
             loggerName = loggerName,
             logLevel = logLevel
         )
         fetching = true
-        LoggingExecutionClient.Companion.getInstance(project).execute(context) { coroutineScope, result ->
+        LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             updateState(result.loggers, server)
             callback.invoke(coroutineScope, result)
 
-            project.messageBus.syncPublisher(CxLoggersStateListener.Companion.TOPIC).onLoggersStateChanged(server)
+            project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
             if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
@@ -101,18 +101,18 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun fetch() = fetch(RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris))
+    fun fetch() = fetch(RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris))
 
     fun fetch(server: RemoteConnectionSettingsState) {
         val context = GroovyExecutionContext(
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]...",
-            content = ExtensionsService.Companion.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
+            content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
             transactionMode = TransactionMode.ROLLBACK
         )
 
         fetching = true
 
-        GroovyExecutionClient.Companion.getInstance(project).execute(context) { coroutineScope, result ->
+        GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             coroutineScope.launch {
                 val loggers = result.result
                     ?.split("\n")
@@ -126,7 +126,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                         val psiElementPointer = getPsiElementPointer(project, loggerIdentifier)
                         val icon = getIcon(project, loggerIdentifier)
 
-                        CxLoggerModel.Companion.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
+                        CxLoggerModel.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
                     }
                     ?.distinctBy { it.name }
                     ?.associateBy { it.name }
@@ -138,7 +138,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     updateState(loggers, server)
                 }
 
-                project.messageBus.syncPublisher(CxLoggersStateListener.Companion.TOPIC).onLoggersStateChanged(server)
+                project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
                 when {
                     result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
@@ -178,7 +178,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    private fun notify(type: NotificationType, title: String, contentProvider: () -> String) = Notifications.Companion
+    private fun notify(type: NotificationType, title: String, contentProvider: () -> String) = Notifications
         .create(type, title, contentProvider.invoke())
         .hideAfter(5)
         .notify(project)

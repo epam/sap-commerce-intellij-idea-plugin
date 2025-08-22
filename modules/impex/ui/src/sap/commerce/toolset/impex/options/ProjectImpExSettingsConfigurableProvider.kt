@@ -39,7 +39,7 @@ class ProjectImpExSettingsConfigurableProvider(private val project: Project) : C
         i18n("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val developerSettings = DeveloperSettings.getInstance(project)
         private val mutableSettings = developerSettings.impexSettings.mutable()
         private var originalGroupLocalizedFiles = mutableSettings.groupLocalizedFiles
 

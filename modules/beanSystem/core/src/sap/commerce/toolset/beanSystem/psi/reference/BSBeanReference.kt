@@ -48,7 +48,7 @@ class BSBeanReference(
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, BSBeanReference> { ref ->
             val project = ref.element.project
-            val metaModelAccess = sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.Companion.getInstance(project)
+            val metaModelAccess = sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.getInstance(project)
             val classFQN = ref.value
             val result: Array<ResolveResult> = metaModelAccess.findMetaBeanByName(classFQN)
                 ?.let { _root_ide_package_.sap.commerce.toolset.beanSystem.psi.reference.result.BeanResolveResult(it) }
@@ -57,7 +57,7 @@ class BSBeanReference(
 
             CachedValueProvider.Result.create(
                 result,
-                sap.commerce.toolset.beanSystem.meta.BSModificationTracker.Companion.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+                sap.commerce.toolset.beanSystem.meta.BSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

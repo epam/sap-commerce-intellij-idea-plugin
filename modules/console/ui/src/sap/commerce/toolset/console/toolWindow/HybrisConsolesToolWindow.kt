@@ -53,7 +53,7 @@ class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope)
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
 
     // TODO: refresh on plugin reloads, f.e. Groovy
-    private val consoles = HybrisConsoleProvider.Companion.EP.extensionList
+    private val consoles = HybrisConsoleProvider.EP.extensionList
         .mapNotNull { it.console(project, coroutineScope) }
 
     init {

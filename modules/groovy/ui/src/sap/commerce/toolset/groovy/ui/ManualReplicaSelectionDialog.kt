@@ -66,7 +66,7 @@ class ManualReplicaSelectionDialog(
                         .showCloseButton(false)
                 )
                     .customize(UnscaledGaps(12, 12, 12, 12))
-                    .align(Align.Companion.CENTER)
+                    .align(Align.CENTER)
             }
 
             row {
@@ -94,6 +94,6 @@ class ManualReplicaSelectionDialog(
 
         val replicaContext = ReplicaContext(manualReplicaId.text, manualCookieName.text)
 
-        GroovyExecutionClient.Companion.getInstance(project).connectionContext = GroovyReplicaAwareContext.Companion.manual(listOf(replicaContext))
+        GroovyExecutionClient.getInstance(project).connectionContext = GroovyReplicaAwareContext.manual(listOf(replicaContext))
     }
 }

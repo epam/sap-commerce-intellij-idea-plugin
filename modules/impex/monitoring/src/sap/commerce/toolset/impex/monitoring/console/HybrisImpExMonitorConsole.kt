@@ -77,7 +77,7 @@ class HybrisImpExMonitorConsole(
 
     @Deprecated("Resolve DATA_DIRECTORY by property")
     private fun obtainDataFolder(project: Project): String {
-        val settings = ProjectSettings.Companion.getInstance(project)
+        val settings = ProjectSettings.getInstance(project)
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 

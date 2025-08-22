@@ -39,6 +39,6 @@ class MapTypeConverter : AbstractTSConverterBase<MapType>(MapType::class.java) {
     override fun createLookupElement(dom: MapType?) = dom
         ?.module
         ?.project
-        ?.let { TSMetaModelAccess.Companion.getInstance(it).findMetaMapByName(dom.code.stringValue) }
+        ?.let { TSMetaModelAccess.getInstance(it).findMetaMapByName(dom.code.stringValue) }
         ?.let { TSLookupElementFactory.build(it) }
 }

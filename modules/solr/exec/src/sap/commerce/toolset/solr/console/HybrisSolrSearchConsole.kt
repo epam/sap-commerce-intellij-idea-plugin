@@ -143,9 +143,9 @@ class HybrisSolrSearchConsole(
     }
 
     private fun retrieveListOfCores() = try {
-        SolrExecutionClient.Companion.getInstance(project).coresData().toList()
+        SolrExecutionClient.getInstance(project).coresData().toList()
     } catch (e: Exception) {
-        Notifications.Companion.create(
+        Notifications.create(
             NotificationType.WARNING,
             i18n("hybris.notification.toolwindow.hac.test.connection.title"),
             i18n("hybris.notification.toolwindow.solr.test.connection.fail.content", e.localizedMessage)

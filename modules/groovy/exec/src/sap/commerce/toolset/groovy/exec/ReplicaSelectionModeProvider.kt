@@ -23,6 +23,6 @@ import sap.commerce.toolset.groovy.exec.context.ReplicaSelectionMode
 
 interface ReplicaSelectionModeProvider {
     companion object {
-        val EP = ExtensionPointName.Companion.create<ReplicaSelectionMode>("sap.commerce.toolset.groovy.exec.replicaSelectionModeProvider")
+        val EP = ExtensionPointName.create<ReplicaSelectionMode>("sap.commerce.toolset.groovy.exec.replicaSelectionModeProvider")
     }
 }

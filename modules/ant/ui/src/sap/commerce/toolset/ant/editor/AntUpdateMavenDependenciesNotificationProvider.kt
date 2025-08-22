@@ -64,7 +64,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
                             EditorNotifications.getInstance(project).removeNotificationsForProvider(this)
                             file.removeUserData(HybrisConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)
                         }
-                        ToolWindowManager.Companion.getInstance(project).activateEditorComponent()
+                        ToolWindowManager.getInstance(project).activateEditorComponent()
                     }
             }
             panel

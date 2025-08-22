@@ -157,13 +157,13 @@ object FxSLookupElementFactory {
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
         .withTailText(" ${i18n("hybris.fxs.completion.table.alias.separator.dot")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_ALIAS_SEPARATOR)
-        .withInsertHandler(AutoPopupInsertHandler.Companion.INSTANCE)
+        .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
     fun buildSeparatorColon(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON)
         .withTailText(" ${i18n("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_ALIAS_SEPARATOR)
-        .withInsertHandler(AutoPopupInsertHandler.Companion.INSTANCE)
+        .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
     fun build(tableAlias: FlexibleSearchTableAliasName, addComma: Boolean, fxsSettings: FlexibleSearchSettingsState): LookupElementBuilder {
         val separator = if (fxsSettings.completion.injectTableAliasSeparator) fxsSettings.completion.defaultTableAliasSeparator

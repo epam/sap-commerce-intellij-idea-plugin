@@ -48,7 +48,7 @@ import java.io.Serial
 class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
-    private val mySettings = BSViewSettings.Companion.getInstance(project)
+    private val mySettings = BSViewSettings.getInstance(project)
     private val myTreePane = BSTreePanel(project)
 
     override fun dispose() {
@@ -59,12 +59,12 @@ class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, 
         installToolbar()
 
         when {
-            DumbService.Companion.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+            DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
                 add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
                 setContent(this)
             }
 
-            !BSMetaModelStateService.Companion.getInstance(project).initialized() -> setContentInitializing()
+            !BSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
 
             else -> refreshContent(ChangeType.FULL)
         }
@@ -88,12 +88,12 @@ class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, 
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(BSViewSettingsListener.Companion.TOPIC, object : BSViewSettingsListener {
+            subscribe(BSViewSettingsListener.TOPIC, object : BSViewSettingsListener {
                 override fun settingsChanged(changeType: ChangeType) {
                     refreshContent(changeType)
                 }
             })
-            subscribe(BSMetaModelChangeListener.Companion.TOPIC, object : BSMetaModelChangeListener {
+            subscribe(BSMetaModelChangeListener.TOPIC, object : BSMetaModelChangeListener {
                 override fun onChanged(globalMetaModel: BSGlobalMetaModel) {
                     refreshContent(globalMetaModel, ChangeType.FULL)
                 }
@@ -103,7 +103,7 @@ class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, 
 
     private fun refreshContent(changeType: ChangeType) {
         try {
-            refreshContent(BSMetaModelStateService.Companion.state(project), changeType)
+            refreshContent(BSMetaModelStateService.state(project), changeType)
         } catch (_: Throwable) {
             setContentInitializing()
         }

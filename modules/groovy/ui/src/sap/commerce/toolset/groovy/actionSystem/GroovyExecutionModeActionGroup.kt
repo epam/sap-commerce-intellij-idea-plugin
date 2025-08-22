@@ -36,7 +36,7 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val connectionContext = GroovyExecutionClient.Companion.getInstance(project).connectionContext
+        val connectionContext = GroovyExecutionClient.getInstance(project).connectionContext
 
         e.presentation.icon = connectionContext.replicaSelectionMode.icon
         e.presentation.text = connectionContext.previewText

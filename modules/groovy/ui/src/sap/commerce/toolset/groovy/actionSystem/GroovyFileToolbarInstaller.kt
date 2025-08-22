@@ -42,7 +42,7 @@ class GroovyFileToolbarInstaller : HybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {
-        val settings = DeveloperSettings.Companion.getInstance(project)
+        val settings = DeveloperSettings.getInstance(project)
         val file = editor.virtualFile
 
         // Checking special cases where toolbar might not be desired

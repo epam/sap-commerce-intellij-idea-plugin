@@ -36,16 +36,16 @@ class ConsoleImpExValidateAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val console = HybrisConsoleService.Companion.getInstance(project).getActiveConsole()
+        val console = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
 
         val context = ImpExExecutionContext(
             content = console.content,
             executionMode = ImpExExecutionContext.ExecutionMode.VALIDATE,
-            settings = ImpExExecutionContext.Companion.DEFAULT_SETTINGS
+            settings = ImpExExecutionContext.DEFAULT_SETTINGS
         )
 
-        ImpExExecutionClient.Companion.getInstance(project).execute(
+        ImpExExecutionClient.getInstance(project).execute(
             context = context,
             beforeCallback = { _ -> console.beforeExecution() },
             resultCallback = { _, result -> console.print(result) }
@@ -57,7 +57,7 @@ class ConsoleImpExValidateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val activeConsole = HybrisConsoleService.Companion.getInstance(project).getActiveConsole()
+        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)

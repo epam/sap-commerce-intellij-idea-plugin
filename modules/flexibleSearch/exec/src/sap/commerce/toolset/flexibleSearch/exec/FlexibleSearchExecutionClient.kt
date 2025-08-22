@@ -48,7 +48,7 @@ class FlexibleSearchExecutionClient(
     )
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): FlexibleSearchExecutionResult {
-        val settings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }

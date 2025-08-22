@@ -35,7 +35,7 @@ class ProjectAclSettingsConfigurableProvider(private val project: Project) : Con
         "Access Control Lists", "hybris.acl.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val developerSettings = DeveloperSettings.getInstance(project)
         private val mutableSettings = developerSettings.aclSettings.mutable()
 
         override fun createPanel() = panel {

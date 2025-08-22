@@ -117,7 +117,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
     }
 
     // active or default
-    private fun solrConnectionSettings(project: Project) = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
+    private fun solrConnectionSettings(project: Project) = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
 
     companion object {
         @Serial

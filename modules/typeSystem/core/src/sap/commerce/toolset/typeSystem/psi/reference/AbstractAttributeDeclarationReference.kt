@@ -58,7 +58,7 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
         val type = resolveType(element) ?: return emptyArray()
         val project = element.project
 
-        return TSCompletionService.Companion.getInstance(project)
+        return TSCompletionService.getInstance(project)
             .getCompletions(type)
             .toTypedArray()
     }
@@ -68,7 +68,7 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
     companion object {
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AbstractAttributeDeclarationReference> { ref ->
             val project = ref.element.project
-            val metaModelAccess = TSMetaModelAccess.Companion.getInstance(project)
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
             val type = ref.resolveType(ref.element)
                 ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
@@ -93,13 +93,13 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
 
             CachedValueProvider.Result.create(
                 result,
-                TSModificationTracker.Companion.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
 
         private fun emptyResult(project: Project): CachedValueProvider.Result<Array<ResolveResult>> = CachedValueProvider.Result.create(
             emptyArray(),
-            TSModificationTracker.Companion.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+            TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
         )
     }
 }

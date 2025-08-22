@@ -24,7 +24,7 @@ import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionServic
 
 class ItemMetaTypeReference(element: PsiElement) : ItemReference(element) {
 
-    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.Companion.getInstance(element.project)
+    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
         .getItemMetaTypeCompletions()
         .toTypedArray()
 

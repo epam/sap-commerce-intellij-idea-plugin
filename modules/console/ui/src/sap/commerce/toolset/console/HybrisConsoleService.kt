@@ -64,17 +64,17 @@ class HybrisConsoleService(private val project: Project) {
         ?.contentManager
         ?.let { contentManager ->
             contentManager
-                .findContent(HybrisConsolesToolWindow.Companion.ID)
+                .findContent(HybrisConsolesToolWindow.ID)
                 ?.let { contentManager.setSelectedContent(it) }
         }
 
     private fun findConsolesView() = hybrisToolWindow()
         ?.contentManager
-        ?.findContent(HybrisConsolesToolWindow.Companion.ID)
+        ?.findContent(HybrisConsolesToolWindow.ID)
         ?.component
         ?.asSafely<HybrisConsolesToolWindow>()
 
-    private fun hybrisToolWindow() = ToolWindowManager.Companion.getInstance(project).getToolWindow(HybrisConstants.TOOLWINDOW_ID)
+    private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisConstants.TOOLWINDOW_ID)
 
     companion object {
         fun getInstance(project: Project): HybrisConsoleService = project.service()

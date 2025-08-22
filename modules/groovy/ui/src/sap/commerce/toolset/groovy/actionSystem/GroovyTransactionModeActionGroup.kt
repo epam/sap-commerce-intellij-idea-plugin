@@ -37,7 +37,7 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val mode = DeveloperSettings.Companion.getInstance(project).groovySettings.txMode
+        val mode = DeveloperSettings.getInstance(project).groovySettings.txMode
             .let { i18n("hybris.groovy.actions.transaction.${it.name.lowercase()}") }
 
         e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", mode)

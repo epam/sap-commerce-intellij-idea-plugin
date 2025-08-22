@@ -29,7 +29,7 @@ class PolyglotQueryLanguageInjector : LanguageInjector {
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        PolyglotQueryToImpexInjectorProvider.Companion.getInstance()
+        PolyglotQueryToImpexInjectorProvider.getInstance()
             .inject(host, injectionPlacesRegistrar)
             ?: Plugin.KOTLIN.service(PolyglotQueryToKotlinInjectorProvider::class.java)
                 ?.inject(host, injectionPlacesRegistrar)

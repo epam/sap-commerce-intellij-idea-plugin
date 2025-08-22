@@ -46,13 +46,13 @@ import java.nio.charset.StandardCharsets
 class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
 
     var connectionContext: GroovyReplicaAwareContext
-        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, GroovyReplicaAwareContext.Companion.auto())
+        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, GroovyReplicaAwareContext.auto())
         set(value) {
             putUserData(KEY_REMOTE_CONNECTION_CONTEXT, value)
         }
 
     override suspend fun execute(context: GroovyExecutionContext): DefaultExecutionResult {
-        val settings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
@@ -71,7 +71,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         try {
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
             val jsonAsString = document.getElementsByTag("body").text()
-            val json = Json.Default.parseToJsonElement(jsonAsString)
+            val json = Json.parseToJsonElement(jsonAsString)
 
             json.jsonObject["stacktraceText"]
 

@@ -42,7 +42,7 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
     override fun isSelected(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
 
-        return GroovyExecutionClient.Companion.getInstance(project)
+        return GroovyExecutionClient.getInstance(project)
             .connectionContext
             .replicaSelectionMode == replicaSelectionMode
     }

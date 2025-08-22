@@ -39,7 +39,7 @@ class CCv2GroovyReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(CC
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = GroovyExecutionClient.Companion.getInstance(project).connectionContext
+        val replicaContexts = GroovyExecutionClient.getInstance(project).connectionContext
             .takeIf { it.replicaSelectionMode == CCv2ExecConstants.ccv2 }
             ?.replicaContexts
             ?: emptyList()

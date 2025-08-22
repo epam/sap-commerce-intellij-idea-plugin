@@ -35,7 +35,7 @@ class BSEnumReference(
     range: TextRange
 ) : PsiReferenceBase.Poly<PsiElement>(element, range, false), PsiPolyVariantReference, HighlightedReference {
 
-    override fun getVariants() = BSCompletionService.Companion.getInstance(element.project)
+    override fun getVariants() = BSCompletionService.getInstance(element.project)
         .getCompletions(BSMetaType.META_ENUM)
         .toTypedArray()
 
@@ -48,7 +48,7 @@ class BSEnumReference(
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, BSEnumReference> { ref ->
             val project = ref.element.project
-            val metaModelAccess = sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.Companion.getInstance(project)
+            val metaModelAccess = sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.getInstance(project)
             val classFQN = ref.value
             val result: Array<ResolveResult> = metaModelAccess.findMetaEnumByName(classFQN)
                 ?.let { _root_ide_package_.sap.commerce.toolset.beanSystem.psi.reference.result.EnumResolveResult(it) }
@@ -57,7 +57,7 @@ class BSEnumReference(
 
             CachedValueProvider.Result.create(
                 result,
-                sap.commerce.toolset.beanSystem.meta.BSModificationTracker.Companion.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+                sap.commerce.toolset.beanSystem.meta.BSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

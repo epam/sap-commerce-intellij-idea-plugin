@@ -53,7 +53,7 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
         if (!project.isHybrisProject) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
 
-        val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        val developerSettings = DeveloperSettings.getInstance(project)
 
         val pgqSettings = developerSettings.polyglotQuerySettings
         if (!pgqSettings.verifyCaseForReservedWords) return null

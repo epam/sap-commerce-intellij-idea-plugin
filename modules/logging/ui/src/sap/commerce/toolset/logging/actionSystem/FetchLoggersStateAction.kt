@@ -35,7 +35,7 @@ class FetchLoggersStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccessService = CxLoggerAccess.Companion.getInstance(project)
+        val loggerAccessService = CxLoggerAccess.getInstance(project)
 
         loggerAccessService.fetch()
     }
@@ -45,11 +45,11 @@ class FetchLoggersStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccess = CxLoggerAccess.Companion.getInstance(project)
+        val loggerAccess = CxLoggerAccess.getInstance(project)
 
         e.presentation.isEnabled = loggerAccess.ready
 
-        val state = CxLoggerAccess.Companion.getInstance(project).stateInitialized
+        val state = CxLoggerAccess.getInstance(project).stateInitialized
 
         e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
         e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
