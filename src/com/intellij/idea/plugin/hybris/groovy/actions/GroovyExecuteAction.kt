@@ -50,14 +50,25 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
         val prefix = fileName ?: "script"
 
-        val transactionMode = DeveloperSettings.getInstance(project).groovySettings.txMode
+        val groovySettings = DeveloperSettings.getInstance(project).groovySettings
         val executionClient = GroovyExecutionClient.getInstance(project)
+
+        val scriptTemplate = if (groovySettings.enableScriptTemplate) {
+            groovySettings.customScriptTemplatePath.takeIf{ !it.isEmpty() } ?: GroovyExecutionClient.GHAC_SCRIPT_TEMPLATE_GROOVY
+        } else {
+            null
+        }
+
+        val connectionContext = GroovyExecutionClient.getInstance(project).connectionContext
+
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
                 GroovyExecutionContext(
                     executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
-                    transactionMode = transactionMode,
+                    transactionMode = groovySettings.txMode,
+                    scriptTemplate = scriptTemplate,
+                    webContext = connectionContext.activeWebContext,
                     replicaContext = it
                 )
             }
@@ -66,7 +77,9 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 GroovyExecutionContext(
                     executionTitle = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
-                    transactionMode = transactionMode
+                    transactionMode = groovySettings.txMode,
+                    scriptTemplate = scriptTemplate,
+                    webContext = connectionContext.activeWebContext,
                 )
             )
 

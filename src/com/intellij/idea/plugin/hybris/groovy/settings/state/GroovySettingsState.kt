@@ -28,12 +28,18 @@ data class GroovySettingsState(
     @JvmField @OptionTag val enableActionsToolbarForGroovyTest: Boolean = false,
     @JvmField @OptionTag val enableActionsToolbarForGroovyIdeConsole: Boolean = false,
     @JvmField @OptionTag val txMode: TransactionMode = TransactionMode.ROLLBACK,
+    @JvmField @OptionTag val enableScriptTemplate: Boolean = false,
+    @JvmField @OptionTag val useCustomScriptTemplate: Boolean = false,
+    @JvmField @OptionTag val customScriptTemplatePath: String = "",
 ) {
     fun mutable() = Mutable(
         enableActionsToolbar = enableActionsToolbar,
         enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
         enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
         txMode = txMode,
+        enableScriptTemplate = enableScriptTemplate,
+        useCustomScriptTemplate = useCustomScriptTemplate,
+        customScriptTemplatePath = customScriptTemplatePath,
     )
 
     data class Mutable(
@@ -41,12 +47,18 @@ data class GroovySettingsState(
         var enableActionsToolbarForGroovyTest: Boolean,
         var enableActionsToolbarForGroovyIdeConsole: Boolean,
         var txMode: TransactionMode,
+        var enableScriptTemplate: Boolean,
+        var useCustomScriptTemplate: Boolean,
+        var customScriptTemplatePath: String,
     ) {
         fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
             enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
             enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
             txMode = txMode,
+            enableScriptTemplate = enableScriptTemplate,
+            useCustomScriptTemplate = useCustomScriptTemplate,
+            customScriptTemplatePath = customScriptTemplatePath
         )
     }
 }

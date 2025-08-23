@@ -57,6 +57,9 @@
                 <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyCCv2ReplicaSelectionModeAction"/>
                 <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyManualReplicaSelectionModeAction"/>
             </group>
+
+            <group popup="true" searchable="false" id="hybris.groovy.select.web.context" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyChooseWebContextActionGroup"/>
+            <action id="hybris.groovy.toggle.script.template" class="com.intellij.idea.plugin.hybris.groovy.actions.ToggleScriptTemplateAction"/>
         </group>
         <group id="hybris.groovy.toolbar.right">
             <reference ref="hybris.hac.chooseConnection"/>

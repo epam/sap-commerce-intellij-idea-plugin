@@ -24,6 +24,8 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSele
 data class RemoteConnectionContext(
     val replicaSelectionMode: ReplicaSelectionMode,
     val replicaContexts: Collection<ReplicaContext> = emptyList(),
+    val springWebContexts: Collection<String> = emptyList(),
+    var activeWebContext: String? = null
 ) {
     override fun toString() = when (replicaSelectionMode) {
         ReplicaSelectionMode.AUTO -> "Auto-discover replica"
