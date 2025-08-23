@@ -44,7 +44,6 @@ import sap.commerce.toolset.project.configurator.ProjectImportConfigurator;
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator;
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor;
 
 import java.util.List;
 import java.util.Optional;
@@ -77,11 +76,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final var modulesDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
-        final var allYModules = modulesDescriptorsToImport.stream()
-            .filter(YModuleDescriptor.class::isInstance)
-            .map(YModuleDescriptor.class::cast)
-            .distinct()
-            .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
         final var allHybrisModuleDescriptors = modulesDescriptorsToImport.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
 
@@ -107,7 +101,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                             indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
                             indicator.setText2("Configuring module: %s".formatted(moduleDescriptor.getName()));
 
-                            final var module = configurator.configure(modifiableModelsProvider, allYModules, rootProjectModifiableModel, moduleDescriptor);
+                            final var module = configurator.configure(hybrisProjectDescriptor, moduleDescriptor, modifiableModelsProvider, rootProjectModifiableModel);
                             final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
                             configureModuleFacet(moduleDescriptor, module, rootModel, modifiableModelsProvider);
                             return module;

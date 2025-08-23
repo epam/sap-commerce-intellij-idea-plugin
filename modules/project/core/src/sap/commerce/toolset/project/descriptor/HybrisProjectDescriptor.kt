@@ -66,6 +66,7 @@ interface HybrisProjectDescriptor {
     val excludedFromScanningDirectories: MutableSet<File>?
 
     val properties: ImportSpecificProperties
+    val yModuleDescriptorsToImport: Map<String, YModuleDescriptor>
 
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null

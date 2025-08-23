@@ -26,8 +26,8 @@ import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage
 import sap.commerce.toolset.java.configurator.ex.*
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 
 class JavaModuleImportConfigurator : ModuleImportConfigurator {
@@ -38,10 +38,10 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
     override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
 
     override fun configure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
-        allYModules: Map<String, YModuleDescriptor>,
-        rootProjectModifiableModel: ModifiableModuleModel,
-        moduleDescriptor: ModuleDescriptor
+        rootProjectModifiableModel: ModifiableModuleModel
     ): Module {
         val javaModule = rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().absolutePath,
@@ -56,8 +56,10 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
 
         modifiableRootModel.inheritSdk();
 
+        val yModuleDescriptorsToImport = hybrisProjectDescriptor.yModuleDescriptorsToImport
+
         JavadocSettingsConfiguratorEx.configure(modifiableRootModel, moduleDescriptor)
-        LibRootsConfiguratorEx.configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
+        LibRootsConfiguratorEx.configure(yModuleDescriptorsToImport, modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
         ContentRootConfiguratorEx.configure(modifiableRootModel, moduleDescriptor);
         CompilerOutputPathsConfiguratorEx.configure( modifiableRootModel, moduleDescriptor);
 

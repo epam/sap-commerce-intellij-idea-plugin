@@ -25,8 +25,8 @@ import com.intellij.platform.workspace.jps.entities.ModuleTypeId
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
 class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
 
@@ -36,10 +36,10 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
     override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
 
     override fun configure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
-        allYModules: Map<String, YModuleDescriptor>,
-        rootProjectModifiableModel: ModifiableModuleModel,
-        moduleDescriptor: ModuleDescriptor
+        rootProjectModifiableModel: ModifiableModuleModel
     ): Module {
         val javaModule = rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().absolutePath,

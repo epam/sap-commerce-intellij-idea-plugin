@@ -80,6 +80,7 @@ import java.util.stream.Stream;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
+@Deprecated(since = "Simplify and convert to Kotlin")
 public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectDescriptor.class);
@@ -139,6 +140,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public @NotNull ImportSpecificProperties getProperties() {
         return properties;
+    }
+
+    @Override
+    public @NotNull Map<@NotNull String, @NotNull YModuleDescriptor> getYModuleDescriptorsToImport() {
+        return this.modulesChosenForImport.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .distinct()
+            .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
     }
 
     private static void processHybrisConfigExtensions(final Hybrisconfig hybrisconfig, final TreeSet<String> explicitlyDefinedModules) {

@@ -24,8 +24,8 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.workspace.jps.entities.ModuleTypeId
 import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
 class AngularModuleImportConfigurator : ModuleImportConfigurator {
 
@@ -35,10 +35,10 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
     override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is AngularModuleDescriptor
 
     override fun configure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
-        allYModules: Map<String, YModuleDescriptor>,
-        rootProjectModifiableModel: ModifiableModuleModel,
-        moduleDescriptor: ModuleDescriptor
+        rootProjectModifiableModel: ModifiableModuleModel
     ): Module {
         return rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().absolutePath,
