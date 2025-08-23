@@ -38,7 +38,10 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.spring.facet.SpringFacet;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
-import sap.commerce.toolset.project.configurator.*;
+import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator;
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator;
+import sap.commerce.toolset.project.configurator.ProjectImportConfigurator;
+import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator;
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor;
@@ -73,7 +76,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setIndeterminate(true);
         indicator.setText(message("hybris.project.import.preparation"));
 
-        final var cache = new ConfiguratorCache();
         final var modulesDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
         final var allYModules = modulesDescriptorsToImport.stream()
             .filter(YModuleDescriptor.class::isInstance)
@@ -121,7 +123,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
-                configurator.configure(project, hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider, cache);
+                configurator.configure(project, hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider);
             }
         );
         indicator.setIndeterminate(true);
@@ -132,8 +134,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .invokeAndWait(() -> ApplicationManager.getApplication()
                 .runWriteAction(modifiableModelsProvider::commit)
             );
-
-        cache.clear();
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }

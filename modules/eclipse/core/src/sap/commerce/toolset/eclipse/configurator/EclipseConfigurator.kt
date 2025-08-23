@@ -23,7 +23,6 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.project.Project
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.descriptor.EclipseModuleDescriptor
-import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -37,8 +36,7 @@ class EclipseConfigurator : ProjectImportConfigurator {
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val projectList = hybrisProjectDescriptor.modulesChosenForImport
             .filterIsInstance<EclipseModuleDescriptor>()

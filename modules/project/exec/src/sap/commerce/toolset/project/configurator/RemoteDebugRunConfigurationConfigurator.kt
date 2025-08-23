@@ -43,8 +43,7 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val runManager = RunManager.getInstance(project)
 
@@ -54,7 +53,7 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
             i18n("hybris.project.run.configuration.remote.debug")
         ) {
             val remoteConfiguration = it.configuration as RemoteConfiguration
-            remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache)
+            remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, hybrisProjectDescriptor.properties)
             remoteConfiguration.isAllowRunningInParallel = false
         }
     }
@@ -76,7 +75,7 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
         }
     }
 
-    private fun getDebugPort(hybrisProjectDescriptor: HybrisProjectDescriptor, cache: ConfiguratorCache) = hybrisProjectDescriptor.configHybrisModuleDescriptor
+    private fun getDebugPort(hybrisProjectDescriptor: HybrisProjectDescriptor, cache: ImportSpecificProperties) = hybrisProjectDescriptor.configHybrisModuleDescriptor
         ?.let { findPortProperty(it, HybrisConstants.LOCAL_PROPERTIES_FILE, cache) }
         ?: hybrisProjectDescriptor
             .foundModules
@@ -85,7 +84,7 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
         ?: HybrisConstants.DEBUG_PORT
 
 
-    private fun findPortProperty(moduleDescriptor: ModuleDescriptor, fileName: String, cache: ConfiguratorCache) = cache.findPropertyInFile(
+    private fun findPortProperty(moduleDescriptor: ModuleDescriptor, fileName: String, cache: ImportSpecificProperties) = cache.findPropertyInFile(
         File(moduleDescriptor.moduleRootDirectory, fileName),
         HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS
     )

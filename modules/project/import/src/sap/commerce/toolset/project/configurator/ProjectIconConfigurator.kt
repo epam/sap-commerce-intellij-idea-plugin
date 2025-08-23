@@ -36,8 +36,7 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val rootDirectory = hybrisProjectDescriptor.rootDirectory ?: return
 

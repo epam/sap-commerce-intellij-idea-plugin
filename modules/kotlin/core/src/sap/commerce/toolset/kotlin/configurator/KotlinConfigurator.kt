@@ -37,7 +37,6 @@ import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -53,8 +52,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val hasKotlinnatureExtension = hybrisProjectDescriptor.modulesChosenForImport.stream()
             .anyMatch { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }

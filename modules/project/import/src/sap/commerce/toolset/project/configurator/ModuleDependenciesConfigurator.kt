@@ -37,8 +37,7 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val modulesChosenForImport = hybrisProjectDescriptor.modulesChosenForImport
         val allModules = modifiableModelsProvider.modules

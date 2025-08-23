@@ -35,8 +35,7 @@ class LoadedModulesConfigurator : ProjectImportConfigurator {
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val unusedModuleNames = hybrisProjectDescriptor.modulesChosenForImport
             .filter { it.importStatus == ModuleDescriptorImportStatus.UNUSED }

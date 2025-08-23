@@ -92,7 +92,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         try {
             this.lock.lock();
-            this.hybrisProjectDescriptor = null;
+            if (this.hybrisProjectDescriptor != null) {
+                this.hybrisProjectDescriptor.clear();
+                this.hybrisProjectDescriptor = null;
+            }
         } finally {
             this.lock.unlock();
         }

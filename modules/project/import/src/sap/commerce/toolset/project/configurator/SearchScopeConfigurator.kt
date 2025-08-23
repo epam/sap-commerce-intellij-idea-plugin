@@ -45,8 +45,7 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom

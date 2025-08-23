@@ -31,9 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConfiguratorCache {
+public class ImportSpecificProperties {
 
-    private static final Logger LOG = Logger.getInstance(ConfiguratorCache.class);
+    private static final Logger LOG = Logger.getInstance(ImportSpecificProperties.class);
 
     private final Map<String, Ref<Properties>> path2Properties = new HashMap<>();
 

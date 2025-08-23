@@ -32,7 +32,6 @@ import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
@@ -88,8 +87,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         if (Plugin.SPRING.isDisabled()) return
 

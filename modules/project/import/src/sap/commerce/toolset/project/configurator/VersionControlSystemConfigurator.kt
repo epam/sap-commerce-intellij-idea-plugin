@@ -36,8 +36,7 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)

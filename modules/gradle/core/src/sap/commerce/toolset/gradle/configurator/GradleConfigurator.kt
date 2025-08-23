@@ -27,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.settings.GradleSettings
 import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
-import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -43,8 +42,7 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        cache: ConfiguratorCache
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         PropertiesComponent.getInstance(project)
             .setValue("show.inlinked.gradle.project.popup", false)
