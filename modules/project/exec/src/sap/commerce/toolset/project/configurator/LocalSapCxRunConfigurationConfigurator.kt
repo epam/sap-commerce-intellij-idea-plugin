@@ -22,7 +22,6 @@ import com.intellij.execution.RunManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
 import sap.commerce.toolset.project.runConfigurations.createRunConfiguration
 
@@ -33,7 +32,6 @@ class LocalSapCxRunConfigurationConfigurator : ProjectImportConfigurator {
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = hybrisProjectDescriptor.project ?: return

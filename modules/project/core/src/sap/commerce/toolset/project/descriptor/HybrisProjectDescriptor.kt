@@ -35,7 +35,7 @@ interface HybrisProjectDescriptor {
     var project: Project?
     var refresh: Boolean
     val foundModules: MutableList<ModuleDescriptor>
-    var modulesChosenForImport: MutableList<ModuleDescriptor>
+    var chosenModuleDescriptors: MutableList<ModuleDescriptor>
     val configHybrisModuleDescriptor: ConfigModuleDescriptor?
     val platformHybrisModuleDescriptor: PlatformModuleDescriptor
     val kotlinNatureModuleDescriptor: ModuleDescriptor?
@@ -67,6 +67,7 @@ interface HybrisProjectDescriptor {
 
     val properties: ImportSpecificProperties
     val yModuleDescriptorsToImport: Map<String, YModuleDescriptor>
+    val moduleDescriptorsToImport: Map<String, ModuleDescriptor>
 
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null

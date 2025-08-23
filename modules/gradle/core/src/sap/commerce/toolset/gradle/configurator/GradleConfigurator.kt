@@ -30,7 +30,6 @@ import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator {
@@ -40,7 +39,6 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = hybrisProjectDescriptor.project ?: return
@@ -49,7 +47,7 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator
 
         try {
             hybrisProjectDescriptor
-                .modulesChosenForImport
+                .chosenModuleDescriptors
                 .filterIsInstance<GradleModuleDescriptor>()
                 .mapNotNull { it.gradleFile.path }
                 .forEach { externalProjectPath ->

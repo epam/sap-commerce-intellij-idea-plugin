@@ -151,6 +151,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
     }
 
+    @Override
+    public @NotNull Map<@NotNull String, @NotNull ModuleDescriptor> getModuleDescriptorsToImport() {
+        return this.modulesChosenForImport.stream()
+            .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
+    }
+
     private static void processHybrisConfigExtensions(final Hybrisconfig hybrisconfig, final TreeSet<String> explicitlyDefinedModules) {
         for (final ExtensionType extensionType : hybrisconfig.getExtensions().getExtension()) {
             final String name = extensionType.getName();
@@ -927,12 +933,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @NotNull
     @Override
-    public List<ModuleDescriptor> getModulesChosenForImport() {
+    public List<ModuleDescriptor> getChosenModuleDescriptors() {
         return this.modulesChosenForImport;
     }
 
     @Override
-    public void setModulesChosenForImport(@NotNull final List<ModuleDescriptor> moduleDescriptors) {
+    public void setChosenModuleDescriptors(@NotNull final List<ModuleDescriptor> moduleDescriptors) {
         this.modulesChosenForImport.clear();
         this.modulesChosenForImport.addAll(moduleDescriptors);
         moduleDescriptors.forEach(module -> {

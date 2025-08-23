@@ -22,17 +22,13 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class ImpExCodeStyleConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
         get() = "ImpEx Code Style"
 
-    override fun preConfigure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>
-    ) {
+    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         CodeStyleSchemes.getInstance().currentScheme
             .codeStyleSettings
             .getCommonSettings(ImpExLanguage)

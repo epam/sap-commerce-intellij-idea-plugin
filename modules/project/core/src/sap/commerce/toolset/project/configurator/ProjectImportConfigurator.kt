@@ -21,13 +21,11 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface ProjectImportConfigurator : Configurator {
 
     fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) = Unit
 

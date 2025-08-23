@@ -23,7 +23,6 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
 
@@ -34,10 +33,9 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val modulesChosenForImport = hybrisProjectDescriptor.modulesChosenForImport
+        val modulesChosenForImport = hybrisProjectDescriptor.chosenModuleDescriptors
         val allModules = modifiableModelsProvider.modules
             .associateBy { it.name }
         val extModules = modulesChosenForImport.filterIsInstance<YPlatformExtModuleDescriptor>()

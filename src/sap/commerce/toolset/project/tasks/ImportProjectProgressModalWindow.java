@@ -47,8 +47,6 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static sap.commerce.toolset.HybrisConstants.IDEA_EDITION_ULTIMATE;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
@@ -75,24 +73,21 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setIndeterminate(true);
         indicator.setText(message("hybris.project.import.preparation"));
 
-        final var modulesDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
-        final var allHybrisModuleDescriptors = modulesDescriptorsToImport.stream()
-            .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
-
-        processUltimateEdition(indicator);
+        processUltimateEdition();
 
         final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         final var rootProjectModifiableModel = modifiableModelsProvider.getModifiableModuleModel();
 
         ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
-                configurator.preConfigure(hybrisProjectDescriptor, allHybrisModuleDescriptors);
+                configurator.preConfigure(hybrisProjectDescriptor);
             }
         );
 
         indicator.setIndeterminate(false);
         indicator.setFraction(0d);
-        modulesDescriptorsToImport.stream()
+        final var chosenModuleDescriptors = hybrisProjectDescriptor.getChosenModuleDescriptors();
+        chosenModuleDescriptors.stream()
             .map(moduleDescriptor ->
                 ModuleImportConfigurator.Companion.getEP().getExtensionList().stream()
                     .filter(configurator -> configurator.isApplicable(moduleDescriptor))
@@ -111,16 +106,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .flatMap(Optional::stream)
             .forEach(module -> {
                 modules.add(module);
-                indicator.setFraction((double) modules.size() / modulesDescriptorsToImport.size());
+                indicator.setFraction((double) modules.size() / chosenModuleDescriptors.size());
             });
         indicator.setText2(null);
+        indicator.setIndeterminate(true);
 
         ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
-                configurator.configure(hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider);
+                configurator.configure(hybrisProjectDescriptor, modifiableModelsProvider);
             }
         );
-        indicator.setIndeterminate(true);
 
         indicator.setText(message("hybris.project.import.saving.project"));
 
@@ -133,7 +128,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     @Deprecated(since = "Extract to own configurator")
-    private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
+    private void processUltimateEdition() {
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             if (Plugin.SPRING.isActive()) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
@@ -168,5 +163,4 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             configuration.addExcludedFramework(frameworkType);
         }
     }
-
 }

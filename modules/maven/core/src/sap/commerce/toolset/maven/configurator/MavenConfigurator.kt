@@ -40,7 +40,7 @@ class MavenConfigurator : ProjectPostImportConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: List<ModuleDescriptor>
     ): List<() -> Unit> {
-        val mavenModules = hybrisProjectDescriptor.modulesChosenForImport
+        val mavenModules = hybrisProjectDescriptor.chosenModuleDescriptors
             .filterIsInstance<MavenModuleDescriptor>()
             .takeIf { it.isNotEmpty() }
             ?: return emptyList()

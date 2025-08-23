@@ -138,7 +138,7 @@ private fun addHmcLibs(
         )
     )
 
-    descriptor.rootProjectDescriptor.modulesChosenForImport
+    descriptor.rootProjectDescriptor.chosenModuleDescriptors
         .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_HMC }
         ?.let {
             libs.add(

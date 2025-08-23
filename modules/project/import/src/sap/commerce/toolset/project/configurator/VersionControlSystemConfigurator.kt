@@ -24,7 +24,6 @@ import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class VersionControlSystemConfigurator : ProjectImportConfigurator {
 
@@ -33,7 +32,6 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = hybrisProjectDescriptor.project ?: return

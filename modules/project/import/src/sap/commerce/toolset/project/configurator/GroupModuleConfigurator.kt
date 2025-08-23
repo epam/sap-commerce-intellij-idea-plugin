@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.util.asSafely
 import sap.commerce.toolset.project.ModuleGroupingUtil
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
 
@@ -30,12 +29,9 @@ class GroupModuleConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Modules Grouping"
 
-    override fun preConfigure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>
-    ) {
+    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         if (!ApplicationSettings.getInstance().groupModules) return
-        val moduleDescriptorsToImport = hybrisProjectDescriptor.modulesChosenForImport
+        val moduleDescriptorsToImport = hybrisProjectDescriptor.chosenModuleDescriptors
         val requiredYModuleDescriptorList = buildSet {
             moduleDescriptorsToImport
                 .filterIsInstance<YModuleDescriptor>()

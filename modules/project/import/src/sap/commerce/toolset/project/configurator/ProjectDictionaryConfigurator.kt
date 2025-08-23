@@ -21,7 +21,6 @@ import com.intellij.openapi.components.service
 import com.intellij.spellchecker.dictionary.UserDictionary
 import com.intellij.spellchecker.state.ProjectDictionaryState
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
 
@@ -30,10 +29,7 @@ class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Project Dictionaries"
 
-    override fun preConfigure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>
-    ) {
+    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val moduleNames = hybrisProjectDescriptor.foundModules
             .map { it.name.lowercase() }

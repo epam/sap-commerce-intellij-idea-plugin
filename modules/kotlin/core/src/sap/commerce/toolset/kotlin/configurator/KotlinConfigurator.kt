@@ -50,11 +50,10 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = hybrisProjectDescriptor.project ?: return
-        val hasKotlinnatureExtension = hybrisProjectDescriptor.modulesChosenForImport.stream()
+        val hasKotlinnatureExtension = hybrisProjectDescriptor.chosenModuleDescriptors.stream()
             .anyMatch { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 

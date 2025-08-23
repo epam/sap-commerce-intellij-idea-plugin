@@ -41,7 +41,6 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = hybrisProjectDescriptor.project ?: return

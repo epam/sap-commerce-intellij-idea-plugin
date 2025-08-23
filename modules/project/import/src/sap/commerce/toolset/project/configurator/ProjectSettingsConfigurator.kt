@@ -22,7 +22,6 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -36,10 +35,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Project Settings"
 
-    override fun preConfigure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>
-    ) {
+    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val projectSettings = ProjectSettings.getInstance(project)
         WorkspaceSettings.getInstance(project).hybrisProject = true
@@ -126,12 +122,12 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     }
 
     private fun createModulesOnBlackList(hybrisProjectDescriptor: HybrisProjectDescriptor): Set<String> {
-        val toBeImportedNames = hybrisProjectDescriptor.modulesChosenForImport
+        val toBeImportedNames = hybrisProjectDescriptor.chosenModuleDescriptors
             .map { it.name }
             .toSet()
 
         return hybrisProjectDescriptor.foundModules
-            .filterNot { hybrisProjectDescriptor.modulesChosenForImport.contains(it) }
+            .filterNot { hybrisProjectDescriptor.chosenModuleDescriptors.contains(it) }
             .filter { toBeImportedNames.contains(it.name) }
             .map { it.getRelativePath() }
             .toSet()

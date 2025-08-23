@@ -54,11 +54,10 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     override val name: String
         get() = "Spring"
 
-    override fun preConfigure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>
-    ) {
+    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         if (Plugin.SPRING.isDisabled()) return
+
+        val moduleDescriptors = hybrisProjectDescriptor.moduleDescriptorsToImport
 
         for (moduleDescriptor in moduleDescriptors.values) {
             try {
@@ -85,11 +84,11 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         if (Plugin.SPRING.isDisabled()) return
 
+        val moduleDescriptors = hybrisProjectDescriptor.moduleDescriptorsToImport
         val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 

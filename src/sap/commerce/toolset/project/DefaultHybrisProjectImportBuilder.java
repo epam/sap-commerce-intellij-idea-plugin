@@ -138,7 +138,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModifiableArtifactModel artifactModel
     ) {
         final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
-        final var allModules = hybrisProjectDescriptor.getModulesChosenForImport();
+        final var allModules = hybrisProjectDescriptor.getChosenModuleDescriptors();
         if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
@@ -308,7 +308,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             : Collections.emptySet();
         chosenForImport.removeAll(alreadyOpenedModules);
 
-        hybrisProjectDescriptor.setModulesChosenForImport(chosenForImport);
+        hybrisProjectDescriptor.setChosenModuleDescriptors(chosenForImport);
     }
 
     @Override

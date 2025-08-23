@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -33,7 +32,6 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val rootDirectory = hybrisProjectDescriptor.rootDirectory ?: return

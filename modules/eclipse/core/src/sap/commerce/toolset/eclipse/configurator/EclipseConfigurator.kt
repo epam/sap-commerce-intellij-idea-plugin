@@ -24,7 +24,6 @@ import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.descriptor.EclipseModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class EclipseConfigurator : ProjectImportConfigurator {
 
@@ -33,11 +32,10 @@ class EclipseConfigurator : ProjectImportConfigurator {
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = hybrisProjectDescriptor.project ?: return
-        val projectList = hybrisProjectDescriptor.modulesChosenForImport
+        val projectList = hybrisProjectDescriptor.chosenModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
             .map { it.moduleRootDirectory }
             .map { it.path }
