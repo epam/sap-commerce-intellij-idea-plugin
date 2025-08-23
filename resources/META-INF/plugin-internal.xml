@@ -18,6 +18,11 @@
   -->
 
 <idea-plugin>
+
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.UltimateFeaturesConfigurator"/>
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
 
         <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>

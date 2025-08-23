@@ -23,10 +23,7 @@ import com.intellij.facet.FacetTypeId;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
-import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
-import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
@@ -35,9 +32,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.spring.facet.SpringFacet;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator;
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator;
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator;
@@ -48,7 +43,6 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import java.util.List;
 import java.util.Optional;
 
-import static sap.commerce.toolset.HybrisConstants.IDEA_EDITION_ULTIMATE;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class ImportProjectProgressModalWindow extends Task.Modal {
@@ -72,8 +66,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     public synchronized void run(@NotNull final ProgressIndicator indicator) {
         indicator.setIndeterminate(true);
         indicator.setText(message("hybris.project.import.preparation"));
-
-        processUltimateEdition();
 
         final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         final var rootProjectModifiableModel = modifiableModelsProvider.getModifiableModuleModel();
@@ -125,21 +117,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             );
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
-    }
-
-    @Deprecated(since = "Extract to own configurator")
-    private void processUltimateEdition() {
-        if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
-            if (Plugin.SPRING.isActive()) {
-                this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
-            }
-            if (Plugin.JAVAEE.isActive()) {
-                this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
-            }
-            if (Plugin.JAVAEE_WEB.isActive()) {
-                this.excludeFrameworkDetection(project, WebFacet.ID);
-            }
-        }
     }
 
     @Deprecated(since = "Extract to own module post-creation-configurator")
