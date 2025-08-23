@@ -37,16 +37,11 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
-import com.intellij.openapi.projectRoots.JavaSdkVersion;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.LanguageLevelProjectExtension;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.facet.SpringFacet;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
@@ -110,8 +105,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
             modulesFilesDirectory.mkdirs();
         }
-
-        this.selectSdk(project);
 
         if (!refresh) {
             this.saveCustomDirectoryLocation(project, projectSettings);
@@ -202,26 +195,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
-    }
-
-    @Deprecated(since = "Extract to own pre-configurator")
-    private void selectSdk(@NotNull final Project project) {
-        final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
-
-        final Sdk projectSdk = projectRootManager.getProjectSdk();
-
-        if (null == projectSdk) {
-            return;
-        }
-
-        if (StringUtils.isNotBlank(projectSdk.getVersionString())) {
-            final JavaSdkVersion sdkVersion = JavaSdkVersion.fromVersionString(projectSdk.getVersionString());
-            final LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
-
-            if (sdkVersion != null && sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
-                languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
-            }
-        }
     }
 
     @Deprecated(since = "Extract to own configurator")

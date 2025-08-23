@@ -18,6 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
 
         <project.module.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaModuleImportConfigurator"/>
