@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
   ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -42,16 +41,11 @@
     <depends>com.intellij.modules.xdebugger</depends>
     <depends>com.intellij.modules.json</depends>
 
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javascript.xml">JavaScript</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml">org.intellij.intelliLang</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
-
-    <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
-
     <xi:include href="/META-INF/sap.commerce.toolset-shared-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-shared-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+    <xi:include href="/META-INF/sap.commerce.toolset-exec-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-exec-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -132,4 +126,12 @@
     <depends optional="true" config-file="sap.commerce.toolset-javaee-el.xml">com.intellij.spring</depends>
 
     <depends optional="true" config-file="sap.commerce.toolset-database-core.xml">com.intellij.database</depends>
+
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javascript.xml">JavaScript</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml">org.intellij.intelliLang</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
+
+    <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

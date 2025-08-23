@@ -15,11 +15,14 @@
   ~ You should have received a copy of the GNU Lesser General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <idea-plugin>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.GroovyLanguageInjector"/>
-    </extensions>
+    <actions>
+        <group id="hybris.hac.chooseConnection" popup="true" searchable="false"
+               class="sap.commerce.toolset.exec.actionSystem.HacChooseConnectionAction">
+            <action class="sap.commerce.toolset.exec.actionSystem.AddHacConnectionAction"/>
+            <action class="sap.commerce.toolset.exec.actionSystem.EditActiveHacConnectionAction"/>
+        </group>
+    </actions>
 
 </idea-plugin>

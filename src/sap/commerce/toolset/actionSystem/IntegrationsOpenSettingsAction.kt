@@ -16,34 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.actionSystem
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import sap.commerce.toolset.options.ProjectIntegrationsSettingsConfigurableProvider
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":project-core"))
-    implementation(project(":exec-core"))
-    implementation(project(":console-core"))
-    implementation(project(":console-ui"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-    }
-}
+class IntegrationsOpenSettingsAction : OpenSettingsAction(
+    configurableClass = ProjectIntegrationsSettingsConfigurableProvider.SettingsConfigurable::class.java,
+    text = "Connection settings"
+)

@@ -16,34 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.exec.actionSystem
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.project.DumbAware
+import sap.commerce.toolset.isHybrisProject
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+class HybrisToolsActionGroup : DefaultActionGroup(), DumbAware {
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":project-core"))
-    implementation(project(":exec-core"))
-    implementation(project(":console-core"))
-    implementation(project(":console-ui"))
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+    override fun update(event: AnActionEvent) {
+        event.presentation.isEnabledAndVisible = event.isHybrisProject
     }
 }

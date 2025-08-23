@@ -1,6 +1,5 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
   ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -73,18 +72,14 @@
         <group id="HybrisToolsActions"
                text="[y] SAP Commerce"
                popup="true"
-               class="sap.commerce.toolset.actionSystem.HybrisToolsActionGroup">
+               class="sap.commerce.toolset.exec.actionSystem.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
 
-        <action id="hybris.hac.configureConnection" class="sap.commerce.toolset.actionSystem.ConfigureHacConnectionAction"/>
+        <action id="hybris.hac.openIntegrationsSettings" class="sap.commerce.toolset.actionSystem.IntegrationsOpenSettingsAction">
+            <add-to-group group-id="hybris.hac.chooseConnection"/>
+        </action>
 
-        <group id="hybris.hac.chooseConnection" popup="true" searchable="false"
-               class="sap.commerce.toolset.actionSystem.HacChooseConnectionAction">
-            <action class="sap.commerce.toolset.actionSystem.AddHacConnectionAction"/>
-            <action class="sap.commerce.toolset.actionSystem.EditActiveHacConnectionAction"/>
-            <reference ref="hybris.hac.configureConnection"/>
-        </group>
         <!--        <action id="GenerateDomModel"-->
         <!--                class="sap.commerce.toolset.typeSystem.model.generator.GenerateDomModelAction"-->
         <!--                text="Generate DOM Model...">-->
