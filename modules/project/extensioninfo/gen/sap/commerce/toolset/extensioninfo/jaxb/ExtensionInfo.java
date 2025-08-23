@@ -19,7 +19,7 @@
 
 package sap.commerce.toolset.extensioninfo.jaxb;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 
 /**

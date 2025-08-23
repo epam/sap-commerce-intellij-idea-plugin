@@ -42,17 +42,11 @@
     <depends>com.intellij.modules.xdebugger</depends>
     <depends>com.intellij.modules.json</depends>
 
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-java.xml">com.intellij.modules.java</depends>
-
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javascript.xml">JavaScript</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-kotlin.xml">org.jetbrains.kotlin</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml">org.intellij.intelliLang</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-grid.xml">intellij.grid.plugin</depends>
-
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
 

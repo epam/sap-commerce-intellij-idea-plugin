@@ -24,39 +24,49 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
-
         <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
 
-        <treeStructureProvider id="hybris.project.root.tree.structure.provider" order="first"
-                               implementation="sap.commerce.toolset.project.view.HybrisProjectView"/>
+        <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
 
-        <projectViewNodeDecorator order="last" implementation="sap.commerce.toolset.project.view.HybrisProjectViewNodeDecorator"/>
-
-        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.cockpitNG.psi.contributor.CngReferenceContributor"/>
-
-        <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
-                        serviceImplementation="sap.commerce.toolset.project.view.impl.HybrisProjectViewDirectoryHelper"
-                        order="last"
-                        overrides="true"/>
+        <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true" canCloseContents="true"
+                    factoryClass="sap.commerce.toolset.toolwindow.HybrisToolWindowFactory"/>
 
         <projectConfigurable id="hybris.project.integrations.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              displayName="Integrations" order="first"
                              provider="sap.commerce.toolset.options.ProjectIntegrationsSettingsConfigurableProvider"/>
+    </extensions>
 
-        <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true" canCloseContents="true"
-                    factoryClass="sap.commerce.toolset.toolwindow.HybrisToolWindowFactory"/>
+    <extensions defaultExtensionNs="com.intellij">
+        <treeStructureProvider id="hybris.project.root.tree.structure.provider" order="first"
+                               implementation="sap.commerce.toolset.project.view.HybrisProjectView"/>
+        <projectViewNodeDecorator order="last" implementation="sap.commerce.toolset.project.view.HybrisProjectViewNodeDecorator"/>
+        <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
+                        serviceImplementation="sap.commerce.toolset.project.view.impl.HybrisProjectViewDirectoryHelper"
+                        order="last"
+                        overrides="true"/>
+    </extensions>
 
-        <iconProvider order="first" implementation="sap.commerce.toolset.project.HybrisProjectIconProvider"/>
-
-        <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
-
+    <extensions defaultExtensionNs="com.intellij">
+        <vfs.asyncListener implementation="sap.commerce.toolset.meta.event.MetaSystemFileListener"/>
+        <psi.treeChangeListener implementation="sap.commerce.toolset.meta.event.MetaSystemPsiTreeChangeListener"/>
+        <editorFactoryListener implementation="sap.commerce.toolset.editor.event.HybrisEditorFactoryListener"/>
         <fileEditorProvider implementation="sap.commerce.toolset.editor.HybrisSplitFileEditorProvider"/>
+    </extensions>
 
-        <!-- Language injections -->
+    <!-- Language injections -->
+    <extensions defaultExtensionNs="com.intellij">
         <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.FlexibleSearchLanguageInjector"/>
         <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.ImpexXmlLanguageInjector"/>
         <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.PolyglotQueryLanguageInjector"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity order="first" id="hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisProjectImportStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisProjectStructureStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.WhatsNewStartupActivity"/>
+        <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.HybrisPluginUpdateCheckerStartupActivity"/>
+        <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.PreLoadSystemsStartupActivity"/>
     </extensions>
 
     <actions>
@@ -65,6 +75,15 @@
                popup="true"
                class="sap.commerce.toolset.actionSystem.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </group>
+
+        <action id="hybris.hac.configureConnection" class="sap.commerce.toolset.actionSystem.ConfigureHacConnectionAction"/>
+
+        <group id="hybris.hac.chooseConnection" popup="true" searchable="false"
+               class="sap.commerce.toolset.actionSystem.HacChooseConnectionAction">
+            <action class="sap.commerce.toolset.actionSystem.AddHacConnectionAction"/>
+            <action class="sap.commerce.toolset.actionSystem.EditActiveHacConnectionAction"/>
+            <reference ref="hybris.hac.configureConnection"/>
         </group>
         <!--        <action id="GenerateDomModel"-->
         <!--                class="sap.commerce.toolset.typeSystem.model.generator.GenerateDomModelAction"-->

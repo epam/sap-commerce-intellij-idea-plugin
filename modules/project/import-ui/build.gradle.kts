@@ -36,6 +36,7 @@ sourceSets {
 }
 
 dependencies {
+    implementation(libs.bundles.jaxb)
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
     implementation(project(":ccv2-core"))

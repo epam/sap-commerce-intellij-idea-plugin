@@ -23,4 +23,8 @@
 
         <project.module.facetConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
     </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <defaultLiveTemplates file="liveTemplates/Kotlin.xml"/>
+    </extensions>
 </idea-plugin>

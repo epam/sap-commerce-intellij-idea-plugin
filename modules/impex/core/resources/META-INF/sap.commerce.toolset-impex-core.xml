@@ -36,15 +36,6 @@
         <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
         <liveTemplateContext contextId="IMPEX" implementation="sap.commerce.toolset.impex.liveTemplates.ImpexContextType"/>
 
-        <codeInsight.declarativeInlayProvider language="ImpEx"
-                                              implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExParameterInlayHintProvider"
-                                              isEnabledByDefault="true"
-                                              group="VALUES_GROUP"
-                                              providerId="hybris.ImpEx.parameter"
-                                              bundle="i18n.HybrisBundle"
-                                              nameKey="hybris.impex.editor.parameter.name"
-                                              descriptionKey="hybris.impex.editor.parameter.description"/>
-
         <colorSettingsPage implementation="sap.commerce.toolset.impex.highlighting.ImpexColorSettingsPage"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
@@ -77,13 +68,7 @@
                              order="after hybris.project.integrations.settings"
                              provider="sap.commerce.toolset.impex.options.ProjectImpExSettingsConfigurableProvider"/>
 
-        <!-- ####################################################################################################### -->
-        <!--                                        Impex Completion Providers                                       -->
-        <!-- ####################################################################################################### -->
-
         <completion.contributor language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.completion.ImpexCompletionContributor"/>
-
-        <!-- ####################################################################################################### -->
 
         <highlightUsagesHandlerFactory
                 implementation="sap.commerce.toolset.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
@@ -92,6 +77,7 @@
 
         <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpexAnnotator"/>
 
+        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpExLineMarkerProvider"/>
         <codeInsight.declarativeInlayProvider language="ImpEx"
                                               implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
                                               isEnabledByDefault="true"
@@ -100,6 +86,14 @@
                                               bundle="i18n.HybrisBundle"
                                               nameKey="hybris.editor.impex.inlay_provider.default_value.name"
                                               descriptionKey="hybris.editor.impex.inlay_provider.default_value.description"/>
+        <codeInsight.declarativeInlayProvider language="ImpEx"
+                                              implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExParameterInlayHintProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.ImpEx.parameter"
+                                              bundle="i18n.HybrisBundle"
+                                              nameKey="hybris.impex.editor.parameter.name"
+                                              descriptionKey="hybris.impex.editor.parameter.description"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

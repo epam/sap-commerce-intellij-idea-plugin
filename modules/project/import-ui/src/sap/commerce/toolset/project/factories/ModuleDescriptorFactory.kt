@@ -20,6 +20,8 @@ package sap.commerce.toolset.project.factories
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.application
+import jakarta.xml.bind.JAXBContext
+import jakarta.xml.bind.JAXBException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
@@ -32,8 +34,6 @@ import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.services.HybrisProjectService
 import java.io.File
 import java.io.IOException
-import javax.xml.bind.JAXBContext
-import javax.xml.bind.JAXBException
 
 object ModuleDescriptorFactory {
 

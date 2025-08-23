@@ -34,6 +34,8 @@ import com.intellij.openapi.util.PropertiesUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -57,8 +59,6 @@ import sap.commerce.toolset.project.utils.FileUtils;
 import sap.commerce.toolset.settings.ApplicationSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

@@ -25,6 +25,8 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <defaultLiveTemplates file="liveTemplates/Java.xml"/>
+
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.java.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
 
         <codeInsight.declarativeInlayProvider language="JAVA"

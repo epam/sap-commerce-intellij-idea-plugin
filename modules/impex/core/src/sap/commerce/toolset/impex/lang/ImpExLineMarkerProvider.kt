@@ -47,6 +47,7 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (Plugin.DATABASE.isDisabled()) return null
+        if (Plugin.GRID.isDisabled()) return null
         if (element !is ImpexHeaderLine) return null
 
         return ImpExDataEditModeLineMarkerInfo(
