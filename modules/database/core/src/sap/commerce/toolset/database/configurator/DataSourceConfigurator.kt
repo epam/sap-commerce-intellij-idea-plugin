@@ -42,6 +42,9 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class DataSourceConfigurator : ProjectPostImportConfigurator {
 
+    override val name: String
+        get() = "Database - Data Sources"
+
     override fun postImport(
         project: Project,
         refresh: Boolean,

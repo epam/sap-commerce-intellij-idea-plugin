@@ -48,6 +48,9 @@ import java.nio.charset.StandardCharsets
 
 class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigurator {
 
+    override val name: String
+        get() = "JRebel"
+
     override fun postImport(
         project: Project,
         refresh: Boolean,

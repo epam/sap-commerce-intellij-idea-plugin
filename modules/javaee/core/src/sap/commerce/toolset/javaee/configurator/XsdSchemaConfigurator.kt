@@ -30,6 +30,9 @@ import kotlin.io.path.exists
 
 class XsdSchemaConfigurator : ProjectPostImportConfigurator {
 
+    override val name: String
+        get() = "XSD Schema"
+
     override fun postImport(
         project: Project,
         refresh: Boolean,

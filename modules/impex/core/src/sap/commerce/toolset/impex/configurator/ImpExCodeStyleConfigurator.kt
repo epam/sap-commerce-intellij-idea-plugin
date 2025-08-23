@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.impex.configurator
 
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.psi.codeStyle.CodeStyleSchemes
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import sap.commerce.toolset.impex.ImpExLanguage
@@ -27,8 +26,10 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class ImpExCodeStyleConfigurator : ProjectPreImportConfigurator {
 
+    override val name: String
+        get() = "ImpEx Code Style"
+
     override fun preConfigure(
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>
     ) {

@@ -22,10 +22,8 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.StdModuleTypes
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.java.configurator.ex.*
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -34,18 +32,17 @@ import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 
 class JavaModuleImportConfigurator : ModuleImportConfigurator {
 
+    override val name: String
+        get() = "Java Modules"
+
     override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
 
     override fun configure(
-        indicator: ProgressIndicator,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         allYModules: Map<String, YModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,
         moduleDescriptor: ModuleDescriptor
     ): Module {
-        indicator.text = i18n("hybris.project.import.module.import", moduleDescriptor.name)
-        indicator.text2 = i18n("hybris.project.import.module.settings")
-
         val javaModule = rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().absolutePath,
             StdModuleTypes.JAVA.id
@@ -55,17 +52,14 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
 
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
 
-        indicator.text2 = i18n("hybris.project.import.module.sdk");
         ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
         modifiableRootModel.inheritSdk();
 
         JavadocSettingsConfiguratorEx.configure(modifiableRootModel, moduleDescriptor)
-        LibRootsConfiguratorEx.configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-        ContentRootConfiguratorEx.configure(indicator, modifiableRootModel, moduleDescriptor);
-        CompilerOutputPathsConfiguratorEx.configure(indicator, modifiableRootModel, moduleDescriptor);
-
-        indicator.text2 = i18n("hybris.project.import.module.facet");
+        LibRootsConfiguratorEx.configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
+        ContentRootConfiguratorEx.configure(modifiableRootModel, moduleDescriptor);
+        CompilerOutputPathsConfiguratorEx.configure( modifiableRootModel, moduleDescriptor);
 
         return javaModule
     }

@@ -20,7 +20,6 @@ package sap.commerce.toolset.gradle.configurator
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.observation.launchTracked
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.settings.GradleSettings
 import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
@@ -38,16 +36,16 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 
 class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator {
 
+    override val name: String
+        get() = "Gradle"
+
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.gradle")
-
         PropertiesComponent.getInstance(project)
             .setValue("show.inlinked.gradle.project.popup", false)
 

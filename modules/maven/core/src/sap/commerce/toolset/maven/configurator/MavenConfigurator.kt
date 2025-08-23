@@ -30,6 +30,10 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.io.File
 
 class MavenConfigurator : ProjectPostImportConfigurator {
+
+    override val name: String
+        get() = "Maven"
+
     override fun postImport(
         project: Project,
         refresh: Boolean,

@@ -37,6 +37,9 @@ import java.io.File
 
 class SpringFacetConfigurator : ModuleFacetConfigurator {
 
+    override val name: String
+        get() = "Spring Facet"
+
     override fun configureModuleFacet(
         module: Module,
         hybrisProjectDescriptor: HybrisProjectDescriptor,

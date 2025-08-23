@@ -17,12 +17,10 @@
  */
 package sap.commerce.toolset.java.configurator.ex
 
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
@@ -30,12 +28,9 @@ import java.io.File
 internal object CompilerOutputPathsConfiguratorEx {
 
     fun configure(
-        indicator: ProgressIndicator,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor
     ) {
-        indicator.text2 = i18n("hybris.project.import.module.outputpath")
-
         val useFakeOutputPathForCustomExtensions = moduleDescriptor.rootProjectDescriptor.isUseFakeOutputPathForCustomExtensions
         val outputDirectory = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM && !useFakeOutputPathForCustomExtensions)
             File(moduleDescriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH)

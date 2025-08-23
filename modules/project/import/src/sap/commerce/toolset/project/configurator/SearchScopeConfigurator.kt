@@ -22,7 +22,6 @@ import com.intellij.find.FindSettings
 import com.intellij.ide.projectView.impl.ModuleGroup
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet
 import com.intellij.psi.search.scope.packageSet.NamedScope
@@ -39,15 +38,16 @@ import javax.swing.Icon
 
 class SearchScopeConfigurator : ProjectImportConfigurator {
 
+    override val name: String
+        get() = "Search Scope"
+
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.search.scope")
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris

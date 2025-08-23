@@ -22,16 +22,14 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.progress.ProgressIndicator
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
-interface ModuleImportConfigurator {
+interface ModuleImportConfigurator : Configurator {
 
     fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
 
     fun configure(
-        indicator: ProgressIndicator,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         allYModules: Map<String, YModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,

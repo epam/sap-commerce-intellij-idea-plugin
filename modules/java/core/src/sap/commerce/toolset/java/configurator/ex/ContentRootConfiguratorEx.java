@@ -19,7 +19,6 @@
 
 package sap.commerce.toolset.java.configurator.ex;
 
-import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
@@ -49,7 +48,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static sap.commerce.toolset.HybrisConstants.*;
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public final class ContentRootConfiguratorEx {
 
@@ -64,13 +62,11 @@ public final class ContentRootConfiguratorEx {
     }
 
     public static void configure(
-        @NotNull final ProgressIndicator indicator,
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         final var appSettings = ApplicationSettings.getInstance();
 
-        indicator.setText2(message("hybris.project.import.module.content"));
         final var contentEntry = modifiableRootModel.addContentEntry(VfsUtil.pathToUrl(
             moduleDescriptor.getModuleRootDirectory().getAbsolutePath()
         ));

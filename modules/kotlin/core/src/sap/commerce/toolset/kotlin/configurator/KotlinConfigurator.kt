@@ -22,7 +22,6 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
@@ -37,7 +36,6 @@ import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfiguration
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
@@ -48,16 +46,16 @@ import sap.commerce.toolset.project.yExtensionName
 
 class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
 
+    override val name: String
+        get() = "Kotlin"
+
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.compiler.kotlin")
-
         val hasKotlinnatureExtension = hybrisProjectDescriptor.modulesChosenForImport.stream()
             .anyMatch { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return

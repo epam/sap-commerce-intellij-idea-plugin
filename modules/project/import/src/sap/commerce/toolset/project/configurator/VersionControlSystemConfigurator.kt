@@ -19,28 +19,26 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class VersionControlSystemConfigurator : ProjectImportConfigurator {
 
+    override val name: String
+        get() = "Version Control System"
+
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.vcs")
-
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)
         val detectedRoots = HashSet(rootDetector.detect())

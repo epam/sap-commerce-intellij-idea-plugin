@@ -24,7 +24,7 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-interface ModuleFacetConfigurator {
+interface ModuleFacetConfigurator : Configurator {
 
     fun configureModuleFacet(
         module: Module,

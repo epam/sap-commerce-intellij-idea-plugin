@@ -16,53 +16,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurator;
+package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.progress.ProgressIndicator;
-import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.project.ModuleGroupingUtil;
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor;
-import sap.commerce.toolset.settings.ApplicationSettings;
+import com.intellij.util.asSafely
+import sap.commerce.toolset.project.ModuleGroupingUtil
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.settings.ApplicationSettings
 
-import java.util.HashSet;
-import java.util.Map;
+class GroupModuleConfigurator : ProjectPreImportConfigurator {
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+    override val name: String
+        get() = "Modules Grouping"
 
-public class GroupModuleConfigurator implements ProjectPreImportConfigurator {
-
-    @Override
-    public void preConfigure(
-        @NotNull final ProgressIndicator indicator,
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final Map<@NotNull String, ? extends @NotNull ModuleDescriptor> moduleDescriptors
+    override fun preConfigure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: Map<String, ModuleDescriptor>
     ) {
-        indicator.setText2(message("hybris.project.import.module.groups"));
-        final var applicationSettings = ApplicationSettings.getInstance();
-        if (!applicationSettings.getGroupModules()) {
-            return;
+        if (!ApplicationSettings.getInstance().groupModules) return
+        val moduleDescriptorsToImport = hybrisProjectDescriptor.modulesChosenForImport
+        val requiredYModuleDescriptorList = buildSet {
+            moduleDescriptorsToImport
+                .filterIsInstance<YModuleDescriptor>()
+                .filter { it.isPreselected() }
+                .forEach {
+                    add(it)
+                    addAll(it.getAllDependencies())
+                }
         }
-        final var requiredYModuleDescriptorList = new HashSet<ModuleDescriptor>();
 
-        final var moduleDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
-        moduleDescriptorsToImport.stream()
-            .filter(YModuleDescriptor.class::isInstance)
-            .map(YModuleDescriptor.class::cast)
-            .filter(ModuleDescriptor::isPreselected)
-            .forEach(it -> {
-                requiredYModuleDescriptorList.add(it);
-                requiredYModuleDescriptorList.addAll(it.getAllDependencies());
-            });
-
-        moduleDescriptorsToImport.forEach(it -> {
-            final var groupNames = ModuleGroupingUtil.getGroupName(it, requiredYModuleDescriptorList);
-            if (groupNames != null) {
-                it.setGroupNames(groupNames);
-            }
-        });
-
-        indicator.setText2("");
+        moduleDescriptorsToImport.forEach { moduleDescriptor ->
+            ModuleGroupingUtil.getGroupName(moduleDescriptor, requiredYModuleDescriptorList)
+                ?.asSafely<Array<String>>()
+                ?.let { moduleDescriptor.groupNames = it }
+        }
     }
 }

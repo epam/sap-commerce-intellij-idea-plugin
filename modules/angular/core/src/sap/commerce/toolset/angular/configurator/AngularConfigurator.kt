@@ -29,6 +29,9 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class AngularConfigurator : ProjectPostImportConfigurator {
 
+    override val name: String
+        get() = "Angular"
+
     override fun postImport(
         project: Project,
         refresh: Boolean,

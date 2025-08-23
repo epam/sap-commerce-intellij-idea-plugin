@@ -54,6 +54,9 @@ import java.util.*
 
 class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurator {
 
+    override val name: String
+        get() = "Ant"
+
     override fun beforeRefresh(project: Project) {
         val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
 

@@ -31,6 +31,9 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class JavaCompilerConfigurator : ProjectPostImportConfigurator {
 
+    override val name: String
+        get() = "Java Compiler"
+
     override fun postImport(
         project: Project,
         refresh: Boolean,

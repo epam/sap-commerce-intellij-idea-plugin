@@ -20,11 +20,9 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
@@ -32,16 +30,16 @@ import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
 
 class ModuleDependenciesConfigurator : ProjectImportConfigurator {
 
+    override val name: String
+        get() = "Modules Dependencies"
+
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.dependencies")
-        indicator.text2 = ""
         val modulesChosenForImport = hybrisProjectDescriptor.modulesChosenForImport
         val allModules = modifiableModelsProvider.modules
             .associateBy { it.name }

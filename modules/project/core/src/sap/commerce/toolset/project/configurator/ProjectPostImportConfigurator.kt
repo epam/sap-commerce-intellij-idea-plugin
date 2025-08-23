@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-interface ProjectPostImportConfigurator {
+interface ProjectPostImportConfigurator : Configurator{
 
     fun postImport(
         project: Project,

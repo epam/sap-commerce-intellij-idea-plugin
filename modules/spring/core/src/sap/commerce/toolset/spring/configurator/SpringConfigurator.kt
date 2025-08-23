@@ -21,7 +21,6 @@ package sap.commerce.toolset.spring.configurator
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.util.io.FileUtilRt
@@ -33,7 +32,6 @@ import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
@@ -54,14 +52,15 @@ import kotlin.io.path.exists
 
 class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurator, ProjectStartupConfigurator {
 
+    override val name: String
+        get() = "Spring"
+
     override fun preConfigure(
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>
     ) {
         if (Plugin.SPRING.isDisabled()) return
 
-        indicator.text = i18n("hybris.project.import.spring")
         for (moduleDescriptor in moduleDescriptors.values) {
             try {
                 when (moduleDescriptor) {
@@ -87,7 +86,6 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
 
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,

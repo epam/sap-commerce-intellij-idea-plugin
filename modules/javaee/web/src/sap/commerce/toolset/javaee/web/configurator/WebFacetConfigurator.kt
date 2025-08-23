@@ -39,6 +39,9 @@ import java.io.File
 
 class WebFacetConfigurator : ModuleFacetConfigurator {
 
+    override val name: String
+        get() = "Web Facets"
+
     override fun configureModuleFacet(
         module: Module,
         hybrisProjectDescriptor: HybrisProjectDescriptor,

@@ -29,7 +29,6 @@ import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationNamesInfo;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
@@ -71,8 +70,6 @@ import static sap.commerce.toolset.HybrisConstants.IDEA_EDITION_ULTIMATE;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class ImportProjectProgressModalWindow extends Task.Modal {
-    private static final Logger LOG = Logger.getInstance(ImportProjectProgressModalWindow.class);
-    private static final int COMMITTED_CHUNK_SIZE = 20;
 
     private final Project project;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
@@ -130,17 +127,25 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         final var rootProjectModifiableModel = modifiableModelsProvider.getModifiableModuleModel();
 
-        ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
-            configurator.preConfigure(indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors)
+        // TODO: show progress?
+        ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
+                indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
+                configurator.preConfigure(hybrisProjectDescriptor, allHybrisModuleDescriptors);
+            }
         );
 
+        indicator.setIndeterminate(false);
+        indicator.setFraction(0d);
         modulesDescriptorsToImport.stream()
             .map(moduleDescriptor ->
                 ModuleImportConfigurator.Companion.getEP().getExtensionList().stream()
                     .filter(configurator -> configurator.isApplicable(moduleDescriptor))
                     .findFirst()
                     .map(configurator -> {
-                            final var module = configurator.configure(indicator, modifiableModelsProvider, allYModules, rootProjectModifiableModel, moduleDescriptor);
+                            indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
+                            indicator.setText2("Configuring module: %s".formatted(moduleDescriptor.getName()));
+
+                            final var module = configurator.configure(modifiableModelsProvider, allYModules, rootProjectModifiableModel, moduleDescriptor);
                             final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
                             configureModuleFacet(moduleDescriptor, module, rootModel, modifiableModelsProvider);
                             return module;
@@ -148,11 +153,19 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     )
             )
             .flatMap(Optional::stream)
-            .forEach(modules::add);
+            .forEach( module -> {
+                modules.add(module);
+                indicator.setFraction((double) modules.size() /modulesDescriptorsToImport.size());
+            });
+        indicator.setText2(null);
 
-        ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
-            configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider, cache)
+        // TODO: show progress?
+        ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
+                indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
+                configurator.configure(project, hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider, cache);
+            }
         );
+        indicator.setIndeterminate(true);
 
         indicator.setText(message("hybris.project.import.saving.project"));
 
@@ -169,7 +182,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     @Deprecated(since = "Extract to own configurator")
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
-            indicator.setText(message("hybris.project.import.facets"));
             if (Plugin.SPRING.isActive()) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
             }

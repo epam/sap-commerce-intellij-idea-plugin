@@ -30,7 +30,10 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import java.io.File
 
-class KotlinModuleConfigurator : ModuleFacetConfigurator {
+class KotlinFacetConfigurator : ModuleFacetConfigurator {
+
+    override val name: String
+        get() = "Kotlin Facet"
 
     override fun configureModuleFacet(
         module: Module,

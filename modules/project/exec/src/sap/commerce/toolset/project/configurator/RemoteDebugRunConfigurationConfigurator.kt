@@ -22,7 +22,6 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.remote.RemoteConfiguration
 import com.intellij.execution.remote.RemoteConfigurationType
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
@@ -37,15 +36,16 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
     private val regexComma = ",".toRegex()
     private val regexEquals = "=".toRegex()
 
+    override val name: String
+        get() = "Run Configurations - Debug"
+
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.runconfiguration")
         val runManager = RunManager.getInstance(project)
 
         createRunConfiguration(

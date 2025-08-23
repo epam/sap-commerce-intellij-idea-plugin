@@ -20,11 +20,9 @@ package sap.commerce.toolset.eclipse.configurator
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.descriptor.EclipseModuleDescriptor
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -32,16 +30,16 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class EclipseConfigurator : ProjectImportConfigurator {
 
+    override val name: String
+        get() = "Eclipse"
+
     override fun configure(
         project: Project,
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.eclipse")
-
         val projectList = hybrisProjectDescriptor.modulesChosenForImport
             .filterIsInstance<EclipseModuleDescriptor>()
             .map { it.moduleRootDirectory }

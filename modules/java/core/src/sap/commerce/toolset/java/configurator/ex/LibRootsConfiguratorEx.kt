@@ -18,7 +18,6 @@
 package sap.commerce.toolset.java.configurator.ex
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.LibraryOrderEntry
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -28,7 +27,6 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
 import sap.commerce.toolset.java.descriptor.getLibraryDescriptors
 import sap.commerce.toolset.project.descriptor.JavaLibraryDescriptor
@@ -47,10 +45,7 @@ internal object LibRootsConfiguratorEx {
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
-        indicator: ProgressIndicator
     ) {
-        indicator.text2 = i18n("hybris.project.import.module.libs")
-
         val sourceCodeRoot = getSourceCodeRoot(moduleDescriptor)
         for (javaLibraryDescriptor in getLibraryDescriptors(moduleDescriptor, allYModules)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {

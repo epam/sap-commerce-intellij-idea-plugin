@@ -21,6 +21,6 @@
         <project.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
 
-        <project.module.facetConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinModuleConfigurator"/>
+        <project.module.facetConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
     </extensions>
 </idea-plugin>

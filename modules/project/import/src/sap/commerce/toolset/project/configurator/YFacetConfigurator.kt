@@ -29,6 +29,9 @@ import sap.commerce.toolset.project.facet.YFacetConstants
 
 class YFacetConfigurator : ModuleFacetConfigurator {
 
+    override val name: String
+        get() = "SAP CX Facet"
+
     override fun configureModuleFacet(
         module: Module,
         hybrisProjectDescriptor: HybrisProjectDescriptor,

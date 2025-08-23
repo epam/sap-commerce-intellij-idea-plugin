@@ -20,29 +20,27 @@ package sap.commerce.toolset.ccv2.configurator
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.workspace.jps.entities.ModuleTypeId
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
 class CCv2ModuleImporter : ModuleImportConfigurator {
+
+    override val name: String
+        get() = "CCv2 Modules"
+
     override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
 
     override fun configure(
-        indicator: ProgressIndicator,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         allYModules: Map<String, YModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,
         moduleDescriptor: ModuleDescriptor
     ): Module {
-        indicator.text = i18n("hybris.project.import.module.import", moduleDescriptor.name)
-        indicator.text2 = i18n("hybris.project.import.module.settings")
-
         val javaModule = rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().absolutePath,
             ModuleTypeId("CCv2").name

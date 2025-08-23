@@ -21,7 +21,7 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 
-interface ProjectRefreshConfigurator {
+interface ProjectRefreshConfigurator : Configurator {
 
     fun beforeRefresh(project: Project)
 

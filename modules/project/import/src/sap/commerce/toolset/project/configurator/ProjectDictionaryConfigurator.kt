@@ -18,7 +18,6 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.spellchecker.dictionary.UserDictionary
 import com.intellij.spellchecker.state.ProjectDictionaryState
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -28,8 +27,10 @@ class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
 
     private val dictionaryName = "sap.commerce.toolset"
 
+    override val name: String
+        get() = "Project Dictionaries"
+
     override fun preConfigure(
-        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>
     ) {
