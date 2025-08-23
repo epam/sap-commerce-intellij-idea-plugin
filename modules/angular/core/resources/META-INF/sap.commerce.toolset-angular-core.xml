@@ -20,7 +20,7 @@
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.postImportConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularConfigurator"/>
 
-        <project.module.importConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularImportConfigurator"/>
+        <project.module.importConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularModuleImportConfigurator"/>
         <project.module.descriptorProvider implementation="sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor$Provider"/>
     </extensions>
 </idea-plugin>

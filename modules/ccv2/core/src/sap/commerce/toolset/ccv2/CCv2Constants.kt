@@ -38,4 +38,17 @@ object CCv2Constants {
         "cx-commerce-crm-integrations",
         "media-telco"
     )
+
+    val CLOUD_EXTENSIONS = arrayOf(
+        "azurecloudhotfolder",
+        "cloudmediaconversion",
+        "cloudcommons",
+        "cloudhotfolder",
+        "cloudstorestorefront",
+        "cloudstoreinitialdata",
+        "cloudstorefulfilmentprocess",
+        "cloudstorefacades",
+        "cloudstorecore",
+        "cloudstorecockpits"
+    )
 }

@@ -42,7 +42,7 @@ class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider
                 ?.map { it.lowercase() } ?: emptyList()
 
         return ProjectSettings.getInstance(project)
-                .getAvailableExtensions()
+                .availableExtensions
                 .entries
                 .filterNot { currentNames.contains(it.key) }
                 .map { it.value }

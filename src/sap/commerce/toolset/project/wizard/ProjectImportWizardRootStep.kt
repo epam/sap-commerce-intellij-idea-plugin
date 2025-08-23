@@ -427,8 +427,9 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.PLATFORM_DB_DRIVER
                 ).absolutePath
 
-                if (appSettings.externalDbDriversDirectory.isNotEmpty()) {
-                    File(appSettings.externalDbDriversDirectory)
+                val externalDbDriversDirectory = appSettings.externalDbDriversDirectory
+                if (externalDbDriversDirectory != null) {
+                    File(externalDbDriversDirectory)
                         .takeIf { it.isDirectory }
                         ?.let {
                             dbDriversDirAbsPath = it.absolutePath
@@ -444,10 +445,11 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             val hybrisVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, false)
             hybrisVersionTextField.text = hybrisVersion
             val sourceCodeDirectory = appSettings.sourceCodeDirectory
-            val sourceFile = if (appSettings.sourceZipUsed
-            ) {
+            val sourceFile = if (appSettings.sourceZipUsed && sourceCodeDirectory != null) {
                 findSourceZip(sourceCodeDirectory, hybrisVersion)
-            } else File(sourceCodeDirectory)
+            } else {
+                File(sourceCodeDirectory)
+            }
 
             if (sourceFile != null) {
                 if (!sourceCodeCheckBox.isSelected) {

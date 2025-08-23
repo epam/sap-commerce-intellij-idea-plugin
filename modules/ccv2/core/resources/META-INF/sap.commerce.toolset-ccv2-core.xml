@@ -22,11 +22,15 @@
     </extensions>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.preImportConfigurator order="after sap.commerce.toolset.configurator.ProjectSettingsConfigurator"
+                                       implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
+        <project.preImportConfigurator implementation="sap.commerce.toolset.ccv2.configurator.CCv2ProjectSettingsConfigurator"/>
+
         <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.CCv2CoreModuleDescriptor$Provider"/>
         <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.CCv2StorefrontModuleDescriptor$Provider"/>
         <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.CCv2DatahubModuleDescriptor$Provider"/>
 
-        <project.module.importConfigurator implementation="sap.commerce.toolset.ccv2.configurator.CCv2ModuleImporter"/>
+        <project.module.importConfigurator implementation="sap.commerce.toolset.ccv2.configurator.CCv2ModuleImportConfigurator"/>
     </extensions>
 
 </idea-plugin>

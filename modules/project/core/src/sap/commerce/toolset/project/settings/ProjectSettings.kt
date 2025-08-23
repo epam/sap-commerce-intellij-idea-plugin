@@ -25,8 +25,6 @@ import com.intellij.util.text.VersionComparatorUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.settings.state.ProjectSettingsState
 
 @State(
@@ -123,11 +121,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(removeExternalModulesOnRefresh = value) }
         }
-    var completeSetOfAvailableExtensionsInHybris
-        get() = state.completeSetOfAvailableExtensionsInHybris
-        set(value) {
-            updateState { it.copy(completeSetOfAvailableExtensionsInHybris = value) }
-        }
     var unusedExtensions
         get() = state.unusedExtensions
         set(value) {
@@ -149,7 +142,7 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
 
-    private var _availableExtensions: Map<String, ExtensionDescriptor>
+    var availableExtensions: Map<String, ExtensionDescriptor>
         get() = state.availableExtensions
         set(value) {
             updateState { it.copy(availableExtensions = value) }
@@ -185,37 +178,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
-    fun getAvailableExtensions(): Map<String, ExtensionDescriptor> {
-        if (_availableExtensions.isEmpty()) {
-            synchronized(state) {
-                _availableExtensions = completeSetOfAvailableExtensionsInHybris
-                    .associateWith { ExtensionDescriptor(name = it) }
-
-                registerCloudExtensions()
-            }
-        }
-        return _availableExtensions
-    }
-
-    fun setAvailableExtensions(descriptors: Set<YModuleDescriptor>) {
-        _availableExtensions = buildMap {
-            descriptors
-                .map { it.extensionDescriptor() }
-                .forEach { put(it.name, it) }
-            putAll(getCloudExtensions())
-        }
-    }
-
-    fun registerCloudExtensions() = getCloudExtensions()
-        .let {
-            _availableExtensions = getAvailableExtensions().toMutableMap()
-                .apply { putAll(it) }
-        }
-
-    private fun getCloudExtensions() = HybrisConstants.CCV2_COMMERCE_CLOUD_EXTENSIONS
-        .map { ExtensionDescriptor(name = it, type = ModuleDescriptorType.CCV2_EXTERNAL) }
-        .associateBy { it.name }
-
     override fun getModificationCount() = stateModificationCount
 
     companion object {
@@ -223,3 +185,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         fun getInstance(project: Project): ProjectSettings = project.service()
     }
 }
+
+val Project.ySettings
+    get() = ProjectSettings.getInstance(this)

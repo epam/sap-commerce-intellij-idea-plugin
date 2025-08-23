@@ -15,24 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.angular.configurator
+package sap.commerce.toolset.ccv2.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.workspace.jps.entities.ModuleTypeId
-import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
-class AngularImportConfigurator : ModuleImportConfigurator {
+class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
 
     override val name: String
-        get() = "Angular Modules"
+        get() = "CCv2 Modules"
 
-    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is AngularModuleDescriptor
+    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
 
     override fun configure(
         modifiableModelsProvider: IdeModifiableModelsProvider,
@@ -40,13 +41,14 @@ class AngularImportConfigurator : ModuleImportConfigurator {
         rootProjectModifiableModel: ModifiableModuleModel,
         moduleDescriptor: ModuleDescriptor
     ): Module {
-        return rootProjectModifiableModel.newModule(
+        val javaModule = rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().absolutePath,
-            ModuleTypeId("Angular").name
+            ModuleTypeId("CCv2").name
         )
-            .apply {
-                modifiableModelsProvider.getModifiableRootModel(this)
-                    .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath));
-            }
+        modifiableModelsProvider.getModifiableRootModel(javaModule)
+            .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath))
+            .addExcludePattern(HybrisConstants.HYBRIS_DIRECTORY)
+
+        return javaModule
     }
 }

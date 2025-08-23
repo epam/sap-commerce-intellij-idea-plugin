@@ -50,7 +50,7 @@ class LeUnknownExtensionDefinition : LeInspection() {
     ) {
         val extensionName = dom.name.stringValue ?: return
         val hybrisProjectSettings = ProjectSettings.getInstance(project)
-        val found = hybrisProjectSettings.getAvailableExtensions().keys
+        val found = hybrisProjectSettings.availableExtensions.keys
             .firstOrNull { extensionName.equals(it, true) }
 
         if (found == null) {

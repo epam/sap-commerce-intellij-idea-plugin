@@ -45,7 +45,6 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
     @JvmField @OptionTag val showFullModuleName: Boolean = false,
     @JvmField @OptionTag val removeExternalModulesOnRefresh: Boolean = false,
-    @JvmField val completeSetOfAvailableExtensionsInHybris: Set<String> = emptySet(),
     @JvmField val unusedExtensions: Set<String> = emptySet(),
     @JvmField val modulesOnBlackList: Set<String> = emptySet(),
 

@@ -133,12 +133,12 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(groupNameExternalModules = value) }
         }
-    var externalDbDriversDirectory: String
+    var externalDbDriversDirectory: String?
         get() = state.externalDbDriversDirectory
         set(value) {
             updateState { it.copy(externalDbDriversDirectory = value) }
         }
-    var sourceCodeDirectory: String
+    var sourceCodeDirectory: String?
         get() = state.sourceCodeDirectory
         set(value) {
             updateState { it.copy(sourceCodeDirectory = value) }

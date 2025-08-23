@@ -19,12 +19,10 @@
 
 package sap.commerce.toolset.project.tasks;
 
-import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.facet.FacetTypeId;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
-import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.application.ApplicationManager;
@@ -37,21 +35,16 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.spring.facet.SpringFacet;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
-import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.project.configurator.*;
-import sap.commerce.toolset.project.descriptor.*;
-import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
-import sap.commerce.toolset.project.settings.ProjectSettings;
-import sap.commerce.toolset.settings.ApplicationSettings;
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -89,16 +82,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
         final var allHybrisModuleDescriptors = modulesDescriptorsToImport.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
-        final var appSettings = ApplicationSettings.getInstance();
-
-        final var projectSettings = ProjectSettings.getInstance(project);
 
         final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
             modulesFilesDirectory.mkdirs();
         }
-
-        this.saveImportedSettings(projectSettings, appSettings, projectSettings);
 
         processUltimateEdition(indicator);
 
@@ -182,87 +170,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
-    }
-
-    @Deprecated(since = "Extract to own pre-configurator")
-    private void saveImportedSettings(@NotNull final ProjectSettings projectSettings,
-                                      @NotNull final ApplicationSettings appSettings,
-                                      @NotNull final ProjectSettings hybrisSettingsComponent) {
-        projectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
-        final File extDir = hybrisProjectDescriptor.getExternalExtensionsDirectory();
-        if (extDir != null && extDir.isDirectory()) {
-            projectSettings.setExternalExtensionsDirectory(FileUtil.toSystemIndependentName(extDir.getPath()));
-        }
-        File configDir = hybrisProjectDescriptor.getExternalConfigDirectory();
-        if (configDir != null && configDir.isDirectory()) {
-            projectSettings.setExternalConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
-        }
-        final ConfigModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
-        if (configModule != null) {
-            configDir = configModule.getModuleRootDirectory();
-            if (configDir.isDirectory()) {
-                projectSettings.setConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
-            }
-        }
-        final File dbDriversDir = hybrisProjectDescriptor.getExternalDbDriversDirectory();
-        if (dbDriversDir != null && dbDriversDir.isDirectory()) {
-            projectSettings.setExternalDbDriversDirectory(FileUtil.toSystemIndependentName(dbDriversDir.getPath()));
-            appSettings.setExternalDbDriversDirectory(FileUtil.toSystemIndependentName(dbDriversDir.getPath()));
-        } else {
-            appSettings.setExternalDbDriversDirectory("");
-        }
-
-        appSettings.setIgnoreNonExistingSourceDirectories(hybrisProjectDescriptor.isIgnoreNonExistingSourceDirectories());
-        appSettings.setWithStandardProvidedSources(hybrisProjectDescriptor.isWithStandardProvidedSources());
-
-        final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();
-
-        if (sourceCodeFile != null && sourceCodeFile.exists()) {
-            projectSettings.setSourceCodeFile(FileUtil.toSystemIndependentName(sourceCodeFile.getPath()));
-            final boolean directory = sourceCodeFile.isDirectory();
-            appSettings.setSourceCodeDirectory(FileUtil.toSystemIndependentName(
-                directory ? sourceCodeFile.getPath() : sourceCodeFile.getParent()));
-            appSettings.setSourceZipUsed(!directory);
-        }
-        final File modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
-        if (modulesFilesDirectory != null && modulesFilesDirectory.isDirectory()) {
-            projectSettings.setIdeModulesFilesDirectory(FileUtil.toSystemIndependentName(modulesFilesDirectory.getPath()));
-        }
-        projectSettings.setFollowSymlink(hybrisProjectDescriptor.isFollowSymlink());
-        projectSettings.setScanThroughExternalModule(hybrisProjectDescriptor.isScanThroughExternalModule());
-        projectSettings.setModulesOnBlackList(createModulesOnBlackList());
-        projectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
-
-        final var credentialAttributes = new CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN);
-        PasswordSafe.getInstance().setPassword(credentialAttributes, hybrisProjectDescriptor.getCcv2Token());
-
-        projectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
-        final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
-            .filter(e -> !(e instanceof ExternalModuleDescriptor)
-                && !(e instanceof ConfigModuleDescriptor)
-                && !(e instanceof YSubModuleDescriptor)
-            )
-            .filter(YModuleDescriptor.class::isInstance)
-            .map(YModuleDescriptor.class::cast)
-            .collect(Collectors.toSet());
-        hybrisSettingsComponent.setAvailableExtensions(completeSetOfHybrisModules);
-        projectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules.stream()
-            .map(ModuleDescriptor::getName)
-            .collect(Collectors.toSet()));
-        projectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
-    }
-
-    private Set<String> createModulesOnBlackList() {
-        final List<String> toBeImportedNames = hybrisProjectDescriptor
-            .getModulesChosenForImport().stream()
-            .map(ModuleDescriptor::getName)
-            .toList();
-        return hybrisProjectDescriptor
-            .getFoundModules().stream()
-            .filter(e -> !hybrisProjectDescriptor.getModulesChosenForImport().contains(e))
-            .filter(e -> toBeImportedNames.contains(e.getName()))
-            .map(ModuleDescriptor::getRelativePath)
-            .collect(Collectors.toSet());
     }
 
     private void excludeFrameworkDetection(final Project project, final FacetTypeId facetTypeId) {

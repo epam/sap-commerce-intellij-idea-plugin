@@ -42,8 +42,6 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 
         if (!isHybrisProject) return
 
-        settingsComponent.registerCloudExtensions()
-
         if (settingsComponent.isOutdatedHybrisProject()) {
             Notifications.create(
                 NotificationType.INFORMATION,

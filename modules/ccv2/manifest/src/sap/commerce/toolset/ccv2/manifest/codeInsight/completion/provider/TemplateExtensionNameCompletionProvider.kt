@@ -26,7 +26,7 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
 
     override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = ProjectSettings.getInstance(project)
-        .getAvailableExtensions()
+        .availableExtensions
         .values
         .filter { it.extGenTemplateExtension }
         .toList()
