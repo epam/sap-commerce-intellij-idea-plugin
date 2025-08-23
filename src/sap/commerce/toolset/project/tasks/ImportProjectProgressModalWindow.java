@@ -123,7 +123,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
-                configurator.configure(project, hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider);
+                configurator.configure(hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider);
             }
         );
         indicator.setIndeterminate(true);

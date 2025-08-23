@@ -20,7 +20,6 @@ package sap.commerce.toolset.eclipse.configurator
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.project.Project
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.descriptor.EclipseModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
@@ -33,11 +32,11 @@ class EclipseConfigurator : ProjectImportConfigurator {
         get() = "Eclipse"
 
     override fun configure(
-        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val project = hybrisProjectDescriptor.project ?: return
         val projectList = hybrisProjectDescriptor.modulesChosenForImport
             .filterIsInstance<EclipseModuleDescriptor>()
             .map { it.moduleRootDirectory }

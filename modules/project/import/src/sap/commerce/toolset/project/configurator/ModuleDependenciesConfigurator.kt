@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -34,7 +33,6 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
         get() = "Modules Dependencies"
 
     override fun configure(
-        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider

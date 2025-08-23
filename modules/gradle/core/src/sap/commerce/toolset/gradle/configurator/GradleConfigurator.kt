@@ -39,11 +39,11 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator
         get() = "Gradle"
 
     override fun configure(
-        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val project = hybrisProjectDescriptor.project ?: return
         PropertiesComponent.getInstance(project)
             .setValue("show.inlinked.gradle.project.popup", false)
 

@@ -42,11 +42,11 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
         get() = "Search Scope"
 
     override fun configure(
-        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val project = hybrisProjectDescriptor.project ?: return
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris

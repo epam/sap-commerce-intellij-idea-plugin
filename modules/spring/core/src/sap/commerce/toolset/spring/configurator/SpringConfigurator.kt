@@ -84,7 +84,6 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     }
 
     override fun configure(
-        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider

@@ -49,11 +49,11 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         get() = "Kotlin"
 
     override fun configure(
-        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val project = hybrisProjectDescriptor.project ?: return
         val hasKotlinnatureExtension = hybrisProjectDescriptor.modulesChosenForImport.stream()
             .anyMatch { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return

@@ -40,11 +40,11 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
         get() = "Run Configurations - Debug"
 
     override fun configure(
-        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val project = hybrisProjectDescriptor.project ?: return
         val runManager = RunManager.getInstance(project)
 
         createRunConfiguration(
