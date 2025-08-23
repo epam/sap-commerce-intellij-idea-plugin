@@ -33,11 +33,16 @@
         }
       ]
     },
+    "commerceSuitePreviewVersion": {
+      "description": "Defines the preview version of the SAP Commerce Cloud artifact to download.",
+      "type": "string"
+    },
     "enableImageProcessingService": {
       "type": "boolean",
       "description": "Enables the image processing service in media conversion."
     },
     "solrVersion": {
+      "description": "The Solr version expressed by two numbers separated with a dot, for example “8.6”. For more information about compatibility with Solr, refer to Selecting Solr Server Version in https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/d7294323e5e542b7b37f48dd83565321.html?locale=en-US&state=PRODUCTION&version=v2211.",
       "type": "string"
     },
     "extensionPacks": {
