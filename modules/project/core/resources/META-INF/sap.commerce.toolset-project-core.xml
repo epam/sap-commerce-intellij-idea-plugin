@@ -53,6 +53,9 @@
 
         <indexedRootsProvider implementation="sap.commerce.toolset.project.indexing.HybrisProjectRootIndexedRootsProvider"/>
         <gotoClassContributor implementation="sap.commerce.toolset.project.gotoClass.CustomGotoClassContributor"/>
+
+        <writingAccessProvider implementation="sap.commerce.toolset.project.vfs.HybrisWritingAccessProvider" />
+        <nonProjectFileWritingAccessExtension implementation="sap.commerce.toolset.project.vfs.HybrisNonProjectFileWritingAccessExtension"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

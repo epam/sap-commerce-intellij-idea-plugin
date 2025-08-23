@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,27 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.providers
+
+package sap.commerce.toolset.project.vfs
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.settings.ySettings
 
-class HybrisWritingAccessProvider(myProject: Project) : WritingAccessProvider() {
+class HybrisWritingAccessProvider(private val project: Project) : WritingAccessProvider() {
 
-    private val ootbReadOnlyMode = ProjectSettings.getInstance(myProject).importOotbModulesInReadOnlyMode
-    private val customDirectory = ProjectSettings.getInstance(myProject).customDirectory
+    override fun requestWriting(files: Collection<VirtualFile>): MutableSet<VirtualFile> {
+        val projectSettings = project.ySettings
+        return files
+            .filter { isFileReadOnly(it, projectSettings) }
+            .toMutableSet()
+    }
 
-    override fun requestWriting(files: Collection<VirtualFile>) = files
-        .filter { isFileReadOnly(it) }
-        .toMutableSet()
+    override fun isPotentiallyWritable(file: VirtualFile) = !isFileReadOnly(file, project.ySettings)
 
-    override fun isPotentiallyWritable(file: VirtualFile) = !isFileReadOnly(file)
-
-    private fun isFileReadOnly(file: VirtualFile): Boolean {
-        if (!ootbReadOnlyMode) return false
+    private fun isFileReadOnly(file: VirtualFile, projectSettings: ProjectSettings): Boolean {
+        if (!projectSettings.importOotbModulesInReadOnlyMode) return false
         if (!file.isWritable) return true
+        val customDirectory = projectSettings.customDirectory
 
         if (file.path.contains("hybris/bin")) {
             if (file.path.contains("hybris/bin/custom")) return false

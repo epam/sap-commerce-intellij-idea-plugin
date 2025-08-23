@@ -25,8 +25,6 @@
         <projectImportBuilder implementation="sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder"/>
         <projectImportBuilder implementation="sap.commerce.toolset.project.OpenHybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="sap.commerce.toolset.project.HybrisProjectOpenProcessor"/>
-        <writingAccessProvider implementation="sap.commerce.toolset.project.providers.HybrisWritingAccessProvider" />
-        <nonProjectFileWritingAccessExtension implementation="sap.commerce.toolset.project.providers.HybrisNonProjectFileWritingAccessExtension"/>
 
         <applicationService serviceInterface="sap.commerce.toolset.project.services.HybrisProjectService"
                             serviceImplementation="sap.commerce.toolset.project.services.impl.DefaultHybrisProjectService"/>
