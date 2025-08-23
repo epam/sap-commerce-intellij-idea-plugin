@@ -19,12 +19,10 @@ package sap.commerce.toolset.javaee.configurator
 
 import com.intellij.javaee.ExternalResourceManagerEx
 import com.intellij.openapi.application.runWriteAction
-import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.cockpitNG.CockpitNGConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.nio.file.Path
 import kotlin.io.path.exists
 
@@ -34,12 +32,10 @@ class XsdSchemaConfigurator : ProjectPostImportConfigurator {
         get() = "XSD Schema"
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
+        hybrisProjectDescriptor: HybrisProjectDescriptor
     ): List<() -> Unit> {
-        val cockpitJarToFile = moduleDescriptors
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
+        val cockpitJarToFile = hybrisProjectDescriptor.chosenModuleDescriptors
             .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE }
             ?.moduleRootDirectory
             ?.toPath()

@@ -22,7 +22,6 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.remote.RemoteConfiguration
 import com.intellij.execution.remote.RemoteConfigurationType
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -58,12 +57,10 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
     }
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
+        hybrisProjectDescriptor: HybrisProjectDescriptor
     ): List<() -> Unit> {
-        if (refresh) return emptyList()
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
+        if (hybrisProjectDescriptor.refresh) return emptyList()
 
         return listOf {
             val debugConfiguration = i18n("hybris.project.run.configuration.remote.debug")

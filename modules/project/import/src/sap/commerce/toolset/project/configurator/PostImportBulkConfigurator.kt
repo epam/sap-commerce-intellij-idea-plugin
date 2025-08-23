@@ -28,24 +28,17 @@ import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 @Service(Service.Level.PROJECT)
-class PostImportConfigurator(private val project: Project) {
+class PostImportBulkConfigurator(private val project: Project) {
 
-    fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allModules: List<ModuleDescriptor>,
-        refresh: Boolean,
-    ) {
+    fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         ReadAction
             .nonBlocking<List<() -> Unit>> {
                 if (project.isDisposed) return@nonBlocking emptyList()
 
                 ProjectPostImportConfigurator.EP.extensionList
-                    .map {
-                        it.postImport(project, refresh, hybrisProjectDescriptor, allModules)
-                    }
+                    .map { it.postImport(hybrisProjectDescriptor) }
                     .flatten()
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
@@ -53,7 +46,7 @@ class PostImportConfigurator(private val project: Project) {
 
                 actions.forEach { it() }
 
-                notifyImportFinished(project, refresh)
+                notifyImportFinished(project, hybrisProjectDescriptor.refresh)
             }
             .inSmartMode(project)
             .submit(AppExecutorUtil.getAppExecutorService())
@@ -73,6 +66,6 @@ class PostImportConfigurator(private val project: Project) {
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): PostImportConfigurator = project.service()
+        fun getInstance(project: Project): PostImportBulkConfigurator = project.service()
     }
 }

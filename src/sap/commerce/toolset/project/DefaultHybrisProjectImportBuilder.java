@@ -28,13 +28,12 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
-import kotlin.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.HybrisIcons;
 import sap.commerce.toolset.Notifications;
-import sap.commerce.toolset.project.configurator.PostImportConfigurator;
+import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
@@ -139,9 +138,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     ) {
         final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
         final var allModules = hybrisProjectDescriptor.getChosenModuleDescriptors();
-        if (allModules.isEmpty()) {
-            return Collections.emptyList();
-        }
+
+        if (allModules.isEmpty()) return Collections.emptyList();
+
         this.performProjectsCleanup(allModules);
 
         final var modules = new ArrayList<Module>();
@@ -149,9 +148,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             .queue();
 
         if (isUpdate()) {
-            PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, isUpdate());
+            PostImportBulkConfigurator.getInstance(project).configure(hybrisProjectDescriptor);
         } else {
-            project.putUserData(ProjectConstants.getKEY_FINALIZE_PROJECT_IMPORT(), new Triple<>(hybrisProjectDescriptor, allModules, isUpdate()));
+            project.putUserData(ProjectConstants.getKEY_FINALIZE_PROJECT_IMPORT(), hybrisProjectDescriptor);
         }
         notifyImportNotFinishedYet(project);
         return modules;

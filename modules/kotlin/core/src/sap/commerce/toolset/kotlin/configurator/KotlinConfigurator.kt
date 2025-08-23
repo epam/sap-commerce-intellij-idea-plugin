@@ -40,7 +40,6 @@ import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName
 
 class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
@@ -62,11 +61,9 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     }
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
+        hybrisProjectDescriptor: HybrisProjectDescriptor
     ): List<() -> Unit> {
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
         val hasKotlinnatureExtension = ModuleManager.getInstance(project).modules
             .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.yExtensionName() }
         if (!hasKotlinnatureExtension) return emptyList()

@@ -30,7 +30,7 @@ import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.PostImportConfigurator
+import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 
@@ -66,11 +66,7 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
                 ?.let {
                     project.removeUserData(ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT)
 
-                    PostImportConfigurator.getInstance(project).configure(
-                        it.first,
-                        it.second,
-                        it.third
-                    )
+                    PostImportBulkConfigurator.getInstance(project).configure(it)
                 }
 
             HybrisConsoleService.getInstance(project).activateToolWindow()

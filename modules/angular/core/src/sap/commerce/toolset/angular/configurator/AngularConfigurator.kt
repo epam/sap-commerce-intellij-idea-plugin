@@ -18,14 +18,12 @@
 package sap.commerce.toolset.angular.configurator
 
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VfsUtil
 import org.angular2.cli.Angular2ProjectConfigurator
 import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class AngularConfigurator : ProjectPostImportConfigurator {
 
@@ -33,21 +31,22 @@ class AngularConfigurator : ProjectPostImportConfigurator {
         get() = "Angular"
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
-    ): List<() -> Unit> = moduleDescriptors
-        .filterIsInstance<AngularModuleDescriptor>()
-        .mapNotNull {
-            val vfs = VfsUtil.findFileByIoFile(it.moduleRootDirectory, true)
-                ?: return@mapNotNull null
-            val moduleRef = ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName())
-                ?.let { module -> Ref.create(module) }
-                ?: return@mapNotNull null
+        hybrisProjectDescriptor: HybrisProjectDescriptor
+    ): List<() -> Unit> {
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
 
-            {
-                Angular2ProjectConfigurator().configureProject(project, vfs, moduleRef, true)
+        return hybrisProjectDescriptor.chosenModuleDescriptors
+            .filterIsInstance<AngularModuleDescriptor>()
+            .mapNotNull {
+                val vfs = VfsUtil.findFileByIoFile(it.moduleRootDirectory, true)
+                    ?: return@mapNotNull null
+                val moduleRef = ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName())
+                    ?.let { module -> Ref.create(module) }
+                    ?: return@mapNotNull null
+
+                {
+                    Angular2ProjectConfigurator().configureProject(project, vfs, moduleRef, true)
+                }
             }
-        }
+    }
 }

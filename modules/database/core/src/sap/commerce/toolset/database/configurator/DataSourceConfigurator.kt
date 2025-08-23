@@ -38,7 +38,6 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class DataSourceConfigurator : ProjectPostImportConfigurator {
 
@@ -46,11 +45,9 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
         get() = "Database - Data Sources"
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
+        hybrisProjectDescriptor: HybrisProjectDescriptor
     ): List<() -> Unit> {
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
         val projectProperties = PropertyService.getInstance(project).findAllProperties()
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)

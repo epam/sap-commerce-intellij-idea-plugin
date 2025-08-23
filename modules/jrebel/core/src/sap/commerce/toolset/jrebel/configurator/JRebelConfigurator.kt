@@ -36,7 +36,6 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -52,17 +51,17 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
         get() = "JRebel"
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
-    ): List<() -> Unit> = moduleDescriptors
-        .filter {
-            it is YCustomRegularModuleDescriptor
-                || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
-        }
-        .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
-        .mapNotNull { configure(it) }
+        hybrisProjectDescriptor: HybrisProjectDescriptor
+    ): List<() -> Unit> {
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
+        return hybrisProjectDescriptor.chosenModuleDescriptors
+            .filter {
+                it is YCustomRegularModuleDescriptor
+                    || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
+            }
+            .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
+            .mapNotNull { configure(it) }
+    }
 
     override fun onStartup(project: Project) {
         val projectSettings = ProjectSettings.getInstance(project)

@@ -20,14 +20,12 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.compiler.CompilerConfiguration
 import com.intellij.compiler.CompilerConfigurationImpl
-import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import org.jetbrains.jps.model.java.compiler.JavaCompilers
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class JavaCompilerConfigurator : ProjectPostImportConfigurator {
 
@@ -35,11 +33,9 @@ class JavaCompilerConfigurator : ProjectPostImportConfigurator {
         get() = "Java Compiler"
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
+        hybrisProjectDescriptor: HybrisProjectDescriptor
     ): List<() -> Unit> {
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
         val compilerConfiguration = CompilerConfiguration.getInstance(project)
             .asSafely<CompilerConfigurationImpl>() ?: return emptyList()
         val compilerVersion = PropertyService.getInstance(project).findProperty(HybrisConstants.PROPERTY_BUILD_COMPILER)

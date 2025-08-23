@@ -66,16 +66,14 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
     }
 
     override fun postImport(
-        project: Project,
-        refresh: Boolean,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: List<ModuleDescriptor>
+        hybrisProjectDescriptor: HybrisProjectDescriptor
     ): List<() -> Unit> {
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
         val platformDescriptor = hybrisProjectDescriptor.platformHybrisModuleDescriptor
         val extHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
         val customHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
 
-        for (descriptor in moduleDescriptors) {
+        for (descriptor in hybrisProjectDescriptor.chosenModuleDescriptors) {
             when (descriptor) {
                 is YPlatformExtModuleDescriptor -> extHybrisModuleDescriptors.add(descriptor)
                 is YCustomRegularModuleDescriptor -> customHybrisModuleDescriptors.add(descriptor)

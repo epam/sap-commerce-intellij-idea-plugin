@@ -20,9 +20,8 @@ package sap.commerce.toolset.project
 
 import com.intellij.openapi.util.Key
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 object ProjectConstants {
     @JvmStatic
-    val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
+    val KEY_FINALIZE_PROJECT_IMPORT: Key<HybrisProjectDescriptor> = Key.create("hybrisProjectImportFinalize")
 }

@@ -445,10 +445,10 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             val hybrisVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, false)
             hybrisVersionTextField.text = hybrisVersion
             val sourceCodeDirectory = appSettings.sourceCodeDirectory
-            val sourceFile = if (appSettings.sourceZipUsed && sourceCodeDirectory != null) {
-                findSourceZip(sourceCodeDirectory, hybrisVersion)
-            } else {
-                File(sourceCodeDirectory)
+            val sourceFile = when {
+                appSettings.sourceZipUsed && sourceCodeDirectory != null -> findSourceZip(sourceCodeDirectory, hybrisVersion)
+                sourceCodeDirectory != null -> File(sourceCodeDirectory)
+                else -> null
             }
 
             if (sourceFile != null) {

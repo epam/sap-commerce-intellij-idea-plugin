@@ -72,7 +72,9 @@ class LocalSapCXRunProfileState(
         ProcessTerminatedListener.attach(processHandler)
 
         if (executor is DefaultDebugExecutor) {
-            waitForPort(sapCXOptions.remoteDebugHost ?: DEBUG_HOST, Integer.valueOf(sapCXOptions.remoteDebugPort ?: DEBUG_PORT), 30000)
+            val host = sapCXOptions.remoteDebugHost ?: DEBUG_HOST
+            val port = Integer.valueOf(sapCXOptions.remoteDebugPort ?: DEBUG_PORT)
+            waitForPort(host, port, 30000)
         }
 
         return processHandler
