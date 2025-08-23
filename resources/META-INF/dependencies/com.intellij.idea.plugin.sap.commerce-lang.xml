@@ -43,12 +43,6 @@
     </extensions>
 
     <actions>
-        <action id="File.yRefresh" class="sap.commerce.toolset.project.actionSystem.ProjectRefreshAction"
-                text="Refresh SAP Commerce Project"
-                description="Re-imports the current hybris project with default values">
-            <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
-        </action>
-
         <action id="hybris.hac.configureConnection" class="sap.commerce.toolset.actionSystem.ConfigureHacConnectionAction"/>
 
         <group id="hybris.hac.chooseConnection" popup="true" searchable="false"

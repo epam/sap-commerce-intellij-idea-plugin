@@ -22,6 +22,8 @@
 
         <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="INSTANCE"
                   implementationClass="sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.daemon.PolyglotQueryLineMarkerProvider"/>
         <codeInsight.declarativeInlayProvider language="Polyglot Query"
                                               implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.hints.PolyglotQueryParameterInlayHintProvider"
                                               isEnabledByDefault="true"

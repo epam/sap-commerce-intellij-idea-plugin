@@ -20,17 +20,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="liveTemplates/Java.xml"/>
-
-        <projectImportProvider implementation="sap.commerce.toolset.project.HybrisProjectImportProvider"/>
-        <projectImportBuilder implementation="sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder"/>
-        <projectImportBuilder implementation="sap.commerce.toolset.project.OpenHybrisProjectImportBuilder"/>
-        <projectOpenProcessor implementation="sap.commerce.toolset.project.HybrisProjectOpenProcessor"/>
-
-        <applicationService serviceInterface="sap.commerce.toolset.project.services.HybrisProjectService"
-                            serviceImplementation="sap.commerce.toolset.project.services.impl.DefaultHybrisProjectService"/>
-
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.daemon.PolyglotQueryLineMarkerProvider"/>
     </extensions>
 
 </idea-plugin>

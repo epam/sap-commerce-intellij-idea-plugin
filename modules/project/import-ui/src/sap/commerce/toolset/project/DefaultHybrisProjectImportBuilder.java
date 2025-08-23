@@ -41,7 +41,6 @@ import sap.commerce.toolset.project.tasks.ImportProjectProgressModalWindow;
 import sap.commerce.toolset.project.tasks.SearchModulesRootsTaskModalWindow;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 
-import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +61,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected final Lock lock = new ReentrantLock();
 
     @Nullable
-    @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
     private List<ModuleDescriptor> moduleList;
     private List<ModuleDescriptor> hybrisModulesToImport;

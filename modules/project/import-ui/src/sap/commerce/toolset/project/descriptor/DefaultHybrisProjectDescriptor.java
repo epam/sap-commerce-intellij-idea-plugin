@@ -34,9 +34,7 @@ import com.intellij.openapi.util.PropertiesUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +57,8 @@ import sap.commerce.toolset.project.utils.FileUtils;
 import sap.commerce.toolset.settings.ApplicationSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 
-import javax.annotation.concurrent.GuardedBy;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -80,7 +79,6 @@ import java.util.stream.Stream;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
-@Deprecated(since = "Simplify and convert to Kotlin")
 public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectDescriptor.class);
@@ -89,7 +87,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @NotNull
     protected final List<ModuleDescriptor> modulesChosenForImport = new ArrayList<>();
     @NotNull
-    @GuardedBy("lock")
     protected final Set<ModuleDescriptor> alreadyOpenedModules = new HashSet<>();
     protected final Lock lock = new ReentrantLock();
     private final Set<File> vcs = new HashSet<>();

@@ -22,8 +22,8 @@
 
         <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
                   implementationClass="sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType"/>
-    </extensions>
-    <extensions defaultExtensionNs="com.intellij">
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
         <codeInsight.declarativeInlayProvider language="FlexibleSearch"
                                               implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
                                               isEnabledByDefault="true"

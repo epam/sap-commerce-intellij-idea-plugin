@@ -20,6 +20,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
     id("java")
+    id("idea") // IDEA support
     id("org.jetbrains.intellij.platform.module")
     alias(libs.plugins.kotlin) // Kotlin support
 }
@@ -37,6 +38,7 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
+    implementation(project(":ccv2-core"))
     implementation(project(":project-extensioninfo"))
     implementation(project(":project-localextensions"))
     implementation(project(":project-core"))
@@ -48,6 +50,8 @@ dependencies {
         }
         bundledPlugins(
             "com.intellij.java",
+            "com.intellij.platform.images",
+            "org.jetbrains.idea.maven",
         )
     }
 }
