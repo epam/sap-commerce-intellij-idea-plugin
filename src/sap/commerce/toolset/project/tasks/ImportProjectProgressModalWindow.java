@@ -27,7 +27,6 @@ import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
-import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.diagnostic.Logger;
@@ -47,16 +46,11 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.codeStyle.CodeStyleScheme;
-import com.intellij.psi.codeStyle.CodeStyleSchemes;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.spring.facet.SpringFacet;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
-import sap.commerce.toolset.impex.ImpExLanguage;
 import sap.commerce.toolset.project.configurator.*;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
@@ -130,7 +124,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         this.saveImportedSettings(projectSettings, appSettings, projectSettings);
-        this.disableWrapOnType(ImpExLanguage.INSTANCE);
 
         processUltimateEdition(indicator);
 
@@ -331,15 +324,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .filter(e -> toBeImportedNames.contains(e.getName()))
             .map(ModuleDescriptor::getRelativePath)
             .collect(Collectors.toSet());
-    }
-
-    private void disableWrapOnType(final Language impexLanguage) {
-        final CodeStyleScheme currentScheme = CodeStyleSchemes.getInstance().getCurrentScheme();
-        final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
-        if (impexLanguage != null) {
-            final CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
-            langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
-        }
     }
 
     private void excludeFrameworkDetection(final Project project, final FacetTypeId facetTypeId) {
