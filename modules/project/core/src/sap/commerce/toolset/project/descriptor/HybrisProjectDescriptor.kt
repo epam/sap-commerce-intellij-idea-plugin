@@ -22,7 +22,6 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import java.io.File
 
-@Deprecated("Review this class")
 interface HybrisProjectDescriptor {
     fun setHybrisProject(project: Project?)
     fun clear()

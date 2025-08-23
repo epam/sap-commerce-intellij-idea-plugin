@@ -22,7 +22,6 @@ import com.intellij.find.FindSettings
 import com.intellij.ide.projectView.impl.ModuleGroup
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet
@@ -45,7 +44,6 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
         indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        rootProjectModifiableModel: ModifiableModuleModel,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
@@ -61,7 +59,7 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
         var commerceScope: NamedScope? = null
         var hybrisScope: NamedScope? = null
 
-        if (groupExists(rootProjectModifiableModel, customGroupName)) {
+        if (groupExists(customGroupName, project)) {
             customScope = createScope(HybrisIcons.Extension.CUSTOM, customGroupName)
             newScopes.add(customScope)
 
@@ -76,12 +74,12 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
             )
         }
 
-        if (groupExists(rootProjectModifiableModel, platformGroupName)) {
+        if (groupExists(platformGroupName, project)) {
             platformScope = createScope(HybrisIcons.Scope.PLATFORM_GROUP, platformGroupName)
             newScopes.add(platformScope)
         }
 
-        if (groupExists(rootProjectModifiableModel, commerceGroupName)) {
+        if (groupExists(commerceGroupName, project)) {
             commerceScope = createScope(HybrisIcons.Scope.COMMERCE_GROUP, commerceGroupName)
             newScopes.add(commerceScope)
         }
@@ -95,7 +93,7 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
             newScopes.add(hybrisScope)
         }
 
-        if (groupExists(rootProjectModifiableModel, nonHybrisGroupName)) {
+        if (groupExists(nonHybrisGroupName, project)) {
             newScopes.add(createScope(HybrisIcons.Scope.LOCAL, nonHybrisGroupName))
         }
 
@@ -139,8 +137,8 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
         }
     }
 
-    private fun groupExists(model: ModifiableModuleModel, groupName: String) = ModuleGroup(listOf(groupName))
-        .modulesInGroup(model.project, true)
+    private fun groupExists(groupName: String, project: Project) = ModuleGroup(listOf(groupName))
+        .modulesInGroup(project, true)
         .isNotEmpty()
 
     private fun createScope(icon: Icon, groupName: String) = NamedScope(

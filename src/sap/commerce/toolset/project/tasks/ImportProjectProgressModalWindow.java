@@ -162,7 +162,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .forEach(modules::add);
 
         ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
-            configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, rootProjectModifiableModel, modifiableModelsProvider, cache)
+            configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider, cache)
         );
 
         indicator.setText(message("hybris.project.import.saving.project"));

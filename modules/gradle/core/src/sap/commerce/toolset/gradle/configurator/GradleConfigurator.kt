@@ -20,7 +20,6 @@ package sap.commerce.toolset.gradle.configurator
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.observation.launchTracked
@@ -44,7 +43,6 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator
         indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
-        rootProjectModifiableModel: ModifiableModuleModel,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
