@@ -19,13 +19,14 @@
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
+    id("java")
     id("org.jetbrains.intellij.platform.module")
     alias(libs.plugins.kotlin) // Kotlin support
 }
 
 sourceSets {
     main {
-        java.srcDirs("src", "gen")
+        java.srcDirs("src")
         resources.srcDirs("resources")
     }
     test {
@@ -35,6 +36,9 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":shared-ui"))
+    implementation(project(":project-extensioninfo"))
+    implementation(project(":project-localextensions"))
     implementation(project(":project-core"))
     implementation(project(":project-import-core"))
 
@@ -42,8 +46,8 @@ dependencies {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
-        compatiblePlugins(
-            "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
+        bundledPlugins(
+            "com.intellij.java",
         )
     }
 }

@@ -39,7 +39,7 @@ dependencies {
     implementation(project(":typeSystem-core"))
     implementation(project(":impex-core"))
     implementation(project(":project-core"))
-    implementation(project(":project-import"))
+    implementation(project(":project-import-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

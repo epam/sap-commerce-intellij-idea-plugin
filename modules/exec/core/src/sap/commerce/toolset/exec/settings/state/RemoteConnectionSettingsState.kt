@@ -29,7 +29,7 @@ import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.RemoteConstants
 import sap.commerce.toolset.exec.generateUrl
 
-// TODO: split to hAC and SOLR settings
+@Deprecated("Split to hAC and SOLR settings")
 @Tag("HybrisRemoteConnectionSettings")
 class RemoteConnectionSettingsState : BaseState(), Comparable<RemoteConnectionSettingsState> {
 
