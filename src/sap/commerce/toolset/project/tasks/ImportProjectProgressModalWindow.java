@@ -83,17 +83,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var allHybrisModuleDescriptors = modulesDescriptorsToImport.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
 
-        final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
-        if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
-            modulesFilesDirectory.mkdirs();
-        }
-
         processUltimateEdition(indicator);
 
         final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         final var rootProjectModifiableModel = modifiableModelsProvider.getModifiableModuleModel();
 
-        // TODO: show progress?
         ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
                 configurator.preConfigure(hybrisProjectDescriptor, allHybrisModuleDescriptors);
@@ -119,13 +113,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     )
             )
             .flatMap(Optional::stream)
-            .forEach( module -> {
+            .forEach(module -> {
                 modules.add(module);
-                indicator.setFraction((double) modules.size() /modulesDescriptorsToImport.size());
+                indicator.setFraction((double) modules.size() / modulesDescriptorsToImport.size());
             });
         indicator.setText2(null);
 
-        // TODO: show progress?
         ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
                 configurator.configure(project, hybrisProjectDescriptor, allHybrisModuleDescriptors, modifiableModelsProvider, cache);
