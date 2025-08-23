@@ -21,10 +21,6 @@ package sap.commerce.toolset.project.actionSystem;
 
 import com.intellij.ide.DataManager;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
-import com.intellij.ide.util.newProjectWizard.StepSequence;
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.ide.util.projectWizard.ProjectBuilder;
-import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.application.ApplicationManager;
@@ -33,7 +29,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.CompilerProjectExtension;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.libraries.Library;
@@ -44,7 +39,6 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisIcons;
-import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder;
 import sap.commerce.toolset.project.HybrisProjectImportProvider;
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator;
 import sap.commerce.toolset.project.facet.YFacet;
@@ -87,21 +81,16 @@ public class ProjectRefreshAction extends AnAction {
 
     @Override
     public void actionPerformed(final @NotNull AnActionEvent e) {
-        final Project project = getEventProject(e);
+        final var project = getEventProject(e);
 
-        if (project == null) {
-            return;
-        }
+        if (project == null) return;
+
         removeOldProjectData(project);
 
         try {
-            final AddModuleWizard wizard = getWizard(project);
-            final ProjectBuilder projectBuilder = wizard.getProjectBuilder();
-
-            if (projectBuilder instanceof AbstractHybrisProjectImportBuilder) {
-                ((AbstractHybrisProjectImportBuilder) projectBuilder).setRefresh(true);
-            }
-            projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
+            createWizard(project)
+                .getProjectBuilder()
+                .commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
         } catch (final ConfigurationException ex) {
             Messages.showErrorDialog(
                 project,
@@ -153,28 +142,28 @@ public class ProjectRefreshAction extends AnAction {
             .forEach(configurator -> configurator.beforeRefresh(project));
     }
 
-    private AddModuleWizard getWizard(final Project project) throws ConfigurationException {
-        final ProjectImportProvider provider = getHybrisProjectImportProvider();
-        final String projectName = project.getName();
-        final Sdk jdk = ProjectRootManager.getInstance(project).getProjectSdk();
-        final String compilerOutputUrl = CompilerProjectExtension.getInstance(project).getCompilerOutputUrl();
-        final ProjectSettings projectSettings = ProjectSettings.getInstance(project);
+    private AddModuleWizard createWizard(final Project project) throws ConfigurationException {
+        final var provider = getHybrisProjectImportProvider();
+        final var projectName = project.getName();
+        final var jdk = ProjectRootManager.getInstance(project).getProjectSdk();
+        final var compilerOutputUrl = CompilerProjectExtension.getInstance(project).getCompilerOutputUrl();
+        final var projectSettings = ProjectSettings.getInstance(project);
 
-        final AddModuleWizard wizard = new AddModuleWizard(null, project.getBasePath(), provider) {
+        final var wizard = new AddModuleWizard(project, project.getBasePath(), provider) {
 
             @Override
             protected void init() {
                 // non GUI mode
             }
         };
-        final WizardContext wizardContext = wizard.getWizardContext();
+        final var wizardContext = wizard.getWizardContext();
         wizardContext.setProjectJdk(jdk);
         wizardContext.setProjectName(projectName);
         wizardContext.setCompilerOutputDirectory(compilerOutputUrl);
-        final StepSequence stepSequence = wizard.getSequence();
-        for (ModuleWizardStep step : stepSequence.getAllSteps()) {
-            if (step instanceof RefreshSupport) {
-                ((RefreshSupport) step).refresh(projectSettings);
+
+        for (final var step : wizard.getSequence().getAllSteps()) {
+            if (step instanceof final RefreshSupport refreshStep) {
+                refreshStep.refresh(projectSettings);
             }
         }
         return wizard;

@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.configurator;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.project.ModuleGroupingUtil;
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
@@ -47,7 +46,8 @@ public class GroupModuleConfigurator implements ProjectPreImportConfigurator {
         }
         final var requiredYModuleDescriptorList = new HashSet<ModuleDescriptor>();
 
-        hybrisProjectDescriptor.getModulesChosenForImport().stream()
+        final var moduleDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
+        moduleDescriptorsToImport.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
             .filter(ModuleDescriptor::isPreselected)
@@ -56,8 +56,8 @@ public class GroupModuleConfigurator implements ProjectPreImportConfigurator {
                 requiredYModuleDescriptorList.addAll(it.getAllDependencies());
             });
 
-        hybrisProjectDescriptor.getModulesChosenForImport().forEach(it -> {
-            final @Nullable String[] groupNames = ModuleGroupingUtil.getGroupName(it, requiredYModuleDescriptorList);
+        moduleDescriptorsToImport.forEach(it -> {
+            final var groupNames = ModuleGroupingUtil.getGroupName(it, requiredYModuleDescriptorList);
             if (groupNames != null) {
                 it.setGroupNames(groupNames);
             }

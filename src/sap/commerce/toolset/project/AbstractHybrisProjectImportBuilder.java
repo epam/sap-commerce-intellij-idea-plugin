@@ -48,5 +48,4 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
 
     public abstract List<ModuleDescriptor> getHybrisModulesToImport();
 
-    public abstract void setRefresh(boolean refresh);
 }

@@ -65,7 +65,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Nullable
     @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
-    protected volatile boolean refresh;
     private List<ModuleDescriptor> moduleList;
     private List<ModuleDescriptor> hybrisModulesToImport;
 
@@ -98,12 +97,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         } finally {
             this.lock.unlock();
         }
-        refresh = false;
-    }
-
-    @Override
-    public void setRefresh(final boolean refresh) {
-        this.refresh = refresh;
     }
 
     @NotNull
@@ -138,7 +131,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Override
     public List<Module> commit(
         final Project project,
-        final ModifiableModuleModel model,
+        @Nullable final ModifiableModuleModel model,
         final ModulesProvider modulesProvider,
         final ModifiableArtifactModel artifactModel
     ) {
@@ -153,13 +146,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.performProjectsCleanup(allModules);
 
         new ImportProjectProgressModalWindow(
-            project, model, hybrisProjectDescriptor, modules, refresh
+            project, hybrisProjectDescriptor, modules, isUpdate()
         ).queue();
 
-        if (refresh) {
-            PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, refresh);
+        if (isUpdate()) {
+            PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, isUpdate());
         } else {
-            project.putUserData(ProjectConstants.getKEY_FINALIZE_PROJECT_IMPORT(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
+            project.putUserData(ProjectConstants.getKEY_FINALIZE_PROJECT_IMPORT(), new Triple<>(hybrisProjectDescriptor, allModules, isUpdate()));
         }
         notifyImportNotFinishedYet(project);
         return modules;
@@ -167,7 +160,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     private void notifyImportNotFinishedYet(@NotNull final Project project) {
 
-        final String notificationTitle = refresh
+        final String notificationTitle = isUpdate()
             ? message("hybris.notification.project.refresh.title")
             : message("hybris.notification.project.import.title");
 
@@ -231,7 +224,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final List<ModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
         final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();
-        for (ModuleDescriptor moduleDescriptor : allModules) {
+        for (final var moduleDescriptor : allModules) {
             if (moduleDescriptor.isPreselected()) {
                 moduleToImport.add(moduleDescriptor);
                 moduleDescriptor.setImportStatus(MANDATORY);
@@ -310,7 +303,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
 
         final var chosenForImport = new ArrayList<>(list);
-        final var alreadyOpenedModules = refresh
+        final var alreadyOpenedModules = isUpdate()
             ? hybrisProjectDescriptor.getAlreadyOpenedModules()
             : Collections.emptySet();
         chosenForImport.removeAll(alreadyOpenedModules);

@@ -34,7 +34,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
-import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
@@ -72,6 +71,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -84,23 +84,18 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private static final int COMMITTED_CHUNK_SIZE = 20;
 
     private final Project project;
-    private final ModifiableModuleModel model;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
     private final List<Module> modules;
     private final boolean refresh;
-    @NotNull
-    private IdeModifiableModelsProvider modifiableModelsProvider;
 
     public ImportProjectProgressModalWindow(
         final Project project,
-        final ModifiableModuleModel model,
         final HybrisProjectDescriptor hybrisProjectDescriptor,
         final List<Module> modules,
-        final boolean refresh) {
+        final boolean refresh
+    ) {
         super(project, message("hybris.project.import.commit"), false);
         this.project = project;
-        this.model = model;
-        this.modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
         this.modules = modules;
         this.refresh = refresh;
@@ -112,13 +107,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final var cache = new ConfiguratorCache();
-        final var moduleDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
-        final var allYModules = moduleDescriptorsToImport.stream()
+        final var modulesDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
+        final var allYModules = modulesDescriptorsToImport.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
             .distinct()
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
-        final var allHybrisModuleDescriptors = moduleDescriptorsToImport.stream()
+        final var allHybrisModuleDescriptors = modulesDescriptorsToImport.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
         final var appSettings = ApplicationSettings.getInstance();
 
@@ -130,7 +125,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         this.initializeHybrisProjectSettings(projectSettings);
-        this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
+        this.updateProjectDictionary(project, modulesDescriptorsToImport);
         this.selectSdk(project);
 
         if (!refresh) {
@@ -143,65 +138,46 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         processUltimateEdition(indicator);
 
-        ModifiableModuleModel rootProjectModifiableModel = model == null
-            ? modifiableModelsProvider.getModifiableModuleModel()
-            : model;
+        final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
+        final var rootProjectModifiableModel = modifiableModelsProvider.getModifiableModuleModel();
 
         ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.preConfigure(indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors)
         );
 
-        int counter = 0;
-
-        final var application = ApplicationManager.getApplication();
-
-        for (final var moduleDescriptor : moduleDescriptorsToImport) {
-            final var modifiableRootModel = rootProjectModifiableModel;
-
-            final var moduleOpt = ModuleImportConfigurator.Companion.getEP().getExtensionList().stream()
-                .filter(configurator -> configurator.isApplicable(moduleDescriptor))
-                .findFirst()
-                .map(configurator -> {
-                        final var module = configurator.configure(indicator, modifiableModelsProvider, allYModules, modifiableRootModel, moduleDescriptor);
-                        final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
-                        configureModuleFacet(moduleDescriptor, module, rootModel, modifiableModelsProvider);
-                        return module;
-                    }
-                );
-
-            if (moduleOpt.isPresent()) {
-                modules.add(moduleOpt.get());
-                counter++;
-
-                // TODO: rewrite to own coroutine commits
-                if (counter >= COMMITTED_CHUNK_SIZE) {
-                    counter = 0;
-                    application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
-
-                    modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
-
-                    rootProjectModifiableModel = model == null
-                        ? modifiableModelsProvider.getModifiableModuleModel()
-                        : model;
-                }
-            }
-        }
-
-        final var finalRootProjectModifiableModel = rootProjectModifiableModel;
+        modulesDescriptorsToImport.stream()
+            .map(moduleDescriptor ->
+                ModuleImportConfigurator.Companion.getEP().getExtensionList().stream()
+                    .filter(configurator -> configurator.isApplicable(moduleDescriptor))
+                    .findFirst()
+                    .map(configurator -> {
+                            final var module = configurator.configure(indicator, modifiableModelsProvider, allYModules, rootProjectModifiableModel, moduleDescriptor);
+                            final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
+                            configureModuleFacet(moduleDescriptor, module, rootModel, modifiableModelsProvider);
+                            return module;
+                        }
+                    )
+            )
+            .flatMap(Optional::stream)
+            .forEach(modules::add);
 
         ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
-            configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider, cache)
+            configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, rootProjectModifiableModel, modifiableModelsProvider, cache)
         );
 
         indicator.setText(message("hybris.project.import.saving.project"));
 
-        application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
+        ApplicationManager.getApplication()
+            .invokeAndWait(() -> ApplicationManager.getApplication()
+                .runWriteAction(modifiableModelsProvider::commit)
+            );
 
         cache.clear();
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
 
+    @Deprecated(since = "Extract to own configurator")
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             indicator.setText(message("hybris.project.import.facets"));
@@ -217,6 +193,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
+    @Deprecated(since = "Extract to own module post-creation-configurator")
     private void configureModuleFacet(
         final ModuleDescriptor moduleDescriptor, final Module module,
         final ModifiableRootModel modifiableRootModel, final IdeModifiableModelsProvider modifiableModelsProvider
@@ -228,6 +205,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         );
     }
 
+    @Deprecated(since = "Extract to own pre-configurator")
     private void updateProjectDictionary(
         final Project project,
         final List<ModuleDescriptor> modules
@@ -252,6 +230,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisDictionary.addToDictionary(moduleNames);
     }
 
+    @Deprecated(since = "Extract to own pre-configurator")
     private void initializeHybrisProjectSettings(final @NotNull ProjectSettings projectSettings) {
         WorkspaceSettings.getInstance(project).setHybrisProject(true);
         final var plugin = Plugin.HYBRIS.getPluginDescriptor();
@@ -262,6 +241,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         projectSettings.setImportedByVersion(version);
     }
 
+    @Deprecated(since = "Extract to own pre-configurator")
     private void selectSdk(@NotNull final Project project) {
         final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
 
@@ -281,6 +261,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
+    @Deprecated(since = "Extract to own configurator")
     private void saveCustomDirectoryLocation(final Project project, final ProjectSettings projectSettings) {
         final File customDirectory = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         final File hybrisDirectory = hybrisProjectDescriptor.getHybrisDistributionDirectory();
@@ -300,6 +281,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
+    @Deprecated(since = "Extract to own pre-configurator")
     private void saveImportedSettings(@NotNull final ProjectSettings projectSettings,
                                       @NotNull final ApplicationSettings appSettings,
                                       @NotNull final ProjectSettings hybrisSettingsComponent) {
