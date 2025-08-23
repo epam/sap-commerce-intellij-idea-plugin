@@ -55,7 +55,6 @@ import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
-import sap.commerce.toolset.settings.WorkspaceSettings;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -112,7 +111,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             modulesFilesDirectory.mkdirs();
         }
 
-        this.initializeHybrisProjectSettings(projectSettings);
         this.selectSdk(project);
 
         if (!refresh) {
@@ -204,17 +202,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
-    }
-
-    @Deprecated(since = "Extract to own pre-configurator")
-    private void initializeHybrisProjectSettings(final @NotNull ProjectSettings projectSettings) {
-        WorkspaceSettings.getInstance(project).setHybrisProject(true);
-        final var plugin = Plugin.HYBRIS.getPluginDescriptor();
-
-        if (plugin == null) return;
-
-        final String version = plugin.getVersion();
-        projectSettings.setImportedByVersion(version);
     }
 
     @Deprecated(since = "Extract to own pre-configurator")
