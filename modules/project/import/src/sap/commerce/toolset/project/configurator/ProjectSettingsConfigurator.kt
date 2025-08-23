@@ -17,6 +17,9 @@
  */
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -33,11 +36,37 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         moduleDescriptors: Map<String, ModuleDescriptor>
     ) {
         val project = hybrisProjectDescriptor.project ?: return
+        val projectSettings = ProjectSettings.getInstance(project)
         WorkspaceSettings.getInstance(project).hybrisProject = true
 
-        val pluginVersion = Plugin.HYBRIS.pluginDescriptor
-            ?.version ?: return
+        Plugin.HYBRIS.pluginDescriptor
+            ?.let { projectSettings.importedByVersion = it.version }
 
-        ProjectSettings.getInstance(project).importedByVersion = pluginVersion
+        hybrisProjectDescriptor.ifImport {
+            saveCustomDirectoryLocation(project, hybrisProjectDescriptor, projectSettings)
+            projectSettings.excludedFromScanning = hybrisProjectDescriptor.excludedFromScanning
+        }
+    }
+
+    private fun saveCustomDirectoryLocation(
+        project: Project,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        projectSettings: ProjectSettings
+    ) {
+        val projectDir = project.guessProjectDir() ?: return
+        val hybrisPath = hybrisProjectDescriptor.hybrisDistributionDirectory
+            ?.toPath() ?: return
+
+        projectSettings.hybrisDirectory = VfsUtilCore.virtualToIoFile(projectDir)
+            .toPath()
+            .relativize(hybrisPath)
+            .toString()
+
+        hybrisProjectDescriptor.externalExtensionsDirectory
+            ?.toPath()
+            ?.let {
+                val relativeCustomPath = hybrisPath.relativize(it)
+                projectSettings.customDirectory = relativeCustomPath.toString()
+            }
     }
 }

@@ -22,7 +22,6 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import java.io.File
 
-@Deprecated("Review time of creation, it must be created together with the Project!")
 interface HybrisProjectDescriptor {
     fun setHybrisProject(project: Project?)
     fun clear()
@@ -33,6 +32,7 @@ interface HybrisProjectDescriptor {
     )
 
     var project: Project?
+    var refresh: Boolean
     val foundModules: MutableList<ModuleDescriptor>
     var modulesChosenForImport: MutableList<ModuleDescriptor>
     val configHybrisModuleDescriptor: ConfigModuleDescriptor?
@@ -63,4 +63,7 @@ interface HybrisProjectDescriptor {
     var isWithStandardProvidedSources: Boolean
     var excludedFromScanning: MutableSet<String>
     val excludedFromScanningDirectories: MutableSet<File>?
+
+    fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
+    fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
 }

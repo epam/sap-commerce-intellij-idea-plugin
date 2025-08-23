@@ -18,9 +18,9 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.preImportConfigurator order="first" implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
         <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.GroupModuleConfigurator"/>
         <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectDictionaryConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
 
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ModuleDependenciesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>

@@ -36,11 +36,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.facet.SpringFacet;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
@@ -52,8 +49,6 @@ import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -68,19 +63,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private final Project project;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
     private final List<Module> modules;
-    private final boolean refresh;
 
     public ImportProjectProgressModalWindow(
         final Project project,
         final HybrisProjectDescriptor hybrisProjectDescriptor,
-        final List<Module> modules,
-        final boolean refresh
+        final List<Module> modules
     ) {
         super(project, message("hybris.project.import.commit"), false);
         this.project = project;
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
         this.modules = modules;
-        this.refresh = refresh;
     }
 
     @Override
@@ -104,11 +96,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
             modulesFilesDirectory.mkdirs();
-        }
-
-        if (!refresh) {
-            this.saveCustomDirectoryLocation(project, projectSettings);
-            projectSettings.setExcludedFromScanning(hybrisProjectDescriptor.getExcludedFromScanning());
         }
 
         this.saveImportedSettings(projectSettings, appSettings, projectSettings);
@@ -195,26 +182,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
-    }
-
-    @Deprecated(since = "Extract to own configurator")
-    private void saveCustomDirectoryLocation(final Project project, final ProjectSettings projectSettings) {
-        final File customDirectory = hybrisProjectDescriptor.getExternalExtensionsDirectory();
-        final File hybrisDirectory = hybrisProjectDescriptor.getHybrisDistributionDirectory();
-        final VirtualFile projectDir = ProjectUtil.guessProjectDir(project);
-
-        if (projectDir == null) return;
-
-        final File baseDirectory = VfsUtilCore.virtualToIoFile(projectDir);
-        final Path projectPath = Paths.get(baseDirectory.getAbsolutePath());
-        final Path hybrisPath = Paths.get(hybrisDirectory.getAbsolutePath());
-        final Path relativeHybrisPath = projectPath.relativize(hybrisPath);
-        projectSettings.setHybrisDirectory(relativeHybrisPath.toString());
-        if (customDirectory != null) {
-            final Path customPath = Paths.get(customDirectory.getAbsolutePath());
-            final Path relativeCustomPath = hybrisPath.relativize(customPath);
-            projectSettings.setCustomDirectory(relativeCustomPath.toString());
-        }
     }
 
     @Deprecated(since = "Extract to own pre-configurator")

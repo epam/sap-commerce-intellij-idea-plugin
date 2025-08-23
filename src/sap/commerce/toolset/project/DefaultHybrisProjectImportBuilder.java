@@ -70,7 +70,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     @Nullable
-    public Project createProject(final String name, final String path) {
+    public Project createProject(@NotNull final String name, @NotNull final String path) {
         final Project project = super.createProject(name, path);
         getHybrisProjectDescriptor().setHybrisProject(project);
         return project;
@@ -78,7 +78,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public void setRootProjectDirectory(@NotNull final File directory) {
-        LOG.info("setting RootProjectDirectory to "+directory.getAbsolutePath());
+        LOG.info("setting RootProjectDirectory to " + directory.getAbsolutePath());
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
             directory, this.getHybrisProjectDescriptor()
         ));
@@ -90,9 +90,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     public void cleanup() {
         super.cleanup();
 
-        this.lock.lock();
-
         try {
+            this.lock.lock();
             this.hybrisProjectDescriptor = null;
         } finally {
             this.lock.unlock();
@@ -102,15 +101,15 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @NotNull
     @Override
     public HybrisProjectDescriptor getHybrisProjectDescriptor() {
-        this.lock.lock();
-
         try {
+            this.lock.lock();
+
             if (null == this.hybrisProjectDescriptor) {
                 this.hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor();
+                this.hybrisProjectDescriptor.setRefresh(isUpdate());
                 this.hybrisProjectDescriptor.setProject(getCurrentProject());
             }
 
-            //noinspection ConstantConditions
             return this.hybrisProjectDescriptor;
         } finally {
             this.lock.unlock();
@@ -135,19 +134,16 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModulesProvider modulesProvider,
         final ModifiableArtifactModel artifactModel
     ) {
-
-        final List<Module> modules = new ArrayList<>();
-
-        final HybrisProjectDescriptor hybrisProjectDescriptor = getHybrisProjectDescriptor();
-        final List<ModuleDescriptor> allModules = hybrisProjectDescriptor.getModulesChosenForImport();
+        final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
+        final var allModules = hybrisProjectDescriptor.getModulesChosenForImport();
         if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
         this.performProjectsCleanup(allModules);
 
-        new ImportProjectProgressModalWindow(
-            project, hybrisProjectDescriptor, modules, isUpdate()
-        ).queue();
+        final var modules = new ArrayList<Module>();
+        new ImportProjectProgressModalWindow(project, hybrisProjectDescriptor, modules)
+            .queue();
 
         if (isUpdate()) {
             PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, isUpdate());

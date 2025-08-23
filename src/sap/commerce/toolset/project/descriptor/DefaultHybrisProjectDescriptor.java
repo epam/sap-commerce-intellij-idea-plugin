@@ -94,6 +94,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private final Set<String> excludedFromScanning = new HashSet<>();
     @Nullable
     protected Project project;
+    private Boolean refresh;
     @Nullable
     protected File rootDirectory;
     @Nullable
@@ -889,6 +890,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (projectSettings.getHybrisProject()) {
             setHybrisProject(project);
         }
+    }
+
+    @Override
+    public boolean getRefresh() {
+        return refresh;
+    }
+
+    @Override
+    public void setRefresh(final boolean refresh) {
+        this.refresh = refresh;
     }
 
     @NotNull
