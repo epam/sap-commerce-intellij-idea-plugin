@@ -22,6 +22,8 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
 open class YPlatformExtModuleDescriptor(
@@ -34,4 +36,5 @@ open class YPlatformExtModuleDescriptor(
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_CORE)
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
+    override fun groupName() = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
 }

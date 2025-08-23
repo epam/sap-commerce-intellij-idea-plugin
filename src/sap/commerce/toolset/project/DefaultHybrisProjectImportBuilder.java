@@ -169,6 +169,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             .notify(project);
     }
 
+    @Deprecated(since = "Compare to refresh action, looks like we may not remove existing modules in case of configured IML files.")
     protected void performProjectsCleanup(@NotNull final Iterable<ModuleDescriptor> modulesChosenForImport) {
         final List<File> alreadyExistingModuleFiles;
         final File dir = hybrisProjectDescriptor.getModulesFilesDirectory();
@@ -304,7 +305,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final var chosenForImport = new ArrayList<>(list);
         final var alreadyOpenedModules = isUpdate()
-            ? hybrisProjectDescriptor.getAlreadyOpenedModules()
+            ? hybrisProjectDescriptor.getAlreadyOpenedModules() // TODO: so what's the purpose if on refresh we remove modules in the ProjectRefreshAction.removeOldProjectData(project);
             : Collections.emptySet();
         chosenForImport.removeAll(alreadyOpenedModules);
 
