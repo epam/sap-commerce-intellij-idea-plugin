@@ -52,6 +52,7 @@
         <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.daemon.LeExtensionLineMarkerProvider"/>
 
         <indexedRootsProvider implementation="sap.commerce.toolset.project.indexing.HybrisProjectRootIndexedRootsProvider"/>
+        <directoryIndexExcludePolicy implementation="sap.commerce.toolset.project.indexing.HybrisDirectoryIndexExcludePolicy"/>
         <gotoClassContributor implementation="sap.commerce.toolset.project.gotoClass.CustomGotoClassContributor"/>
 
         <writingAccessProvider implementation="sap.commerce.toolset.project.vfs.HybrisWritingAccessProvider" />

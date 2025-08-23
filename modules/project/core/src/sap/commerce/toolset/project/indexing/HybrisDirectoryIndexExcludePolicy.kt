@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.indexing
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootModel
 import com.intellij.openapi.roots.impl.DirectoryIndexExcludePolicy
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -32,29 +31,22 @@ import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager
 import com.intellij.util.application
 import sap.commerce.toolset.settings.ApplicationSettings
 
-class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExcludePolicy {
+class HybrisDirectoryIndexExcludePolicy : DirectoryIndexExcludePolicy {
 
-    override fun getExcludeRootsForModule(rootModel: ModuleRootModel): Array<VirtualFilePointer> {
-        val contentRoots = rootModel.contentRoots
-        val excludedFoldersFromIndex = mutableListOf<VirtualFilePointer>()
-        contentRoots.forEach { contentRoot ->
-            excludedFoldersFromIndex.addAll(getExcludedFoldersFromIndex(contentRoot))
-        }
-        return excludedFoldersFromIndex.toTypedArray()
-    }
+    override fun getExcludeRootsForModule(rootModel: ModuleRootModel) = rootModel.contentRoots
+        .flatMap { getExcludedFoldersFromIndex(it) }
+        .toTypedArray()
 
     private fun getExcludedFoldersFromIndex(contentRoot: VirtualFile): List<VirtualFilePointer> {
         val excludedFoldersFromIndex = mutableListOf<VirtualFilePointer>()
         getExcludedFromIndexList().forEach { excludedFolderPath ->
-            val visitor = HybrisExcludeFromIndexFileVisitor(
-                excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT
-            )
+            val visitor = HybrisExcludeFromIndexFileVisitor(excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT)
             VfsUtilCore.visitChildrenRecursively(contentRoot, visitor)
         }
         return excludedFoldersFromIndex
     }
 
-    private fun getExcludedFromIndexList(): List<String> = ApplicationSettings.getInstance()
+    private fun getExcludedFromIndexList(): List<String> = ApplicationSettings.Companion.getInstance()
         .excludedFromIndexList
 
     internal class HybrisExcludeFromIndexFileVisitor(
@@ -65,13 +57,10 @@ class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExclud
 
         private val virtualFilePointerProvider = HybrisVirtualFilePointerProvider.getInstance()
         private val pathFragments: List<String> = excludedFolderPath.split("/")
-
         private var currentDepth = 0
 
-        override fun visitFile(file: VirtualFile): Boolean {
-            return file.isDirectory && pathFragments.size > currentDepth &&
-                isFolderNameEqualToPathFragment(file, currentDepth)
-        }
+        override fun visitFile(file: VirtualFile) = file.isDirectory && pathFragments.size > currentDepth &&
+            isFolderNameEqualToPathFragment(file, currentDepth)
 
         override fun visitFileEx(file: VirtualFile): Result {
             if (visitFile(file)) {
@@ -85,7 +74,9 @@ class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExclud
         }
 
         private fun changeContentRoot(file: VirtualFile) {
-            val excludedFolderPath = pathFragments.drop(pathFragments.indexOf("**") + 1).joinToString("/")
+            val excludedFolderPath = pathFragments
+                .drop(pathFragments.indexOf("**") + 1)
+                .joinToString("/")
             val fileVisitor = HybrisExcludeFromIndexFileVisitor(excludedFolderPath, excludedFoldersFromIndex, SKIP_ROOT)
             VfsUtilCore.visitChildrenRecursively(file, fileVisitor)
         }
@@ -96,21 +87,15 @@ class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExclud
             }
         }
 
-        private fun isFolderNameEqualToPathFragment(file: VirtualFile, fragmentIndex: Int): Boolean {
-            return file.name == pathFragments[fragmentIndex]
-        }
-
-        private fun isFolderNameUndefined(fragmentIndex: Int): Boolean {
-            return pathFragments.size > fragmentIndex && pathFragments[fragmentIndex] == "**"
-        }
-
+        private fun isFolderNameEqualToPathFragment(file: VirtualFile, fragmentIndex: Int) = file.name == pathFragments[fragmentIndex]
+        private fun isFolderNameUndefined(fragmentIndex: Int) = pathFragments.size > fragmentIndex && pathFragments[fragmentIndex] == "**"
     }
 
     @Service
     internal class HybrisVirtualFilePointerProvider() : Disposable {
-        private val virtualFilePointerManager = VirtualFilePointerManager.getInstance()
 
-        fun createVirtualFilePointer(vf: VirtualFile): VirtualFilePointer = virtualFilePointerManager.create(vf.url, this, null)
+        fun createVirtualFilePointer(vf: VirtualFile): VirtualFilePointer = VirtualFilePointerManager.getInstance()
+            .create(vf.url, this, null)
 
         override fun dispose() = Unit
 
