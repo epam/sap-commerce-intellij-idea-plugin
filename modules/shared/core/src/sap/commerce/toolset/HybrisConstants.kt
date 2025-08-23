@@ -314,8 +314,6 @@ object HybrisConstants {
     const val ATTRIBUTE_CODE = "code"
     const val ATTRIBUTE_NAME = "name"
     const val ATTRIBUTE_PK = "pk"
-    const val DICTIONARY_NAME = "hybris_integration"
-    const val DIALOG_TITLE = "hybris.copy.file.dialog."
 
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
     const val FXS_TABLE_ALIAS_SEPARATOR_DOT = "."

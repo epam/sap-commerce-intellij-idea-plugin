@@ -51,9 +51,6 @@ import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.spellchecker.dictionary.ProjectDictionary;
-import com.intellij.spellchecker.dictionary.UserDictionary;
-import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +73,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static sap.commerce.toolset.HybrisConstants.*;
+import static sap.commerce.toolset.HybrisConstants.IDEA_EDITION_ULTIMATE;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class ImportProjectProgressModalWindow extends Task.Modal {
@@ -125,7 +122,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         this.initializeHybrisProjectSettings(projectSettings);
-        this.updateProjectDictionary(project, modulesDescriptorsToImport);
         this.selectSdk(project);
 
         if (!refresh) {
@@ -203,31 +199,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
-    }
-
-    @Deprecated(since = "Extract to own pre-configurator")
-    private void updateProjectDictionary(
-        final Project project,
-        final List<ModuleDescriptor> modules
-    ) {
-        final ProjectDictionaryState dictionaryState = project.getService(ProjectDictionaryState.class);
-        final ProjectDictionary projectDictionary = dictionaryState.getProjectDictionary();
-        projectDictionary.getEditableWords();//ensure dictionaries exist
-        final var hybrisDictionary = projectDictionary.getDictionaries().stream()
-            .filter(e -> DICTIONARY_NAME.equals(e.getName()))
-            .findFirst()
-            .orElseGet(() -> {
-                final var dictionary = new UserDictionary(DICTIONARY_NAME);
-                projectDictionary.getDictionaries().add(dictionary);
-                return dictionary;
-            });
-        hybrisDictionary.addToDictionary(DICTIONARY_WORDS);
-        hybrisDictionary.addToDictionary(project.getName().toLowerCase());
-        final Set<String> moduleNames = modules.stream()
-            .map(ModuleDescriptor::getName)
-            .map(String::toLowerCase)
-            .collect(Collectors.toSet());
-        hybrisDictionary.addToDictionary(moduleNames);
     }
 
     @Deprecated(since = "Extract to own pre-configurator")

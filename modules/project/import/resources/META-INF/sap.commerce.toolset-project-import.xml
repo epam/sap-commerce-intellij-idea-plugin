@@ -19,6 +19,7 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.GroupModuleConfigurator"/>
+        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectDictionaryConfigurator"/>
 
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ModuleDependenciesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
