@@ -31,7 +31,7 @@ import sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchFileToolba
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
 import sap.commerce.toolset.impex.actionSystem.ImpExFileToolbarInstaller
-import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryFileToolbarInstaller
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
@@ -48,7 +48,7 @@ class HybrisEditorFactoryListener : EditorFactoryListener {
         val toolbarInstaller = when {
             file.fileType is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()
             file.fileType is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.getInstance()
-            file.fileType is ImpexFileType -> ImpExFileToolbarInstaller.getInstance()
+            file.fileType is ImpExFileType -> ImpExFileToolbarInstaller.getInstance()
             file.fileType is AclFileType -> AclFileToolbarInstaller.getInstance()
             Plugin.GROOVY.isActive() && file.fileType is GroovyFileType -> GroovyFileToolbarInstaller.getInstance()
             else -> null

@@ -25,8 +25,8 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.businessProcess.psi.tryInject
-import sap.commerce.toolset.impex.psi.ImpexGroovyScriptBody
-import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.impex.psi.ImpExGroovyScriptBody
+import sap.commerce.toolset.impex.psi.ImpExString
 import sap.commerce.toolset.impex.psi.getScriptType
 import sap.commerce.toolset.typeSystem.ScriptType
 
@@ -55,7 +55,7 @@ class GroovyLanguageInjector : LanguageInjector {
 
     private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         when (host) {
-            is ImpexString -> {
+            is ImpExString -> {
                 val hostString = StringUtil.unquoteString(host.text).lowercase()
                 if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(groovyMarker)) {
                     val markerOffset = setOf("beforeeach:", "aftereach:", "if:")
@@ -70,7 +70,7 @@ class GroovyLanguageInjector : LanguageInjector {
                 }
             }
 
-            is ImpexGroovyScriptBody -> {
+            is ImpExGroovyScriptBody -> {
                 injectLanguage(injectionPlacesRegistrar, host.textLength, 0)
             }
         }

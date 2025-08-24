@@ -1,0 +1,143 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.impex.psi.references
+
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.ParameterizedCachedValue
+import com.intellij.psi.util.ParameterizedCachedValueProvider
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.psi.ImpExParameter
+import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.psi.PsiTreeUtilExt
+import sap.commerce.toolset.psi.getValidResults
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaMap
+import sap.commerce.toolset.typeSystem.model.MapType
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.MapResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.OrderingAttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
+
+class ImpExFunctionTSAttributeReference(owner: ImpExParameter) : TSReferenceBase<ImpExParameter>(owner) {
+
+    override fun calculateDefaultRangeInElement(): TextRange {
+        val attributeName = element.attributeName
+        return TextRange.from(element.text.indexOf(attributeName), attributeName.length)
+    }
+
+    override fun getVariants(): Array<LookupElement> {
+        // if an inline type already present, we should not suggest any other types
+        if (element.inlineTypeName != null) return emptyArray()
+        return TSCompletionService.getInstance(element.project)
+            .getSubTypeCompletions(element.project, element.referenceItemTypeName, element.inlineTypeName)
+            .toTypedArray()
+    }
+
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val indicator = ProgressManager.getInstance().progressIndicator
+        if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
+
+        return CachedValuesManager.getManager(project)
+            .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+            .let { getValidResults(it) }
+    }
+
+    companion object {
+        @JvmStatic
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExFunctionTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExFunctionTSAttributeReference> { ref ->
+            val project = ref.project
+            val metaService = TSMetaModelAccess.getInstance(project)
+            val featureName = ref.element.attributeName
+            val typeName = ref.element.itemTypeName
+
+            val result: Array<ResolveResult> = resolveType(ref.element, typeName, featureName, metaService)
+                ?.let { arrayOf(it) }
+                ?: ResolveResult.EMPTY_ARRAY
+
+            // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
+            CachedValueProvider.Result.create(
+                result,
+                TSModificationTracker.getInstance(project)
+            )
+        }
+
+        private fun resolveType(
+            element: PsiElement,
+            typeName: String?,
+            featureName: String,
+            metaService: TSMetaModelAccess,
+            recursionLevel: Int = 0
+        ): ResolveResult? {
+            // If we've entered this method, 2+ times it may sound like a bidirectional relation, return right away
+            if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return null
+            return metaService.findMetaClassifierByName(typeName)
+                ?.let { meta ->
+                    when (meta) {
+                        is TSGlobalMetaEnum -> metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+                            ?.let { it.allAttributes[featureName] }
+                            ?.let { attr -> AttributeResolveResult(attr) }
+
+                        is TSGlobalMetaItem -> meta.allAttributes[featureName]
+                            ?.let { attr -> AttributeResolveResult(attr) }
+                            ?: meta.allOrderingAttributes[featureName]
+                                ?.let { attr -> OrderingAttributeResolveResult(attr) }
+                            ?: meta.allRelationEnds
+                                .find { relationEnd -> relationEnd.name.equals(featureName, true) }
+                                ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
+
+                        is TSGlobalMetaCollection -> resolveType(
+                            element,
+                            meta.elementType,
+                            featureName,
+                            metaService,
+                            recursionLevel + 1
+                        )
+
+                        is TSGlobalMetaMap -> {
+                            if (PsiTreeUtilExt.getPrevSiblingOfElementType(element, ImpExTypes.COMMA) == null) {
+                                MapResolveResult(meta, MapType.ARGUMENTTYPE)
+                            } else {
+                                MapResolveResult(meta, MapType.RETURNTYPE)
+                            }
+                        }
+
+                        else -> null
+                    }
+                }
+        }
+
+    }
+
+}

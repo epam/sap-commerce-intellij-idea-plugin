@@ -29,7 +29,7 @@
     </extensions>
 
     <actions>
-        <action id="hybris.impex.extractAcl" class="sap.commerce.toolset.acl.actionSystem.ImpexExtractAclAction"/>
+        <action id="hybris.impex.extractAcl" class="sap.commerce.toolset.acl.actionSystem.ImpExExtractAclAction"/>
 
         <action id="Acl.NewAclFile" class="sap.commerce.toolset.acl.actionSystem.AclFileCreateAction"
                 text="Access Control Lists File" description="Create new Access control lists file">

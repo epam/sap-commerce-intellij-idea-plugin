@@ -24,8 +24,8 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.codeInsight.completion.JavaClassCompletionService
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.constants.InterceptorType
-import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
-import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeName
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
@@ -39,7 +39,7 @@ import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 enum class TypeModifier(
     override val modifierName: String,
     private val modifierValues: Set<String> = emptySet()
-) : ImpexModifier {
+) : ImpExModifier {
 
     DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES("disable.UniqueAttributesValidator.for.types") {
         override fun getLookupElements(project: Project) = TSCompletionService.getInstance(project)
@@ -75,11 +75,11 @@ enum class TypeModifier(
         private val CACHE = entries.associateBy { it.modifierName }
 
         fun getModifier(modifierName: String) = CACHE[modifierName]
-        fun getModifier(modifierValue: ImpexAnyAttributeValue?) = modifierValue
+        fun getModifier(modifierValue: ImpExAnyAttributeValue?) = modifierValue
             ?.anyAttributeName
             ?.let { getModifier(it) }
 
-        fun getModifier(modifierName: ImpexAnyAttributeName?) = modifierName
+        fun getModifier(modifierName: ImpExAnyAttributeName?) = modifierName
             ?.text
             ?.let { CACHE[it] }
     }

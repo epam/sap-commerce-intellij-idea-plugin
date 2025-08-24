@@ -32,8 +32,8 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
 
     override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
         val headerParameter = when (element) {
-            is ImpexFullHeaderParameter -> element
-            is ImpexValueGroup -> element.fullHeaderParameter
+            is ImpExFullHeaderParameter -> element
+            is ImpExValueGroup -> element.fullHeaderParameter
                 ?: return
 
             else -> return
@@ -65,7 +65,7 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
         }
     }
 
-    private fun insertHeaderParam(project: Project, headerLine: ImpexHeaderLine, column: Int, position: ImpExColumnPosition): PsiElement? {
+    private fun insertHeaderParam(project: Project, headerLine: ImpExHeaderLine, column: Int, position: ImpExColumnPosition): PsiElement? {
         val current = headerLine.fullHeaderParameterList.getOrNull(column)
             ?: return null
 
@@ -78,7 +78,7 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
             }
     }
 
-    private fun insertValueGroups(project: Project, valueLines: Collection<ImpexValueLine>, column: Int, position: ImpExColumnPosition) {
+    private fun insertValueGroups(project: Project, valueLines: Collection<ImpExValueLine>, column: Int, position: ImpExColumnPosition) {
         valueLines
             .forEach {
                 val valueGroup = it.getValueGroup(column) ?: return@forEach

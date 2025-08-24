@@ -22,8 +22,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
 
 class ImpExTableColumnMoveRightAction : AbstractImpExTableColumnMoveAction(ImpExColumnPosition.RIGHT) {
 
@@ -39,9 +39,9 @@ class ImpExTableColumnMoveRightAction : AbstractImpExTableColumnMoveAction(ImpEx
         val suitableElement = getSuitableElement(element) ?: return false
 
         return when (suitableElement) {
-            is ImpexFullHeaderParameter -> isNotLastColumn(suitableElement)
+            is ImpExFullHeaderParameter -> isNotLastColumn(suitableElement)
 
-            is ImpexValueGroup -> suitableElement.fullHeaderParameter
+            is ImpExValueGroup -> suitableElement.fullHeaderParameter
                 ?.let { isNotLastColumn(it) }
                 ?: false
 
@@ -49,7 +49,7 @@ class ImpExTableColumnMoveRightAction : AbstractImpExTableColumnMoveAction(ImpEx
         }
     }
 
-    private fun isNotLastColumn(suitableElement: ImpexFullHeaderParameter): Boolean {
+    private fun isNotLastColumn(suitableElement: ImpExFullHeaderParameter): Boolean {
         val totalColumns = suitableElement.headerLine
             ?.fullHeaderParameterList
             ?.size

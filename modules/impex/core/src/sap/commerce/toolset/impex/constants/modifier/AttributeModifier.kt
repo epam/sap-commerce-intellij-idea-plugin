@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.codeInsight.completion.JavaClassCompletionService
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
-import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
-import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeName
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
 
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US
@@ -32,7 +32,7 @@ import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
 enum class AttributeModifier(
     override val modifierName: String,
     private val modifierValues: Set<String> = emptySet(),
-) : ImpexModifier {
+) : ImpExModifier {
 
     UNIQUE("unique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     ALLOW_NULL("allownull", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
@@ -80,11 +80,11 @@ enum class AttributeModifier(
         private val CACHE = entries.associateBy { it.modifierName }
 
         fun getModifier(modifierName: String) = CACHE[modifierName]
-        fun getModifier(modifierValue: ImpexAnyAttributeValue?) = modifierValue
+        fun getModifier(modifierValue: ImpExAnyAttributeValue?) = modifierValue
             ?.anyAttributeName
             ?.let { getModifier(it) }
 
-        fun getModifier(modifierName: ImpexAnyAttributeName?) = modifierName
+        fun getModifier(modifierName: ImpExAnyAttributeName?) = modifierName
             ?.text
             ?.let { CACHE[it] }
     }

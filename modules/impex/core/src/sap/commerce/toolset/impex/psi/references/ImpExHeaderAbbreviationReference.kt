@@ -28,11 +28,11 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
-import sap.commerce.toolset.impex.psi.ImpexAnyHeaderParameterName
+import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.psi.getValidResults
 
-class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
+class ImpExHeaderAbbreviationReference(owner: ImpExAnyHeaderParameterName) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)

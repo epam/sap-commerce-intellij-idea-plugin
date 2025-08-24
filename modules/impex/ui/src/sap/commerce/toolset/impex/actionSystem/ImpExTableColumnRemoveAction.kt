@@ -32,9 +32,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
 import sap.commerce.toolset.psi.PsiTreeUtilExt
 
 class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
@@ -56,8 +56,8 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
                 if (!psiFile.isValid) return@readAction null
 
                 when (element) {
-                    is ImpexFullHeaderParameter -> element
-                    is ImpexValueGroup -> {
+                    is ImpExFullHeaderParameter -> element
+                    is ImpExValueGroup -> {
                         val headerParameter = element.fullHeaderParameter
                             ?: return@readAction null
                         return@readAction headerParameter
@@ -87,7 +87,7 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
                         WriteCommandAction.runWriteCommandAction(
                             project, commandName, groupID,
                             {
-                                PsiTreeUtilExt.getPrevSiblingOfElementType(fullHeaderParameter, ImpexTypes.PARAMETERS_SEPARATOR)
+                                PsiTreeUtilExt.getPrevSiblingOfElementType(fullHeaderParameter, ImpExTypes.PARAMETERS_SEPARATOR)
                                     ?.delete()
                                 fullHeaderParameter.delete()
                             },

@@ -24,9 +24,9 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.impex.psi.ImpexString
-import sap.commerce.toolset.impex.psi.ImpexValue
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
+import sap.commerce.toolset.impex.psi.ImpExString
+import sap.commerce.toolset.impex.psi.ImpExValue
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
 
 class CronExpLanguageInjector : LanguageInjector {
 
@@ -45,15 +45,15 @@ class CronExpLanguageInjector : LanguageInjector {
      */
     private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         when (host) {
-            is ImpexString -> {
+            is ImpExString -> {
                 val valueGroup = host.valueGroup ?: return
                 if (isTriggerCronExpression(valueGroup)) {
                     injectLanguage(injectionPlacesRegistrar, host.textLength - quoteSymbolLength - 1, quoteSymbolLength)
                 }
             }
 
-            is ImpexValue -> {
-                if (host.childrenOfType<ImpexString>().isNotEmpty()) return
+            is ImpExValue -> {
+                if (host.childrenOfType<ImpExString>().isNotEmpty()) return
 
                 val valueGroup = host.valueGroup ?: return
                 if (isTriggerCronExpression(valueGroup)) {
@@ -63,7 +63,7 @@ class CronExpLanguageInjector : LanguageInjector {
         }
     }
 
-    private fun isTriggerCronExpression(valueGroup: ImpexValueGroup): Boolean {
+    private fun isTriggerCronExpression(valueGroup: ImpExValueGroup): Boolean {
         val fullHeaderParameter = valueGroup
             .fullHeaderParameter
             ?.takeIf { it.anyHeaderParameterName.textMatches("cronExpression") }

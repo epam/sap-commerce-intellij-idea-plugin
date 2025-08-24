@@ -22,7 +22,7 @@ import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.typeSystem.ScriptType
 
-fun getScriptType(impexString: ImpexString): ScriptType? {
+fun getScriptType(impexString: ImpExString): ScriptType? {
     val valueGroup = impexString
         .valueGroup
         ?: return null
@@ -58,8 +58,8 @@ fun getScriptType(impexString: ImpexString): ScriptType? {
  *
  * In such a case, we have to identify "code" parameter index, split value by ":" and take value of the "code" index.
  */
-private fun parseValue(value: String, scriptTypeColumn: ImpexFullHeaderParameter) = scriptTypeColumn
-    .childrenOfType<ImpexParameters>()
+private fun parseValue(value: String, scriptTypeColumn: ImpExFullHeaderParameter) = scriptTypeColumn
+    .childrenOfType<ImpExParameters>()
     .firstOrNull()
     ?.parameterList
     ?.map { it.text }

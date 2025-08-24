@@ -25,17 +25,17 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
-import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 
 class ImpExInvalidModeModifierValueInspection : LocalInspectionTool() {
 
     private val allowedValues = setOf("append", "merge", "remove")
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpexVisitor() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpExVisitor() {
 
-        override fun visitAnyAttributeValue(element: ImpexAnyAttributeValue) {
+        override fun visitAnyAttributeValue(element: ImpExAnyAttributeValue) {
             if (AttributeModifier.getModifier(element) != AttributeModifier.MODE) return
 
             val text = element.text

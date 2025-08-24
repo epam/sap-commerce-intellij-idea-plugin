@@ -20,7 +20,7 @@ package sap.commerce.toolset.impex.formatting
 
 import com.intellij.lang.ASTNode
 import org.jetbrains.annotations.Contract
-import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.impex.psi.ImpExTypes
 
 class ImpExTableAlignmentStrategy : ImpExColumnsAlignmentStrategy() {
 
@@ -30,5 +30,5 @@ class ImpExTableAlignmentStrategy : ImpExColumnsAlignmentStrategy() {
 
     @Contract(pure = true)
     override fun isNewColumn(currentNode: ASTNode) = super.isNewColumn(currentNode)
-        || ImpexTypes.PARAMETERS_SEPARATOR == currentNode.elementType
+        || ImpExTypes.PARAMETERS_SEPARATOR == currentNode.elementType
 }

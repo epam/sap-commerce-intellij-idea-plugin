@@ -20,10 +20,10 @@ package sap.commerce.toolset.impex.actionSystem
 import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.console.ImpExConsole
-import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.file.ImpExFileType
 
 class ImpExOpenInConsoleAction : OpenInConsoleAction(
-    ImpexFileType,
+    ImpExFileType,
     ImpExConsole::class,
     i18n("hybris.impex.actions.open_query"),
     i18n("hybris.impex.actions.open_query.description"),

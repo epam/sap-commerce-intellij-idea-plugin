@@ -25,7 +25,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.editor.ImpExSplitEditor
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.isNotHybrisProject
 
 class ImpExParameterInlayHintProvider : InlayHintsProvider {
@@ -45,7 +45,7 @@ class ImpExParameterInlayHintProvider : InlayHintsProvider {
             if (!splitEditor.inEditorParameters) return
 
             element
-                .asSafely<ImpexMacroDeclaration>()
+                .asSafely<ImpExMacroDeclaration>()
                 ?.let { splitEditor.virtualParameter(it) }
                 ?.let {
                     sink.addPresentation(

@@ -34,10 +34,10 @@ import sap.commerce.toolset.impex.psi.*
 
 class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
 
-    override fun canProcessElement(element: PsiElement) = element is ImpexMacroNameDec
-        || element is ImpexDocumentIdDec
-        || element is ImpexDocumentIdUsage
-        || (element is ImpexMacroUsageDec && !element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX))
+    override fun canProcessElement(element: PsiElement) = element is ImpExMacroNameDec
+        || element is ImpExDocumentIdDec
+        || element is ImpExDocumentIdUsage
+        || (element is ImpExMacroUsageDec && !element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX))
 
     override fun findReferences(element: PsiElement, searchScope: SearchScope, searchInCommentsAndStrings: Boolean): Collection<PsiReference> {
         return findElements(element, element.text)
@@ -46,7 +46,7 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
     }
 
     override fun renameElement(element: PsiElement, newName: String, usages: Array<out UsageInfo>, listener: RefactoringElementListener?) {
-        with(element as ImpexPsiNamedElement) {
+        with(element as ImpExPsiNamedElement) {
             this.setName(newName)
 
             usages
@@ -77,8 +77,8 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
                     .forEach {
                         result.add(object : UnresolvableCollisionUsageInfo(it, element) {
                             override fun getDescription() = when (element.elementType) {
-                                ImpexTypes.MACRO_NAME_DECLARATION,
-                                ImpexTypes.MACRO_USAGE -> i18n("hybris.impex.refactoring.rename.existing.macroName.conflict", newName)
+                                ImpExTypes.MACRO_NAME_DECLARATION,
+                                ImpExTypes.MACRO_USAGE -> i18n("hybris.impex.refactoring.rename.existing.macroName.conflict", newName)
 
                                 else -> i18n("hybris.impex.refactoring.rename.existing.conflict", newName)
                             }
@@ -90,18 +90,18 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
     private fun findElements(renameElement: PsiElement, newText: String): Array<PsiElement> = renameElement.containingFile
         ?.let { file ->
             val filter = when (renameElement) {
-                is ImpexMacroNameDec,
-                is ImpexMacroUsageDec -> PsiElementFilter { element ->
-                    if (element is ImpexMacroNameDec || element is ImpexMacroUsageDec) {
+                is ImpExMacroNameDec,
+                is ImpExMacroUsageDec -> PsiElementFilter { element ->
+                    if (element is ImpExMacroNameDec || element is ImpExMacroUsageDec) {
                         element.text == newText
                     } else {
                         false
                     }
                 }
 
-                is ImpexDocumentIdDec,
-                is ImpexDocumentIdUsage -> PsiElementFilter { element ->
-                    if (element is ImpexDocumentIdDec || element is ImpexDocumentIdUsage) {
+                is ImpExDocumentIdDec,
+                is ImpExDocumentIdUsage -> PsiElementFilter { element ->
+                    if (element is ImpExDocumentIdDec || element is ImpExDocumentIdUsage) {
                         element.text == newText
                     } else {
                         false

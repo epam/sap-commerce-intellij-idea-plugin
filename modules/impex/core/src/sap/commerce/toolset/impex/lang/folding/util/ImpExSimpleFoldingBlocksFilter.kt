@@ -20,15 +20,15 @@ package sap.commerce.toolset.impex.lang.folding.util
 
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
-import sap.commerce.toolset.impex.psi.ImpexModifiers
-import sap.commerce.toolset.impex.psi.ImpexParameters
-import sap.commerce.toolset.impex.utils.ImpexPsiUtils
+import sap.commerce.toolset.impex.psi.ImpExModifiers
+import sap.commerce.toolset.impex.psi.ImpExParameters
+import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 
 @Service
 class ImpExSimpleFoldingBlocksFilter : AbstractImpExFoldingFilter() {
 
-    override fun isFoldable(element: PsiElement) = element is ImpexModifiers
-        || element is ImpexParameters
-        || ImpexPsiUtils.isLineBreak(element)
+    override fun isFoldable(element: PsiElement) = element is ImpExModifiers
+        || element is ImpExParameters
+        || ImpExPsiUtils.isLineBreak(element)
 
 }

@@ -21,22 +21,22 @@ package sap.commerce.toolset.impex.lang.folding.util
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import sap.commerce.toolset.impex.psi.ImpexAttribute
-import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
-import sap.commerce.toolset.impex.psi.ImpexParameters
-import sap.commerce.toolset.impex.psi.ImpexUserRightsPermissionValue
-import sap.commerce.toolset.impex.utils.ImpexPsiUtils
+import sap.commerce.toolset.impex.psi.ImpExAttribute
+import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
+import sap.commerce.toolset.impex.psi.ImpExParameters
+import sap.commerce.toolset.impex.psi.ImpExUserRightsPermissionValue
+import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 
 @Service
 class ImpExSmartFoldingBlocksFilter : AbstractImpExFoldingFilter() {
 
     override fun isFoldable(element: PsiElement) = isSupportedType(element)
-        && (ImpexPsiUtils.isLineBreak(element) || isNotBlankPlaceholder(element))
+        && (ImpExPsiUtils.isLineBreak(element) || isNotBlankPlaceholder(element))
 
-    private fun isSupportedType(element: PsiElement) = element is ImpexParameters
-        || element is ImpexUserRightsPermissionValue
-        || ImpexPsiUtils.isLineBreak(element)
-        || (element is ImpexAttribute && PsiTreeUtil.findChildOfType(element, ImpexMacroUsageDec::class.java) == null)
+    private fun isSupportedType(element: PsiElement) = element is ImpExParameters
+        || element is ImpExUserRightsPermissionValue
+        || ImpExPsiUtils.isLineBreak(element)
+        || (element is ImpExAttribute && PsiTreeUtil.findChildOfType(element, ImpExMacroUsageDec::class.java) == null)
 
     private fun isNotBlankPlaceholder(element: PsiElement) = ImpExSmartFoldingPlaceholderBuilder.getInstance().getPlaceholder(element)
         .isNotBlank()

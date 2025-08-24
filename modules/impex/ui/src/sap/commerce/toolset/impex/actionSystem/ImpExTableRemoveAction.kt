@@ -32,9 +32,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
-import sap.commerce.toolset.impex.psi.ImpexUserRights
-import sap.commerce.toolset.impex.psi.ImpexValueLine
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExUserRights
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 
 class ImpExTableRemoveAction : AbstractImpExTableAction() {
 
@@ -47,7 +47,7 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
     }
 
     override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
-        if (element is ImpexUserRights) removeUserRightsTable(project, element)
+        if (element is ImpExUserRights) removeUserRightsTable(project, element)
         else removeTable(project, editor, psiFile, element)
     }
 
@@ -63,8 +63,8 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
                 if (!psiFile.isValid) return@readAction null
 
                 when (element) {
-                    is ImpexHeaderLine -> element.tableRange
-                    is ImpexValueLine -> element.headerLine
+                    is ImpExHeaderLine -> element.tableRange
+                    is ImpExValueLine -> element.headerLine
                         ?.tableRange
                         ?: return@readAction null
 
@@ -87,7 +87,7 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
     }
 
     override fun getSuitableElement(element: PsiElement) = PsiTreeUtil
-        .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java, ImpexUserRights::class.java)
+        .getParentOfType(element, ImpExValueLine::class.java, ImpExHeaderLine::class.java, ImpExUserRights::class.java)
 
     override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 

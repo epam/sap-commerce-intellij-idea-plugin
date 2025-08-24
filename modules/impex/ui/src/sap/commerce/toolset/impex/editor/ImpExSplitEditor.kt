@@ -39,7 +39,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -60,7 +60,7 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
 
-        private val KEY_PARAMETERS = Key.create<Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>>("impex.parameters.key")
+        private val KEY_PARAMETERS = Key.create<Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>>("impex.parameters.key")
         private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("impex.in_editor_results.key")
     }
 
@@ -81,7 +81,7 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
             reparseTextEditor()
         }
 
-    override var virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>?
+    override var virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)
 
@@ -134,7 +134,7 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         add(verticalSplitter, BorderLayout.CENTER)
     }
 
-    override fun virtualParameter(element: ImpexMacroDeclaration): ImpExVirtualParameter? = virtualParameters
+    override fun virtualParameter(element: ImpExMacroDeclaration): ImpExVirtualParameter? = virtualParameters
         ?.takeIf { inEditorParameters }
         ?.filter { (key, _) ->
             key.element?.isEquivalentTo(element) ?: false
@@ -142,7 +142,7 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         ?.map { (_, value) -> value }
         ?.firstOrNull()
 
-    override fun resetVirtualParameter(pointer: SmartPsiElementPointer<ImpexMacroDeclaration>) {
+    override fun resetVirtualParameter(pointer: SmartPsiElementPointer<ImpExMacroDeclaration>) {
         virtualParameters ?: return
 
         val newVirtualParameters = HashMap(virtualParameters)
@@ -219,7 +219,7 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
         ?: editor.document.text
 
-    private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>): String {
+    private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>): String {
         var text = editor.document.text
         virtualParameters
             .toSortedMap(compareByDescending { it.element?.textRange?.startOffset ?: 0 })

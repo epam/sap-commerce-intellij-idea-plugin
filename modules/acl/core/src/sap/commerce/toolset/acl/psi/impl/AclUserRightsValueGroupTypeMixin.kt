@@ -21,16 +21,16 @@ package sap.commerce.toolset.acl.psi.impl
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
 import sap.commerce.toolset.acl.psi.AclUserRightsValueGroupType
-import sap.commerce.toolset.impex.psi.references.ImpexUserRightsTypeReference
+import sap.commerce.toolset.impex.psi.references.ImpExUserRightsTypeReference
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
 import java.io.Serial
 
 abstract class AclUserRightsValueGroupTypeMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), AclUserRightsValueGroupType {
 
-    override fun createReference() = ImpexUserRightsTypeReference(this)
+    override fun createReference() = ImpExUserRightsTypeReference(this)
 
     override fun subtreeChanged() {
-        removeUserData(ImpexUserRightsTypeReference.CACHE_KEY)
+        removeUserData(ImpExUserRightsTypeReference.CACHE_KEY)
     }
 
     companion object {

@@ -21,23 +21,23 @@ package sap.commerce.toolset.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.parentOfType
-import sap.commerce.toolset.impex.psi.ImpexUserRights
-import sap.commerce.toolset.impex.psi.ImpexUserRightsHeaderLine
-import sap.commerce.toolset.impex.psi.ImpexUserRightsHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexUserRightsValueGroup
+import sap.commerce.toolset.impex.psi.ImpExUserRights
+import sap.commerce.toolset.impex.psi.ImpExUserRightsHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExUserRightsHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExUserRightsValueGroup
 import java.io.Serial
 
-abstract class ImpExUserRightsHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexUserRightsHeaderParameter {
+abstract class ImpExUserRightsHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExUserRightsHeaderParameter {
 
-    override fun getHeaderLine(): ImpexUserRightsHeaderLine? = parentOfType<ImpexUserRightsHeaderLine>()
+    override fun getHeaderLine(): ImpExUserRightsHeaderLine? = parentOfType<ImpExUserRightsHeaderLine>()
     override fun getColumnNumber(): Int? = getHeaderLine()
         ?.userRightsHeaderParameterList
         ?.indexOf(this)
         ?.takeIf { it != -1 }
 
-    override fun getValueGroups(): Collection<ImpexUserRightsValueGroup> {
+    override fun getValueGroups(): Collection<ImpExUserRightsValueGroup> {
         val columnNumber = this.columnNumber ?: return emptyList()
-        val userRights = parentOfType<ImpexUserRights>() ?: return emptyList()
+        val userRights = parentOfType<ImpExUserRights>() ?: return emptyList()
         return userRights.getValueGroups(columnNumber)
     }
 

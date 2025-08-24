@@ -26,10 +26,10 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpExDeleteParametersSeparatorFix
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
-import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 import sap.commerce.toolset.psi.PsiTreeUtilExt
 
 class ImpExMissingHeaderParameterInspection : LocalInspectionTool() {
@@ -37,15 +37,15 @@ class ImpExMissingHeaderParameterInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = Visitor(holder)
 
-    class Visitor(private val holder: ProblemsHolder) : ImpexVisitor() {
+    class Visitor(private val holder: ProblemsHolder) : ImpExVisitor() {
 
-        override fun visitHeaderLine(headerLine: ImpexHeaderLine) {
-            PsiTreeUtilExt.getLeafsOfElementType(headerLine, ImpexTypes.PARAMETERS_SEPARATOR)
+        override fun visitHeaderLine(headerLine: ImpExHeaderLine) {
+            PsiTreeUtilExt.getLeafsOfElementType(headerLine, ImpExTypes.PARAMETERS_SEPARATOR)
                 .filter {
                     var sibling = it.nextSibling
                     while (sibling != null) {
-                        if (sibling.elementType == ImpexTypes.PARAMETERS_SEPARATOR) return@filter true
-                        if (sibling is ImpexFullHeaderParameter) return@filter false
+                        if (sibling.elementType == ImpExTypes.PARAMETERS_SEPARATOR) return@filter true
+                        if (sibling is ImpExFullHeaderParameter) return@filter false
 
                         sibling = sibling.nextSibling
                     }

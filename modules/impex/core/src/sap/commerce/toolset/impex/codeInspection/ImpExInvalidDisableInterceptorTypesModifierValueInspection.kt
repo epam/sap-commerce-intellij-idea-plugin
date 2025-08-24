@@ -26,17 +26,17 @@ import com.intellij.psi.PsiElementVisitor
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.InterceptorType
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
-import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
-import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 
 class ImpExInvalidDisableInterceptorTypesModifierValueInspection : LocalInspectionTool() {
 
     private val allowedValues = InterceptorType.entries.map { it.code }
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpexVisitor() {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpExVisitor() {
 
-        override fun visitAnyAttributeValue(element: ImpexAnyAttributeValue) {
+        override fun visitAnyAttributeValue(element: ImpExAnyAttributeValue) {
             if (TypeModifier.getModifier(element) != TypeModifier.DISABLE_INTERCEPTOR_TYPES) return
 
             val text = element.text

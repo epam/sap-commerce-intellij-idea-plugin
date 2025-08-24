@@ -24,18 +24,18 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.codeInspection.fix.ImpexChangeMacroNameQuickFix
-import sap.commerce.toolset.impex.psi.ImpexMacroNameDec
-import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.impex.codeInspection.fix.ImpExChangeMacroNameQuickFix
+import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 
 class ImpExMultilineMacroNameInspection : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = Visitor(holder)
 
-    class Visitor(private val holder: ProblemsHolder) : ImpexVisitor() {
+    class Visitor(private val holder: ProblemsHolder) : ImpExVisitor() {
 
-        override fun visitMacroNameDec(element: ImpexMacroNameDec) {
+        override fun visitMacroNameDec(element: ImpExMacroNameDec) {
             if (element.textContains('\n') || element.textContains('\\')) {
                 val newMacroName = element.text
                     .replace("\n", "")
@@ -45,7 +45,7 @@ class ImpExMultilineMacroNameInspection : LocalInspectionTool() {
                     element,
                     i18n("hybris.inspections.impex.ImpExMultilineMacroNameInspection.key"),
                     ProblemHighlightType.WARNING,
-                    ImpexChangeMacroNameQuickFix(element, newMacroName)
+                    ImpExChangeMacroNameQuickFix(element, newMacroName)
                 )
             }
         }

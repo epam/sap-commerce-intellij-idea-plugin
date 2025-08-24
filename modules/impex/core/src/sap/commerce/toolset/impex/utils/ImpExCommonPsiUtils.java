@@ -50,7 +50,7 @@ public final class ImpExCommonPsiUtils {
     public static PsiElement getNextNonWhitespaceElement(@NotNull final PsiElement element) {
         PsiElement nextSibling = element.getNextSibling();
 
-        while (ImpexPsiUtils.isWhiteSpace(nextSibling)) {
+        while (ImpExPsiUtils.isWhiteSpace(nextSibling)) {
             nextSibling = nextSibling.getNextSibling();
         }
 

@@ -31,7 +31,7 @@ import com.maddyhome.idea.copyright.CopyrightProfile;
 import com.maddyhome.idea.copyright.psi.UpdateCopyright;
 import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
 import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
-import sap.commerce.toolset.impex.psi.ImpexFile;
+import sap.commerce.toolset.impex.psi.ImpExFile;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class UpdateImpExCopyrightsProvider extends UpdateCopyrightsProvider {
 
         @Override
         protected boolean accept() {
-            return getFile() instanceof ImpexFile;
+            return getFile() instanceof ImpExFile;
         }
 
         @Override

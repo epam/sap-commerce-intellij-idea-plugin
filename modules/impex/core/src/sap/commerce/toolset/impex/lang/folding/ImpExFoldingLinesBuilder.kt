@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
-import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpExFile
 
 class ImpExFoldingLinesBuilder : AbstractImpExFoldingBuilder() {
 
@@ -36,7 +36,7 @@ class ImpExFoldingLinesBuilder : AbstractImpExFoldingBuilder() {
         document: Document,
         quick: Boolean
     ): Array<FoldingDescriptor> {
-        val impExFile = psi.asSafely<ImpexFile>() ?: return emptyArray()
+        val impExFile = psi.asSafely<ImpExFile>() ?: return emptyArray()
         val document = PsiDocumentManager.getInstance(psi.project).getDocument(impExFile) ?: return emptyArray()
 
         return impExFile.getHeaderLines()
@@ -47,7 +47,7 @@ class ImpExFoldingLinesBuilder : AbstractImpExFoldingBuilder() {
                 val lineNumber = document.getLineNumber(firstValueLine.startOffset)
                 val lineStartOffset = document.getLineStartOffset(lineNumber)
 
-                ImpexFoldingDescriptor(
+                ImpExFoldingDescriptor(
                     firstValueLine,
                     lineStartOffset, lastValueLine.endOffset,
                     FoldingGroup.newGroup("impex.${headerLine.startOffset}")

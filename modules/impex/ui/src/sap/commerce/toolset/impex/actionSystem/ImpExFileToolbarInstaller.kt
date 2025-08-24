@@ -22,14 +22,14 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
 import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
-import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.file.ImpExFileType
 
 @Service
 class ImpExFileToolbarInstaller : HybrisFileToolbarInstaller(
     "hybris.impex.console",
     "hybris.impex.toolbar.left",
     "hybris.impex.toolbar.right",
-    ImpexFileType
+    ImpExFileType
 ) {
 
     companion object {

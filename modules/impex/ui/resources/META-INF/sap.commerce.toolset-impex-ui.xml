@@ -18,11 +18,11 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <editorFactoryListener implementation="sap.commerce.toolset.impex.editor.event.ImpexEditorFactoryListener"/>
+        <editorFactoryListener implementation="sap.commerce.toolset.impex.editor.event.ImpExEditorFactoryListener"/>
 
         <treeStructureProvider order="after hybris.project.root.tree.structure.provider" implementation="sap.commerce.toolset.impex.projectView.ImpExTreeStructureProvider"/>
-        <lang.psiStructureViewFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.structureView.ImpexStructureViewBuilderProvider"/>
-        <breadcrumbsInfoProvider implementation="sap.commerce.toolset.impex.breadcrumbs.ImpexColumnBreadcrumbsProvider"/>
+        <lang.psiStructureViewFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.structureView.ImpExStructureViewBuilderProvider"/>
+        <breadcrumbsInfoProvider implementation="sap.commerce.toolset.impex.breadcrumbs.ImpExColumnBreadcrumbsProvider"/>
         <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="sap.commerce.toolset.impex.editor.ImpExToAclEditorNotificationProvider"/>
         <editorFactoryListener implementation="sap.commerce.toolset.impex.editor.event.ImpExLineEditorFactoryListener"/>
     </extensions>
@@ -32,12 +32,12 @@
             <add-to-group group-id="hybris.console.actionGroup" relative-to-action="hybris.hac.console.clearAll" anchor="before"/>
         </action>
 
-        <action id="ImpEx.NewImpExFile" class="sap.commerce.toolset.impex.actionSystem.ImpexFileCreateAction"
+        <action id="ImpEx.NewImpExFile" class="sap.commerce.toolset.impex.actionSystem.ImpExFileCreateAction"
                 text="ImpEx File" description="Create new ImpEx file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.impex.learnMoreAcl" class="sap.commerce.toolset.impex.actionSystem.ImpexLearnMoreAboutAclAction"/>
+        <action id="hybris.impex.learnMoreAcl" class="sap.commerce.toolset.impex.actionSystem.ImpExLearnMoreAboutAclAction"/>
         <action id="hybris.impex.openQuery" class="sap.commerce.toolset.impex.actionSystem.ImpExOpenInConsoleAction">
             <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
         </action>

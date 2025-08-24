@@ -22,16 +22,16 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.psi.SmartPsiElementPointer
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import javax.swing.JComponent
 
 interface ImpExSplitEditor : FileEditor, TextEditor {
     val textEditor: TextEditor
     var virtualParametersDisposable: Disposable?
-    var virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>?
+    var virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>?
     var inEditorResults: Boolean
     var inEditorParameters: Boolean
     var inEditorParametersView: JComponent?
     val virtualText: String
-    fun virtualParameter(element: ImpexMacroDeclaration): ImpExVirtualParameter?
+    fun virtualParameter(element: ImpExMacroDeclaration): ImpExVirtualParameter?
 }

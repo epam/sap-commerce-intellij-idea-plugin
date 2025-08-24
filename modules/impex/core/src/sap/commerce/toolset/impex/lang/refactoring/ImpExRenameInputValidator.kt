@@ -24,28 +24,28 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.impex.ImpExConstants
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
-import sap.commerce.toolset.impex.psi.ImpexMacroNameDec
-import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
+import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
+import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
 
 class ImpExRenameInputValidator : RenameInputValidator {
 
     override fun getPattern(): ElementPattern<out PsiElement> {
         return StandardPatterns.or(
-            PlatformPatterns.psiElement(ImpexDocumentIdDec::class.java),
-            PlatformPatterns.psiElement(ImpexDocumentIdUsage::class.java),
-            PlatformPatterns.psiElement(ImpexMacroNameDec::class.java),
-            PlatformPatterns.psiElement(ImpexMacroUsageDec::class.java),
+            PlatformPatterns.psiElement(ImpExDocumentIdDec::class.java),
+            PlatformPatterns.psiElement(ImpExDocumentIdUsage::class.java),
+            PlatformPatterns.psiElement(ImpExMacroNameDec::class.java),
+            PlatformPatterns.psiElement(ImpExMacroUsageDec::class.java),
         )
     }
 
     override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext) = when (element) {
-        is ImpexDocumentIdDec,
-        is ImpexDocumentIdUsage -> newName.startsWith(ImpExConstants.IMPEX_PREFIX_DOC_ID)
+        is ImpExDocumentIdDec,
+        is ImpExDocumentIdUsage -> newName.startsWith(ImpExConstants.IMPEX_PREFIX_DOC_ID)
 
-        is ImpexMacroNameDec,
-        is ImpexMacroUsageDec -> newName.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)
+        is ImpExMacroNameDec,
+        is ImpExMacroUsageDec -> newName.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)
 
         else -> false
     }

@@ -26,8 +26,8 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.editor.ImpExEditorMarkupModelHelper
-import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExFile
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 
 class ImpExVfsAsyncListener : AsyncFileListener {
 
@@ -42,7 +42,7 @@ class ImpExVfsAsyncListener : AsyncFileListener {
                 val project = editor.project ?: return@mapNotNull null
                 val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
                     ?.takeIf { it.isPhysical }
-                    ?.asSafely<ImpexFile>()
+                    ?.asSafely<ImpExFile>()
                     ?: return@mapNotNull null
 
                 editor to psiFile
@@ -56,7 +56,7 @@ class ImpExVfsAsyncListener : AsyncFileListener {
                 editors.forEach { (impexFile, editor) ->
                     ImpExEditorMarkupModelHelper.removeHighlighters(editor)
 
-                    impexFile.childrenOfType<ImpexHeaderLine>()
+                    impexFile.childrenOfType<ImpExHeaderLine>()
                         .forEach { headerLine ->
                             ImpExEditorMarkupModelHelper.highlightHeaderLine(editor, headerLine.textOffset)
 

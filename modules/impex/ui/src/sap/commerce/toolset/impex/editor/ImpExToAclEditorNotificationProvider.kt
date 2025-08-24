@@ -29,8 +29,8 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.file.ImpexFileType
-import sap.commerce.toolset.impex.psi.ImpexUserRights
+import sap.commerce.toolset.impex.file.ImpExFileType
+import sap.commerce.toolset.impex.psi.ImpExUserRights
 import sap.commerce.toolset.isHybrisProject
 import java.util.function.Function
 
@@ -41,10 +41,10 @@ class ImpExToAclEditorNotificationProvider : EditorNotificationProvider {
         file: VirtualFile
     ): Function<FileEditor, EditorNotificationPanel>? {
         if (!project.isHybrisProject) return null
-        if (!FileTypeRegistry.getInstance().isFileOfType(file, ImpexFileType)) return null
+        if (!FileTypeRegistry.getInstance().isFileOfType(file, ImpExFileType)) return null
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return null
 
-        PsiTreeUtil.collectElementsOfType(psiFile, ImpexUserRights::class.java)
+        PsiTreeUtil.collectElementsOfType(psiFile, ImpExUserRights::class.java)
             .takeIf { it.isNotEmpty() } ?: return null
 
         return Function<FileEditor, EditorNotificationPanel> { fileEditor ->

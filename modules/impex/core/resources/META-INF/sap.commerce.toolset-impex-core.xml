@@ -31,32 +31,32 @@
         <internalFileTemplate name="ImpEx File"/>
 
         <fileType name="ImpEx" language="ImpEx" extensions="impex" fieldName="INSTANCE"
-                  implementationClass="sap.commerce.toolset.impex.file.ImpexFileType"/>
+                  implementationClass="sap.commerce.toolset.impex.file.ImpExFileType"/>
 
         <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
-        <liveTemplateContext contextId="IMPEX" implementation="sap.commerce.toolset.impex.liveTemplates.ImpexContextType"/>
+        <liveTemplateContext contextId="IMPEX" implementation="sap.commerce.toolset.impex.liveTemplates.ImpExContextType"/>
 
-        <colorSettingsPage implementation="sap.commerce.toolset.impex.highlighting.ImpexColorSettingsPage"/>
+        <colorSettingsPage implementation="sap.commerce.toolset.impex.highlighting.ImpExColorSettingsPage"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpExDarcula.xml"/>
 
-        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpexPsiDocumentationTargetProvider"/>
-        <platform.backend.documentation.targetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
+        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpExPsiDocumentationTargetProvider"/>
+        <platform.backend.documentation.targetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpExDocumentationTargetProvider"/>
 
         <vfs.asyncListener implementation="sap.commerce.toolset.impex.vfs.event.ImpExVfsAsyncListener"/>
 
-        <lang.parserDefinition language="ImpEx" implementationClass="sap.commerce.toolset.impex.ImpexParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
-        <lang.commenter language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpexCommenter"/>
-        <lang.formatter language="ImpEx" implementationClass="sap.commerce.toolset.impex.formatting.ImpexFormattingModelBuilder"/>
+        <lang.parserDefinition language="ImpEx" implementationClass="sap.commerce.toolset.impex.ImpExParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.highlighting.ImpExSyntaxHighlighterFactory"/>
+        <lang.commenter language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpExCommenter"/>
+        <lang.formatter language="ImpEx" implementationClass="sap.commerce.toolset.impex.formatting.ImpExFormattingModelBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingLinesBuilder"/>
-        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpexMacroFoldingBuilder"/>
-        <lang.refactoringSupport language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExMacroFoldingBuilder"/>
+        <lang.refactoringSupport language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.refactoring.ImpExRefactoringSupportProvider"/>
 
-        <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexCodeStyleSettingsProvider"/>
-        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpExCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpExLanguageCodeStyleSettingsProvider"/>
 
         <vetoRenameCondition implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExVetoRenameCondition"/>
         <renameInputValidator implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenameInputValidator"/>
@@ -68,14 +68,14 @@
                              order="after hybris.project.integrations.settings"
                              provider="sap.commerce.toolset.impex.options.ProjectImpExSettingsConfigurableProvider"/>
 
-        <completion.contributor language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.completion.ImpexCompletionContributor"/>
+        <completion.contributor language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.completion.ImpExCompletionContributor"/>
 
         <highlightUsagesHandlerFactory
-                implementation="sap.commerce.toolset.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
+                implementation="sap.commerce.toolset.impex.highlighting.findUsages.ImpExHighlightMacrosHandlerFactory"/>
 
-        <lang.findUsagesProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.findUsages.ImpexFindUsagesProvider"/>
+        <lang.findUsagesProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.findUsages.ImpExFindUsagesProvider"/>
 
-        <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpexAnnotator"/>
+        <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpExAnnotator"/>
 
         <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpExLineMarkerProvider"/>
         <codeInsight.declarativeInlayProvider language="ImpEx"
@@ -99,27 +99,27 @@
     <extensions defaultExtensionNs="com.intellij">
         <localInspection groupPath="SAP Commerce" shortName="ImpexLanguageIsNotSupportedInspection" displayName="[y] Language is not supported"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexLanguageIsNotSupportedInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExLanguageIsNotSupportedInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexLanguageModifierIsNotAllowedInspection" displayName="[y] Lang modifier is not allowed for non-localized attributes"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexLanguageModifierIsNotAllowedInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExLanguageModifierIsNotAllowedInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexNoUniqueValueInspection" displayName="[y] No unique value in column"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexNoUniqueValueInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExNoUniqueValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownConfigPropertyInspection" displayName="[y] Unknown configuration property"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUnknownConfigPropertyInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownConfigPropertyInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownMacrosInspection" displayName="[y] Unknown macros"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUnknownMacrosInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownMacrosInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeAttributeInspection" displayName="[y] Unknown attribute"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUnknownTypeAttributeInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownTypeAttributeInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExDoubleQuotedStringAsModifierInspection" displayName="[y] Double Quote string as a modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
@@ -127,28 +127,28 @@
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownFunctionTypeInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUnknownFunctionTypeInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownFunctionTypeInspection"/>
 
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexConfigProcessorInspection" displayName="[y] Incorrect use of $config macros"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexConfigProcessorInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExConfigProcessorInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexFunctionReferenceTypeMismatchInspection" displayName="[y] Mismatch reference attribute inline type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexFunctionReferenceTypeMismatchInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExFunctionReferenceTypeMismatchInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueAttributeWithoutIndex" displayName="[y] Unique attribute without an index"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUniqueAttributeWithoutIndexInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUniqueAttributeWithoutIndexInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueDocumentId" displayName="[y] Unique document Id in column"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUniqueDocumentIdInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUniqueDocumentIdInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeNameInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUnknownTypeNameInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownTypeNameInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidProcessorValueInspection" displayName="[y] Invalid processor modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
@@ -176,15 +176,15 @@
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUnknownTypeModifierInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownTypeModifierInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownAttributeModifierInspection" displayName="[y] Unknown attribute modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexUnknownAttributeModifierInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownAttributeModifierInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexOnlyUpdateAllowedForNonDynamicEnumInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExOnlyUpdateAllowedForNonDynamicEnumInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExIncompleteHeaderAbbreviationUsageInspection" displayName="[y] Incomplete header abbreviation usage"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"

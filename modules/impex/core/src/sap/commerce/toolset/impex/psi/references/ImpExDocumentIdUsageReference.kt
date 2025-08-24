@@ -29,13 +29,13 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
-import sap.commerce.toolset.impex.psi.ImpexValue
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
+import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class ImpExDocumentIdUsageReference(
-    private val impexValue: ImpexValue,
+    private val impexValue: ImpExValue,
     textRange: TextRange,
 ) : PsiReferenceBase.Poly<PsiElement>(impexValue, textRange, false) {
 
@@ -63,12 +63,12 @@ class ImpExDocumentIdUsageReference(
                 ?.parameterList
                 ?.takeIf { it.size == 1 }
                 ?.firstOrNull()
-                ?.childrenOfType<ImpexDocumentIdUsage>()
+                ?.childrenOfType<ImpExDocumentIdUsage>()
                 ?.firstOrNull()
                 ?.reference
                 ?.asSafely<ImpExDocumentIdReference>()
                 ?.multiResolve(false)
-                ?.mapNotNull { it.element as? ImpexDocumentIdDec }
+                ?.mapNotNull { it.element as? ImpExDocumentIdDec }
                 ?.flatMap { it.values.values }
                 ?.flatten()
                 ?.distinctBy { it.text }
@@ -99,12 +99,12 @@ class ImpExDocumentIdUsageReference(
                 ?.parameterList
                 ?.takeIf { it.size == 1 }
                 ?.firstOrNull()
-                ?.childrenOfType<ImpexDocumentIdUsage>()
+                ?.childrenOfType<ImpExDocumentIdUsage>()
                 ?.firstOrNull()
                 ?.reference
                 ?.asSafely<ImpExDocumentIdReference>()
                 ?.multiResolve(false)
-                ?.mapNotNull { it.element as? ImpexDocumentIdDec }
+                ?.mapNotNull { it.element as? ImpExDocumentIdDec }
                 ?.mapNotNull { it.values[name] }
                 ?.flatten()
                 ?.let { PsiElementResolveResult.createResults(it) }

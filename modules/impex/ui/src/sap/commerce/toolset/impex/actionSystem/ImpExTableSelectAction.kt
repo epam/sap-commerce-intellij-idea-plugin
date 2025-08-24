@@ -27,9 +27,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
-import sap.commerce.toolset.impex.psi.ImpexUserRights
-import sap.commerce.toolset.impex.psi.ImpexValueLine
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExUserRights
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 
 class ImpExTableSelectAction : AbstractImpExTableAction() {
 
@@ -45,9 +45,9 @@ class ImpExTableSelectAction : AbstractImpExTableAction() {
         ReadAction
             .nonBlocking<TextRange?> {
                 return@nonBlocking when (element) {
-                    is ImpexUserRights -> element.textRange
-                    is ImpexHeaderLine -> element.tableRange
-                    is ImpexValueLine -> element.headerLine
+                    is ImpExUserRights -> element.textRange
+                    is ImpExHeaderLine -> element.tableRange
+                    is ImpExValueLine -> element.headerLine
                         ?.tableRange
                         ?: return@nonBlocking null
 
@@ -63,7 +63,7 @@ class ImpExTableSelectAction : AbstractImpExTableAction() {
     }
 
     override fun getSuitableElement(element: PsiElement) = PsiTreeUtil
-        .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java, ImpexUserRights::class.java)
+        .getParentOfType(element, ImpExValueLine::class.java, ImpExHeaderLine::class.java, ImpExUserRights::class.java)
 
     override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 

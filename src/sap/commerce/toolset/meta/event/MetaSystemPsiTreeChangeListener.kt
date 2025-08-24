@@ -32,7 +32,7 @@ import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
-import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
@@ -79,7 +79,7 @@ class MetaSystemPsiTreeChangeListener(private val project: Project) : PsiTreeCha
                 .filterIsInstance<PolyglotQuerySplitEditorEx>()
                 .forEach { it.refreshParameters() }
 
-            is ImpexFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
+            is ImpExFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
                 .filterIsInstance<ImpExSplitEditorEx>()
                 .forEach { it.refreshParameters() }
 

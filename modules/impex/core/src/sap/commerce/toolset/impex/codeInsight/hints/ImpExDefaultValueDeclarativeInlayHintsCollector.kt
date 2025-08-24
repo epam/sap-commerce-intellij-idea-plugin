@@ -23,13 +23,13 @@ import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
 import com.intellij.psi.PsiElement
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
 
 class ImpExDefaultValueDeclarativeInlayHintsCollector : SharedBypassCollector {
 
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (!element.isValid || element.project.isDefault) return
-        if (element !is ImpexValueGroup) return
+        if (element !is ImpExValueGroup) return
         if (element.value != null) return
 
         val defaultValue = element.computeValue()

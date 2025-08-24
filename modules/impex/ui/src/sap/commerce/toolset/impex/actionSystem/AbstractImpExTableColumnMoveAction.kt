@@ -24,19 +24,19 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.startOffset
-import sap.commerce.toolset.impex.editor.event.ImpexHighlightingCaretListener
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
-import sap.commerce.toolset.impex.psi.ImpexValueLine
+import sap.commerce.toolset.impex.editor.event.ImpExHighlightingCaretListener
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 import java.util.*
 
 abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExColumnPosition) : AbstractImpExTableColumnAction() {
 
     override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
         val headerParameter = when (element) {
-            is ImpexFullHeaderParameter -> element
-            is ImpexValueGroup -> element.fullHeaderParameter
+            is ImpExFullHeaderParameter -> element
+            is ImpExValueGroup -> element.fullHeaderParameter
                 ?: return
 
             else -> return
@@ -45,7 +45,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
         run(project, "Moving the '${headerParameter.text}' column ${direction.name.lowercase(Locale.ROOT)}") {
             WriteCommandAction.runWriteCommandAction(project) {
                 PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                    ImpexHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
+                    ImpExHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
 
                     val headerLine = headerParameter.headerLine ?: return@disablePostprocessFormattingInside
                     val column = headerParameter.columnNumber
@@ -69,7 +69,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
         }
     }
 
-    private fun moveHeaderParam(headerLine: ImpexHeaderLine, column: Int, direction: ImpExColumnPosition): ImpexFullHeaderParameter? {
+    private fun moveHeaderParam(headerLine: ImpExHeaderLine, column: Int, direction: ImpExColumnPosition): ImpExFullHeaderParameter? {
         val newColumn = column + direction.step
         val previous = headerLine.fullHeaderParameterList.getOrNull(newColumn)
             ?: return null
@@ -81,7 +81,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
         return headerLine.fullHeaderParameterList.getOrNull(newColumn)
     }
 
-    private fun moveValueGroups(valueLines: Collection<ImpexValueLine>, elementAtCaret: PsiElement, column: Int, direction: ImpExColumnPosition): PsiElement? {
+    private fun moveValueGroups(valueLines: Collection<ImpExValueLine>, elementAtCaret: PsiElement, column: Int, direction: ImpExColumnPosition): PsiElement? {
         val newColumn = column + direction.step
         var newElementAtCaret: PsiElement? = null
         valueLines.forEach {

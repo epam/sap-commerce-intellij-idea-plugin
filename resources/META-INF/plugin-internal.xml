@@ -56,7 +56,7 @@
     <!-- Language injections -->
     <extensions defaultExtensionNs="com.intellij">
         <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.FlexibleSearchLanguageInjector"/>
-        <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.ImpexXmlLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.XmlToImpExLanguageInjector"/>
         <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.PolyglotQueryLanguageInjector"/>
     </extensions>
 

@@ -39,7 +39,7 @@ import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import javax.swing.LayoutFocusTraversalPolicy
@@ -64,7 +64,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
     }
 
     private fun renderParametersPanel(
-        virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>,
+        virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>,
         fileEditor: ImpExSplitEditorEx,
     ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
@@ -125,7 +125,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
     }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
-        virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>,
+        virtualParameters: Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter>,
         fileEditor: ImpExSplitEditorEx
     ) = panel {
         group("Macro Declarations") {
@@ -152,13 +152,13 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
         }
     }
 
-    private suspend fun collectVirtualParameters(fileEditor: ImpExSplitEditorEx): Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter> {
+    private suspend fun collectVirtualParameters(fileEditor: ImpExSplitEditorEx): Map<SmartPsiElementPointer<ImpExMacroDeclaration>, ImpExVirtualParameter> {
         val currentVirtualParameters = fileEditor.virtualParameters
             ?: emptyMap()
 
         return readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
-                ?.let { PsiTreeUtil.findChildrenOfType(it, ImpexMacroDeclaration::class.java) }
+                ?.let { PsiTreeUtil.findChildrenOfType(it, ImpExMacroDeclaration::class.java) }
                 ?.associate {
                     currentVirtualParameters
                         .filter { (key, _) -> key.element?.isEquivalentTo(it) ?: false }

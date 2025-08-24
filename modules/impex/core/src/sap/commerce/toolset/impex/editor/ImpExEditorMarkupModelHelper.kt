@@ -20,16 +20,16 @@ package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.HighlighterLayer
-import sap.commerce.toolset.impex.highlighting.ImpexHighlighterColors
+import sap.commerce.toolset.impex.highlighting.ImpExHighlighterColors
 
 object ImpExEditorMarkupModelHelper {
 
     fun removeHighlighters(editor: Editor) = with(editor.markupModel) {
         allHighlighters
             .filter {
-                it.textAttributesKey == ImpexHighlighterColors.VALUE_LINE_EVEN
-                    || it.textAttributesKey == ImpexHighlighterColors.VALUE_LINE_ODD
-                    || it.textAttributesKey == ImpexHighlighterColors.HEADER_LINE
+                it.textAttributesKey == ImpExHighlighterColors.VALUE_LINE_EVEN
+                    || it.textAttributesKey == ImpExHighlighterColors.VALUE_LINE_ODD
+                    || it.textAttributesKey == ImpExHighlighterColors.HEADER_LINE
             }
             .forEach { removeHighlighter(it) }
     }
@@ -42,9 +42,9 @@ object ImpExEditorMarkupModelHelper {
         val lineNumber = document.getLineNumber(textOffset)
 
         if ((valueLineIndex + 1) % 2 == 0) {
-            editor.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_EVEN, lineNumber, HighlighterLayer.SYNTAX)
+            editor.markupModel.addLineHighlighter(ImpExHighlighterColors.VALUE_LINE_EVEN, lineNumber, HighlighterLayer.SYNTAX)
         } else {
-            editor.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_ODD, lineNumber, HighlighterLayer.SYNTAX)
+            editor.markupModel.addLineHighlighter(ImpExHighlighterColors.VALUE_LINE_ODD, lineNumber, HighlighterLayer.SYNTAX)
         }
     }
 
@@ -54,6 +54,6 @@ object ImpExEditorMarkupModelHelper {
 
         val lineNumber = document.getLineNumber(textOffset)
 
-        editor.markupModel.addLineHighlighter(ImpexHighlighterColors.HEADER_LINE, lineNumber, HighlighterLayer.SYNTAX)
+        editor.markupModel.addLineHighlighter(ImpExHighlighterColors.HEADER_LINE, lineNumber, HighlighterLayer.SYNTAX)
     }
 }

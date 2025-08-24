@@ -23,27 +23,27 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
-import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.impex.psi.ImpExFile
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.psi.PsiTreeUtilExt
 
-fun notKeyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filterNot { keyAttrPredicate(it) }
+fun notKeyAttributesList(fullParametersList: List<ImpExFullHeaderParameter>) = fullParametersList.filterNot { keyAttrPredicate(it) }
 
-fun keyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filter { keyAttrPredicate(it) }
+fun keyAttributesList(fullParametersList: List<ImpExFullHeaderParameter>) = fullParametersList.filter { keyAttrPredicate(it) }
 
-fun fullParametersList(headerLines: List<ImpexHeaderLine>) = headerLines.flatMap { it.fullHeaderParameterList }
+fun fullParametersList(headerLines: List<ImpExHeaderLine>) = headerLines.flatMap { it.fullHeaderParameterList }
 
-fun keyAttrsName(it: ImpexHeaderLine) = it.fullHeaderParameterList.filter { keyAttrPredicate(it) }.map { it.text }
+fun keyAttrsName(it: ImpExHeaderLine) = it.fullHeaderParameterList.filter { keyAttrPredicate(it) }.map { it.text }
 
-fun keyAttrPredicate(param: ImpexFullHeaderParameter) = param.modifiersList
+fun keyAttrPredicate(param: ImpExFullHeaderParameter) = param.modifiersList
     .flatMap { it.attributeList }
     .find { it.anyAttributeName.text == AttributeModifier.UNIQUE.modifierName && it.anyAttributeValue?.text == "true" } != null
 
 fun intersection(a: ByteArray, b: ByteArray) = a.filterIndexed { index, i -> b[index] != 0.toByte() && b[index] == i }.isNotEmpty()
 
-fun createDataTable(dataMap: Map<String, List<PsiElement?>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpexFullHeaderParameter>): DataTable {
+fun createDataTable(dataMap: Map<String, List<PsiElement?>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpExFullHeaderParameter>): DataTable {
     val countKeyAttrs = dataMap.entries.size
     val countRows = dataMap.values.first().size
 
@@ -67,7 +67,7 @@ fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: Map<String, List<Psi
     return keyRows
 }
 
-class DataTable(private val keyRows: List<Key>, private val attrs: List<String>, private val attrsValues: List<ImpexFullHeaderParameter>) {
+class DataTable(private val keyRows: List<Key>, private val attrs: List<String>, private val attrsValues: List<ImpExFullHeaderParameter>) {
 
     private val rows = mutableListOf<Row>()
     private val errorBag = mutableSetOf<PsiElement>()
@@ -140,15 +140,15 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                         .filter {
                             PsiTreeUtilExt.getLeafsOfAnyElementType(
                                 it.value!!,
-                                ImpexTypes.COLLECTION_APPEND_PREFIX,
-                                ImpexTypes.COLLECTION_REMOVE_PREFIX,
-                                ImpexTypes.COLLECTION_MERGE_PREFIX
+                                ImpExTypes.COLLECTION_APPEND_PREFIX,
+                                ImpExTypes.COLLECTION_REMOVE_PREFIX,
+                                ImpExTypes.COLLECTION_MERGE_PREFIX
                             ).isEmpty()
                         }
                         .filter { valueGroup ->
                             val commonContext = keyValue.keys.first()
                                 ?.let { PsiTreeUtil.findCommonContext(it, valueGroup) }
-                            commonContext != null && commonContext !is ImpexFile
+                            commonContext != null && commonContext !is ImpExFile
                         }
                         .toList()
 
@@ -177,7 +177,7 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
         }
     }
 
-    private fun hasNoAppendModeModifier(headerParameter: ImpexFullHeaderParameter) = !headerParameter.modifiersList
+    private fun hasNoAppendModeModifier(headerParameter: ImpExFullHeaderParameter) = !headerParameter.modifiersList
         .flatMap { it.attributeList }
         .any {
             it.anyAttributeName.text == AttributeModifier.LANG.modifierName

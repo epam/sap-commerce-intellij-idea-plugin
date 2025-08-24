@@ -22,8 +22,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
 
 class ImpExTableColumnMoveLeftAction : AbstractImpExTableColumnMoveAction(ImpExColumnPosition.LEFT) {
 
@@ -39,8 +39,8 @@ class ImpExTableColumnMoveLeftAction : AbstractImpExTableColumnMoveAction(ImpExC
         val suitableElement = getSuitableElement(element) ?: return false
 
         return when (suitableElement) {
-            is ImpexFullHeaderParameter -> suitableElement.columnNumber > 0
-            is ImpexValueGroup -> suitableElement.columnNumber > 0
+            is ImpExFullHeaderParameter -> suitableElement.columnNumber > 0
+            is ImpExValueGroup -> suitableElement.columnNumber > 0
             else -> false
         }
     }

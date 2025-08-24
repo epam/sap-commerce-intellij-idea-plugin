@@ -35,7 +35,7 @@ import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
-import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
@@ -47,7 +47,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
                 when (file.fileType) {
                     is FlexibleSearchFileType -> FlexibleSearchSplitEditorEx(it, project)
                     is PolyglotQueryFileType -> PolyglotQuerySplitEditorEx(it, project)
-                    is ImpexFileType -> ImpExSplitEditorBase(it, project)
+                    is ImpExFileType -> ImpExSplitEditorBase(it, project)
                     is AclFileType -> AclSplitEditorEx(it, project)
                     else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditor(it, project)
                     else null
@@ -60,7 +60,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
     override fun getPolicy(): FileEditorPolicy = FileEditorPolicy.HIDE_DEFAULT_EDITOR
     override fun accept(project: Project, file: VirtualFile): Boolean = file.fileType is FlexibleSearchFileType
         || file.fileType is PolyglotQueryFileType
-        || file.fileType is ImpexFileType
+        || file.fileType is ImpExFileType
         || file.fileType is AclFileType
         || (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType)
 }

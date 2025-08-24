@@ -20,13 +20,13 @@ package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
-import sap.commerce.toolset.impex.psi.ImpexUserRights
-import sap.commerce.toolset.impex.psi.ImpexUserRightsValueGroup
+import sap.commerce.toolset.impex.psi.ImpExUserRights
+import sap.commerce.toolset.impex.psi.ImpExUserRightsValueGroup
 import java.io.Serial
 
-abstract class ImpExUserRightsMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexUserRights {
+abstract class ImpExUserRightsMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExUserRights {
 
-    override fun getValueGroups(index: Int): Collection<ImpexUserRightsValueGroup> = this
+    override fun getValueGroups(index: Int): Collection<ImpExUserRightsValueGroup> = this
         .userRightsValueLineList
         .mapNotNull { it.getValueGroup(index) }
 

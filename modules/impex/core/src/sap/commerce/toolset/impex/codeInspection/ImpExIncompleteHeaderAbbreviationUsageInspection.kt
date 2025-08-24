@@ -28,27 +28,27 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.psi.ImpexAnyHeaderParameterName
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
-import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
 
 class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
 
     private val cachedMacros = mutableSetOf<String>()
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder, cachedMacros)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpExHeaderLineVisitor(holder, cachedMacros)
     override fun inspectionStarted(session: LocalInspectionToolSession, isOnTheFly: Boolean) {
         cachedMacros.clear()
 
-        PsiTreeUtil.findChildrenOfAnyType(session.file, ImpexMacroDeclaration::class.java)
+        PsiTreeUtil.findChildrenOfAnyType(session.file, ImpExMacroDeclaration::class.java)
             .map { it.firstChild.text }
             .let { cachedMacros.addAll(it) }
     }
 
-    private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder, private val cachedMacros: Set<String>) : ImpexVisitor() {
+    private class ImpExHeaderLineVisitor(private val problemsHolder: ProblemsHolder, private val cachedMacros: Set<String>) : ImpExVisitor() {
 
-        override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
+        override fun visitAnyHeaderParameterName(parameter: ImpExAnyHeaderParameterName) {
             val reference = parameter.reference as? ImpExHeaderAbbreviationReference ?: return
 
             val headerAbbreviationValue = reference

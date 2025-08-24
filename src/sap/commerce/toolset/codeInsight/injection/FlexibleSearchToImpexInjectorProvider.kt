@@ -41,19 +41,19 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        val valueGroup: ImpexValueGroup?
+        val valueGroup: ImpExValueGroup?
         val expression: String
         val quoteLength: Int
 
         when (host) {
-            is ImpexString -> {
+            is ImpExString -> {
                 valueGroup = host.valueGroup
                 expression = StringUtil.unquoteString(host.text).lowercase(Locale.getDefault())
                 quoteLength = 1
             }
 
-            is ImpexValue -> {
-                if (host.childrenOfType<ImpexString>().isNotEmpty()) return
+            is ImpExValue -> {
+                if (host.childrenOfType<ImpExString>().isNotEmpty()) return
                 valueGroup = host.valueGroup
                 expression = host.text.lowercase(Locale.getDefault())
                 quoteLength = 0
@@ -93,15 +93,15 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
     }
 
     private fun tryInjectAnotherColumnTypeDependant(
-        valueLine: ImpexValueLine,
-        headerLine: ImpexHeaderLine,
+        valueLine: ImpExValueLine,
+        headerLine: ImpExHeaderLine,
         injectionPlacesRegistrar: InjectedLanguagePlaces,
         host: PsiLanguageInjectionHost,
         expression: String,
         quoteLength: Int,
         typeDependantInjection: TypeDependantInjection,
     ) {
-        host.parentOfType<ImpexValueGroup>()
+        host.parentOfType<ImpExValueGroup>()
             ?.fullHeaderParameter
             ?.text
             ?.takeIf { it.equals(typeDependantInjection.parameterName, true) }

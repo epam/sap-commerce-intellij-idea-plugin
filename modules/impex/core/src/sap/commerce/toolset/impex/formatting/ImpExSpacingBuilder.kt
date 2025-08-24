@@ -21,73 +21,73 @@ package sap.commerce.toolset.impex.formatting
 import com.intellij.formatting.SpacingBuilder
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.impex.psi.ImpExTypes
 
 class ImpExSpacingBuilder(
     settings: CodeStyleSettings,
-    impexSettings: ImpexCodeStyleSettings
+    impexSettings: ImpExCodeStyleSettings
 ) : SpacingBuilder(settings, ImpExLanguage) {
 
     init {
         this
             .between(
-                ImpexTypes.ANY_HEADER_MODE,
-                ImpexTypes.FULL_HEADER_TYPE
+                ImpExTypes.ANY_HEADER_MODE,
+                ImpExTypes.FULL_HEADER_TYPE
             )
             .spaces(1)
 
-            .before(ImpexTypes.VALUE_GROUP)
+            .before(ImpExTypes.VALUE_GROUP)
             .spaceIf(impexSettings.SPACE_BEFORE_FIELD_VALUE_SEPARATOR)
 
-            .after(ImpexTypes.FIELD_VALUE_SEPARATOR)
+            .after(ImpExTypes.FIELD_VALUE_SEPARATOR)
             .spaceIf(impexSettings.SPACE_AFTER_FIELD_VALUE_SEPARATOR)
 
-            .before(ImpexTypes.PARAMETERS_SEPARATOR)
+            .before(ImpExTypes.PARAMETERS_SEPARATOR)
             .spaceIf(impexSettings.SPACE_BEFORE_PARAMETERS_SEPARATOR)
 
-            .after(ImpexTypes.PARAMETERS_SEPARATOR)
+            .after(ImpExTypes.PARAMETERS_SEPARATOR)
             .spaceIf(impexSettings.SPACE_AFTER_PARAMETERS_SEPARATOR)
 
-            .before(ImpexTypes.ATTRIBUTE_SEPARATOR)
+            .before(ImpExTypes.ATTRIBUTE_SEPARATOR)
             .spaceIf(impexSettings.SPACE_BEFORE_ATTRIBUTE_SEPARATOR)
 
-            .after(ImpexTypes.COMMA)
+            .after(ImpExTypes.COMMA)
             .spaceIf(impexSettings.SPACE_AFTER_COMMA)
 
-            .before(ImpexTypes.COMMA)
+            .before(ImpExTypes.COMMA)
             .spaceIf(impexSettings.SPACE_BEFORE_COMMA)
 
-            .after(ImpexTypes.ATTRIBUTE_SEPARATOR)
+            .after(ImpExTypes.ATTRIBUTE_SEPARATOR)
             .spaceIf(impexSettings.SPACE_AFTER_ATTRIBUTE_SEPARATOR)
 
-            .before(ImpexTypes.FIELD_LIST_ITEM_SEPARATOR)
+            .before(ImpExTypes.FIELD_LIST_ITEM_SEPARATOR)
             .spaceIf(impexSettings.SPACE_BEFORE_FIELD_LIST_ITEM_SEPARATOR)
 
-            .after(ImpexTypes.FIELD_LIST_ITEM_SEPARATOR)
+            .after(ImpExTypes.FIELD_LIST_ITEM_SEPARATOR)
             .spaceIf(impexSettings.SPACE_AFTER_FIELD_LIST_ITEM_SEPARATOR)
 
-            .after(ImpexTypes.ASSIGN_VALUE)
+            .after(ImpExTypes.ASSIGN_VALUE)
             .spaceIf(impexSettings.SPACE_AFTER_ASSIGN_VALUE)
 
-            .before(ImpexTypes.ASSIGN_VALUE)
+            .before(ImpExTypes.ASSIGN_VALUE)
             .spaceIf(impexSettings.SPACE_BEFORE_ASSIGN_VALUE)
 
-            .after(ImpexTypes.LEFT_ROUND_BRACKET)
+            .after(ImpExTypes.LEFT_ROUND_BRACKET)
             .spaceIf(impexSettings.SPACE_AFTER_LEFT_ROUND_BRACKET)
 
-            .before(ImpexTypes.RIGHT_ROUND_BRACKET)
+            .before(ImpExTypes.RIGHT_ROUND_BRACKET)
             .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_ROUND_BRACKET)
 
-            .after(ImpexTypes.LEFT_SQUARE_BRACKET)
+            .after(ImpExTypes.LEFT_SQUARE_BRACKET)
             .spaceIf(impexSettings.SPACE_AFTER_LEFT_SQUARE_BRACKET)
 
-            .before(ImpexTypes.RIGHT_SQUARE_BRACKET)
+            .before(ImpExTypes.RIGHT_SQUARE_BRACKET)
             .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_SQUARE_BRACKET)
 
-            .after(ImpexTypes.ALTERNATIVE_PATTERN)
+            .after(ImpExTypes.ALTERNATIVE_PATTERN)
             .spaceIf(impexSettings.SPACE_AFTER_ALTERNATIVE_PATTERN)
 
-            .before(ImpexTypes.ALTERNATIVE_PATTERN)
+            .before(ImpExTypes.ALTERNATIVE_PATTERN)
             .spaceIf(impexSettings.SPACE_BEFORE_ALTERNATIVE_PATTERN)
     }
 

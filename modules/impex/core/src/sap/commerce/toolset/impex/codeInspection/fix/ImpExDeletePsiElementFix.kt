@@ -22,7 +22,6 @@ import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.i18n
 
 open class ImpExDeletePsiElementFix internal constructor(
     element: PsiElement,
@@ -38,15 +37,3 @@ open class ImpExDeletePsiElementFix internal constructor(
     }
 }
 
-class ImpExDeleteParametersSeparatorFix(element: PsiElement) : ImpExDeletePsiElementFix(
-    element,
-    i18n("hybris.inspections.fix.impex.DeleteParametersSeparator"),
-    i18n("hybris.inspections.fix.impex.DeleteParametersSeparator")
-)
-
-class ImpExDeleteValueGroupFix(element: PsiElement, valueGroupPreview: String) : ImpExDeletePsiElementFix(
-    element,
-    i18n("hybris.inspections.fix.impex.DeleteValueGroup"),
-    i18n("hybris.inspections.fix.impex.DeleteValueGroup.key", valueGroupPreview
-    )
-)

@@ -20,7 +20,7 @@ package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 
 data class ImpExVirtualParameter(
     val name: String,
@@ -43,12 +43,12 @@ data class ImpExVirtualParameter(
     private fun evaluatePresentationValue(): String = rawValue ?: ""
 
     companion object {
-        fun of(macroDeclaration: ImpexMacroDeclaration) = ImpExVirtualParameter(
+        fun of(macroDeclaration: ImpExMacroDeclaration) = ImpExVirtualParameter(
             name = macroDeclaration.macroNameDec.text,
         ).apply {
             rawValue = getInitialValue(macroDeclaration)
         }
 
-        fun getInitialValue(macroDeclaration: ImpexMacroDeclaration) = macroDeclaration.macroNameDec.resolveValue(mutableSetOf())
+        fun getInitialValue(macroDeclaration: ImpExMacroDeclaration) = macroDeclaration.macroNameDec.resolveValue(mutableSetOf())
     }
 }

@@ -22,17 +22,17 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
 
 abstract class AbstractImpExTableColumnAction : AbstractImpExTableAction() {
 
     override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 
     override fun getSuitableElement(element: PsiElement): PsiElement? {
-        val targetElement = PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java, ImpexValueGroup::class.java)
+        val targetElement = PsiTreeUtil.getParentOfType(element, ImpExFullHeaderParameter::class.java, ImpExValueGroup::class.java)
 
-        return if (targetElement == null && element is PsiWhiteSpace) PsiTreeUtil.getPrevSiblingOfType(element, ImpexValueGroup::class.java)
+        return if (targetElement == null && element is PsiWhiteSpace) PsiTreeUtil.getPrevSiblingOfType(element, ImpExValueGroup::class.java)
         else targetElement
     }
 

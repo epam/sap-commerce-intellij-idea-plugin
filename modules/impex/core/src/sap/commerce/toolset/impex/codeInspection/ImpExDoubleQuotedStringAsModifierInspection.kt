@@ -26,21 +26,21 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
 import sap.commerce.toolset.impex.codeInspection.fix.ImpExConvertToSingleQuoteStringQuickFix
-import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
-import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
+import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 
 class ImpExDoubleQuotedStringAsModifierInspection : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WEAK_WARNING
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpExHeaderLineVisitor(holder)
 
-    private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+    private class ImpExHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpExVisitor() {
 
-        override fun visitAnyAttributeValue(element: ImpexAnyAttributeValue) {
+        override fun visitAnyAttributeValue(element: ImpExAnyAttributeValue) {
             element.stringList
                 .firstOrNull()
-                ?.takeIf { it.firstLeaf().elementType == ImpexTypes.DOUBLE_STRING }
+                ?.takeIf { it.firstLeaf().elementType == ImpExTypes.DOUBLE_STRING }
                 ?.let {
                     problemsHolder.registerProblem(
                         it,

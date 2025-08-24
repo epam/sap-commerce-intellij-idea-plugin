@@ -25,8 +25,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpExDeleteValueGroupFix
-import sap.commerce.toolset.impex.psi.ImpexValueLine
-import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 import kotlin.math.absoluteValue
 
 class ImpExOrphanValueGroupInspection : LocalInspectionTool() {
@@ -34,8 +34,8 @@ class ImpExOrphanValueGroupInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = Visitor(holder)
 
-    class Visitor(private val holder: ProblemsHolder) : ImpexVisitor() {
-        override fun visitValueLine(valueLine: ImpexValueLine) {
+    class Visitor(private val holder: ProblemsHolder) : ImpExVisitor() {
+        override fun visitValueLine(valueLine: ImpExValueLine) {
             val headerLine = valueLine.headerLine
                 ?: return
             val valueGroups = valueLine.valueGroupList

@@ -25,7 +25,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.impex.psi.ImpexValue
+import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -35,10 +35,10 @@ import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
 import sap.commerce.toolset.typeSystem.psi.reference.result.*
 
 class ImpExValueTSClassifierReference(
-    owner: ImpexValue,
+    owner: ImpExValue,
     textRange: TextRange,
     private val allowedTypes: List<TSMetaType> = TSMetaType.entries
-) : TSReferenceBase<ImpexValue>(owner, false, textRange), HighlightedReference {
+) : TSReferenceBase<ImpExValue>(owner, false, textRange), HighlightedReference {
 
     private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
 

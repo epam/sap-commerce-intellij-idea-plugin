@@ -30,7 +30,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.impex.editor.ImpExEditorMarkupModelHelper
-import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpExFile
 
 class ImpExLineEditorFactoryListener : EditorFactoryListener {
 
@@ -50,7 +50,7 @@ private class ImpExLineHighlighterService(private val project: Project, private 
             val headerLines = readAction {
                 PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
                     ?.takeIf { it.isPhysical }
-                    ?.asSafely<ImpexFile>()
+                    ?.asSafely<ImpExFile>()
                     ?.getHeaderLines()
             } ?: return@launch
 

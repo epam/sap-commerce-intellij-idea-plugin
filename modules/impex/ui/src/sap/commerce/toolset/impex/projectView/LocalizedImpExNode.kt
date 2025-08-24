@@ -27,14 +27,14 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import org.jetbrains.annotations.Unmodifiable
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.file.ImpExFileType
 
 class LocalizedImpExNode(
     name: String,
     project: Project,
     children: Collection<AbstractTreeNode<*>>,
     viewSettings: ViewSettings,
-    private val presentableName: String = "$name.${ImpexFileType.defaultExtension}",
+    private val presentableName: String = "$name.${ImpExFileType.defaultExtension}",
 ) : ProjectViewNode<Collection<AbstractTreeNode<*>>>(project, children, viewSettings) {
 
     override fun contains(file: VirtualFile) = ProjectViewPane.canBeSelectedInProjectView(myProject, file)

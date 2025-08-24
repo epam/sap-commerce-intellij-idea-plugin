@@ -23,10 +23,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.psi.ImpexValueLine
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 
 class ImpExAddFieldValueGroupsQuickFix(
-    element: ImpexValueLine,
+    element: ImpExValueLine,
     private val valueGroups: Int
 ) : LocalQuickFixOnPsiElement(element) {
 
@@ -34,7 +34,7 @@ class ImpExAddFieldValueGroupsQuickFix(
     override fun getText() = i18n("hybris.inspections.fix.impex.ImpExMissingValueGroupInspection.key", valueGroups)
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        (endElement as? ImpexValueLine)
+        (endElement as? ImpExValueLine)
             ?.addValueGroups(valueGroups)
     }
 }

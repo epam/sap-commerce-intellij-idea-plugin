@@ -22,29 +22,29 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.impex.constants.HeaderMode
-import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.file.ImpExFileType
 
 object ImpExElementFactory {
 
     fun createHeaderMode(project: Project, mode: HeaderMode) = createFile(project, "$mode Product;")
-        .childrenOfType<ImpexHeaderLine>()
+        .childrenOfType<ImpExHeaderLine>()
         .firstOrNull()
         ?.anyHeaderMode
         ?.firstChild
 
     fun createParametersSeparator(project: Project) = createFile(project, "INSERT Product;")
-        .childrenOfType<ImpexHeaderLine>()
+        .childrenOfType<ImpExHeaderLine>()
         .firstOrNull()
         ?.lastChild
 
     fun createMacroName(project: Project, value: String) = createFile(project, "$value = dummy")
-        .childrenOfType<ImpexMacroDeclaration>().firstOrNull()
-        ?.childrenOfType<ImpexMacroNameDec>()
+        .childrenOfType<ImpExMacroDeclaration>().firstOrNull()
+        ?.childrenOfType<ImpExMacroNameDec>()
         ?.firstOrNull()
 
     fun createSingleQuotedString(project: Project, value: String) = createFile(project, "\$macro = '$value'")
-        .childrenOfType<ImpexMacroDeclaration>().firstOrNull()
-        ?.childrenOfType<ImpexString>()
+        .childrenOfType<ImpExMacroDeclaration>().firstOrNull()
+        ?.childrenOfType<ImpExString>()
         ?.firstOrNull()
 
     fun createValueGroup(project: Project, value: String? = "") = createFile(project, """
@@ -52,11 +52,11 @@ object ImpExElementFactory {
                    ;$value
     """.trimIndent()
     )
-        .childrenOfType<ImpexValueLine>()
+        .childrenOfType<ImpExValueLine>()
         .firstOrNull()
         ?.valueGroupList
         ?.firstOrNull()
 
-    fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
-        .createFileFromText("dummy.impex", ImpexFileType, text) as ImpexFile
+    fun createFile(project: Project, text: String): ImpExFile = PsiFileFactory.getInstance(project)
+        .createFileFromText("dummy.impex", ImpExFileType, text) as ImpExFile
 }

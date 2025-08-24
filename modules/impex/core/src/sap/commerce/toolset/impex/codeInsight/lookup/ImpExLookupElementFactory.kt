@@ -28,8 +28,8 @@ import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.constants.modifier.InterceptorProvider
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
-import sap.commerce.toolset.impex.psi.ImpexAttribute
-import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.impex.psi.ImpExAttribute
+import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.settings.state.ImpExCompletionSettingsState
 
 object ImpExLookupElementFactory {
@@ -76,9 +76,9 @@ object ImpExLookupElementFactory {
         else LookupElementBuilder.create(modifierName)
             .withPresentableText(modifierName)
 
-    private fun hasAssignValueLeaf(element: PsiElement) = element.parentOfType<ImpexAttribute>()
+    private fun hasAssignValueLeaf(element: PsiElement) = element.parentOfType<ImpExAttribute>()
         ?.childrenOfType<LeafPsiElement>()
-        ?.any { it.elementType == ImpexTypes.ASSIGN_VALUE }
+        ?.any { it.elementType == ImpExTypes.ASSIGN_VALUE }
         ?: false
 
 }

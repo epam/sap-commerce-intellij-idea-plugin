@@ -24,10 +24,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExElementFactory
-import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.impex.psi.ImpExString
 
 class ImpExConvertToSingleQuoteStringQuickFix(
-    element: ImpexString,
+    element: ImpExString,
 ) : LocalQuickFixOnPsiElement(element) {
 
     override fun getFamilyName() = i18n("hybris.inspections.fix.impex.ConvertToSingleQuoteString")

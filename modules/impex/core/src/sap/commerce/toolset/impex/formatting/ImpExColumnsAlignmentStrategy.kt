@@ -22,11 +22,11 @@ import com.intellij.formatting.Alignment
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.annotations.Contract
-import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.impex.psi.ImpexUserRightsValueGroup
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
-import sap.commerce.toolset.impex.utils.ImpexPsiUtils
+import sap.commerce.toolset.impex.psi.ImpExFile
+import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.ImpExUserRightsValueGroup
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
+import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 
 open class ImpExColumnsAlignmentStrategy : ImpExAlignmentStrategy {
 
@@ -63,31 +63,31 @@ open class ImpExColumnsAlignmentStrategy : ImpExAlignmentStrategy {
             alignments.clear()
         }
 
-        if (ImpexPsiUtils.isUserRightsMacros(currentNode.psi)) {
+        if (ImpExPsiUtils.isUserRightsMacros(currentNode.psi)) {
             alignments.clear()
         }
     }
 
     @Contract(pure = true)
-    fun isStartOfTheFile(currentNode: ASTNode) = currentNode.psi is ImpexFile
+    fun isStartOfTheFile(currentNode: ASTNode) = currentNode.psi is ImpExFile
 
     @Contract(pure = true)
     open fun isNewLine(currentNode: ASTNode) = isNewColumn(currentNode)
         && isStartOfValueLine(currentNode)
 
     @Contract(pure = true)
-    open fun isNewColumn(currentNode: ASTNode) = ImpexTypes.VALUE_GROUP == currentNode.elementType
-        || ImpexTypes.USER_RIGHTS_VALUE_GROUP == currentNode.elementType
+    open fun isNewColumn(currentNode: ASTNode) = ImpExTypes.VALUE_GROUP == currentNode.elementType
+        || ImpExTypes.USER_RIGHTS_VALUE_GROUP == currentNode.elementType
 
     @Contract(pure = true)
     fun isStartOfValueLine(currentNode: ASTNode) = PsiTreeUtil
         .findChildOfAnyType(
             currentNode.treeParent.psi,
-            ImpexValueGroup::class.java,
-            ImpexUserRightsValueGroup::class.java
+            ImpExValueGroup::class.java,
+            ImpExUserRightsValueGroup::class.java
         ) == currentNode.psi
 
     @Contract(pure = true)
-    fun isHeaderLine(currentNode: ASTNode) = ImpexTypes.HEADER_LINE == currentNode.elementType
-        || ImpexTypes.USER_RIGHTS_HEADER_LINE == currentNode.elementType
+    fun isHeaderLine(currentNode: ASTNode) = ImpExTypes.HEADER_LINE == currentNode.elementType
+        || ImpExTypes.USER_RIGHTS_HEADER_LINE == currentNode.elementType
 }

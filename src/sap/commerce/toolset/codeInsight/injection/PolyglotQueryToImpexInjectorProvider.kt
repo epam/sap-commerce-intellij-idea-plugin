@@ -25,7 +25,7 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.application
 import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.impex.psi.ImpExString
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryUtils
 import java.util.*
@@ -37,7 +37,7 @@ class PolyglotQueryToImpexInjectorProvider : LanguageInjectorProvider(PolyglotQu
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        if (host !is ImpexString) return
+        if (host !is ImpExString) return
 
         val expression = StringUtil.unquoteString(host.text).lowercase(Locale.getDefault())
 

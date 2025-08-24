@@ -34,7 +34,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.Function
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.settings.yDeveloperSettings
 import java.util.*
 import java.util.function.Supplier
@@ -48,7 +48,7 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (Plugin.DATABASE.isDisabled()) return null
         if (Plugin.GRID.isDisabled()) return null
-        if (element !is ImpexHeaderLine) return null
+        if (element !is ImpExHeaderLine) return null
 
         return ImpExDataEditModeLineMarkerInfo(
             element.anyHeaderMode.firstLeaf(),
@@ -57,7 +57,7 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
     }
 
     private fun openEditMode(leaf: PsiElement?) {
-        val element = leaf?.parentOfType<ImpexHeaderLine>()
+        val element = leaf?.parentOfType<ImpExHeaderLine>()
         val project = element?.project ?: return
         val tableRange = element.tableRange
         val format = getImpExFormat(project)

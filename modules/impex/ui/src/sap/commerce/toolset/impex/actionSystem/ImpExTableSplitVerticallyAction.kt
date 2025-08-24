@@ -55,8 +55,8 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
 
         return when (suitableElement) {
             // Table with only-unique columns are not allowed for split
-            is ImpexFullHeaderParameter -> canProcess(suitableElement.headerLine)
-            is ImpexValueGroup -> canProcess(suitableElement.valueLine?.headerLine)
+            is ImpExFullHeaderParameter -> canProcess(suitableElement.headerLine)
+            is ImpExValueGroup -> canProcess(suitableElement.valueLine?.headerLine)
             else -> false
         }
     }
@@ -68,8 +68,8 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
                     if (!psiFile.isValid) return@readAction null
 
                     when (element) {
-                        is ImpexFullHeaderParameter -> element
-                        is ImpexValueGroup -> element.fullHeaderParameter
+                        is ImpExFullHeaderParameter -> element
+                        is ImpExValueGroup -> element.fullHeaderParameter
                             ?: return@readAction null
 
                         else -> return@readAction null
@@ -99,7 +99,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
             }
 
             // grab header lines from both cloned future left and right tables
-            val cloneLeftHeaderLine = readAction { cloneTableLeft.childrenOfType<ImpexHeaderLine>().firstOrNull() }
+            val cloneLeftHeaderLine = readAction { cloneTableLeft.childrenOfType<ImpExHeaderLine>().firstOrNull() }
                 ?: return@launch
             val valueLines = readAction { cloneLeftHeaderLine.valueLines }
 
@@ -126,7 +126,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
 
             // and clone right
             val cloneTableRight = readAction { cloneTableLeft.copy() }
-            val cloneRightHeaderLine = readAction { cloneTableRight.childrenOfType<ImpexHeaderLine>().firstOrNull() }
+            val cloneRightHeaderLine = readAction { cloneTableRight.childrenOfType<ImpExHeaderLine>().firstOrNull() }
                 ?: return@launch
 
             val elementsToRemove = mutableListOf<PsiElement>()
@@ -193,13 +193,13 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         }
     }
 
-    private fun canProcess(headerLine: ImpexHeaderLine?): Boolean {
+    private fun canProcess(headerLine: ImpExHeaderLine?): Boolean {
         headerLine ?: return false
         return headerLine.fullHeaderParameterList.size != headerLine.uniqueFullHeaderParameters.size
     }
 
     private suspend fun collectValueGroups(
-        cloneRightHeaderLine: ImpexHeaderLine,
+        cloneRightHeaderLine: ImpExHeaderLine,
         canDelete: (Int) -> Boolean
     ) = readAction {
         cloneRightHeaderLine.valueLines
@@ -208,15 +208,15 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
     }
 
     private suspend fun collectHeaderParams(
-        cloneRightHeaderLine: ImpexHeaderLine,
+        cloneRightHeaderLine: ImpExHeaderLine,
         canDelete: (Int) -> Boolean
     ) = readAction {
         cloneRightHeaderLine.fullHeaderParameterList
             .filter { canDelete(it.columnNumber) }
             .flatMap {
                 listOfNotNull(
-                    PsiTreeUtilExt.getPrevSiblingOfElementType(it, ImpexTypes.MULTILINE_SEPARATOR),
-                    PsiTreeUtilExt.getPrevSiblingOfElementType(it, ImpexTypes.PARAMETERS_SEPARATOR),
+                    PsiTreeUtilExt.getPrevSiblingOfElementType(it, ImpExTypes.MULTILINE_SEPARATOR),
+                    PsiTreeUtilExt.getPrevSiblingOfElementType(it, ImpExTypes.PARAMETERS_SEPARATOR),
                     it
                 )
             }

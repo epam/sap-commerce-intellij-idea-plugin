@@ -31,7 +31,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
 import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
 import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecutionContext
 import sap.commerce.toolset.impex.monitoring.exec.context.TimeOption
@@ -84,7 +84,7 @@ class HybrisImpExMonitorConsole(
     override fun printResult(result: ConsoleAwareExecutionResult) {
         clear()
         when {
-            result.output != null -> ConsoleViewUtil.printAsFileType(this, text, ImpexFileType)
+            result.output != null -> ConsoleViewUtil.printAsFileType(this, text, ImpExFileType)
             else -> {
                 val timeOption = timeComboBox.selectedItem as TimeOption
                 ConsoleViewUtil.printAsFileType(this, "No imported ImpEx files found ${timeOption.name}.", PlainTextFileType.INSTANCE)

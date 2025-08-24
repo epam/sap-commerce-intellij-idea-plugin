@@ -22,10 +22,10 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.util.application
-import sap.commerce.toolset.impex.lang.folding.ImpexFoldingPlaceholderBuilder
+import sap.commerce.toolset.impex.lang.folding.ImpExFoldingPlaceholderBuilder
 
 @Service
-class ImpExSimpleFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
+class ImpExSimpleFoldingPlaceholderBuilder : ImpExFoldingPlaceholderBuilder {
 
     override fun getPlaceholder(psiElement: PsiElement): String = with(psiElement.text) {
         if (this.length < 2) {

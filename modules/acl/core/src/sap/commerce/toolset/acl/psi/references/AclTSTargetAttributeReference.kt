@@ -21,9 +21,9 @@ package sap.commerce.toolset.acl.psi.references
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import sap.commerce.toolset.acl.psi.AclTypes
-import sap.commerce.toolset.impex.psi.references.ImpexUserRightsTSAttributeReference
+import sap.commerce.toolset.impex.psi.references.ImpExUserRightsTSAttributeReference
 
-open class AclTSTargetAttributeReference : ImpexUserRightsTSAttributeReference {
+open class AclTSTargetAttributeReference : ImpExUserRightsTSAttributeReference {
 
     constructor(owner: PsiElement, soft: Boolean = false, rangeInElement: TextRange? = null) : super(owner, soft, rangeInElement)
 

@@ -27,7 +27,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import org.jetbrains.annotations.Unmodifiable
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.settings.yDeveloperSettings
 
 /**
@@ -53,7 +53,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
         children.forEach { childNode ->
             val nodeValue = childNode.value
 
-            if (nodeValue is ImpexFile && childNode is PsiFileNode) {
+            if (nodeValue is ImpExFile && childNode is PsiFileNode) {
                 val baseName = baseName(nodeValue)
 
                 localizedImpExNodes.getOrPut(baseName) { mutableListOf() }

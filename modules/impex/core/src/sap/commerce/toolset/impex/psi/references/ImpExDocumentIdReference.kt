@@ -28,12 +28,12 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
 import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
-class ImpExDocumentIdReference(impexDocumentId: ImpexDocumentIdUsage) : PsiReferenceBase.Poly<PsiElement>(impexDocumentId, false) {
+class ImpExDocumentIdReference(impexDocumentId: ImpExDocumentIdUsage) : PsiReferenceBase.Poly<PsiElement>(impexDocumentId, false) {
 
     override fun getVariants(): Array<LookupElementBuilder> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, KEY_LOOKUP_ELEMENTS, PROVIDER_LOOKUP_ELEMENTS, false, this)
@@ -56,7 +56,7 @@ class ImpExDocumentIdReference(impexDocumentId: ImpexDocumentIdUsage) : PsiRefer
             val element = ref.element
 
             val result = PsiTreeUtil
-                .collectElementsOfType(element.containingFile, ImpexDocumentIdDec::class.java)
+                .collectElementsOfType(element.containingFile, ImpExDocumentIdDec::class.java)
                 .filter { element.textMatches(it.text) }
                 .takeIf { it.isNotEmpty() }
                 ?.let { PsiElementResolveResult.createResults(it) }
@@ -70,7 +70,7 @@ class ImpExDocumentIdReference(impexDocumentId: ImpexDocumentIdUsage) : PsiRefer
 
         private val PROVIDER_LOOKUP_ELEMENTS = ParameterizedCachedValueProvider<Array<LookupElementBuilder>, ImpExDocumentIdReference> { ref ->
             val lookupElements = PsiTreeUtil
-                .collectElementsOfType(ref.element.containingFile, ImpexDocumentIdDec::class.java)
+                .collectElementsOfType(ref.element.containingFile, ImpExDocumentIdDec::class.java)
                 .map { idDec ->
                     val meta = idDec.headerType?.text
                         ?.let { TSMetaModelAccess.getInstance(ref.element.project).findMetaClassifierByName(it) }

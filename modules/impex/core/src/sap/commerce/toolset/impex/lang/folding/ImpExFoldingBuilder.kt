@@ -23,7 +23,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SyntaxTraverser
-import sap.commerce.toolset.impex.utils.ImpexPsiUtils
+import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 
 class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
 
@@ -40,7 +40,7 @@ class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
         var groupIsNotFresh = false
         val descriptors = mutableListOf<FoldingDescriptor>()
         for (psiElement in psiElements) {
-            if (ImpexPsiUtils.isLineBreak(psiElement)) {
+            if (ImpExPsiUtils.isLineBreak(psiElement)) {
                 if (groupIsNotFresh) {
                     currentLineGroup = FoldingGroup.newGroup(GROUP_NAME)
                     groupIsNotFresh = false
@@ -55,7 +55,7 @@ class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
 
     override fun getPlaceholderText(node: ASTNode): String {
         val psi = node.psi
-        return ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder(psi.project)
+        return ImpExFoldingPlaceholderBuilderFactory.getPlaceholderBuilder(psi.project)
             .getPlaceholder(psi)
     }
 
