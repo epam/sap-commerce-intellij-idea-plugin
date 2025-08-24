@@ -87,9 +87,12 @@ fun navigate(psiElement: PsiElement?, requestFocus: Boolean = true) = PsiNavigat
 fun navigate(descriptor: ProblemDescriptor, psiElement: PsiElement?, requestFocus: Boolean = true) = descriptor.asSafely<ProblemDescriptorBase>()
     ?.let { navigate(psiElement, requestFocus) }
 
-fun shouldCreateNewReference(reference: PsiReference?, text: String?) = reference.asSafely<PsiReferenceBase<*>>()
-    ?.let { text != null && (text.length != it.getRangeInElement().length || text != it.getValue()) }
-    ?: false
+fun shouldCreateNewReference(reference: PsiReference?, text: String?) = when {
+    reference == null -> true
+    else -> reference.asSafely<PsiReferenceBase<*>>()
+        ?.let { text != null && (text.length != it.getRangeInElement().length || text != it.getValue()) }
+        ?: false
+}
 
 fun getValidResults(resolveResults: Array<out ResolveResult>) = resolveResults
     .filter { it.isValidResult }
