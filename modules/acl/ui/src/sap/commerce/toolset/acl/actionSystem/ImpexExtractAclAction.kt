@@ -91,14 +91,15 @@ class ImpexExtractAclAction : AnAction() {
                     val aclTargetFile = aclExistingFile
                         ?: directory.createFile(aclFileName)
 
-                    psiDocumentManager.getDocument(aclTargetFile)?.let {
-                        val aclContentFormatted = PsiFileFactory.getInstance(project).createFileFromText(AclLanguage, aclContent)
-                            .let { CodeStyleManager.getInstance(project).reformat(it) }
-                            .text
+                    psiDocumentManager.getDocument(aclTargetFile)
+                        ?.apply {
+                            val aclContentFormatted = PsiFileFactory.getInstance(project).createFileFromText(AclLanguage, aclContent)
+                                .let { CodeStyleManager.getInstance(project).reformat(it) }
+                                .text
 
-                        it.setText(aclContentFormatted)
-                        psiDocumentManager.commitDocument(it)
-                    }
+                            setText(aclContentFormatted)
+                            psiDocumentManager.commitDocument(this)
+                        }
 
                     userRights
                         .reversed()

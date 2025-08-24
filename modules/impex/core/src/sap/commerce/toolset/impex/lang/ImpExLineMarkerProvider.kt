@@ -35,7 +35,7 @@ import com.intellij.util.Function
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import java.util.*
 import java.util.function.Supplier
 import javax.swing.Icon
@@ -67,7 +67,7 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
     }
 
     private fun getImpExFormat(project: Project): CsvFormat {
-        val editModeSettings = DeveloperSettings.getInstance(project).impexSettings.editMode
+        val editModeSettings = project.yDeveloperSettings.impexSettings.editMode
 
         val key = BitSet(2).also {
             it.set(0, editModeSettings.firstRowIsHeader)

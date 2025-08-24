@@ -24,12 +24,12 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FxSTablesAliasCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val fxsSettings = DeveloperSettings.getInstance(parameters.position.project).flexibleSearchSettings
+        val fxsSettings = parameters.position.project.yDeveloperSettings.flexibleSearchSettings
 
         if (!fxsSettings.completion.suggestTableAliasNames) return
 

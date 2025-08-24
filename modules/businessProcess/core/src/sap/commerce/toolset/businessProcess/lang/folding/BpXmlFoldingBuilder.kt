@@ -26,8 +26,8 @@ import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.businessProcess.model.*
 import sap.commerce.toolset.businessProcess.util.BpHelper
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.BpFoldingSettingsState
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>(Process::class.java), DumbAware {
 
@@ -50,7 +50,7 @@ class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>
         }
     }
 
-    override fun initSettings(project: Project) = DeveloperSettings.getInstance(project)
+    override fun initSettings(project: Project) = project.yDeveloperSettings
         .bpSettings
         .folding
 

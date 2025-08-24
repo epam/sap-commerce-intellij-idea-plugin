@@ -38,8 +38,8 @@ import sap.commerce.toolset.cockpitNG.model.wizardConfig.ComposedHandler
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.Property
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.PropertyList
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.CngFoldingSettingsState
+import sap.commerce.toolset.settings.yDeveloperSettings
 import java.util.*
 
 class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Config>(Config::class.java), DumbAware {
@@ -66,7 +66,7 @@ class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Con
         }
     }
 
-    override fun initSettings(project: Project) = DeveloperSettings.getInstance(project)
+    override fun initSettings(project: Project) = project.yDeveloperSettings
         .cngSettings
         .folding
 

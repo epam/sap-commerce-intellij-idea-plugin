@@ -21,8 +21,8 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TransactionMode
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 abstract class GroovyTransactionAction(text: String, description: String, private val transactionMode: TransactionMode) : CheckboxAction(
     text, description, null
@@ -32,13 +32,13 @@ abstract class GroovyTransactionAction(text: String, description: String, privat
 
     override fun isSelected(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
-        return DeveloperSettings.getInstance(project).groovySettings.txMode == transactionMode
+        return project.yDeveloperSettings.groovySettings.txMode == transactionMode
     }
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
 
-        with(DeveloperSettings.getInstance(project)) {
+        with(project.yDeveloperSettings) {
             groovySettings = groovySettings.copy(txMode = transactionMode)
         }
     }

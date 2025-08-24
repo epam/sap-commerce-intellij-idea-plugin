@@ -33,7 +33,7 @@ import sap.commerce.toolset.flexibleSearch.psi.*
 import sap.commerce.toolset.flexibleSearch.psi.reference.result.FxSColumnAliasNameResolveResult
 import sap.commerce.toolset.flexibleSearch.psi.reference.result.FxSYColumnNameResolveResult
 import sap.commerce.toolset.psi.getValidResults
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase.Poly<FlexibleSearchColumnName>(owner) {
 
@@ -54,7 +54,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.resolve()
         ?.parent
         ?.let { fromClause ->
-            val fxsSettings = DeveloperSettings.getInstance(element.project).flexibleSearchSettings
+            val fxsSettings = element.project.yDeveloperSettings.flexibleSearchSettings
             val addComma = FxSUtils.shouldAddCommaAfterExpression(element, fxsSettings)
 
             val aliases = findColumnAliasNames(fromClause) { true }
@@ -123,7 +123,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             .toList()
 
         private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
-            val fxsSettings = DeveloperSettings.getInstance(element.project).flexibleSearchSettings
+            val fxsSettings = element.project.yDeveloperSettings.flexibleSearchSettings
 
             val addComma = FxSUtils.shouldAddCommaAfterExpression(element, fxsSettings)
             // only DOT allowed for non [y] columns

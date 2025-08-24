@@ -37,7 +37,7 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
 import sap.commerce.toolset.psi.PsiTreeUtilExt
 import sap.commerce.toolset.psi.getValidResults
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -117,7 +117,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators
      */
     private fun getSuitablePrefixes(): Array<LookupElementBuilder> {
-        val fxsSettings = DeveloperSettings.getInstance(element.project).flexibleSearchSettings
+        val fxsSettings = element.project.yDeveloperSettings.flexibleSearchSettings
         val aliasText = element.text.replace(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
 
         val separators: Array<LookupElementBuilder> = element.text.substringAfter(FlexibleSearchConstants.DUMMY_IDENTIFIER)
@@ -141,7 +141,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     fun isAliasedReference() = PsiTreeUtilExt
         .getPrevSiblingOfElementType(element, FlexibleSearchTypes.SELECTED_TABLE_NAME) != null
 
-    fun canFallbackToTableName() = DeveloperSettings.getInstance(element.project)
+    fun canFallbackToTableName() = element.project.yDeveloperSettings
         .flexibleSearchSettings
         .fallbackToTableNameIfNoAliasProvided
 

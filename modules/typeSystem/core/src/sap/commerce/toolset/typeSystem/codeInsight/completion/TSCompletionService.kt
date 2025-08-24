@@ -27,7 +27,7 @@ import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.typeSystem.meta.TSMetaHelper
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -97,7 +97,7 @@ class TSCompletionService(private val project: Project) {
         referenceItemTypeName: String?,
         inlineTypeName: String?
     ): List<LookupElement> {
-        val completion = DeveloperSettings.getInstance(project).impexSettings.completion
+        val completion = project.yDeveloperSettings.impexSettings.completion
         if (!completion.showInlineTypes) return emptyList()
 
         val referenceItemTypeName = referenceItemTypeName ?: return emptyList()

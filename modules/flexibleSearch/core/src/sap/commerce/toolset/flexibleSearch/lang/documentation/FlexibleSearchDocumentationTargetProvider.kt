@@ -27,7 +27,7 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FlexibleSearchDocumentationTargetProvider : DocumentationTargetProvider {
 
@@ -38,7 +38,7 @@ class FlexibleSearchDocumentationTargetProvider : DocumentationTargetProvider {
 
         if (!file.project.isHybrisProject) return emptyList()
 
-        val developerSettings = DeveloperSettings.getInstance(file.project)
+        val developerSettings = file.project.yDeveloperSettings
 
         val documentationSettings = developerSettings.flexibleSearchSettings.documentation
         if (!documentationSettings.enabled) return emptyList()

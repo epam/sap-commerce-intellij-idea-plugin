@@ -24,7 +24,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiErrorElement
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FxSRootCompletionProvider : CompletionProvider<CompletionParameters>() {
 
@@ -32,7 +32,7 @@ class FxSRootCompletionProvider : CompletionProvider<CompletionParameters>() {
         val psiErrorElement = parameters.position.parent as? PsiErrorElement
             ?: return
 
-        val fxsSettings = DeveloperSettings.getInstance(parameters.position.project).flexibleSearchSettings
+        val fxsSettings = parameters.position.project.yDeveloperSettings.flexibleSearchSettings
         // FlexibleSearchTokenType.toString()
         when (psiErrorElement.errorDescription.substringBefore(">") + ">") {
             "<statement>" -> result.addAllElements(

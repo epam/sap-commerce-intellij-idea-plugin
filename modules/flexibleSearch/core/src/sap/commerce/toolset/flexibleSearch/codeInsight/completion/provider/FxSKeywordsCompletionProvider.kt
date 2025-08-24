@@ -23,12 +23,12 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FxSKeywordsCompletionProvider(private val keywords: Set<String>) : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val fxsSettings = DeveloperSettings.getInstance(parameters.position.project).flexibleSearchSettings
+        val fxsSettings = parameters.position.project.yDeveloperSettings.flexibleSearchSettings
         result.addAllElements(FxSLookupElementFactory.buildKeywords(keywords, fxsSettings))
     }
 }

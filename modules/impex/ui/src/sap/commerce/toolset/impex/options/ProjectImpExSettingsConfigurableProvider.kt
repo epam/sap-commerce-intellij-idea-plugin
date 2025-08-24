@@ -27,7 +27,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectImpExSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
@@ -39,7 +39,7 @@ class ProjectImpExSettingsConfigurableProvider(private val project: Project) : C
         i18n("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.impexSettings.mutable()
         private var originalGroupLocalizedFiles = mutableSettings.groupLocalizedFiles
 

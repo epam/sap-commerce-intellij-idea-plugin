@@ -30,8 +30,8 @@ import com.intellij.ui.layout.selected
 import sap.commerce.toolset.flexibleSearch.editor.FxSReservedWordsCaseEditorNotificationProvider
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.ReservedWordsCase
+import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
@@ -43,7 +43,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Pro
         i18n("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.flexibleSearchSettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox

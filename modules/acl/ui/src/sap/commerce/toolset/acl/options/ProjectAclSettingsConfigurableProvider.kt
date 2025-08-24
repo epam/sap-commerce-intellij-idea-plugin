@@ -24,7 +24,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class ProjectAclSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
@@ -35,7 +35,7 @@ class ProjectAclSettingsConfigurableProvider(private val project: Project) : Con
         "Access Control Lists", "hybris.acl.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.aclSettings.mutable()
 
         override fun createPanel() = panel {

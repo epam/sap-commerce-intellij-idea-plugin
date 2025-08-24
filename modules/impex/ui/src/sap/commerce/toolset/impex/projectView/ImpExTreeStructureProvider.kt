@@ -28,7 +28,7 @@ import com.intellij.psi.util.CachedValuesManager
 import org.jetbrains.annotations.Unmodifiable
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 /**
  * This provider enables:
@@ -43,7 +43,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
         children: Collection<AbstractTreeNode<*>>,
         settings: ViewSettings
     ): @Unmodifiable Collection<AbstractTreeNode<*>> {
-        if (!DeveloperSettings.getInstance(parent.project).impexSettings.groupLocalizedFiles) return children
+        if (!parent.project.yDeveloperSettings.impexSettings.groupLocalizedFiles) return children
         if (parent is LocalizedImpExNode) return children
         if (children.isEmpty()) return children
 

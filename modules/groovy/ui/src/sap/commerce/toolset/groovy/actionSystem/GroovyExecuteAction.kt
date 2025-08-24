@@ -32,8 +32,8 @@ import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TransactionMode
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
     GroovyLanguage,
@@ -50,7 +50,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
         val prefix = fileName ?: "script"
 
-        val transactionMode = DeveloperSettings.getInstance(project).groovySettings.txMode
+        val transactionMode = project.yDeveloperSettings.groovySettings.txMode
         val executionClient = GroovyExecutionClient.getInstance(project)
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
@@ -111,7 +111,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
         val project = e.project ?: return
 
-        when (DeveloperSettings.getInstance(project).groovySettings.txMode) {
+        when (project.yDeveloperSettings.groovySettings.txMode) {
             TransactionMode.ROLLBACK -> {
                 e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE_ROLLBACK
                 e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>"

@@ -28,11 +28,11 @@ import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchResultColumns
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FxSHybrisColumnCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val fxsSettings = DeveloperSettings.getInstance(parameters.position.project).flexibleSearchSettings
+        val fxsSettings = parameters.position.project.yDeveloperSettings.flexibleSearchSettings
         val addComma = FxSUtils.shouldAddCommaAfterExpression(parameters.position, fxsSettings)
 
         val parent = parameters.position.parentOfType<FlexibleSearchColumnRefExpression>()

@@ -30,8 +30,8 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
+import sap.commerce.toolset.settings.yDeveloperSettings
 import java.util.function.Function
 import javax.swing.JComponent
 
@@ -41,7 +41,7 @@ abstract class FxSEditorNotificationProvider : EditorNotificationProvider, DumbA
         if (!project.isHybrisProject) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, FlexibleSearchFileType)) return null
 
-        val developerSettings = DeveloperSettings.getInstance(project)
+        val developerSettings = project.yDeveloperSettings
         val fxsSettings = developerSettings.flexibleSearchSettings
         if (!shouldCollect(fxsSettings)) return null
 

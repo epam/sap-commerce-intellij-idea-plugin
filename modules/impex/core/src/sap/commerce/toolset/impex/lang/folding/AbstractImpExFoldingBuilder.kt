@@ -22,14 +22,14 @@ import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.psi.PsiElement
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 abstract class AbstractImpExFoldingBuilder : FoldingBuilderEx() {
 
     abstract fun buildFoldRegionsInternal(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor>
 
     override fun buildFoldRegions(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingEnabled = DeveloperSettings.getInstance(psi.project)
+        val foldingEnabled = psi.project.yDeveloperSettings
             .impexSettings
             .folding
             .enabled

@@ -23,8 +23,8 @@ import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TypeSystemDiagramSettingsState
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.diagram.node.graph.*
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.*
@@ -34,7 +34,7 @@ import java.awt.Shape
 object TSDiagramRefresher {
 
     fun refresh(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
-        val settings = DeveloperSettings.getInstance(model.project).typeSystemDiagramSettings
+        val settings = model.project.yDeveloperSettings.typeSystemDiagramSettings
 
         refreshNodes(model, nodesMap, settings)
         refreshEdges(model, nodesMap, edges)

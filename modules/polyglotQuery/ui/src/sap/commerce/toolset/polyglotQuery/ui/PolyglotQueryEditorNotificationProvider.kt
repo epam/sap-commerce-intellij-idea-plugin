@@ -41,9 +41,9 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryConstants
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.PolyglotQuerySettingsState
 import sap.commerce.toolset.settings.state.ReservedWordsCase
+import sap.commerce.toolset.settings.yDeveloperSettings
 import java.util.function.Function
 import javax.swing.JComponent
 
@@ -53,7 +53,7 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
         if (!project.isHybrisProject) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
 
-        val developerSettings = DeveloperSettings.getInstance(project)
+        val developerSettings = project.yDeveloperSettings
 
         val pgqSettings = developerSettings.polyglotQuerySettings
         if (!pgqSettings.verifyCaseForReservedWords) return null

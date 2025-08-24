@@ -30,14 +30,14 @@ import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private val filter = PolyglotQueryFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val developerSettings = DeveloperSettings.getInstance(root.project)
+        val developerSettings = root.project.yDeveloperSettings
         val foldingSetting = developerSettings.polyglotQuerySettings.folding
 
         if (!foldingSetting.enabled) return emptyArray()
@@ -78,7 +78,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ?.trim()
                 ?: "?"
 
-            if (DeveloperSettings.getInstance(node.psi.project).polyglotQuerySettings.folding.showLanguage) {
+            if (node.psi.project.yDeveloperSettings.polyglotQuerySettings.folding.showLanguage) {
                 val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
                     ?.let {
                         it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)

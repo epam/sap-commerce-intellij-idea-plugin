@@ -31,7 +31,7 @@ import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.codeInsight.injection.TypeDependantInjection
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import java.util.*
 
 @Service
@@ -113,7 +113,7 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
             ?.computeValue()
             ?: return injectSimple(injectionPlacesRegistrar, host, expression, quoteLength = quoteLength)
 
-        val alias = DeveloperSettings.getInstance(host.project)
+        val alias = host.project.yDeveloperSettings
             .flexibleSearchSettings
             .fallbackToTableNameIfNoAliasProvided
             .takeIf { it }

@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TypeSystemFoldingSettingsState
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.model.deployment.DatabaseSchema
 import sap.commerce.toolset.typeSystem.model.deployment.Model
 import sap.commerce.toolset.typeSystem.model.deployment.TypeMapping
@@ -46,7 +46,7 @@ class DeploymentModelFoldingBuilder : XmlFoldingBuilderEx<TypeSystemFoldingSetti
         }
     }
 
-    override fun initSettings(project: Project) = DeveloperSettings.getInstance(project)
+    override fun initSettings(project: Project) = project.yDeveloperSettings
         .typeSystemSettings
         .folding
 

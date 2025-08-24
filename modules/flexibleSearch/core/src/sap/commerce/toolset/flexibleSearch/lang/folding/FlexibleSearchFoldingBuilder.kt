@@ -32,14 +32,14 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.flexibleSearch.psi.*
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private val filter = FlexibleSearchFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val developerSettings = DeveloperSettings.getInstance(root.project)
+        val developerSettings = root.project.yDeveloperSettings
         val foldingSettings = developerSettings.flexibleSearchSettings.folding
         if (!foldingSettings.enabled) return emptyArray()
 
@@ -121,7 +121,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
         ?: FALLBACK_PLACEHOLDER
 
     private fun getColumnPlaceholderText(node: ASTNode, columnNameType: IElementType, tableAliasType: IElementType): String {
-        val fxsSettings = DeveloperSettings.getInstance(node.psi.project).flexibleSearchSettings
+        val fxsSettings = node.psi.project.yDeveloperSettings.flexibleSearchSettings
         val columnName = node.findChildByType(columnNameType)
             ?.text
             ?.trim()

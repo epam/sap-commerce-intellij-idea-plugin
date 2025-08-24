@@ -95,3 +95,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         fun getInstance(project: Project): DeveloperSettings = project.service()
     }
 }
+
+val Project.yDeveloperSettings
+    get() = DeveloperSettings.getInstance(this)

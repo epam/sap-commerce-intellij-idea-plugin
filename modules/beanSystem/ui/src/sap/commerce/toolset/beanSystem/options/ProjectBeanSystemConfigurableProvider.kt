@@ -26,7 +26,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectBeanSystemConfigurableProvider(private val project: Project) : ConfigurableProvider() {
@@ -38,7 +38,7 @@ class ProjectBeanSystemConfigurableProvider(private val project: Project) : Conf
         i18n("hybris.settings.project.bs.title"), "[y] SAP CX Bean System configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.beanSystemSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox

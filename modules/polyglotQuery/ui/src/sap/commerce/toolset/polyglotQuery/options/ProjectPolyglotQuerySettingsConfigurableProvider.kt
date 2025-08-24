@@ -33,8 +33,8 @@ import com.intellij.ui.layout.selected
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.ReservedWordsCase
+import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
@@ -46,7 +46,7 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Proj
         i18n("hybris.settings.project.pgq.title"), "hybris.pgq.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.polyglotQuerySettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox

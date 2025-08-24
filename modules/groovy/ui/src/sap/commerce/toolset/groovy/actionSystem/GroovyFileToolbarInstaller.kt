@@ -27,7 +27,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 @Service
 class GroovyFileToolbarInstaller : HybrisFileToolbarInstaller(
@@ -42,7 +42,7 @@ class GroovyFileToolbarInstaller : HybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {
-        val settings = DeveloperSettings.getInstance(project)
+        val settings = project.yDeveloperSettings
         val file = editor.virtualFile
 
         // Checking special cases where toolbar might not be desired

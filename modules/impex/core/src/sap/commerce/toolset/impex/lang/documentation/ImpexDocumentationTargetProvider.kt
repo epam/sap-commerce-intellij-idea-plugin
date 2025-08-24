@@ -26,7 +26,7 @@ import com.intellij.psi.util.elementType
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
 
@@ -37,7 +37,7 @@ class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
 
         if (!file.project.isHybrisProject) return emptyList()
 
-        val developerSettings = DeveloperSettings.getInstance(file.project)
+        val developerSettings = file.project.yDeveloperSettings
         val documentationSettings = developerSettings.impexSettings.documentation
         if (!documentationSettings.enabled) return emptyList()
 

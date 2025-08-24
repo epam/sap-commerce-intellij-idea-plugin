@@ -29,7 +29,7 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectGroovySettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
@@ -41,7 +41,7 @@ class ProjectGroovySettingsConfigurableProvider(private val project: Project) : 
         i18n("hybris.settings.project.groovy.title"), "hybris.groovy.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.groovySettings.mutable()
         private lateinit var enableActionToolbar: JCheckBox
 

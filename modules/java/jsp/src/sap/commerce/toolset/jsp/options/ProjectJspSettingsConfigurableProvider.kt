@@ -25,7 +25,7 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class ProjectJspSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
@@ -36,7 +36,7 @@ class ProjectJspSettingsConfigurableProvider(private val project: Project) : Con
         i18n("hybris.settings.project.jsp.title"), "hybris.jsp.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.jspSettings.mutable()
 
         override fun createPanel() = panel {

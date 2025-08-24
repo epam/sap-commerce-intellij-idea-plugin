@@ -29,7 +29,7 @@ import com.intellij.ui.layout.selected
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.ui.TSDiagramSettingsExcludedTypeNameTable
 import java.awt.Dimension
 import javax.swing.JCheckBox
@@ -43,7 +43,7 @@ class ProjectTypeSystemConfigurableProvider(private val project: Project) : Conf
         i18n("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val tsMutableSettings = developerSettings.typeSystemSettings.mutable()
         private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable()
 

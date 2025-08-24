@@ -26,7 +26,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectCngSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
@@ -38,7 +38,7 @@ class ProjectCngSettingsConfigurableProvider(private val project: Project) : Con
         i18n("hybris.settings.project.cng.title"), "[y] SAP CX Cockpit NG configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = project.yDeveloperSettings
         private val mutableSettings = developerSettings.cngSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox

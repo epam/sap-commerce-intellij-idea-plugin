@@ -24,7 +24,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class ImpexHeaderAttributeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
@@ -34,7 +34,7 @@ class ImpexHeaderAttributeModifierNameCompletionProvider : CompletionProvider<Co
         result: CompletionResultSet
     ) {
         val element = parameters.position
-        val completionSettings = DeveloperSettings.getInstance(element.project)
+        val completionSettings = element.project.yDeveloperSettings
             .impexSettings
             .completion
         AttributeModifier.entries

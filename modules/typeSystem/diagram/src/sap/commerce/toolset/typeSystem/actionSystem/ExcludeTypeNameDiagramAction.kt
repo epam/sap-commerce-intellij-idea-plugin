@@ -23,7 +23,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramNode
 
 class ExcludeTypeNameDiagramAction : DiagramAction(
@@ -39,7 +39,7 @@ class ExcludeTypeNameDiagramAction : DiagramAction(
             .map { it.graphNode.name }
 
         if (excludedTypeNames.isNotEmpty()) {
-            with(DeveloperSettings.getInstance(project)) {
+            with(project.yDeveloperSettings) {
                 val newExcludedTypeNames = typeSystemDiagramSettings.excludedTypeNames.toMutableSet()
                     .apply { addAll(excludedTypeNames) }
                 typeSystemDiagramSettings = typeSystemDiagramSettings.copy(excludedTypeNames = newExcludedTypeNames)
