@@ -18,6 +18,7 @@
 package sap.commerce.toolset.polyglotQuery.lang.annotation
 
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.childrenOfType
@@ -30,7 +31,10 @@ import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes.*
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
-class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.getInstance()) {
+class PolyglotQueryAnnotator : AbstractAnnotator() {
+
+    override val highlighter: SyntaxHighlighter
+        get() = PolyglotQuerySyntaxHighlighter.getInstance()
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {

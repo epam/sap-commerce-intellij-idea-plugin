@@ -39,7 +39,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
         i18n("hybris.settings.project.title"), "hybris.project.settings"
     ) {
 
-        private val projectSettings = ProjectSettings.Companion.getInstance(project)
+        private val projectSettings = ProjectSettings.getInstance(project)
         private lateinit var generateCodeOnRebuildCheckBox: JCheckBox
 
         private val excludedFromScanning = CRUDListPanel(

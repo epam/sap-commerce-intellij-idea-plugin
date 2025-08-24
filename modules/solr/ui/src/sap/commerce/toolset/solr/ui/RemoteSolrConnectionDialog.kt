@@ -40,7 +40,7 @@ class RemoteSolrConnectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        project.messageBus.syncPublisher(RemoteConnectionListener.Companion.TOPIC).onSolrConnectionModified(settings)
+        project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onSolrConnectionModified(settings)
     }
 
     override fun panel() = panel {

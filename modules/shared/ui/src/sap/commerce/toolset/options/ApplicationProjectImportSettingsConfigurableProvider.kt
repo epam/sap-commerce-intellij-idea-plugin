@@ -37,7 +37,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
         i18n("hybris.settings.application.project_import.title"), "[y] SAP CX project import configuration."
     ) {
 
-        private val applicationSettings = ApplicationSettings.Companion.getInstance()
+        private val applicationSettings = ApplicationSettings.getInstance()
 
         private lateinit var groupModulesCheckBox: JCheckBox
         private lateinit var externalModulesCheckBox: JCheckBox

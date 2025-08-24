@@ -45,7 +45,7 @@ class RemoteHacConnectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        project.messageBus.syncPublisher(RemoteConnectionListener.Companion.TOPIC).onHybrisConnectionModified(settings)
+        project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onHybrisConnectionModified(settings)
     }
 
     override fun createTestSettings() = with(RemoteConnectionSettingsState()) {

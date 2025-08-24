@@ -18,6 +18,7 @@
 package sap.commerce.toolset.impex.lang.annotation
 
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
@@ -32,7 +33,10 @@ import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.*
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 
-class ImpexAnnotator : AbstractAnnotator(ImpExSyntaxHighlighter.getInstance()) {
+class ImpexAnnotator : AbstractAnnotator() {
+
+    override val highlighter: SyntaxHighlighter
+        get() = ImpExSyntaxHighlighter.getInstance()
 
     private val tsElementTypes = setOf(ImpexTypes.TYPE, ImpexTypes.TARGET)
     private val userRightsParameters = mapOf(

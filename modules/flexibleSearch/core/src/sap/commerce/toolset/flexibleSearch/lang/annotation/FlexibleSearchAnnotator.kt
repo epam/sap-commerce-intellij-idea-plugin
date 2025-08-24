@@ -21,6 +21,7 @@ import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -39,7 +40,10 @@ import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
-class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighter.getInstance()) {
+class FlexibleSearchAnnotator : AbstractAnnotator() {
+
+    override val highlighter: SyntaxHighlighter
+        get() = FlexibleSearchSyntaxHighlighter.getInstance()
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {

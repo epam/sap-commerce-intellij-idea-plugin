@@ -34,7 +34,7 @@ class CngWidgetComponentRendererClassCompletionProvider : CompletionProvider<Com
     ) {
         val project = parameters.editor.project ?: return
 
-        val elements = JavaClassCompletionService.Companion.getInstance(project).getImplementationsForClasses(
+        val elements = JavaClassCompletionService.getInstance(project).getImplementationsForClasses(
             HybrisConstants.CLASS_FQN_CNG_WIDGET_COMPONENT_RENDERER
         )
         result.addAllElements(elements)

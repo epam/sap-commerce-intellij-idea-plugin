@@ -31,7 +31,7 @@ class RemoteHacInstancesListPanel(
 ) : RemoteInstancesListPanel(project, RemoteConnectionType.Hybris, HybrisIcons.Y.REMOTE) {
 
     override fun addItem() {
-        val settings = RemoteConnectionService.Companion.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val dialog = RemoteHacConnectionDialog(myProject, this, settings)
         if (dialog.showAndGet()) {
             addElement(settings)

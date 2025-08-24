@@ -18,6 +18,7 @@
 package sap.commerce.toolset.acl.lang.annotation
 
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.acl.highlighting.AclSyntaxHighlighter
@@ -26,7 +27,10 @@ import sap.commerce.toolset.acl.psi.references.AclTSTargetAttributeReference
 import sap.commerce.toolset.acl.psi.references.AclTSTargetTypeReference
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 
-class AclAnnotator : AbstractAnnotator(AclSyntaxHighlighter.getInstance()) {
+class AclAnnotator : AbstractAnnotator() {
+
+    override val highlighter: SyntaxHighlighter
+        get() = AclSyntaxHighlighter.getInstance()
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {

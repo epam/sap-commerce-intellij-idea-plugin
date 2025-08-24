@@ -35,7 +35,7 @@ class AddHacConnectionAction : HacConnectionAction("Create new connection", Hybr
         val component = (eventSource as? Component)
             ?: return
 
-        val remoteConnectionService = RemoteConnectionService.Companion.getInstance(project)
+        val remoteConnectionService = RemoteConnectionService.getInstance(project)
         val settings = remoteConnectionService.createDefaultRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         if (RemoteHacConnectionDialog(project, component, settings).showAndGet()) {

@@ -33,7 +33,9 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
 
-abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : Annotator {
+abstract class AbstractAnnotator : Annotator {
+
+    abstract val highlighter: SyntaxHighlighter
 
     fun highlightError(
         holder: AnnotationHolder,

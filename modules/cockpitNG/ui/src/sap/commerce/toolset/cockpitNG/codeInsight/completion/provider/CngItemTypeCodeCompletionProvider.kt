@@ -60,7 +60,7 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
             ?.takeIf { it.localName == Config.CONTEXT }
             ?: return addTypeCompletions(parameters, context, result)
 
-        val metaModelAccess = TSMetaModelAccess.Companion.getInstance(element.project)
+        val metaModelAccess = TSMetaModelAccess.getInstance(element.project)
         val currentAttributeName = currentAttribute.localName
         val anotherAttributeValue = getAnotherType(currentAttributeName, tag)
             ?.let { metaModelAccess.findMetaClassifierByName(it) }

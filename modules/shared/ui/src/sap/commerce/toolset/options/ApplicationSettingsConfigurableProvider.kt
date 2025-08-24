@@ -33,7 +33,7 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
         "[y] SAP Commerce", "[y] SAP CX configuration."
     ) {
 
-        private val applicationSettings = ApplicationSettings.Companion.getInstance()
+        private val applicationSettings = ApplicationSettings.getInstance()
 
         override fun createPanel() = panel {
             row {

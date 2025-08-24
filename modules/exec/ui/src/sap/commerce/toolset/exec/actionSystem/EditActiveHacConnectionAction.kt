@@ -35,7 +35,7 @@ class EditActiveHacConnectionAction : HacConnectionAction("Edit active connectio
         val component = (eventSource as? Component)
             ?: return
 
-        val settings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         RemoteHacConnectionDialog(project, component, settings).showAndGet()
     }
 }

@@ -43,7 +43,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         val project = e?.project ?: return emptyArray()
         val actions = super.getChildren(e)
 
-        val remoteConnectionService = RemoteConnectionService.Companion.getInstance(project)
+        val remoteConnectionService = RemoteConnectionService.getInstance(project)
         val activeConnection = remoteConnectionService.getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val connectionActions = remoteConnectionService.getRemoteConnections(RemoteConnectionType.Hybris)
             .map {
@@ -64,7 +64,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         val project = e.project ?: return
         val presentation = e.presentation
 
-        val hacSettings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val hacSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         presentation.text = when (e.place) {
             ActionPlaces.EDITOR_TOOLBAR -> hacSettings.toString()
             ConsoleUiConstants.PLACE_TOOLBAR -> null
