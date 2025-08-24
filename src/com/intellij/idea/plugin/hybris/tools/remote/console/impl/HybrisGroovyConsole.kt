@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
@@ -52,6 +53,17 @@ class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : Hy
 
     init {
         isEditable = true
+
+        timeoutSpinner.addChangeListener(
+            ChangeListener@{
+                val value = (it.source as? JSpinner)?.value
+                if (value is Int) {
+                    val developerSettings = DeveloperSettings.getInstance(project)
+                    val groovySettings = DeveloperSettings.getInstance(project).groovySettings
+                    developerSettings.groovySettings = groovySettings.copy(timeOut = value)
+                }
+            }
+        )
 
         val panel = JPanel(WrappedFlowLayout(0, 0))
         panel.add(commitCheckbox)

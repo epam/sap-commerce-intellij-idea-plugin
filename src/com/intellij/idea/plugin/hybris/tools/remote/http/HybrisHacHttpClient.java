@@ -85,7 +85,7 @@ import static org.apache.http.HttpVersion.HTTP_1_1;
 public final class HybrisHacHttpClient extends UserDataHolderBase {
 
     private static final Logger LOG = Logger.getInstance(HybrisHacHttpClient.class);
-    public static final int DEFAULT_HAC_TIMEOUT = 6000;
+    public static final int DEFAULT_HAC_TIMEOUT = 10000;
 
     @Serial
     private static final long serialVersionUID = -4915832410081381025L;

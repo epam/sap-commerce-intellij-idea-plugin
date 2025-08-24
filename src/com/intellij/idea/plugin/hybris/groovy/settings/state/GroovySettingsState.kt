@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.groovy.settings.state
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
@@ -28,12 +29,24 @@ data class GroovySettingsState(
     @JvmField @OptionTag val enableActionsToolbarForGroovyTest: Boolean = false,
     @JvmField @OptionTag val enableActionsToolbarForGroovyIdeConsole: Boolean = false,
     @JvmField @OptionTag val txMode: TransactionMode = TransactionMode.ROLLBACK,
+    @JvmField @OptionTag val timeOut: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000,
+    @JvmField @OptionTag val useScriptTemplate: Boolean = false,
+    @JvmField @OptionTag val useCustomScriptTemplate: Boolean = false,
+    @JvmField @OptionTag val customScriptTemplatePath: String = "",
+    @JvmField @OptionTag val exceptionHandling: GroovyHACExceptionHandling = GroovyHACExceptionHandling.SIMPLE_STACKTRACE,
+    @JvmField @OptionTag val exceptionHandlingName: String = GroovyHACExceptionHandling.SIMPLE_STACKTRACE.name,
 ) {
     fun mutable() = Mutable(
         enableActionsToolbar = enableActionsToolbar,
         enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
         enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
         txMode = txMode,
+        timeOut = timeOut,
+        useScriptTemplate = this@GroovySettingsState.useScriptTemplate,
+        useCustomScriptTemplate = useCustomScriptTemplate,
+        customScriptTemplatePath = customScriptTemplatePath,
+        exceptionHandling = exceptionHandling,
+        exceptionHandlingName = exceptionHandlingName,
     )
 
     data class Mutable(
@@ -41,12 +54,24 @@ data class GroovySettingsState(
         var enableActionsToolbarForGroovyTest: Boolean,
         var enableActionsToolbarForGroovyIdeConsole: Boolean,
         var txMode: TransactionMode,
-    ) {
+        var timeOut: Int,
+        var useScriptTemplate: Boolean,
+        var useCustomScriptTemplate: Boolean,
+        var customScriptTemplatePath: String,
+        var exceptionHandling: GroovyHACExceptionHandling,
+        var exceptionHandlingName: String,
+        ) {
         fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
             enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
             enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
             txMode = txMode,
+            timeOut = timeOut,
+            useScriptTemplate = useScriptTemplate,
+            useCustomScriptTemplate = useCustomScriptTemplate,
+            customScriptTemplatePath = customScriptTemplatePath,
+            exceptionHandling = exceptionHandling,
+            exceptionHandlingName = exceptionHandlingName,
         )
     }
 }

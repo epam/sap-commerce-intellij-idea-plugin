@@ -27,10 +27,16 @@ import java.nio.file.Files
  */
 enum class ExtensionResource(val fqn: String) {
 
-    CX_LOGGERS_STATE("cx-loggers-state.groovy");
+    CX_LOGGERS_STATE("cx-loggers-state.groovy"),
+    DEFAULT_SCRIP_TEMPLATE("default-script-template.groovy");
 
     val content: String
         get() = ExtensionsService.getInstance().findResource(this)
             ?.let { Files.readString(it) }
             ?: throw HybrisConfigurationException("Unable to read Extension file: $fqn.")
+
+    companion object {
+        fun fromFqn(fqn: String): ExtensionResource? = entries.find { it.fqn == fqn }
+    }
+
 }

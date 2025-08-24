@@ -47,10 +47,13 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
             ?.let { result ->
                 panelView {
                     when {
-                        result.hasError -> it.errorView(
-                            result.errorMessage ?: "An error was encountered while processing the request.",
-                            result.errorDetailMessage
-                        )
+                        result.hasError -> {
+                            it.errorView(
+                                result.errorMessage ?: "An error was encountered while processing the request.",
+                                result.errorDetailMessage
+                            )
+                            if (result.output != null) it.group("Output", result.output)
+                        }
 
                         result.result != null || result.output != null -> {
                             if (result.result != null) it.group("Result", result.result)

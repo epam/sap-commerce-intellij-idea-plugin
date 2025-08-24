@@ -18,6 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
+import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovyHACExceptionHandling
+import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovySettingsState
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -25,9 +28,12 @@ import org.apache.commons.lang3.BooleanUtils
 
 data class GroovyExecutionContext(
     override val executionTitle: String = DEFAULT_TITLE,
-    private val content: String,
+    val content: String,
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
+    val webContext: String? = null,
+    val scriptTemplate: String? = null,
+    val exceptionHandling: GroovyHACExceptionHandling = GroovyHACExceptionHandling.SIMPLE_STACKTRACE,
     val replicaContext: ReplicaContext? = null
 ) : ExecutionContext {
 
