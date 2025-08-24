@@ -25,7 +25,6 @@ abstract class BSMetaSelfMerge<DOM : DomElement, T : BSMetaClassifier<DOM>>(loca
     override val name = localMeta.name
     override var isCustom = localMeta.isCustom
     override val declarations: MutableSet<T> = HashSet()
-    var mergeConflicts: MutableList<String> = ArrayList()
 
     fun merge(localMeta: T) {
         declarations.add(localMeta)

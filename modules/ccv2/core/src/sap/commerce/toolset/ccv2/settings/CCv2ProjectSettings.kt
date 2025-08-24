@@ -26,7 +26,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.application
-import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
@@ -107,13 +106,5 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<ApplicationSett
     companion object {
         @JvmStatic
         fun getInstance(): CCv2ProjectSettings = application.service()
-
-        @JvmStatic
-        fun toIdeaGroup(group: String?): Array<String>? {
-            if (group == null || group.trim { it <= ' ' }.isEmpty()) {
-                return null
-            }
-            return StringUtils.split(group, " ,.;>/\\")
-        }
     }
 }

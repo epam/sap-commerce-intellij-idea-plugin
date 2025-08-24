@@ -31,9 +31,6 @@ import sap.commerce.toolset.typeSystem.model.deployment.TypeMapping
 
 class DeploymentModelFoldingBuilder : XmlFoldingBuilderEx<TypeSystemFoldingSettingsState, Model>(Model::class.java), DumbAware {
 
-    // it can be: EnumValue, ColumnType, but not CustomProperty
-    private val valueName = "value"
-
     override val filter = PsiElementFilter {
         when (it) {
             is XmlTag -> when (it.localName) {

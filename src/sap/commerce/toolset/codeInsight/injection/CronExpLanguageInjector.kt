@@ -18,7 +18,6 @@
 package sap.commerce.toolset.codeInsight.injection
 
 import com.intellij.cron.CronExpLanguage
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
@@ -87,9 +86,5 @@ class CronExpLanguageInjector : LanguageInjector {
             CronExpLanguage,
             TextRange.from(offset, length), null, null
         )
-    }
-
-    companion object {
-        private val LOG by lazy { Logger.getInstance(GroovyLanguageInjector::class.java) }
     }
 }

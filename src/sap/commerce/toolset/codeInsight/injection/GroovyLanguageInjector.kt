@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.codeInsight.injection
 
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
@@ -102,9 +101,5 @@ class GroovyLanguageInjector : LanguageInjector {
                     
                 """.trimIndent(), null
         )
-    }
-
-    companion object {
-        private val LOG by lazy { Logger.getInstance(GroovyLanguageInjector::class.java) }
     }
 }

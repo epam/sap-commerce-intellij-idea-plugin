@@ -25,7 +25,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
 import com.intellij.psi.PsiFile
-import com.intellij.psi.xml.XmlElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomFileElement
@@ -65,9 +64,6 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
     open fun canProcess(dom: T): Boolean = true
 
     protected fun getTextRange(dom: DomElement) = dom.xmlElement
-        ?.let { TextRange.from(0, it.textLength) }
-
-    protected fun getTextRange(xmlElement: XmlElement?) = xmlElement
         ?.let { TextRange.from(0, it.textLength) }
 
     private fun getProblemHighlightType(file: PsiFile) = HighlightDisplayKey.find(shortName)

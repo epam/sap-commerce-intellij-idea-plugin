@@ -19,6 +19,6 @@
 package sap.commerce.toolset.ui.actionSystem
 
 object HybrisActionPlaces {
-    const val CONSOLE_TOOLBAR = "Hybris.Consoles.ContextMenu"
+    @Deprecated("review this usage, migrate to LoggersConstants")
     const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
 }
