@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
+import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovyHACExceptionHandling
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -30,6 +31,7 @@ data class GroovyExecutionContext(
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
     val webContext: String? = null,
     val scriptTemplate: String? = null,
+    val exceptionHandling: GroovyHACExceptionHandling = GroovyHACExceptionHandling.SIMPLE_STACKTRACE,
     val replicaContext: ReplicaContext? = null
 ) : ExecutionContext {
 

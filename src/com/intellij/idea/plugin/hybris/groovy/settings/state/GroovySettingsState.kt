@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.groovy.settings.state
 
+import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
@@ -31,6 +32,8 @@ data class GroovySettingsState(
     @JvmField @OptionTag val enableScriptTemplate: Boolean = false,
     @JvmField @OptionTag val useCustomScriptTemplate: Boolean = false,
     @JvmField @OptionTag val customScriptTemplatePath: String = "",
+    @JvmField @OptionTag val exceptionHandling: GroovyHACExceptionHandling = GroovyHACExceptionHandling.SIMPLE_STACKTRACE,
+    @JvmField @OptionTag val exceptionHandlingName: String = GroovyHACExceptionHandling.SIMPLE_STACKTRACE.name,
 ) {
     fun mutable() = Mutable(
         enableActionsToolbar = enableActionsToolbar,
@@ -40,6 +43,8 @@ data class GroovySettingsState(
         enableScriptTemplate = enableScriptTemplate,
         useCustomScriptTemplate = useCustomScriptTemplate,
         customScriptTemplatePath = customScriptTemplatePath,
+        exceptionHandling = exceptionHandling,
+        exceptionHandlingName = exceptionHandlingName,
     )
 
     data class Mutable(
@@ -50,7 +55,9 @@ data class GroovySettingsState(
         var enableScriptTemplate: Boolean,
         var useCustomScriptTemplate: Boolean,
         var customScriptTemplatePath: String,
-    ) {
+        var exceptionHandling: GroovyHACExceptionHandling,
+        var exceptionHandlingName: String,
+        ) {
         fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
             enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
@@ -58,7 +65,9 @@ data class GroovySettingsState(
             txMode = txMode,
             enableScriptTemplate = enableScriptTemplate,
             useCustomScriptTemplate = useCustomScriptTemplate,
-            customScriptTemplatePath = customScriptTemplatePath
+            customScriptTemplatePath = customScriptTemplatePath,
+            exceptionHandling = exceptionHandling,
+            exceptionHandlingName = exceptionHandlingName,
         )
     }
 }

@@ -20,9 +20,11 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import javax.swing.Icon
@@ -35,9 +37,7 @@ class GroovyChooseWebContextActionGroup : DefaultActionGroup({ "Choose Spring We
 
     val separator = Separator.create()
 
-    val reloadWebContextAction = ReloadWebContextAction(this)
-
-    val webContexts: MutableList<String> = mutableListOf("default")
+    val webContexts: MutableList<String> = mutableListOf()
 
     init {
         templatePresentation.icon = HybrisIcons.Y.LOGO_GREEN
@@ -47,11 +47,13 @@ class GroovyChooseWebContextActionGroup : DefaultActionGroup({ "Choose Spring We
     override fun getChildren(e: AnActionEvent?): Array<out AnAction?> {
         val children = super.getChildren(e)
 
-        val actions = children + webContexts.map { name ->
+        val actions = children + webContexts.let { if (it.isEmpty()) mutableListOf("default") else it }.map { name ->
             WebContextAction(name, HybrisIcons.Y.LOGO_BLUE, this)
         }.toTypedArray()
 
-        return actions + separator + reloadWebContextAction
+        val text = "${if (webContexts.isEmpty()) "Load" else "Reload"} Web Contexts"
+        val description = "${if (webContexts.isEmpty()) "Loada" else "Reloada"} the list of context"
+        return actions + separator + ReloadWebContextAction(this, text, description)
     }
 
     override fun update(e: AnActionEvent) {
@@ -69,10 +71,6 @@ class GroovyChooseWebContextActionGroup : DefaultActionGroup({ "Choose Spring We
         presentation.text = this.currentAction?.actionName ?: "Select Spring Web Context"
         this.currentAction?.icon?.let { presentation.icon = it }
         presentation.isEnabledAndVisible = true
-        // (this.currentAction?.actionName)?.let {
-        //    val connectionContext = GroovyExecutionClient.getInstance(project).connectionContext
-        //    connectionContext.springWebContexts = it
-        // }
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -94,8 +92,11 @@ class WebContextAction(val actionName: String, val icon: Icon, private val paren
 
 }
 
-class ReloadWebContextAction(private val parent: GroovyChooseWebContextActionGroup) :
-    AnAction("Reload Web Contexts", "Reloads the list of context", AllIcons.General.Refresh) {
+class ReloadWebContextAction(
+    val parent: GroovyChooseWebContextActionGroup,
+    val text: String,
+    val description : String) :
+    AnAction(text, description, AllIcons.General.Refresh) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -110,6 +111,10 @@ class ReloadWebContextAction(private val parent: GroovyChooseWebContextActionGro
                 parent.webContexts.clear()
                 parent.webContexts.add("default")
                 parent.webContexts.addAll(contexts)
+                Notifications.create(NotificationType.INFORMATION, "Found ${contexts.size} web contexts").notify(project)
+            },
+            onError = { _, ex ->
+                Notifications.create(NotificationType.ERROR, "Unable to load web contexts: ${ex.message}").notify(project)
             }
         )
     }

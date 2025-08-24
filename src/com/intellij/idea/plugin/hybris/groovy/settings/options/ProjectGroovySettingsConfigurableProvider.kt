@@ -21,17 +21,22 @@ package com.intellij.idea.plugin.hybris.groovy.settings.options
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
+import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovyHACExceptionHandling
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.and
-import com.intellij.ui.layout.not
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
@@ -49,6 +54,7 @@ class ProjectGroovySettingsConfigurableProvider(private val project: Project) : 
         private lateinit var enableActionToolbar: JCheckBox
         private lateinit var enableScriptTemplateCheckBox: JCheckBox
         private lateinit var customScriptTemplateCheckBox: JCheckBox
+        private val exceptionHandling = EnumComboBoxModel(GroovyHACExceptionHandling::class.java)
 
         override fun createPanel() = panel {
             group("Language") {
@@ -86,13 +92,23 @@ class ProjectGroovySettingsConfigurableProvider(private val project: Project) : 
                 row {
                     customScriptTemplateCheckBox = checkBox("Use a custom script template:")
                         .bindSelected(mutableSettings::useCustomScriptTemplate)
+                        .enabledIf(enableScriptTemplateCheckBox.selected)
                         .component
                     textFieldWithBrowseButton("Select Groovy Script Template")
                         .align(AlignX.FILL)
                         .bindText(mutableSettings::customScriptTemplatePath)
                         .comment("Default script template ghac/scriptTemplate.groovy")
-                        .enabledIf(customScriptTemplateCheckBox.selected.and(enableScriptTemplateCheckBox.selected.not()))
+                        .enabledIf(customScriptTemplateCheckBox.selected.and(enableScriptTemplateCheckBox.selected))
                         .component
+                }
+                row {
+                    comboBox(
+                        exceptionHandling,
+                        renderer = SimpleListCellRenderer.create("?") { HybrisI18NBundleUtils.message("hybris.groovy.settings.exception.handling.$it") }
+                    )
+                        .label("Exception rendering:")
+                        .bindItem(mutableSettings::exceptionHandling.toNullableProperty())
+                        .enabledIf(enableScriptTemplateCheckBox.selected)
                 }
             }
         }

@@ -53,11 +53,14 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val groovySettings = DeveloperSettings.getInstance(project).groovySettings
         val executionClient = GroovyExecutionClient.getInstance(project)
 
-        val scriptTemplate = if (groovySettings.enableScriptTemplate) {
-            groovySettings.customScriptTemplatePath.takeIf{ !it.isEmpty() } ?: GroovyExecutionClient.GHAC_SCRIPT_TEMPLATE_GROOVY
-        } else {
-            null
-        }
+        val scriptTemplate = groovySettings.enableScriptTemplate
+            .takeIf { it }
+            ?.let {
+                groovySettings.customScriptTemplatePath
+                    .takeIf { !it.isEmpty() }
+                    ?.let { "file://$it" }
+                ?: GroovyExecutionClient.GHAC_SCRIPT_TEMPLATE_GROOVY
+            }
 
         val connectionContext = GroovyExecutionClient.getInstance(project).connectionContext
 
@@ -67,8 +70,9 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                     executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = groovySettings.txMode,
-                    scriptTemplate = scriptTemplate,
                     webContext = connectionContext.activeWebContext,
+                    scriptTemplate = scriptTemplate,
+                    exceptionHandling = groovySettings.exceptionHandling,
                     replicaContext = it
                 )
             }
@@ -78,8 +82,9 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                     executionTitle = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = groovySettings.txMode,
-                    scriptTemplate = scriptTemplate,
                     webContext = connectionContext.activeWebContext,
+                    scriptTemplate = scriptTemplate,
+                    exceptionHandling = groovySettings.exceptionHandling,
                 )
             )
 
@@ -163,7 +168,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
         }
 
-        processedContent = "/* ${psiFile.name} */\n$processedContent"
+        // processedContent = "/* ${psiFile.name} */\n$processedContent"
 
         return processedContent
     }

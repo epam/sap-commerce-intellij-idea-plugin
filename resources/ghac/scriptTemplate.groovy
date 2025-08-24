@@ -51,6 +51,7 @@ static Map<String,WebApplicationContext> getSpringWeb() {
 def result = [:]
 def outputStream = new ByteArrayOutputStream()
 def stackTraceWriter = new StringWriter()
+def exceptionHandling = '$exceptionHandling'
 
 try {
 
@@ -90,6 +91,7 @@ try {
                 def engine = getEngine(scriptContent.engineName) as Compilable
                 def scriptBody = engine.compile(scriptContent.content)
                 scriptExecutable = new PrecompiledExecutable(scriptBody, globalContext, applicationContext, null)
+                // println "script class: ${scriptExecutable.compiledScript.clasz.name}"
             }
 
             scriptExecutable.execute(globalContext, outputWriter, stackTraceWriter)
@@ -97,30 +99,34 @@ try {
         }
 
     } catch (ScriptExecutionException ex) {
-        def clean = false
         def scriptException = ex.cause.cause ?: ex.cause
         def stw = new StringWriter()
         scriptException.printStackTrace(new PrintWriter(stw))
-        if (clean) {
-            def lines = stw.toString().readLines()
-            def cleanedLines = [] as List<String>
-            def append = true
-            def scriptClassName = this.class.name
-            lines.each { line ->
-                if (line.contains(scriptClassName)) {
-                    // cleanedLines << line
-                    cleanedLines << '\t... hac stack'
-                    append = false
-                } else if (line.startsWith('Caused by:')) {
-                    cleanedLines << line
-                    append = true
-                } else if (append) {
-                    cleanedLines << line
+        switch (exceptionHandling) {
+            case 'SIMPLE_STACKTRACE':
+                def lines = stw.toString().readLines()
+                def cleanedLines = [] as List<String>
+                def append = true
+                def scriptClassName = this.class.name
+                lines.each { line ->
+                    if (line.contains('org.codehaus.groovy.jsr223.GroovyScriptEngineImpl.eval') && append) {
+                        // cleanedLines << line
+                        cleanedLines << '\t... hac stack suppressed'
+                        append = false
+                    } else if (line.startsWith('Caused by:')) {
+                        cleanedLines << line
+                        append = true
+                    } else if (append) {
+                        cleanedLines << line
+                    }
                 }
-            }
-            stackTraceText = cleanedLines.join('\n')
-        } else {
-            stackTraceText = stw.toString()
+                stackTraceText = cleanedLines.join('\n')
+                break
+            case 'FULL_STACKTRACE':
+                stackTraceText = stw.toString()
+                break
+            default:
+                stackTraceText = ex.message
         }
     }
 
@@ -139,6 +145,6 @@ try {
     } else {
         result[STACKTRACE_TEXT_KEY] = new StringWriter().withWriter {t.printStackTrace(new PrintWriter(it)); it}.toString()
     }
-    return mapObject(result)
+    return JsonOutput.toJson(result)
 
 }

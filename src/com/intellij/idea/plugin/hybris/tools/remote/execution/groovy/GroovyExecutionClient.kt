@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
+import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovyHACExceptionHandling
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
@@ -70,7 +71,9 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             mutableParams["script"] = applyScriptTemplate(
                 context.content,
                 context.scriptTemplate,
-                context.webContext ?: "default")
+                context.webContext ?: "default",
+                context.exceptionHandling
+            )
         }
         val params = mutableParams.map { BasicNameValuePair(it.key, it.value) }
 
@@ -92,26 +95,43 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             var errorText = json.jsonObject["stacktraceText"]
                 ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
 
+            var outputText = json.jsonObject["outputText"]
+                ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
+
             if (errorText == null && context.scriptTemplate != null) {
                 json = json.jsonObject["executionResult"]
                     ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
                     ?.let { Json.parseToJsonElement(it) }
                     ?: JsonObject(emptyMap())
+                val nestedOutputText = json.jsonObject["outputText"]
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
+                outputText = when {
+                    outputText == null -> nestedOutputText
+                    nestedOutputText == null -> outputText
+                    else -> outputText + "\n" + nestedOutputText
+                }
                 errorText = json.jsonObject["stacktraceText"]
                     ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
             }
 
-            return if (errorText != null) DefaultExecutionResult(
-                statusCode = HttpStatus.SC_BAD_REQUEST,
+            val errorTextSplitIndex = errorText?.indexOf("\tat") ?: -1
+
+            return DefaultExecutionResult(
+                statusCode = errorText?.let { HttpStatus.SC_BAD_REQUEST } ?: HttpStatus.SC_OK,
                 replicaContext = context.replicaContext,
-                errorMessage = errorText
-            )
-            else DefaultExecutionResult(
-                replicaContext = context.replicaContext,
-                output = json.jsonObject["outputText"]
-                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() },
+                errorMessage = when {
+                    context.scriptTemplate != null && errorTextSplitIndex != -1 ->
+                        errorText?.substring(0,errorTextSplitIndex)
+                    else -> errorText
+                },
+                errorDetailMessage = when {
+                    context.scriptTemplate != null && errorTextSplitIndex != -1 ->
+                        errorText?.replace("\t", "    ")
+                    else -> null
+                },
+                output = outputText,
                 result = json.jsonObject["executionResult"]
-                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() && it != "null" }
             )
 
         } catch (e: SerializationException) {
@@ -131,7 +151,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         }
     }
 
-    fun applyScriptTemplate(script: String, scriptTemplatePath: String, webContext: String): String {
+    fun applyScriptTemplate(script: String, scriptTemplatePath: String, webContext: String, exceptionHandling: GroovyHACExceptionHandling): String {
         val statusBar = WindowManager.getInstance().getStatusBar(project)
 
         var template : String? = null
@@ -151,7 +171,11 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             script
         } else {
             val encodedScript = Base64.getEncoder().encodeToString(script.toByteArray(StandardCharsets.UTF_8))
-            template.replace("\$hacEncodedScript", encodedScript).replace("\$hacSpringWebContext", webContext)
+            template
+                .replace("\$hacEncodedScript", encodedScript)
+                .replace("\$hacSpringWebContext", webContext)
+                .replace("\$exceptionHandling", exceptionHandling.name)
+
         }
     }
 
