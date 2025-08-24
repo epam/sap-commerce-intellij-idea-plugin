@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":logging-core"))
     implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
     implementation(project(":groovy-exec"))
 
     intellijPlatform {

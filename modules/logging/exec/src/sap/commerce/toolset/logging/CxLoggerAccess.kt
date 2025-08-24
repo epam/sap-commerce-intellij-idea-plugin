@@ -28,13 +28,13 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.shortenConnectionName
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.exec.LoggingExecutionClient
 import sap.commerce.toolset.logging.exec.context.LoggingExecutionContext
 import sap.commerce.toolset.logging.exec.context.LoggingExecutionResult
@@ -46,37 +46,37 @@ import java.util.*
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
 
     private var fetching: Boolean = false
-    private val loggersStates = WeakHashMap<RemoteConnectionSettingsState, CxLoggersState>()
+    private val loggersStates = WeakHashMap<HacConnectionSettingsState, CxLoggersState>()
 
     val ready: Boolean
         get() = !fetching
 
     val stateInitialized: Boolean
         get() {
-            val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+            val server = HacExecService.getInstance(project).activeConnection
             return state(server).initialized
         }
 
     init {
         with(project.messageBus.connect(this)) {
-            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) = refresh()
-                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = clearState(remoteConnection)
+            subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
+                override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = refresh()
+                override fun onModified(connection: HacConnectionSettingsState) = clearState(connection)
             })
         }
     }
 
     fun logger(loggerIdentifier: String): CxLoggerModel? {
-        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val server = HacExecService.getInstance(project).activeConnection
         return if (stateInitialized) state(server).get(loggerIdentifier) else null
     }
 
     fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecutionResult) -> Unit = { _, _ -> }) {
-        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val server = HacExecService.getInstance(project).activeConnection
         val context = LoggingExecutionContext(
-            executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName()}]...",
+            executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName}]...",
             loggerName = loggerName,
-            logLevel = logLevel
+            logLevel = logLevel,
         )
         fetching = true
         LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
@@ -88,24 +88,24 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
                 <p>${result.errorMessage}</p>
-                <p>Server: ${server.shortenConnectionName()}</p>
+                <p>Server: ${server.shortenConnectionName}</p>
             """.trimIndent()
             }
             else notify(NotificationType.INFORMATION, "Log Level Updated") {
                 """
                 <p>Level : $logLevel</p>
                 <p>Logger: $loggerName</p>
-                <p>Server: ${server.shortenConnectionName()}</p>
+                <p>Server: ${server.shortenConnectionName}</p>
             """.trimIndent()
             }
         }
     }
 
-    fun fetch() = fetch(RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris))
+    fun fetch() = fetch(HacExecService.getInstance(project).activeConnection)
 
-    fun fetch(server: RemoteConnectionSettingsState) {
+    fun fetch(server: HacConnectionSettingsState) {
         val context = GroovyExecutionContext(
-            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]...",
+            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
             content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
             transactionMode = TransactionMode.ROLLBACK
         )
@@ -143,18 +143,18 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 when {
                     result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
                         "<p>${result.errorMessage}</p>"
-                        "<p>Server: ${server.shortenConnectionName()}</p>"
+                        "<p>Server: ${server.shortenConnectionName}</p>"
                     }
 
                     loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
                         "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>" +
-                            "<p>Server: ${server.shortenConnectionName()}</p>"
+                            "<p>Server: ${server.shortenConnectionName}</p>"
                     }
 
                     else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
                         """
                     <p>Declared loggers: ${loggers.size}</p>
-                    <p>Server: ${server.shortenConnectionName()}</p>
+                    <p>Server: ${server.shortenConnectionName}</p>
                 """.trimIndent()
                     }
                 }
@@ -162,10 +162,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun state(settings: RemoteConnectionSettingsState): CxLoggersState = loggersStates
+    fun state(settings: HacConnectionSettingsState): CxLoggersState = loggersStates
         .computeIfAbsent(settings) { CxLoggersState() }
 
-    private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: RemoteConnectionSettingsState) {
+    private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: HacConnectionSettingsState) {
         coroutineScope.launch {
 
             state(settings).update(loggers ?: emptyMap())
@@ -188,7 +188,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         loggersStates.clear()
     }
 
-    private fun clearState(settings: RemoteConnectionSettingsState) {
+    private fun clearState(settings: HacConnectionSettingsState) {
         val logState = loggersStates[settings]
         logState?.clear()
 

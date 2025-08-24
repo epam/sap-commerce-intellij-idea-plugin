@@ -32,9 +32,9 @@ import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.ExecutionClient
-import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.http.HacHttpClient
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.generatedURL
+import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.exec.context.LoggingExecutionContext
 import sap.commerce.toolset.logging.exec.context.LoggingExecutionResult
@@ -48,14 +48,14 @@ import java.nio.charset.StandardCharsets
 class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext, LoggingExecutionResult>(project, coroutineScope) {
 
     override suspend fun execute(context: LoggingExecutionContext): LoggingExecutionResult {
-        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val connectionSettings = HacExecService.getInstance(project).activeConnection
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val actionUrl = settings.generatedURL + "/platform/log4j/changeLevel/"
+        val actionUrl = connectionSettings.generatedURL + "/platform/log4j/changeLevel/"
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, false, context.timeout, settings, null)
+            .post(actionUrl, params, false, context.timeout, connectionSettings, null)
 
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
@@ -63,7 +63,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
         if (statusCode != HttpStatus.SC_OK || response.entity == null) {
             return LoggingExecutionResult(
                 statusCode = statusCode,
-                errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
+                errorMessage = "[$statusCode] ${statusLine.reasonPhrase}",
             )
         }
 
@@ -93,12 +93,12 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
 
             return LoggingExecutionResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
-                errorMessage = "Cannot parse response from the server..."
+                errorMessage = "Cannot parse response from the server...",
             )
         } catch (e: IOException) {
             return LoggingExecutionResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
-                errorMessage = "${e.message} $actionUrl"
+                errorMessage = "${e.message} $actionUrl",
             )
         }
     }

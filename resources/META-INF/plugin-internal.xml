@@ -72,7 +72,7 @@
         <group id="HybrisToolsActions"
                text="[y] SAP Commerce"
                popup="true"
-               class="sap.commerce.toolset.exec.actionSystem.HybrisToolsActionGroup">
+               class="sap.commerce.toolset.hac.actionSystem.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
 

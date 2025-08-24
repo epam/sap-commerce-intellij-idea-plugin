@@ -28,6 +28,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
+import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
@@ -102,6 +103,8 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
+
+    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
 
     companion object {
         @Serial

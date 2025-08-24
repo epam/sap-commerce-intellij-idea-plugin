@@ -5,15 +5,15 @@
 > Due severe API changes it is highly advised to backup project and import it from the scratch.
 > Please, report any issues via project's Slack or GitHub.
 
-- With over ~260 commits complete rework of the project to Gradle multi-modular architecture [#1528](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1528)
+- With over ~270 commits complete rework of the project to Gradle multi-modular architecture [#1528](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1528)
 
 ### `SAP CX Logging` enhancements
 - Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
 
 ### `xDebugger` enhancements
-- Create type renderer: The item type is not present in the *items.xml files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
+- Create type renderer: The item type is not present in the `*items.xml` files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
 - Create type renderer: The class for the item type was not found [#1532](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1532)
-- Refresh type renderer: The item type is not present in the *items.xml files [#1533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1533)
+- Refresh type renderer: The item type is not present in the `*items.xml` files [#1533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1533)
 - Refresh type renderer: The class for the item type was not found [#1534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1534)
 
 ### Fixes

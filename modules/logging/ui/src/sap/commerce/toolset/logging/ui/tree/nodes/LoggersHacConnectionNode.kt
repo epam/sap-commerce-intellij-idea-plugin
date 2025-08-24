@@ -22,15 +22,16 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.connectionName
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 class LoggersHacConnectionNode(
-    val connectionSettings: RemoteConnectionSettingsState,
+    val connectionSettings: HacConnectionSettingsState,
     val activeConnection: Boolean,
     project: Project
 ) : LoggersNode(project) {
 
-    override fun getName() = connectionSettings.connectionName()
+    override fun getName() = connectionSettings.connectionName
 
     override fun update(presentation: PresentationData) {
         if (myProject == null || myProject.isDisposed) return

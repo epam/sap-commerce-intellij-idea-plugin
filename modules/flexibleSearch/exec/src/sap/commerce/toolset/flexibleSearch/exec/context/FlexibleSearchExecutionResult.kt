@@ -22,10 +22,8 @@ import org.apache.http.HttpStatus
 import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 
 data class FlexibleSearchExecutionResult(
-    override val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,
     val statusCode: Int = HttpStatus.SC_OK,
     override val result: String? = null,
     override val output: String? = null,
@@ -39,7 +37,6 @@ data class FlexibleSearchExecutionResult(
 
     companion object {
         fun from(result: DefaultExecutionResult) = FlexibleSearchExecutionResult(
-            remoteConnectionType = result.remoteConnectionType,
             statusCode = result.statusCode,
             result = result.result,
             output = result.output,

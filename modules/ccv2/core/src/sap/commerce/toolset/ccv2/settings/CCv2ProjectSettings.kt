@@ -29,7 +29,7 @@ import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
-import sap.commerce.toolset.ccv2.settings.state.ApplicationSettingsState
+import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
 
@@ -39,7 +39,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service
-class CCv2ProjectSettings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()), ModificationTracker {
+class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2ApplicationSettingsState>(CCv2ApplicationSettingsState()), ModificationTracker {
 
     var ccv2ReadTimeout: Int
         get() = state.ccv2ReadTimeout

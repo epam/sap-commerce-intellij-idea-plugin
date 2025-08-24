@@ -21,14 +21,14 @@ package sap.commerce.toolset.groovy.exec.context
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecutionContext
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.exec.http.HacHttpClient
+import sap.commerce.toolset.hac.HacConstants
 import sap.commerce.toolset.settings.state.TransactionMode
 
 data class GroovyExecutionContext(
     override val executionTitle: String = DEFAULT_TITLE,
     private val content: String,
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
-    val timeout: Int = HacHttpClient.DEFAULT_HAC_TIMEOUT,
+    val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
     val replicaContext: ReplicaContext? = null
 ) : ExecutionContext {
 

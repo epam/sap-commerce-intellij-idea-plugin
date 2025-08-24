@@ -23,9 +23,8 @@ import com.intellij.ui.AddEditDeleteListPanel;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.util.ui.JBEmptyBorder;
 import org.jetbrains.annotations.Nullable;
-import sap.commerce.toolset.exec.RemoteConnectionService;
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState;
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType;
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState;
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsStateKt;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
@@ -37,7 +36,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<RemoteConnectionSettingsState> {
+abstract public class RemoteInstancesListPanel<T extends ExecConnectionSettingsState> extends AddEditDeleteListPanel<T> {
 
     @Serial
     private static final long serialVersionUID = -1932103943790251488L;
@@ -51,7 +50,7 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
         ADD, REMOVE, CHANGE
     }
 
-    public RemoteInstancesListPanel(final Project project, final RemoteConnectionType type, final Icon icon) {
+    public RemoteInstancesListPanel(final Project project, final Icon icon) {
         super(null, Collections.emptyList());
         this.myProject = project;
         this.icon = icon;
@@ -74,32 +73,30 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
         });
     }
 
-    public void setData(final Collection<RemoteConnectionSettingsState> remoteConnectionSettingsList) {
+    public void setData(final Collection<T> remoteConnectionSettingsList) {
         myListModel.clear();
         myListModel.addAll(remoteConnectionSettingsList);
     }
 
-    public Set<RemoteConnectionSettingsState> getData() {
-        final var remoteConnectionSettingsList = new LinkedHashSet<RemoteConnectionSettingsState>();
+    public Set<T> getData() {
+        final var remoteConnectionSettingsList = new LinkedHashSet<T>();
         for (int index = 0; index < myList.getModel().getSize(); index++) {
             remoteConnectionSettingsList.add(myList.getModel().getElementAt(index));
         }
         return remoteConnectionSettingsList;
     }
 
-    abstract protected void onDataChanged(EventType eventType, final Set<RemoteConnectionSettingsState> data);
+    abstract protected void onDataChanged(EventType eventType, final Set<T> data);
 
     @Nullable
     @Override
-    protected RemoteConnectionSettingsState findItemToAdd() {
+    protected T findItemToAdd() {
         return null;
     }
 
     @Override
-    protected void addElement(@Nullable final RemoteConnectionSettingsState itemToAdd) {
+    protected void addElement(@Nullable final T itemToAdd) {
         super.addElement(itemToAdd);
-
-        if (itemToAdd != null) RemoteConnectionService.Companion.getInstance(myProject).addRemoteConnection(itemToAdd);
     }
 
     @Override
@@ -115,9 +112,12 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
                     final boolean isSelected,
                     final boolean cellHasFocus
                 ) {
-                    final var comp = super.getListCellRendererComponent(list, value.toString(), index, isSelected, cellHasFocus);
-                    ((JComponent) comp).setBorder(new JBEmptyBorder(5));
+                    final var name = value instanceof ExecConnectionSettingsState connection
+                        ? ExecConnectionSettingsStateKt.getPresentationName(connection)
+                        : value.toString();
 
+                    final var comp = super.getListCellRendererComponent(list, name, index, isSelected, cellHasFocus);
+                    ((JComponent) comp).setBorder(new JBEmptyBorder(5));
                     setIcon(RemoteInstancesListPanel.this.icon);
                     return comp;
                 }

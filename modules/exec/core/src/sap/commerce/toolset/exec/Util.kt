@@ -18,17 +18,16 @@
 
 package sap.commerce.toolset.exec
 
-
 fun generateUrl(ssl: Boolean, host: String?, port: String?, webroot: String?) = buildString {
-    if (ssl) append("https://")
-    else append("http://")
+    if (ssl) append(RemoteConstants.HTTPS_PROTOCOL)
+    else append(RemoteConstants.HTTP_PROTOCOL)
     append(host?.trim() ?: "")
     port
         ?.takeIf { it.isNotBlank() }
         ?.takeUnless { "443" == it && ssl }
         ?.takeUnless { "80" == it && !ssl }
         ?.let {
-            append(":")
+            append(RemoteConstants.URL_PORT_DELIMITER)
             append(it)
         }
         ?: ""

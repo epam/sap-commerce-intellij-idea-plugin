@@ -23,24 +23,24 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
-import sap.commerce.toolset.exec.RemoteConstants
-import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionScope
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.ui.AbstractRemoteConnectionDialog
+import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
+import sap.commerce.toolset.exec.settings.state.generatedURL
+import sap.commerce.toolset.exec.ui.RemoteConnectionDialog
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
+import sap.commerce.toolset.solr.exec.settings.event.SolrConnectionSettingsListener
+import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.awt.Component
 
 class RemoteSolrConnectionDialog(
     project: Project,
     parentComponent: Component,
-    settings: RemoteConnectionSettingsState
-) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SOLR Instance") {
+    settings: SolrConnectionSettingsState
+) : RemoteConnectionDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings.mutable(), "Remote SOLR Instance") {
 
     override fun applyFields() {
         super.applyFields()
 
-        project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onSolrConnectionModified(settings)
+        project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onModified(mutableSettings.immutable())
     }
 
     override fun panel() = panel {
@@ -49,7 +49,7 @@ class RemoteSolrConnectionDialog(
                 .bold()
             connectionNameTextField = textField()
                 .align(AlignX.FILL)
-                .bindText(settings::displayName.toNonNullableProperty(""))
+                .bindText(mutableSettings::name.toNonNullableProperty(""))
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
@@ -57,15 +57,15 @@ class RemoteSolrConnectionDialog(
             label("Scope:")
                 .comment("Non-personal settings will be stored in the <strong>hybrisProjectSettings.xml</strong> and can be shared via VCS.")
             comboBox(
-                EnumComboBoxModel(RemoteConnectionScope::class.java),
+                EnumComboBoxModel(ExecConnectionScope::class.java),
                 renderer = SimpleListCellRenderer.create("?") { it.title }
             )
-                .bindItem(settings::scope.toNullableProperty(RemoteConnectionScope.PROJECT_PERSONAL))
+                .bindItem(mutableSettings::scope.toNullableProperty(ExecConnectionScope.PROJECT_PERSONAL))
         }.layout(RowLayout.PARENT_GRID)
 
         group("Full URL Preview", false) {
             row {
-                urlPreviewLabel = label(settings.generatedURL)
+                urlPreviewLabel = label(mutableSettings.immutable().generatedURL)
                     .bold()
                     .align(AlignX.FILL)
                     .component
@@ -86,7 +86,7 @@ class RemoteSolrConnectionDialog(
                 hostTextField = textField()
                     .comment("Host name or IP address")
                     .align(AlignX.FILL)
-                    .bindText(settings::hostIP.toNonNullableProperty(RemoteConstants.DEFAULT_HOST_URL))
+                    .bindText(mutableSettings::host)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
@@ -96,7 +96,7 @@ class RemoteSolrConnectionDialog(
                 label("Port:")
                 portTextField = textField()
                     .align(AlignX.FILL)
-                    .bindText(settings::port.toNonNullableProperty(""))
+                    .bindText(mutableSettings::port.toNonNullableProperty(""))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Port should be blank or in a range of 1..65535.") {
                         if (it.text.isNullOrBlank()) return@addValidationRule false
@@ -109,7 +109,7 @@ class RemoteSolrConnectionDialog(
 
             row {
                 sslProtocolCheckBox = checkBox("SSL")
-                    .bindSelected(settings::isSsl)
+                    .bindSelected(mutableSettings::ssl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -118,13 +118,10 @@ class RemoteSolrConnectionDialog(
                 label("Webroot:")
                 webrootTextField = textField()
                     .align(AlignX.FILL)
-                    .bindText(settings::solrWebroot.toNonNullableProperty(""))
+                    .bindText(mutableSettings::webroot)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
-            if (isWindows()) {
-                wslHostConfiguration()
-            }
         }
 
         group("Credentials") {
@@ -148,18 +145,15 @@ class RemoteSolrConnectionDialog(
         }
     }
 
-    override fun createTestSettings() = with(RemoteConnectionSettingsState()) {
-        type = settings.type
-        hostIP = hostTextField.text
-        port = portTextField.text
-        isSsl = sslProtocolCheckBox.isSelected
-        isWsl = isWslCheckBox?.isSelected ?: false
-        solrWebroot = webrootTextField.text
-        credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
-        this
-    }
+    override fun testConnection(): String? = try {
+        val testSettings = SolrConnectionSettingsState(
+            host = hostTextField.text,
+            port = portTextField.text,
+            ssl = sslProtocolCheckBox.isSelected,
+            webroot = webrootTextField.text,
+            credentials = Credentials(usernameTextField.text, String(passwordTextField.password)),
+        )
 
-    override fun testConnection(testSettings: RemoteConnectionSettingsState): String? = try {
         SolrExecutionClient.getInstance(project).listOfCores(testSettings)
 
         null

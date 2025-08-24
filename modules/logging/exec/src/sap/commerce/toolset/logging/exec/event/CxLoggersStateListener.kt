@@ -19,11 +19,11 @@
 package sap.commerce.toolset.logging.exec.event
 
 import com.intellij.util.messages.Topic
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 interface CxLoggersStateListener {
 
-    fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettingsState) = Unit
+    fun onLoggersStateChanged(remoteConnection: HacConnectionSettingsState) = Unit
 
     companion object {
         val TOPIC = Topic(CxLoggersStateListener::class.java)

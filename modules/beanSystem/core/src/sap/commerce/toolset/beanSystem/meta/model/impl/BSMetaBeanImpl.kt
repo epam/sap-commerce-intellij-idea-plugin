@@ -60,7 +60,7 @@ internal class BSMetaBeanImpl(
 }
 
 internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSGlobalMetaBeanSelfMerge<Bean, BSMetaBean>(localMeta),
-    sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean {
+    BSGlobalMetaBean {
 
     override val hints = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, BSMetaHint>()
     override val properties = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, BSMetaProperty>()

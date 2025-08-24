@@ -25,13 +25,13 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.settings.yDeveloperSettings
 

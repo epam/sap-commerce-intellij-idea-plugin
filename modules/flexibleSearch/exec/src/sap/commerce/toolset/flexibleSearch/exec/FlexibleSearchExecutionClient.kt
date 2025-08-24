@@ -27,12 +27,12 @@ import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.exec.ExecutionClient
-import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.http.HacHttpClient
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
 import sap.commerce.toolset.flexibleSearch.exec.context.TableBuilder
+import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 
@@ -48,7 +48,7 @@ class FlexibleSearchExecutionClient(
     )
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): FlexibleSearchExecutionResult {
-        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = HacExecService.getInstance(project).activeConnection
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }

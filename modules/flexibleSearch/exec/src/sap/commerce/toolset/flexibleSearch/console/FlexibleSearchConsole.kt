@@ -27,6 +27,7 @@ import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
+import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
@@ -69,6 +70,8 @@ class FlexibleSearchConsole(
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
+
+    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
 
     companion object {
         @Serial

@@ -38,7 +38,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
     implementation(project(":exec-core"))
-    implementation(project(":exec-ui"))
+    implementation(project(":hac-ui"))
     implementation(project(":console-core"))
     implementation(project(":console-ui"))
     implementation(project(":groovy-exec"))

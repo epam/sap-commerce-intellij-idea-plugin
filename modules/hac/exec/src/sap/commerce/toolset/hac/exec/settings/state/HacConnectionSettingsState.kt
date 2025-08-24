@@ -1,0 +1,98 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.hac.exec.settings.state
+
+import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.credentialStore.Credentials
+import com.intellij.ide.passwordSafe.PasswordSafe
+import kotlinx.serialization.Transient
+import sap.commerce.toolset.exec.RemoteConstants
+import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import java.util.*
+
+data class HacConnectionSettingsState(
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val scope: ExecConnectionScope = ExecConnectionScope.PROJECT_PERSONAL,
+    override val name: String? = null,
+    override val host: String = RemoteConstants.DEFAULT_HOST_URL,
+    override val port: String? = null,
+    override val webroot: String = "",
+    override val ssl: Boolean = true,
+    override val credentials: Credentials? = null,
+    val wsl: Boolean = false,
+    val sslProtocol: String = "TLSv1.2",
+    val sessionCookieName: String = RemoteConstants.DEFAULT_SESSION_COOKIE_NAME,
+) : ExecConnectionSettingsState {
+
+    @Transient
+    private val dynamicCredentials
+        get() = credentials
+            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+    @Transient
+    override val username
+        get() = dynamicCredentials?.userName ?: "admin"
+
+    @Transient
+    override val password
+        get() = dynamicCredentials?.getPasswordAsString() ?: "password"
+
+    override fun mutable() = Mutable(
+        uuid = uuid,
+        scope = scope,
+        name = name,
+        host = host,
+        port = port,
+        webroot = webroot,
+        ssl = ssl,
+        username = username,
+        password = password,
+        wsl = wsl,
+        sslProtocol = sslProtocol,
+        sessionCookieName = sessionCookieName
+    )
+
+    data class Mutable(
+        override var uuid: String = UUID.randomUUID().toString(),
+        override var scope: ExecConnectionScope,
+        override var name: String?,
+        override var host: String,
+        override var port: String?,
+        override var webroot: String,
+        override var ssl: Boolean,
+        override var username: String,
+        override var password: String,
+        var wsl: Boolean,
+        var sslProtocol: String,
+        var sessionCookieName: String,
+    ) : ExecConnectionSettingsState.Mutable {
+        override fun immutable() = HacConnectionSettingsState(
+            uuid = uuid,
+            scope = scope,
+            name = name,
+            host = host,
+            port = port,
+            webroot = webroot,
+            ssl = ssl,
+            wsl = wsl,
+            sslProtocol = sslProtocol,
+            sessionCookieName = sessionCookieName
+        )
+    }
+}

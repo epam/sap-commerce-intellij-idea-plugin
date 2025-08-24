@@ -22,7 +22,6 @@ interface ExecutionContext {
     val executionTitle: String
         get() = "Executing HTTP Call to the remote SAP Commerce instance…"
 
-
     interface Settings {
         fun modifiable(): ModifiableSettings
     }

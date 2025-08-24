@@ -27,7 +27,6 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsoleService
-import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
@@ -71,8 +70,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
             HybrisConsoleService.getInstance(project).activateToolWindow()
         }
-
-        RemoteConnectionService.getInstance(project).fixRemoteConnectionSettings()
     }
 
 }

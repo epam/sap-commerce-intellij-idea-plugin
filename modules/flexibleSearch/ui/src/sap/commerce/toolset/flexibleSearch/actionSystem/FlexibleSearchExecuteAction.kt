@@ -24,7 +24,6 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
@@ -32,6 +31,7 @@ import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.i18n
 
 class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole, FlexibleSearchSplitEditorEx>(

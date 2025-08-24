@@ -31,6 +31,7 @@ import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
+import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
@@ -80,6 +81,8 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
+
+    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
 
     override fun icon(): Icon = HybrisIcons.FlexibleSearch.SQL
 

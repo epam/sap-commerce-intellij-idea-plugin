@@ -21,10 +21,9 @@ package sap.commerce.toolset.flexibleSearch.exec.context
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
-import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.ExecutionContext
-import sap.commerce.toolset.exec.http.HacHttpClient
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.hac.HacConstants
+import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.settings.state.TransactionMode
 
 data class FlexibleSearchExecutionContext(
@@ -32,7 +31,7 @@ data class FlexibleSearchExecutionContext(
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
     private val settings: Settings,
-    val timeout: Int = HacHttpClient.DEFAULT_HAC_TIMEOUT,
+    val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
 ) : ExecutionContext {
 
     override val executionTitle: String
@@ -87,8 +86,8 @@ data class FlexibleSearchExecutionContext(
         // Slow operation, do not invoke on EDT
         fun defaultSettings(project: Project) = DEFAULT_SETTINGS.modifiable()
             .apply {
-                user = RemoteConnectionService.getInstance(project)
-                    .getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+                user = HacExecService.getInstance(project)
+                    .activeConnection
                     .username
             }
             .immutable()

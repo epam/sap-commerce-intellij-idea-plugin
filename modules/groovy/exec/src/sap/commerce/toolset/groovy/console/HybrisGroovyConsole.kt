@@ -25,9 +25,10 @@ import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.exec.http.HacHttpClient
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.hac.HacConstants
+import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
@@ -48,7 +49,7 @@ class HybrisGroovyConsole(
                 timeoutSpinner = spinner(1..3600, 10)
                     .label("Timeout (seconds):")
                     .component
-                    .apply { value = HacHttpClient.DEFAULT_HAC_TIMEOUT / 1000 }
+                    .apply { value = HacConstants.DEFAULT_TIMEOUT / 1000 }
             }
         }
 
@@ -68,6 +69,8 @@ class HybrisGroovyConsole(
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
+
+    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
 
     companion object {
         @Serial

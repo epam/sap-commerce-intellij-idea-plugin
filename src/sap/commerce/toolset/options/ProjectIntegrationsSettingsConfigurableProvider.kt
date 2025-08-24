@@ -32,13 +32,16 @@ import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
-import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
-import sap.commerce.toolset.exec.ui.RemoteHacInstancesListPanel
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.presentationName
 import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
+import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.ui.RemoteHacInstancesListPanel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.solr.exec.SolrExecService
+import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import sap.commerce.toolset.solr.ui.RemoteSolrInstancesListPanel
 import javax.swing.DefaultComboBoxModel
 
@@ -55,26 +58,26 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
 
         @Volatile
         private var isReset = false
-        private val currentActiveHybrisConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        private val currentActiveSolrConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
+        private val currentActiveHybrisConnection = HacExecService.getInstance(project).activeConnection
+        private val currentActiveSolrConnection = SolrExecService.getInstance(project).activeConnection
 
         private lateinit var activeCCv2SubscriptionComboBox: ComboBox<CCv2Subscription>
-        private val activeHacServerModel = DefaultComboBoxModel<RemoteConnectionSettingsState>()
-        private val activeSolrServerModel = DefaultComboBoxModel<RemoteConnectionSettingsState>()
-        private val hacInstances = RemoteHacInstancesListPanel(project) { eventType, data ->
+        private val activeHacServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
+        private val activeSolrServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
+        private val hacInstances = RemoteHacInstancesListPanel(project) { eventType, connections ->
             if (!isReset) {
                 if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    RemoteConnectionService.getInstance(project).saveRemoteConnections(RemoteConnectionType.Hybris, data)
+                    HacExecService.getInstance(project).saveConnections(connections)
                 }
-                updateModel(activeHacServerModel, activeHacServerModel.selectedItem as RemoteConnectionSettingsState?, data)
+                updateModel(activeHacServerModel, activeHacServerModel.selectedItem as HacConnectionSettingsState?, connections)
             }
         }
 
-        private val solrInstances = RemoteSolrInstancesListPanel(project) { eventType, data ->
+        private val solrInstances = RemoteSolrInstancesListPanel(project) { eventType, connections ->
             if (!isReset) {
                 if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    RemoteConnectionService.getInstance(project).saveRemoteConnections(RemoteConnectionType.Hybris, data)
-                    updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as RemoteConnectionSettingsState?, data)
+                    SolrExecService.getInstance(project).saveConnections(connections)
+                    updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as SolrConnectionSettingsState?, connections)
                 }
             }
         }
@@ -120,16 +123,16 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
                     icon(HybrisIcons.Y.REMOTE_GREEN)
                     comboBox(
                         activeHacServerModel,
-                        renderer = SimpleListCellRenderer.create("?") { it.toString() }
+                        renderer = SimpleListCellRenderer.create("?") { it.presentationName }
                     )
                         .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
                         .onApply {
-                            (activeHacServerModel.selectedItem as RemoteConnectionSettingsState?)
-                                ?.let { settings -> RemoteConnectionService.getInstance(project).setActiveRemoteConnectionSettings(settings) }
+                            (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                                ?.let { settings -> HacExecService.getInstance(project).activeConnection = settings }
                         }
                         .onIsModified {
-                            (activeHacServerModel.selectedItem as RemoteConnectionSettingsState?)
-                                ?.let { it.uuid != RemoteConnectionService.getInstance(project).getActiveRemoteConnectionId(it.type) }
+                            (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                                ?.let { it.uuid != HacExecService.getInstance(project).activeConnection.uuid }
                                 ?: false
                         }
                         .align(AlignX.FILL)
@@ -139,16 +142,16 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
                     icon(HybrisIcons.Console.SOLR)
                     comboBox(
                         activeSolrServerModel,
-                        renderer = SimpleListCellRenderer.create("?") { it.toString() }
+                        renderer = SimpleListCellRenderer.create("?") { it.presentationName }
                     )
                         .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
                         .onApply {
-                            (activeSolrServerModel.selectedItem as RemoteConnectionSettingsState?)
-                                ?.let { settings -> RemoteConnectionService.getInstance(project).setActiveRemoteConnectionSettings(settings) }
+                            (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
+                                ?.let { settings -> SolrExecService.getInstance(project).activeConnection = settings }
                         }
                         .onIsModified {
-                            (activeSolrServerModel.selectedItem as RemoteConnectionSettingsState?)
-                                ?.let { it.uuid != RemoteConnectionService.getInstance(project).getActiveRemoteConnectionId(it.type) }
+                            (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
+                                ?.let { it.uuid != SolrExecService.getInstance(project).activeConnection.uuid }
                                 ?: false
                         }
                         .align(AlignX.FILL)
@@ -175,8 +178,8 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
 
             activeCCv2SubscriptionComboBox.selectedItem = ccv2DeveloperSettings.getActiveCCv2Subscription()
 
-            hacInstances.setData(RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris))
-            solrInstances.setData(RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.SOLR))
+            hacInstances.setData(HacExecService.getInstance(project).connections)
+            solrInstances.setData(SolrExecService.getInstance(project).connections)
 
             updateModel(activeHacServerModel, currentActiveHybrisConnection, hacInstances.data)
             updateModel(activeSolrServerModel, currentActiveSolrConnection, solrInstances.data)
@@ -184,10 +187,10 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
             isReset = false
         }
 
-        private fun updateModel(
-            model: DefaultComboBoxModel<RemoteConnectionSettingsState>,
-            activeConnection: RemoteConnectionSettingsState?,
-            connectionSettings: Collection<RemoteConnectionSettingsState>
+        private fun <T : ExecConnectionSettingsState> updateModel(
+            model: DefaultComboBoxModel<T>,
+            activeConnection: T?,
+            connectionSettings: Collection<T>
         ) {
             model.removeAllElements()
             model.addAll(connectionSettings)

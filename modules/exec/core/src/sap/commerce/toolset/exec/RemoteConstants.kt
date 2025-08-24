@@ -20,7 +20,6 @@ package sap.commerce.toolset.exec
 
 object RemoteConstants {
     const val DEFAULT_HOST_URL = "localhost"
-    const val DEFAULT_SSL_PROTOCOL = "TLSv1.2"
     const val DEFAULT_SESSION_COOKIE_NAME = "JSESSIONID"
 
     const val HTTP_PROTOCOL = "http://"

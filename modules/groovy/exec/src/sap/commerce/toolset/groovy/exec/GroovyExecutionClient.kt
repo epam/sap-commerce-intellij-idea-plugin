@@ -32,12 +32,12 @@ import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.DefaultExecutionClient
-import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.http.HacHttpClient
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
+import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -52,7 +52,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         }
 
     override suspend fun execute(context: GroovyExecutionContext): DefaultExecutionResult {
-        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = HacExecService.getInstance(project).activeConnection
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }

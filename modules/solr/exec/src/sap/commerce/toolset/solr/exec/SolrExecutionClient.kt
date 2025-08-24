@@ -35,12 +35,11 @@ import org.apache.solr.client.solrj.response.CoreAdminResponse
 import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
 import sap.commerce.toolset.exec.DefaultExecutionClient
-import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecutionContext
+import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.io.Serial
 
 @Service(Service.Level.PROJECT)
@@ -48,7 +47,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
 
     fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
-    fun listOfCores(solrConnectionSettings: RemoteConnectionSettingsState) = coresData(solrConnectionSettings)
+    fun listOfCores(solrConnectionSettings: SolrConnectionSettingsState) = coresData(solrConnectionSettings)
         .map { it.core }
         .toTypedArray()
 
@@ -62,20 +61,18 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
             .runCatching { request(queryRequest) }
             .map { namedList ->
                 DefaultExecutionResult(
-                    remoteConnectionType = RemoteConnectionType.SOLR,
                     output = (namedList["response"] as String).takeIf { it.isNotBlank() }
                 )
             }
             .getOrElse {
                 DefaultExecutionResult(
-                    remoteConnectionType = RemoteConnectionType.SOLR,
                     errorMessage = it.message,
                     statusCode = HttpStatus.SC_BAD_GATEWAY
                 )
             }
     }
 
-    private fun coresData(settings: RemoteConnectionSettingsState) = CoreAdminRequest()
+    private fun coresData(settings: SolrConnectionSettingsState) = CoreAdminRequest()
         .apply {
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
             setBasicAuthCredentials(settings.username, settings.password)
@@ -102,7 +99,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
 
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
 
-    private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettingsState) = QueryRequest(solrQuery).apply {
+    private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: SolrConnectionSettingsState) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)
         method = SolrRequest.METHOD.POST
         // https://issues.apache.org/jira/browse/SOLR-5530
@@ -117,7 +114,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
     }
 
     // active or default
-    private fun solrConnectionSettings(project: Project) = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
+    private fun solrConnectionSettings(project: Project) = SolrExecService.getInstance(project).activeConnection
 
     companion object {
         @Serial

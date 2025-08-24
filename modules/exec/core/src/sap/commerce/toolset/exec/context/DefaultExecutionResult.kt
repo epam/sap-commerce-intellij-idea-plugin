@@ -19,10 +19,8 @@
 package sap.commerce.toolset.exec.context
 
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 
 data class DefaultExecutionResult(
-    override val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,
     val statusCode: Int = HttpStatus.SC_OK,
     override val result: String? = null,
     override val output: String? = null,

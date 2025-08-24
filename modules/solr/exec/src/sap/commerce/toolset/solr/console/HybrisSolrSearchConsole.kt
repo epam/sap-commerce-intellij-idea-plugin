@@ -40,8 +40,9 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.solr.exec.SolrExecService
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecutionContext
@@ -97,6 +98,8 @@ class HybrisSolrSearchConsole(
         this.setInputText("*:*")
     }
 
+    override fun activeConnection(): ExecConnectionSettingsState = SolrExecService.getInstance(project).activeConnection
+
     override fun onSelection() {
         val selectedCore = coresComboBox.selectedItem.asSafely<SolrCoreData>()
         reloadCores(selectedCore)
@@ -105,7 +108,7 @@ class HybrisSolrSearchConsole(
     override fun printResult(result: ConsoleAwareExecutionResult) {
         clear()
 
-        printHost(RemoteConnectionType.SOLR, result.replicaContext)
+        printHost(result.replicaContext)
 
         when {
             result.hasError -> ConsoleViewUtil.printAsFileType(this, result.errorMessage!!, PlainTextFileType.INSTANCE)

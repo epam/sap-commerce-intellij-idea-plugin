@@ -27,7 +27,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.acl.AclLanguage
 import sap.commerce.toolset.acl.editor.AclSplitEditorEx
 import sap.commerce.toolset.acl.editor.aclSplitEditor
-import sap.commerce.toolset.exec.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings

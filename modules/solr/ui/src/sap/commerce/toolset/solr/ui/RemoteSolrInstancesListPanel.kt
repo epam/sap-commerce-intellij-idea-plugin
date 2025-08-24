@@ -20,34 +20,34 @@ package sap.commerce.toolset.solr.ui
 
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
+import sap.commerce.toolset.solr.exec.SolrExecService
+import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.io.Serial
 
 class RemoteSolrInstancesListPanel(
     project: Project,
-    private val onDataChanged: (EventType, Set<RemoteConnectionSettingsState>) -> Unit = { _, _ -> }
-) : RemoteInstancesListPanel(project, RemoteConnectionType.SOLR, HybrisIcons.Console.SOLR) {
+    private val onDataChanged: (EventType, Set<SolrConnectionSettingsState>) -> Unit = { _, _ -> }
+) : RemoteInstancesListPanel<SolrConnectionSettingsState>(project, HybrisIcons.Console.SOLR) {
 
-    override fun editSelectedItem(item: RemoteConnectionSettingsState): RemoteConnectionSettingsState? {
+    override fun editSelectedItem(item: SolrConnectionSettingsState): SolrConnectionSettingsState? {
         val ok = RemoteSolrConnectionDialog(myProject, this, item).showAndGet()
         return if (ok) item
         else null
     }
 
     public override fun addItem() {
-        val item = RemoteConnectionService.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.SOLR)
+        val item = SolrExecService.getInstance(myProject).defaultConnectionSettings()
         val dialog = RemoteSolrConnectionDialog(myProject, this, item)
         if (dialog.showAndGet()) {
             addElement(item)
+            SolrExecService.getInstance(myProject).addConnection(item)
         }
     }
 
     override fun onDataChanged(
         eventType: EventType,
-        data: Set<RemoteConnectionSettingsState>
+        data: Set<SolrConnectionSettingsState>
     ) = onDataChanged.invoke(eventType, data)
 
     companion object {

@@ -18,10 +18,7 @@
 
 package sap.commerce.toolset.exec.context
 
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
-
 interface ConsoleAwareExecutionResult : ExecutionResult {
-    val remoteConnectionType: RemoteConnectionType
     val result: String?
     val output: String?
     val replicaContext: ReplicaContext?

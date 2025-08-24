@@ -22,7 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNodeParameters
 import javax.swing.tree.TreePath
@@ -31,7 +31,7 @@ class LoggersOptionsModel(
     private val rootTreeNode: LoggersOptionsTreeNode
 ) : com.intellij.ui.tree.BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
 
-    private var connections: Map<RemoteConnectionSettingsState, Boolean>? = null
+    private var connections: Map<HacConnectionSettingsState, Boolean>? = null
     private val nodes = mutableMapOf<LoggersNode, LoggersOptionsTreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)
 
@@ -49,7 +49,7 @@ class LoggersOptionsModel(
 
     override fun getInvoker() = myInvoker
 
-    fun reload(connections: Map<RemoteConnectionSettingsState, Boolean>) {
+    fun reload(connections: Map<HacConnectionSettingsState, Boolean>) {
         this.connections = connections
 
         treeStructureChanged(TreePath(root), null, null)

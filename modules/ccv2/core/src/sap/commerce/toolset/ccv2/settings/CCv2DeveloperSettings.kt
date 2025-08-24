@@ -22,7 +22,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.ccv2.settings.state.DeveloperSettingsState
+import sap.commerce.toolset.ccv2.settings.state.CCv2DeveloperSettingsState
 import sap.commerce.toolset.ccv2.settings.state.SUser
 
 @State(
@@ -30,7 +30,7 @@ import sap.commerce.toolset.ccv2.settings.state.SUser
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
-class CCv2DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
+class CCv2DeveloperSettings : SerializablePersistentStateComponent<CCv2DeveloperSettingsState>(CCv2DeveloperSettingsState()), ModificationTracker {
 
     var activeCCv2SubscriptionID
         get() = state.activeCCv2SubscriptionID

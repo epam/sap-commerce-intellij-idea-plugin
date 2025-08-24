@@ -26,10 +26,9 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
@@ -64,20 +63,17 @@ class LoggersSplitView(
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
-        val activeConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val activeConnection = HacExecService.getInstance(project).activeConnection
         updateTree(activeConnection)
 
         with(project.messageBus.connect(this)) {
-            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) {
-                    updateTree(remoteConnection)
-                }
-
-                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = tree.update()
+            subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
+                override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = updateTree(connection)
+                override fun onModified(connection: HacConnectionSettingsState) = tree.update()
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
-                override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettingsState) {
+                override fun onLoggersStateChanged(remoteConnection: HacConnectionSettingsState) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
                         ?.userObject
@@ -89,9 +85,8 @@ class LoggersSplitView(
         }
     }
 
-    private fun updateTree(settings: RemoteConnectionSettingsState) {
-        val connections = RemoteConnectionService.getInstance(project)
-            .getRemoteConnections(RemoteConnectionType.Hybris)
+    private fun updateTree(settings: HacConnectionSettingsState) {
+        val connections = HacExecService.getInstance(project).connections
             .associateWith { (it == settings) }
         tree.update(connections)
     }

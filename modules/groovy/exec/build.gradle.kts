@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":exec-core"))
     implementation(project(":console-core"))
+    implementation(project(":hac-exec"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

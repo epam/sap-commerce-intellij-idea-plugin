@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":console-core"))
     implementation(project(":flexibleSearch-exec"))
     implementation(project(":polyglotQuery-core"))
+    implementation(project(":hac-exec"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

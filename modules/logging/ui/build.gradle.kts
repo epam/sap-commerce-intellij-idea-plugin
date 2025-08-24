@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":logging-core"))
     implementation(project(":logging-exec"))
     implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

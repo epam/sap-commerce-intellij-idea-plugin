@@ -32,11 +32,11 @@ import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.ui.AnimatedIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
 import sap.commerce.toolset.exec.context.ExecutionContext
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.generatedURL
 import java.io.Serial
 import javax.swing.Icon
 
@@ -70,6 +70,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     abstract fun title(): String
     abstract fun tip(): String
     abstract fun execute()
+    abstract fun activeConnection(): ExecConnectionSettingsState?
 
     open fun icon(): Icon? = language.associatedFileType?.icon
     open fun disabledIcon(): Icon? = AnimatedIcon.Default.INSTANCE
@@ -123,14 +124,14 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     protected open fun printResult(result: ConsoleAwareExecutionResult) {
-        printHost(result.remoteConnectionType, result.replicaContext)
+        printHost(result.replicaContext)
         printPlainText(result)
     }
 
-    protected fun printHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
-        val activeConnectionSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(remoteConnectionType)
+    protected fun printHost(replicaContext: ReplicaContext?) {
+        val activeConnectionSettings = activeConnection() ?: return
         print("[HOST] ", ConsoleViewContentType.SYSTEM_OUTPUT)
-        activeConnectionSettings.displayName
+        activeConnectionSettings.name
             ?.let { name -> print("($name) ", ConsoleViewContentType.LOG_INFO_OUTPUT) }
         replicaContext
             ?.replicaId

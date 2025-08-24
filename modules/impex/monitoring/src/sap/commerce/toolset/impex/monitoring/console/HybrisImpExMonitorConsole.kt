@@ -30,6 +30,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
@@ -105,6 +106,8 @@ class HybrisImpExMonitorConsole(
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
+
+    override fun activeConnection(): ExecConnectionSettingsState? = null
 
     companion object {
         @Serial

@@ -29,10 +29,10 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import sap.commerce.toolset.exec.DefaultExecutionClient
-import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.http.HacHttpClient
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.settings.state.generatedURL
+import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import java.io.IOException
 import java.io.Serial
@@ -42,7 +42,7 @@ import java.nio.charset.StandardCharsets
 class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExExecutionContext): DefaultExecutionResult {
-        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = HacExecService.getInstance(project).activeConnection
         val actionUrl = when (context.executionMode) {
             ImpExExecutionContext.ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
             ImpExExecutionContext.ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"

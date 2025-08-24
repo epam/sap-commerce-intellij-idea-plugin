@@ -65,8 +65,8 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
 
     private fun processPlatformModulesDependencies(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        platformModule: com.intellij.openapi.module.Module,
-        allModules: Map<String, com.intellij.openapi.module.Module>,
+        platformModule: Module,
+        allModules: Map<String, Module>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val platformRootModel = modifiableModelsProvider.getModifiableRootModel(platformModule)

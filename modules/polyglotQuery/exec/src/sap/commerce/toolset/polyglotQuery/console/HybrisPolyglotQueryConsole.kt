@@ -27,6 +27,7 @@ import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
+import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import java.awt.BorderLayout
@@ -83,6 +84,8 @@ class HybrisPolyglotQueryConsole(
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
+
+    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
 
     companion object {
         @Serial

@@ -24,7 +24,7 @@ import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersRootNode
 import java.io.Serial
@@ -52,7 +52,7 @@ class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update(connections: Map<RemoteConnectionSettingsState, Boolean>) = myTreeModel.reload(connections)
+    fun update(connections: Map<HacConnectionSettingsState, Boolean>) = myTreeModel.reload(connections)
     fun update() = myTreeModel.reload()
 
     companion object {
