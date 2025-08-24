@@ -18,7 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
+import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovyHACExceptionHandling
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
@@ -26,6 +28,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionRe
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext.Companion.auto
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
@@ -160,14 +163,16 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             template = if (scriptTemplatePath.startsWith("file://")) {
                 Files.readString(Path.of(scriptTemplatePath.substring("file://".length)), StandardCharsets.UTF_8)
             } else {
-                getScriptAsResource(scriptTemplatePath)
+                // getScriptAsResource(scriptTemplatePath)
+                ExtensionResource.fromFqn(scriptTemplatePath)?.content
             }
-        } catch (e: IOException) {
-            statusBar.setInfo(String.format("Can't find custom script template %s [%s]", scriptTemplatePath, e.message))
+        } catch (ex: IOException) {
+            Notifications.create(NotificationType.ERROR, "Can't find custom script template $scriptTemplatePath, ${ex.message}").notify(project)
         }
 
         return if (template == null) {
             statusBar.setInfo("Can't load custom script template $scriptTemplatePath")
+            Notifications.create(NotificationType.ERROR, "Script template $scriptTemplatePath not found").notify(project)
             script
         } else {
             val encodedScript = Base64.getEncoder().encodeToString(script.toByteArray(StandardCharsets.UTF_8))
@@ -175,31 +180,30 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
                 .replace("\$hacEncodedScript", encodedScript)
                 .replace("\$hacSpringWebContext", webContext)
                 .replace("\$exceptionHandling", exceptionHandling.name)
-
         }
     }
 
-    @Throws(IOException::class)
-    fun getScriptAsResource(path: String): String? {
-        val templateStream = javaClass.getResourceAsStream(path)
-        var template: String? = null
-
-        if (templateStream != null) {
-            BufferedReader(InputStreamReader(templateStream, StandardCharsets.UTF_8)).use { reader ->
-                template = reader.lines().collect(
-                    Collectors.joining("\n")
-                )
-            }
-        }
-
-        return template
-    }
+    // @Throws(IOException::class)
+    // fun getScriptAsResource(path: String): String? {
+    //     val templateStream = javaClass.getResourceAsStream(path)
+    //     var template: String? = null
+    //
+    //     if (templateStream != null) {
+    //         BufferedReader(InputStreamReader(templateStream, StandardCharsets.UTF_8)).use { reader ->
+    //             template = reader.lines().collect(
+    //                 Collectors.joining("\n")
+    //             )
+    //         }
+    //     }
+    //
+    //     return template
+    // }
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = 3297887080603991051L
         val KEY_REMOTE_CONNECTION_CONTEXT = Key.create<RemoteConnectionContext>("hybris.http.remote.connection.context")
-        const val GHAC_SCRIPT_TEMPLATE_GROOVY: String = "/ghac/scriptTemplate.groovy"
+        // const val GHAC_SCRIPT_TEMPLATE_GROOVY: String = "/ghac/scriptTemplate.groovy"
 
         fun getInstance(project: Project): GroovyExecutionClient = project.service()
     }

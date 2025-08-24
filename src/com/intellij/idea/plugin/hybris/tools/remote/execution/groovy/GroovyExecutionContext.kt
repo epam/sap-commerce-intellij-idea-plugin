@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
 import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovyHACExceptionHandling
+import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovySettingsState
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient

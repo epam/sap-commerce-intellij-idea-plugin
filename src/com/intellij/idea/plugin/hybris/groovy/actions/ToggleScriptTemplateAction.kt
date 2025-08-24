@@ -29,14 +29,14 @@ class ToggleScriptTemplateAction : ToggleAction(null, null, AllIcons.Actions.Min
     override fun isSelected(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
         val groovySettings = DeveloperSettings.getInstance(project).groovySettings.mutable()
-        e.presentation.text = if (!groovySettings.enableScriptTemplate) "Enable Script Template" else "Disable Script Template"
-        return groovySettings.enableScriptTemplate
+        e.presentation.text = if (!groovySettings.useScriptTemplate) "Enable Script Template" else "Disable Script Template"
+        return groovySettings.useScriptTemplate
     }
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         with(DeveloperSettings.getInstance(project)) {
-            groovySettings = groovySettings.copy(enableScriptTemplate = state)
+            groovySettings = groovySettings.copy(useScriptTemplate = state)
         }
     }
 

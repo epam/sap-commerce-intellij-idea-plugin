@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
@@ -61,7 +62,7 @@ class GroovyChooseWebContextActionGroup : DefaultActionGroup({ "Choose Spring We
         val presentation = e.presentation
 
         val groovySettings = DeveloperSettings.getInstance(project).state.groovySettings
-        if (!groovySettings.enableScriptTemplate) {
+        if (!groovySettings.useScriptTemplate) {
             presentation.isVisible = false
             return
         } else {
@@ -103,7 +104,11 @@ class ReloadWebContextAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val executionClient = GroovyExecutionClient.getInstance(project)
-        val context = GroovyExecutionContext(content = "springWeb.keySet().join('|')", scriptTemplate = GroovyExecutionClient.GHAC_SCRIPT_TEMPLATE_GROOVY)
+        val groovySettings = DeveloperSettings.getInstance(project).groovySettings
+        val context = GroovyExecutionContext(
+            content = "springWeb.keySet().join('|')",
+            timeout = groovySettings.timeOut * 1000,
+            scriptTemplate = ExtensionResource.DEFAULT_SCRIP_TEMPLATE.fqn)
         executionClient.execute(
             context = context,
             resultCallback = { _, result ->

@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovyHACExceptionHandling
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -83,7 +82,7 @@ class ProjectGroovySettingsConfigurableProvider(private val project: Project) : 
             group("Execution") {
                 row {
                     enableScriptTemplateCheckBox = checkBox("Enable script template")
-                        .bindSelected(mutableSettings::enableScriptTemplate)
+                        .bindSelected(mutableSettings::useScriptTemplate)
                         .comment("Enable script template for execution of Groovy scripts in hAC Groovy console.")
                         .enabledIf(enableActionToolbar.selected)
                         .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }

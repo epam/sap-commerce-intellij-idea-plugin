@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
 import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
@@ -32,6 +33,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.jetbrains.rd.framework.base.deepClonePolymorphic
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 
@@ -51,16 +53,17 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val prefix = fileName ?: "script"
 
         val groovySettings = DeveloperSettings.getInstance(project).groovySettings
+
         val executionClient = GroovyExecutionClient.getInstance(project)
 
-        val scriptTemplate = groovySettings.enableScriptTemplate
-            .takeIf { it }
-            ?.let {
-                groovySettings.customScriptTemplatePath
-                    .takeIf { !it.isEmpty() }
-                    ?.let { "file://$it" }
-                ?: GroovyExecutionClient.GHAC_SCRIPT_TEMPLATE_GROOVY
-            }
+        val scriptTemplate = groovySettings.useScriptTemplate
+             .takeIf { it }
+             ?.let {
+                 groovySettings.customScriptTemplatePath
+                     .takeIf { !it.isEmpty() }
+                     ?.let { "file://$it" }
+                 ?: ExtensionResource.DEFAULT_SCRIP_TEMPLATE.fqn
+             }
 
         val connectionContext = GroovyExecutionClient.getInstance(project).connectionContext
 
@@ -70,6 +73,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                     executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = groovySettings.txMode,
+                    timeout = groovySettings.timeOut * 1000,
                     webContext = connectionContext.activeWebContext,
                     scriptTemplate = scriptTemplate,
                     exceptionHandling = groovySettings.exceptionHandling,
@@ -82,6 +86,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                     executionTitle = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = groovySettings.txMode,
+                    timeout = groovySettings.timeOut * 1000,
                     webContext = connectionContext.activeWebContext,
                     scriptTemplate = scriptTemplate,
                     exceptionHandling = groovySettings.exceptionHandling,
