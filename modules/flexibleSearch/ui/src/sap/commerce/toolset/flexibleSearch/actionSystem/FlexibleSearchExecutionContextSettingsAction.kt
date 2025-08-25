@@ -29,7 +29,7 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.ui.GroupedComboBoxItem
@@ -37,10 +37,10 @@ import sap.commerce.toolset.ui.GroupedComboBoxModel
 import sap.commerce.toolset.ui.GroupedComboBoxRenderer
 import javax.swing.LayoutFocusTraversalPolicy
 
-class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecutionContext.ModifiableSettings>() {
+class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecContext.ModifiableSettings>() {
 
     private val defaultPreviewSettings by lazy {
-        FlexibleSearchExecutionContext.DEFAULT_SETTINGS.modifiable()
+        FlexibleSearchExecContext.DEFAULT_SETTINGS.modifiable()
             .apply { user = "from active connection" }
             .immutable()
     }
@@ -55,19 +55,19 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                 """.trimIndent()
         }
 
-    override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecutionContext.ModifiableSettings {
+    override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecContext.ModifiableSettings {
         val settings = e.flexibleSearchExecutionContextSettings {
-            FlexibleSearchExecutionContext.defaultSettings(project)
+            FlexibleSearchExecContext.defaultSettings(project)
         }
 
         return settings.modifiable()
     }
 
-    override fun applySettings(editor: Editor, settings: FlexibleSearchExecutionContext.ModifiableSettings) {
-        editor.putUserData(FlexibleSearchExecutionContext.KEY_EXECUTION_SETTINGS, settings.immutable())
+    override fun applySettings(editor: Editor, settings: FlexibleSearchExecContext.ModifiableSettings) {
+        editor.putUserData(FlexibleSearchExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
-    override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel {
+    override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecContext.ModifiableSettings): DialogPanel {
         val dataSources = application.runReadAction<Collection<String>> {
             PropertyService.getInstance(project)
                 .findProperty(HybrisConstants.PROPERTY_INSTALLED_TENANTS)
@@ -75,7 +75,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                 ?: emptyList()
         }
             .toSortedSet()
-            .apply { add(FlexibleSearchExecutionContext.DEFAULT_SETTINGS.dataSource) }
+            .apply { add(FlexibleSearchExecContext.DEFAULT_SETTINGS.dataSource) }
 
 
         return panel {

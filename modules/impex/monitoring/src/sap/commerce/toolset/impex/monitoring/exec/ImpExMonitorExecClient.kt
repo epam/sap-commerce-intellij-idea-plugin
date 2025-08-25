@@ -23,9 +23,9 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.exec.DefaultExecutionClient
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecutionContext
+import sap.commerce.toolset.exec.DefaultExecClient
+import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecContext
 import java.io.File
 import java.io.Serial
 import java.time.Instant
@@ -33,9 +33,9 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Service(Service.Level.PROJECT)
-class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExMonitorExecutionContext>(project, coroutineScope) {
+class ImpExMonitorExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<ImpExMonitorExecContext>(project, coroutineScope) {
 
-    override suspend fun execute(context: ImpExMonitorExecutionContext): DefaultExecutionResult {
+    override suspend fun execute(context: ImpExMonitorExecContext): DefaultExecResult {
         val unit = context.timeOption.unit
         val duration = context.timeOption.value.toLong()
         val minutesAgo = LocalDateTime.now().minusMinutes(unit.toMinutes(duration))
@@ -52,7 +52,7 @@ class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineSco
                 out.append("\n${it.readText()}\n")
             }
 
-        return DefaultExecutionResult(
+        return DefaultExecResult(
             statusCode = HttpStatus.SC_OK,
             output = out.toString().takeIf { it.isNotBlank() }
         )
@@ -66,7 +66,7 @@ class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineSco
         @Serial
         private const val serialVersionUID: Long = -6318486147370249181L
 
-        fun getInstance(project: Project): ImpExMonitorExecutionClient = project.service()
+        fun getInstance(project: Project): ImpExMonitorExecClient = project.service()
     }
 
 }

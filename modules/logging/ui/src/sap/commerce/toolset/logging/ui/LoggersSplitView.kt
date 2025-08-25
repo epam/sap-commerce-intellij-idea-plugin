@@ -26,7 +26,7 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLoggerAccess
@@ -63,7 +63,7 @@ class LoggersSplitView(
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
-        val activeConnection = HacExecService.getInstance(project).activeConnection
+        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
         updateTree(activeConnection)
 
         with(project.messageBus.connect(this)) {
@@ -86,7 +86,7 @@ class LoggersSplitView(
     }
 
     private fun updateTree(settings: HacConnectionSettingsState) {
-        val connections = HacExecService.getInstance(project).connections
+        val connections = HacExecConnectionService.getInstance(project).connections
             .associateWith { (it == settings) }
         tree.update(connections)
     }

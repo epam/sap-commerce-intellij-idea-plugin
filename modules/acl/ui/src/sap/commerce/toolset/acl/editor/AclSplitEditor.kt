@@ -33,8 +33,8 @@ import com.intellij.pom.Navigatable
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -78,7 +78,7 @@ class AclSplitEditorEx(override val textEditor: TextEditor, private val project:
         add(verticalSplitter, BorderLayout.CENTER)
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = AclInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+    fun renderExecutionResult(result: DefaultExecResult) = AclInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view
@@ -86,7 +86,7 @@ class AclSplitEditorEx(override val textEditor: TextEditor, private val project:
         }
     }
 
-    fun showLoader(context: ImpExExecutionContext) {
+    fun showLoader(context: ImpExExecContext) {
         inEditorResultsView = AclInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }
 

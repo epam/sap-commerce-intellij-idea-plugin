@@ -22,7 +22,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.ReplicaSelectionMode
 
 abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode: ReplicaSelectionMode) : CheckboxAction(
@@ -42,7 +42,7 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
     override fun isSelected(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
 
-        return GroovyExecutionClient.getInstance(project)
+        return GroovyExecClient.getInstance(project)
             .connectionContext
             .replicaSelectionMode == replicaSelectionMode
     }

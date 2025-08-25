@@ -20,11 +20,11 @@ package sap.commerce.toolset.exec.context
 
 import org.apache.http.HttpStatus
 
-data class DefaultExecutionResult(
+data class DefaultExecResult(
     val statusCode: Int = HttpStatus.SC_OK,
     override val result: String? = null,
     override val output: String? = null,
     override val replicaContext: ReplicaContext? = null,
     override val errorMessage: String? = null,
     override val errorDetailMessage: String? = null,
-) : ConsoleAwareExecutionResult
+) : ConsoleAwareExecResult

@@ -16,19 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.console
+package sap.commerce.toolset.exec.context
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.project.Project
-import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.exec.context.ExecContext
+interface ExecContext {
+    val executionTitle: String
+        get() = "Executing HTTP Call to the remote SAP Commerce instance…"
 
-interface HybrisConsoleProvider<T : HybrisConsole<out ExecContext>> {
+    interface Settings {
+        fun modifiable(): ModifiableSettings
+    }
 
-    fun console(project : Project, coroutineScope: CoroutineScope): T?
-
-    companion object {
-        val EP = ExtensionPointName
-            .create<HybrisConsoleProvider<HybrisConsole<out ExecContext>>>("sap.commerce.toolset.consoleProvider")
+    interface ModifiableSettings {
+        fun immutable(): Settings
     }
 }

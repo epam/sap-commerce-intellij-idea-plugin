@@ -23,7 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.exec.ExecService
+import sap.commerce.toolset.exec.ExecConnectionService
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.solr.exec.settings.SolrExecDeveloperSettings
 import sap.commerce.toolset.solr.exec.settings.SolrExecProjectSettings
@@ -31,7 +31,7 @@ import sap.commerce.toolset.solr.exec.settings.event.SolrConnectionSettingsListe
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 
 @Service(Service.Level.PROJECT)
-class SolrExecService(private val project: Project) : ExecService<SolrConnectionSettingsState>() {
+class SolrExecConnectionService(private val project: Project) : ExecConnectionService<SolrConnectionSettingsState>() {
 
     override var activeConnection: SolrConnectionSettingsState
         get() = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
@@ -107,7 +107,7 @@ class SolrExecService(private val project: Project) : ExecService<SolrConnection
     }
 
     companion object {
-        fun getInstance(project: Project): SolrExecService = project.service()
+        fun getInstance(project: Project): SolrExecConnectionService = project.service()
     }
 
 }

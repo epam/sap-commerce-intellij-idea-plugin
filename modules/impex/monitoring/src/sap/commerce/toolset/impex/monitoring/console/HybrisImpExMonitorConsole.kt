@@ -29,12 +29,12 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
+import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.file.ImpExFileType
-import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
-import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecutionContext
+import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecClient
+import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecContext
 import sap.commerce.toolset.impex.monitoring.exec.context.TimeOption
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.awt.BorderLayout
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit
 class HybrisImpExMonitorConsole(
     project: Project,
     coroutineScope: CoroutineScope
-) : HybrisConsole<ImpExMonitorExecutionContext>(project, "[y] Monitor Console", ImpExLanguage, coroutineScope) {
+) : HybrisConsole<ImpExMonitorExecContext>(project, "[y] Monitor Console", ImpExLanguage, coroutineScope) {
 
     private lateinit var timeComboBox: ComboBox<TimeOption>
 
@@ -82,7 +82,7 @@ class HybrisImpExMonitorConsole(
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 
-    override fun printResult(result: ConsoleAwareExecutionResult) {
+    override fun printResult(result: ConsoleAwareExecResult) {
         clear()
         when {
             result.output != null -> ConsoleViewUtil.printAsFileType(this, text, ImpExFileType)
@@ -94,14 +94,14 @@ class HybrisImpExMonitorConsole(
 
     }
 
-    override fun currentExecutionContext(content: String) = ImpExMonitorExecutionContext(
+    override fun currentExecutionContext(content: String) = ImpExMonitorExecContext(
         timeOption = timeComboBox.selectedItem as TimeOption,
         workingDir = obtainDataFolder(project),
     )
 
     override fun title() = "ImpEx Monitor"
     override fun tip() = "Last imported ImpEx files"
-    override fun execute() = ImpExMonitorExecutionClient.getInstance(project).execute(
+    override fun execute() = ImpExMonitorExecClient.getInstance(project).execute(
         context = context,
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }

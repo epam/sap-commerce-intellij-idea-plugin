@@ -27,7 +27,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.settings.state.presentationName
-import sap.commerce.toolset.solr.exec.SolrExecService
+import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
@@ -44,7 +44,7 @@ class ChooseSolrConnectionAction : DefaultActionGroup() {
         val project = e?.project ?: return emptyArray()
         val actions = super.getChildren(e)
 
-        val execService = SolrExecService.getInstance(project)
+        val execService = SolrExecConnectionService.getInstance(project)
         val activeConnection = execService.activeConnection
         val connectionActions = execService.connections
             .map {
@@ -67,7 +67,7 @@ class ChooseSolrConnectionAction : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val activeConnection = SolrExecService.getInstance(project).activeConnection
+        val activeConnection = SolrExecConnectionService.getInstance(project).activeConnection
 
         e.presentation.isEnabledAndVisible = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?.activeConnection()

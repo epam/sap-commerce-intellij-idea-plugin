@@ -16,13 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.solr.exec.context
+package sap.commerce.toolset.logging.exec.context
 
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.hac.HacConstants
+import sap.commerce.toolset.logging.LogLevel
 
-data class SolrQueryExecutionContext(
-    override val executionTitle: String = "Execute HTTP Call to SOLR...",
-    val content: String,
-    val core: String,
-    val rows: Int
-) : ExecutionContext
+data class LoggingExecContext(
+    override val executionTitle: String,
+    private val loggerName: String,
+    private val logLevel: LogLevel,
+    val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
+) : ExecContext {
+    fun params(): Map<String, String> = buildMap {
+        put("loggerName", loggerName)
+        put("levelName", logLevel.name)
+    }
+}

@@ -28,16 +28,16 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
 
-class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
+class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecContext>(
     project,
     "[y] SQL Console",
     if (Plugin.DATABASE.isActive()) SqlLanguage.INSTANCE else PlainTextLanguage.INSTANCE,
@@ -63,11 +63,11 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
         add(myPanel, BorderLayout.NORTH)
     }
 
-    override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
+    override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
         content = content,
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         queryMode = QueryMode.SQL,
-        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecContext.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }
@@ -76,13 +76,13 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
 
     override fun title(): String = "SQL"
     override fun tip(): String = "SQL Console"
-    override fun execute() = FlexibleSearchExecutionClient.getInstance(project).execute(
+    override fun execute() = FlexibleSearchExecClient.getInstance(project).execute(
         context = context,
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
 
-    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
+    override fun activeConnection() = HacExecConnectionService.getInstance(project).activeConnection
 
     override fun icon(): Icon = HybrisIcons.FlexibleSearch.SQL
 

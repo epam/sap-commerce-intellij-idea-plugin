@@ -21,18 +21,18 @@ package sap.commerce.toolset.flexibleSearch.exec.context
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.hac.HacConstants
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 
-data class FlexibleSearchExecutionContext(
+data class FlexibleSearchExecContext(
     private val content: String = "",
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
     private val settings: Settings,
     val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
-) : ExecutionContext {
+) : ExecContext {
 
     override val executionTitle: String
         get() = "Executing ${queryMode.title} on the remote SAP Commerce instance…"
@@ -54,7 +54,7 @@ data class FlexibleSearchExecutionContext(
         }
     }
 
-    data class Settings(val maxCount: Int, val locale: String, val dataSource: String, val user: String) : ExecutionContext.Settings {
+    data class Settings(val maxCount: Int, val locale: String, val dataSource: String, val user: String) : ExecContext.Settings {
         override fun modifiable() = ModifiableSettings(
             maxCount = maxCount,
             locale = locale,
@@ -63,7 +63,7 @@ data class FlexibleSearchExecutionContext(
         )
     }
 
-    data class ModifiableSettings(var maxCount: Int, var locale: String, var dataSource: String, var user: String) : ExecutionContext.ModifiableSettings {
+    data class ModifiableSettings(var maxCount: Int, var locale: String, var dataSource: String, var user: String) : ExecContext.ModifiableSettings {
         override fun immutable() = Settings(
             maxCount = maxCount,
             locale = locale,
@@ -86,7 +86,7 @@ data class FlexibleSearchExecutionContext(
         // Slow operation, do not invoke on EDT
         fun defaultSettings(project: Project) = DEFAULT_SETTINGS.modifiable()
             .apply {
-                user = HacExecService.getInstance(project)
+                user = HacExecConnectionService.getInstance(project)
                     .activeConnection
                     .username
             }

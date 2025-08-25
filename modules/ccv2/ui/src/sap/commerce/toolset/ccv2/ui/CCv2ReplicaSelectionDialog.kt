@@ -42,7 +42,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 import java.awt.BorderLayout
 import java.awt.Component
@@ -156,7 +156,7 @@ class CCv2ReplicaSelectionDialog(
     }
 
     override fun applyFields() {
-        GroovyExecutionClient.getInstance(project).connectionContext = if (selectedReplicaIds.isEmpty()) GroovyReplicaAwareContext.auto()
+        GroovyExecClient.getInstance(project).connectionContext = if (selectedReplicaIds.isEmpty()) GroovyReplicaAwareContext.auto()
         else GroovyReplicaAwareContext(CCv2ExecConstants.ccv2, selectedReplicaIds.map { ReplicaContext(it) })
     }
 

@@ -32,7 +32,7 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.context.ExecutionResult
+import sap.commerce.toolset.exec.context.ExecResult
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import java.lang.Boolean
@@ -44,7 +44,7 @@ import kotlin.Unit
 import kotlin.apply
 import kotlin.let
 
-abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
+abstract class InEditorResultsView<E : FileEditor, R : ExecResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun executingView(richMessage: String) = panel {
         panel {

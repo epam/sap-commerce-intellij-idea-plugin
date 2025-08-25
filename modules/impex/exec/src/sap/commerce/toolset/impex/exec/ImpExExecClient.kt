@@ -28,24 +28,24 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import sap.commerce.toolset.exec.DefaultExecutionClient
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.DefaultExecClient
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
+class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<ImpExExecContext>(project, coroutineScope) {
 
-    override suspend fun execute(context: ImpExExecutionContext): DefaultExecutionResult {
-        val settings = HacExecService.getInstance(project).activeConnection
+    override suspend fun execute(context: ImpExExecContext): DefaultExecResult {
+        val settings = HacExecConnectionService.getInstance(project).activeConnection
         val actionUrl = when (context.executionMode) {
-            ImpExExecutionContext.ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
-            ImpExExecutionContext.ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
+            ImpExExecContext.ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
+            ImpExExecContext.ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
         }
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
@@ -55,7 +55,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
-        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecutionResult(
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecResult(
             statusCode = statusCode,
             errorMessage = statusLine.reasonPhrase
         )
@@ -64,25 +64,25 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
 
             return when (context.executionMode) {
-                ImpExExecutionContext.ExecutionMode.IMPORT -> processResponse(document, "impexResult") { element ->
-                    if (element.attr("data-level") == "error") DefaultExecutionResult(
+                ImpExExecContext.ExecutionMode.IMPORT -> processResponse(document, "impexResult") { element ->
+                    if (element.attr("data-level") == "error") DefaultExecResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = element.attr("data-result").takeIf { it.isNotBlank() },
                         errorDetailMessage = document.getElementsByClass("impexResult")
                             .first()?.children()?.first()?.text()
                             ?: "No data in response"
                     )
-                    else DefaultExecutionResult(
+                    else DefaultExecResult(
                         output = element.attr("data-result").takeIf { it.isNotBlank() }
                     )
                 }
 
-                ImpExExecutionContext.ExecutionMode.VALIDATE -> processResponse(document, "validationResultMsg") { element ->
-                    if ("error" == element.attr("data-level")) DefaultExecutionResult(
+                ImpExExecContext.ExecutionMode.VALIDATE -> processResponse(document, "validationResultMsg") { element ->
+                    if ("error" == element.attr("data-level")) DefaultExecResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = element.attr("data-result").takeIf { it.isNotBlank() }
                     )
-                    else DefaultExecutionResult(
+                    else DefaultExecResult(
                         output = element.attr("data-result").takeIf { it.isNotBlank() }
                     )
                 }
@@ -90,16 +90,16 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
         } catch (e: IOException) {
             thisLogger().warn(e.message, e)
 
-            return DefaultExecutionResult(
+            return DefaultExecResult(
                 errorMessage = e.message,
             )
         }
     }
 
-    private fun processResponse(document: Document, id: String, mapper: (Element) -> DefaultExecutionResult) = document.getElementById(id)
+    private fun processResponse(document: Document, id: String, mapper: (Element) -> DefaultExecResult) = document.getElementById(id)
         ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
         ?.let { mapper.invoke(it) }
-        ?: DefaultExecutionResult(
+        ?: DefaultExecResult(
             statusCode = HttpStatus.SC_BAD_REQUEST,
             errorMessage = "No data in response"
         )
@@ -108,7 +108,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
         @Serial
         private const val serialVersionUID: Long = -1646069318244320642L
 
-        fun getInstance(project: Project): ImpExExecutionClient = project.service()
+        fun getInstance(project: Project): ImpExExecClient = project.service()
     }
 
 }

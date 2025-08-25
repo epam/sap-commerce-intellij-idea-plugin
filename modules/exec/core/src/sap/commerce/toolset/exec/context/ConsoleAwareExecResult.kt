@@ -16,11 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.monitoring.exec.context
+package sap.commerce.toolset.exec.context
 
-import sap.commerce.toolset.exec.context.ExecutionContext
+interface ConsoleAwareExecResult : ExecResult {
+    val result: String?
+    val output: String?
+    val replicaContext: ReplicaContext?
 
-data class ImpExMonitorExecutionContext(
-    val timeOption: TimeOption,
-    val workingDir: String,
-) : ExecutionContext
+    val hasError
+        get() = errorMessage != null
+}

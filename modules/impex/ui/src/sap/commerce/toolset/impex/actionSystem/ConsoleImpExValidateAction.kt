@@ -27,8 +27,8 @@ import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.impex.console.ImpExConsole
-import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.ImpExExecClient
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 
 class ConsoleImpExValidateAction : AnAction() {
 
@@ -39,13 +39,13 @@ class ConsoleImpExValidateAction : AnAction() {
         val console = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
 
-        val context = ImpExExecutionContext(
+        val context = ImpExExecContext(
             content = console.content,
-            executionMode = ImpExExecutionContext.ExecutionMode.VALIDATE,
-            settings = ImpExExecutionContext.DEFAULT_SETTINGS
+            executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
+            settings = ImpExExecContext.DEFAULT_SETTINGS
         )
 
-        ImpExExecutionClient.getInstance(project).execute(
+        ImpExExecClient.getInstance(project).execute(
             context = context,
             beforeCallback = { _ -> console.beforeExecution() },
             resultCallback = { _, result -> console.print(result) }

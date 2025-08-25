@@ -28,10 +28,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.popup.*
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
 import java.awt.event.KeyEvent
 
-abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSettings> : DumbAwareAction() {
+abstract class ExecutionContextSettingsAction<M : ExecContext.ModifiableSettings> : DumbAwareAction() {
 
     protected abstract fun previewSettings(e: AnActionEvent, project: Project): String
     protected abstract fun settings(e: AnActionEvent, project: Project): M

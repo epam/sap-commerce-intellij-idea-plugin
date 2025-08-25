@@ -16,9 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.exec.context
+package sap.commerce.toolset.exec
 
-interface ExecutionResult {
-    val errorMessage: String?
-    val errorDetailMessage: String?
+import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.exec.context.ExecContext
+import java.io.Serial
+
+abstract class DefaultExecClient<E : ExecContext>(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : ExecClient<E, DefaultExecResult>(project, coroutineScope) {
+
+    override suspend fun onError(context: E, exception: Throwable) = DefaultExecResult(
+        errorMessage = exception.message,
+        errorDetailMessage = exception.stackTraceToString(),
+    )
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -7785886660763821295L
+    }
 }

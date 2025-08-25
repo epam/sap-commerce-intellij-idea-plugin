@@ -24,10 +24,10 @@ import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
@@ -35,7 +35,7 @@ import java.io.Serial
 class FlexibleSearchConsole(
     project: Project,
     coroutineScope: CoroutineScope
-) : HybrisConsole<FlexibleSearchExecutionContext>(project, "[y] FxS Console", FlexibleSearchLanguage, coroutineScope) {
+) : HybrisConsole<FlexibleSearchExecContext>(project, "[y] FxS Console", FlexibleSearchLanguage, coroutineScope) {
 
     private lateinit var maxRowsSpinner: JBIntSpinner
 
@@ -52,11 +52,11 @@ class FlexibleSearchConsole(
         add(myPanel, BorderLayout.NORTH)
     }
 
-    override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
+    override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
         content = content,
         transactionMode = TransactionMode.ROLLBACK,
         queryMode = QueryMode.FlexibleSearch,
-        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecContext.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }
@@ -65,13 +65,13 @@ class FlexibleSearchConsole(
 
     override fun title(): String = "FlexibleSearch"
     override fun tip(): String = "FlexibleSearch Console"
-    override fun execute() = FlexibleSearchExecutionClient.getInstance(project).execute(
+    override fun execute() = FlexibleSearchExecClient.getInstance(project).execute(
         context = context,
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
 
-    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
+    override fun activeConnection() = HacExecConnectionService.getInstance(project).activeConnection
 
     companion object {
         @Serial

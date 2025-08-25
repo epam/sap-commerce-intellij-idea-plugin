@@ -25,10 +25,10 @@ import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.HacConstants
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
@@ -36,7 +36,7 @@ import java.io.Serial
 class HybrisGroovyConsole(
     project: Project,
     coroutineScope: CoroutineScope
-) : HybrisConsole<GroovyExecutionContext>(project, "[y] Groovy Console", GroovyLanguage, coroutineScope) {
+) : HybrisConsole<GroovyExecContext>(project, "[y] Groovy Console", GroovyLanguage, coroutineScope) {
 
     private lateinit var commitCheckbox: JBCheckBox
     private lateinit var timeoutSpinner: JBIntSpinner
@@ -56,7 +56,7 @@ class HybrisGroovyConsole(
         add(myPanel, BorderLayout.NORTH)
     }
 
-    override fun currentExecutionContext(content: String) = GroovyExecutionContext(
+    override fun currentExecutionContext(content: String) = GroovyExecContext(
         content = content,
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         timeout = timeoutSpinner.value.toString().toInt() * 1000,
@@ -64,13 +64,13 @@ class HybrisGroovyConsole(
 
     override fun title() = "Groovy Scripting"
     override fun tip() = "Groovy Console"
-    override fun execute() = GroovyExecutionClient.getInstance(project).execute(
+    override fun execute() = GroovyExecClient.getInstance(project).execute(
         context = context,
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
 
-    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
+    override fun activeConnection() = HacExecConnectionService.getInstance(project).activeConnection
 
     companion object {
         @Serial

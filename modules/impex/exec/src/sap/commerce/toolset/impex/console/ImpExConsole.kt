@@ -28,15 +28,15 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.ImpExExecClient
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import java.awt.BorderLayout
 import java.io.Serial
 
-class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecutionContext>(
+class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecContext>(
     project,
     "[y] ImpEx Console",
     ImpExLanguage,
@@ -47,7 +47,7 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
     private lateinit var enableCodeExecutionCheckbox: JBCheckBox
     private lateinit var directPersistenceCheckbox: JBCheckBox
     private lateinit var maxThreadsSpinner: JBIntSpinner
-    private lateinit var importModeComboBox: ComboBox<ImpExExecutionContext.ValidationMode>
+    private lateinit var importModeComboBox: ComboBox<ImpExExecContext.ValidationMode>
 
     init {
         val myPanel = panel {
@@ -55,12 +55,12 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
                 label("UTF-8")
 
                 importModeComboBox = comboBox(
-                    model = EnumComboBoxModel<ImpExExecutionContext.ValidationMode>(ImpExExecutionContext.ValidationMode::class.java),
+                    model = EnumComboBoxModel<ImpExExecContext.ValidationMode>(ImpExExecContext.ValidationMode::class.java),
                     renderer = SimpleListCellRenderer.create("...") { value -> value.name }
                 )
                     .label("Validation mode:")
                     .component
-                    .apply { selectedItem = ImpExExecutionContext.ValidationMode.IMPORT_STRICT }
+                    .apply { selectedItem = ImpExExecContext.ValidationMode.IMPORT_STRICT }
 
                 maxThreadsSpinner = spinner(1..Int.MAX_VALUE)
                     .label("Max threads:")
@@ -83,28 +83,28 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
         add(myPanel, BorderLayout.NORTH)
     }
 
-    override fun currentExecutionContext(content: String) = ImpExExecutionContext(
+    override fun currentExecutionContext(content: String) = ImpExExecContext(
         content = content,
-        settings = ImpExExecutionContext.DEFAULT_SETTINGS.modifiable()
+        settings = ImpExExecContext.DEFAULT_SETTINGS.modifiable()
             .apply {
-                validationMode = importModeComboBox.selectedItem as ImpExExecutionContext.ValidationMode
+                validationMode = importModeComboBox.selectedItem as ImpExExecContext.ValidationMode
                 maxThreads = maxThreadsSpinner.value.toString().toInt()
-                legacyMode = if (legacyModeCheckbox.isSelected) ImpExExecutionContext.Toggle.ON else ImpExExecutionContext.Toggle.OFF
-                enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) ImpExExecutionContext.Toggle.ON else ImpExExecutionContext.Toggle.OFF
-                sldEnabled = if (directPersistenceCheckbox.isSelected) ImpExExecutionContext.Toggle.ON else ImpExExecutionContext.Toggle.OFF
-                distributedMode = ImpExExecutionContext.Toggle.ON
+                legacyMode = if (legacyModeCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
+                enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
+                sldEnabled = if (directPersistenceCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
+                distributedMode = ImpExExecContext.Toggle.ON
             }.immutable()
     )
 
     override fun title(): String = ImpExConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
-    override fun execute() = ImpExExecutionClient.getInstance(project).execute(
+    override fun execute() = ImpExExecClient.getInstance(project).execute(
         context = context,
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
 
-    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
+    override fun activeConnection() = HacExecConnectionService.getInstance(project).activeConnection
 
     companion object {
         @Serial

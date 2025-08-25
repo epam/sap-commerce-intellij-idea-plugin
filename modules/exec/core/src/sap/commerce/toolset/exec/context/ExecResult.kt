@@ -18,15 +18,7 @@
 
 package sap.commerce.toolset.exec.context
 
-interface ExecutionContext {
-    val executionTitle: String
-        get() = "Executing HTTP Call to the remote SAP Commerce instance…"
-
-    interface Settings {
-        fun modifiable(): ModifiableSettings
-    }
-
-    interface ModifiableSettings {
-        fun immutable(): Settings
-    }
+interface ExecResult {
+    val errorMessage: String?
+    val errorDetailMessage: String?
 }

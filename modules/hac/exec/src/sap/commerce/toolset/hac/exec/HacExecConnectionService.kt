@@ -23,7 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.exec.ExecService
+import sap.commerce.toolset.exec.ExecConnectionService
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.hac.exec.settings.HacExecDeveloperSettings
 import sap.commerce.toolset.hac.exec.settings.HacExecProjectSettings
@@ -31,7 +31,7 @@ import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListene
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 @Service(Service.Level.PROJECT)
-class HacExecService(private val project: Project) : ExecService<HacConnectionSettingsState>() {
+class HacExecConnectionService(private val project: Project) : ExecConnectionService<HacConnectionSettingsState>() {
 
     override var activeConnection: HacConnectionSettingsState
         get() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
@@ -108,7 +108,7 @@ class HacExecService(private val project: Project) : ExecService<HacConnectionSe
     }
 
     companion object {
-        fun getInstance(project: Project): HacExecService = project.service()
+        fun getInstance(project: Project): HacExecConnectionService = project.service()
     }
 
 }

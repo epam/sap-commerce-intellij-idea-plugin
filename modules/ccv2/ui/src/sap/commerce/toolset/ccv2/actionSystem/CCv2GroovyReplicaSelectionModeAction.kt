@@ -25,7 +25,7 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2ExecConstants
 import sap.commerce.toolset.ccv2.ui.CCv2ReplicaSelectionDialog
 import sap.commerce.toolset.groovy.actionSystem.GroovyReplicaSelectionModeAction
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import java.awt.Component
 
 class CCv2GroovyReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(CCv2ExecConstants.ccv2) {
@@ -39,7 +39,7 @@ class CCv2GroovyReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(CC
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = GroovyExecutionClient.getInstance(project).connectionContext
+        val replicaContexts = GroovyExecClient.getInstance(project).connectionContext
             .takeIf { it.replicaSelectionMode == CCv2ExecConstants.ccv2 }
             ?.replicaContexts
             ?: emptyList()

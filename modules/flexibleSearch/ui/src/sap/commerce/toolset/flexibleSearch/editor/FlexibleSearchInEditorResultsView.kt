@@ -30,7 +30,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.flexibleSearch.xsvFlexibleSearchFormat
 import sap.commerce.toolset.ui.editor.InEditorResultsView
@@ -40,9 +40,9 @@ import javax.swing.JComponent
 class FlexibleSearchInEditorResultsView(
     project: Project,
     coroutineScope: CoroutineScope
-) : InEditorResultsView<FlexibleSearchSplitEditor, FlexibleSearchExecutionResult>(project, coroutineScope) {
+) : InEditorResultsView<FlexibleSearchSplitEditor, FlexibleSearchExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: FlexibleSearchSplitEditor, results: Collection<FlexibleSearchExecutionResult>): JComponent {
+    override suspend fun render(fileEditor: FlexibleSearchSplitEditor, results: Collection<FlexibleSearchExecResult>): JComponent {
         fileEditor.csvResultsDisposable?.dispose()
 
         return results.firstOrNull()

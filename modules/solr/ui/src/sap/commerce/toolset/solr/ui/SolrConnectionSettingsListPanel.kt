@@ -21,7 +21,7 @@ package sap.commerce.toolset.solr.ui
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
-import sap.commerce.toolset.solr.exec.SolrExecService
+import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.io.Serial
 
@@ -37,7 +37,7 @@ class SolrConnectionSettingsListPanel(
     }
 
     override fun addItem() {
-        val mutableSettings = SolrExecService.getInstance(myProject).default().mutable()
+        val mutableSettings = SolrExecConnectionService.getInstance(myProject).default().mutable()
         if (SolrConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) {
             addElement(mutableSettings.immutable())
         }

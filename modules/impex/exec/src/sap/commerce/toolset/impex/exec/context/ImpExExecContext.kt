@@ -20,16 +20,16 @@ package sap.commerce.toolset.impex.exec.context
 
 import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.hac.HacConstants
 import java.nio.charset.StandardCharsets
 
-data class ImpExExecutionContext(
+data class ImpExExecContext(
     private val content: String = "",
     val dialect: Dialect = Dialect.IMPEX,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
     val settings: Settings
-) : ExecutionContext {
+) : ExecContext {
 
     override val executionTitle: String
         get() = when (executionMode) {
@@ -60,7 +60,7 @@ data class ImpExExecutionContext(
         val enableCodeExecution: Toggle,
         val sldEnabled: Toggle,
         val distributedMode: Toggle,
-    ) : ExecutionContext.Settings {
+    ) : ExecContext.Settings {
         override fun modifiable() = ModifiableSettings(
             validationMode = validationMode,
             maxThreads = maxThreads,
@@ -82,7 +82,7 @@ data class ImpExExecutionContext(
         var enableCodeExecution: Toggle,
         var sldEnabled: Toggle,
         var distributedMode: Toggle,
-    ) : ExecutionContext.ModifiableSettings {
+    ) : ExecContext.ModifiableSettings {
         override fun immutable() = Settings(
             validationMode = validationMode,
             maxThreads = maxThreads,

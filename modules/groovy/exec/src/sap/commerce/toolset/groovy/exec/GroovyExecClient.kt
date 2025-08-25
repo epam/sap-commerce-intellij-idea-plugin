@@ -31,19 +31,19 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
-import sap.commerce.toolset.exec.DefaultExecutionClient
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.DefaultExecClient
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
+class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<GroovyExecContext>(project, coroutineScope) {
 
     var connectionContext: GroovyReplicaAwareContext
         get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, GroovyReplicaAwareContext.auto())
@@ -51,8 +51,8 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             putUserData(KEY_REMOTE_CONNECTION_CONTEXT, value)
         }
 
-    override suspend fun execute(context: GroovyExecutionContext): DefaultExecutionResult {
-        val settings = HacExecService.getInstance(project).activeConnection
+    override suspend fun execute(context: GroovyExecContext): DefaultExecResult {
+        val settings = HacExecConnectionService.getInstance(project).activeConnection
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
@@ -62,7 +62,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
-        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecutionResult(
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecResult(
             replicaContext = context.replicaContext,
             statusCode = statusCode,
             errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
@@ -78,12 +78,12 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             val errorText = json.jsonObject["stacktraceText"]
                 ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
 
-            return if (errorText != null) DefaultExecutionResult(
+            return if (errorText != null) DefaultExecResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 replicaContext = context.replicaContext,
                 errorMessage = errorText
             )
-            else DefaultExecutionResult(
+            else DefaultExecResult(
                 replicaContext = context.replicaContext,
                 output = json.jsonObject["outputText"]
                     ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() },
@@ -93,13 +93,13 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
 
-            return DefaultExecutionResult(
+            return DefaultExecResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 replicaContext = context.replicaContext,
                 errorMessage = "Cannot parse response from the server..."
             )
         } catch (e: IOException) {
-            return DefaultExecutionResult(
+            return DefaultExecResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 replicaContext = context.replicaContext,
                 errorMessage = "${e.message} $actionUrl"
@@ -112,7 +112,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         private const val serialVersionUID: Long = 3297887080603991051L
         val KEY_REMOTE_CONNECTION_CONTEXT = Key.create<GroovyReplicaAwareContext>("hybris.http.remote.connection.context")
 
-        fun getInstance(project: Project): GroovyExecutionClient = project.service()
+        fun getInstance(project: Project): GroovyExecClient = project.service()
     }
 
 }

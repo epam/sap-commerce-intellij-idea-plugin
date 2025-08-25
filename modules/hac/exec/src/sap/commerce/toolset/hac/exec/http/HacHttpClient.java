@@ -51,7 +51,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
 import org.jsoup.select.Elements;
-import sap.commerce.toolset.exec.RemoteConstants;
+import sap.commerce.toolset.exec.ExecConstants;
 import sap.commerce.toolset.exec.context.ReplicaContext;
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsStateKt;
 import sap.commerce.toolset.hac.HacConstants;
@@ -310,7 +310,7 @@ public final class HacHttpClient extends UserDataHolderBase {
         final var sessionCookieName = settings.sessionCookieName;
         return StringUtils.isNotBlank(sessionCookieName)
             ? sessionCookieName
-            : RemoteConstants.DEFAULT_SESSION_COOKIE_NAME;
+            : ExecConstants.DEFAULT_SESSION_COOKIE_NAME;
     }
 
     @Nullable

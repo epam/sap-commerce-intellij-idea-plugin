@@ -27,7 +27,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 import java.awt.Component
 import javax.swing.JComponent
@@ -94,6 +94,6 @@ class ManualReplicaSelectionDialog(
 
         val replicaContext = ReplicaContext(manualReplicaId.text, manualCookieName.text)
 
-        GroovyExecutionClient.getInstance(project).connectionContext = GroovyReplicaAwareContext.manual(listOf(replicaContext))
+        GroovyExecClient.getInstance(project).connectionContext = GroovyReplicaAwareContext.manual(listOf(replicaContext))
     }
 }

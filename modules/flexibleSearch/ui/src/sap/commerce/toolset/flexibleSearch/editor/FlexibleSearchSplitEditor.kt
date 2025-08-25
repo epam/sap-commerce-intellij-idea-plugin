@@ -36,8 +36,8 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout
@@ -51,8 +51,8 @@ import kotlin.time.Duration.Companion.milliseconds
 fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<FlexibleSearchSplitEditorEx>()
 
-fun AnActionEvent.flexibleSearchExecutionContextSettings(fallback: () -> FlexibleSearchExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
-    ?.getUserData(FlexibleSearchExecutionContext.KEY_EXECUTION_SETTINGS)
+fun AnActionEvent.flexibleSearchExecutionContextSettings(fallback: () -> FlexibleSearchExecContext.Settings) = this.getData(CommonDataKeys.EDITOR)
+    ?.getUserData(FlexibleSearchExecContext.KEY_EXECUTION_SETTINGS)
     ?: fallback()
 
 class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FlexibleSearchSplitEditor {
@@ -154,7 +154,7 @@ class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private v
         }
     }
 
-    fun renderExecutionResult(result: FlexibleSearchExecutionResult) = FlexibleSearchInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+    fun renderExecutionResult(result: FlexibleSearchExecResult) = FlexibleSearchInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view
@@ -162,7 +162,7 @@ class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private v
         }
     }
 
-    fun showLoader(context: FlexibleSearchExecutionContext) {
+    fun showLoader(context: FlexibleSearchExecContext) {
         inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }
 

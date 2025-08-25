@@ -32,15 +32,15 @@ import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.ui.AnimatedIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
+import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import java.io.Serial
 import javax.swing.Icon
 
-abstract class HybrisConsole<E : ExecutionContext>(
+abstract class HybrisConsole<E : ExecContext>(
     project: Project, title: String, language: Language,
     private val coroutineScope: CoroutineScope
 ) : LanguageConsoleImpl(project, title, language) {
@@ -99,7 +99,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         }
     }
 
-    fun print(result: ConsoleAwareExecutionResult, isEditable: Boolean = true) {
+    fun print(result: ConsoleAwareExecResult, isEditable: Boolean = true) {
         coroutineScope.launch {
             edtWriteAction {
                 printResult(result)
@@ -123,7 +123,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         }
     }
 
-    protected open fun printResult(result: ConsoleAwareExecutionResult) {
+    protected open fun printResult(result: ConsoleAwareExecResult) {
         printHost(result.replicaContext)
         printPlainText(result)
     }
@@ -140,7 +140,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         print("${activeConnectionSettings.generatedURL}\n", ConsoleViewContentType.NORMAL_OUTPUT)
     }
 
-    private fun printPlainText(result: ConsoleAwareExecutionResult) {
+    private fun printPlainText(result: ConsoleAwareExecResult) {
         if (result.hasError) {
             print("[ERROR]\n", ConsoleViewContentType.SYSTEM_OUTPUT)
             listOfNotNull(result.errorMessage, result.errorDetailMessage)

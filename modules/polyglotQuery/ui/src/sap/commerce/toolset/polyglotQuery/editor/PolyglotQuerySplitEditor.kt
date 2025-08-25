@@ -35,7 +35,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout
@@ -141,7 +141,7 @@ class PolyglotQuerySplitEditorEx(override val textEditor: TextEditor, private va
         }
     }
 
-    fun renderExecutionResult(result: FlexibleSearchExecutionResult) = PolyglotQueryInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+    fun renderExecutionResult(result: FlexibleSearchExecResult) = PolyglotQueryInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view

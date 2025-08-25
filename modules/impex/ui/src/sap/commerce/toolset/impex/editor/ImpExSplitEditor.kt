@@ -37,8 +37,8 @@ import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
@@ -50,8 +50,8 @@ import kotlin.time.Duration
 fun AnActionEvent.impexSplitEditorEx() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<ImpExSplitEditorEx>()
 
-fun AnActionEvent.impexExecutionContextSettings(fallback: () -> ImpExExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
-    ?.getUserData(ImpExExecutionContext.KEY_EXECUTION_SETTINGS)
+fun AnActionEvent.impexExecutionContextSettings(fallback: () -> ImpExExecContext.Settings) = this.getData(CommonDataKeys.EDITOR)
+    ?.getUserData(ImpExExecContext.KEY_EXECUTION_SETTINGS)
     ?: fallback()
 
 class ImpExSplitEditorBase(override val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), ImpExSplitEditorEx {
@@ -153,7 +153,7 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         ImpExInEditorParametersView.getInstance(project).renderParameters(this)
     }
 
-    override fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+    override fun renderExecutionResult(result: DefaultExecResult) = ImpExInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view
@@ -161,7 +161,7 @@ class ImpExSplitEditorBase(override val textEditor: TextEditor, private val proj
         }
     }
 
-    override fun showLoader(context: ImpExExecutionContext) {
+    override fun showLoader(context: ImpExExecContext) {
         inEditorResultsView = ImpExInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }
 

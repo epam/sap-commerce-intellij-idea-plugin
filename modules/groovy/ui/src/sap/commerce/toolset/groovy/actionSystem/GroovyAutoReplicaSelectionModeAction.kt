@@ -20,7 +20,7 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 
 class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(GroovyExecConstants.auto) {
@@ -28,6 +28,6 @@ class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Gr
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
 
-        GroovyExecutionClient.getInstance(project).connectionContext = GroovyReplicaAwareContext.auto()
+        GroovyExecClient.getInstance(project).connectionContext = GroovyReplicaAwareContext.auto()
     }
 }

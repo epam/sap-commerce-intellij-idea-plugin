@@ -39,13 +39,13 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
+import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.solr.exec.SolrExecService
-import sap.commerce.toolset.solr.exec.SolrExecutionClient
+import sap.commerce.toolset.solr.exec.SolrExecClient
+import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
-import sap.commerce.toolset.solr.exec.context.SolrQueryExecutionContext
+import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
@@ -54,7 +54,7 @@ import javax.swing.JLabel
 class HybrisSolrSearchConsole(
     project: Project,
     coroutineScope: CoroutineScope
-) : HybrisConsole<SolrQueryExecutionContext>(project, "[y] Solr search", PlainTextLanguage.INSTANCE, coroutineScope) {
+) : HybrisConsole<SolrQueryExecContext>(project, "[y] Solr search", PlainTextLanguage.INSTANCE, coroutineScope) {
 
     val docs = "Docs: "
     val coresComboBoxModel = MutableCollectionComboBoxModel<SolrCoreData>()
@@ -98,14 +98,14 @@ class HybrisSolrSearchConsole(
         this.setInputText("*:*")
     }
 
-    override fun activeConnection(): ExecConnectionSettingsState = SolrExecService.getInstance(project).activeConnection
+    override fun activeConnection(): ExecConnectionSettingsState = SolrExecConnectionService.getInstance(project).activeConnection
 
     override fun onSelection() {
         val selectedCore = coresComboBox.selectedItem.asSafely<SolrCoreData>()
         reloadCores(selectedCore)
     }
 
-    override fun printResult(result: ConsoleAwareExecutionResult) {
+    override fun printResult(result: ConsoleAwareExecResult) {
         clear()
 
         printHost(result.replicaContext)
@@ -146,7 +146,7 @@ class HybrisSolrSearchConsole(
     }
 
     private fun retrieveListOfCores() = try {
-        SolrExecutionClient.getInstance(project).coresData().toList()
+        SolrExecClient.getInstance(project).coresData().toList()
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,
@@ -160,7 +160,7 @@ class HybrisSolrSearchConsole(
     override fun canExecute() = super.canExecute()
         && coresComboBox.selectedItem.asSafely<SolrCoreData>() != null
 
-    override fun currentExecutionContext(content: String) = SolrQueryExecutionContext(
+    override fun currentExecutionContext(content: String) = SolrQueryExecContext(
         content = content,
         core = (coresComboBox.selectedItem as SolrCoreData).core,
         rows = maxRowsSpinner.value as Int
@@ -168,7 +168,7 @@ class HybrisSolrSearchConsole(
 
     override fun title() = "Solr Search"
     override fun tip() = "Solr Search Console"
-    override fun execute() = SolrExecutionClient.getInstance(project).execute(
+    override fun execute() = SolrExecClient.getInstance(project).execute(
         context = context,
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }

@@ -31,8 +31,8 @@ import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.editor.impexSplitEditorEx
-import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.ImpExExecClient
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 
 class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditorEx>(
     ImpExLanguage,
@@ -50,8 +50,8 @@ class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-        val settings = e.impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
-        val context = ImpExExecutionContext(
+        val settings = e.impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
+        val context = ImpExExecContext(
             content = content,
             settings = settings
         )
@@ -60,7 +60,7 @@ class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 
-            ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 fileEditor.renderExecutionResult(result)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
@@ -71,7 +71,7 @@ class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor
         } else {
             val console = openConsole(project, content) ?: return
 
-            ImpExExecutionClient.getInstance(project).execute(context) { _, result ->
+            ImpExExecClient.getInstance(project).execute(context) { _, result ->
                 console.print(result)
             }
         }

@@ -26,7 +26,7 @@ import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
-import sap.commerce.toolset.solr.exec.SolrExecutionClient
+import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.awt.Component
 
@@ -147,7 +147,7 @@ class SolrConnectionSettingsDialog(
             credentials = Credentials(usernameTextField.text, String(passwordTextField.password)),
         )
 
-        SolrExecutionClient.getInstance(project).listOfCores(testSettings)
+        SolrExecClient.getInstance(project).listOfCores(testSettings)
 
         null
     } catch (e: Exception) {

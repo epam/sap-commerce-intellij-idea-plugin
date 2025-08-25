@@ -24,12 +24,12 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.*
-import sap.commerce.toolset.exec.context.ExecutionContext
-import sap.commerce.toolset.exec.context.ExecutionResult
+import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.exec.context.ExecResult
 import java.io.Serial
 import kotlin.coroutines.CoroutineContext
 
-abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
+abstract class ExecClient<E : ExecContext, R : ExecResult>(
     protected val project: Project,
     protected val coroutineScope: CoroutineScope
 ) : UserDataHolderBase() {

@@ -30,7 +30,7 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.exec.RemoteConstants
+import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
@@ -66,7 +66,7 @@ class HacConnectionSettingsDialog(
             wsl = isWslCheckBox?.isSelected ?: false,
             sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: "",
             webroot = webrootTextField.text,
-            sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: RemoteConstants.DEFAULT_SESSION_COOKIE_NAME,
+            sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
             credentials = Credentials(usernameTextField.text, String(passwordTextField.password)),
         )
     )

@@ -34,7 +34,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -78,7 +78,7 @@ class GroovySplitEditor(internal val textEditor: TextEditor, private val project
         add(verticalSplitter, BorderLayout.CENTER)
     }
 
-    fun renderExecutionResults(results: Collection<DefaultExecutionResult>) = GroovyInEditorResultsView.getInstance(project).resultView(this, results) { coroutineScope, view ->
+    fun renderExecutionResults(results: Collection<DefaultExecResult>) = GroovyInEditorResultsView.getInstance(project).resultView(this, results) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view

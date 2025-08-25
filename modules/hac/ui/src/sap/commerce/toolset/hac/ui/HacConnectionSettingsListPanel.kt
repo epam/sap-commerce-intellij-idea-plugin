@@ -21,7 +21,7 @@ package sap.commerce.toolset.hac.ui
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.io.Serial
 
@@ -31,7 +31,7 @@ class HacConnectionSettingsListPanel(
 ) : RemoteInstancesListPanel<HacConnectionSettingsState>(project, HybrisIcons.Y.REMOTE) {
 
     override fun addItem() {
-        val settings = HacExecService.getInstance(myProject).default()
+        val settings = HacExecConnectionService.getInstance(myProject).default()
         val mutableSettings = settings.mutable()
         val dialog = HacConnectionSettingsDialog(myProject, this, mutableSettings)
         if (dialog.showAndGet()) {

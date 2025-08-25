@@ -26,13 +26,13 @@ import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun <C : HybrisConsole<out ExecutionContext>> openConsole(consoleClass: KClass<C>): C? {
+    fun <C : HybrisConsole<out ExecContext>> openConsole(consoleClass: KClass<C>): C? {
         val view = findConsolesView() ?: return null
         val console = view.findConsole(consoleClass) ?: return null
         activateToolWindow()
@@ -54,7 +54,7 @@ class HybrisConsoleService(private val project: Project) {
             }
         }
 
-    fun openInConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, content: String) = openConsole(consoleClass)
+    fun openInConsole(consoleClass: KClass<out HybrisConsole<out ExecContext>>, content: String) = openConsole(consoleClass)
         ?.apply {
             clear()
             setInputText(content)

@@ -16,33 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.exec.context
+package sap.commerce.toolset.logging.exec.context
 
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.exec.context.ExecResult
+import sap.commerce.toolset.logging.CxLoggerModel
 
-data class FlexibleSearchExecutionResult(
+data class LoggingExecResult(
     val statusCode: Int = HttpStatus.SC_OK,
-    override val result: String? = null,
-    override val output: String? = null,
-    override val replicaContext: ReplicaContext? = null,
     override val errorMessage: String? = null,
     override val errorDetailMessage: String? = null,
-) : ConsoleAwareExecutionResult {
+    private val result: List<CxLoggerModel>? = null,
+) : ExecResult {
 
-    val hasDataRows: Boolean
-        get() = output?.trim()?.contains("\n") ?: false
+    val loggers
+        get() = result
+            ?.distinctBy { it.name }
+            ?.associateBy { it.name }
 
-    companion object {
-        fun from(result: DefaultExecutionResult) = FlexibleSearchExecutionResult(
-            statusCode = result.statusCode,
-            result = result.result,
-            output = result.output,
-            replicaContext = result.replicaContext,
-            errorMessage = result.errorMessage,
-            errorDetailMessage = result.errorDetailMessage,
-        )
-    }
+    val hasError
+        get() = errorMessage != null
 }

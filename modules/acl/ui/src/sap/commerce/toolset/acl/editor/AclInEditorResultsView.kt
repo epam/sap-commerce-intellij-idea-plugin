@@ -29,13 +29,13 @@ import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.ui.editor.InEditorResultsView
 
 @Service(Service.Level.PROJECT)
-class AclInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<AclSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
+class AclInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<AclSplitEditor, DefaultExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: AclSplitEditor, results: Collection<DefaultExecutionResult>): DialogPanel = results.firstOrNull()
+    override suspend fun render(fileEditor: AclSplitEditor, results: Collection<DefaultExecResult>): DialogPanel = results.firstOrNull()
         .takeIf { results.size == 1 }
         ?.let { result ->
             panelView {

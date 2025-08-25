@@ -34,16 +34,16 @@ import org.apache.solr.client.solrj.request.QueryRequest
 import org.apache.solr.client.solrj.response.CoreAdminResponse
 import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
-import sap.commerce.toolset.exec.DefaultExecutionClient
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.DefaultExecClient
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
-import sap.commerce.toolset.solr.exec.context.SolrQueryExecutionContext
+import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.io.Serial
 
 @Service(Service.Level.PROJECT)
-class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<SolrQueryExecutionContext>(project, coroutineScope) {
+class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<SolrQueryExecContext>(project, coroutineScope) {
 
     fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
@@ -51,7 +51,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
         .map { it.core }
         .toTypedArray()
 
-    override suspend fun execute(context: SolrQueryExecutionContext): DefaultExecutionResult {
+    override suspend fun execute(context: SolrQueryExecContext): DefaultExecResult {
         val settings = solrConnectionSettings(project)
         val solrQuery = buildSolrQuery(context)
         val queryRequest = buildQueryRequest(solrQuery, settings)
@@ -60,12 +60,12 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
         return buildHttpSolrClient(url)
             .runCatching { request(queryRequest) }
             .map { namedList ->
-                DefaultExecutionResult(
+                DefaultExecResult(
                     output = (namedList["response"] as String).takeIf { it.isNotBlank() }
                 )
             }
             .getOrElse {
-                DefaultExecutionResult(
+                DefaultExecResult(
                     errorMessage = it.message,
                     statusCode = HttpStatus.SC_BAD_GATEWAY
                 )
@@ -107,19 +107,19 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
         responseParser = NoOpResponseParser("json")
     }
 
-    private fun buildSolrQuery(queryObject: SolrQueryExecutionContext) = SolrQuery().apply {
+    private fun buildSolrQuery(queryObject: SolrQueryExecContext) = SolrQuery().apply {
         rows = queryObject.rows
         query = queryObject.content
         setParam("wt", "json")
     }
 
     // active or default
-    private fun solrConnectionSettings(project: Project) = SolrExecService.getInstance(project).activeConnection
+    private fun solrConnectionSettings(project: Project) = SolrExecConnectionService.getInstance(project).activeConnection
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -4606760283632482489L
 
-        fun getInstance(project: Project): SolrExecutionClient = project.service()
+        fun getInstance(project: Project): SolrExecClient = project.service()
     }
 }

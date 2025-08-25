@@ -20,7 +20,7 @@ package sap.commerce.toolset.hac.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.ui.HacConnectionSettingsDialog
 import java.awt.Component
 import java.awt.event.InputEvent
@@ -34,7 +34,7 @@ class EditActiveHacConnectionAction : HacConnectionAction("Edit active connectio
         val component = (eventSource as? Component)
             ?: return
 
-        val execService = HacExecService.getInstance(project)
+        val execService = HacExecConnectionService.getInstance(project)
         val mutableSettings = execService.activeConnection.mutable()
         if (HacConnectionSettingsDialog(project, component, mutableSettings).showAndGet()) {
             execService.save(mutableSettings.immutable())

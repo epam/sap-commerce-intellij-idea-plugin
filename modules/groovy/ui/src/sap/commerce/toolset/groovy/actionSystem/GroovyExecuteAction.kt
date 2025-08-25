@@ -25,12 +25,12 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.settings.yDeveloperSettings
@@ -51,11 +51,11 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val prefix = fileName ?: "script"
 
         val transactionMode = project.yDeveloperSettings.groovySettings.txMode
-        val executionClient = GroovyExecutionClient.getInstance(project)
+        val executionClient = GroovyExecClient.getInstance(project)
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
-                GroovyExecutionContext(
-                    executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
+                GroovyExecContext(
+                    executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode,
                     replicaContext = it
@@ -63,8 +63,8 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
             }
             .takeIf { it.isNotEmpty() }
             ?: listOf(
-                GroovyExecutionContext(
-                    executionTitle = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
+                GroovyExecContext(
+                    executionTitle = "$prefix | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode
                 )
@@ -72,14 +72,14 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
         if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
+            fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecContext.DEFAULT_TITLE}")
             var completed = 0
 
             executionClient.execute(
                 contexts = contexts,
                 resultCallback = { _, _ ->
                     completed++
-                    fileEditor.showLoader("$prefix | $completed of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
+                    fileEditor.showLoader("$prefix | $completed of ${contexts.size} | ${GroovyExecContext.DEFAULT_TITLE}")
                 },
                 afterCallback = { _, results ->
                     fileEditor.renderExecutionResults(results)
@@ -87,7 +87,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 },
                 onError = { _, e ->
                     fileEditor.renderExecutionResults(listOf(
-                        DefaultExecutionResult(
+                        DefaultExecResult(
                             errorMessage = e.message,
                             errorDetailMessage = e.stackTraceToString()
                         )

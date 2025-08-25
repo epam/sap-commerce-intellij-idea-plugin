@@ -29,8 +29,8 @@ import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.i18n
 
@@ -50,8 +50,8 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-        val settings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecutionContext.defaultSettings(project) }
-        val context = FlexibleSearchExecutionContext(
+        val settings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings(project) }
+        val context = FlexibleSearchExecContext(
             content = content,
             settings = settings
         )
@@ -60,7 +60,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 
-            FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 fileEditor.renderExecutionResult(result)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
@@ -71,7 +71,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole
         } else {
             val console = openConsole(project, content) ?: return
 
-            FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 console.print(result)
             }
         }

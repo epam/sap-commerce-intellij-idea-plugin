@@ -20,7 +20,7 @@ package sap.commerce.toolset.solr.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.solr.exec.SolrExecService
+import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.ui.SolrConnectionSettingsDialog
 import java.awt.Component
 import java.awt.event.InputEvent
@@ -34,7 +34,7 @@ class EditActiveSolrConnectionAction : SolrConnectionAction("Edit active connect
         val component = (eventSource as? Component)
             ?: return
 
-        val execService = SolrExecService.getInstance(project)
+        val execService = SolrExecConnectionService.getInstance(project)
         val mutableSettings = execService.activeConnection.mutable()
         if (SolrConnectionSettingsDialog(project, component, mutableSettings).showAndGet()) {
             execService.save(mutableSettings.immutable())

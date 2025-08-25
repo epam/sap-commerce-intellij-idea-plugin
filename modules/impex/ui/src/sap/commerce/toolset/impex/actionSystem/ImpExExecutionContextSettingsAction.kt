@@ -28,12 +28,12 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import javax.swing.LayoutFocusTraversalPolicy
 
-class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecutionContext.ModifiableSettings>() {
+class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecContext.ModifiableSettings>() {
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
+    override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
         .let {
             """<pre>
  · validation mode:       ${it.validationMode.title}
@@ -47,17 +47,17 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         }
 
     override fun settings(e: AnActionEvent, project: Project) = e
-        .impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
+        .impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
         .modifiable()
 
-    override fun applySettings(editor: Editor, settings: ImpExExecutionContext.ModifiableSettings) {
-        editor.putUserData(ImpExExecutionContext.KEY_EXECUTION_SETTINGS, settings.immutable())
+    override fun applySettings(editor: Editor, settings: ImpExExecContext.ModifiableSettings) {
+        editor.putUserData(ImpExExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
-    override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecutionContext.ModifiableSettings) = panel {
+    override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecContext.ModifiableSettings) = panel {
         row {
             comboBox(
-                EnumComboBoxModel(ImpExExecutionContext.ValidationMode::class.java),
+                EnumComboBoxModel(ImpExExecContext.ValidationMode::class.java),
                 renderer = SimpleListCellRenderer.create { label, value, _ ->
                     label.text = value.title
                 })
@@ -65,7 +65,7 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
                 .label("Validation mode:")
                 .comment("Read more about ImpEx validation modes <a href='link'>here</a>.")
                 { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/c703c0bd88bd4281a09163658c66fac8.html?locale=en-US") }
-                .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ImpExExecutionContext.ValidationMode.IMPORT_STRICT })
+                .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ImpExExecContext.ValidationMode.IMPORT_STRICT })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -93,13 +93,13 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         row {
             checkBox("Enable code execution")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.enableCodeExecution.booleanValue }, { value -> settings.enableCodeExecution = ImpExExecutionContext.Toggle.of(value) })
+                .bindSelected({ settings.enableCodeExecution.booleanValue }, { value -> settings.enableCodeExecution = ImpExExecContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             checkBox("Legacy mode")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = ImpExExecutionContext.Toggle.of(value) })
+                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = ImpExExecContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -107,7 +107,7 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
                 .align(AlignX.FILL)
                 .comment("Enables the <a href='link'>Service Layer Direct</a> mode.")
                 { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/ccf4dd14636b4f7eac2416846ffd5a70.html?locale=en-US") }
-                .bindSelected({ settings.sldEnabled.booleanValue }, { value -> settings.sldEnabled = ImpExExecutionContext.Toggle.of(value) })
+                .bindSelected({ settings.sldEnabled.booleanValue }, { value -> settings.sldEnabled = ImpExExecContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -115,7 +115,7 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
                 .align(AlignX.FILL)
                 .comment("Read more about distributed ImpEx <a href='link'>here</a>.")
                 { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/f849db85d68740ed870e729a3688a19d.html?locale=en-US") }
-                .bindSelected({ settings.distributedMode.booleanValue }, { value -> settings.distributedMode = ImpExExecutionContext.Toggle.of(value) })
+                .bindSelected({ settings.distributedMode.booleanValue }, { value -> settings.distributedMode = ImpExExecContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
     }
         .apply {

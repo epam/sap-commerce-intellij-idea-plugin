@@ -16,13 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.exec.context
+package sap.commerce.toolset.exec
 
-interface ConsoleAwareExecutionResult : ExecutionResult {
-    val result: String?
-    val output: String?
-    val replicaContext: ReplicaContext?
+object ExecConstants {
+    const val DEFAULT_HOST_URL = "localhost"
+    const val DEFAULT_SESSION_COOKIE_NAME = "JSESSIONID"
 
-    val hasError
-        get() = errorMessage != null
+    const val HTTP_PROTOCOL = "http://"
+    const val HTTPS_PROTOCOL = "https://"
+
+    const val URL_PORT_DELIMITER = ":"
 }

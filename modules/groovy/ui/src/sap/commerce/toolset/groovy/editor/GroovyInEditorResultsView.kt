@@ -28,7 +28,7 @@ import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.ui.editor.InEditorResultsView
 import java.lang.Boolean
 import javax.swing.JComponent
@@ -39,9 +39,9 @@ import kotlin.let
 import kotlin.takeIf
 
 @Service(Service.Level.PROJECT)
-class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<GroovySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
+class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<GroovySplitEditor, DefaultExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: GroovySplitEditor, results: Collection<DefaultExecutionResult>): JComponent {
+    override suspend fun render(fileEditor: GroovySplitEditor, results: Collection<DefaultExecResult>): JComponent {
         return results.firstOrNull()
             .takeIf { results.size == 1 }
             ?.let { result ->

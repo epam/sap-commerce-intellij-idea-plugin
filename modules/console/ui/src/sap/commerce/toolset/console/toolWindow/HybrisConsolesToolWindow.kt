@@ -34,7 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleProvider
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
@@ -74,7 +74,7 @@ class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope)
             val console = event.source.asSafely<JBEditorTabs>()
                 ?.selectedInfo
                 ?.component
-                ?.asSafely<HybrisConsole<in ExecutionContext>>()
+                ?.asSafely<HybrisConsole<in ExecContext>>()
                 ?: return@addChangeListener
 
 
@@ -89,13 +89,13 @@ class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope)
         add(rootPanel)
     }
 
-    var activeConsole: HybrisConsole<out ExecutionContext>
+    var activeConsole: HybrisConsole<out ExecContext>
         set(console) {
             tabsPanel.selectedIndex = consoles.indexOf(console)
         }
         get() = consoles[tabsPanel.selectedIndex]
 
-    fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? = consoles
+    fun <C : HybrisConsole<out ExecContext>> findConsole(consoleClass: KClass<C>): C? = consoles
         .firstNotNullOfOrNull { consoleClass.safeCast(it) }
 
     companion object {

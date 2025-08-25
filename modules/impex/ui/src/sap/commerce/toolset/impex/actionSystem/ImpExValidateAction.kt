@@ -29,8 +29,8 @@ import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.editor.impexSplitEditorEx
-import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.ImpExExecClient
+import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 
 class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditorEx>(
     ImpExLanguage,
@@ -44,10 +44,10 @@ class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEdito
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-        val settings = e.impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
-        val context = ImpExExecutionContext(
+        val settings = e.impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
+        val context = ImpExExecContext(
             content = content,
-            executionMode = ImpExExecutionContext.ExecutionMode.VALIDATE,
+            executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
             settings = settings
         )
 
@@ -55,7 +55,7 @@ class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEdito
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 
-            ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 fileEditor.renderExecutionResult(result)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
@@ -66,7 +66,7 @@ class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEdito
         } else {
             val console = openConsole(project, content) ?: return
 
-            ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 console.print(result)
             }
         }

@@ -28,11 +28,11 @@ import com.intellij.openapi.util.Key
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleService
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
-abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F : FileEditor>(
+abstract class ExecuteStatementAction<C : HybrisConsole<out ExecContext>, F : FileEditor>(
     val language: Language,
     val consoleClass: KClass<C>,
     private val name: String,

@@ -30,14 +30,14 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.exec.settings.state.shortenConnectionName
 import sap.commerce.toolset.extensions.ExtensionsService
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.logging.exec.LoggingExecutionClient
-import sap.commerce.toolset.logging.exec.context.LoggingExecutionContext
-import sap.commerce.toolset.logging.exec.context.LoggingExecutionResult
+import sap.commerce.toolset.logging.exec.LoggingExecClient
+import sap.commerce.toolset.logging.exec.context.LoggingExecContext
+import sap.commerce.toolset.logging.exec.context.LoggingExecResult
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.util.*
@@ -53,7 +53,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     val stateInitialized: Boolean
         get() {
-            val server = HacExecService.getInstance(project).activeConnection
+            val server = HacExecConnectionService.getInstance(project).activeConnection
             return state(server).initialized
         }
 
@@ -67,19 +67,19 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     }
 
     fun logger(loggerIdentifier: String): CxLoggerModel? {
-        val server = HacExecService.getInstance(project).activeConnection
+        val server = HacExecConnectionService.getInstance(project).activeConnection
         return if (stateInitialized) state(server).get(loggerIdentifier) else null
     }
 
-    fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecutionResult) -> Unit = { _, _ -> }) {
-        val server = HacExecService.getInstance(project).activeConnection
-        val context = LoggingExecutionContext(
+    fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecResult) -> Unit = { _, _ -> }) {
+        val server = HacExecConnectionService.getInstance(project).activeConnection
+        val context = LoggingExecContext(
             executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName}]...",
             loggerName = loggerName,
             logLevel = logLevel,
         )
         fetching = true
-        LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+        LoggingExecClient.getInstance(project).execute(context) { coroutineScope, result ->
             updateState(result.loggers, server)
             callback.invoke(coroutineScope, result)
 
@@ -101,10 +101,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun fetch() = fetch(HacExecService.getInstance(project).activeConnection)
+    fun fetch() = fetch(HacExecConnectionService.getInstance(project).activeConnection)
 
     fun fetch(server: HacConnectionSettingsState) {
-        val context = GroovyExecutionContext(
+        val context = GroovyExecContext(
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
             content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
             transactionMode = TransactionMode.ROLLBACK
@@ -112,7 +112,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
         fetching = true
 
-        GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+        GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
             coroutineScope.launch {
                 val loggers = result.result
                     ?.split("\n")

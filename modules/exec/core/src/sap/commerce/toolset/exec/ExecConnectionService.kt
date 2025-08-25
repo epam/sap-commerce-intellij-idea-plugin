@@ -19,23 +19,31 @@
 package sap.commerce.toolset.exec
 
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.context.ExecutionContext
-import java.io.Serial
+import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
+import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.project.PropertyService
 
-abstract class DefaultExecutionClient<E : ExecutionContext>(
-    project: Project,
-    coroutineScope: CoroutineScope
-) : ExecutionClient<E, DefaultExecutionResult>(project, coroutineScope) {
+abstract class ExecConnectionService<T : ExecConnectionSettingsState> {
 
-    override suspend fun onError(context: E, exception: Throwable) = DefaultExecutionResult(
-        errorMessage = exception.message,
-        errorDetailMessage = exception.stackTraceToString(),
+    abstract var activeConnection: T
+    abstract val connections: Set<T>
+
+    abstract fun default(): T
+    abstract fun add(settings: T)
+    abstract fun remove(settings: T, scope: ExecConnectionScope = settings.scope)
+    abstract fun save(settings: Map<ExecConnectionScope, Set<T>>)
+
+    fun save(settings: Collection<T>) = save(
+        settings.groupBy { it.scope }
+            .mapValues { (_, v) -> v.toSet() }
     )
 
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = -7785886660763821295L
+    fun save(settings: T) {
+        remove(settings)
+        add(settings)
     }
+
+    fun getPropertyOrDefault(project: Project, key: String, fallback: String) = PropertyService.getInstance(project)
+        .findProperty(key)
+        ?: fallback
 }

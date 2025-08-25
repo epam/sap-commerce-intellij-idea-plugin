@@ -26,29 +26,29 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
-import sap.commerce.toolset.exec.ExecutionClient
+import sap.commerce.toolset.exec.ExecClient
 import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.flexibleSearch.exec.context.TableBuilder
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class FlexibleSearchExecutionClient(
+class FlexibleSearchExecClient(
     project: Project,
     coroutineScope: CoroutineScope
-) : ExecutionClient<FlexibleSearchExecutionContext, FlexibleSearchExecutionResult>(project, coroutineScope) {
+) : ExecClient<FlexibleSearchExecContext, FlexibleSearchExecResult>(project, coroutineScope) {
 
-    override suspend fun onError(context: FlexibleSearchExecutionContext, exception: Throwable) = FlexibleSearchExecutionResult(
+    override suspend fun onError(context: FlexibleSearchExecContext, exception: Throwable) = FlexibleSearchExecResult(
         errorMessage = exception.message,
         errorDetailMessage = exception.stackTraceToString()
     )
 
-    override suspend fun execute(context: FlexibleSearchExecutionContext): FlexibleSearchExecutionResult {
-        val settings = HacExecService.getInstance(project).activeConnection
+    override suspend fun execute(context: FlexibleSearchExecContext): FlexibleSearchExecResult {
+        val settings = HacExecConnectionService.getInstance(project).activeConnection
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
@@ -58,7 +58,7 @@ class FlexibleSearchExecutionClient(
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
-        if (statusCode != HttpStatus.SC_OK || response.entity == null) return FlexibleSearchExecutionResult(
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) return FlexibleSearchExecResult(
             statusCode = HttpStatus.SC_BAD_REQUEST,
             errorMessage = "[$statusCode] ${statusLine.reasonPhrase}",
         )
@@ -74,16 +74,16 @@ class FlexibleSearchExecutionClient(
                 ?.let { it["message"] }
                 ?.toString()
                 ?.let {
-                    FlexibleSearchExecutionResult(
+                    FlexibleSearchExecResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = it
                     )
                 }
-                ?: FlexibleSearchExecutionResult(
+                ?: FlexibleSearchExecResult(
                     output = buildTableResult(json)
                 )
         } catch (e: Exception) {
-            return FlexibleSearchExecutionResult(
+            return FlexibleSearchExecResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 errorMessage = "Cannot parse response from the server: ${e.message} $actionUrl"
             )
@@ -104,7 +104,7 @@ class FlexibleSearchExecutionClient(
     companion object {
         @Serial
         private const val serialVersionUID: Long = -1238922198933240517L
-        fun getInstance(project: Project): FlexibleSearchExecutionClient = project.service()
+        fun getInstance(project: Project): FlexibleSearchExecClient = project.service()
     }
 
 }

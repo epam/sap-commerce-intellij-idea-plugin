@@ -29,12 +29,12 @@ import kotlinx.coroutines.launch
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
@@ -61,7 +61,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             ?.let { PsiTreeUtil.findChildOfType(it, PolyglotQueryTypeKeyName::class.java) }
             ?.typeName
             ?: "Item"
-        val executionContextSettings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecutionContext.defaultSettings(project) }
+        val executionContextSettings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings(project) }
 
         if (fileEditor.inEditorParameters) executeParametrizedQuery(project, fileEditor, e, itemType, content, executionContextSettings)
         else executeDirectQuery(project, fileEditor, e, itemType, content, executionContextSettings)
@@ -73,7 +73,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         e: AnActionEvent,
         typeCode: String,
         content: String,
-        executionContextSettings: FlexibleSearchExecutionContext.Settings
+        executionContextSettings: FlexibleSearchExecContext.Settings
     ) {
         val missingParameters = fileEditor.virtualParameters?.values
             ?.filter { it.sqlValue.isBlank() }
@@ -81,7 +81,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             ?.joinToString(", ", "missing values for [", "]") { it.name }
 
         if (missingParameters != null) {
-            val result = FlexibleSearchExecutionResult(
+            val result = FlexibleSearchExecResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 errorMessage = missingParameters
             )
@@ -104,9 +104,9 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         e: AnActionEvent,
         typeCode: String,
         content: String,
-        executionContextSettings: FlexibleSearchExecutionContext.Settings
+        executionContextSettings: FlexibleSearchExecContext.Settings
     ) {
-        val context = FlexibleSearchExecutionContext(
+        val context = FlexibleSearchExecContext(
             content = content,
             queryMode = QueryMode.PolyglotQuery,
             settings = executionContextSettings
@@ -116,7 +116,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context.executionTitle)
 
-            FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 val pks = getPKsFromDirectQuery(result)
 
                 if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks, executionContextSettings) { c, r ->
@@ -127,7 +127,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         } else {
             val console = openConsole(project, content) ?: return
 
-            FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 val pks = getPKsFromDirectQuery(result)
 
                 if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks, executionContextSettings) { _, r ->
@@ -138,7 +138,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         }
     }
 
-    private fun getPKsFromDirectQuery(result: FlexibleSearchExecutionResult): String? = result.output
+    private fun getPKsFromDirectQuery(result: FlexibleSearchExecResult): String? = result.output
         ?.takeIf { it.isNotEmpty() }
         ?.replace("\n", ",")
         ?.replace("PK", "")
@@ -152,7 +152,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         fileEditor: PolyglotQuerySplitEditorEx,
         typeCode: String,
         content: String,
-        executionContextSettings: FlexibleSearchExecutionContext.Settings
+        executionContextSettings: FlexibleSearchExecContext.Settings
     ) {
         val virtualParameters = fileEditor.virtualParameters?.values
             ?.filter { it.sqlValue.isNotBlank() }
@@ -171,7 +171,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                 .<ItemModel>search(query, params)
                 .result.forEach { println it.pk }
         """.trimIndent()
-        val context = GroovyExecutionContext(
+        val context = GroovyExecContext(
             content = """
                             import de.hybris.platform.core.model.ItemModel
                             import de.hybris.platform.servicelayer.search.FlexibleSearchService
@@ -187,31 +187,31 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context.executionTitle)
 
-            GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 val pks = result.output?.takeIf { it.isNotEmpty() }
 
                 if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks, executionContextSettings) { c, r ->
                     renderInEditorExecutionResult(e, fileEditor, c, r)
                 }
                 else {
-                    renderInEditorExecutionResult(e, fileEditor, coroutineScope, FlexibleSearchExecutionResult.from(result))
+                    renderInEditorExecutionResult(e, fileEditor, coroutineScope, FlexibleSearchExecResult.from(result))
                 }
             }
         } else {
             val console = openConsole(project, content) ?: return
 
-            GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
                 val pks = result.output?.takeIf { it.isNotEmpty() }
 
                 if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks, executionContextSettings) { _, r ->
                     printConsoleExecutionResult(console, fileEditor, r)
                 }
-                else printConsoleExecutionResult(console, fileEditor, FlexibleSearchExecutionResult.from(result))
+                else printConsoleExecutionResult(console, fileEditor, FlexibleSearchExecResult.from(result))
             }
         }
     }
 
-    private fun printConsoleExecutionResult(console: HybrisPolyglotQueryConsole, fileEditor: PolyglotQuerySplitEditorEx, result: FlexibleSearchExecutionResult) {
+    private fun printConsoleExecutionResult(console: HybrisPolyglotQueryConsole, fileEditor: PolyglotQuerySplitEditorEx, result: FlexibleSearchExecResult) {
         console.print(fileEditor.virtualParameters?.values)
         console.print(result)
     }
@@ -220,7 +220,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         e: AnActionEvent,
         fileEditor: PolyglotQuerySplitEditorEx,
         coroutineScope: CoroutineScope,
-        result: FlexibleSearchExecutionResult
+        result: FlexibleSearchExecResult
     ) {
         fileEditor.renderExecutionResult(result)
         fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
@@ -232,11 +232,11 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
 
     private fun executeFlexibleSearchForPKs(
         project: Project, typeCode: String, pks: String,
-        executionContextSettings: FlexibleSearchExecutionContext.Settings,
-        exec: (CoroutineScope, FlexibleSearchExecutionResult) -> Unit
-    ) = FlexibleSearchExecutionClient.getInstance(project)
+        executionContextSettings: FlexibleSearchExecContext.Settings,
+        exec: (CoroutineScope, FlexibleSearchExecResult) -> Unit
+    ) = FlexibleSearchExecClient.getInstance(project)
         .execute(
-            FlexibleSearchExecutionContext(
+            FlexibleSearchExecContext(
                 content = "SELECT * FROM {$typeCode} WHERE {pk} in ($pks)",
                 settings = executionContextSettings
             )

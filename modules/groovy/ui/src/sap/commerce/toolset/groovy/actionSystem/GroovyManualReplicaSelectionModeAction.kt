@@ -21,7 +21,7 @@ package sap.commerce.toolset.groovy.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.ui.ManualReplicaSelectionDialog
 import java.awt.Component
 
@@ -31,7 +31,7 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = GroovyExecutionClient.getInstance(project).connectionContext
+        val replicaContexts = GroovyExecClient.getInstance(project).connectionContext
             .takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
             ?.replicaContexts
             ?: emptyList()

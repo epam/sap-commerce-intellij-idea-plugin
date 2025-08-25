@@ -24,10 +24,10 @@ import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import java.awt.BorderLayout
@@ -36,7 +36,7 @@ import java.io.Serial
 class HybrisPolyglotQueryConsole(
     project: Project,
     coroutineScope: CoroutineScope
-) : HybrisConsole<FlexibleSearchExecutionContext>(project, "[y] PolyglotQuery", PolyglotQueryLanguage, coroutineScope) {
+) : HybrisConsole<FlexibleSearchExecContext>(project, "[y] PolyglotQuery", PolyglotQueryLanguage, coroutineScope) {
 
     private lateinit var maxRowsSpinner: JBIntSpinner
 
@@ -52,10 +52,10 @@ class HybrisPolyglotQueryConsole(
         add(myPanel, BorderLayout.NORTH)
     }
 
-    override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
+    override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
         content = content,
         queryMode = QueryMode.PolyglotQuery,
-        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecContext.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }
@@ -79,13 +79,13 @@ class HybrisPolyglotQueryConsole(
 
     override fun title() = "Polyglot Query"
     override fun tip() = "Polyglot Persistence Query Language Console (available only for 1905+)"
-    override fun execute() = FlexibleSearchExecutionClient.getInstance(project).execute(
+    override fun execute() = FlexibleSearchExecClient.getInstance(project).execute(
         context = context,
         beforeCallback = { _ -> beforeExecution() },
         resultCallback = { _, result -> print(result) }
     )
 
-    override fun activeConnection() = HacExecService.getInstance(project).activeConnection
+    override fun activeConnection() = HacExecConnectionService.getInstance(project).activeConnection
 
     companion object {
         @Serial

@@ -30,7 +30,7 @@ import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.settings.state.presentationName
 import sap.commerce.toolset.exec.settings.state.shortenConnectionName
-import sap.commerce.toolset.hac.exec.HacExecService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
@@ -47,7 +47,7 @@ class ChooseHacConnectionAction : DefaultActionGroup() {
         val project = e?.project ?: return emptyArray()
         val actions = super.getChildren(e)
 
-        val execService = HacExecService.getInstance(project)
+        val execService = HacExecConnectionService.getInstance(project)
         val activeConnection = execService.activeConnection
         val connectionActions = execService.connections
             .map {
@@ -81,7 +81,7 @@ class ChooseHacConnectionAction : DefaultActionGroup() {
             presentation.isEnabledAndVisible = true
         }
 
-        val hacSettings = HacExecService.getInstance(project).activeConnection
+        val hacSettings = HacExecConnectionService.getInstance(project).activeConnection
         presentation.text = when (e.place) {
             ActionPlaces.EDITOR_TOOLBAR -> hacSettings.presentationName
             ConsoleUiConstants.PLACE_TOOLBAR -> null

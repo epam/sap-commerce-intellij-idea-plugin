@@ -29,13 +29,13 @@ import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleService
-import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecContext
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
 abstract class OpenInConsoleAction(
     private val fileType: FileType,
-    private val consoleClass: KClass<out HybrisConsole<out ExecutionContext>>,
+    private val consoleClass: KClass<out HybrisConsole<out ExecContext>>,
     private val text: String,
     private val description: String,
     private val icon: Icon? = HybrisIcons.Console.Actions.OPEN

@@ -16,14 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.exec
+package sap.commerce.toolset.impex.monitoring.exec.context
 
-object RemoteConstants {
-    const val DEFAULT_HOST_URL = "localhost"
-    const val DEFAULT_SESSION_COOKIE_NAME = "JSESSIONID"
+import sap.commerce.toolset.exec.context.ExecContext
 
-    const val HTTP_PROTOCOL = "http://"
-    const val HTTPS_PROTOCOL = "https://"
-
-    const val URL_PORT_DELIMITER = ":"
-}
+data class ImpExMonitorExecContext(
+    val timeOption: TimeOption,
+    val workingDir: String,
+) : ExecContext
