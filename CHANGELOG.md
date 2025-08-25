@@ -16,13 +16,16 @@
 - Refresh type renderer: The item type is not present in the `*items.xml` files [#1533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1533)
 - Refresh type renderer: The class for the item type was not found [#1534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1534)
 
-### Fixes
-- Enhance JVM Parameters only with Standalone JDK Module Exports during Integrationtestse [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
-- Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
+### `Solr` enhancements
+- Use own configuration pane for Solr-related connection settings [#1541](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1541)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)
+
+### Fixes
+- Enhance JVM Parameters only with Standalone JDK Module Exports during Integrationtestse [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
+- Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
 
 ## [2025.2.2]
 

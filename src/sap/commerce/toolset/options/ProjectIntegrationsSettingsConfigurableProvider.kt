@@ -39,9 +39,6 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.ui.HacConnectionSettingsListPanel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.solr.exec.SolrExecConnectionService
-import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
-import sap.commerce.toolset.solr.ui.SolrConnectionSettingsListPanel
 import javax.swing.DefaultComboBoxModel
 
 class ProjectIntegrationsSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
@@ -58,24 +55,14 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
         @Volatile
         private var isReset = false
         private val currentActiveHybrisConnection = HacExecConnectionService.getInstance(project).activeConnection
-        private val currentActiveSolrConnection = SolrExecConnectionService.getInstance(project).activeConnection
 
         private lateinit var activeCCv2SubscriptionComboBox: ComboBox<CCv2Subscription>
         private val activeHacServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
-        private val activeSolrServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
-        private val hacInstances = HacConnectionSettingsListPanel(project) { eventType, connections ->
+        private val hacInstances = HacConnectionSettingsListPanel(project) { _, connections ->
             if (!isReset) {
                 HacExecConnectionService.getInstance(project).save(connections)
 
                 updateModel(activeHacServerModel, activeHacServerModel.selectedItem as HacConnectionSettingsState?, connections)
-            }
-        }
-
-        private val solrInstances = SolrConnectionSettingsListPanel(project) { eventType, connections ->
-            if (!isReset) {
-                SolrExecConnectionService.getInstance(project).save(connections)
-
-                updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as SolrConnectionSettingsState?, connections)
             }
         }
 
@@ -135,35 +122,9 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
 
-                row {
-                    icon(HybrisIcons.Console.SOLR)
-                    comboBox(
-                        activeSolrServerModel,
-                        renderer = SimpleListCellRenderer.create("?") { it.presentationName }
-                    )
-                        .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
-                        .onApply {
-                            (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
-                                ?.let { settings -> SolrExecConnectionService.getInstance(project).activeConnection = settings }
-                        }
-                        .onIsModified {
-                            (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
-                                ?.let { it.uuid != SolrExecConnectionService.getInstance(project).activeConnection.uuid }
-                                ?: false
-                        }
-                        .align(AlignX.FILL)
-                }.layout(RowLayout.PARENT_GRID)
-
                 group(i18n("hybris.settings.project.remote_instances.hac.title"), false) {
                     row {
                         cell(hacInstances)
-                            .align(AlignX.FILL)
-                    }
-                }
-
-                group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
-                    row {
-                        cell(solrInstances)
                             .align(AlignX.FILL)
                     }
                 }
@@ -176,10 +137,8 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
             activeCCv2SubscriptionComboBox.selectedItem = ccv2DeveloperSettings.getActiveCCv2Subscription()
 
             hacInstances.setData(HacExecConnectionService.getInstance(project).connections)
-            solrInstances.setData(SolrExecConnectionService.getInstance(project).connections)
 
             updateModel(activeHacServerModel, currentActiveHybrisConnection, hacInstances.data)
-            updateModel(activeSolrServerModel, currentActiveSolrConnection, solrInstances.data)
 
             isReset = false
         }

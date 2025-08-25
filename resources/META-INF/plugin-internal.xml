@@ -71,7 +71,6 @@
     <actions>
         <action id="hybris.hac.openIntegrationsSettings" class="sap.commerce.toolset.actionSystem.IntegrationsOpenSettingsAction">
             <add-to-group group-id="sap.commerce.toolset.hac.chooseConnection"/>
-            <add-to-group group-id="sap.commerce.toolset.solr.chooseConnection"/>
         </action>
 
         <!--        <action id="GenerateDomModel"-->

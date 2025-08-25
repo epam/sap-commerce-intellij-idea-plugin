@@ -31,6 +31,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
@@ -60,6 +61,7 @@ abstract class ConnectionSettingsDialog<T: ExecConnectionSettingsState.Mutable>(
     protected lateinit var hostTextField: JBTextField
     protected lateinit var portTextField: JBTextField
     protected lateinit var sslProtocolCheckBox: JBCheckBox
+    protected lateinit var timeoutIntSpinner: JBIntSpinner
     protected lateinit var webrootTextField: JBTextField
     protected lateinit var usernameTextField: JBTextField
     protected lateinit var passwordTextField: JBPasswordField

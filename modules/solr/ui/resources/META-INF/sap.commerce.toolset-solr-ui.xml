@@ -18,11 +18,19 @@
 
 <idea-plugin>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable id="sap.commerce.toolset.solr.exec.settings" parentId="hybris.project.integrations.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             displayName="Integrations" order="first"
+                             provider="sap.commerce.toolset.solr.ui.options.ProjectSolrExecSettingsConfigurableProvider"/>
+    </extensions>
+
     <actions>
         <group id="sap.commerce.toolset.solr.chooseConnection" popup="true" searchable="false"
                class="sap.commerce.toolset.solr.actionSystem.ChooseSolrConnectionAction">
             <action class="sap.commerce.toolset.solr.actionSystem.AddSolrConnectionAction"/>
             <action class="sap.commerce.toolset.solr.actionSystem.EditActiveSolrConnectionAction"/>
+            <action class="sap.commerce.toolset.solr.actionSystem.SolrOpenSettingsAction"/>
 
             <add-to-group anchor="first" group-id="hybris.console.actionGroup"/>
         </group>
