@@ -23,6 +23,24 @@ import com.intellij.util.xmlb.annotations.Tag
 
 @Tag("HybrisApplicationSettings")
 data class CCv2ApplicationSettingsState(
-    @JvmField @OptionTag val ccv2ReadTimeout: Int = 60,
-    @JvmField val ccv2Subscriptions: List<CCv2Subscription> = emptyList()
-)
+    @JvmField @OptionTag val readTimeout: Int = 60,
+    @JvmField val subscriptions: List<CCv2Subscription> = emptyList()
+) {
+    fun mutable() = Mutable(
+        readTimeout = readTimeout,
+        subscriptions = subscriptions
+            .map { it.mutable() }
+            .toMutableList()
+    )
+
+    data class Mutable(
+        var readTimeout: Int,
+        var subscriptions: MutableList<CCv2Subscription.Mutable>
+    ) {
+        fun immutable() = CCv2ApplicationSettingsState(
+            readTimeout = readTimeout,
+            subscriptions = subscriptions
+                .map { it.immutable() }
+        )
+    }
+}

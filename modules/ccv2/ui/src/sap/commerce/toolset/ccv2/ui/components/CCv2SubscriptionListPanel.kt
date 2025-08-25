@@ -22,7 +22,7 @@ import com.intellij.ui.AddEditDeleteListPanel
 import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.ui.JBEmptyBorder
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
+import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionDialog
 import java.awt.Component
 import java.io.Serial
@@ -32,7 +32,7 @@ import javax.swing.JComponent
 import javax.swing.JList
 import javax.swing.ListCellRenderer
 
-internal class CCv2SubscriptionListPanel(initialList: List<CCv2SubscriptionDto>) : AddEditDeleteListPanel<CCv2SubscriptionDto>(null, initialList) {
+internal class CCv2SubscriptionListPanel(initialList: List<CCv2Subscription.Mutable> = emptyList()) : AddEditDeleteListPanel<CCv2Subscription.Mutable>(null, initialList) {
 
     private var myListCellRenderer: ListCellRenderer<*>? = null
 
@@ -40,14 +40,14 @@ internal class CCv2SubscriptionListPanel(initialList: List<CCv2SubscriptionDto>)
         ListSpeedSearch.installOn(myList) { it.name }
     }
 
-    override fun findItemToAdd(): CCv2SubscriptionDto? {
-        val newSubscription = CCv2SubscriptionDto()
+    override fun findItemToAdd(): CCv2Subscription.Mutable? {
+        val newSubscription = CCv2Subscription.Mutable()
 
         return if (CCv2SubscriptionDialog(this, newSubscription, "Create CCv2 Subscription").showAndGet()) newSubscription
         else null
     }
 
-    override fun editSelectedItem(item: CCv2SubscriptionDto) = if (CCv2SubscriptionDialog(this, item, "Edit CCv2 Subscription").showAndGet()) item
+    override fun editSelectedItem(item: CCv2Subscription.Mutable) = if (CCv2SubscriptionDialog(this, item, "Edit CCv2 Subscription").showAndGet()) item
     else null
 
     override fun getListCellRenderer(): ListCellRenderer<*> {
@@ -69,7 +69,7 @@ internal class CCv2SubscriptionListPanel(initialList: List<CCv2SubscriptionDto>)
         return myListCellRenderer!!
     }
 
-    var data: List<CCv2SubscriptionDto>
+    var data: List<CCv2Subscription.Mutable>
         get() = Collections.list(myListModel.elements())
         set(itemList) {
             myListModel.clear()

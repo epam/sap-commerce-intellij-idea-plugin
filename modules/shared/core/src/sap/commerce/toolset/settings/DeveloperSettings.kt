@@ -26,7 +26,7 @@ import sap.commerce.toolset.settings.state.DeveloperSettingsState
 
 @State(
     name = "HybrisDeveloperSpecificProjectSettings",
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
 class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {

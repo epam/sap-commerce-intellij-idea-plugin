@@ -22,20 +22,25 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.state.CCv2DeveloperSettingsState
 import sap.commerce.toolset.ccv2.settings.state.SUser
 
 @State(
     name = "[y] CCv2 Developer Settings",
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
-class CCv2DeveloperSettings : SerializablePersistentStateComponent<CCv2DeveloperSettingsState>(CCv2DeveloperSettingsState()), ModificationTracker {
+class CCv2DeveloperSettings(private val project: Project) : SerializablePersistentStateComponent<CCv2DeveloperSettingsState>(CCv2DeveloperSettingsState()), ModificationTracker {
 
     var activeCCv2SubscriptionID
         get() = state.activeCCv2SubscriptionID
         set(value) {
             updateState { it.copy(activeCCv2SubscriptionID = value) }
+
+            project.messageBus
+                .syncPublisher(CCv2SettingsListener.TOPIC)
+                .onActivation(getActiveCCv2Subscription())
         }
     var ccv2Settings
         get() = state.ccv2Settings
@@ -48,10 +53,9 @@ class CCv2DeveloperSettings : SerializablePersistentStateComponent<CCv2Developer
 
     fun getSUser(id: String) = ccv2Settings
         .sUsers[id]
-        ?: SUser()
-            .also {
-                it.id = id
-            }
+        ?: SUser(
+            id = id,
+        )
 
     override fun getModificationCount() = stateModificationCount
 

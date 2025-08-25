@@ -23,12 +23,12 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
-import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
+import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import java.awt.Component
 
 internal class CCv2SubscriptionDialog(
     parentComponent: Component,
-    private val subscription: CCv2SubscriptionDto,
+    private val subscription: CCv2Subscription.Mutable,
     dialogTitle: String
 ) : DialogWrapper(null, parentComponent, false, IdeModalityType.IDE) {
 

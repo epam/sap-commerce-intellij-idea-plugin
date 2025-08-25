@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
     implementation(project(":exec-core"))
+    implementation(project(":exec-ui"))
     implementation(project(":ccv2-core"))
     implementation(project(":ccv2-exec"))
     implementation(project(":groovy-exec"))

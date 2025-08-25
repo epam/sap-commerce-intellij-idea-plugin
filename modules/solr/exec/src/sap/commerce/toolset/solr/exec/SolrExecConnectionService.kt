@@ -48,13 +48,13 @@ class SolrExecConnectionService(private val project: Project) : ExecConnectionSe
             project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onActiveConnectionChanged(value)
         }
 
-    override val connections: Set<SolrConnectionSettingsState>
-        get() = buildSet {
+    override val connections: List<SolrConnectionSettingsState>
+        get() = buildList {
             addAll(SolrExecDeveloperSettings.getInstance(project).connections)
             addAll(SolrExecProjectSettings.getInstance(project).connections)
         }
             .takeIf { it.isNotEmpty() }
-            ?: setOf(default())
+            ?: listOf(default())
 
     override fun add(settings: SolrConnectionSettingsState) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
@@ -74,7 +74,6 @@ class SolrExecConnectionService(private val project: Project) : ExecConnectionSe
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
-                .toSet()
 
             project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
@@ -82,15 +81,14 @@ class SolrExecConnectionService(private val project: Project) : ExecConnectionSe
         ExecConnectionScope.PROJECT -> with(SolrExecProjectSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
-                .toSet()
 
             project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
     }
 
-    override fun save(settings: Map<ExecConnectionScope, Set<SolrConnectionSettingsState>>) {
-        SolrExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptySet() }
-        SolrExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptySet() }
+    override fun save(settings: Map<ExecConnectionScope, List<SolrConnectionSettingsState>>) {
+        SolrExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
+        SolrExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
 
         project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onSave(settings)
     }

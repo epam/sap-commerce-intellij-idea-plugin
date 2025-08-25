@@ -28,7 +28,7 @@ import sap.commerce.toolset.settings.state.ApplicationSettingsState
 @State(
     name = "[y] Global Settings",
     category = SettingsCategory.PLUGINS,
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.DISABLED)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service
 class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()), ModificationTracker {

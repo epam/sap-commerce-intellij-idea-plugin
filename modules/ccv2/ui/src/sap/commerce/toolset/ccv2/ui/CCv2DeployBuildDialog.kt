@@ -68,7 +68,7 @@ class CCv2DeployBuildDialog(
         title = "Schedule CCv2 Build Deployment"
         super.init()
 
-        val subscriptions = CCv2ProjectSettings.getInstance().ccv2Subscriptions
+        val subscriptions = CCv2ProjectSettings.getInstance().subscriptions
 
         isOKActionEnabled = false
         subscriptionComboBox.isEnabled = false

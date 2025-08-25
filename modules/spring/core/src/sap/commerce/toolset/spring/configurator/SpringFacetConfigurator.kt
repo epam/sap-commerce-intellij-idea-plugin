@@ -26,6 +26,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -47,6 +48,8 @@ class SpringFacetConfigurator : ModuleFacetConfigurator {
         moduleDescriptor: ModuleDescriptor,
         modifiableRootModel: ModifiableRootModel
     ) {
+        if (Plugin.SPRING.isDisabled()) return
+
         when (moduleDescriptor) {
             is YBackofficeSubModuleDescriptor -> return
             is PlatformModuleDescriptor -> configure(module, moduleDescriptor, modifiableFacetModel, emptySet())

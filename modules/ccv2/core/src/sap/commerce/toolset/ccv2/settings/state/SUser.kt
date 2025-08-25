@@ -17,34 +17,24 @@
  */
 package sap.commerce.toolset.ccv2.settings.state
 
-import com.intellij.openapi.components.BaseState
+import com.intellij.util.xmlb.annotations.OptionTag
 
-class SUser : BaseState(), Comparable<SUser> {
-    var id by string()
-    var alias by string(null)
-
-    override fun compareTo(other: SUser) = toString().compareTo(other.toString())
-
-    override fun toString() = alias
-        ?: id
-        ?: "?"
-
-    fun toDto() = SUserDto(id, alias)
-}
-
-data class SUserDto(
-    var id: String? = null,
-    var alias: String? = null,
+data class SUser(
+    @JvmField @OptionTag val id: String,
+    @JvmField @OptionTag val alias: String? = null
 ) {
-    fun toModel() = SUser()
-        .also {
-            it.id = id
-            it.alias = alias
-        }
+    fun mutable() = Mutable(
+        id = id,
+        alias = alias
+    )
 
-    fun copy() = SUserDto(id, alias)
-
-    override fun toString() = alias
-        ?: id
-        ?: "?"
+    data class Mutable(
+        var id: String,
+        var alias: String?,
+    ) {
+        fun immutable() = SUser(
+            id = id,
+            alias = alias
+        )
+    }
 }

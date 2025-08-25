@@ -21,8 +21,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <projectConfigurable id="sap.commerce.toolset.solr.exec.settings" parentId="hybris.project.integrations.settings"
                              nonDefaultProject="true" dynamic="true"
-                             displayName="Integrations" order="first"
-                             provider="sap.commerce.toolset.solr.ui.options.ProjectSolrExecSettingsConfigurableProvider"/>
+                             displayName="Solr" order="first"
+                             provider="sap.commerce.toolset.solr.options.ProjectSolrExecSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>

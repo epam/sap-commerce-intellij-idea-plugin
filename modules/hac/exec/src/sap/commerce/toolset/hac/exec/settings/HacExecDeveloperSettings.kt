@@ -26,7 +26,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacExecDeveloperSettingsStat
 
 @State(
     name = "[y] hAC Exec Developer Settings",
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
 internal class HacExecDeveloperSettings : SerializablePersistentStateComponent<HacExecDeveloperSettingsState>(HacExecDeveloperSettingsState()), ModificationTracker {

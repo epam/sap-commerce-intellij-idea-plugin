@@ -23,6 +23,7 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
 object CCv2SubscriptionsComboBoxModelFactory {
@@ -35,14 +36,14 @@ object CCv2SubscriptionsComboBoxModelFactory {
         onSelectedItem: ((Any?) -> Unit)? = null
     ) = CCv2SubscriptionsComboBoxModel(onSelectedItem)
         .also {
-            val currentSubscriptions = CCv2ProjectSettings.getInstance().ccv2Subscriptions
+            val currentSubscriptions = CCv2ProjectSettings.getInstance().subscriptions
             initModel(project, it, selectedSubscription, currentSubscriptions, allowBlank)
 
             if (disposable != null) {
                 with(project.messageBus.connect(disposable)) {
                     subscribe(CCv2SettingsListener.TOPIC, object : CCv2SettingsListener {
-                        override fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) {
-                            initModel(project, it, selectedSubscription, subscriptions, allowBlank)
+                        override fun onChange(state: CCv2ApplicationSettingsState) {
+                            initModel(project, it, selectedSubscription, state.subscriptions, allowBlank)
                         }
                     })
                 }

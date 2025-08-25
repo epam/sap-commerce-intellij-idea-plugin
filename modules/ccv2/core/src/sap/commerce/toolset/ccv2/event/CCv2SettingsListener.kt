@@ -19,11 +19,12 @@
 package sap.commerce.toolset.ccv2.event
 
 import com.intellij.util.messages.Topic
+import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
 interface CCv2SettingsListener {
-    fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) = Unit
-    fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) = Unit
+    fun onChange(state: CCv2ApplicationSettingsState) = Unit
+    fun onActivation(subscription: CCv2Subscription?) = Unit
 
     companion object {
         val TOPIC = Topic(CCv2SettingsListener::class.java)

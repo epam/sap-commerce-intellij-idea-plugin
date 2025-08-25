@@ -18,14 +18,15 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable id="hybris.settings.ccv2" parentId="hybris.settings" displayName="CCv2"
-                                 provider="sap.commerce.toolset.ccv2.options.ApplicationCCv2SettingsConfigurableProvider"/>
         <webHelpProvider implementation="sap.commerce.toolset.ccv2.help.CCv2WebHelpProvider"/>
+
+        <projectConfigurable id="sap.commerce.toolset.ccv2.exec.settings" parentId="hybris.project.integrations.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             displayName="CCv2" order="first"
+                             provider="sap.commerce.toolset.ccv2.options.ProjectCCv2ExecSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>
-        <action id="ccv2.show.settings" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ShowSettings"/>
-
         <action id="ccv2.open.settings.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2OpenSettingsAction"/>
         <action id="ccv2.reset.cache.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ResetCacheAction"/>
 

@@ -22,16 +22,11 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
-import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
-import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.presentationName
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
@@ -50,13 +45,10 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
         "Integrations", "hybris.project.integrations.settings"
     ) {
 
-        private val ccv2DeveloperSettings = CCv2DeveloperSettings.getInstance(project)
-
         @Volatile
         private var isReset = false
         private val currentActiveHybrisConnection = HacExecConnectionService.getInstance(project).activeConnection
 
-        private lateinit var activeCCv2SubscriptionComboBox: ComboBox<CCv2Subscription>
         private val activeHacServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
         private val hacInstances = HacConnectionSettingsListPanel(project) { _, connections ->
             if (!isReset) {
@@ -66,75 +58,36 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
             }
         }
 
-        private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true)
-
         override fun createPanel() = panel {
-            group("CCv2 Integration", true) {
-                row {
-                    icon(HybrisIcons.Module.CCV2)
-                    activeCCv2SubscriptionComboBox = comboBox(
-                        ccv2SubscriptionsModel,
-                        renderer = SimpleListCellRenderer.create { label, value, _ ->
-                            if (value != null) {
-                                label.icon = HybrisIcons.Module.CCV2
-                                label.text = value.toString()
-                            } else {
-                                label.text = "-- all subscriptions --"
-                            }
-                        }
-                    )
-                        .label("Subscription:")
-                        .comment("Subscriptions are IntelliJ IDEA application-aware and can be changes via corresponding settings: [y] SAP CX > CCv2.")
-                        .onApply {
-                            val activeSubscription = activeCCv2SubscriptionComboBox.selectedItem as? CCv2Subscription
-                            when (activeSubscription) {
-                                is CCv2Subscription -> ccv2DeveloperSettings.activeCCv2SubscriptionID = activeSubscription.uuid
-                                else -> ccv2DeveloperSettings.activeCCv2SubscriptionID = null
-                            }
-
-                            project.messageBus
-                                .syncPublisher(CCv2SettingsListener.TOPIC)
-                                .onActiveSubscriptionChanged(activeSubscription)
-                        }
-                        .onIsModified { activeCCv2SubscriptionComboBox.selectedItem != ccv2DeveloperSettings.getActiveCCv2Subscription() }
-                        .component
-                        .also { it.selectedItem = ccv2DeveloperSettings.getActiveCCv2Subscription() }
-                }.layout(RowLayout.PARENT_GRID)
-            }
-
-            group("Remote Instances", true) {
-                row {
-                    icon(HybrisIcons.Y.REMOTE_GREEN)
-                    comboBox(
-                        activeHacServerModel,
-                        renderer = SimpleListCellRenderer.create("?") { it.presentationName }
-                    )
-                        .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
-                        .onApply {
-                            (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
-                                ?.let { settings -> HacExecConnectionService.getInstance(project).activeConnection = settings }
-                        }
-                        .onIsModified {
-                            (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
-                                ?.let { it.uuid != HacExecConnectionService.getInstance(project).activeConnection.uuid }
-                                ?: false
-                        }
-                        .align(AlignX.FILL)
-                }.layout(RowLayout.PARENT_GRID)
-
-                group(i18n("hybris.settings.project.remote_instances.hac.title"), false) {
-                    row {
-                        cell(hacInstances)
-                            .align(AlignX.FILL)
+            row {
+                icon(HybrisIcons.Y.REMOTE_GREEN)
+                comboBox(
+                    activeHacServerModel,
+                    renderer = SimpleListCellRenderer.create("?") { it.presentationName }
+                )
+                    .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
+                    .onApply {
+                        (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                            ?.let { settings -> HacExecConnectionService.getInstance(project).activeConnection = settings }
                     }
+                    .onIsModified {
+                        (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                            ?.let { it.uuid != HacExecConnectionService.getInstance(project).activeConnection.uuid }
+                            ?: false
+                    }
+                    .align(AlignX.FILL)
+            }.layout(RowLayout.PARENT_GRID)
+
+            group(i18n("hybris.settings.project.remote_instances.hac.title"), false) {
+                row {
+                    cell(hacInstances)
+                        .align(AlignX.FILL)
                 }
             }
         }
 
         override fun reset() {
             isReset = true
-
-            activeCCv2SubscriptionComboBox.selectedItem = ccv2DeveloperSettings.getActiveCCv2Subscription()
 
             hacInstances.setData(HacExecConnectionService.getInstance(project).connections)
 

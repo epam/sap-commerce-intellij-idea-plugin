@@ -23,5 +23,5 @@ import sap.commerce.toolset.exec.settings.state.ExecDeveloperSettingsState
 
 data class SolrExecDeveloperSettingsState(
     @OptionTag override val activeConnectionUUID: String? = null,
-    @OptionTag override val connections: Set<SolrConnectionSettingsState> = emptySet()
+    @OptionTag override val connections: List<SolrConnectionSettingsState> = emptyList()
 ) : ExecDeveloperSettingsState<SolrConnectionSettingsState>

@@ -26,7 +26,7 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrExecDeveloperSettingsSt
 
 @State(
     name = "[y] Solr Exec Developer Settings",
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
 internal class SolrExecDeveloperSettings : SerializablePersistentStateComponent<SolrExecDeveloperSettingsState>(SolrExecDeveloperSettingsState()), ModificationTracker {

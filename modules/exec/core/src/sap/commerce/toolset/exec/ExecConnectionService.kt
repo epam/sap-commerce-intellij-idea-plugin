@@ -26,16 +26,16 @@ import sap.commerce.toolset.project.PropertyService
 abstract class ExecConnectionService<T : ExecConnectionSettingsState> {
 
     abstract var activeConnection: T
-    abstract val connections: Set<T>
+    abstract val connections: List<T>
 
     abstract fun default(): T
     abstract fun add(settings: T)
     abstract fun remove(settings: T, scope: ExecConnectionScope = settings.scope)
-    abstract fun save(settings: Map<ExecConnectionScope, Set<T>>)
+    abstract fun save(settings: Map<ExecConnectionScope, List<T>>)
 
     fun save(settings: Collection<T>) = save(
         settings.groupBy { it.scope }
-            .mapValues { (_, v) -> v.toSet() }
+            .mapValues { (_, v) -> v.toList() }
     )
 
     fun save(settings: T) {

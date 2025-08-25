@@ -46,5 +46,5 @@ abstract class CCv2Action(
             ?: false
     }
 
-    protected open fun isEnabled() = CCv2ProjectSettings.getInstance().ccv2Subscriptions.isNotEmpty()
+    protected open fun isEnabled() = CCv2ProjectSettings.getInstance().subscriptions.isNotEmpty()
 }

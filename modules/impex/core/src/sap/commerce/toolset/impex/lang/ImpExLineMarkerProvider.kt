@@ -43,7 +43,6 @@ import javax.swing.Icon
 class ImpExLineMarkerProvider : LineMarkerProvider {
 
     private val valueSeparator = ";"
-    private val quotationPolicy = CsvRecordFormat.QuotationPolicy.NEVER
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (Plugin.DATABASE.isDisabled()) return null
@@ -81,6 +80,7 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
     }
 
     private fun xsvImpExFormat(firstRowIsHeader: Boolean, trimWhitespace: Boolean): CsvFormat {
+        val quotationPolicy = CsvRecordFormat.QuotationPolicy.NEVER
         val headerFormat = if (firstRowIsHeader) CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
         else null
         val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)

@@ -16,6 +16,9 @@
 - Refresh type renderer: The item type is not present in the `*items.xml` files [#1533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1533)
 - Refresh type renderer: The class for the item type was not found [#1534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1534)
 
+### `CCv2` enhancements
+- Use own configuration pane for CCv2-related connection settings [#1542](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1542)
+
 ### `Solr` enhancements
 - Use own configuration pane for Solr-related connection settings [#1541](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1541)
 

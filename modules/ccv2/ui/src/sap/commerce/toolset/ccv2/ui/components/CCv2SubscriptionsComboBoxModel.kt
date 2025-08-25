@@ -34,7 +34,7 @@ class CCv2SubscriptionsComboBoxModel(
 
     fun refresh() {
         removeAllElements()
-        val subscriptions = CCv2ProjectSettings.getInstance().ccv2Subscriptions
+        val subscriptions = CCv2ProjectSettings.getInstance().subscriptions
         addAll(subscriptions.sortedBy { it.toString() })
     }
 

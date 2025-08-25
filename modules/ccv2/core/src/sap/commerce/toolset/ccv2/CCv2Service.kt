@@ -47,6 +47,7 @@ import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.project.actionSystem.triggerAction
 import java.io.Serial
@@ -64,7 +65,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     init {
         with(project.messageBus.connect(this)) {
             subscribe(CCv2SettingsListener.TOPIC, object : CCv2SettingsListener {
-                override fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) = resetCache()
+                override fun onChange(state: CCv2ApplicationSettingsState) = resetCache()
             })
         }
     }

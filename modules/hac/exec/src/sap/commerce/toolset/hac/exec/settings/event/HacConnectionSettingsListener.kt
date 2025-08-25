@@ -28,7 +28,7 @@ interface HacConnectionSettingsListener : ExecConnectionListener<HacConnectionSe
     override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = Unit
     override fun onAdded(connection: HacConnectionSettingsState) = Unit
     override fun onModified(connection: HacConnectionSettingsState) = Unit
-    override fun onSave(settings: Map<ExecConnectionScope, Set<HacConnectionSettingsState>>) = Unit
+    override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = Unit
     override fun onRemoved(connection: HacConnectionSettingsState) = Unit
 
     companion object {
