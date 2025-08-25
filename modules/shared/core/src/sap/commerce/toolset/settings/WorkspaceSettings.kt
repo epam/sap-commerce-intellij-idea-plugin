@@ -25,9 +25,7 @@ import sap.commerce.toolset.settings.state.WorkspaceSettingsState
 
 @State(
     name = "HybrisProjectWorkspaceSettings",
-    storages = [
-        Storage(StoragePathMacros.WORKSPACE_FILE),
-    ]
+    storages = [Storage(StoragePathMacros.WORKSPACE_FILE), ]
 )
 @Service(Service.Level.PROJECT)
 class WorkspaceSettings : SerializablePersistentStateComponent<WorkspaceSettingsState>(WorkspaceSettingsState()), ModificationTracker {

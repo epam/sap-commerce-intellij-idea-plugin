@@ -18,8 +18,9 @@
 
 package sap.commerce.toolset.solr.exec.settings.state
 
+import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.exec.settings.state.ExecProjectSettingsState
 
 data class SolrExecProjectSettingsState(
-    override val connections: Set<SolrConnectionSettingsState> = emptySet(),
+    @OptionTag override val connections: Set<SolrConnectionSettingsState> = emptySet(),
 ) : ExecProjectSettingsState<SolrConnectionSettingsState>

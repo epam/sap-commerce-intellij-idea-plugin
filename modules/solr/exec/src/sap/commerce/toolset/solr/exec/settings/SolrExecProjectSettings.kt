@@ -26,12 +26,10 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrExecProjectSettingsStat
 
 @State(
     name = "[y] Solr Exec Project Settings",
-    storages = [
-        Storage(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED),
-    ]
+    storages = [Storage(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)]
 )
 @Service(Service.Level.PROJECT)
-class SolrExecProjectSettings : SerializablePersistentStateComponent<SolrExecProjectSettingsState>(SolrExecProjectSettingsState()), ModificationTracker {
+internal class SolrExecProjectSettings : SerializablePersistentStateComponent<SolrExecProjectSettingsState>(SolrExecProjectSettingsState()), ModificationTracker {
 
     var connections
         get() = state.connections

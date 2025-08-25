@@ -21,6 +21,7 @@ package sap.commerce.toolset.solr.exec.settings.state
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
+import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.RemoteConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
@@ -28,15 +29,16 @@ import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import java.util.*
 
 data class SolrConnectionSettingsState(
-    override val uuid: String = UUID.randomUUID().toString(),
-    override val scope: ExecConnectionScope = ExecConnectionScope.PROJECT_PERSONAL,
-    override val name: String? = null,
-    override val host: String = RemoteConstants.DEFAULT_HOST_URL,
-    override val port: String? = null,
-    override val webroot: String = "solr",
-    override val ssl: Boolean = true,
+    @OptionTag override val uuid: String = UUID.randomUUID().toString(),
+    @OptionTag override val scope: ExecConnectionScope = ExecConnectionScope.PROJECT_PERSONAL,
+    @OptionTag override val name: String? = null,
+    @OptionTag override val host: String = RemoteConstants.DEFAULT_HOST_URL,
+    @OptionTag override val port: String? = null,
+    @OptionTag override val webroot: String = "solr",
+    @OptionTag override val ssl: Boolean = true,
+
     @Transient
-    override val credentials: Credentials? = null,
+    @OptionTag override val credentials: Credentials? = null,
 ) : ExecConnectionSettingsState {
 
     private val dynamicCredentials

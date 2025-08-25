@@ -26,12 +26,10 @@ import sap.commerce.toolset.hac.exec.settings.state.HacExecProjectSettingsState
 
 @State(
     name = "[y] hAC Exec Project Settings",
-    storages = [
-        Storage(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED),
-    ]
+    storages = [Storage(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)]
 )
 @Service(Service.Level.PROJECT)
-class HacExecProjectSettings : SerializablePersistentStateComponent<HacExecProjectSettingsState>(HacExecProjectSettingsState()), ModificationTracker {
+internal class HacExecProjectSettings : SerializablePersistentStateComponent<HacExecProjectSettingsState>(HacExecProjectSettingsState()), ModificationTracker {
 
     var connections
         get() = state.connections

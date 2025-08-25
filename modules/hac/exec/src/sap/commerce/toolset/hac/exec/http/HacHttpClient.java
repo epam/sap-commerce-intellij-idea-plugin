@@ -50,7 +50,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
-import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import sap.commerce.toolset.exec.RemoteConstants;
 import sap.commerce.toolset.exec.context.ReplicaContext;
@@ -308,8 +307,10 @@ public final class HacHttpClient extends UserDataHolderBase {
     }
 
     private String getCookieName(@NotNull final HacConnectionSettingsState settings) {
-        final var sessionCookieName = settings.getSessionCookieName();
-        return StringUtils.isNotBlank(sessionCookieName) ? sessionCookieName : RemoteConstants.DEFAULT_SESSION_COOKIE_NAME;
+        final var sessionCookieName = settings.sessionCookieName;
+        return StringUtils.isNotBlank(sessionCookieName)
+            ? sessionCookieName
+            : RemoteConstants.DEFAULT_SESSION_COOKIE_NAME;
     }
 
     @Nullable
@@ -319,8 +320,7 @@ public final class HacHttpClient extends UserDataHolderBase {
         final @Nullable ReplicaContext replicaContext
     ) {
         try {
-            final var sslProtocol = settings.getSslProtocol();
-            final var connection = connect(hacURL, sslProtocol);
+            final var connection = connect(hacURL, settings.sslProtocol);
 
             if (replicaContext != null) {
                 connection.cookie(replicaContext.getCookieName(), replicaContext.getReplicaCookie());
@@ -343,9 +343,7 @@ public final class HacHttpClient extends UserDataHolderBase {
         final String cookiesKey
     ) {
         try {
-            final var sslProtocol = settings.getSslProtocol();
-
-            final Document doc = connect(hacURL, sslProtocol)
+            final var doc = connect(hacURL, settings.sslProtocol)
                 .cookies(cookiesPerSettings.get(cookiesKey))
                 .get();
             final Elements csrfMetaElt = doc.select("meta[name=_csrf]");

@@ -29,7 +29,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacExecDeveloperSettingsStat
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
-class HacExecDeveloperSettings : SerializablePersistentStateComponent<HacExecDeveloperSettingsState>(HacExecDeveloperSettingsState()), ModificationTracker {
+internal class HacExecDeveloperSettings : SerializablePersistentStateComponent<HacExecDeveloperSettingsState>(HacExecDeveloperSettingsState()), ModificationTracker {
 
     var activeConnectionUUID
         get() = state.activeConnectionUUID
