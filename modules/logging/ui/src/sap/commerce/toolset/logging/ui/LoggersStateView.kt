@@ -26,6 +26,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.util.and
 import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -89,7 +90,7 @@ class LoggersStateView(
                 }
 
                 separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-                    .visibleIf(showDataPanel)
+                    .visibleIf(showDataPanel.and(editable))
 
                 row {
                     dataScrollPane = JBScrollPane(JPanel())
@@ -114,6 +115,18 @@ class LoggersStateView(
     fun renderNoLoggerTemplates() = toggleView(showNoLogger)
     fun renderNothingSelected() = toggleView(showNothingSelected)
     fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
+        editable.set(true)
+
+        renderLoggersInternal(loggers)
+    }
+
+    fun renderLoggersTemplate(loggers: Map<String, CxLoggerModel>) {
+        editable.set(false)
+
+        renderLoggersInternal(loggers)
+    }
+
+    private fun renderLoggersInternal(loggers: Map<String, CxLoggerModel>) {
         val view = if (loggers.isEmpty()) noLoggersView()
         else loggersView(loggers)
 
@@ -261,6 +274,7 @@ class LoggersStateView(
                     applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
                 }
             }
+                .visibleIf(editable)
                 .layout(RowLayout.PARENT_GRID)
         }
             .apply {

@@ -46,5 +46,7 @@
             <action class="sap.commerce.toolset.logging.actionSystem.ErrorLoggerAction"/>
             <action class="sap.commerce.toolset.logging.actionSystem.FatalLoggerAction"/>
         </group>
+
+        <group id="sap.cx.loggers.toolwindow.menu" popup="true" searchable="false" class="sap.commerce.toolset.logging.actionSystem.CxLoggersContextMenuActionGroup"/>
     </actions>
 </idea-plugin>

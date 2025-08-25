@@ -28,6 +28,7 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.exec.settings.state.shortenConnectionName
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
@@ -101,15 +102,48 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun fetch() = fetch(HacExecConnectionService.getInstance(project).activeConnection)
+    fun fetch() = fetch(
+        HacExecConnectionService.getInstance(project).activeConnection
+    )
 
     fun fetch(server: HacConnectionSettingsState) {
+        val scriptContent = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT)
         val context = GroovyExecContext(
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
-            content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
+            content = scriptContent,
             transactionMode = TransactionMode.ROLLBACK
         )
 
+        executeGroovyLoggersScript(context, server)
+    }
+
+    fun setLoggers(loggers: List<CxLoggerModel>, callback: (CoroutineScope, DefaultExecResult) -> Unit = { _, _ -> }) {
+        val groovyScriptContent = loggers.joinToString(",\n") {
+            """
+                "${it.name}" : "${it.level}"
+            """.trimIndent()
+        }
+            .let { ExtensionsService.getInstance().findResource(CxLoggersConstants.UPDATE_CX_LOGGERS_STATE).replace("[loggersMapToBeReplacedPlaceholder]", it) }
+
+        val server = HacExecConnectionService.getInstance(project).activeConnection
+        val context = GroovyExecContext(
+            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
+            content = groovyScriptContent,
+            transactionMode = TransactionMode.ROLLBACK
+        )
+
+        executeGroovyLoggersScript(
+            context,
+            server,
+            callback
+        )
+    }
+
+    private fun executeGroovyLoggersScript(
+        context: GroovyExecContext,
+        server: HacConnectionSettingsState,
+        callback: (CoroutineScope, DefaultExecResult) -> Unit = { _, _ -> }
+    ) {
         fetching = true
 
         GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
@@ -138,6 +172,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     updateState(loggers, server)
                 }
 
+                callback.invoke(coroutineScope, result)
+
                 project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
                 when {
@@ -153,9 +189,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
                     else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
                         """
-                    <p>Declared loggers: ${loggers.size}</p>
-                    <p>Server: ${server.shortenConnectionName}</p>
-                """.trimIndent()
+                        <p>Declared loggers: ${loggers.size}</p>
+                        <p>Server: ${server.shortenConnectionName}</p>
+                    """.trimIndent()
                     }
                 }
             }

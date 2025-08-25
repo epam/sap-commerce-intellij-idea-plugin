@@ -18,10 +18,12 @@
 
 package sap.commerce.toolset.logging.ui
 
+
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
@@ -33,10 +35,7 @@ import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
-import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateLoggersOptionsNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateLoggersOptionsNode
-import sap.commerce.toolset.logging.ui.tree.nodes.LoggersHacConnectionNode
-import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
+import sap.commerce.toolset.logging.ui.tree.nodes.*
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
 import sap.commerce.toolset.ui.addTreeSelectionListener
@@ -59,7 +58,7 @@ class LoggersSplitView(
         firstComponent = JBScrollPane(tree)
         secondComponent = loggersStateView.view
 
-        //PopupHandler.installPopupMenu(tree, "action.group.id", "place")
+        PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
@@ -127,8 +126,12 @@ class LoggersSplitView(
                     ?.let { loggersStateView.renderLoggers(it) }
                     ?: loggersStateView.renderFetchLoggers()
 
-                is BundledLoggersTemplateLoggersOptionsNode -> loggersStateView.renderNoLoggerTemplates()
+                is BundledLoggersTemplateGroupNode -> loggersStateView.renderNoLoggerTemplates()
                 is CustomLoggersTemplateLoggersOptionsNode -> loggersStateView.renderNoLoggerTemplates()
+                is BundledLoggersTemplateItemNode -> {
+                    node.loggers.associateBy { it.name }.let { loggersStateView.renderLoggersTemplate(it) }
+                }
+
                 else -> loggersStateView.renderNothingSelected()
             }
         }

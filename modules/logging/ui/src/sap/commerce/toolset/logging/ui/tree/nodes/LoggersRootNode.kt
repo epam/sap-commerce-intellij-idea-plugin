@@ -30,7 +30,7 @@ class LoggersRootNode(project: Project) : LoggersNode(project) {
     }
 
     override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
-        RemoteHacInstancesLoggersOptionsNode(project)
-        //LoggersTemplateLoggersOptionsNode(project)
+        RemoteHacInstancesLoggersOptionsNode(project),
+        BundledLoggersTemplateGroupNode(project)
     ).associateBy { it.name }
 }
