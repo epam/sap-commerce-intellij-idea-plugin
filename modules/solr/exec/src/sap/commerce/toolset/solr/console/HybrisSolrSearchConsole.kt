@@ -81,7 +81,7 @@ class HybrisSolrSearchConsole(
                 docsLabel = label("Docs: ")
                     .component
 
-                spinner(1..500)
+                maxRowsSpinner = spinner(1..500)
                     .label("Rows (max 500):")
                     .component
                     .apply { value = 10 }
