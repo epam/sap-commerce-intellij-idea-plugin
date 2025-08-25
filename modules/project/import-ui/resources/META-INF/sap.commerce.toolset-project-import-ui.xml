@@ -22,9 +22,6 @@
         <projectImportBuilder implementation="sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder"/>
         <projectImportBuilder implementation="sap.commerce.toolset.project.OpenHybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="sap.commerce.toolset.project.HybrisProjectOpenProcessor"/>
-
-        <applicationService serviceInterface="sap.commerce.toolset.project.services.HybrisProjectService"
-                            serviceImplementation="sap.commerce.toolset.project.services.impl.DefaultHybrisProjectService"/>
     </extensions>
 
     <actions>

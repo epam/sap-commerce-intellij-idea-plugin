@@ -26,6 +26,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
@@ -38,11 +39,12 @@ class ConsoleImpExValidateAction : AnAction() {
         val project = e.project ?: return
         val console = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
 
         val context = ImpExExecContext(
             content = console.content,
             executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
-            settings = ImpExExecContext.DEFAULT_SETTINGS
+            settings = ImpExExecContext.defaultSettings(connectionSettings)
         )
 
         ImpExExecClient.getInstance(project).execute(

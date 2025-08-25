@@ -54,7 +54,6 @@ import org.jsoup.select.Elements;
 import sap.commerce.toolset.exec.ExecConstants;
 import sap.commerce.toolset.exec.context.ReplicaContext;
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsStateKt;
-import sap.commerce.toolset.hac.HacConstants;
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener;
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState;
 
@@ -228,8 +227,7 @@ public final class HacHttpClient extends UserDataHolderBase {
             new BasicNameValuePair("_csrf", csrfToken)
         );
         final var loginURL = hostHacURL + "/j_spring_security_check";
-        // TODO: timeout is not respected (!)
-        final HttpResponse response = post(loginURL, params, false, HacConstants.DEFAULT_TIMEOUT, settings, replicaContext);
+        final HttpResponse response = post(loginURL, params, false, settings.getTimeout(), settings, replicaContext);
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
             final Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login_error")) {

@@ -17,69 +17,62 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.services.impl;
+package sap.commerce.toolset.project;
 
+import com.intellij.openapi.components.Service;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.ccv2.CCv2Constants;
-import sap.commerce.toolset.project.ProjectUtil;
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
-import sap.commerce.toolset.project.services.HybrisProjectService;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 
 import java.io.File;
 
-public class DefaultHybrisProjectService implements HybrisProjectService {
 
-    @Override
+@Service
+public final class HybrisProjectService {
+
     public boolean isConfigModule(@NotNull final File file) {
         return new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
-               && new File(file, HybrisConstants.LOCAL_PROPERTIES_FILE).isFile();
+            && new File(file, HybrisConstants.LOCAL_PROPERTIES_FILE).isFile();
     }
 
-    @Override
     public boolean isCCv2Module(@NotNull final File file) {
         return
             (
                 file.getAbsolutePath().contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
-                || file.getAbsolutePath().contains(CCv2Constants.DATAHUB_NAME)
-                || file.getAbsolutePath().contains(CCv2Constants.JS_STOREFRONT_NAME)
+                    || file.getAbsolutePath().contains(CCv2Constants.DATAHUB_NAME)
+                    || file.getAbsolutePath().contains(CCv2Constants.JS_STOREFRONT_NAME)
             )
-            && new File(file, CCv2Constants.MANIFEST_NAME).isFile();
+                && new File(file, CCv2Constants.MANIFEST_NAME).isFile();
     }
 
-    @Override
     public boolean isAngularModule(@NotNull final File file) {
         return new File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile();
     }
 
-    @Override
     public boolean isPlatformModule(@NotNull final File file) {
         return file.getName().equals(HybrisConstants.EXTENSION_NAME_PLATFORM)
-               && new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
+            && new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
     }
 
-    @Override
     public boolean isPlatformExtModule(@NotNull final File file) {
         return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
-               && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
-               && !isCoreExtModule(file);
+            && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
+            && !isCoreExtModule(file);
     }
 
-    @Override
     public boolean isCoreExtModule(@NotNull final File file) {
         return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
-               && file.getName().equals(HybrisConstants.EXTENSION_NAME_CORE)
-               && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
+            && file.getName().equals(HybrisConstants.EXTENSION_NAME_CORE)
+            && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 
-    @Override
     public boolean isHybrisModule(@NotNull final File file) {
         return ProjectUtil.isHybrisModuleRoot(file);
     }
 
-    @Override
     public boolean isOutOfTheBoxModule(@NotNull final File file, final HybrisProjectDescriptor rootProjectDescriptor) {
         final File extDir = rootProjectDescriptor.getExternalExtensionsDirectory();
         if (extDir != null) {
@@ -89,12 +82,11 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
             }
         }
         return (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX) ||
-                file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX_2019)
-               )
-               && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
+            file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX_2019)
+        )
+            && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 
-    @Override
     public boolean isMavenModule(final File rootProjectDirectory) {
         if (rootProjectDirectory.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
@@ -102,7 +94,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         return new File(rootProjectDirectory, MavenConstants.POM_XML).isFile();
     }
 
-    @Override
     public boolean isEclipseModule(final File rootProjectDirectory) {
         if (rootProjectDirectory.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
@@ -110,7 +101,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         return new File(rootProjectDirectory, HybrisConstants.DOT_PROJECT).isFile();
     }
 
-    @Override
     public boolean isGradleModule(final File file) {
         if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
@@ -119,7 +109,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
             || new File(file, HybrisConstants.GRADLE_BUILD).isFile();
     }
 
-    @Override
     public boolean isGradleKtsModule(final File file) {
         if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
@@ -128,7 +117,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
             || new File(file, HybrisConstants.GRADLE_BUILD_KTS).isFile();
     }
 
-    @Override
     public boolean hasVCS(final File rootProjectDirectory) {
         return new File(rootProjectDirectory, ".git").isDirectory()
             || new File(rootProjectDirectory, ".svn").isDirectory()

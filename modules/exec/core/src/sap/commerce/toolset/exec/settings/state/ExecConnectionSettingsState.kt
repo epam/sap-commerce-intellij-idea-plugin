@@ -30,6 +30,7 @@ interface ExecConnectionSettingsState {
     val host: String
     val port: String?
     val webroot: String
+    val timeout: Int
 
     val credentials: Credentials?
     val username: String
@@ -42,6 +43,7 @@ interface ExecConnectionSettingsState {
         var uuid: String
         var name: String?
         var ssl: Boolean
+        var timeout: Int
         var host: String
         var port: String?
         var webroot: String

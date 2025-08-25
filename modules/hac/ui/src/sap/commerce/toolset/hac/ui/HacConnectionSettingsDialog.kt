@@ -66,6 +66,7 @@ class HacConnectionSettingsDialog(
             wsl = isWslCheckBox?.isSelected ?: false,
             sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: "",
             webroot = webrootTextField.text,
+            timeout = timeoutIntSpinner.number,
             sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
             credentials = Credentials(usernameTextField.text, String(passwordTextField.password)),
         )
@@ -89,6 +90,13 @@ class HacConnectionSettingsDialog(
                 renderer = SimpleListCellRenderer.create("?") { it.title }
             )
                 .bindItem(mutableSettings::scope.toNullableProperty(ExecConnectionScope.PROJECT_PERSONAL))
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            timeoutIntSpinner = spinner(1000 ..Int.MAX_VALUE, 1000)
+                .label("Connection Timeout (ms):")
+                .bindIntValue(mutableSettings::timeout)
+                .component
         }.layout(RowLayout.PARENT_GRID)
 
         group("Full URL Preview", false) {

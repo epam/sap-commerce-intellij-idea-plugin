@@ -27,13 +27,17 @@ import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import javax.swing.LayoutFocusTraversalPolicy
 
 class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecContext.ModifiableSettings>() {
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
+    override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings {
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        ImpExExecContext.defaultSettings(connectionSettings)
+    }
         .let {
             """<pre>
  · validation mode:       ${it.validationMode.title}
@@ -47,7 +51,10 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         }
 
     override fun settings(e: AnActionEvent, project: Project) = e
-        .impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
+        .impexExecutionContextSettings {
+            val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+            ImpExExecContext.defaultSettings(connectionSettings)
+        }
         .modifiable()
 
     override fun applySettings(editor: Editor, settings: ImpExExecContext.ModifiableSettings) {

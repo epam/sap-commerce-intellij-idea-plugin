@@ -26,12 +26,12 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
+import sap.commerce.toolset.project.HybrisProjectService
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.impl.*
-import sap.commerce.toolset.project.services.HybrisProjectService
 import java.io.File
 import java.io.IOException
 

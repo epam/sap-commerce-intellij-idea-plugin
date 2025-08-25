@@ -20,5 +20,5 @@ package sap.commerce.toolset.hac
 
 object HacConstants {
 
-    const val DEFAULT_TIMEOUT: Int = 6000
+    internal const val DEFAULT_TIMEOUT: Int = 6000
 }

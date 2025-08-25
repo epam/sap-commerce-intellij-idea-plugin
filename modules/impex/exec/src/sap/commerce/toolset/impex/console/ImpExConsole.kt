@@ -55,7 +55,7 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
                 label("UTF-8")
 
                 importModeComboBox = comboBox(
-                    model = EnumComboBoxModel<ImpExExecContext.ValidationMode>(ImpExExecContext.ValidationMode::class.java),
+                    model = EnumComboBoxModel(ImpExExecContext.ValidationMode::class.java),
                     renderer = SimpleListCellRenderer.create("...") { value -> value.name }
                 )
                     .label("Validation mode:")
@@ -85,10 +85,10 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
 
     override fun currentExecutionContext(content: String) = ImpExExecContext(
         content = content,
-        settings = ImpExExecContext.DEFAULT_SETTINGS.modifiable()
+        settings = ImpExExecContext.defaultSettings(activeConnection()).modifiable()
             .apply {
                 validationMode = importModeComboBox.selectedItem as ImpExExecContext.ValidationMode
-                maxThreads = maxThreadsSpinner.value.toString().toInt()
+                maxThreads = maxThreadsSpinner.number
                 legacyMode = if (legacyModeCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
                 enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
                 sldEnabled = if (directPersistenceCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF

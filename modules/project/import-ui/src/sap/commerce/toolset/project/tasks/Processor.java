@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,13 +17,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy.exec
+package sap.commerce.toolset.project.tasks;
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import sap.commerce.toolset.groovy.exec.context.ReplicaSelectionMode
+public interface Processor<T> {
 
-interface ReplicaSelectionModeProvider {
-    companion object {
-        val EP = ExtensionPointName.create<ReplicaSelectionMode>("sap.commerce.toolset.groovy.exec.replicaSelectionModeProvider")
-    }
+    void process(T parameter);
+
 }

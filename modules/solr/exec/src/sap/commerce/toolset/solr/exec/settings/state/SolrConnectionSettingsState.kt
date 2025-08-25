@@ -26,6 +26,7 @@ import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.solr.SolrConstants
 import java.util.*
 
 data class SolrConnectionSettingsState(
@@ -36,6 +37,8 @@ data class SolrConnectionSettingsState(
     @OptionTag override val port: String? = null,
     @OptionTag override val webroot: String = "solr",
     @OptionTag override val ssl: Boolean = true,
+    @OptionTag override val timeout: Int = SolrConstants.CONNECTION_TIMEOUT_MILLIS,
+    @OptionTag val socketTimeout: Int = SolrConstants.SOCKET_TIMEOUT_MILLIS,
 
     @Transient
     override val credentials: Credentials? = null,
@@ -60,6 +63,8 @@ data class SolrConnectionSettingsState(
         port = port,
         webroot = webroot,
         ssl = ssl,
+        timeout = timeout,
+        socketTimeout = socketTimeout,
         username = username,
         password = password,
     )
@@ -72,8 +77,10 @@ data class SolrConnectionSettingsState(
         override var port: String?,
         override var webroot: String,
         override var ssl: Boolean,
+        override var timeout: Int,
         override var username: String,
         override var password: String,
+        var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
         override fun immutable() = SolrConnectionSettingsState(
             uuid = uuid,
@@ -83,6 +90,8 @@ data class SolrConnectionSettingsState(
             port = port,
             webroot = webroot,
             ssl = ssl,
+            timeout = timeout,
+            socketTimeout = socketTimeout,
         )
     }
 }

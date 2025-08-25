@@ -19,7 +19,6 @@
 package sap.commerce.toolset.codeInsight.injection
 
 import com.intellij.lang.Language
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiElement
@@ -57,9 +56,5 @@ abstract class LanguageInjectorProvider(
             prefix,
             suffix
         )
-    }
-
-    companion object {
-        private val LOG = Logger.getInstance(LanguageInjectorProvider::class.java)
     }
 }

@@ -32,6 +32,7 @@ import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.settings.yDeveloperSettings
 
@@ -51,14 +52,17 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val prefix = fileName ?: "script"
 
         val transactionMode = project.yDeveloperSettings.groovySettings.txMode
-        val executionClient = GroovyExecClient.getInstance(project)
-        val contexts = executionClient.connectionContext.replicaContexts
+
+        val execClient = GroovyExecClient.getInstance(project)
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        val contexts = execClient.connectionContext.replicaContexts
             .map {
                 GroovyExecContext(
                     executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode,
-                    replicaContext = it
+                    replicaContext = it,
+                    timeout =connectionSettings.timeout,
                 )
             }
             .takeIf { it.isNotEmpty() }
@@ -66,7 +70,8 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 GroovyExecContext(
                     executionTitle = "$prefix | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
-                    transactionMode = transactionMode
+                    transactionMode = transactionMode,
+                    timeout =connectionSettings.timeout,
                 )
             )
 
@@ -75,7 +80,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
             fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecContext.DEFAULT_TITLE}")
             var completed = 0
 
-            executionClient.execute(
+            execClient.execute(
                 contexts = contexts,
                 resultCallback = { _, _ ->
                     completed++
@@ -98,7 +103,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         } else {
             val console = openConsole(project, content) ?: return
 
-            executionClient.execute(
+            execClient.execute(
                 contexts = contexts,
                 resultCallback = { _, result -> console.print(result, false) },
                 afterCallback = { _, _ -> console.afterExecution() }

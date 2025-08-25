@@ -54,7 +54,7 @@ class FlexibleSearchExecClient(
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, true, context.timeout, settings, null)
+            .post(actionUrl, params, true, context.settings.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 

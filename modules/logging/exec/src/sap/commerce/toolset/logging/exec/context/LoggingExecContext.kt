@@ -19,14 +19,13 @@
 package sap.commerce.toolset.logging.exec.context
 
 import sap.commerce.toolset.exec.context.ExecContext
-import sap.commerce.toolset.hac.HacConstants
 import sap.commerce.toolset.logging.LogLevel
 
 data class LoggingExecContext(
     override val executionTitle: String,
     private val loggerName: String,
     private val logLevel: LogLevel,
-    val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
+    val timeout: Int,
 ) : ExecContext {
     fun params(): Map<String, String> = buildMap {
         put("loggerName", loggerName)

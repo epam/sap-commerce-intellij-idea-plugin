@@ -36,6 +36,7 @@ import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.console.HybrisPolyglotQueryConsole
@@ -61,7 +62,10 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             ?.let { PsiTreeUtil.findChildOfType(it, PolyglotQueryTypeKeyName::class.java) }
             ?.typeName
             ?: "Item"
-        val executionContextSettings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings(project) }
+        val executionContextSettings = e.flexibleSearchExecutionContextSettings {
+            val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+            FlexibleSearchExecContext.defaultSettings(connectionSettings)
+        }
 
         if (fileEditor.inEditorParameters) executeParametrizedQuery(project, fileEditor, e, itemType, content, executionContextSettings)
         else executeDirectQuery(project, fileEditor, e, itemType, content, executionContextSettings)
@@ -180,7 +184,8 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                             def params = $virtualParameters
     
                             $scriptOutputLogic
-                        """.trimIndent()
+                        """.trimIndent(),
+            timeout = executionContextSettings.timeout
         )
 
         if (fileEditor.inEditorResults) {
@@ -200,7 +205,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         } else {
             val console = openConsole(project, content) ?: return
 
-            GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
+            GroovyExecClient.getInstance(project).execute(context) { _, result ->
                 val pks = result.output?.takeIf { it.isNotEmpty() }
 
                 if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks, executionContextSettings) { _, r ->

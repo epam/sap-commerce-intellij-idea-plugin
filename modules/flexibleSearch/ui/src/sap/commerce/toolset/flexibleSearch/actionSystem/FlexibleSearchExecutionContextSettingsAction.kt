@@ -31,6 +31,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.ui.GroupedComboBoxItem
 import sap.commerce.toolset.ui.GroupedComboBoxModel
@@ -39,13 +40,7 @@ import javax.swing.LayoutFocusTraversalPolicy
 
 class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecContext.ModifiableSettings>() {
 
-    private val defaultPreviewSettings by lazy {
-        FlexibleSearchExecContext.DEFAULT_SETTINGS.modifiable()
-            .apply { user = "from active connection" }
-            .immutable()
-    }
-
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings { defaultPreviewSettings }
+    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings() }
         .let {
             """<pre>
  · rows:   ${it.maxCount}
@@ -57,7 +52,8 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
 
     override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecContext.ModifiableSettings {
         val settings = e.flexibleSearchExecutionContextSettings {
-            FlexibleSearchExecContext.defaultSettings(project)
+            val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+            FlexibleSearchExecContext.defaultSettings(connectionSettings)
         }
 
         return settings.modifiable()
@@ -75,8 +71,11 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                 ?: emptyList()
         }
             .toSortedSet()
-            .apply { add(FlexibleSearchExecContext.DEFAULT_SETTINGS.dataSource) }
+            .apply {
+                val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
 
+                add(FlexibleSearchExecContext.defaultSettings(connectionSettings).dataSource)
+            }
 
         return panel {
             row {

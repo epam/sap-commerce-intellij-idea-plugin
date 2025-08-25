@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.utils;
+package sap.commerce.toolset.solr
 
-public interface Processor<T> {
-
-    void process(T parameter);
-
+object SolrConstants {
+    const val CONNECTION_TIMEOUT_MILLIS: Int = 15000
+    const val SOCKET_TIMEOUT_MILLIS: Int = 120000
 }

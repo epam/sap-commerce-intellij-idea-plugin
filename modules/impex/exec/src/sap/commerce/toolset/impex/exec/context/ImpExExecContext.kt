@@ -21,7 +21,7 @@ package sap.commerce.toolset.impex.exec.context
 import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
-import sap.commerce.toolset.hac.HacConstants
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.nio.charset.StandardCharsets
 
 data class ImpExExecContext(
@@ -119,17 +119,17 @@ data class ImpExExecContext(
 
     companion object {
         val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.impex.execution.settings")
-        val DEFAULT_SETTINGS by lazy {
+
+        fun defaultSettings(connectionSettings: HacConnectionSettingsState): Settings =
             Settings(
                 validationMode = ValidationMode.IMPORT_STRICT,
                 maxThreads = 20,
-                timeout = HacConstants.DEFAULT_TIMEOUT,
+                timeout = connectionSettings.timeout,
                 encoding = StandardCharsets.UTF_8.name(),
                 legacyMode = Toggle.OFF,
                 enableCodeExecution = Toggle.ON,
                 sldEnabled = Toggle.OFF,
                 distributedMode = Toggle.OFF,
             )
-        }
     }
 }

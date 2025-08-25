@@ -68,8 +68,4 @@ enum class Plugin(val id: String, val url: String? = null) {
     fun <T> service(clazz: Class<T>): T? = ifActive { application.getService(clazz) }
     fun <T> service(project: Project, clazz: Class<T>): T? = ifActive { project.getService(clazz) }
 
-    /**
-     * Support annotation to indicate dependencies in the code, ensure correct instantiation and access in the runtime
-     */
-    annotation class DependsOn(vararg val plugins: Plugin)
 }

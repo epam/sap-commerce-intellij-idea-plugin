@@ -57,7 +57,7 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
         val queryRequest = buildQueryRequest(solrQuery, settings)
         val url = "${settings.generatedURL}/${context.core}"
 
-        return buildHttpSolrClient(url)
+        return buildHttpSolrClient(settings, url)
             .runCatching { request(queryRequest) }
             .map { namedList ->
                 DefaultExecResult(
@@ -77,7 +77,7 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
             setBasicAuthCredentials(settings.username, settings.password)
         }
-        .runCatching { process(buildHttpSolrClient(settings.generatedURL)) }
+        .runCatching { process(buildHttpSolrClient(settings, settings.generatedURL)) }
         .map { parseCoreResponse(it) }
         .getOrElse {
             throw it
@@ -97,7 +97,10 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
         (it["index"] as NamedList<*>)["numDocs"] as Int
     )
 
-    private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
+    private fun buildHttpSolrClient(settings: SolrConnectionSettingsState, url: String) = HttpSolrClient.Builder(url)
+        .withConnectionTimeout(settings.timeout)
+        .withSocketTimeout(settings.socketTimeout)
+        .build()
 
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: SolrConnectionSettingsState) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)

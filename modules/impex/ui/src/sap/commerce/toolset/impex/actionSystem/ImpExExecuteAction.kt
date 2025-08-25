@@ -25,6 +25,7 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.console.ImpExConsole
@@ -50,7 +51,8 @@ class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-        val settings = e.impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        val settings = e.impexExecutionContextSettings { ImpExExecContext.defaultSettings(connectionSettings) }
         val context = ImpExExecContext(
             content = content,
             settings = settings

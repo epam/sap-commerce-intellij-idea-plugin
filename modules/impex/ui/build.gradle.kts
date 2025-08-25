@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":impex-core"))
     implementation(project(":impex-exec"))
     implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
     implementation(project(":hac-ui"))
     implementation(project(":console-core"))
     implementation(project(":console-ui"))

@@ -19,26 +19,19 @@
 
 package sap.commerce.toolset.project.tasks;
 
-import com.intellij.facet.FacetTypeId;
-import com.intellij.facet.FacetTypeRegistry;
-import com.intellij.framework.detection.DetectionExcludesConfiguration;
-import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator;
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator;
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator;
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator;
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 
 import java.util.List;
 import java.util.Optional;
@@ -89,8 +82,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                             indicator.setText2("Configuring module: %s".formatted(moduleDescriptor.getName()));
 
                             final var module = configurator.configure(hybrisProjectDescriptor, moduleDescriptor, modifiableModelsProvider, rootProjectModifiableModel);
-                            final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
-                            configureModuleFacet(moduleDescriptor, module, rootModel, modifiableModelsProvider);
+
+                            indicator.setText2("Configuring facets for module: %s".formatted(moduleDescriptor.getName()));
+                            final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
+                            final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
+
+                            ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(facetConfigurator ->
+                                facetConfigurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
+                            );
                             return module;
                         }
                     )
@@ -117,27 +116,5 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             );
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
-    }
-
-    @Deprecated(since = "Extract to own module post-creation-configurator")
-    private void configureModuleFacet(
-        final ModuleDescriptor moduleDescriptor, final Module module,
-        final ModifiableRootModel modifiableRootModel, final IdeModifiableModelsProvider modifiableModelsProvider
-    ) {
-        final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
-
-        ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
-            configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
-        );
-    }
-
-    private void excludeFrameworkDetection(final Project project, final FacetTypeId facetTypeId) {
-        final var configuration = DetectionExcludesConfiguration.getInstance(project);
-        final var facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
-        final var frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
-
-        if (frameworkType != null) {
-            configuration.addExcludedFramework(frameworkType);
-        }
     }
 }
