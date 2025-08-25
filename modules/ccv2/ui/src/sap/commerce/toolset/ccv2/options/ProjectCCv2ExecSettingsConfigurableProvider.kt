@@ -58,10 +58,6 @@ class ProjectCCv2ExecSettingsConfigurableProvider(private val project: Project) 
         private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel()
         private lateinit var ccv2SubscriptionsModel: CCv2SubscriptionsComboBoxModel
 
-        init {
-            reset()
-        }
-
         override fun createPanel(): DialogPanel {
             ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true, disposable = disposable)
 
@@ -115,7 +111,7 @@ class ProjectCCv2ExecSettingsConfigurableProvider(private val project: Project) 
                             .align(AlignX.FILL)
                     }
                 }
-            }
+            }.also { reset() }
         }
 
         override fun isModified(): Boolean {
