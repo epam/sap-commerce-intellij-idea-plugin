@@ -20,6 +20,6 @@ package sap.commerce.toolset.hac.exec.settings.state
 
 import sap.commerce.toolset.exec.settings.state.ExecProjectSettingsState
 
-internal data class HacExecProjectSettingsState(
+data class HacExecProjectSettingsState(
     override val connections: Set<HacConnectionSettingsState> = emptySet(),
 ) : ExecProjectSettingsState<HacConnectionSettingsState>

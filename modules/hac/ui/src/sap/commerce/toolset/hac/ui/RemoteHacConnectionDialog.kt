@@ -35,9 +35,7 @@ import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.ui.RemoteConnectionDialog
 import sap.commerce.toolset.exec.ui.WSL_PROXY_CONNECT_LOCALHOST
-import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
-import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.awt.Component
 import java.util.*
@@ -49,8 +47,8 @@ import javax.swing.JLabel
 class RemoteHacConnectionDialog(
     project: Project,
     parentComponent: Component,
-    settings: HacConnectionSettingsState
-) : RemoteConnectionDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings.mutable(), "Remote SAP Commerce Instance") {
+    settings: HacConnectionSettingsState.Mutable
+) : RemoteConnectionDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SAP Commerce Instance") {
 
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField
@@ -59,14 +57,6 @@ class RemoteHacConnectionDialog(
     private lateinit var wslProxyWarningComment: JEditorPane
     private lateinit var wslDistributionText: Cell<JLabel>
     private var isWslCheckBox: JBCheckBox? = null
-
-    override fun applyFields() {
-        super.applyFields()
-
-        HacExecService.getInstance(project).saveConnection(mutableSettings.immutable())
-
-        project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onModified(mutableSettings.immutable())
-    }
 
     override fun testConnection(): String = HacHttpClient.getInstance(project).testConnection(
         HacConnectionSettingsState(

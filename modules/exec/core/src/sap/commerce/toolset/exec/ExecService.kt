@@ -28,19 +28,19 @@ abstract class ExecService<T : ExecConnectionSettingsState> {
     abstract var activeConnection: T
     abstract val connections: Set<T>
 
-    abstract fun defaultConnectionSettings(): T
-    abstract fun addConnection(settings: T)
-    abstract fun removeConnection(settings: T, scope: ExecConnectionScope = settings.scope)
-    abstract fun saveConnections(settings: Map<ExecConnectionScope, Set<T>>)
+    abstract fun default(): T
+    abstract fun add(settings: T)
+    abstract fun remove(settings: T, scope: ExecConnectionScope = settings.scope)
+    abstract fun save(settings: Map<ExecConnectionScope, Set<T>>)
 
-    fun saveConnections(settings: Collection<T>) = saveConnections(
+    fun save(settings: Collection<T>) = save(
         settings.groupBy { it.scope }
             .mapValues { (_, v) -> v.toSet() }
     )
 
-    fun saveConnection(settings: T) {
-        removeConnection(settings)
-        addConnection(settings)
+    fun save(settings: T) {
+        remove(settings)
+        add(settings)
     }
 
     fun getPropertyOrDefault(project: Project, key: String, fallback: String) = PropertyService.getInstance(project)

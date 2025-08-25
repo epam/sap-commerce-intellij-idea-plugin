@@ -21,7 +21,7 @@ package sap.commerce.toolset.hac.exec.settings.state
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
-import kotlinx.serialization.Transient
+import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.RemoteConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
@@ -35,22 +35,22 @@ data class HacConnectionSettingsState(
     override val port: String? = null,
     override val webroot: String = "",
     override val ssl: Boolean = true,
+    @Transient
     override val credentials: Credentials? = null,
     val wsl: Boolean = false,
     val sslProtocol: String = "TLSv1.2",
     val sessionCookieName: String = RemoteConstants.DEFAULT_SESSION_COOKIE_NAME,
 ) : ExecConnectionSettingsState {
 
-    @Transient
     private val dynamicCredentials
+        @Transient
         get() = credentials
             ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
-    @Transient
     override val username
+        @Transient
         get() = dynamicCredentials?.userName ?: "admin"
-
-    @Transient
     override val password
+        @Transient
         get() = dynamicCredentials?.getPasswordAsString() ?: "password"
 
     override fun mutable() = Mutable(

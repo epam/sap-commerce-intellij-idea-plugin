@@ -20,7 +20,7 @@ package sap.commerce.toolset.solr.exec.settings.state
 
 import sap.commerce.toolset.exec.settings.state.ExecDeveloperSettingsState
 
-internal data class SolrExecDeveloperSettingsState(
+data class SolrExecDeveloperSettingsState(
     override val activeConnectionUUID: String? = null,
     override val connections: Set<SolrConnectionSettingsState> = emptySet()
 ) : ExecDeveloperSettingsState<SolrConnectionSettingsState>

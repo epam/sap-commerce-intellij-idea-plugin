@@ -34,7 +34,6 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.presentationName
-import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
 import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.ui.RemoteHacInstancesListPanel
@@ -66,19 +65,17 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
         private val activeSolrServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
         private val hacInstances = RemoteHacInstancesListPanel(project) { eventType, connections ->
             if (!isReset) {
-                if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    HacExecService.getInstance(project).saveConnections(connections)
-                }
+                HacExecService.getInstance(project).save(connections)
+
                 updateModel(activeHacServerModel, activeHacServerModel.selectedItem as HacConnectionSettingsState?, connections)
             }
         }
 
         private val solrInstances = RemoteSolrInstancesListPanel(project) { eventType, connections ->
             if (!isReset) {
-                if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    SolrExecService.getInstance(project).saveConnections(connections)
-                    updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as SolrConnectionSettingsState?, connections)
-                }
+                SolrExecService.getInstance(project).save(connections)
+
+                updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as SolrConnectionSettingsState?, connections)
             }
         }
 

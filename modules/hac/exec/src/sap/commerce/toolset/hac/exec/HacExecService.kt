@@ -27,6 +27,7 @@ import sap.commerce.toolset.exec.ExecService
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.hac.exec.settings.HacExecDeveloperSettings
 import sap.commerce.toolset.hac.exec.settings.HacExecProjectSettings
+import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 @Service(Service.Level.PROJECT)
@@ -35,12 +36,16 @@ class HacExecService(private val project: Project) : ExecService<HacConnectionSe
     override var activeConnection: HacConnectionSettingsState
         get() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
             ?.let { uuid -> connections.find { it.uuid == uuid } }
-            ?: defaultConnectionSettings().also {
+            ?: default().also {
                 HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                addConnection(it)
+                add(it)
+
+                project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(it)
             }
         set(value) {
             HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
+
+            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(value)
         }
 
     override val connections: Set<HacConnectionSettingsState>
@@ -49,38 +54,48 @@ class HacExecService(private val project: Project) : ExecService<HacConnectionSe
             addAll(HacExecProjectSettings.getInstance(project).connections)
         }
             .takeIf { it.isNotEmpty() }
-            ?: setOf(defaultConnectionSettings())
+            ?: setOf(default())
 
-    override fun addConnection(settings: HacConnectionSettingsState) = when (settings.scope) {
+    override fun add(settings: HacConnectionSettingsState) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
             connections = connections + settings
+
+            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onAdded(settings)
         }
 
         ExecConnectionScope.PROJECT -> with(HacExecProjectSettings.getInstance(project)) {
             connections = connections + settings
+
+            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onAdded(settings)
         }
     }
 
-    override fun removeConnection(settings: HacConnectionSettingsState, scope: ExecConnectionScope) = when (settings.scope) {
+    override fun remove(settings: HacConnectionSettingsState, scope: ExecConnectionScope) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
                 .toSet()
+
+            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
 
         ExecConnectionScope.PROJECT -> with(HacExecProjectSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
                 .toSet()
+
+            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
     }
 
-    override fun saveConnections(settings: Map<ExecConnectionScope, Set<HacConnectionSettingsState>>) {
+    override fun save(settings: Map<ExecConnectionScope, Set<HacConnectionSettingsState>>) {
         HacExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptySet() }
         HacExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptySet() }
+
+        project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onSave(settings)
     }
 
-    override fun defaultConnectionSettings(): HacConnectionSettingsState {
+    override fun default(): HacConnectionSettingsState {
         val connectionSettings = HacConnectionSettingsState(
             port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002"),
             webroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, ""),

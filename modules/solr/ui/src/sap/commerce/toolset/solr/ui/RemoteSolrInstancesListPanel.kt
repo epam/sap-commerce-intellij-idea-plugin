@@ -31,17 +31,15 @@ class RemoteSolrInstancesListPanel(
 ) : RemoteInstancesListPanel<SolrConnectionSettingsState>(project, HybrisIcons.Console.SOLR) {
 
     override fun editSelectedItem(item: SolrConnectionSettingsState): SolrConnectionSettingsState? {
-        val ok = RemoteSolrConnectionDialog(myProject, this, item).showAndGet()
-        return if (ok) item
+        val mutableSettings = item.mutable()
+        return if (RemoteSolrConnectionDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
         else null
     }
 
-    public override fun addItem() {
-        val item = SolrExecService.getInstance(myProject).defaultConnectionSettings()
-        val dialog = RemoteSolrConnectionDialog(myProject, this, item)
-        if (dialog.showAndGet()) {
-            addElement(item)
-            SolrExecService.getInstance(myProject).addConnection(item)
+    override fun addItem() {
+        val mutableSettings = SolrExecService.getInstance(myProject).default().mutable()
+        if (RemoteSolrConnectionDialog(myProject, this, mutableSettings).showAndGet()) {
+            addElement(mutableSettings.immutable())
         }
     }
 

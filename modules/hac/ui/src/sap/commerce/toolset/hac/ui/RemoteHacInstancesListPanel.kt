@@ -31,11 +31,11 @@ class RemoteHacInstancesListPanel(
 ) : RemoteInstancesListPanel<HacConnectionSettingsState>(project, HybrisIcons.Y.REMOTE) {
 
     override fun addItem() {
-        val settings = HacExecService.getInstance(myProject).defaultConnectionSettings()
-        val dialog = RemoteHacConnectionDialog(myProject, this, settings)
+        val settings = HacExecService.getInstance(myProject).default()
+        val mutableSettings = settings.mutable()
+        val dialog = RemoteHacConnectionDialog(myProject, this, mutableSettings)
         if (dialog.showAndGet()) {
-            addElement(settings)
-            HacExecService.getInstance(myProject).addConnection(settings);
+            addElement(mutableSettings.immutable())
         }
     }
 
@@ -44,8 +44,11 @@ class RemoteHacInstancesListPanel(
         data: Set<HacConnectionSettingsState>
     ) = onDataChanged.invoke(eventType, data)
 
-    override fun editSelectedItem(item: HacConnectionSettingsState) = if (RemoteHacConnectionDialog(myProject, this, item).showAndGet()) item
-    else null
+    override fun editSelectedItem(item: HacConnectionSettingsState): HacConnectionSettingsState? {
+        val mutableSettings = item.mutable()
+        return if (RemoteHacConnectionDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
+        else null
+    }
 
     companion object {
         @Serial

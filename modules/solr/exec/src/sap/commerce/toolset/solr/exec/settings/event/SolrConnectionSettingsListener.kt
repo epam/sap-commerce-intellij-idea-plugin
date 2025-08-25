@@ -20,13 +20,16 @@ package sap.commerce.toolset.solr.exec.settings.event
 
 import com.intellij.util.messages.Topic
 import sap.commerce.toolset.exec.settings.event.ExecConnectionListener
+import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 
 interface SolrConnectionSettingsListener : ExecConnectionListener<SolrConnectionSettingsState> {
 
     override fun onActiveConnectionChanged(connection: SolrConnectionSettingsState) = Unit
+    override fun onAdded(connection: SolrConnectionSettingsState) = Unit
     override fun onModified(connection: SolrConnectionSettingsState) = Unit
-    override fun onRemove(connection: SolrConnectionSettingsState) = Unit
+    override fun onSave(settings: Map<ExecConnectionScope, Set<SolrConnectionSettingsState>>) = Unit
+    override fun onRemoved(connection: SolrConnectionSettingsState) = Unit
 
     companion object {
         val TOPIC = Topic(SolrConnectionSettingsListener::class.java)

@@ -27,6 +27,7 @@ import sap.commerce.toolset.exec.ExecService
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.solr.exec.settings.SolrExecDeveloperSettings
 import sap.commerce.toolset.solr.exec.settings.SolrExecProjectSettings
+import sap.commerce.toolset.solr.exec.settings.event.SolrConnectionSettingsListener
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 
 @Service(Service.Level.PROJECT)
@@ -35,12 +36,16 @@ class SolrExecService(private val project: Project) : ExecService<SolrConnection
     override var activeConnection: SolrConnectionSettingsState
         get() = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
             ?.let { uuid -> connections.find { it.uuid == uuid } }
-            ?: defaultConnectionSettings().also {
+            ?: default().also {
                 SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                addConnection(it)
+                add(it)
+
+                project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onActiveConnectionChanged(it)
             }
         set(value) {
             SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
+
+            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onActiveConnectionChanged(value)
         }
 
     override val connections: Set<SolrConnectionSettingsState>
@@ -49,38 +54,48 @@ class SolrExecService(private val project: Project) : ExecService<SolrConnection
             addAll(SolrExecProjectSettings.getInstance(project).connections)
         }
             .takeIf { it.isNotEmpty() }
-            ?: setOf(defaultConnectionSettings())
+            ?: setOf(default())
 
-    override fun addConnection(settings: SolrConnectionSettingsState) = when (settings.scope) {
+    override fun add(settings: SolrConnectionSettingsState) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
             connections = connections + settings
+
+            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onAdded(settings)
         }
 
         ExecConnectionScope.PROJECT -> with(SolrExecProjectSettings.getInstance(project)) {
             connections = connections + settings
+
+            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onAdded(settings)
         }
     }
 
-    override fun removeConnection(settings: SolrConnectionSettingsState, scope: ExecConnectionScope) = when (settings.scope) {
+    override fun remove(settings: SolrConnectionSettingsState, scope: ExecConnectionScope) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
                 .toSet()
+
+            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
 
         ExecConnectionScope.PROJECT -> with(SolrExecProjectSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
                 .toSet()
+
+            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
     }
 
-    override fun saveConnections(settings: Map<ExecConnectionScope, Set<SolrConnectionSettingsState>>) {
+    override fun save(settings: Map<ExecConnectionScope, Set<SolrConnectionSettingsState>>) {
         SolrExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptySet() }
         SolrExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptySet() }
+
+        project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onSave(settings)
     }
 
-    override fun defaultConnectionSettings(): SolrConnectionSettingsState {
+    override fun default(): SolrConnectionSettingsState {
         val connectionSettings = SolrConnectionSettingsState(
             port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"),
             credentials = Credentials(

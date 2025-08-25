@@ -20,6 +20,6 @@ package sap.commerce.toolset.solr.exec.settings.state
 
 import sap.commerce.toolset.exec.settings.state.ExecProjectSettingsState
 
-internal data class SolrExecProjectSettingsState(
+data class SolrExecProjectSettingsState(
     override val connections: Set<SolrConnectionSettingsState> = emptySet(),
 ) : ExecProjectSettingsState<SolrConnectionSettingsState>

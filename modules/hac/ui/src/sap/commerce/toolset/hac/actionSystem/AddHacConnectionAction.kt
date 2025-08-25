@@ -35,10 +35,10 @@ class AddHacConnectionAction : HacConnectionAction("Create new connection", Hybr
             ?: return
 
         val hacExecService = HacExecService.getInstance(project)
-        val settings = hacExecService.defaultConnectionSettings()
+        val mutableSettings = hacExecService.default().mutable()
 
-        if (RemoteHacConnectionDialog(project, component, settings).showAndGet()) {
-            hacExecService.addConnection(settings)
+        if (RemoteHacConnectionDialog(project, component, mutableSettings).showAndGet()) {
+            hacExecService.add(mutableSettings.immutable())
         }
     }
 }

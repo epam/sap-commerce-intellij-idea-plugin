@@ -20,13 +20,16 @@ package sap.commerce.toolset.hac.exec.settings.event
 
 import com.intellij.util.messages.Topic
 import sap.commerce.toolset.exec.settings.event.ExecConnectionListener
+import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 interface HacConnectionSettingsListener : ExecConnectionListener<HacConnectionSettingsState> {
 
     override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = Unit
+    override fun onAdded(connection: HacConnectionSettingsState) = Unit
     override fun onModified(connection: HacConnectionSettingsState) = Unit
-    override fun onRemove(connection: HacConnectionSettingsState) = Unit
+    override fun onSave(settings: Map<ExecConnectionScope, Set<HacConnectionSettingsState>>) = Unit
+    override fun onRemoved(connection: HacConnectionSettingsState) = Unit
 
     companion object {
         val TOPIC = Topic(HacConnectionSettingsListener::class.java)

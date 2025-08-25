@@ -20,7 +20,7 @@ package sap.commerce.toolset.hac.exec.settings.state
 
 import sap.commerce.toolset.exec.settings.state.ExecDeveloperSettingsState
 
-internal data class HacExecDeveloperSettingsState(
+data class HacExecDeveloperSettingsState(
     override val activeConnectionUUID: String? = null,
     override val connections: Set<HacConnectionSettingsState> = emptySet()
 ) : ExecDeveloperSettingsState<HacConnectionSettingsState>

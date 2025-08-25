@@ -27,21 +27,14 @@ import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.ui.RemoteConnectionDialog
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
-import sap.commerce.toolset.solr.exec.settings.event.SolrConnectionSettingsListener
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.awt.Component
 
 class RemoteSolrConnectionDialog(
     project: Project,
     parentComponent: Component,
-    settings: SolrConnectionSettingsState
-) : RemoteConnectionDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings.mutable(), "Remote SOLR Instance") {
-
-    override fun applyFields() {
-        super.applyFields()
-
-        project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onModified(mutableSettings.immutable())
-    }
+    settings: SolrConnectionSettingsState.Mutable
+) : RemoteConnectionDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SOLR Instance") {
 
     override fun panel() = panel {
         row {

@@ -29,7 +29,7 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrExecDeveloperSettingsSt
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
-internal class SolrExecDeveloperSettings : SerializablePersistentStateComponent<SolrExecDeveloperSettingsState>(SolrExecDeveloperSettingsState()), ModificationTracker {
+class SolrExecDeveloperSettings : SerializablePersistentStateComponent<SolrExecDeveloperSettingsState>(SolrExecDeveloperSettingsState()), ModificationTracker {
 
     var activeConnectionUUID
         get() = state.activeConnectionUUID

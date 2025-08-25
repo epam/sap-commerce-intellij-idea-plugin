@@ -31,7 +31,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacExecProjectSettingsState
     ]
 )
 @Service(Service.Level.PROJECT)
-internal class HacExecProjectSettings : SerializablePersistentStateComponent<HacExecProjectSettingsState>(HacExecProjectSettingsState()), ModificationTracker {
+class HacExecProjectSettings : SerializablePersistentStateComponent<HacExecProjectSettingsState>(HacExecProjectSettingsState()), ModificationTracker {
 
     var connections
         get() = state.connections

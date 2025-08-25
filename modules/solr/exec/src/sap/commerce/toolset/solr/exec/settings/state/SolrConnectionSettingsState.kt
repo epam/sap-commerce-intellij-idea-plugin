@@ -21,7 +21,7 @@ package sap.commerce.toolset.solr.exec.settings.state
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
-import kotlinx.serialization.Transient
+import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.RemoteConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
@@ -35,20 +35,19 @@ data class SolrConnectionSettingsState(
     override val port: String? = null,
     override val webroot: String = "solr",
     override val ssl: Boolean = true,
+    @Transient
     override val credentials: Credentials? = null,
 ) : ExecConnectionSettingsState {
 
-    @Transient
     private val dynamicCredentials
+        @Transient
         get() = credentials
             ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
-
-    @Transient
     override val username
+        @Transient
         get() = dynamicCredentials?.userName ?: "solrserver"
-
-    @Transient
     override val password
+        @Transient
         get() = dynamicCredentials?.getPasswordAsString() ?: "server123"
 
     override fun mutable() = Mutable(

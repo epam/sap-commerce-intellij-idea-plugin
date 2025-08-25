@@ -31,7 +31,7 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrExecProjectSettingsStat
     ]
 )
 @Service(Service.Level.PROJECT)
-internal class SolrExecProjectSettings : SerializablePersistentStateComponent<SolrExecProjectSettingsState>(SolrExecProjectSettingsState()), ModificationTracker {
+class SolrExecProjectSettings : SerializablePersistentStateComponent<SolrExecProjectSettingsState>(SolrExecProjectSettingsState()), ModificationTracker {
 
     var connections
         get() = state.connections

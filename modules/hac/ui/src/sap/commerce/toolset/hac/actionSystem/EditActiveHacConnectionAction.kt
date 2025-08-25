@@ -34,7 +34,10 @@ class EditActiveHacConnectionAction : HacConnectionAction("Edit active connectio
         val component = (eventSource as? Component)
             ?: return
 
-        val settings = HacExecService.getInstance(project).activeConnection
-        RemoteHacConnectionDialog(project, component, settings).showAndGet()
+        val hacExecService = HacExecService.getInstance(project)
+        val mutableSettings = hacExecService.activeConnection.mutable()
+        if (RemoteHacConnectionDialog(project, component, mutableSettings).showAndGet()) {
+            hacExecService.save(mutableSettings.immutable())
+        }
     }
 }
