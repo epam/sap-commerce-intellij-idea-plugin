@@ -19,6 +19,6 @@
 package sap.commerce.toolset.solr
 
 object SolrConstants {
-    const val CONNECTION_TIMEOUT_MILLIS: Int = 15000
-    const val SOCKET_TIMEOUT_MILLIS: Int = 120000
+    internal const val CONNECTION_TIMEOUT_MILLIS: Int = 15000
+    internal const val SOCKET_TIMEOUT_MILLIS: Int = 120000
 }
