@@ -22,8 +22,18 @@
                                  provider="sap.commerce.toolset.options.ApplicationSettingsConfigurableProvider"/>
 
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
+                                 bundle="i18n.HybrisBundle"
                                  key="hybris.settings.application.project_import.title"
                                  provider="sap.commerce.toolset.options.ApplicationProjectImportSettingsConfigurableProvider"/>
     </extensions>
+
+    <actions>
+        <group id="HybrisToolsActions"
+               text="[y] SAP Commerce"
+               popup="true"
+               class="sap.commerce.toolset.actionSystem.CxToolsetActionGroup">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </group>
+    </actions>
 
 </idea-plugin>

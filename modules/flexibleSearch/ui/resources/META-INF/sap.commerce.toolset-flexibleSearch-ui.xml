@@ -64,7 +64,7 @@
             <reference ref="hybris.fxs.openSettings"/>
         </group>
         <group id="hybris.fxs.toolbar.right">
-            <reference ref="hybris.hac.chooseConnection"/>
+            <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
         </group>
     </actions>
 

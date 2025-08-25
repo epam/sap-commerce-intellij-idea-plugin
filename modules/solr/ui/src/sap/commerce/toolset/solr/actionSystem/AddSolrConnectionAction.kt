@@ -16,16 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.actionSystem
+package sap.commerce.toolset.solr.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.hac.exec.HacExecService
-import sap.commerce.toolset.hac.ui.HacConnectionSettingsDialog
+import sap.commerce.toolset.solr.exec.SolrExecService
+import sap.commerce.toolset.solr.ui.SolrConnectionSettingsDialog
 import java.awt.Component
 import java.awt.event.InputEvent
 
-class EditActiveHacConnectionAction : HacConnectionAction("Edit active connection", HybrisIcons.Connection.EDIT) {
+class AddSolrConnectionAction : SolrConnectionAction("Create new connection", HybrisIcons.Connection.ADD) {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -34,10 +34,11 @@ class EditActiveHacConnectionAction : HacConnectionAction("Edit active connectio
         val component = (eventSource as? Component)
             ?: return
 
-        val execService = HacExecService.getInstance(project)
-        val mutableSettings = execService.activeConnection.mutable()
-        if (HacConnectionSettingsDialog(project, component, mutableSettings).showAndGet()) {
-            execService.save(mutableSettings.immutable())
+        val execService = SolrExecService.getInstance(project)
+        val mutableSettings = execService.default().mutable()
+
+        if (SolrConnectionSettingsDialog(project, component, mutableSettings).showAndGet()) {
+            execService.add(mutableSettings.immutable())
         }
     }
 }

@@ -46,6 +46,9 @@
 
     <xi:include href="/META-INF/sap.commerce.toolset-exec-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <xi:include href="/META-INF/sap.commerce.toolset-console-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-console-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
     <xi:include href="/META-INF/sap.commerce.toolset-hac-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-hac-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
@@ -64,9 +67,6 @@
     <xi:include href="/META-INF/sap.commerce.toolset-project-import-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
-
-    <xi:include href="/META-INF/sap.commerce.toolset-console-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/sap.commerce.toolset-console-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-debugger-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
@@ -104,13 +104,17 @@
     <xi:include href="/META-INF/sap.commerce.toolset-spring-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-logging-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-occ-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
     <xi:include href="/META-INF/sap.commerce.toolset-solr-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-solr-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
     <xi:include href="/META-INF/sap.commerce.toolset-java-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-java-jsp.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <depends optional="true" config-file="sap.commerce.toolset-businessProcess-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="sap.commerce.toolset-typeSystem-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="sap.commerce.toolset-project-diagram.xml">com.intellij.diagram</depends>
+
     <depends optional="true" config-file="sap.commerce.toolset-jrebel-core.xml">JRebelPlugin</depends>
     <depends optional="true" config-file="sap.commerce.toolset-copyright-core.xml">com.intellij.copyright</depends>
     <depends optional="true" config-file="sap.commerce.toolset-terminal-core.xml">org.jetbrains.plugins.terminal</depends>

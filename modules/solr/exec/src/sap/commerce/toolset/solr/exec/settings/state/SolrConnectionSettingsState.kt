@@ -38,7 +38,7 @@ data class SolrConnectionSettingsState(
     @OptionTag override val ssl: Boolean = true,
 
     @Transient
-    @OptionTag override val credentials: Credentials? = null,
+    override val credentials: Credentials? = null,
 ) : ExecConnectionSettingsState {
 
     private val dynamicCredentials

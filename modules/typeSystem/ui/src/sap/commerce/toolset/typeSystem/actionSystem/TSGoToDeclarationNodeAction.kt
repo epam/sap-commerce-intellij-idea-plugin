@@ -25,11 +25,11 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.AbstractGoToDeclarationAction
 import sap.commerce.toolset.typeSystem.model.*
 import sap.commerce.toolset.typeSystem.ui.tree.TSTreeNode
 import sap.commerce.toolset.typeSystem.ui.tree.nodes.TSMetaNode
 import sap.commerce.toolset.typeSystem.ui.tree.nodes.TSNode
-import sap.commerce.toolset.ui.actionSystem.AbstractGoToDeclarationAction
 import javax.swing.JTree
 
 class TSGoToDeclarationNodeAction : AbstractGoToDeclarationAction() {

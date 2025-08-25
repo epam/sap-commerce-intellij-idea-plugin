@@ -33,7 +33,7 @@ import com.intellij.ui.layout.selected
 import sap.commerce.toolset.exec.RemoteConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.exec.ui.RemoteConnectionDialog
+import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.exec.ui.WSL_PROXY_CONNECT_LOCALHOST
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -44,11 +44,11 @@ import javax.swing.JComboBox
 import javax.swing.JEditorPane
 import javax.swing.JLabel
 
-class RemoteHacConnectionDialog(
+class HacConnectionSettingsDialog(
     project: Project,
     parentComponent: Component,
     settings: HacConnectionSettingsState.Mutable
-) : RemoteConnectionDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SAP Commerce Instance") {
+) : ConnectionSettingsDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SAP Commerce Instance") {
 
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField

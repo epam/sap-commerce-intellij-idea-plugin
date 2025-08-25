@@ -15,13 +15,14 @@
   ~ You should have received a copy of the GNU Lesser General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
+
 <idea-plugin>
 
     <actions>
-        <group id="sap.commerce.toolset.hac.chooseConnection" popup="true" searchable="false"
-               class="sap.commerce.toolset.hac.actionSystem.ChooseHacConnectionAction">
-            <action class="sap.commerce.toolset.hac.actionSystem.AddHacConnectionAction"/>
-            <action class="sap.commerce.toolset.hac.actionSystem.EditActiveHacConnectionAction"/>
+        <group id="sap.commerce.toolset.solr.chooseConnection" popup="true" searchable="false"
+               class="sap.commerce.toolset.solr.actionSystem.ChooseSolrConnectionAction">
+            <action class="sap.commerce.toolset.solr.actionSystem.AddSolrConnectionAction"/>
+            <action class="sap.commerce.toolset.solr.actionSystem.EditActiveSolrConnectionAction"/>
 
             <add-to-group anchor="first" group-id="hybris.console.actionGroup"/>
         </group>

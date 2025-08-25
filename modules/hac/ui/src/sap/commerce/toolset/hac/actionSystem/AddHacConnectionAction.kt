@@ -21,7 +21,7 @@ package sap.commerce.toolset.hac.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecService
-import sap.commerce.toolset.hac.ui.RemoteHacConnectionDialog
+import sap.commerce.toolset.hac.ui.HacConnectionSettingsDialog
 import java.awt.Component
 import java.awt.event.InputEvent
 
@@ -34,11 +34,11 @@ class AddHacConnectionAction : HacConnectionAction("Create new connection", Hybr
         val component = (eventSource as? Component)
             ?: return
 
-        val hacExecService = HacExecService.getInstance(project)
-        val mutableSettings = hacExecService.default().mutable()
+        val execService = HacExecService.getInstance(project)
+        val mutableSettings = execService.default().mutable()
 
-        if (RemoteHacConnectionDialog(project, component, mutableSettings).showAndGet()) {
-            hacExecService.add(mutableSettings.immutable())
+        if (HacConnectionSettingsDialog(project, component, mutableSettings).showAndGet()) {
+            execService.add(mutableSettings.immutable())
         }
     }
 }

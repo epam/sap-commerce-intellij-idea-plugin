@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.actionSystem
+package sap.commerce.toolset.solr.actionSystem
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
@@ -24,17 +24,14 @@ import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.settings.state.presentationName
-import sap.commerce.toolset.exec.settings.state.shortenConnectionName
-import sap.commerce.toolset.hac.exec.HacExecService
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.solr.exec.SolrExecService
+import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
-import sap.commerce.toolset.ui.actionSystem.HybrisActionPlaces
 
-class HacChooseConnectionAction : DefaultActionGroup() {
+class ChooseSolrConnectionAction : DefaultActionGroup() {
 
     init {
         templatePresentation.icon = HybrisIcons.Y.REMOTE
@@ -47,18 +44,18 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         val project = e?.project ?: return emptyArray()
         val actions = super.getChildren(e)
 
-        val remoteConnectionService = HacExecService.getInstance(project)
-        val activeConnection = remoteConnectionService.activeConnection
-        val connectionActions = remoteConnectionService.connections
+        val execService = SolrExecService.getInstance(project)
+        val activeConnection = execService.activeConnection
+        val connectionActions = execService.connections
             .map {
-                if (it == activeConnection) object : HacConnectionAction(it.presentationName, HybrisIcons.Y.REMOTE) {
+                if (it == activeConnection) object : SolrConnectionAction(it.presentationName, HybrisIcons.Y.REMOTE) {
                     override fun actionPerformed(e: AnActionEvent) {
-                        remoteConnectionService.activeConnection = it
+                        execService.activeConnection = it
                     }
                 }
-                else object : HacConnectionAction(it.presentationName, HybrisIcons.Y.REMOTE_GREEN) {
+                else object : SolrConnectionAction(it.presentationName, HybrisIcons.Y.REMOTE_GREEN) {
                     override fun actionPerformed(e: AnActionEvent) {
-                        remoteConnectionService.activeConnection = it
+                        execService.activeConnection = it
                     }
                 }
             }
@@ -70,31 +67,18 @@ class HacChooseConnectionAction : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val presentation = e.presentation
+        val activeConnection = SolrExecService.getInstance(project).activeConnection
 
-        if (e.place == ConsoleUiConstants.PLACE_TOOLBAR) {
-            presentation.isEnabledAndVisible = HybrisConsoleService.getInstance(project).getActiveConsole()
-                ?.activeConnection()
-                ?.let { it is HacConnectionSettingsState }
-                ?: false
-        } else {
-            presentation.isEnabledAndVisible = true
-        }
+        e.presentation.isEnabledAndVisible = HybrisConsoleService.getInstance(project).getActiveConsole()
+            ?.activeConnection()
+            ?.let { it is SolrConnectionSettingsState }
+            ?: false
 
-        val hacSettings = HacExecService.getInstance(project).activeConnection
-        presentation.text = when (e.place) {
-            ActionPlaces.EDITOR_TOOLBAR -> hacSettings.presentationName
-            ConsoleUiConstants.PLACE_TOOLBAR -> null
-            HybrisActionPlaces.LOGGERS_TOOLBAR -> null
-            else -> hacSettings.shortenConnectionName
-        }
-        if (e.place == ConsoleUiConstants.PLACE_TOOLBAR || e.place == HybrisActionPlaces.LOGGERS_TOOLBAR) {
-            presentation.putClientProperty(ActionUtil.HIDE_DROPDOWN_ICON, true)
-        }
-
-        presentation.description = createHTML().div {
+        e.presentation.text = null
+        e.presentation.putClientProperty(ActionUtil.HIDE_DROPDOWN_ICON, true)
+        e.presentation.description = createHTML().div {
             p { +"Switch active connection" }
-            hacSettings.generatedURL
+            activeConnection.generatedURL
                 .let { p { +it } }
         }
     }

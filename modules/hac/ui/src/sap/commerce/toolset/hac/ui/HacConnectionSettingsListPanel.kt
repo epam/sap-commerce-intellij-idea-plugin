@@ -25,7 +25,7 @@ import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.io.Serial
 
-class RemoteHacInstancesListPanel(
+class HacConnectionSettingsListPanel(
     project: Project,
     private val onDataChanged: (EventType, Set<HacConnectionSettingsState>) -> Unit
 ) : RemoteInstancesListPanel<HacConnectionSettingsState>(project, HybrisIcons.Y.REMOTE) {
@@ -33,7 +33,7 @@ class RemoteHacInstancesListPanel(
     override fun addItem() {
         val settings = HacExecService.getInstance(myProject).default()
         val mutableSettings = settings.mutable()
-        val dialog = RemoteHacConnectionDialog(myProject, this, mutableSettings)
+        val dialog = HacConnectionSettingsDialog(myProject, this, mutableSettings)
         if (dialog.showAndGet()) {
             addElement(mutableSettings.immutable())
         }
@@ -46,7 +46,7 @@ class RemoteHacInstancesListPanel(
 
     override fun editSelectedItem(item: HacConnectionSettingsState): HacConnectionSettingsState? {
         val mutableSettings = item.mutable()
-        return if (RemoteHacConnectionDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
+        return if (HacConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
         else null
     }
 

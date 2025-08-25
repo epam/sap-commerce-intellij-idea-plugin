@@ -24,10 +24,10 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.AbstractGoToDeclarationAction
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier
 import sap.commerce.toolset.beanSystem.model.*
 import sap.commerce.toolset.ui.AbstractTable
-import sap.commerce.toolset.ui.actionSystem.AbstractGoToDeclarationAction
 
 class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
 

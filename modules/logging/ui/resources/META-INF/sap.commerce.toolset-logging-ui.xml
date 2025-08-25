@@ -26,7 +26,7 @@
         <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.FetchLoggersStateAction"/>
 
         <group id="sap.cx.loggers.toolbar.actions" searchable="false">
-            <reference ref="hybris.hac.chooseConnection"/>
+            <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
             <reference ref="sap.cx.fetch.loggers.action"/>
         </group>
 
@@ -34,7 +34,7 @@
             <reference ref="sap.cx.fetch.loggers.action"/>
 
             <separator text="Active Connection"/>
-            <reference ref="hybris.hac.chooseConnection"/>
+            <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
 
             <separator text="Log Levels"/>
             <action class="sap.commerce.toolset.logging.actionSystem.OffLoggerAction"/>

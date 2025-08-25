@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.actionSystem
+package sap.commerce.toolset.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.DumbAware
 import sap.commerce.toolset.isHybrisProject
 
-class HybrisToolsActionGroup : DefaultActionGroup(), DumbAware {
+class CxToolsetActionGroup : DefaultActionGroup(), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

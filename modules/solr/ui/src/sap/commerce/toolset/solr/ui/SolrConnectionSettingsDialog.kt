@@ -25,16 +25,16 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.exec.ui.RemoteConnectionDialog
+import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.awt.Component
 
-class RemoteSolrConnectionDialog(
+class SolrConnectionSettingsDialog(
     project: Project,
     parentComponent: Component,
     settings: SolrConnectionSettingsState.Mutable
-) : RemoteConnectionDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SOLR Instance") {
+) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SOLR Instance") {
 
     override fun panel() = panel {
         row {

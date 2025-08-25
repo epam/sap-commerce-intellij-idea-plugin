@@ -16,28 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.actionSystem
+package sap.commerce.toolset.actionSystem
 
-import com.intellij.ide.util.PsiNavigationSupport
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.project.Project
-import com.intellij.util.xml.DomElement
-
-abstract class AbstractGoToDeclarationAction : AnAction() {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    protected fun navigate(project: Project, dom: DomElement, offset: Int?) {
-        if (offset == null) return
-
-        dom.xmlTag
-            ?.containingFile
-            ?.virtualFile
-            ?.let {
-                PsiNavigationSupport.getInstance()
-                    .createNavigatable(project, it, offset)
-                    .navigate(false)
-            }
-    }
+object HybrisActionPlaces {
+    @Deprecated("review this usage, migrate to LoggersConstants")
+    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
 }

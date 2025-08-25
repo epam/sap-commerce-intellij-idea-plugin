@@ -25,20 +25,20 @@ import sap.commerce.toolset.solr.exec.SolrExecService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.io.Serial
 
-class RemoteSolrInstancesListPanel(
+class SolrConnectionSettingsListPanel(
     project: Project,
     private val onDataChanged: (EventType, Set<SolrConnectionSettingsState>) -> Unit = { _, _ -> }
 ) : RemoteInstancesListPanel<SolrConnectionSettingsState>(project, HybrisIcons.Console.SOLR) {
 
     override fun editSelectedItem(item: SolrConnectionSettingsState): SolrConnectionSettingsState? {
         val mutableSettings = item.mutable()
-        return if (RemoteSolrConnectionDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
+        return if (SolrConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
         else null
     }
 
     override fun addItem() {
         val mutableSettings = SolrExecService.getInstance(myProject).default().mutable()
-        if (RemoteSolrConnectionDialog(myProject, this, mutableSettings).showAndGet()) {
+        if (SolrConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) {
             addElement(mutableSettings.immutable())
         }
     }

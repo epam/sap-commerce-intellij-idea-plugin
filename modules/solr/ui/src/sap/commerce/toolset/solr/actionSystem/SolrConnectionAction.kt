@@ -16,17 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.actionSystem
+package sap.commerce.toolset.solr.actionSystem
 
-import com.intellij.openapi.command.CommandProcessor
-import sap.commerce.toolset.HybrisConstants
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import javax.swing.Icon
 
-fun isTypingActionInProgress(): Boolean {
-    val currentCommandName = CommandProcessor.getInstance().currentCommandName ?: return false
+abstract class SolrConnectionAction(private val actionName: String, val icon: Icon) : AnAction() {
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    return HybrisConstants.TYPING_EDITOR_ACTIONS.any {
-        currentCommandName.equals(it, true)
-    } || HybrisConstants.UNDO_REDO_EDITOR_ACTIONS.any {
-        currentCommandName.startsWith(it)
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        val presentation = e.presentation
+
+        presentation.text = actionName
+        presentation.icon = icon
     }
 }

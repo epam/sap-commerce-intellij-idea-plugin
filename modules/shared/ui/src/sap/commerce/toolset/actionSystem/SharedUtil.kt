@@ -16,36 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.actionSystem
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.command.CommandProcessor
+import sap.commerce.toolset.HybrisConstants
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+fun isTypingActionInProgress(): Boolean {
+    val currentCommandName = CommandProcessor.getInstance().currentCommandName ?: return false
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":exec-core"))
-    implementation(project(":exec-ui"))
-    implementation(project(":console-core"))
-    implementation(project(":console-ui"))
-    implementation(project(":solr-core"))
-    implementation(project(":solr-exec"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+    return HybrisConstants.TYPING_EDITOR_ACTIONS.any {
+        currentCommandName.equals(it, true)
+    } || HybrisConstants.UNDO_REDO_EDITOR_ACTIONS.any {
+        currentCommandName.startsWith(it)
     }
 }

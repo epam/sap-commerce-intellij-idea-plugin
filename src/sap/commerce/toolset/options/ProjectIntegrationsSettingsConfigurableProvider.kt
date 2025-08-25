@@ -36,12 +36,12 @@ import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.presentationName
 import sap.commerce.toolset.hac.exec.HacExecService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.hac.ui.RemoteHacInstancesListPanel
+import sap.commerce.toolset.hac.ui.HacConnectionSettingsListPanel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.solr.exec.SolrExecService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
-import sap.commerce.toolset.solr.ui.RemoteSolrInstancesListPanel
+import sap.commerce.toolset.solr.ui.SolrConnectionSettingsListPanel
 import javax.swing.DefaultComboBoxModel
 
 class ProjectIntegrationsSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
@@ -63,7 +63,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
         private lateinit var activeCCv2SubscriptionComboBox: ComboBox<CCv2Subscription>
         private val activeHacServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
         private val activeSolrServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
-        private val hacInstances = RemoteHacInstancesListPanel(project) { eventType, connections ->
+        private val hacInstances = HacConnectionSettingsListPanel(project) { eventType, connections ->
             if (!isReset) {
                 HacExecService.getInstance(project).save(connections)
 
@@ -71,7 +71,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
             }
         }
 
-        private val solrInstances = RemoteSolrInstancesListPanel(project) { eventType, connections ->
+        private val solrInstances = SolrConnectionSettingsListPanel(project) { eventType, connections ->
             if (!isReset) {
                 SolrExecService.getInstance(project).save(connections)
 

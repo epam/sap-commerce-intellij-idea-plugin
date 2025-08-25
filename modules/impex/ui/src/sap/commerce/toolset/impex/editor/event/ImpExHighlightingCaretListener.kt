@@ -40,10 +40,10 @@ import com.intellij.psi.util.PsiUtilBase
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.actionSystem.isTypingActionInProgress
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
-import sap.commerce.toolset.ui.actionSystem.isTypingActionInProgress
 
 @Service
 class ImpExHighlightingCaretListener : CaretListener {

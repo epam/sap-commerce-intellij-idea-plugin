@@ -54,7 +54,7 @@
             <reference ref="hybris.pgq.openSettings"/>
         </group>
         <group id="hybris.pgq.toolbar.right">
-            <reference ref="hybris.hac.chooseConnection"/>
+            <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
         </group>
     </actions>
 

@@ -29,7 +29,7 @@
 
     <actions>
         <action id="hybris.hac.console.impex.validate" class="sap.commerce.toolset.impex.actionSystem.ConsoleImpExValidateAction">
-            <add-to-group group-id="hybris.console.actionGroup" relative-to-action="hybris.hac.console.clearAll" anchor="before"/>
+            <add-to-group group-id="hybris.console.actionGroup" relative-to-action="sap.commerce.toolset.console.clearAll" anchor="before"/>
         </action>
 
         <action id="ImpEx.NewImpExFile" class="sap.commerce.toolset.impex.actionSystem.ImpExFileCreateAction"
@@ -92,7 +92,7 @@
             <reference ref="hybris.impex.openSettings"/>
         </group>
         <group id="hybris.impex.toolbar.right">
-            <reference ref="hybris.hac.chooseConnection"/>
+            <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
         </group>
     </actions>
 </idea-plugin>

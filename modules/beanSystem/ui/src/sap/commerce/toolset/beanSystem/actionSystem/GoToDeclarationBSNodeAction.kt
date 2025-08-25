@@ -24,6 +24,7 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.AbstractGoToDeclarationAction
 import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.Enum
 import sap.commerce.toolset.beanSystem.model.EnumValue
@@ -31,7 +32,6 @@ import sap.commerce.toolset.beanSystem.model.Property
 import sap.commerce.toolset.beanSystem.ui.tree.BSTreeNode
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSMetaNode
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSNode
-import sap.commerce.toolset.ui.actionSystem.AbstractGoToDeclarationAction
 import javax.swing.JTree
 
 class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {

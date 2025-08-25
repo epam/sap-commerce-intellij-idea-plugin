@@ -48,14 +48,13 @@ import javax.swing.JLabel
 
 const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
 
-abstract class RemoteConnectionDialog<T: ExecConnectionSettingsState.Mutable>(
+abstract class ConnectionSettingsDialog<T: ExecConnectionSettingsState.Mutable>(
     protected val project: Project,
     parentComponent: Component,
     protected val mutableSettings: T,
     dialogTitle: String
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
 
-    private val originalScope = mutableSettings.scope
     protected lateinit var connectionNameTextField: JBTextField
     protected lateinit var urlPreviewLabel: JLabel
     protected lateinit var hostTextField: JBTextField

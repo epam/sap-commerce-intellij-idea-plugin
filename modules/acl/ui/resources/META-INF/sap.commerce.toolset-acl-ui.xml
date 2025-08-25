@@ -52,7 +52,7 @@
             <action class="sap.commerce.toolset.acl.actionSystem.AclToggleInEditorResultsAction"/>
         </group>
         <group id="hybris.acl.toolbar.right">
-            <reference ref="hybris.hac.chooseConnection"/>
+            <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
         </group>
     </actions>
 </idea-plugin>
