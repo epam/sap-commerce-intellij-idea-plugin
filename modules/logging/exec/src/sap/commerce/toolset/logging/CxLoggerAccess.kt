@@ -114,7 +114,30 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             transactionMode = TransactionMode.ROLLBACK
         )
 
-        executeGroovyLoggersScript(context, server)
+        executeGroovyLoggersScript(context, server) { _, groovyScriptResult ->
+            val result = groovyScriptResult.result
+            val loggers = groovyScriptResult.loggers
+
+            when {
+                result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
+                    "<p>${result.errorMessage}</p>"
+                    "<p>Server: ${server.shortenConnectionName}</p>"
+                }
+
+                loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
+                    "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>" +
+                        "<p>Server: ${server.shortenConnectionName}</p>"
+                }
+
+                else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
+                    """
+                        <p>Declared loggers: ${loggers.size}</p>
+                        <p>Server: ${server.shortenConnectionName}</p>
+                    """.trimIndent()
+                }
+            }
+
+        }
     }
 
     fun setLoggers(loggers: List<CxLoggerModel>, callback: (CoroutineScope, DefaultExecResult) -> Unit = { _, _ -> }) {
@@ -127,22 +150,44 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
         val server = HacExecConnectionService.getInstance(project).activeConnection
         val context = GroovyExecContext(
-            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
+            executionTitle = "Applying the Loggers Template for SAP Commerce [${server.shortenConnectionName}]...",
             content = groovyScriptContent,
             transactionMode = TransactionMode.ROLLBACK
         )
 
         executeGroovyLoggersScript(
             context,
-            server,
-            callback
-        )
+            server
+        ) { _, groovyScriptResult ->
+            val result = groovyScriptResult.result
+            val loggers = groovyScriptResult.loggers
+
+            when {
+                result.hasError -> notify(NotificationType.ERROR, "Failed to apply the loggers template") {
+                    "<p>${result.errorMessage}</p>"
+                    "<p>Server: ${server.shortenConnectionName}</p>"
+                }
+
+                loggers == null -> notify(NotificationType.WARNING, "Unable to apply the loggers template") {
+                    "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>" +
+                        "<p>Server: ${server.shortenConnectionName}</p>"
+                }
+
+                else -> notify(NotificationType.INFORMATION, "The logger template is applied.") {
+                    """
+                        <p>Declared loggers: ${loggers.size}</p>
+                        <p>Server: ${server.shortenConnectionName}</p>
+                    """.trimIndent()
+                }
+            }
+
+        }
     }
 
     private fun executeGroovyLoggersScript(
         context: GroovyExecContext,
         server: HacConnectionSettingsState,
-        callback: (CoroutineScope, DefaultExecResult) -> Unit = { _, _ -> }
+        callback: (CoroutineScope, LoggersGroovyScriptExecResult) -> Unit = { _, _ -> }
     ) {
         fetching = true
 
@@ -172,28 +217,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     updateState(loggers, server)
                 }
 
-                callback.invoke(coroutineScope, result)
+                callback.invoke(coroutineScope, LoggersGroovyScriptExecResult(loggers, result))
 
                 project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
-
-                when {
-                    result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
-                        "<p>${result.errorMessage}</p>"
-                        "<p>Server: ${server.shortenConnectionName}</p>"
-                    }
-
-                    loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
-                        "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>" +
-                            "<p>Server: ${server.shortenConnectionName}</p>"
-                    }
-
-                    else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
-                        """
-                        <p>Declared loggers: ${loggers.size}</p>
-                        <p>Server: ${server.shortenConnectionName}</p>
-                    """.trimIndent()
-                    }
-                }
             }
         }
     }
@@ -253,3 +279,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         fun getInstance(project: Project): CxLoggerAccess = project.service()
     }
 }
+private data class LoggersGroovyScriptExecResult(
+    val loggers: Map<String, CxLoggerModel>? = null,
+    val result: DefaultExecResult
+)
