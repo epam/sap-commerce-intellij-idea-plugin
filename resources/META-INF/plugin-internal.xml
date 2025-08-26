@@ -29,11 +29,6 @@
 
         <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true" canCloseContents="true"
                     factoryClass="sap.commerce.toolset.toolwindow.HybrisToolWindowFactory"/>
-
-        <projectConfigurable id="hybris.project.integrations.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             displayName="Integrations" order="first"
-                             provider="sap.commerce.toolset.options.IntegrationsProjectSettingsConfigurableProvider"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
