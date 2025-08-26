@@ -93,7 +93,7 @@ class ApplyBundledTemplateAction : AnAction() {
 
     override fun update(e: AnActionEvent) {
         e.presentation.text = "Apply Template"
-        e.presentation.icon = HybrisIcons.Log.Template.APPLY
+        e.presentation.icon = HybrisIcons.Log.Template.EXECUTE
     }
 }
 

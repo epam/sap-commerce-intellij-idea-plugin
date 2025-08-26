@@ -19,18 +19,40 @@
 package sap.commerce.toolset.logging.template
 
 import com.google.gson.Gson
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.CxLoggersConstants
 
 object CxLoggersTemplatesAccess {
 
-    fun bundledLoggerTemplates() = ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
-        .let { Gson().fromJson(it, TemplatesConfigurationDto::class.java) }
-        .templates
-        .takeIf { it.isNotEmpty() }
-        ?.associate { item ->
-            item.name to item.loggers.map { logConfig -> CxLoggerModel.of(logConfig.identifier, logConfig.effectiveLevel) }
-        }
-        ?: emptyMap()
+    val iconsMap = mapOf(
+        "DISABLE" to HybrisIcons.Log.Template.DISABLE,
+        "ENABLE" to HybrisIcons.Log.Template.ENABLE
+    )
+
+
+    fun bundledLoggerTemplates(): List<CxLoggersTemplateModel> {
+        return ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
+            .let { Gson().fromJson(it, CxLoggersTemplatesDto::class.java) }
+            .templates
+            .takeIf { it.isNotEmpty() }
+            ?.map { item ->
+                CxLoggersTemplateModel(
+                    name = item.name,
+                    loggers = item.loggers
+                        .map { logConfig ->
+                            CxLoggerModel.of(
+                                name = logConfig.identifier,
+                                effectiveLevel = logConfig.effectiveLevel
+                            )
+                        },
+                    icon = item.iconName
+                        ?.let { iconsMap.getOrElse(it) { HybrisIcons.Log.Template.DEFAULT } }
+                        ?: HybrisIcons.Log.Template.DEFAULT
+
+                )
+            }
+            ?: emptyList()
+    }
 }

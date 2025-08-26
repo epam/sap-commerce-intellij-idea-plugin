@@ -16,22 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree.nodes
+package sap.commerce.toolset.logging.template
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
-import kotlinx.coroutines.CoroutineScope
+import com.google.gson.annotations.SerializedName
 
-class LoggersRootNode(project: Project, private val coroutineScope: CoroutineScope) : LoggersNode(project) {
+data class CxLoggersTemplatesDto(
+    @SerializedName("templates")
+    var templates: List<CxLoggersDto>
+)
 
-    override fun getName() = "root"
-    override fun update(presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-    }
+data class CxLoggersDto(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("loggers")
+    var loggers: List<CxLoggerDto>,
+    @SerializedName("icon")
+    var iconName: String? = null
+)
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
-        RemoteHacInstancesLoggersOptionsNode(project),
-        BundledLoggersTemplateGroupNode(project, coroutineScope)
-    ).associateBy { it.name }
-}
+data class CxLoggerDto(
+    @SerializedName("identifier")
+    var identifier: String,
+    @SerializedName("effectiveLevel")
+    var effectiveLevel: String
+)

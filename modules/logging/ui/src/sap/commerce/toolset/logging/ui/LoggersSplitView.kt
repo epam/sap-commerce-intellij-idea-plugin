@@ -35,6 +35,7 @@ import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
+import sap.commerce.toolset.logging.ui.tree.listener.LoggersOptionsTreeListener
 import sap.commerce.toolset.logging.ui.tree.nodes.*
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
@@ -51,7 +52,7 @@ class LoggersSplitView(
     private val coroutineScope: CoroutineScope
 ) : OnePixelSplitter(false, 0.25f), Disposable {
 
-    private val tree = LoggersOptionsTree(project).apply { registerListeners(this) }
+    private val tree = LoggersOptionsTree(project, coroutineScope).apply { registerListeners(this) }
     private val loggersStateView = LoggersStateView(project, coroutineScope)
 
     init {
@@ -69,6 +70,12 @@ class LoggersSplitView(
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = updateTree(connection)
                 override fun onModified(connection: HacConnectionSettingsState) = tree.update()
+                override fun onAdded(connection: HacConnectionSettingsState) = tree.update()
+                override fun onRemoved(connection: HacConnectionSettingsState) = tree.update()
+            })
+
+            subscribe(LoggersOptionsTreeListener.TOPIC, object : LoggersOptionsTreeListener {
+                override fun onBundledLoggersTemplatesChanged() = tree.update()
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {

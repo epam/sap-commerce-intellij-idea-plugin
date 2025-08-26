@@ -25,7 +25,7 @@ import javax.swing.Icon
 
 abstract class LoggersOptionsNode(
     private val text: String,
-    private val icon: Icon,
+    private val icon: Icon?,
     project: Project
 ) : LoggersNode(project) {
 

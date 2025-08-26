@@ -2,28 +2,42 @@
   "templates" : [
     {
       "name": "Enabled Solr loggers",
+      "icon": "ENABLE",
       "loggers": [
         {
           "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",
           "effectiveLevel": "DEBUG"
+
         }
       ]
     },
     {
       "name": "Disabled Solr loggers",
+      "icon": "DISABLE",
       "loggers": [
         {
           "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",
-          "effectiveLevel": "OFF"
+          "effectiveLevel": "DISABLE"
         }
       ]
     },
     {
-      "name": "FlexibleSearch loggers",
+      "name": "Enable FlexibleSearch loggers",
+      "icon": "ENABLE",
       "loggers": [
         {
           "identifier": "de.hybris.platform.jalo.flexiblesearch",
           "effectiveLevel": "DEBUG"
+        }
+      ]
+    },
+    {
+      "name": "Disable FlexibleSearch loggers",
+      "icon": "DISABLE",
+      "loggers": [
+        {
+          "identifier": "de.hybris.platform.jalo.flexiblesearch",
+          "effectiveLevel": "OFF"
         }
       ]
     }

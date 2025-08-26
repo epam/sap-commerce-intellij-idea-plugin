@@ -16,25 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.template
+package sap.commerce.toolset.logging.ui.tree.listener
 
-import com.google.gson.annotations.SerializedName
+import com.intellij.util.messages.Topic
 
-data class TemplatesConfigurationDto(
-    @SerializedName("templates")
-    var templates: List<CxLoggersDto>
-)
+interface LoggersOptionsTreeListener {
+    fun onBundledLoggersTemplatesChanged() = Unit
 
-data class CxLoggersDto(
-    @SerializedName("name")
-    val name: String,
-    @SerializedName("loggers")
-    var loggers: List<CxLoggerDto>
-)
-
-data class CxLoggerDto(
-    @SerializedName("identifier")
-    var identifier: String,
-    @SerializedName("effectiveLevel")
-    var effectiveLevel: String
-)
+    companion object {
+        val TOPIC = Topic(LoggersOptionsTreeListener::class.java)
+    }
+}

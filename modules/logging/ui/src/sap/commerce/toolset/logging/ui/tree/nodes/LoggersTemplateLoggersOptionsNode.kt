@@ -19,21 +19,40 @@
 package sap.commerce.toolset.logging.ui.tree.nodes
 
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.template.CxLoggersTemplatesAccess
+import sap.commerce.toolset.logging.ui.tree.listener.LoggersOptionsTreeListener
+import javax.swing.Icon
 
-class BundledLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Bundled Loggers Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
+class BundledLoggersTemplateGroupNode(private val project: Project, private val coroutineScope: CoroutineScope) :
+    LoggersOptionsNode("Bundled Loggers Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
+    var initialized = false
+    var newChildren: Map<String, LoggersNode>? = null
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLoggersTemplatesAccess.bundledLoggerTemplates()
-        .entries
-        .associate { entry ->
-            entry.key to BundledLoggersTemplateItemNode(entry.key, entry.value, project)
+    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = when {
+        initialized && newChildren != null -> newChildren!!
+        else -> {
+            coroutineScope.launch {
+                newChildren = CxLoggersTemplatesAccess.bundledLoggerTemplates()
+                    .associate { item ->
+                        item.name to BundledLoggersTemplateItemNode(item.name, item.icon, item.loggers, project)
+                    }
+
+                initialized = true
+                project.messageBus.syncPublisher(LoggersOptionsTreeListener.TOPIC).onBundledLoggersTemplatesChanged()
+            }
+            emptyMap()
         }
+    }
+
 }
 
 class BundledLoggersTemplateItemNode(
     text: String,
+    icon: Icon?,
     val loggers: List<CxLoggerModel>,
     project: Project
-) : LoggersOptionsNode(text, HybrisIcons.Log.Template.BUNDLED, project)
+) : LoggersOptionsNode(text, icon, project)

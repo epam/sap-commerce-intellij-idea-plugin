@@ -16,22 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree.nodes
+package sap.commerce.toolset.logging.template
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
-import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.logging.CxLoggerModel
+import javax.swing.Icon
 
-class LoggersRootNode(project: Project, private val coroutineScope: CoroutineScope) : LoggersNode(project) {
-
-    override fun getName() = "root"
-    override fun update(presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-    }
-
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
-        RemoteHacInstancesLoggersOptionsNode(project),
-        BundledLoggersTemplateGroupNode(project, coroutineScope)
-    ).associateBy { it.name }
-}
+data class CxLoggersTemplateModel(
+    val name: String,
+    var loggers: List<CxLoggerModel>,
+    var icon: Icon
+)

@@ -501,7 +501,10 @@ object HybrisIcons {
             val TEMPLATES = getIcon("/icons/logging/template/logTemplates.svg")
             val BUNDLED = getIcon("/icons/logging/template/bundledLogTemplate.svg")
             val CUSTOM = getIcon("/icons/logging/template/customLogTemplate.svg")
-            val APPLY = AllIcons.Actions.Execute
+            val EXECUTE = AllIcons.Actions.Execute
+            val ENABLE = getIcon("/icons/logging/template/enableLoggersTemplate.svg")
+            val DISABLE = AllIcons.Nodes.Template
+            val DEFAULT = AllIcons.Nodes.Template
         }
     }
 
