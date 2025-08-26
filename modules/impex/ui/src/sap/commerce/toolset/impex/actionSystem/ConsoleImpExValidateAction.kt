@@ -42,6 +42,7 @@ class ConsoleImpExValidateAction : AnAction() {
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
 
         val context = ImpExExecContext(
+            connection = connectionSettings,
             content = console.content,
             executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
             settings = ImpExExecContext.defaultSettings(connectionSettings)

@@ -54,6 +54,7 @@ class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
         val settings = e.impexExecutionContextSettings { ImpExExecContext.defaultSettings(connectionSettings) }
         val context = ImpExExecContext(
+            connection = connectionSettings,
             content = content,
             settings = settings
         )

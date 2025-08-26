@@ -84,6 +84,7 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
     }
 
     override fun currentExecutionContext(content: String) = ImpExExecContext(
+        connection = activeConnection(),
         content = content,
         settings = ImpExExecContext.defaultSettings(activeConnection()).mutable()
             .apply {

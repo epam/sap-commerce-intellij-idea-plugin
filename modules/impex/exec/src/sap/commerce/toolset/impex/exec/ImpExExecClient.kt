@@ -31,7 +31,6 @@ import org.jsoup.nodes.Element
 import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import java.io.IOException
@@ -42,7 +41,7 @@ import java.nio.charset.StandardCharsets
 class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<ImpExExecContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExExecContext): DefaultExecResult {
-        val settings = HacExecConnectionService.getInstance(project).activeConnection
+        val settings = context.connection
         val actionUrl = when (context.executionMode) {
             ImpExExecContext.ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
             ImpExExecContext.ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"

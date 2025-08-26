@@ -45,11 +45,10 @@ class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEdito
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-        val settings = e.impexExecutionContextSettings {
-            val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-            ImpExExecContext.defaultSettings(connectionSettings)
-        }
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        val settings = e.impexExecutionContextSettings { ImpExExecContext.defaultSettings(connectionSettings) }
         val context = ImpExExecContext(
+            connection = connectionSettings,
             content = content,
             executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
             settings = settings

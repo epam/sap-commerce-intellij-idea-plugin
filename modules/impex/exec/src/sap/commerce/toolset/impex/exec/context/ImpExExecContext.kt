@@ -25,6 +25,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.nio.charset.StandardCharsets
 
 data class ImpExExecContext(
+    val connection: HacConnectionSettingsState,
     private val content: String = "",
     val dialect: Dialect = Dialect.IMPEX,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,

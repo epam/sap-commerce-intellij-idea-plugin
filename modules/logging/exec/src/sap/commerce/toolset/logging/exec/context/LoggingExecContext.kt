@@ -19,9 +19,11 @@
 package sap.commerce.toolset.logging.exec.context
 
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.LogLevel
 
 data class LoggingExecContext(
+    val connection: HacConnectionSettingsState,
     override val executionTitle: String,
     private val loggerName: String,
     private val logLevel: LogLevel,

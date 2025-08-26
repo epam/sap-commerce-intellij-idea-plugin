@@ -74,6 +74,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecResult) -> Unit = { _, _ -> }) {
         val server = HacExecConnectionService.getInstance(project).activeConnection
         val context = LoggingExecContext(
+            connection = server,
             executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName}]...",
             loggerName = loggerName,
             logLevel = logLevel,

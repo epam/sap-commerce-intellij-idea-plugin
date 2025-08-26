@@ -48,6 +48,7 @@ class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
 
         val context = ImpExExecContext(
+            connection = connectionSettings,
             content = content,
             executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
             dialect = ImpExExecContext.Dialect.ACL,
