@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.hac.actionSystem
 
-package sap.commerce.toolset.actionSystem
+import sap.commerce.toolset.actionSystem.OpenSettingsAction
+import sap.commerce.toolset.hac.options.HacExecProjectSettingsConfigurableProvider
 
-import sap.commerce.toolset.options.IntegrationsProjectSettingsConfigurableProvider
-
-class IntegrationsOpenSettingsAction : OpenSettingsAction(
-    configurableClass = IntegrationsProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
+class OpenHacSettingsAction : OpenSettingsAction(
+    configurableClass = HacExecProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
     text = "Connection settings"
 )

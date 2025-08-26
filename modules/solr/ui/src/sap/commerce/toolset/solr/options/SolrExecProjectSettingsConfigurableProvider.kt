@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.solr.options
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -36,7 +35,7 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import sap.commerce.toolset.solr.ui.SolrConnectionSettingsListPanel
 import javax.swing.DefaultComboBoxModel
 
-class SolrExecProjectSettingsConfigurableProvider (private val project: Project) : ConfigurableProvider(), Disposable {
+class SolrExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
@@ -47,15 +46,15 @@ class SolrExecProjectSettingsConfigurableProvider (private val project: Project)
 
         @Volatile
         private var isReset = false
-        private val currentActiveSolrConnection = SolrExecConnectionService.getInstance(project).activeConnection
+        private val currentActiveConnection = SolrExecConnectionService.getInstance(project).activeConnection
 
-        private val activeSolrServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
+        private val activeServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
 
-        private val solrInstances = SolrConnectionSettingsListPanel(project) { _, connections ->
+        private val servers = SolrConnectionSettingsListPanel(project) { _, connections ->
             if (!isReset) {
                 SolrExecConnectionService.getInstance(project).save(connections)
 
-                updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as SolrConnectionSettingsState?, connections)
+                updateModel(activeServerModel, activeServerModel.selectedItem as SolrConnectionSettingsState?, connections)
             }
         }
 
@@ -63,16 +62,16 @@ class SolrExecProjectSettingsConfigurableProvider (private val project: Project)
             row {
                 icon(HybrisIcons.Console.SOLR)
                 comboBox(
-                    activeSolrServerModel,
+                    activeServerModel,
                     renderer = SimpleListCellRenderer.create("?") { it.presentationName }
                 )
                     .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
                     .onApply {
-                        (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
+                        (activeServerModel.selectedItem as SolrConnectionSettingsState?)
                             ?.let { settings -> SolrExecConnectionService.getInstance(project).activeConnection = settings }
                     }
                     .onIsModified {
-                        (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
+                        (activeServerModel.selectedItem as SolrConnectionSettingsState?)
                             ?.let { it.uuid != SolrExecConnectionService.getInstance(project).activeConnection.uuid }
                             ?: false
                     }
@@ -81,7 +80,7 @@ class SolrExecProjectSettingsConfigurableProvider (private val project: Project)
 
             group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
                 row {
-                    cell(solrInstances)
+                    cell(servers)
                         .align(AlignX.FILL)
                 }
             }
@@ -90,9 +89,9 @@ class SolrExecProjectSettingsConfigurableProvider (private val project: Project)
         override fun reset() {
             isReset = true
 
-            solrInstances.setData(SolrExecConnectionService.getInstance(project).connections)
+            servers.setData(SolrExecConnectionService.getInstance(project).connections)
 
-            updateModel(activeSolrServerModel, currentActiveSolrConnection, solrInstances.data)
+            updateModel(activeServerModel, currentActiveConnection, servers.data)
 
             isReset = false
         }
@@ -109,6 +108,4 @@ class SolrExecProjectSettingsConfigurableProvider (private val project: Project)
             else model.getElementAt(0)
         }
     }
-
-    override fun dispose() = Unit
 }

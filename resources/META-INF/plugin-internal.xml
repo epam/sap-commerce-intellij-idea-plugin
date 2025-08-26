@@ -64,10 +64,6 @@
     </extensions>
 
     <actions>
-        <action id="hybris.hac.openIntegrationsSettings" class="sap.commerce.toolset.actionSystem.IntegrationsOpenSettingsAction">
-            <add-to-group group-id="sap.commerce.toolset.hac.chooseConnection"/>
-        </action>
-
         <!--        <action id="GenerateDomModel"-->
         <!--                class="sap.commerce.toolset.typeSystem.model.generator.GenerateDomModelAction"-->
         <!--                text="Generate DOM Model...">-->

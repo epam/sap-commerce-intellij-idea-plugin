@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.options
+package sap.commerce.toolset.hac.options
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -26,6 +26,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.presentationName
@@ -36,25 +37,26 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import javax.swing.DefaultComboBoxModel
 
-class IntegrationsProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
+class HacExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        "Integrations", "hybris.project.integrations.settings"
+        "hAC", "sap.commerce.toolset.hac.exec.settings"
     ) {
 
         @Volatile
         private var isReset = false
-        private val currentActiveHybrisConnection = HacExecConnectionService.getInstance(project).activeConnection
+        private val currentActiveConnection = HacExecConnectionService.getInstance(project).activeConnection
 
-        private val activeHacServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
-        private val hacInstances = HacConnectionSettingsListPanel(project) { _, connections ->
+        private val activeServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
+
+        private val servers = HacConnectionSettingsListPanel(project) { _, connections ->
             if (!isReset) {
                 HacExecConnectionService.getInstance(project).save(connections)
 
-                updateModel(activeHacServerModel, activeHacServerModel.selectedItem as HacConnectionSettingsState?, connections)
+                updateModel(activeServerModel, activeServerModel.selectedItem as HacConnectionSettingsState?, connections)
             }
         }
 
@@ -62,36 +64,36 @@ class IntegrationsProjectSettingsConfigurableProvider(private val project: Proje
             row {
                 icon(HybrisIcons.Y.REMOTE_GREEN)
                 comboBox(
-                    activeHacServerModel,
+                    activeServerModel,
                     renderer = SimpleListCellRenderer.create("?") { it.presentationName }
                 )
                     .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
                     .onApply {
-                        (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                        activeServerModel.selectedItem
+                            ?.asSafely<HacConnectionSettingsState>()
                             ?.let { settings -> HacExecConnectionService.getInstance(project).activeConnection = settings }
                     }
                     .onIsModified {
-                        (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                        activeServerModel.selectedItem
+                            ?.asSafely<HacConnectionSettingsState>()
                             ?.let { it.uuid != HacExecConnectionService.getInstance(project).activeConnection.uuid }
                             ?: false
                     }
                     .align(AlignX.FILL)
             }.layout(RowLayout.PARENT_GRID)
 
-            group(i18n("hybris.settings.project.remote_instances.hac.title"), false) {
-                row {
-                    cell(hacInstances)
-                        .align(AlignX.FILL)
-                }
+            row {
+                cell(servers)
+                    .align(AlignX.FILL)
             }
         }
 
         override fun reset() {
             isReset = true
 
-            hacInstances.setData(HacExecConnectionService.getInstance(project).connections)
+            servers.setData(HacExecConnectionService.getInstance(project).connections)
 
-            updateModel(activeHacServerModel, currentActiveHybrisConnection, hacInstances.data)
+            updateModel(activeServerModel, currentActiveConnection, servers.data)
 
             isReset = false
         }

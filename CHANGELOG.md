@@ -19,6 +19,9 @@
 ### `CCv2` enhancements
 - Use own configuration pane for CCv2-related connection settings [#1542](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1542)
 
+### `hAC` enhancements
+- Use own configuration pane for hAC-related connection settings [#1543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1543)
+
 ### `Solr` enhancements
 - Use own configuration pane for Solr-related connection settings [#1541](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1541)
 
