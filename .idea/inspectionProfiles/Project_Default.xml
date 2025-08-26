@@ -45,6 +45,7 @@
     </inspection_tool>
     <inspection_tool class="CollectionContainsUrl" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ComparableImplementedButEqualsNotOverridden" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ComparisonOfShortAndChar" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConstantNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="onlyCheckImmutables" value="false" />
       <option name="m_regex" value="[A-Z][A-Z_\d]*" />
