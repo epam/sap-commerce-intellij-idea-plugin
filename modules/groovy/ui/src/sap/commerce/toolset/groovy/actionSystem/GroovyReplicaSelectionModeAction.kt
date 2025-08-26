@@ -47,7 +47,7 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
         val currentReplicaSelectionMode = editor.groovyExecContextSettings
             ?.replicaContext
             ?.replicaSelectionMode
-            ?: GroovyReplicaAwareContext.auto()
+            ?: GroovyReplicaAwareContext.auto().replicaSelectionMode
 
         return currentReplicaSelectionMode == replicaSelectionMode
     }

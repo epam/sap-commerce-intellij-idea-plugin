@@ -52,15 +52,15 @@ class ManualReplicaSelectionDialog(
         super.dispose()
     }
 
-    private val replicaContext = currentSettings.replicaContext
-        ?.takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
-        ?: GroovyReplicaAwareContext(GroovyExecConstants.manual)
-
     private lateinit var manualCookieName: JBTextField
     private lateinit var manualReplicaId: JBTextField
 
     override fun createCenterPanel(): JComponent {
         // TODO: support multiple replicas
+        val replicaContext = currentSettings.replicaContext
+            .takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
+            ?: GroovyReplicaAwareContext(GroovyExecConstants.manual)
+
         val firstReplica = replicaContext.replicaContexts.firstOrNull()
         return panel {
             row {

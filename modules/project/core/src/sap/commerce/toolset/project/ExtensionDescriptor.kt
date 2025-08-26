@@ -21,6 +21,7 @@ package sap.commerce.toolset.project
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 
+@Deprecated("migrate to data class and mutable")
 class ExtensionDescriptor(
     var name: String = "",
     var description: String? = null,
