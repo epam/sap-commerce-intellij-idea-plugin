@@ -33,14 +33,15 @@ data class FlexibleSearchSettingsState(
     @JvmField @OptionTag val documentation: FlexibleSearchDocumentationSettingsState = FlexibleSearchDocumentationSettingsState(),
 ) {
 
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         verifyCaseForReservedWords = verifyCaseForReservedWords,
         verifyUsedTableAliasSeparator = verifyUsedTableAliasSeparator,
         fallbackToTableNameIfNoAliasProvided = fallbackToTableNameIfNoAliasProvided,
         defaultCaseForReservedWords = defaultCaseForReservedWords,
-        completion = completion.mutable(),
-        folding = folding.mutable(),
-        documentation = documentation.mutable(),
+            completion = completion.mutable,
+            folding = folding.mutable,
+            documentation = documentation.mutable,
     )
 
     data class Mutable(
@@ -52,14 +53,15 @@ data class FlexibleSearchSettingsState(
         var folding: FlexibleSearchFoldingSettingsState.Mutable,
         var documentation: FlexibleSearchDocumentationSettingsState.Mutable,
     ) {
-        fun immutable() = FlexibleSearchSettingsState(
+        val immutable
+            get() = FlexibleSearchSettingsState(
             verifyCaseForReservedWords = verifyCaseForReservedWords,
             verifyUsedTableAliasSeparator = verifyUsedTableAliasSeparator,
             fallbackToTableNameIfNoAliasProvided = fallbackToTableNameIfNoAliasProvided,
             defaultCaseForReservedWords = defaultCaseForReservedWords,
-            completion = completion.immutable(),
-            folding = folding.immutable(),
-            documentation = documentation.immutable(),
+                completion = completion.immutable,
+                folding = folding.immutable,
+                documentation = documentation.immutable,
         )
     }
 }

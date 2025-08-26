@@ -28,7 +28,8 @@ data class FlexibleSearchFoldingSettingsState(
     @JvmField @OptionTag val showLanguageForYColumn: Boolean = true,
 ) : FoldingSettings {
 
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         enabled = enabled,
         showSelectedTableNameForYColumn = showSelectedTableNameForYColumn,
         showLanguageForYColumn = showLanguageForYColumn,
@@ -39,7 +40,8 @@ data class FlexibleSearchFoldingSettingsState(
         var showSelectedTableNameForYColumn: Boolean,
         var showLanguageForYColumn: Boolean,
     ) : FoldingSettings {
-        fun immutable() = FlexibleSearchFoldingSettingsState(
+        val immutable
+            get() = FlexibleSearchFoldingSettingsState(
             enabled = enabled,
             showSelectedTableNameForYColumn = showSelectedTableNameForYColumn,
             showLanguageForYColumn = showLanguageForYColumn,

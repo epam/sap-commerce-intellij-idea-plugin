@@ -35,10 +35,10 @@ class AddSolrConnectionAction : SolrConnectionAction("Create new connection", Hy
             ?: return
 
         val execService = SolrExecConnectionService.getInstance(project)
-        val mutableSettings = execService.default().mutable()
+        val mutableSettings = execService.default().mutable
 
         if (SolrConnectionSettingsDialog(project, component, mutableSettings).showAndGet()) {
-            execService.add(mutableSettings.immutable())
+            execService.add(mutableSettings.immutable)
         }
     }
 }

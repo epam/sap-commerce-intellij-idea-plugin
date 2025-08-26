@@ -41,21 +41,23 @@ data class CCv2SettingsState(
     // key = S-User uid
     @JvmField val sUsers: Map<String, SUser> = mapOf(),
 ) {
-    fun mutable() = Mutable(
-        showBuildStatuses = showBuildStatuses.toMutableSet(),
-        showEnvironmentStatuses = showEnvironmentStatuses.toMutableSet(),
-        sUsers = sUsers.toMutableMap(),
-    )
+    val mutable
+        get() = Mutable(
+            showBuildStatuses = showBuildStatuses.toMutableSet(),
+            showEnvironmentStatuses = showEnvironmentStatuses.toMutableSet(),
+            sUsers = sUsers.toMutableMap(),
+        )
 
     data class Mutable(
         var showBuildStatuses: MutableSet<CCv2BuildStatus>,
         var showEnvironmentStatuses: MutableSet<CCv2EnvironmentStatus>,
         var sUsers: MutableMap<String, SUser>,
     ) {
-        fun immutable() = CCv2SettingsState(
-            showBuildStatuses = showBuildStatuses.toImmutableSet(),
-            showEnvironmentStatuses = showEnvironmentStatuses.toImmutableSet(),
-            sUsers = sUsers.toImmutableMap(),
-        )
+        val immutable
+            get() = CCv2SettingsState(
+                showBuildStatuses = showBuildStatuses.toImmutableSet(),
+                showEnvironmentStatuses = showEnvironmentStatuses.toImmutableSet(),
+                sUsers = sUsers.toImmutableMap(),
+            )
     }
 }

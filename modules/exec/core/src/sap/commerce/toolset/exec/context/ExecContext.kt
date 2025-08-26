@@ -23,10 +23,10 @@ interface ExecContext {
         get() = "Executing HTTP Call to the remote SAP Commerce instance…"
 
     interface Settings {
-        fun mutable(): Mutable
+        val mutable: Mutable
 
         interface Mutable {
-            fun immutable(): Settings
+            val immutable: Settings
         }
     }
 }

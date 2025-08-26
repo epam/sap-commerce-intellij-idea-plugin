@@ -27,11 +27,12 @@ data class CCv2Subscription(
     @JvmField @OptionTag val name: String? = null,
 ) : Comparable<CCv2Subscription> {
 
-    fun mutable() = Mutable(
-        uuid,
-        id,
-        name
-    )
+    val mutable
+        get() = Mutable(
+            uuid,
+            id,
+            name
+        )
 
     val presentableName
         @Transient
@@ -47,11 +48,12 @@ data class CCv2Subscription(
         var name: String?,
         var ccv2Token: String? = null,
     ) {
-        fun immutable() = CCv2Subscription(
-            uuid = uuid,
-            id = id,
-            name = name,
-        )
+        val immutable
+            get() = CCv2Subscription(
+                uuid = uuid,
+                id = id,
+                name = name,
+            )
 
         val presentableName
             @Transient

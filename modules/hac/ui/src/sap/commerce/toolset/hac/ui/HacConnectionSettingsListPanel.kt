@@ -32,10 +32,10 @@ class HacConnectionSettingsListPanel(
 
     override fun addItem() {
         val settings = HacExecConnectionService.getInstance(myProject).default()
-        val mutableSettings = settings.mutable()
+        val mutableSettings = settings.mutable
         val dialog = HacConnectionSettingsDialog(myProject, this, mutableSettings)
         if (dialog.showAndGet()) {
-            addElement(mutableSettings.immutable())
+            addElement(mutableSettings.immutable)
         }
     }
 
@@ -45,8 +45,8 @@ class HacConnectionSettingsListPanel(
     ) = onDataChanged.invoke(eventType, data)
 
     override fun editSelectedItem(item: HacConnectionSettingsState): HacConnectionSettingsState? {
-        val mutableSettings = item.mutable()
-        return if (HacConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
+        val mutableSettings = item.mutable
+        return if (HacConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable
         else null
     }
 

@@ -39,7 +39,7 @@ interface ExecConnectionSettingsState {
     val password: String
 
     fun retrieveCredentials() = retrieveCredentials(uuid)
-    fun mutable(): Mutable
+    val mutable: Mutable
 
     interface Mutable {
         var scope: ExecConnectionScope
@@ -54,7 +54,7 @@ interface ExecConnectionSettingsState {
         val password: String
 
         fun retrieveCredentials() = retrieveCredentials(uuid)
-        fun immutable(): ExecConnectionSettingsState
+        val immutable: ExecConnectionSettingsState
     }
 }
 

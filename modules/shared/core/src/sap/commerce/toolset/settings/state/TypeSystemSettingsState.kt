@@ -26,15 +26,17 @@ data class TypeSystemSettingsState(
     @JvmField @OptionTag val folding: TypeSystemFoldingSettingsState = TypeSystemFoldingSettingsState(),
 ) {
 
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
+    val mutable
+        get() = Mutable(
+            folding = folding.mutable,
     )
 
     data class Mutable(
         var folding: TypeSystemFoldingSettingsState.Mutable,
     ) {
-        fun immutable() = TypeSystemSettingsState(
-            folding = folding.immutable(),
+        val immutable
+            get() = TypeSystemSettingsState(
+                folding = folding.immutable,
         )
     }
 }

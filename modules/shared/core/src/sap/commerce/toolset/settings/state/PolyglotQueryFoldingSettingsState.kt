@@ -27,7 +27,8 @@ data class PolyglotQueryFoldingSettingsState(
     @JvmField @OptionTag val showLanguage: Boolean = true,
 ) : FoldingSettings {
 
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         enabled = enabled,
         showLanguage = showLanguage,
     )
@@ -36,7 +37,8 @@ data class PolyglotQueryFoldingSettingsState(
         override var enabled: Boolean,
         var showLanguage: Boolean,
     ) : FoldingSettings {
-        fun immutable() = PolyglotQueryFoldingSettingsState(
+        val immutable
+            get() = PolyglotQueryFoldingSettingsState(
             enabled = enabled,
             showLanguage = showLanguage,
         )

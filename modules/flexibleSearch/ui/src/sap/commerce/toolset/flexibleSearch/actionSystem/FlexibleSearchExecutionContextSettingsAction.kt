@@ -56,11 +56,11 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
             FlexibleSearchExecContext.defaultSettings(connectionSettings)
         }
 
-        return settings.mutable()
+        return settings.mutable
     }
 
     override fun applySettings(editor: Editor, settings: FlexibleSearchExecContext.Settings.Mutable) {
-        editor.putUserData(FlexibleSearchExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
+        editor.putUserData(FlexibleSearchExecContext.KEY_EXECUTION_SETTINGS, settings.immutable)
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecContext.Settings.Mutable): DialogPanel {

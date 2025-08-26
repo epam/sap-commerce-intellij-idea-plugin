@@ -55,10 +55,10 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
             val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
             ImpExExecContext.defaultSettings(connectionSettings)
         }
-        .mutable()
+        .mutable
 
     override fun applySettings(editor: Editor, settings: ImpExExecContext.Settings.Mutable) {
-        editor.putUserData(ImpExExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
+        editor.putUserData(ImpExExecContext.KEY_EXECUTION_SETTINGS, settings.immutable)
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecContext.Settings.Mutable) = panel {

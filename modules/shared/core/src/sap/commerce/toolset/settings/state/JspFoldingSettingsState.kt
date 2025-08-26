@@ -25,14 +25,16 @@ import com.intellij.util.xmlb.annotations.Tag
 data class JspFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true
 ) : FoldingSettings {
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         enabled = enabled,
     )
 
     data class Mutable(
         var enabled: Boolean,
     ) {
-        fun immutable() = JspFoldingSettingsState(
+        val immutable
+            get() = JspFoldingSettingsState(
             enabled = enabled,
         )
     }

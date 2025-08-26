@@ -61,16 +61,17 @@ data class ImpExExecContext(
         val sldEnabled: Toggle,
         val distributedMode: Toggle,
     ) : ExecContext.Settings {
-        override fun mutable() = Mutable(
-            validationMode = validationMode,
-            maxThreads = maxThreads,
-            timeout = timeout,
-            encoding = encoding,
-            legacyMode = legacyMode,
-            enableCodeExecution = enableCodeExecution,
-            sldEnabled = sldEnabled,
-            distributedMode = distributedMode,
-        )
+        override val mutable
+            get() = Mutable(
+                validationMode = validationMode,
+                maxThreads = maxThreads,
+                timeout = timeout,
+                encoding = encoding,
+                legacyMode = legacyMode,
+                enableCodeExecution = enableCodeExecution,
+                sldEnabled = sldEnabled,
+                distributedMode = distributedMode,
+            )
 
         data class Mutable(
             var validationMode: ValidationMode,
@@ -82,16 +83,17 @@ data class ImpExExecContext(
             var sldEnabled: Toggle,
             var distributedMode: Toggle,
         ) : ExecContext.Settings.Mutable {
-            override fun immutable() = Settings(
-                validationMode = validationMode,
-                maxThreads = maxThreads,
-                timeout = timeout,
-                encoding = encoding,
-                legacyMode = legacyMode,
-                enableCodeExecution = enableCodeExecution,
-                sldEnabled = sldEnabled,
-                distributedMode = distributedMode,
-            )
+            override val immutable
+                get() = Settings(
+                    validationMode = validationMode,
+                    maxThreads = maxThreads,
+                    timeout = timeout,
+                    encoding = encoding,
+                    legacyMode = legacyMode,
+                    enableCodeExecution = enableCodeExecution,
+                    sldEnabled = sldEnabled,
+                    distributedMode = distributedMode,
+                )
         }
     }
 

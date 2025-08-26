@@ -32,7 +32,7 @@ import sap.commerce.toolset.ccv2.settings.state.SUser
 class SUserDetailsDialog(
     private val project: Project,
     private val sUser: SUser,
-    private val sUserDto: SUser.Mutable = sUser.mutable()
+    private val sUserDto: SUser.Mutable = sUser.mutable
 ) : DialogWrapper(project), Disposable {
 
     private lateinit var idTextField: JBTextField
@@ -68,10 +68,10 @@ class SUserDetailsDialog(
 
     override fun applyFields() {
         val developerSettings = CCv2DeveloperSettings.getInstance(project)
-        val mutableSettings = developerSettings.ccv2Settings.mutable()
-        mutableSettings.sUsers[sUser.id] = sUserDto.immutable()
+        val mutableSettings = developerSettings.ccv2Settings.mutable
+        mutableSettings.sUsers[sUser.id] = sUserDto.immutable
 
-        developerSettings.ccv2Settings = mutableSettings.immutable()
+        developerSettings.ccv2Settings = mutableSettings.immutable
     }
 
     override fun getStyle() = DialogStyle.COMPACT

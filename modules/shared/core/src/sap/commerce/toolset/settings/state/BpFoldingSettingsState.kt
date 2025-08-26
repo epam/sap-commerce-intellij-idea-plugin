@@ -29,12 +29,13 @@ data class BpFoldingSettingsState(
     @JvmField @OptionTag val tablifyCaseChoices: Boolean = true,
 ) : FoldingSettings {
 
-    fun mutable() = Mutable(
-        enabled = enabled,
-        tablifyActionTransitions = tablifyActionTransitions,
-        tablifyEnds = tablifyEnds,
-        tablifyCaseChoices = tablifyCaseChoices,
-    )
+    val mutable
+        get() = Mutable(
+            enabled = enabled,
+            tablifyActionTransitions = tablifyActionTransitions,
+            tablifyEnds = tablifyEnds,
+            tablifyCaseChoices = tablifyCaseChoices,
+        )
 
     data class Mutable(
         override var enabled: Boolean,
@@ -42,11 +43,12 @@ data class BpFoldingSettingsState(
         var tablifyEnds: Boolean,
         var tablifyCaseChoices: Boolean,
     ) : FoldingSettings {
-        fun immutable() = BpFoldingSettingsState(
-            enabled = enabled,
-            tablifyActionTransitions = tablifyActionTransitions,
-            tablifyEnds = tablifyEnds,
-            tablifyCaseChoices = tablifyCaseChoices,
-        )
+        val immutable
+            get() = BpFoldingSettingsState(
+                enabled = enabled,
+                tablifyActionTransitions = tablifyActionTransitions,
+                tablifyEnds = tablifyEnds,
+                tablifyCaseChoices = tablifyCaseChoices,
+            )
     }
 }

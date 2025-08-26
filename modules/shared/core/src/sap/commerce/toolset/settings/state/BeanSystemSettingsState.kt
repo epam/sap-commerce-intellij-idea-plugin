@@ -25,15 +25,17 @@ import com.intellij.util.xmlb.annotations.Tag
 data class BeanSystemSettingsState(
     @JvmField @OptionTag val folding: BeanSystemFoldingSettingsState = BeanSystemFoldingSettingsState(),
 ) {
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
-    )
+    val mutable
+        get() = Mutable(
+            folding = folding.mutable,
+        )
 
     data class Mutable(
         var folding: BeanSystemFoldingSettingsState.Mutable,
     ) {
-        fun immutable() = BeanSystemSettingsState(
-            folding = folding.immutable(),
-        )
+        val immutable
+            get() = BeanSystemSettingsState(
+                folding = folding.immutable,
+            )
     }
 }

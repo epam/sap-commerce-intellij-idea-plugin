@@ -39,7 +39,7 @@ class BpProjectConfigurableProvider(val project: Project) : ConfigurableProvider
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.bpSettings.mutable()
+        private val mutableSettings = developerSettings.bpSettings.mutable
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -69,7 +69,7 @@ class BpProjectConfigurableProvider(val project: Project) : ConfigurableProvider
         override fun apply() {
             super.apply()
 
-            developerSettings.bpSettings = mutableSettings.immutable()
+            developerSettings.bpSettings = mutableSettings.immutable
         }
     }
 }

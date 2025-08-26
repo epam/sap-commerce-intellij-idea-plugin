@@ -26,7 +26,8 @@ data class FlexibleSearchDocumentationSettingsState(
     @JvmField @OptionTag val enabled: Boolean = true,
     @JvmField @OptionTag val showTypeDocumentation: Boolean = true,
 ) {
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         enabled = enabled,
         showTypeDocumentation = showTypeDocumentation,
     )
@@ -35,7 +36,8 @@ data class FlexibleSearchDocumentationSettingsState(
         override var enabled: Boolean,
         var showTypeDocumentation: Boolean,
     ) : FoldingSettings {
-        fun immutable() = FlexibleSearchDocumentationSettingsState(
+        val immutable
+            get() = FlexibleSearchDocumentationSettingsState(
             enabled = enabled,
             showTypeDocumentation = showTypeDocumentation,
         )

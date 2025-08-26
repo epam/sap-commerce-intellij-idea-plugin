@@ -40,7 +40,7 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.impexSettings.mutable()
+        private val mutableSettings = developerSettings.impexSettings.mutable
         private var originalGroupLocalizedFiles = mutableSettings.groupLocalizedFiles
 
         private lateinit var foldingEnableCheckBox: JCheckBox
@@ -144,7 +144,7 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
         override fun apply() {
             super.apply()
 
-            developerSettings.impexSettings = mutableSettings.immutable()
+            developerSettings.impexSettings = mutableSettings.immutable
 
             if (mutableSettings.groupLocalizedFiles != originalGroupLocalizedFiles) {
                 // TODO: do we need this?

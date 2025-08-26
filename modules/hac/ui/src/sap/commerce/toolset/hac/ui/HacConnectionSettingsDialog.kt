@@ -101,7 +101,7 @@ class HacConnectionSettingsDialog(
 
         group("Full URL Preview", false) {
             row {
-                urlPreviewLabel = label(mutableSettings.immutable().generatedURL)
+                urlPreviewLabel = label(mutableSettings.immutable.generatedURL)
                     .bold()
                     .align(AlignX.FILL)
                     .component

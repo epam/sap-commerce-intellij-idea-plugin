@@ -27,7 +27,8 @@ data class ImpExCompletionSettingsState(
     @JvmField @OptionTag val addCommaAfterInlineType: Boolean = true,
     @JvmField @OptionTag val addEqualsAfterModifier: Boolean = true,
 ) {
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         showInlineTypes = showInlineTypes,
         addCommaAfterInlineType = addCommaAfterInlineType,
         addEqualsAfterModifier = addEqualsAfterModifier,
@@ -38,7 +39,8 @@ data class ImpExCompletionSettingsState(
         var addCommaAfterInlineType: Boolean,
         var addEqualsAfterModifier: Boolean,
     ) {
-        fun immutable() = ImpExCompletionSettingsState(
+        val immutable
+            get() = ImpExCompletionSettingsState(
             showInlineTypes = showInlineTypes,
             addCommaAfterInlineType = addCommaAfterInlineType,
             addEqualsAfterModifier = addEqualsAfterModifier,

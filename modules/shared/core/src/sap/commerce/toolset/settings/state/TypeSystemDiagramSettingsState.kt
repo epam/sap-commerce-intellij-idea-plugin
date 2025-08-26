@@ -41,7 +41,8 @@ data class TypeSystemDiagramSettingsState(
     )
 ) {
 
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         nodesCollapsedByDefault = nodesCollapsedByDefault,
         showOOTBMapNodes = showOOTBMapNodes,
         showCustomAtomicNodes = showCustomAtomicNodes,
@@ -62,7 +63,8 @@ data class TypeSystemDiagramSettingsState(
         var showCustomRelationNodes: Boolean,
         var excludedTypeNames: MutableSet<String>,
     ) {
-        fun immutable() = TypeSystemDiagramSettingsState(
+        val immutable
+            get() = TypeSystemDiagramSettingsState(
             nodesCollapsedByDefault = nodesCollapsedByDefault,
             showOOTBMapNodes = showOOTBMapNodes,
             showCustomAtomicNodes = showCustomAtomicNodes,

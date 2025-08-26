@@ -27,7 +27,8 @@ data class ImpExDocumentationSettingsState(
     @JvmField @OptionTag val showTypeDocumentation: Boolean = true,
     @JvmField @OptionTag val showModifierDocumentation: Boolean = true,
 ) {
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         enabled = enabled,
         showTypeDocumentation = showTypeDocumentation,
         showModifierDocumentation = showModifierDocumentation,
@@ -38,7 +39,8 @@ data class ImpExDocumentationSettingsState(
         var showTypeDocumentation: Boolean,
         var showModifierDocumentation: Boolean,
     ) {
-        fun immutable() = ImpExDocumentationSettingsState(
+        val immutable
+            get() = ImpExDocumentationSettingsState(
             enabled = enabled,
             showTypeDocumentation = showTypeDocumentation,
             showModifierDocumentation = showModifierDocumentation,

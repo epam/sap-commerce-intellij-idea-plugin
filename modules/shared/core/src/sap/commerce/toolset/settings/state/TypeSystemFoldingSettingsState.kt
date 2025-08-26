@@ -33,7 +33,8 @@ data class TypeSystemFoldingSettingsState(
     @JvmField @OptionTag val tablifyItemCustomProperties: Boolean = true,
 ) : FoldingSettings {
 
-    fun mutable() = Mutable(
+    val mutable
+        get() = Mutable(
         enabled = enabled,
         tablifyAtomics = tablifyAtomics,
         tablifyCollections = tablifyCollections,
@@ -54,7 +55,8 @@ data class TypeSystemFoldingSettingsState(
         var tablifyItemIndexes: Boolean,
         var tablifyItemCustomProperties: Boolean,
     ) : FoldingSettings {
-        fun immutable() = TypeSystemFoldingSettingsState(
+        val immutable
+            get() = TypeSystemFoldingSettingsState(
             enabled = enabled,
             tablifyAtomics = tablifyAtomics,
             tablifyCollections = tablifyCollections,
