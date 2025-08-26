@@ -30,7 +30,7 @@
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)
 
 ### Fixes
-- Enhance JVM Parameters only with Standalone JDK Module Exports during Integrationtestse [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
+- Enhance JVM Parameters only with Standalone JDK Module Exports during Integration Tests [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
 - Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
 
 ## [2025.2.2]

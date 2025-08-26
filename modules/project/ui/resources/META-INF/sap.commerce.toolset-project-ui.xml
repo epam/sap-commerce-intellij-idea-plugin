@@ -23,14 +23,8 @@
 
         <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
                              dynamic="true"
+                             bundle="i18n.HybrisBundle"
                              key="hybris.settings.project.title"
                              provider="sap.commerce.toolset.project.options.ProjectSettingsConfigurableProvider"/>
-
-        <groupConfigurable id="hybris.project.integrations.settings"
-                           parentId="hybris.project.settings"
-                           helpTopic="hybris.project.integrations.settings"
-                           bundle="i18n.HybrisBundle"
-                           displayNameKey="hybris.project.integrations.settings.title"
-                           descriptionKey="hybris.project.integrations.settings.description"/>
     </extensions>
 </idea-plugin>

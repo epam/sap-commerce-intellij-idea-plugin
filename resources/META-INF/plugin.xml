@@ -49,9 +49,6 @@
     <xi:include href="/META-INF/sap.commerce.toolset-console-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-console-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
-    <xi:include href="/META-INF/sap.commerce.toolset-hac-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/sap.commerce.toolset-hac-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
-
     <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
@@ -67,6 +64,9 @@
     <xi:include href="/META-INF/sap.commerce.toolset-project-import-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+    <xi:include href="/META-INF/sap.commerce.toolset-hac-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-hac-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-debugger-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
