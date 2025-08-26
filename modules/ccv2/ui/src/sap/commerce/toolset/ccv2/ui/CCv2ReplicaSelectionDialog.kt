@@ -122,7 +122,7 @@ class CCv2ReplicaSelectionDialog(
                 renderer = SimpleListCellRenderer.create { label, value, _ ->
                     if (value != null) {
                         label.icon = HybrisIcons.Module.CCV2
-                        label.text = value.toString()
+                        label.text = value.presentableName
                     }
                 }
             )

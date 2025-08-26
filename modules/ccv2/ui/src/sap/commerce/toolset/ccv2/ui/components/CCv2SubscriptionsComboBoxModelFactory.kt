@@ -34,7 +34,7 @@ object CCv2SubscriptionsComboBoxModelFactory {
         allowBlank: Boolean = false,
         disposable: Disposable? = null,
         onSelectedItem: ((Any?) -> Unit)? = null
-    ) = CCv2SubscriptionsComboBoxModel(onSelectedItem)
+    ) = CCv2SubscriptionsComboBoxModel(allowBlank, onSelectedItem)
         .also {
             val currentSubscriptions = CCv2ProjectSettings.getInstance().subscriptions
             initModel(project, it, selectedSubscription, currentSubscriptions, allowBlank)
@@ -59,7 +59,7 @@ object CCv2SubscriptionsComboBoxModelFactory {
     ) {
         model.removeAllElements()
         if (allowBlank) model.addElement(null)
-        model.addAll(subscriptions.sortedBy { it.toString() })
+        model.addAll(subscriptions.sortedBy { it.presentableName })
         model.selectedItem = selectedSubscription
             ?: CCv2DeveloperSettings.getInstance(project).getActiveCCv2Subscription()
     }

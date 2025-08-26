@@ -33,11 +33,13 @@ data class CCv2Subscription(
         name
     )
 
-    private val sortableName
+    val presentableName
         @Transient
-        get() = name ?: id ?: "?"
+        get() = name
+            ?.takeIf { it.isNotEmpty() }
+            ?: id ?: "?"
 
-    override fun compareTo(other: CCv2Subscription) = sortableName.compareTo(other.sortableName)
+    override fun compareTo(other: CCv2Subscription) = presentableName.compareTo(other.presentableName)
 
     data class Mutable(
         var uuid: String = UUID.randomUUID().toString(),
@@ -50,5 +52,11 @@ data class CCv2Subscription(
             id = id,
             name = name,
         )
+
+        val presentableName
+            @Transient
+            get() = name
+                ?.takeIf { it.isNotEmpty() }
+                ?: id ?: "?"
     }
 }
