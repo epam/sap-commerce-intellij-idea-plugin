@@ -54,6 +54,7 @@ class HybrisPolyglotQueryConsole(
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
+        connection = activeConnection(),
         content = content,
         queryMode = QueryMode.PolyglotQuery,
         settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable()

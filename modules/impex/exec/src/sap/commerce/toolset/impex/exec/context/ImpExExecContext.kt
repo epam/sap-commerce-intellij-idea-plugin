@@ -54,7 +54,7 @@ data class ImpExExecContext(
     data class Settings(
         val validationMode: ValidationMode,
         val maxThreads: Int,
-        val timeout: Int,
+        override val timeout: Int,
         val encoding: String,
         val legacyMode: Toggle,
         val enableCodeExecution: Toggle,
@@ -75,7 +75,7 @@ data class ImpExExecContext(
         data class Mutable(
             var validationMode: ValidationMode,
             var maxThreads: Int,
-            var timeout: Int,
+            override var timeout: Int,
             var encoding: String,
             var legacyMode: Toggle,
             var enableCodeExecution: Toggle,

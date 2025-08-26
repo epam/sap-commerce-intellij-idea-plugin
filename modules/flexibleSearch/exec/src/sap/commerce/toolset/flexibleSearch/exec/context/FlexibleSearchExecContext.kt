@@ -25,6 +25,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
 
 data class FlexibleSearchExecContext(
+    val connection: HacConnectionSettingsState,
     private val content: String = "",
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
@@ -56,7 +57,7 @@ data class FlexibleSearchExecContext(
         val locale: String,
         val dataSource: String,
         val user: String,
-        val timeout: Int
+        override val timeout: Int
     ) : ExecContext.Settings {
         override fun mutable() = Mutable(
             maxCount = maxCount,
@@ -71,7 +72,7 @@ data class FlexibleSearchExecContext(
             var locale: String,
             var dataSource: String,
             var user: String,
-            var timeout: Int
+            override var timeout: Int
         ) : ExecContext.Settings.Mutable {
             override fun immutable() = Settings(
                 maxCount = maxCount,

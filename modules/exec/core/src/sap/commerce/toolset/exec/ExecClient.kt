@@ -73,6 +73,7 @@ abstract class ExecClient<E : ExecContext, R : ExecResult>(
         }
     }
 
+    @Deprecated("")
     abstract suspend fun execute(context: E): R
 
     abstract suspend fun onError(context: E, exception: Throwable): R

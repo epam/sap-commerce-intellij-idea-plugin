@@ -31,7 +31,6 @@ import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.flexibleSearch.exec.context.TableBuilder
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -48,13 +47,13 @@ class FlexibleSearchExecClient(
     )
 
     override suspend fun execute(context: FlexibleSearchExecContext): FlexibleSearchExecResult {
-        val settings = HacExecConnectionService.getInstance(project).activeConnection
-        val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
+        val connection = context.connection
+        val actionUrl = "${connection.generatedURL}/console/flexsearch/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, true, context.settings.timeout, settings, null)
+            .post(actionUrl, params, true, context.settings.timeout, connection, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 

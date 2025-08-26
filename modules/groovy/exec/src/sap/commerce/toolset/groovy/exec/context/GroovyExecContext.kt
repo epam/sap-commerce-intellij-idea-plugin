@@ -39,7 +39,7 @@ data class GroovyExecContext(
     }
 
     data class Settings(
-        val timeout: Int,
+        override val timeout: Int,
         val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
         val replicaContext: GroovyReplicaAwareContext = GroovyReplicaAwareContext.auto()
     ) : ExecContext.Settings {
@@ -50,7 +50,7 @@ data class GroovyExecContext(
         )
 
         data class Mutable(
-            var timeout: Int,
+            override var timeout: Int,
             var transactionMode: TransactionMode,
             var replicaContext: GroovyReplicaAwareContext
         ) : ExecContext.Settings.Mutable {

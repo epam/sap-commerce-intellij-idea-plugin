@@ -51,12 +51,10 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-
-        val settings = e.flexibleSearchExecutionContextSettings {
-            val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-            FlexibleSearchExecContext.defaultSettings(connectionSettings)
-        }
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        val settings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings(connectionSettings) }
         val context = FlexibleSearchExecContext(
+            connection = connectionSettings,
             content = content,
             settings = settings
         )

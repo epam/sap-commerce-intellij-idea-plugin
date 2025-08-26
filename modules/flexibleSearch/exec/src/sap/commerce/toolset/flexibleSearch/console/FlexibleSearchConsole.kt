@@ -53,6 +53,7 @@ class FlexibleSearchConsole(
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
+        connection =  activeConnection(),
         content = content,
         transactionMode = TransactionMode.ROLLBACK,
         queryMode = QueryMode.FlexibleSearch,
