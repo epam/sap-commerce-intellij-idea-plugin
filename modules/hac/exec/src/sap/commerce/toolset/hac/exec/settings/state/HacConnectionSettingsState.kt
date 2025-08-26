@@ -54,10 +54,10 @@ data class HacConnectionSettingsState(
             ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
     override val username
         @Transient
-        get() = dynamicCredentials?.userName ?: "admin"
+        get() = dynamicCredentials?.userName ?: DEFAULT_USERNAME
     override val password
         @Transient
-        get() = dynamicCredentials?.getPasswordAsString() ?: "password"
+        get() = dynamicCredentials?.getPasswordAsString() ?: DEFAULT_PASSWORD
 
     override fun mutable() = Mutable(
         uuid = uuid,
@@ -90,11 +90,11 @@ data class HacConnectionSettingsState(
         override val username
             get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
                 ?.userName
-                ?: "admin"
+                ?: DEFAULT_USERNAME
         override val password
             get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
                 ?.getPasswordAsString()
-                ?: "nimda"
+                ?: DEFAULT_PASSWORD
 
         override fun immutable() = HacConnectionSettingsState(
             uuid = uuid,
@@ -109,5 +109,10 @@ data class HacConnectionSettingsState(
             sslProtocol = sslProtocol,
             sessionCookieName = sessionCookieName
         )
+    }
+
+    companion object {
+        private const val DEFAULT_USERNAME = "admin"
+        private const val DEFAULT_PASSWORD = "nimda"
     }
 }
