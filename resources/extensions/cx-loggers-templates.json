@@ -1,7 +1,7 @@
 {
   "templates" : [
     {
-      "name": "Enabled SOLR loggers",
+      "name": "Enabled Solr loggers",
       "loggers": [
         {
           "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",
@@ -10,7 +10,7 @@
       ]
     },
     {
-      "name": "Disabled SOLR loggers",
+      "name": "Disabled Solr loggers",
       "loggers": [
         {
           "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",

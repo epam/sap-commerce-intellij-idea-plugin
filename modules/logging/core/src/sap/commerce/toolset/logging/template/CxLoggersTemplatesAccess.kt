@@ -16,24 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree.nodes
+package sap.commerce.toolset.logging.template
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisIcons
+import com.google.gson.Gson
+import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.template.CxLoggersTemplatesAccess
+import sap.commerce.toolset.logging.CxLoggersConstants
 
-class BundledLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Bundled Loggers Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
+object CxLoggersTemplatesAccess {
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLoggersTemplatesAccess.bundledLoggerTemplates()
-        .entries
-        .associate { entry ->
-            entry.key to BundledLoggersTemplateItemNode(entry.key, entry.value, project)
+    fun bundledLoggerTemplates() = ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
+        .let { Gson().fromJson(it, TemplatesConfigurationDto::class.java) }
+        .templates
+        .takeIf { it.isNotEmpty() }
+        ?.associate { item ->
+            item.name to item.loggers.map { logConfig -> CxLoggerModel.of(logConfig.identifier, logConfig.effectiveLevel) }
         }
+        ?: emptyMap()
 }
-
-class BundledLoggersTemplateItemNode(
-    text: String,
-    val loggers: List<CxLoggerModel>,
-    project: Project
-) : LoggersOptionsNode(text, HybrisIcons.Log.Template.BUNDLED, project)
