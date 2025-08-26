@@ -21,7 +21,6 @@ package sap.commerce.toolset.exec.context
 data class ReplicaContext(
     val replicaId: String,
     val cookieName: String = "ROUTE",
-    var content: String = ""
 ) {
     val replicaCookie: String
         get() = if (replicaId.startsWith(".")) replicaId
@@ -31,19 +30,16 @@ data class ReplicaContext(
         get() = Mutable(
             replicaId = replicaId,
             cookieName = cookieName,
-            content = content
         )
 
     data class Mutable(
         var replicaId: String,
         var cookieName: String,
-        var content: String
     ) {
         val immutable
             get() = ReplicaContext(
                 replicaId = replicaId,
                 cookieName = cookieName,
-                content = content
             )
     }
 }
