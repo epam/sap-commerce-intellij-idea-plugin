@@ -63,6 +63,7 @@ class LoggersSplitView(
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
+        // TODO: review this logic, let's NOT build the tree on init, instead render it on first show
         val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
         updateTree(activeConnection)
 
