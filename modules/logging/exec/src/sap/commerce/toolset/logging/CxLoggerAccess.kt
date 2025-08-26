@@ -107,6 +107,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     fun fetch(server: HacConnectionSettingsState) {
         val context = GroovyExecContext(
+            connection = server,
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
             content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
             settings = GroovyExecContext.defaultSettings(server).copy(

@@ -34,7 +34,6 @@ import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.IOException
 import java.io.Serial
@@ -44,7 +43,7 @@ import java.nio.charset.StandardCharsets
 class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<GroovyExecContext>(project, coroutineScope) {
 
     override suspend fun execute(context: GroovyExecContext): DefaultExecResult {
-        val settings = HacExecConnectionService.getInstance(project).activeConnection
+        val settings = context.connection
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }

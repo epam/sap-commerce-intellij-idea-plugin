@@ -50,6 +50,7 @@ class HybrisGroovyConsole(
     }
 
     override fun currentExecutionContext(content: String) = GroovyExecContext(
+        connection = activeConnection(),
         content = content,
         settings = GroovyExecContext.defaultSettings(activeConnection()).copy(
             timeout = activeConnection().timeout,

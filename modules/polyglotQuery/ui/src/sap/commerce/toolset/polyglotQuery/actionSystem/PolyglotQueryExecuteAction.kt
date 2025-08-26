@@ -179,6 +179,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                 .result.forEach { println it.pk }
         """.trimIndent()
         val context = GroovyExecContext(
+            connection = connectionSettings,
             content = """
                             import de.hybris.platform.core.model.ItemModel
                             import de.hybris.platform.servicelayer.search.FlexibleSearchService

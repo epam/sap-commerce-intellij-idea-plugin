@@ -26,6 +26,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
 
 data class GroovyExecContext(
+    val connection: HacConnectionSettingsState,
     override val executionTitle: String = DEFAULT_TITLE,
     private val content: String,
     val settings: Settings,
