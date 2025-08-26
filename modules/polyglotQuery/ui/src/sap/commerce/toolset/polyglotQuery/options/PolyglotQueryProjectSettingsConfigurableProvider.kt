@@ -37,7 +37,7 @@ import sap.commerce.toolset.settings.state.ReservedWordsCase
 import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
-class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
+class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)

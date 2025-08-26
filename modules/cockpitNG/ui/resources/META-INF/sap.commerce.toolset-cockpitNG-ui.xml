@@ -25,7 +25,7 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.cng.title"
                              order="after hybris.project.bp.settings"
-                             provider="sap.commerce.toolset.cockpitNG.options.ProjectCngSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.cockpitNG.options.CngProjectSettingsConfigurableProvider"/>
     </extensions>
 
 </idea-plugin>

@@ -44,7 +44,7 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
                              order="after hybris.project.integrations.settings"
-                             provider="sap.commerce.toolset.typeSystem.options.ProjectTypeSystemConfigurableProvider"/>
+                             provider="sap.commerce.toolset.typeSystem.options.TSProjectConfigurableProvider"/>
     </extensions>
 
     <actions>

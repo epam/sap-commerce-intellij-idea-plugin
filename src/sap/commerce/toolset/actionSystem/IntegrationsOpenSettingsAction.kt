@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.actionSystem
 
-import sap.commerce.toolset.options.ProjectIntegrationsSettingsConfigurableProvider
+import sap.commerce.toolset.options.IntegrationsProjectSettingsConfigurableProvider
 
 class IntegrationsOpenSettingsAction : OpenSettingsAction(
-    configurableClass = ProjectIntegrationsSettingsConfigurableProvider.SettingsConfigurable::class.java,
+    configurableClass = IntegrationsProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
     text = "Connection settings"
 )

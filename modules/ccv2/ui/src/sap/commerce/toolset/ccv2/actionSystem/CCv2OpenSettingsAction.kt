@@ -18,9 +18,9 @@
 package sap.commerce.toolset.ccv2.actionSystem
 
 import sap.commerce.toolset.actionSystem.OpenSettingsAction
-import sap.commerce.toolset.ccv2.options.ProjectCCv2ExecSettingsConfigurableProvider
+import sap.commerce.toolset.ccv2.options.CCv2ExecProjectSettingsConfigurableProvider
 
 class CCv2OpenSettingsAction : OpenSettingsAction(
-    configurableClass = ProjectCCv2ExecSettingsConfigurableProvider.SettingsConfigurable::class.java,
+    configurableClass = CCv2ExecProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
     text = "Open CCv2 Settings"
 )

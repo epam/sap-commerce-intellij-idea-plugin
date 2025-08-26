@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.cockpitNG.options
+package sap.commerce.toolset.beanSystem.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -29,17 +29,17 @@ import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
-class ProjectCngSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
+class BSProjectConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        i18n("hybris.settings.project.cng.title"), "[y] SAP CX Cockpit NG configuration."
+        i18n("hybris.settings.project.bs.title"), "[y] SAP CX Bean System configuration."
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.cngSettings.mutable()
+        private val mutableSettings = developerSettings.beanSystemSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -52,25 +52,8 @@ class ProjectCngSettingsConfigurableProvider(private val project: Project) : Con
                 }
                 group("Table-Like Folding", true) {
                     row {
-                        checkBox("Wizard properties")
-                            .bindSelected(mutableSettings.folding::tablifyWizardProperties)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Navigation nodes")
-                            .bindSelected(mutableSettings.folding::tablifyNavigationNodes)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Search fields")
-                            .bindSelected(mutableSettings.folding::tablifySearchFields)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                    }
-                    row {
-                        checkBox("List columns")
-                            .bindSelected(mutableSettings.folding::tablifyListColumns)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Parameters")
-                            .bindSelected(mutableSettings.folding::tablifyParameters)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Molds")
-                            .bindSelected(mutableSettings.folding::tablifyMolds)
+                        checkBox("Properties")
+                            .bindSelected(mutableSettings.folding::tablifyProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
@@ -80,7 +63,7 @@ class ProjectCngSettingsConfigurableProvider(private val project: Project) : Con
         override fun apply() {
             super.apply()
 
-            developerSettings.cngSettings = mutableSettings.immutable()
+            developerSettings.beanSystemSettings = mutableSettings.immutable()
         }
     }
 }

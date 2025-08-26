@@ -41,7 +41,7 @@ import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModel
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.isHybrisProject
 
-class ProjectCCv2ExecSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
+class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)

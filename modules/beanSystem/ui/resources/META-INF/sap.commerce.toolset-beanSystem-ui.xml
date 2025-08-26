@@ -24,7 +24,7 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
                              order="after hybris.project.ts.settings"
-                             provider="sap.commerce.toolset.beanSystem.options.ProjectBeanSystemConfigurableProvider"/>
+                             provider="sap.commerce.toolset.beanSystem.options.BSProjectConfigurableProvider"/>
 
         <applicationService serviceImplementation="sap.commerce.toolset.beanSystem.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>

@@ -25,7 +25,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.typeSystem.options.ProjectTypeSystemConfigurableProvider
+import sap.commerce.toolset.typeSystem.options.TSProjectConfigurableProvider
 
 class OpenSettingsDiagramAction : AnAction() {
 
@@ -43,7 +43,7 @@ class OpenSettingsDiagramAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         invokeLater {
-            ShowSettingsUtil.getInstance().showSettingsDialog(project, ProjectTypeSystemConfigurableProvider.SettingsConfigurable::class.java)
+            ShowSettingsUtil.getInstance().showSettingsDialog(project, TSProjectConfigurableProvider.SettingsConfigurable::class.java)
         }
     }
 }

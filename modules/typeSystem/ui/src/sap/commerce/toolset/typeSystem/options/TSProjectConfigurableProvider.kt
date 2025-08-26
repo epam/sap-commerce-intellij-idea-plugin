@@ -34,7 +34,7 @@ import sap.commerce.toolset.typeSystem.ui.TSDiagramSettingsExcludedTypeNameTable
 import java.awt.Dimension
 import javax.swing.JCheckBox
 
-class ProjectTypeSystemConfigurableProvider(private val project: Project) : ConfigurableProvider() {
+class TSProjectConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)

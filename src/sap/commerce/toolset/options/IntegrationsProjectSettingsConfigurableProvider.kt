@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.solr.options
+package sap.commerce.toolset.options
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -29,59 +29,58 @@ import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.presentationName
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.ui.HacConnectionSettingsListPanel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.solr.exec.SolrExecConnectionService
-import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
-import sap.commerce.toolset.solr.ui.SolrConnectionSettingsListPanel
 import javax.swing.DefaultComboBoxModel
 
-class ProjectSolrExecSettingsConfigurableProvider (private val project: Project) : ConfigurableProvider(), Disposable {
+class IntegrationsProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        "Solr", "sap.commerce.toolset.solr.exec.settings"
+        "Integrations", "hybris.project.integrations.settings"
     ) {
 
         @Volatile
         private var isReset = false
-        private val currentActiveSolrConnection = SolrExecConnectionService.getInstance(project).activeConnection
+        private val currentActiveHybrisConnection = HacExecConnectionService.getInstance(project).activeConnection
 
-        private val activeSolrServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
-
-        private val solrInstances = SolrConnectionSettingsListPanel(project) { _, connections ->
+        private val activeHacServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
+        private val hacInstances = HacConnectionSettingsListPanel(project) { _, connections ->
             if (!isReset) {
-                SolrExecConnectionService.getInstance(project).save(connections)
+                HacExecConnectionService.getInstance(project).save(connections)
 
-                updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as SolrConnectionSettingsState?, connections)
+                updateModel(activeHacServerModel, activeHacServerModel.selectedItem as HacConnectionSettingsState?, connections)
             }
         }
 
         override fun createPanel() = panel {
             row {
-                icon(HybrisIcons.Console.SOLR)
+                icon(HybrisIcons.Y.REMOTE_GREEN)
                 comboBox(
-                    activeSolrServerModel,
+                    activeHacServerModel,
                     renderer = SimpleListCellRenderer.create("?") { it.presentationName }
                 )
-                    .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
+                    .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
                     .onApply {
-                        (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
-                            ?.let { settings -> SolrExecConnectionService.getInstance(project).activeConnection = settings }
+                        (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                            ?.let { settings -> HacExecConnectionService.getInstance(project).activeConnection = settings }
                     }
                     .onIsModified {
-                        (activeSolrServerModel.selectedItem as SolrConnectionSettingsState?)
-                            ?.let { it.uuid != SolrExecConnectionService.getInstance(project).activeConnection.uuid }
+                        (activeHacServerModel.selectedItem as HacConnectionSettingsState?)
+                            ?.let { it.uuid != HacExecConnectionService.getInstance(project).activeConnection.uuid }
                             ?: false
                     }
                     .align(AlignX.FILL)
             }.layout(RowLayout.PARENT_GRID)
 
-            group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
+            group(i18n("hybris.settings.project.remote_instances.hac.title"), false) {
                 row {
-                    cell(solrInstances)
+                    cell(hacInstances)
                         .align(AlignX.FILL)
                 }
             }
@@ -90,9 +89,9 @@ class ProjectSolrExecSettingsConfigurableProvider (private val project: Project)
         override fun reset() {
             isReset = true
 
-            solrInstances.setData(SolrExecConnectionService.getInstance(project).connections)
+            hacInstances.setData(HacExecConnectionService.getInstance(project).connections)
 
-            updateModel(activeSolrServerModel, currentActiveSolrConnection, solrInstances.data)
+            updateModel(activeHacServerModel, currentActiveHybrisConnection, hacInstances.data)
 
             isReset = false
         }

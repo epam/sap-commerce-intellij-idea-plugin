@@ -16,28 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.jsp.options
+package sap.commerce.toolset.acl.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.yDeveloperSettings
 
-class ProjectJspSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
+class AclProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        i18n("hybris.settings.project.jsp.title"), "hybris.jsp.settings"
+        "Access Control Lists", "hybris.acl.settings"
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.jspSettings.mutable()
+        private val mutableSettings = developerSettings.aclSettings.mutable()
 
         override fun createPanel() = panel {
             group("Code Folding") {
@@ -52,7 +51,7 @@ class ProjectJspSettingsConfigurableProvider(private val project: Project) : Con
         override fun apply() {
             super.apply()
 
-            developerSettings.jspSettings = mutableSettings.immutable()
+            developerSettings.aclSettings = mutableSettings.immutable()
         }
     }
 }

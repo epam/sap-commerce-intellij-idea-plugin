@@ -18,9 +18,9 @@
 package sap.commerce.toolset.solr.actionSystem
 
 import sap.commerce.toolset.actionSystem.OpenSettingsAction
-import sap.commerce.toolset.solr.options.ProjectSolrExecSettingsConfigurableProvider
+import sap.commerce.toolset.solr.options.SolrExecProjectSettingsConfigurableProvider
 
 class SolrOpenSettingsAction : OpenSettingsAction(
-    configurableClass = ProjectSolrExecSettingsConfigurableProvider.SettingsConfigurable::class.java,
+    configurableClass = SolrExecProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
     text = "Solr connection settings"
 )

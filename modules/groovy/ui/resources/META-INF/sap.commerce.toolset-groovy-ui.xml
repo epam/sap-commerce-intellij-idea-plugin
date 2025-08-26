@@ -21,7 +21,7 @@
         <projectConfigurable id="hybris.project.groovy.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.groovy.title"
-                             provider="sap.commerce.toolset.groovy.options.ProjectGroovySettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.groovy.options.GroovyProjectSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>

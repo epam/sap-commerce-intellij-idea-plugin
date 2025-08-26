@@ -16,52 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.businessProcess.options
+package sap.commerce.toolset.jsp.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.layout.selected
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.yDeveloperSettings
-import javax.swing.JCheckBox
 
-class ProjectBusinessProcessConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class JspProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        i18n("hybris.settings.project.bp.title"), "[y] SAP CX Business Process configuration."
+    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+        i18n("hybris.settings.project.jsp.title"), "hybris.jsp.settings"
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.bpSettings.mutable()
-
-        private lateinit var foldingEnableCheckBox: JCheckBox
+        private val mutableSettings = developerSettings.jspSettings.mutable()
 
         override fun createPanel() = panel {
             group("Code Folding") {
                 row {
-                    foldingEnableCheckBox = checkBox("Enable code folding")
+                    checkBox("Enable code folding")
                         .bindSelected(mutableSettings.folding::enabled)
                         .component
-                }
-                group("Table-Like Folding", true) {
-                    row {
-                        checkBox("Action transitions")
-                            .bindSelected(mutableSettings.folding::tablifyActionTransitions)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Case choices")
-                            .bindSelected(mutableSettings.folding::tablifyCaseChoices)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Ends")
-                            .bindSelected(mutableSettings.folding::tablifyEnds)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                    }
                 }
             }
         }
@@ -69,7 +52,7 @@ class ProjectBusinessProcessConfigurableProvider(val project: Project) : Configu
         override fun apply() {
             super.apply()
 
-            developerSettings.bpSettings = mutableSettings.immutable()
+            developerSettings.jspSettings = mutableSettings.immutable()
         }
     }
 }

@@ -25,7 +25,7 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.acl.title"
                              order="after hybris.project.impex.settings"
-                             provider="sap.commerce.toolset.acl.options.ProjectAclSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.acl.options.AclProjectSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>

@@ -21,7 +21,7 @@
         <projectConfigurable id="hybris.project.jsp.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.jsp.title"
-                             provider="sap.commerce.toolset.jsp.options.ProjectJspSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.jsp.options.JspProjectSettingsConfigurableProvider"/>
 
         <lang.foldingBuilder language="JSP" implementationClass="sap.commerce.toolset.jsp.JspPropertyFoldingBuilder"/>
     </extensions>
