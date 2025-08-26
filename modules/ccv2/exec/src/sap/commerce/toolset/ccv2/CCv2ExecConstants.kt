@@ -31,7 +31,7 @@ object CCv2ExecConstants {
             icon = HybrisIcons.CCv2.DESCRIPTOR,
             presentationText = i18n("hybris.groovy.actions.executionMode.ccv2"),
             presentationDescription = i18n("hybris.groovy.actions.executionMode.ccv2.description"),
-            previewText = { _ -> "Auto-Discover Replica" },
+            previewText = { _ -> "CCv2" },
             previewDescription = { context -> "- CCv2 ${context.replicaContexts.size} replica(s) -" }
         )
     }

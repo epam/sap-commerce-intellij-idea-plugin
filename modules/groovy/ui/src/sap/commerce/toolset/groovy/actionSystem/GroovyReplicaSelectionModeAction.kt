@@ -42,7 +42,6 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        val project = e.project ?: return false
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return false
         val currentReplicaSelectionMode = editor.groovyExecContextSettings
             ?.replicaContext

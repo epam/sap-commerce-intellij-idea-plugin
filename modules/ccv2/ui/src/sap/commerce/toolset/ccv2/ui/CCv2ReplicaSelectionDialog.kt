@@ -58,7 +58,7 @@ class CCv2ReplicaSelectionDialog(
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
     private val replicaContext = currentSettings.replicaContext
-        ?.takeIf { it.replicaSelectionMode == CCv2ExecConstants.ccv2 }
+        .takeIf { it.replicaSelectionMode == CCv2ExecConstants.ccv2 }
         ?: GroovyReplicaAwareContext(CCv2ExecConstants.ccv2)
     private val previousReplicaIds = replicaContext.replicaContexts.map { it.replicaId }
     private val selectedReplicaIds = mutableSetOf<String>()
