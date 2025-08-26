@@ -20,9 +20,12 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
 class GroovyExecutionModeActionGroup : DefaultActionGroup() {
@@ -36,7 +39,11 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val connectionContext = GroovyExecClient.getInstance(project).connectionContext
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val connectionContext = editor.groovyExecContextSettings {
+            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+            GroovyExecContext.defaultSettings(activeConnection)
+        }.replicaContext
 
         e.presentation.icon = connectionContext.replicaSelectionMode.icon
         e.presentation.text = connectionContext.previewText

@@ -19,23 +19,26 @@
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.util.asSafely
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.ui.ManualReplicaSelectionDialog
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import java.awt.Component
 
 class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(GroovyExecConstants.manual) {
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        val component = e.inputEvent?.source?.asSafely<Component>()
-            ?: return
-        val replicaContexts = GroovyExecClient.getInstance(project).connectionContext
-            .takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
-            ?.replicaContexts
-            ?: emptyList()
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val component = e.inputEvent?.source?.asSafely<Component>() ?: return
+        val execSettings = e.groovyExecContextSettings {
+            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+            GroovyExecContext.defaultSettings(activeConnection)
+        }
 
-        ManualReplicaSelectionDialog(project, replicaContexts, component).showAndGet()
+        ManualReplicaSelectionDialog(project, editor, execSettings, component).showAndGet()
     }
 }

@@ -108,8 +108,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         val context = GroovyExecContext(
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
             content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
-            transactionMode = TransactionMode.ROLLBACK,
-            timeout =  server.timeout,
+            settings = GroovyExecContext.defaultSettings(server).copy(
+                transactionMode = TransactionMode.ROLLBACK,
+                timeout = server.timeout,
+            )
         )
 
         fetching = true

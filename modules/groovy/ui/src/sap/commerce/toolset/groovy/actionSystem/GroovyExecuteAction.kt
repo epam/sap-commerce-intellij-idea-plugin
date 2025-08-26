@@ -28,13 +28,13 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
-import sap.commerce.toolset.settings.yDeveloperSettings
 
 class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
     GroovyLanguage,
@@ -50,19 +50,17 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val fileEditor = fileEditor(e) ?: return
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
         val prefix = fileName ?: "script"
-
-        val transactionMode = project.yDeveloperSettings.groovySettings.txMode
-
         val execClient = GroovyExecClient.getInstance(project)
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-        val contexts = execClient.connectionContext.replicaContexts
+        val execContextSettings = e.groovyExecContextSettings { GroovyExecContext.defaultSettings(connectionSettings) }
+
+        val contexts = execContextSettings.replicaContext.replicaContexts
             .map {
                 GroovyExecContext(
                     executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
-                    transactionMode = transactionMode,
                     replicaContext = it,
-                    timeout =connectionSettings.timeout,
+                    settings = execContextSettings
                 )
             }
             .takeIf { it.isNotEmpty() }
@@ -70,8 +68,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 GroovyExecContext(
                     executionTitle = "$prefix | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
-                    transactionMode = transactionMode,
-                    timeout =connectionSettings.timeout,
+                    settings = execContextSettings
                 )
             )
 
@@ -114,9 +111,13 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
     override fun update(e: AnActionEvent) {
         super.update(e)
 
-        val project = e.project ?: return
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
 
-        when (project.yDeveloperSettings.groovySettings.txMode) {
+        val transactionMode = (editor.groovyExecContextSettings
+            ?.transactionMode
+            ?: TransactionMode.ROLLBACK)
+
+        when (transactionMode) {
             TransactionMode.ROLLBACK -> {
                 e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE_ROLLBACK
                 e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>"

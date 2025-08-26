@@ -26,6 +26,10 @@
 
     <actions>
         <group id="hybris.groovy.toolbar.left">
+            <action class="sap.commerce.toolset.groovy.actionSystem.GroovyExecutionContextSettingsAction"/>
+
+            <separator/>
+
             <action id="hybris.groovy.execute" class="sap.commerce.toolset.groovy.actionSystem.GroovyExecuteAction">
                 <keyboard-shortcut first-keystroke="control shift alt ENTER" keymap="$default"/>
             </action>

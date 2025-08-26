@@ -185,7 +185,9 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     
                             $scriptOutputLogic
                         """.trimIndent(),
-            timeout = executionContextSettings.timeout
+            settings = GroovyExecContext.Settings(
+                timeout = executionContextSettings.timeout,
+            )
         )
 
         if (fileEditor.inEditorResults) {

@@ -25,6 +25,9 @@
 ### `Solr` enhancements
 - Use own configuration pane for Solr-related connection settings [#1541](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1541)
 
+### `Groovy` enhancements
+- Introduced possibility to specify execution context parameters [#1544](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1544)
+
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)

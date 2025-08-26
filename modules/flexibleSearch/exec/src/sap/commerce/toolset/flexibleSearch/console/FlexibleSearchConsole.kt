@@ -56,7 +56,7 @@ class FlexibleSearchConsole(
         content = content,
         transactionMode = TransactionMode.ROLLBACK,
         queryMode = QueryMode.FlexibleSearch,
-        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).modifiable()
+        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
                 maxCount = maxRowsSpinner.number
             }

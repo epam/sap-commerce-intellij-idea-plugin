@@ -19,6 +19,7 @@
 package sap.commerce.toolset.groovy.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EditorNotificationPanel
@@ -27,14 +28,17 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.GroovyExecConstants
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 import java.awt.Component
 import javax.swing.JComponent
 
 class ManualReplicaSelectionDialog(
     private val project: Project,
-    private val replicas: Collection<ReplicaContext>,
+    private val editor: Editor,
+    private val currentSettings: GroovyExecContext.Settings,
     parentComponent: Component
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
@@ -48,12 +52,16 @@ class ManualReplicaSelectionDialog(
         super.dispose()
     }
 
+    private val replicaContext = currentSettings.replicaContext
+        ?.takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
+        ?: GroovyReplicaAwareContext(GroovyExecConstants.manual)
+
     private lateinit var manualCookieName: JBTextField
     private lateinit var manualReplicaId: JBTextField
 
     override fun createCenterPanel(): JComponent {
         // TODO: support multiple replicas
-        val firstReplica = replicas.firstOrNull()
+        val firstReplica = replicaContext.replicaContexts.firstOrNull()
         return panel {
             row {
                 cell(
@@ -92,8 +100,12 @@ class ManualReplicaSelectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        val replicaContext = ReplicaContext(manualReplicaId.text, manualCookieName.text)
+        val context = GroovyReplicaAwareContext.manual(
+            listOf(
+                ReplicaContext(manualReplicaId.text, manualCookieName.text)
+            )
+        )
 
-        GroovyExecClient.getInstance(project).connectionContext = GroovyReplicaAwareContext.manual(listOf(replicaContext))
+        editor.groovyExecContextSettings = currentSettings.copy(replicaContext = context)
     }
 }

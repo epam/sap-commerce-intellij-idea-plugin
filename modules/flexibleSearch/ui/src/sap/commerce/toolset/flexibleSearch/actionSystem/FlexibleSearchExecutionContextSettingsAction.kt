@@ -38,7 +38,7 @@ import sap.commerce.toolset.ui.GroupedComboBoxModel
 import sap.commerce.toolset.ui.GroupedComboBoxRenderer
 import javax.swing.LayoutFocusTraversalPolicy
 
-class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecContext.ModifiableSettings>() {
+class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecContext.Settings.Mutable>() {
 
     override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings() }
         .let {
@@ -50,20 +50,20 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                 """.trimIndent()
         }
 
-    override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecContext.ModifiableSettings {
+    override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecContext.Settings.Mutable {
         val settings = e.flexibleSearchExecutionContextSettings {
             val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
             FlexibleSearchExecContext.defaultSettings(connectionSettings)
         }
 
-        return settings.modifiable()
+        return settings.mutable()
     }
 
-    override fun applySettings(editor: Editor, settings: FlexibleSearchExecContext.ModifiableSettings) {
+    override fun applySettings(editor: Editor, settings: FlexibleSearchExecContext.Settings.Mutable) {
         editor.putUserData(FlexibleSearchExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
-    override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecContext.ModifiableSettings): DialogPanel {
+    override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecContext.Settings.Mutable): DialogPanel {
         val dataSources = application.runReadAction<Collection<String>> {
             PropertyService.getInstance(project)
                 .findProperty(HybrisConstants.PROPERTY_INSTALLED_TENANTS)

@@ -51,24 +51,36 @@ data class FlexibleSearchExecContext(
         }
     }
 
-    data class Settings(val maxCount: Int, val locale: String, val dataSource: String, val user: String, val timeout: Int) : ExecContext.Settings {
-        override fun modifiable() = ModifiableSettings(
+    data class Settings(
+        val maxCount: Int,
+        val locale: String,
+        val dataSource: String,
+        val user: String,
+        val timeout: Int
+    ) : ExecContext.Settings {
+        override fun mutable() = Mutable(
             maxCount = maxCount,
             locale = locale,
             dataSource = dataSource,
             user = user,
             timeout = timeout,
         )
-    }
 
-    data class ModifiableSettings(var maxCount: Int, var locale: String, var dataSource: String, var user: String, val timeout: Int) : ExecContext.ModifiableSettings {
-        override fun immutable() = Settings(
-            maxCount = maxCount,
-            locale = locale,
-            dataSource = dataSource,
-            user = user,
-            timeout = timeout,
-        )
+        data class Mutable(
+            var maxCount: Int,
+            var locale: String,
+            var dataSource: String,
+            var user: String,
+            var timeout: Int
+        ) : ExecContext.Settings.Mutable {
+            override fun immutable() = Settings(
+                maxCount = maxCount,
+                locale = locale,
+                dataSource = dataSource,
+                user = user,
+                timeout = timeout,
+            )
+        }
     }
 
     companion object {

@@ -26,4 +26,24 @@ data class ReplicaContext(
     val replicaCookie: String
         get() = if (replicaId.startsWith(".")) replicaId
         else ".$replicaId"
+
+    val mutable
+        get() = Mutable(
+            replicaId = replicaId,
+            cookieName = cookieName,
+            content = content
+        )
+
+    data class Mutable(
+        var replicaId: String,
+        var cookieName: String,
+        var content: String
+    ) {
+        val immutable
+            get() = ReplicaContext(
+                replicaId = replicaId,
+                cookieName = cookieName,
+                content = content
+            )
+    }
 }

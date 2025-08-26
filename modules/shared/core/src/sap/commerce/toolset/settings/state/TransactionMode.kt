@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.settings.state
 
-enum class TransactionMode {
-    COMMIT, ROLLBACK
+enum class TransactionMode(val presentationText: String) {
+    COMMIT("Commit"),
+    ROLLBACK("Rollback")
 }

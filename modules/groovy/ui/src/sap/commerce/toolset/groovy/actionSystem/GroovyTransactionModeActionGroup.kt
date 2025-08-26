@@ -20,10 +20,12 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.settings.yDeveloperSettings
+import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
 class GroovyTransactionModeActionGroup : DefaultActionGroup() {
@@ -36,9 +38,12 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val project = e.project ?: return
-        val mode = project.yDeveloperSettings.groovySettings.txMode
-            .let { i18n("hybris.groovy.actions.transaction.${it.name.lowercase()}") }
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val currentTransactionMode = editor.groovyExecContextSettings
+            ?.transactionMode
+            ?: TransactionMode.ROLLBACK
+
+        val mode = i18n("hybris.groovy.actions.transaction.${currentTransactionMode.name.lowercase()}")
 
         e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", mode)
     }

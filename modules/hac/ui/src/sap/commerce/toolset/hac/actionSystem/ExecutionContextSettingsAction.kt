@@ -31,7 +31,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.context.ExecContext
 import java.awt.event.KeyEvent
 
-abstract class ExecutionContextSettingsAction<M : ExecContext.ModifiableSettings> : DumbAwareAction() {
+abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> : DumbAwareAction() {
 
     protected abstract fun previewSettings(e: AnActionEvent, project: Project): String
     protected abstract fun settings(e: AnActionEvent, project: Project): M
