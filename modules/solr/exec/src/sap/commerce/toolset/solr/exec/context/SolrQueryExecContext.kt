@@ -19,8 +19,10 @@
 package sap.commerce.toolset.solr.exec.context
 
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 
 data class SolrQueryExecContext(
+    val connection: SolrConnectionSettingsState,
     override val executionTitle: String = "Execute HTTP Call to SOLR...",
     val content: String,
     val core: String,

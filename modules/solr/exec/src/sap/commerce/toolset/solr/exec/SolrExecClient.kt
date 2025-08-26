@@ -45,14 +45,8 @@ import java.io.Serial
 @Service(Service.Level.PROJECT)
 class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<SolrQueryExecContext>(project, coroutineScope) {
 
-    fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
-
-    fun listOfCores(solrConnectionSettings: SolrConnectionSettingsState) = coresData(solrConnectionSettings)
-        .map { it.core }
-        .toTypedArray()
-
     override suspend fun execute(context: SolrQueryExecContext): DefaultExecResult {
-        val settings = solrConnectionSettings(project)
+        val settings = context.connection
         val solrQuery = buildSolrQuery(context)
         val queryRequest = buildQueryRequest(solrQuery, settings)
         val url = "${settings.generatedURL}/${context.core}"
@@ -72,7 +66,11 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
             }
     }
 
-    private fun coresData(settings: SolrConnectionSettingsState) = CoreAdminRequest()
+    fun listOfCores(solrConnectionSettings: SolrConnectionSettingsState) = coresData(solrConnectionSettings)
+        .map { it.core }
+        .toTypedArray()
+
+    fun coresData(settings: SolrConnectionSettingsState) = CoreAdminRequest()
         .apply {
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
             setBasicAuthCredentials(settings.username, settings.password)
@@ -115,9 +113,6 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
         query = queryObject.content
         setParam("wt", "json")
     }
-
-    // active or default
-    private fun solrConnectionSettings(project: Project) = SolrExecConnectionService.getInstance(project).activeConnection
 
     companion object {
         @Serial
