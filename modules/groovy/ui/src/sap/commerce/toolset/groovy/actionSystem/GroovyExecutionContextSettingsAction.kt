@@ -38,8 +38,7 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
     override fun previewSettings(e: AnActionEvent, project: Project): String = e.groovyExecContextSettings { GroovyExecContext.defaultSettings() }
         .let {
             """<pre>
- · timeout:   ${it.timeout}
- </pre>
+ · timeout:   ${it.timeout}</pre>
                 """.trimIndent()
         }
 

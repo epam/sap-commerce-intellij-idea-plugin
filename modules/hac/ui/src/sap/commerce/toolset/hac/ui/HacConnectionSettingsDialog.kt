@@ -44,6 +44,18 @@ import javax.swing.JComboBox
 import javax.swing.JEditorPane
 import javax.swing.JLabel
 
+/**
+ * TODO
+ * java.lang.Throwable: Slow operations are prohibited on EDT. See SlowOperations.assertSlowOperationsAreAllowed javadoc.
+ * 	at com.intellij.openapi.diagnostic.Logger.error(Logger.java:375)
+ * 	at com.intellij.util.SlowOperations.assertNonCancelableSlowOperationsAreAllowed(SlowOperations.java:127)
+ * 	at com.intellij.ide.passwordSafe.impl.BasePasswordSafe.get(PasswordSafeImpl.kt:95)
+ * 	at sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState.getDynamicCredentials(HacConnectionSettingsState.kt:54)
+ * 	at sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState.getPassword(HacConnectionSettingsState.kt:60)
+ * 	at sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState.mutable(HacConnectionSettingsState.kt:72)
+ * 	at sap.commerce.toolset.hac.ui.HacConnectionSettingsListPanel.editSelectedItem(HacConnectionSettingsListPanel.kt:48)
+ * 	at sap.commerce.toolset.hac.ui.HacConnectionSettingsListPanel.editSelectedItem(HacConnectionSettingsListPanel.kt:28)
+ */
 class HacConnectionSettingsDialog(
     project: Project,
     parentComponent: Component,

@@ -123,7 +123,10 @@ public final class HacHttpClient extends UserDataHolderBase {
 
     @NotNull
     public String testConnection(@NotNull final HacConnectionSettingsState settings) {
-        return login(settings, null, getCookiesKey(settings, null));
+        final var cookiesKey = getCookiesKey(settings, null);
+        final var result = login(settings, null, cookiesKey);
+        cookiesPerSettings.remove(cookiesKey);
+        return result;
     }
 
     @NotNull
