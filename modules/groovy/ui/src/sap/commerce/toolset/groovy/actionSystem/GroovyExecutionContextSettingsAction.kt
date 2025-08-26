@@ -48,11 +48,11 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
             GroovyExecContext.defaultSettings(connectionSettings)
         }
 
-        return settings.mutable
+        return settings.mutable()
     }
 
     override fun applySettings(editor: Editor, settings: GroovyExecContext.Settings.Mutable) {
-        editor.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, settings.immutable)
+        editor.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: GroovyExecContext.Settings.Mutable): DialogPanel {

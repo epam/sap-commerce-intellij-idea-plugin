@@ -47,7 +47,7 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.polyglotQuerySettings.mutable
+        private val mutableSettings = developerSettings.polyglotQuerySettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
         private lateinit var foldingEnableCheckBox: JCheckBox
@@ -91,7 +91,7 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
         override fun apply() {
             super.apply()
 
-            developerSettings.polyglotQuerySettings = mutableSettings.immutable
+            developerSettings.polyglotQuerySettings = mutableSettings.immutable()
 
             EditorNotificationProvider.EP_NAME.findExtension(PolyglotQueryEditorNotificationProvider::class.java, project)
                 ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }

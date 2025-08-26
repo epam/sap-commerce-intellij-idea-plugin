@@ -67,11 +67,11 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
         content = content,
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         queryMode = QueryMode.SQL,
-        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable
+        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
                 maxCount = maxRowsSpinner.number
             }
-            .immutable
+            .immutable()
     )
 
     override fun title(): String = "SQL"

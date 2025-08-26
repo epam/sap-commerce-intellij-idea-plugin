@@ -52,8 +52,7 @@ data class SolrConnectionSettingsState(
         @Transient
         get() = dynamicCredentials?.getPasswordAsString() ?: "server123"
 
-    override val mutable
-        get() = Mutable(
+    override fun mutable() = Mutable(
         uuid = uuid,
         scope = scope,
         name = name,
@@ -82,8 +81,7 @@ data class SolrConnectionSettingsState(
         override val password
             get() = retrieveCredentials()?.getPasswordAsString() ?: "server123"
 
-        override val immutable
-            get() = SolrConnectionSettingsState(
+        override fun immutable() = SolrConnectionSettingsState(
             uuid = uuid,
             scope = scope,
             name = name,

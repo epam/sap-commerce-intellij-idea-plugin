@@ -30,14 +30,13 @@ data class FlexibleSearchCompletionSettingsState(
     @JvmField @OptionTag val injectCommaAfterExpression: Boolean = true,
     @JvmField @OptionTag val defaultTableAliasSeparator: String = HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT,
 ) {
-    val mutable
-        get() = Mutable(
-            injectSpaceAfterKeywords = injectSpaceAfterKeywords,
-            injectTableAliasSeparator = injectTableAliasSeparator,
-            suggestTableAliasNames = suggestTableAliasNames,
-            injectCommaAfterExpression = injectCommaAfterExpression,
-            defaultTableAliasSeparator = defaultTableAliasSeparator,
-        )
+    fun mutable() = Mutable(
+        injectSpaceAfterKeywords = injectSpaceAfterKeywords,
+        injectTableAliasSeparator = injectTableAliasSeparator,
+        suggestTableAliasNames = suggestTableAliasNames,
+        injectCommaAfterExpression = injectCommaAfterExpression,
+        defaultTableAliasSeparator = defaultTableAliasSeparator,
+    )
 
     data class Mutable(
         var injectSpaceAfterKeywords: Boolean,
@@ -46,8 +45,7 @@ data class FlexibleSearchCompletionSettingsState(
         var injectCommaAfterExpression: Boolean,
         var defaultTableAliasSeparator: String,
     ) {
-        val immutable
-            get() = FlexibleSearchCompletionSettingsState(
+        fun immutable() = FlexibleSearchCompletionSettingsState(
             injectSpaceAfterKeywords = injectSpaceAfterKeywords,
             injectTableAliasSeparator = injectTableAliasSeparator,
             suggestTableAliasNames = suggestTableAliasNames,

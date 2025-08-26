@@ -25,17 +25,15 @@ import com.intellij.util.xmlb.annotations.Tag
 data class AclFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true
 ) : FoldingSettings {
-    val mutable
-        get() = Mutable(
-            enabled = enabled,
-        )
+    fun mutable() = Mutable(
+        enabled = enabled,
+    )
 
     data class Mutable(
         var enabled: Boolean,
     ) {
-        val immutable
-            get() = AclFoldingSettingsState(
-                enabled = enabled,
-            )
+        fun immutable() = AclFoldingSettingsState(
+            enabled = enabled,
+        )
     }
 }

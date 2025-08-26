@@ -32,16 +32,15 @@ data class CngFoldingSettingsState(
     @JvmField @OptionTag val tablifyMolds: Boolean = true,
 ) : FoldingSettings {
 
-    val mutable
-        get() = Mutable(
-            enabled = enabled,
-            tablifyWizardProperties = tablifyWizardProperties,
-            tablifyNavigationNodes = tablifyNavigationNodes,
-            tablifySearchFields = tablifySearchFields,
-            tablifyListColumns = tablifyListColumns,
-            tablifyParameters = tablifyParameters,
-            tablifyMolds = tablifyMolds,
-        )
+    fun mutable() = Mutable(
+        enabled = enabled,
+        tablifyWizardProperties = tablifyWizardProperties,
+        tablifyNavigationNodes = tablifyNavigationNodes,
+        tablifySearchFields = tablifySearchFields,
+        tablifyListColumns = tablifyListColumns,
+        tablifyParameters = tablifyParameters,
+        tablifyMolds = tablifyMolds,
+    )
 
     data class Mutable(
         override var enabled: Boolean,
@@ -52,15 +51,14 @@ data class CngFoldingSettingsState(
         var tablifyParameters: Boolean,
         var tablifyMolds: Boolean,
     ) : FoldingSettings {
-        val immutable
-            get() = CngFoldingSettingsState(
-                enabled = enabled,
-                tablifyWizardProperties = tablifyWizardProperties,
-                tablifyNavigationNodes = tablifyNavigationNodes,
-                tablifySearchFields = tablifySearchFields,
-                tablifyListColumns = tablifyListColumns,
-                tablifyParameters = tablifyParameters,
-                tablifyMolds = tablifyMolds,
-            )
+        fun immutable() = CngFoldingSettingsState(
+            enabled = enabled,
+            tablifyWizardProperties = tablifyWizardProperties,
+            tablifyNavigationNodes = tablifyNavigationNodes,
+            tablifySearchFields = tablifySearchFields,
+            tablifyListColumns = tablifyListColumns,
+            tablifyParameters = tablifyParameters,
+            tablifyMolds = tablifyMolds,
+        )
     }
 }

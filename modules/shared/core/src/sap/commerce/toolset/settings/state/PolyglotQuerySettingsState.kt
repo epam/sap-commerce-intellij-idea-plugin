@@ -29,11 +29,10 @@ data class PolyglotQuerySettingsState(
     @JvmField @OptionTag val folding: PolyglotQueryFoldingSettingsState = PolyglotQueryFoldingSettingsState(),
 ) {
 
-    val mutable
-        get() = Mutable(
+    fun mutable() = Mutable(
         verifyCaseForReservedWords = verifyCaseForReservedWords,
         defaultCaseForReservedWords = defaultCaseForReservedWords,
-            folding = folding.mutable,
+        folding = folding.mutable(),
     )
 
     data class Mutable(
@@ -41,11 +40,10 @@ data class PolyglotQuerySettingsState(
         var defaultCaseForReservedWords: ReservedWordsCase,
         var folding: PolyglotQueryFoldingSettingsState.Mutable,
     ) {
-        val immutable
-            get() = PolyglotQuerySettingsState(
+        fun immutable() = PolyglotQuerySettingsState(
             verifyCaseForReservedWords = verifyCaseForReservedWords,
             defaultCaseForReservedWords = defaultCaseForReservedWords,
-                folding = folding.immutable,
+            folding = folding.immutable(),
         )
     }
 }

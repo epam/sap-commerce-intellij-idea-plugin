@@ -85,7 +85,7 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
 
     override fun currentExecutionContext(content: String) = ImpExExecContext(
         content = content,
-        settings = ImpExExecContext.defaultSettings(activeConnection()).mutable
+        settings = ImpExExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
                 validationMode = importModeComboBox.selectedItem as ImpExExecContext.ValidationMode
                 maxThreads = maxThreadsSpinner.number
@@ -93,7 +93,7 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
                 enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
                 sldEnabled = if (directPersistenceCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
                 distributedMode = ImpExExecContext.Toggle.ON
-            }.immutable
+            }.immutable()
     )
 
     override fun title(): String = ImpExConstants.IMPEX

@@ -25,17 +25,15 @@ import com.intellij.util.xmlb.annotations.Tag
 data class CngSettingsState(
     @JvmField @OptionTag val folding: CngFoldingSettingsState = CngFoldingSettingsState(),
 ) {
-    val mutable
-        get() = Mutable(
-            folding = folding.mutable
-        )
+    fun mutable() = Mutable(
+        folding = folding.mutable()
+    )
 
     data class Mutable(
         var folding: CngFoldingSettingsState.Mutable,
     ) {
-        val immutable
-            get() = CngSettingsState(
-                folding = folding.immutable
-            )
+        fun immutable() = CngSettingsState(
+            folding = folding.immutable()
+        )
     }
 }

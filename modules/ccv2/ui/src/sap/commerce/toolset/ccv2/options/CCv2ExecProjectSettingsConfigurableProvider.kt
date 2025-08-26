@@ -59,7 +59,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
         private val editable = AtomicBooleanProperty(false)
         private val projectSettings = CCv2ProjectSettings.getInstance()
         private val developerSettings = CCv2DeveloperSettings.getInstance(project)
-        private val mutable = projectSettings.state.mutable
+        private val mutable = projectSettings.state.mutable()
         private var originalToken: String? = null
         private var originalSubscriptions = mutable.subscriptions
         private var originalActiveSubscription = developerSettings.getActiveCCv2Subscription()
@@ -70,7 +70,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
             subscriptionsComboBoxModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true, disposable = disposable)
             subscriptionListPanel = CCv2SubscriptionListPanel(disposable) {
                 val previousSelectedItem = subscriptionsComboBoxModel.selectedItem?.asSafely<CCv2Subscription>()?.uuid
-                val modifiedSubscriptions = subscriptionListPanel.data.map { it.immutable }
+                val modifiedSubscriptions = subscriptionListPanel.data.map { it.immutable() }
                 subscriptionsComboBoxModel.refresh(modifiedSubscriptions)
                 subscriptionsComboBoxModel.selectedItem = modifiedSubscriptions.find { it.uuid == previousSelectedItem }
                 activeCCv2SubscriptionComboBox.repaint()
@@ -138,7 +138,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
         }
 
         override fun reset() {
-            subscriptionsComboBoxModel.refresh(originalSubscriptions.map { it.immutable })
+            subscriptionsComboBoxModel.refresh(originalSubscriptions.map { it.immutable() })
             subscriptionListPanel.data = originalSubscriptions.map { it.copy() }
             timeoutTextField.text = originalTimeout.toString()
             activeCCv2SubscriptionComboBox.selectedItem = originalActiveSubscription
@@ -152,7 +152,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
 
             developerSettings.activeCCv2SubscriptionID = activeCCv2SubscriptionComboBox.selectedItem?.asSafely<CCv2Subscription>()?.uuid
             projectSettings.readTimeout = timeoutTextField.text.toIntOrNull() ?: 60
-            projectSettings.subscriptions = subscriptionListPanel.data.map { it.immutable }
+            projectSettings.subscriptions = subscriptionListPanel.data.map { it.immutable() }
 
             val token = String(defaultCCv2TokenTextField.password).takeIf { it.isNotBlank() }
             originalToken = token

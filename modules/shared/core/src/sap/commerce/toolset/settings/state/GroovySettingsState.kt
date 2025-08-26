@@ -27,8 +27,7 @@ data class GroovySettingsState(
     @JvmField @OptionTag val enableActionsToolbarForGroovyTest: Boolean = false,
     @JvmField @OptionTag val enableActionsToolbarForGroovyIdeConsole: Boolean = false,
 ) {
-    val mutable
-        get() = Mutable(
+    fun mutable() = Mutable(
         enableActionsToolbar = enableActionsToolbar,
         enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
         enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
@@ -39,8 +38,7 @@ data class GroovySettingsState(
         var enableActionsToolbarForGroovyTest: Boolean,
         var enableActionsToolbarForGroovyIdeConsole: Boolean,
     ) {
-        val immutable
-            get() = GroovySettingsState(
+        fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
             enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
             enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,

@@ -25,17 +25,15 @@ import com.intellij.util.xmlb.annotations.Tag
 data class JspSettingsState(
     @JvmField @OptionTag val folding: JspFoldingSettingsState = JspFoldingSettingsState(),
 ) {
-    val mutable
-        get() = Mutable(
-            folding = folding.mutable,
+    fun mutable() = Mutable(
+        folding = folding.mutable(),
     )
 
     data class Mutable(
         var folding: JspFoldingSettingsState.Mutable,
     ) {
-        val immutable
-            get() = JspSettingsState(
-                folding = folding.immutable,
+        fun immutable() = JspSettingsState(
+            folding = folding.immutable(),
         )
     }
 }

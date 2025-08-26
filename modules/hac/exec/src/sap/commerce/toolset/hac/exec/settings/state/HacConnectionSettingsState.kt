@@ -59,20 +59,19 @@ data class HacConnectionSettingsState(
         @Transient
         get() = dynamicCredentials?.getPasswordAsString() ?: "password"
 
-    override val mutable
-        get() = Mutable(
-            uuid = uuid,
-            scope = scope,
-            name = name,
-            host = host,
-            port = port,
-            webroot = webroot,
-            ssl = ssl,
-            timeout = timeout,
-            wsl = wsl,
-            sslProtocol = sslProtocol,
-            sessionCookieName = sessionCookieName
-        )
+    override fun mutable() = Mutable(
+        uuid = uuid,
+        scope = scope,
+        name = name,
+        host = host,
+        port = port,
+        webroot = webroot,
+        ssl = ssl,
+        timeout = timeout,
+        wsl = wsl,
+        sslProtocol = sslProtocol,
+        sessionCookieName = sessionCookieName
+    )
 
     data class Mutable(
         override var uuid: String = UUID.randomUUID().toString(),
@@ -97,19 +96,18 @@ data class HacConnectionSettingsState(
                 ?.getPasswordAsString()
                 ?: "nimda"
 
-        override val immutable
-            get() = HacConnectionSettingsState(
-                uuid = uuid,
-                scope = scope,
-                name = name,
-                host = host,
-                port = port,
-                webroot = webroot,
-                ssl = ssl,
-                timeout = timeout,
-                wsl = wsl,
-                sslProtocol = sslProtocol,
-                sessionCookieName = sessionCookieName
-            )
+        override fun immutable() = HacConnectionSettingsState(
+            uuid = uuid,
+            scope = scope,
+            name = name,
+            host = host,
+            port = port,
+            webroot = webroot,
+            ssl = ssl,
+            timeout = timeout,
+            wsl = wsl,
+            sslProtocol = sslProtocol,
+            sessionCookieName = sessionCookieName
+        )
     }
 }

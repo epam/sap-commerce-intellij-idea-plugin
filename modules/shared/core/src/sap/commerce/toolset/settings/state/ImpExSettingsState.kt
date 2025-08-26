@@ -29,13 +29,12 @@ data class ImpExSettingsState(
     @JvmField @OptionTag val completion: ImpExCompletionSettingsState = ImpExCompletionSettingsState(),
     @JvmField @OptionTag val documentation: ImpExDocumentationSettingsState = ImpExDocumentationSettingsState(),
 ) {
-    val mutable
-        get() = Mutable(
+    fun mutable() = Mutable(
         groupLocalizedFiles = groupLocalizedFiles,
-            editMode = editMode.mutable,
-            folding = folding.mutable,
-            completion = completion.mutable,
-            documentation = documentation.mutable,
+        editMode = editMode.mutable(),
+        folding = folding.mutable(),
+        completion = completion.mutable(),
+        documentation = documentation.mutable(),
     )
 
     data class Mutable(
@@ -45,13 +44,12 @@ data class ImpExSettingsState(
         var completion: ImpExCompletionSettingsState.Mutable,
         var documentation: ImpExDocumentationSettingsState.Mutable,
     ) {
-        val immutable
-            get() = ImpExSettingsState(
+        fun immutable() = ImpExSettingsState(
             groupLocalizedFiles = groupLocalizedFiles,
-                editMode = editMode.immutable,
-                folding = folding.immutable,
-                completion = completion.immutable,
-                documentation = documentation.immutable,
+            editMode = editMode.immutable(),
+            folding = folding.immutable(),
+            completion = completion.immutable(),
+            documentation = documentation.immutable(),
         )
     }
 }

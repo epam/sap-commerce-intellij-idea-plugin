@@ -44,7 +44,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.flexibleSearchSettings.mutable
+        private val mutableSettings = developerSettings.flexibleSearchSettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
 
@@ -156,7 +156,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
         override fun apply() {
             super.apply()
 
-            developerSettings.flexibleSearchSettings = mutableSettings.immutable
+            developerSettings.flexibleSearchSettings = mutableSettings.immutable()
 
             EditorNotificationProvider.EP_NAME.findExtension(FxSReservedWordsCaseEditorNotificationProvider::class.java, project)
                 ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }

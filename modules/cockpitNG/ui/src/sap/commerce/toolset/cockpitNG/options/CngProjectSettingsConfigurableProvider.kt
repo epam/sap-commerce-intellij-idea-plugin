@@ -39,7 +39,7 @@ class CngProjectSettingsConfigurableProvider(private val project: Project) : Con
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.cngSettings.mutable
+        private val mutableSettings = developerSettings.cngSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -80,7 +80,7 @@ class CngProjectSettingsConfigurableProvider(private val project: Project) : Con
         override fun apply() {
             super.apply()
 
-            developerSettings.cngSettings = mutableSettings.immutable
+            developerSettings.cngSettings = mutableSettings.immutable()
         }
     }
 }

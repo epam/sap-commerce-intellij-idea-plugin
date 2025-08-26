@@ -26,8 +26,7 @@ data class ImpExEditModeSettingsState(
     @JvmField @OptionTag val firstRowIsHeader: Boolean = true,
     @JvmField @OptionTag val trimWhitespace: Boolean = false,
 ) {
-    val mutable
-        get() = Mutable(
+    fun mutable() = Mutable(
         firstRowIsHeader = firstRowIsHeader,
         trimWhitespace = trimWhitespace,
     )
@@ -36,8 +35,7 @@ data class ImpExEditModeSettingsState(
         var firstRowIsHeader: Boolean,
         var trimWhitespace: Boolean,
     ) {
-        val immutable
-            get() = ImpExEditModeSettingsState(
+        fun immutable() = ImpExEditModeSettingsState(
             firstRowIsHeader = firstRowIsHeader,
             trimWhitespace = trimWhitespace,
         )

@@ -97,8 +97,7 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
 
     override fun getModificationCount() = stateModificationCount
 
-    val mutable
-        get() = state.mutable
+    fun mutable() = state.mutable()
 
     companion object {
         @JvmStatic

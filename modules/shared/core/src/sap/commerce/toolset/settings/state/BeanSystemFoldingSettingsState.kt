@@ -27,20 +27,18 @@ data class BeanSystemFoldingSettingsState(
     @JvmField @OptionTag val tablifyProperties: Boolean = true,
 ) : FoldingSettings {
 
-    val mutable
-        get() = Mutable(
-            enabled = enabled,
-            tablifyProperties = tablifyProperties,
-        )
+    fun mutable() = Mutable(
+        enabled = enabled,
+        tablifyProperties = tablifyProperties,
+    )
 
     data class Mutable(
         override var enabled: Boolean,
         var tablifyProperties: Boolean,
     ) : FoldingSettings {
-        val immutable
-            get() = BeanSystemFoldingSettingsState(
-                enabled = enabled,
-                tablifyProperties = tablifyProperties,
-            )
+        fun immutable() = BeanSystemFoldingSettingsState(
+            enabled = enabled,
+            tablifyProperties = tablifyProperties,
+        )
     }
 }

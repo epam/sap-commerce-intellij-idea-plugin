@@ -44,8 +44,8 @@ class TSProjectConfigurableProvider(private val project: Project) : Configurable
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val tsMutableSettings = developerSettings.typeSystemSettings.mutable
-        private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable
+        private val tsMutableSettings = developerSettings.typeSystemSettings.mutable()
+        private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable()
 
         private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.getInstance(project)
         private val excludedTypeNamesPane = ToolbarDecorator.createDecorator(excludedTypeNamesTable)
@@ -148,8 +148,8 @@ class TSProjectConfigurableProvider(private val project: Project) : Configurable
         override fun apply() {
             super.apply()
 
-            developerSettings.typeSystemSettings = tsMutableSettings.immutable
-            developerSettings.typeSystemDiagramSettings = tsDiagramMutableSettings.immutable
+            developerSettings.typeSystemSettings = tsMutableSettings.immutable()
+            developerSettings.typeSystemDiagramSettings = tsDiagramMutableSettings.immutable()
         }
 
         private fun getNewTypeNames() = excludedTypeNamesTable.getItems()

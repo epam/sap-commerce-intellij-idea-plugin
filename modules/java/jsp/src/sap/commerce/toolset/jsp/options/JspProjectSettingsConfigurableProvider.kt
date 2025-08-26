@@ -37,7 +37,7 @@ class JspProjectSettingsConfigurableProvider(private val project: Project) : Con
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.jspSettings.mutable
+        private val mutableSettings = developerSettings.jspSettings.mutable()
 
         override fun createPanel() = panel {
             group("Code Folding") {
@@ -52,7 +52,7 @@ class JspProjectSettingsConfigurableProvider(private val project: Project) : Con
         override fun apply() {
             super.apply()
 
-            developerSettings.jspSettings = mutableSettings.immutable
+            developerSettings.jspSettings = mutableSettings.immutable()
         }
     }
 }

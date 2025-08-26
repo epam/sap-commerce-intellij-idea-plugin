@@ -58,14 +58,13 @@ data class FlexibleSearchExecContext(
         val user: String,
         val timeout: Int
     ) : ExecContext.Settings {
-        override val mutable
-            get() = Mutable(
-                maxCount = maxCount,
-                locale = locale,
-                dataSource = dataSource,
-                user = user,
-                timeout = timeout,
-            )
+        override fun mutable() = Mutable(
+            maxCount = maxCount,
+            locale = locale,
+            dataSource = dataSource,
+            user = user,
+            timeout = timeout,
+        )
 
         data class Mutable(
             var maxCount: Int,
@@ -74,14 +73,13 @@ data class FlexibleSearchExecContext(
             var user: String,
             var timeout: Int
         ) : ExecContext.Settings.Mutable {
-            override val immutable
-                get() = Settings(
-                    maxCount = maxCount,
-                    locale = locale,
-                    dataSource = dataSource,
-                    user = user,
-                    timeout = timeout,
-                )
+            override fun immutable() = Settings(
+                maxCount = maxCount,
+                locale = locale,
+                dataSource = dataSource,
+                user = user,
+                timeout = timeout,
+            )
         }
     }
 

@@ -56,11 +56,11 @@ class HybrisPolyglotQueryConsole(
     override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
         content = content,
         queryMode = QueryMode.PolyglotQuery,
-        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable
+        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
                 maxCount = maxRowsSpinner.number
             }
-            .immutable
+            .immutable()
     )
 
     fun print(values: Collection<PolyglotQueryVirtualParameter>?) {

@@ -56,11 +56,11 @@ class FlexibleSearchConsole(
         content = content,
         transactionMode = TransactionMode.ROLLBACK,
         queryMode = QueryMode.FlexibleSearch,
-        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable
+        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
                 maxCount = maxRowsSpinner.number
             }
-            .immutable
+            .immutable()
     )
 
     override fun title(): String = "FlexibleSearch"

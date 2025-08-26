@@ -26,23 +26,21 @@ data class CCv2ApplicationSettingsState(
     @JvmField @OptionTag val readTimeout: Int = 60,
     @JvmField val subscriptions: List<CCv2Subscription> = emptyList()
 ) {
-    val mutable
-        get() = Mutable(
-            readTimeout = readTimeout,
-            subscriptions = subscriptions
-                .map { it.mutable }
-                .toMutableList()
-        )
+    fun mutable() = Mutable(
+        readTimeout = readTimeout,
+        subscriptions = subscriptions
+            .map { it.mutable() }
+            .toMutableList()
+    )
 
     data class Mutable(
         var readTimeout: Int,
         var subscriptions: MutableList<CCv2Subscription.Mutable>
     ) {
-        val immutable
-            get() = CCv2ApplicationSettingsState(
-                readTimeout = readTimeout,
-                subscriptions = subscriptions
-                    .map { it.immutable }
-            )
+        fun immutable() = CCv2ApplicationSettingsState(
+            readTimeout = readTimeout,
+            subscriptions = subscriptions
+                .map { it.immutable() }
+        )
     }
 }

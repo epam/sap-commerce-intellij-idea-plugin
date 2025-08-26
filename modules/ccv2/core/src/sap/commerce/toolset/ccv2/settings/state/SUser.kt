@@ -23,20 +23,18 @@ data class SUser(
     @JvmField @OptionTag val id: String,
     @JvmField @OptionTag val alias: String? = null
 ) {
-    val mutable
-        get() = Mutable(
-            id = id,
-            alias = alias
-        )
+    fun mutable() = Mutable(
+        id = id,
+        alias = alias
+    )
 
     data class Mutable(
         var id: String,
         var alias: String?,
     ) {
-        val immutable
-            get() = SUser(
-                id = id,
-                alias = alias
-            )
+        fun immutable() = SUser(
+            id = id,
+            alias = alias
+        )
     }
 }

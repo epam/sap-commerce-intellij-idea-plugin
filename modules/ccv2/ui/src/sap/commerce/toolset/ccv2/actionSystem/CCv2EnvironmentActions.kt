@@ -190,11 +190,11 @@ abstract class CCv2ShowEnvironmentWithStatusAction(status: CCv2EnvironmentStatus
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val developerSettings = CCv2DeveloperSettings.getInstance(project)
-        val mutableSettings = developerSettings.ccv2Settings.mutable
+        val mutableSettings = developerSettings.ccv2Settings.mutable()
         if (state) mutableSettings.showEnvironmentStatuses.add(status)
         else mutableSettings.showEnvironmentStatuses.remove(status)
 
-        developerSettings.ccv2Settings = mutableSettings.immutable
+        developerSettings.ccv2Settings = mutableSettings.immutable()
     }
 
     override fun getStatuses(settings: CCv2SettingsState) = settings.showEnvironmentStatuses

@@ -43,24 +43,22 @@ data class GroovyExecContext(
         val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
         val replicaContext: GroovyReplicaAwareContext = GroovyReplicaAwareContext.auto()
     ) : ExecContext.Settings {
-        override val mutable
-            get() = Mutable(
-                timeout = timeout,
-                transactionMode = transactionMode,
-                replicaContext = replicaContext,
-            )
+        override fun mutable() = Mutable(
+            timeout = timeout,
+            transactionMode = transactionMode,
+            replicaContext = replicaContext,
+        )
 
         data class Mutable(
             var timeout: Int,
             var transactionMode: TransactionMode,
             var replicaContext: GroovyReplicaAwareContext
         ) : ExecContext.Settings.Mutable {
-            override val immutable
-                get() = Settings(
-                    timeout = timeout,
-                    transactionMode = transactionMode,
-                    replicaContext = replicaContext,
-                )
+            override fun immutable() = Settings(
+                timeout = timeout,
+                transactionMode = transactionMode,
+                replicaContext = replicaContext,
+            )
         }
     }
 

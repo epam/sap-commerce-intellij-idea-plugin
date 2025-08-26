@@ -42,7 +42,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.groovySettings.mutable
+        private val mutableSettings = developerSettings.groovySettings.mutable()
         private lateinit var enableActionToolbar: JCheckBox
 
         override fun createPanel() = panel {
@@ -73,7 +73,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
 
         override fun apply() {
             super.apply()
-            developerSettings.groovySettings = mutableSettings.immutable
+            developerSettings.groovySettings = mutableSettings.immutable()
         }
     }
 }

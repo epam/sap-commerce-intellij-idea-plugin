@@ -36,7 +36,7 @@ class AclProjectSettingsConfigurableProvider(private val project: Project) : Con
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.aclSettings.mutable
+        private val mutableSettings = developerSettings.aclSettings.mutable()
 
         override fun createPanel() = panel {
             group("Code Folding") {
@@ -51,7 +51,7 @@ class AclProjectSettingsConfigurableProvider(private val project: Project) : Con
         override fun apply() {
             super.apply()
 
-            developerSettings.aclSettings = mutableSettings.immutable
+            developerSettings.aclSettings = mutableSettings.immutable()
         }
     }
 }
