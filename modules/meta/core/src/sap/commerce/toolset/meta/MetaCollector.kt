@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.meta
 
-import com.intellij.openapi.application.readAction
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ProjectFileIndex
@@ -52,7 +52,7 @@ abstract class MetaCollector<T : DomElement>(
     open suspend fun collectDependencies(): Set<Meta<T>> {
         val files = HashSet<Meta<T>>()
 
-        readAction {
+        smartReadAction(project) {
             StubIndex.getInstance().processElements(
                 DomElementClassIndex.KEY,
                 clazz.name,

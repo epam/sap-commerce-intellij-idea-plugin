@@ -74,41 +74,39 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
 
         _metaModelState.value = CachedMetaState(null, computed = false, computing = true)
 
-        DumbService.getInstance(project).smartInvokeLater {
-            coroutineScope.launch {
-                val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
-                    val collectedDependencies = metaCollector.collectDependencies()
+        coroutineScope.launch {
+            val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
+                val collectedDependencies = metaCollector.collectDependencies()
 
-                    val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
-                        collectedDependencies
-                            .map {
-                                progressReporter.sizedStep(1, "Processing: ${it.representationName}...") {
-                                    async {
-                                        val cachedMetaModel = metaModelsState.value[it.name]
-                                        if (cachedMetaModel == null || metaModels.contains(it.name)) {
-                                            it.name to metaModelProcessor.process(it)
-                                        } else {
-                                            it.name to cachedMetaModel
-                                        }
+                val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
+                    collectedDependencies
+                        .map {
+                            progressReporter.sizedStep(1, "Processing: ${it.representationName}...") {
+                                async {
+                                    val cachedMetaModel = metaModelsState.value[it.name]
+                                    if (cachedMetaModel == null || metaModels.contains(it.name)) {
+                                        it.name to metaModelProcessor.process(it)
+                                    } else {
+                                        it.name to cachedMetaModel
                                     }
                                 }
                             }
-                            .awaitAll()
-                            .filter { (_, model) -> model != null }
-                            .distinctBy { it.first }
-                            .associate { it.first to it.second!! }
-                    }
-
-                    _metaModelsState.value = localMetaModels
-
-                    create(metaModelsState.value.values)
+                        }
+                        .awaitAll()
+                        .filter { (_, model) -> model != null }
+                        .distinctBy { it.first }
+                        .associate { it.first to it.second!! }
                 }
 
-                _metaModelState.value = CachedMetaState(newState, computed = true, computing = false)
-                _recomputeMetasState.value = null
+                _metaModelsState.value = localMetaModels
 
-                onCompletion(newState)
+                create(metaModelsState.value.values)
             }
+
+            _metaModelState.value = CachedMetaState(newState, computed = true, computing = false)
+            _recomputeMetasState.value = null
+
+            onCompletion(newState)
         }
     }
 

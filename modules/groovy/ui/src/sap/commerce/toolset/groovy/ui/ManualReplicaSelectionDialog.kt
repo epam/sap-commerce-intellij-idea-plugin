@@ -24,7 +24,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import sap.commerce.toolset.exec.context.ReplicaContext
@@ -39,7 +38,11 @@ class ManualReplicaSelectionDialog(
     private val project: Project,
     private val editor: Editor,
     private val currentSettings: GroovyExecContext.Settings,
-    parentComponent: Component
+    parentComponent: Component,
+    private val replicaContext: GroovyReplicaAwareContext.Mutable = currentSettings.replicaContext
+        .takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
+        ?.mutable()
+        ?: GroovyReplicaAwareContext(GroovyExecConstants.manual).mutable()
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
     init {
@@ -52,16 +55,15 @@ class ManualReplicaSelectionDialog(
         super.dispose()
     }
 
-    private lateinit var manualCookieName: JBTextField
-    private lateinit var manualReplicaId: JBTextField
-
     override fun createCenterPanel(): JComponent {
         // TODO: support multiple replicas
-        val replicaContext = currentSettings.replicaContext
-            .takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
-            ?: GroovyReplicaAwareContext(GroovyExecConstants.manual)
 
-        val firstReplica = replicaContext.replicaContexts.firstOrNull()
+        if (replicaContext.replicaContexts.size != 1) {
+            replicaContext.replicaContexts.clear()
+            replicaContext.replicaContexts.add(ReplicaContext("", "").mutable())
+        }
+
+        val singleReplicaContext = replicaContext.replicaContexts.first()
         return panel {
             row {
                 cell(
@@ -78,18 +80,18 @@ class ManualReplicaSelectionDialog(
             }
 
             row {
-                manualReplicaId = textField()
+                textField()
                     .label("Replica id:")
-                    .text(firstReplica?.replicaId ?: "")
+                    .bindText(singleReplicaContext::replicaId)
                     .align(AlignX.FILL)
                     .component
             }
                 .layout(RowLayout.PARENT_GRID)
 
             row {
-                manualCookieName = textField()
+                textField()
                     .label("Cookie name:")
-                    .text(firstReplica?.cookieName ?: "")
+                    .bindText(singleReplicaContext::cookieName)
                     .align(AlignX.FILL)
                     .component
             }
@@ -100,12 +102,6 @@ class ManualReplicaSelectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        val context = GroovyReplicaAwareContext.manual(
-            listOf(
-                ReplicaContext(manualReplicaId.text, manualCookieName.text)
-            )
-        )
-
-        editor.groovyExecContextSettings = currentSettings.copy(replicaContext = context)
+        editor.groovyExecContextSettings = currentSettings.copy(replicaContext = replicaContext.immutable())
     }
 }
