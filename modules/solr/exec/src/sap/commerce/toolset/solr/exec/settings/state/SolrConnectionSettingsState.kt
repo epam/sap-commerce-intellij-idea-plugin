@@ -18,9 +18,7 @@
 
 package sap.commerce.toolset.solr.exec.settings.state
 
-import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
@@ -46,8 +44,7 @@ data class SolrConnectionSettingsState(
 
     private val dynamicCredentials
         @Transient
-        get() = credentials
-            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+        get() = credentials ?: retrieveCredentials()
     override val username
         @Transient
         get() = dynamicCredentials?.userName ?: "solrserver"
@@ -65,8 +62,6 @@ data class SolrConnectionSettingsState(
         ssl = ssl,
         timeout = timeout,
         socketTimeout = socketTimeout,
-        username = username,
-        password = password,
     )
 
     data class Mutable(
@@ -78,10 +73,14 @@ data class SolrConnectionSettingsState(
         override var webroot: String,
         override var ssl: Boolean,
         override var timeout: Int,
-        override var username: String,
-        override var password: String,
         var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
+
+        override val username
+            get() = retrieveCredentials()?.userName ?: "solrserver"
+        override val password
+            get() = retrieveCredentials()?.getPasswordAsString() ?: "server123"
+
         override fun immutable() = SolrConnectionSettingsState(
             uuid = uuid,
             scope = scope,

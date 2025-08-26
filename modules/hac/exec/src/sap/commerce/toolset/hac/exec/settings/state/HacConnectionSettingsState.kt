@@ -68,8 +68,6 @@ data class HacConnectionSettingsState(
         webroot = webroot,
         ssl = ssl,
         timeout = timeout,
-        username = username,
-        password = password,
         wsl = wsl,
         sslProtocol = sslProtocol,
         sessionCookieName = sessionCookieName
@@ -84,12 +82,20 @@ data class HacConnectionSettingsState(
         override var webroot: String,
         override var ssl: Boolean,
         override var timeout: Int,
-        override var username: String,
-        override var password: String,
         var wsl: Boolean,
         var sslProtocol: String,
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
+
+        override val username
+            get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.userName
+                ?: "admin"
+        override val password
+            get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.getPasswordAsString()
+                ?: "nimda"
+
         override fun immutable() = HacConnectionSettingsState(
             uuid = uuid,
             scope = scope,

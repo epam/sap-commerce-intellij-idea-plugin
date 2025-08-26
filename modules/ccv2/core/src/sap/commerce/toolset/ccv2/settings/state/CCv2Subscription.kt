@@ -42,9 +42,9 @@ data class CCv2Subscription(
     override fun compareTo(other: CCv2Subscription) = presentableName.compareTo(other.presentableName)
 
     data class Mutable(
-        var uuid: String = UUID.randomUUID().toString(),
-        var id: String? = null,
-        var name: String? = null,
+        var uuid: String,
+        var id: String?,
+        var name: String?,
         var ccv2Token: String? = null,
     ) {
         fun immutable() = CCv2Subscription(

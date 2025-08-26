@@ -48,7 +48,7 @@ internal class CCv2SubscriptionListPanel(disposable: Disposable?, listener: (Lis
     }
 
     override fun findItemToAdd(): CCv2Subscription.Mutable? {
-        val mutable = CCv2Subscription.Mutable()
+        val mutable = CCv2Subscription().mutable()
         return if (CCv2SubscriptionDialog(this, mutable, "Create CCv2 Subscription").showAndGet()) mutable
         else null
     }
