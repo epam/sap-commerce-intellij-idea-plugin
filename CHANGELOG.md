@@ -35,7 +35,7 @@
 ### Fixes
 - Enhance JVM Parameters only with Standalone JDK Module Exports during Integration Tests [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
 - Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
-- NCDFE: CngReferenceContributor.registerReferenceProviders -> `com/intellij/lang/properties/PropertiesReferenceProvider` [#1537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1537)
+- NCDFE: CngReferenceContributor.registerReferenceProviders -> `com/intellij/lang/properties/PropertiesReferenceProvider` [#1545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1545)
 
 ## [2025.2.2]
 
