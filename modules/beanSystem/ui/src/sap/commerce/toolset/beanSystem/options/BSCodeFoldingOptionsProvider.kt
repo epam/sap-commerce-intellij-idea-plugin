@@ -15,25 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.beanSystem.options
 
-package sap.commerce.toolset.settings.state
+import com.intellij.application.options.editor.CodeFoldingOptionsProvider
+import com.intellij.openapi.options.BeanConfigurable
+import sap.commerce.toolset.beanSystem.settings.BSFoldingSettings
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+class BSCodeFoldingOptionsProvider : BeanConfigurable<BSFoldingSettings>(
+    beanInstance = BSFoldingSettings.getInstance(),
+    title = "Bean System"
+), CodeFoldingOptionsProvider {
+    private val settings
+        get() = BSFoldingSettings.getInstance()
 
-@Tag("BeanSystemSettings")
-data class BeanSystemSettingsState(
-    @JvmField @OptionTag val folding: BeanSystemFoldingSettingsState = BeanSystemFoldingSettingsState(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
-    )
-
-    data class Mutable(
-        var folding: BeanSystemFoldingSettingsState.Mutable,
-    ) {
-        fun immutable() = BeanSystemSettingsState(
-            folding = folding.immutable(),
+    init {
+        checkBox(
+            "Enabled",
+            { settings.enabled },
+            { value -> settings.enabled = value }
+        )
+        checkBox(
+            "Tablify - Properties",
+            { settings.tablifyProperties },
+            { value -> settings.tablifyProperties = value }
         )
     }
 }

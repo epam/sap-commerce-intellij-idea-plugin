@@ -27,11 +27,11 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
 import sap.commerce.toolset.beanSystem.model.*
 import sap.commerce.toolset.beanSystem.model.Enum
+import sap.commerce.toolset.beanSystem.settings.BSFoldingSettings
+import sap.commerce.toolset.beanSystem.settings.state.BSFoldingSettingsState
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
-import sap.commerce.toolset.settings.state.BeanSystemFoldingSettingsState
-import sap.commerce.toolset.settings.yDeveloperSettings
 
-class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BeanSystemFoldingSettingsState, Beans>(Beans::class.java), DumbAware {
+class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BSFoldingSettingsState, Beans>(Beans::class.java), DumbAware {
 
     private val foldHints = "[hints]"
 
@@ -60,9 +60,7 @@ class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BeanSystemFoldingSettingsStat
         }
     }
 
-    override fun initSettings(project: Project) = project.yDeveloperSettings
-        .beanSystemSettings
-        .folding
+    override fun initSettings(project: Project) = BSFoldingSettings.getInstance().state
 
     override fun getPlaceholderText(node: ASTNode): String = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {

@@ -16,29 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.beanSystem.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("BeanSystemFoldingSettings")
-data class BeanSystemFoldingSettingsState(
+data class BSFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val tablifyProperties: Boolean = true,
-) : FoldingSettings {
-
-    fun mutable() = Mutable(
-        enabled = enabled,
-        tablifyProperties = tablifyProperties,
-    )
-
-    data class Mutable(
-        override var enabled: Boolean,
-        var tablifyProperties: Boolean,
-    ) : FoldingSettings {
-        fun immutable() = BeanSystemFoldingSettingsState(
-            enabled = enabled,
-            tablifyProperties = tablifyProperties,
-        )
-    }
-}
+) : FoldingSettings

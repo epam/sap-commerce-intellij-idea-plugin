@@ -20,12 +20,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.beanSystem.structureView.BSXmlStructureViewBuilderProvider"/>
 
-        <projectConfigurable id="hybris.project.bs.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
-                             order="after hybris.project.ts.settings"
-                             provider="sap.commerce.toolset.beanSystem.options.BSProjectConfigurableProvider"/>
-
+        <codeFoldingOptionsProvider instance="sap.commerce.toolset.beanSystem.options.BSCodeFoldingOptionsProvider"/>
         <applicationService serviceImplementation="sap.commerce.toolset.beanSystem.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>
 

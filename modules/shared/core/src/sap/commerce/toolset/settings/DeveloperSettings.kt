@@ -36,11 +36,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(typeSystemDiagramSettings = value) }
         }
-    var beanSystemSettings
-        get() = state.beanSystemSettings
-        set(value) {
-            updateState { it.copy(beanSystemSettings = value) }
-        }
     var typeSystemSettings
         get() = state.typeSystemSettings
         set(value) {
