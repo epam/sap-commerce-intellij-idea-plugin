@@ -16,17 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.java.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("HybrisDeveloperSpecificProjectSettings")
-data class DeveloperSettingsState(
-
-    @JvmField @OptionTag val typeSystemDiagramSettings: TypeSystemDiagramSettingsState = TypeSystemDiagramSettingsState(),
-    @JvmField @OptionTag val flexibleSearchSettings: FlexibleSearchSettingsState = FlexibleSearchSettingsState(),
-    @JvmField @OptionTag val polyglotQuerySettings: PolyglotQuerySettingsState = PolyglotQuerySettingsState(),
-    @JvmField @OptionTag val impexSettings: ImpExSettingsState = ImpExSettingsState(),
-    @JvmField @OptionTag val groovySettings: GroovySettingsState = GroovySettingsState(),
-)
+data class JspFoldingSettingsState(
+    @OptionTag override val enabled: Boolean = true
+) : FoldingSettings

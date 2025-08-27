@@ -16,24 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.java.settings
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import com.intellij.openapi.components.*
+import com.intellij.openapi.util.ModificationTracker
+import com.intellij.util.application
+import sap.commerce.toolset.java.settings.state.JspFoldingSettingsState
 
-@Tag("JspSettingsState")
-data class JspSettingsState(
-    @JvmField @OptionTag val folding: JspFoldingSettingsState = JspFoldingSettingsState(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
-    )
+@State(
+    name = "[y] Jsp Folding Settings",
+    category = SettingsCategory.CODE,
+    storages = [Storage(value = "editor.xml")]
+)
+@Service
+class JspFoldingSettings : SerializablePersistentStateComponent<JspFoldingSettingsState>(JspFoldingSettingsState()), ModificationTracker {
 
-    data class Mutable(
-        var folding: JspFoldingSettingsState.Mutable,
-    ) {
-        fun immutable() = JspSettingsState(
-            folding = folding.immutable(),
-        )
+    var enabled: Boolean
+        get() = state.enabled
+        set(value) {
+            updateState { it.copy(enabled = value) }
+        }
+
+    override fun getModificationCount() = stateModificationCount
+
+    companion object {
+        @JvmStatic
+        fun getInstance(): JspFoldingSettings = application.service()
     }
 }

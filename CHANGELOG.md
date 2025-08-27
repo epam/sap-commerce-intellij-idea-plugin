@@ -52,6 +52,9 @@
 ### `Type System` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1554](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1554)
 
+### `JSP` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1555](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1555)
+
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)

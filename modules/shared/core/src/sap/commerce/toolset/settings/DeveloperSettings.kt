@@ -56,11 +56,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(groovySettings = value) }
         }
-    var jspSettings
-        get() = state.jspSettings
-        set(value) {
-            updateState { it.copy(jspSettings = value) }
-        }
 
     override fun getModificationCount() = stateModificationCount
 

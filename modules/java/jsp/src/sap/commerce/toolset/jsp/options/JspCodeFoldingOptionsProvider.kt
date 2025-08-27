@@ -15,25 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.jsp.options
 
-package sap.commerce.toolset.settings.state
+import com.intellij.application.options.editor.CodeFoldingOptionsProvider
+import com.intellij.openapi.options.BeanConfigurable
+import sap.commerce.toolset.java.settings.JspFoldingSettings
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+class JspCodeFoldingOptionsProvider: BeanConfigurable<JspFoldingSettings>(
+    beanInstance = JspFoldingSettings.getInstance(),
+    title = "JSP"
+), CodeFoldingOptionsProvider {
+    private val settings
+        get() = JspFoldingSettings.getInstance()
 
-@Tag("JspFoldingSettingsState")
-data class JspFoldingSettingsState(
-    @OptionTag override val enabled: Boolean = true
-) : FoldingSettings {
-    fun mutable() = Mutable(
-        enabled = enabled,
-    )
-
-    data class Mutable(
-        var enabled: Boolean,
-    ) {
-        fun immutable() = JspFoldingSettingsState(
-            enabled = enabled,
+    init {
+        checkBox(
+            "Enabled",
+            { settings.enabled },
+            { value -> settings.enabled = value }
         )
     }
 }
