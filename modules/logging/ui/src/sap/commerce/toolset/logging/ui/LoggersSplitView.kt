@@ -53,6 +53,7 @@ class LoggersSplitView(
 
     private val tree = LoggersOptionsTree(project, coroutineScope).apply { registerListeners(this) }
     private val loggersStateView = LoggersStateView(project, coroutineScope)
+    private val loggersTemplatesStateView = LoggersTemplatesStateView(project, coroutineScope)
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -61,6 +62,7 @@ class LoggersSplitView(
         PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
+        Disposer.register(this, loggersTemplatesStateView)
 
         val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
         updateTree(activeConnection)
@@ -124,17 +126,36 @@ class LoggersSplitView(
             if (project.isDisposed) return@launch
 
             when (node) {
-                is LoggersHacConnectionNode -> CxLoggerAccess.getInstance(project).state(node.connectionSettings).get()
-                    ?.let { loggersStateView.renderLoggers(it) }
-                    ?: loggersStateView.renderFetchLoggers()
+                is LoggersHacConnectionNode -> {
+                    secondComponent = loggersStateView.view
 
-                is BundledLoggersTemplateGroupNode -> loggersStateView.renderNoLoggerTemplates()
-                is CustomLoggersTemplateLoggersOptionsNode -> loggersStateView.renderNoLoggerTemplates()
-                is BundledLoggersTemplateItemNode -> {
-                    node.loggers.associateBy { it.name }.let { loggersStateView.renderLoggersTemplate(it) }
+                    CxLoggerAccess.getInstance(project).state(node.connectionSettings).get()
+                        ?.let { loggersStateView.renderLoggers(it) }
+                        ?: loggersStateView.renderFetchLoggers()
                 }
 
-                else -> loggersStateView.renderNothingSelected()
+                is BundledLoggersTemplateGroupNode -> {
+                    secondComponent = loggersTemplatesStateView.view
+
+                    loggersTemplatesStateView.renderNoLoggerTemplates()
+                }
+                is CustomLoggersTemplateLoggersOptionsNode -> {
+                    secondComponent = loggersTemplatesStateView.view
+
+                    loggersTemplatesStateView.renderNoLoggerTemplates()
+                }
+                is BundledLoggersTemplateItemNode -> {
+                    secondComponent = loggersTemplatesStateView.view
+
+                    node.loggers.associateBy { it.name }.let {
+                        loggersTemplatesStateView.renderLoggersTemplate(it) }
+                }
+
+                else -> {
+                    secondComponent = loggersStateView.view
+
+                    loggersStateView.renderNothingSelected()
+                }
             }
         }
     }

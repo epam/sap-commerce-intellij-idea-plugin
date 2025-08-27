@@ -37,13 +37,10 @@ import com.intellij.psi.PsiPackage
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.InlineBanner
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
-import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,22 +49,17 @@ import kotlinx.coroutines.withContext
 import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.LogLevel
-import sap.commerce.toolset.ui.addItemListener
-import sap.commerce.toolset.ui.addKeyListener
-import sap.commerce.toolset.ui.event.KeyListener
-import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
-class LoggersStateView(
+class LoggersTemplatesStateView(
     private val project: Project,
     private val coroutineScope: CoroutineScope
 ) : Disposable {
 
     private val showNothingSelected = AtomicBooleanProperty(true)
-    private val showFetchLoggers = AtomicBooleanProperty(false)
     private val showNoLogger = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
-    private val editable = AtomicBooleanProperty(true)
+    private val initialized = AtomicBooleanProperty(true)
     private val canApply = AtomicBooleanProperty(false)
 
     private lateinit var dataScrollPane: JBScrollPane
@@ -75,11 +67,10 @@ class LoggersStateView(
         object : ClearableLazyValue<DialogPanel>() {
             override fun compute() = panel {
                 row {
-                    cellNoData(showFetchLoggers, "Fetch Loggers State")
                     cellNoData(showNoLogger, "No Logger Templates")
                     cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
                 }
-                    .visibleIf(showFetchLoggers.or(showNoLogger).or(showNothingSelected))
+                    .visibleIf(showNoLogger.or(showNothingSelected))
                     .resizableRow()
                     .topGap(TopGap.MEDIUM)
 
@@ -90,7 +81,7 @@ class LoggersStateView(
                 }
 
                 separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-                    .visibleIf(showDataPanel.and(editable))
+                    .visibleIf(showDataPanel.and(initialized))
 
                 row {
                     dataScrollPane = JBScrollPane(JPanel())
@@ -111,10 +102,11 @@ class LoggersStateView(
     val view: DialogPanel
         get() = panel.value
 
-    fun renderFetchLoggers() = toggleView(showFetchLoggers)
+    fun renderNoLoggerTemplates() = toggleView(showNoLogger)
     fun renderNothingSelected() = toggleView(showNothingSelected)
-    fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
-        editable.set(true)
+
+    fun renderLoggersTemplate(loggers: Map<String, CxLoggerModel>) {
+        initialized.set(false)
 
         renderLoggersInternal(loggers)
     }
@@ -131,7 +123,6 @@ class LoggersStateView(
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
         listOf(
             showNothingSelected,
-            showFetchLoggers,
             showNoLogger,
             showDataPanel
         )
@@ -163,29 +154,11 @@ class LoggersStateView(
             .sortedBy { it.name }
             .forEach { cxLogger ->
                 row {
-                    comboBox(
-                        EnumComboBoxModel(LogLevel::class.java),
-                        renderer = SimpleListCellRenderer.create { label, value, _ ->
-                            if (value != null) {
-                                label.icon = value.icon
-                                label.text = value.name
-                            }
-                        }
-                    )
+                    icon(cxLogger.level.icon)
+                        .gap(RightGap.SMALL)
+                    label(cxLogger.level.name)
                         .align(AlignX.FILL)
-                        .enabledIf(editable)
-                        .bindItem({ cxLogger.level }, { _ -> })
-                        .addItemListener(this@LoggersStateView) { event ->
-                            event.item.asSafely<LogLevel>()
-                                ?.takeUnless { it == cxLogger.level }
-                                ?.let { newLogLevel ->
-                                    editable.set(false)
-
-                                    CxLoggerAccess.getInstance(project).setLogger(cxLogger.name, newLogLevel) { _, _ ->
-                                        editable.set(true)
-                                    }
-                                }
-                        }
+                        .enabledIf(initialized)
 
                     icon(cxLogger.icon)
                         .gap(RightGap.SMALL)
@@ -230,48 +203,17 @@ class LoggersStateView(
 
         return panel {
             row {
-                loggerLevelField = comboBox(
-                    model = EnumComboBoxModel(LogLevel::class.java),
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = value.icon
-                            label.text = value.name
-                        }
-                    }
-                )
-                    .comment("Effective level")
-                    .component
 
-                loggerNameField = textField()
+                label("Effective level")
+
+                label("Logger (package or class name)")
                     .resizableColumn()
-                    .align(AlignX.FILL)
-                    .validationOnInput {
-                        if (it.text.isBlank()) error("Please enter a logger name")
-                        else null
-                    }
-                    .validationOnApply {
-                        if (it.text.isBlank()) error("Please enter a logger name")
-                        else null
-                    }
-                    .comment("Logger (package or class name)")
-                    .addKeyListener(this@LoggersStateView, object : KeyListener {
-                        override fun keyReleased(e: KeyEvent) {
-                            if (e.keyCode == KeyEvent.VK_ENTER) {
-                                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
-                            }
-                        }
-                    })
-                    .component
-
-                button("Apply Logger") {
-                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
-                }
             }
-                .visibleIf(editable)
+                .visibleIf(initialized)
                 .layout(RowLayout.PARENT_GRID)
         }
             .apply {
-                registerValidators(this@LoggersStateView) { validations ->
+                registerValidators(this@LoggersTemplatesStateView) { validations ->
                     canApply.set(validations.values.all { it.okEnabled })
                 }
                 dPanel = this
@@ -283,12 +225,12 @@ class LoggersStateView(
 
         if (!canApply.get()) return
 
-        editable.set(false)
+        initialized.set(false)
 
         CxLoggerAccess.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
             coroutineScope.launch {
                 withContext(Dispatchers.EDT) {
-                    editable.set(true)
+                    initialized.set(true)
                 }
             }
         }
