@@ -25,14 +25,12 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.layout.selected
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.ui.TSDiagramSettingsExcludedTypeNameTable
 import java.awt.Dimension
-import javax.swing.JCheckBox
 
 class TSProjectConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
@@ -44,7 +42,6 @@ class TSProjectConfigurableProvider(private val project: Project) : Configurable
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val tsMutableSettings = developerSettings.typeSystemSettings.mutable()
         private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable()
 
         private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.getInstance(project)
@@ -57,44 +54,7 @@ class TSProjectConfigurableProvider(private val project: Project) : Configurable
             excludedTypeNamesPane.minimumSize = Dimension(excludedTypeNamesPane.width, 400)
         }
 
-        private lateinit var foldingEnableCheckBox: JCheckBox
-
         override fun createPanel() = panel {
-            group("Code Folding - items.xml") {
-                row {
-                    foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(tsMutableSettings.folding::enabled)
-                        .component
-                }
-                group("Table-Like Folding", true) {
-                    row {
-                        checkBox("Atomics")
-                            .bindSelected(tsMutableSettings.folding::tablifyAtomics)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Collections")
-                            .bindSelected(tsMutableSettings.folding::tablifyCollections)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Maps")
-                            .bindSelected(tsMutableSettings.folding::tablifyMaps)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Relations")
-                            .bindSelected(tsMutableSettings.folding::tablifyRelations)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                    }
-                    row {
-                        checkBox("Item attributes")
-                            .bindSelected(tsMutableSettings.folding::tablifyItemAttributes)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Item indexes")
-                            .bindSelected(tsMutableSettings.folding::tablifyItemIndexes)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Item custom properties")
-                            .bindSelected(tsMutableSettings.folding::tablifyItemCustomProperties)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                    }
-                }
-            }
-
             group("Diagram Settings") {
                 row {
                     checkBox("Collapse nodes by default")
@@ -148,7 +108,6 @@ class TSProjectConfigurableProvider(private val project: Project) : Configurable
         override fun apply() {
             super.apply()
 
-            developerSettings.typeSystemSettings = tsMutableSettings.immutable()
             developerSettings.typeSystemDiagramSettings = tsDiagramMutableSettings.immutable()
         }
 

@@ -46,8 +46,11 @@
 ### `Polyglot Query` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1552](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1552)
 
-### `Bean Syste` enhancements
+### `Bean System` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1553](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1553)
+
+### `Type System` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1554](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1554)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)

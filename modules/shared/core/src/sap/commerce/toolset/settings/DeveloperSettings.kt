@@ -36,11 +36,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(typeSystemDiagramSettings = value) }
         }
-    var typeSystemSettings
-        get() = state.typeSystemSettings
-        set(value) {
-            updateState { it.copy(typeSystemSettings = value) }
-        }
     var flexibleSearchSettings
         get() = state.flexibleSearchSettings
         set(value) {

@@ -23,13 +23,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
-import sap.commerce.toolset.settings.state.TypeSystemFoldingSettingsState
-import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.model.deployment.DatabaseSchema
 import sap.commerce.toolset.typeSystem.model.deployment.Model
 import sap.commerce.toolset.typeSystem.model.deployment.TypeMapping
+import sap.commerce.toolset.typeSystem.settings.TSFoldingSettings
+import sap.commerce.toolset.typeSystem.settings.state.TSFoldingSettingsState
 
-class DeploymentModelFoldingBuilder : XmlFoldingBuilderEx<TypeSystemFoldingSettingsState, Model>(Model::class.java), DumbAware {
+class DeploymentModelFoldingBuilder : XmlFoldingBuilderEx<TSFoldingSettingsState, Model>(Model::class.java), DumbAware {
 
     override val filter = PsiElementFilter {
         when (it) {
@@ -43,9 +43,7 @@ class DeploymentModelFoldingBuilder : XmlFoldingBuilderEx<TypeSystemFoldingSetti
         }
     }
 
-    override fun initSettings(project: Project) = project.yDeveloperSettings
-        .typeSystemSettings
-        .folding
+    override fun initSettings(project: Project) = TSFoldingSettings.getInstance().state
 
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {

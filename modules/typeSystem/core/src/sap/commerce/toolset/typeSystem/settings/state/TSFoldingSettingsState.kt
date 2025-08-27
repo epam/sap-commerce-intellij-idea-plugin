@@ -16,25 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.typeSystem.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("TypeSystemSettings")
-data class TypeSystemSettingsState(
-    @JvmField @OptionTag val folding: TypeSystemFoldingSettingsState = TypeSystemFoldingSettingsState(),
-) {
-
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
-    )
-
-    data class Mutable(
-        var folding: TypeSystemFoldingSettingsState.Mutable,
-    ) {
-        fun immutable() = TypeSystemSettingsState(
-            folding = folding.immutable(),
-        )
-    }
-}
+data class TSFoldingSettingsState(
+    @OptionTag override val enabled: Boolean = true,
+    @JvmField @OptionTag val tablifyAtomics: Boolean = true,
+    @JvmField @OptionTag val tablifyCollections: Boolean = true,
+    @JvmField @OptionTag val tablifyMaps: Boolean = true,
+    @JvmField @OptionTag val tablifyRelations: Boolean = true,
+    @JvmField @OptionTag val tablifyItemAttributes: Boolean = true,
+    @JvmField @OptionTag val tablifyItemIndexes: Boolean = true,
+    @JvmField @OptionTag val tablifyItemCustomProperties: Boolean = true,
+) : FoldingSettings
