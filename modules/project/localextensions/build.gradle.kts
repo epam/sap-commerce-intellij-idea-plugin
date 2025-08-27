@@ -47,5 +47,10 @@ dependencies {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
+        bundledModules(
+            "intellij.spellchecker",
+            "intellij.spellchecker.xml",
+        )
     }
 }
