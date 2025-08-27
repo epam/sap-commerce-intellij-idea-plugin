@@ -18,11 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable id="hybris.project.bp.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.bp.title"
-                             order="after hybris.project.bs.settings"
-                             provider="sap.commerce.toolset.businessProcess.options.BpProjectConfigurableProvider"/>
+        <codeFoldingOptionsProvider instance="sap.commerce.toolset.businessProcess.options.BpCodeFoldingOptionsProvider"/>
     </extensions>
 
 </idea-plugin>

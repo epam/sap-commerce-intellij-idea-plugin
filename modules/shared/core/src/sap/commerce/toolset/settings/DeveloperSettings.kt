@@ -51,11 +51,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(cngSettings = value) }
         }
-    var bpSettings
-        get() = state.bpSettings
-        set(value) {
-            updateState { it.copy(bpSettings = value) }
-        }
     var flexibleSearchSettings
         get() = state.flexibleSearchSettings
         set(value) {

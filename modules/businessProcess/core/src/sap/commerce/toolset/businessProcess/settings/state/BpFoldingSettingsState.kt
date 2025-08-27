@@ -16,24 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.businessProcess.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("BpSettings")
-data class BpSettingsState(
-    @JvmField @OptionTag val folding: BpFoldingSettingsState = BpFoldingSettingsState(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable()
-    )
-
-    data class Mutable(
-        var folding: BpFoldingSettingsState.Mutable,
-    ) {
-        fun immutable() = BpSettingsState(
-            folding = folding.immutable()
-        )
-    }
-}
+data class BpFoldingSettingsState(
+    @OptionTag override val enabled: Boolean = true,
+    @JvmField @OptionTag val tablifyActionTransitions: Boolean = true,
+    @JvmField @OptionTag val tablifyEnds: Boolean = true,
+    @JvmField @OptionTag val tablifyCaseChoices: Boolean = true,
+) : FoldingSettings

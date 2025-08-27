@@ -24,10 +24,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.businessProcess.model.*
+import sap.commerce.toolset.businessProcess.settings.BpFoldingSettings
+import sap.commerce.toolset.businessProcess.settings.state.BpFoldingSettingsState
 import sap.commerce.toolset.businessProcess.util.BpHelper
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
-import sap.commerce.toolset.settings.state.BpFoldingSettingsState
-import sap.commerce.toolset.settings.yDeveloperSettings
 
 class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>(Process::class.java), DumbAware {
 
@@ -50,9 +50,7 @@ class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>
         }
     }
 
-    override fun initSettings(project: Project) = project.yDeveloperSettings
-        .bpSettings
-        .folding
+    override fun initSettings(project: Project) = BpFoldingSettings.getInstance().state
 
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {

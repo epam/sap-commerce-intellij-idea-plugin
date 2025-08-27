@@ -32,9 +32,9 @@ data class FlexibleSearchDocumentationSettingsState(
     )
 
     data class Mutable(
-        override var enabled: Boolean,
+        var enabled: Boolean,
         var showTypeDocumentation: Boolean,
-    ) : FoldingSettings {
+    ) {
         fun immutable() = FlexibleSearchDocumentationSettingsState(
             enabled = enabled,
             showTypeDocumentation = showTypeDocumentation,
