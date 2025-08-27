@@ -50,7 +50,6 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
         private val mutableSettings = developerSettings.polyglotQuerySettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
-        private lateinit var foldingEnableCheckBox: JCheckBox
 
         private val reservedWordsModel = EnumComboBoxModel(ReservedWordsCase::class.java)
 
@@ -72,19 +71,6 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
                         .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
                 }.rowComment("Existing case-related notifications will be closed for all related editors.<br>Verification of the case will be re-triggered on the next re-opening of the file")
-            }
-            group("Code Folding") {
-                row {
-                    foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(mutableSettings.folding::enabled)
-                        .component
-                }
-                row {
-                    checkBox("Show language for folded attribute")
-                        .bindSelected(mutableSettings.folding::showLanguage)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                        .comment("If checked localized attribute <code>{name[en]}</code> will be represented as <code>name:en</code>")
-                }
             }
         }
 

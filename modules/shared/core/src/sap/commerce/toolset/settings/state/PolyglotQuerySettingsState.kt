@@ -25,25 +25,20 @@ import com.intellij.util.xmlb.annotations.Tag
 data class PolyglotQuerySettingsState(
     @JvmField @OptionTag val verifyCaseForReservedWords: Boolean = true,
     @JvmField @OptionTag val defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
-
-    @JvmField @OptionTag val folding: PolyglotQueryFoldingSettingsState = PolyglotQueryFoldingSettingsState(),
 ) {
 
     fun mutable() = Mutable(
         verifyCaseForReservedWords = verifyCaseForReservedWords,
         defaultCaseForReservedWords = defaultCaseForReservedWords,
-        folding = folding.mutable(),
     )
 
     data class Mutable(
         var verifyCaseForReservedWords: Boolean,
         var defaultCaseForReservedWords: ReservedWordsCase,
-        var folding: PolyglotQueryFoldingSettingsState.Mutable,
     ) {
         fun immutable() = PolyglotQuerySettingsState(
             verifyCaseForReservedWords = verifyCaseForReservedWords,
             defaultCaseForReservedWords = defaultCaseForReservedWords,
-            folding = folding.immutable(),
         )
     }
 }

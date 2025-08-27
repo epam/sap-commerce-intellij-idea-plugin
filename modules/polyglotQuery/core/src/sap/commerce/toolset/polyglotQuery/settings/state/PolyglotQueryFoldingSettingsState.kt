@@ -16,29 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.polyglotQuery.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("PolyglotQueryFoldingSettings")
 data class PolyglotQueryFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val showLanguage: Boolean = true,
-) : FoldingSettings {
-
-    fun mutable() = Mutable(
-        enabled = enabled,
-        showLanguage = showLanguage,
-    )
-
-    data class Mutable(
-        override var enabled: Boolean,
-        var showLanguage: Boolean,
-    ) : FoldingSettings {
-        fun immutable() = PolyglotQueryFoldingSettingsState(
-            enabled = enabled,
-            showLanguage = showLanguage,
-        )
-    }
-}
+) : FoldingSettings

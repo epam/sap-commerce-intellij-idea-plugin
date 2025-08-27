@@ -25,6 +25,7 @@
         <annotator language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
         <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="sap.commerce.toolset.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
 
+        <codeFoldingOptionsProvider instance="sap.commerce.toolset.polyglotQuery.options.PolyglotQueryCodeFoldingOptionsProvider"/>
         <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.pgq.title"
                              order="after hybris.project.fxs.settings"
