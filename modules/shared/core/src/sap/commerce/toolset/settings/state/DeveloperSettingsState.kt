@@ -27,7 +27,6 @@ data class DeveloperSettingsState(
     @JvmField @OptionTag val typeSystemDiagramSettings: TypeSystemDiagramSettingsState = TypeSystemDiagramSettingsState(),
     @JvmField @OptionTag val beanSystemSettings: BeanSystemSettingsState = BeanSystemSettingsState(),
     @JvmField @OptionTag val typeSystemSettings: TypeSystemSettingsState = TypeSystemSettingsState(),
-    @JvmField @OptionTag val cngSettings: CngSettingsState = CngSettingsState(),
     @JvmField @OptionTag val flexibleSearchSettings: FlexibleSearchSettingsState = FlexibleSearchSettingsState(),
     @JvmField @OptionTag val polyglotQuerySettings: PolyglotQuerySettingsState = PolyglotQuerySettingsState(),
     @JvmField @OptionTag val impexSettings: ImpExSettingsState = ImpExSettingsState(),

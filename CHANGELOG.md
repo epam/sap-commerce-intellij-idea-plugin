@@ -40,6 +40,9 @@
 ### `Business Process` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1550)
 
+### `Cockpit NG` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1551](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1551)
+
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)

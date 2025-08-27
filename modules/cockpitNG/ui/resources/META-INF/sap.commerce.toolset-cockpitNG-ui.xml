@@ -21,11 +21,7 @@
         <completion.contributor language="XML" implementationClass="sap.commerce.toolset.cockpitNG.codeInsight.completion.CngCompletionContributor"/>
         <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.cockpitNG.psi.contributor.CngReferenceContributor"/>
 
-        <projectConfigurable id="hybris.project.cng.settings" groupId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.cng.title"
-                             order="after hybris.project.bp.settings"
-                             provider="sap.commerce.toolset.cockpitNG.options.CngProjectSettingsConfigurableProvider"/>
+        <codeFoldingOptionsProvider instance="sap.commerce.toolset.cockpitNG.options.CngCodeFoldingOptionsProvider"/>
     </extensions>
 
 </idea-plugin>

@@ -16,24 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.cockpitNG.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("CngSettings")
-data class CngSettingsState(
-    @JvmField @OptionTag val folding: CngFoldingSettingsState = CngFoldingSettingsState(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable()
-    )
-
-    data class Mutable(
-        var folding: CngFoldingSettingsState.Mutable,
-    ) {
-        fun immutable() = CngSettingsState(
-            folding = folding.immutable()
-        )
-    }
-}
+data class CngFoldingSettingsState(
+    @OptionTag override val enabled: Boolean = true,
+    @JvmField @OptionTag val tablifyWizardProperties: Boolean = true,
+    @JvmField @OptionTag val tablifyNavigationNodes: Boolean = true,
+    @JvmField @OptionTag val tablifySearchFields: Boolean = true,
+    @JvmField @OptionTag val tablifyListColumns: Boolean = true,
+    @JvmField @OptionTag val tablifyParameters: Boolean = true,
+    @JvmField @OptionTag val tablifyMolds: Boolean = true,
+) : FoldingSettings
