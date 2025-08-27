@@ -229,41 +229,19 @@ dependencies {
             pluginComposedModule(implementation(project(it)))
         }
 
-        bundledModules(
-            "intellij.grid.impl"
-        )
-
         // printBundledPlugins for bundled plugins
         bundledPlugins(
-            "intellij.grid.plugin",
             "com.intellij.java",
-            "com.intellij.java-i18n",
             "com.intellij.cron",
             "org.intellij.intelliLang",
-            "com.intellij.copyright",
-            "com.intellij.database",
-            "com.intellij.diagram",
+            "com.intellij.properties",
             "com.intellij.spring",
             "org.intellij.groovy",
-            "com.intellij.gradle",
             "com.intellij.javaee",
             "com.intellij.javaee.el",
             "com.intellij.javaee.web",
-            "com.intellij.platform.images",
-            "org.jetbrains.idea.maven",
-            "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
             "JavaScript",
-            "JUnit",
-        )
-
-        // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
-
-        compatiblePlugins(
-            "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
-            "PsiViewer",                        // PsiViewer            https://plugins.jetbrains.com/plugin/227-psiviewer
-            "JRebelPlugin",                     // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-            "AngularJS"                         // Angular              https://plugins.jetbrains.com/plugin/6971-angular
         )
 
         // Big Data Tools:
