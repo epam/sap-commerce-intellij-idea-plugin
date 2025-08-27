@@ -30,7 +30,6 @@ data class DeveloperSettingsState(
     @JvmField @OptionTag val cngSettings: CngSettingsState = CngSettingsState(),
     @JvmField @OptionTag val bpSettings: BpSettingsState = BpSettingsState(),
     @JvmField @OptionTag val flexibleSearchSettings: FlexibleSearchSettingsState = FlexibleSearchSettingsState(),
-    @JvmField @OptionTag val aclSettings: AclSettingsState = AclSettingsState(),
     @JvmField @OptionTag val polyglotQuerySettings: PolyglotQuerySettingsState = PolyglotQuerySettingsState(),
     @JvmField @OptionTag val impexSettings: ImpExSettingsState = ImpExSettingsState(),
     @JvmField @OptionTag val groovySettings: GroovySettingsState = GroovySettingsState(),

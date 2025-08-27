@@ -21,11 +21,7 @@
         <codeStyleSettingsProvider implementation="sap.commerce.toolset.acl.formatting.AclCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.acl.formatting.AclLanguageCodeStyleSettingsProvider"/>
 
-        <projectConfigurable id="hybris.project.acl.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.acl.title"
-                             order="after hybris.project.impex.settings"
-                             provider="sap.commerce.toolset.acl.options.AclProjectSettingsConfigurableProvider"/>
+        <codeFoldingOptionsProvider instance="sap.commerce.toolset.acl.options.AclCodeFoldingOptionsProvider"/>
     </extensions>
 
     <actions>

@@ -61,11 +61,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(flexibleSearchSettings = value) }
         }
-    var aclSettings
-        get() = state.aclSettings
-        set(value) {
-            updateState { it.copy(aclSettings = value) }
-        }
     var polyglotQuerySettings
         get() = state.polyglotQuerySettings
         set(value) {

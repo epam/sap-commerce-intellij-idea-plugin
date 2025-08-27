@@ -16,24 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.acl.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("AclSettings")
-data class AclSettingsState(
-    @JvmField @OptionTag val folding: AclFoldingSettingsState = AclFoldingSettingsState(),
-) {
+data class AclFoldingSettingsState(
+    @OptionTag override val enabled: Boolean = true
+) : FoldingSettings {
     fun mutable() = Mutable(
-        folding = folding.mutable(),
+        enabled = enabled,
     )
 
     data class Mutable(
-        var folding: AclFoldingSettingsState.Mutable,
+        var enabled: Boolean,
     ) {
-        fun immutable() = AclSettingsState(
-            folding = folding.immutable(),
+        fun immutable() = AclFoldingSettingsState(
+            enabled = enabled,
         )
     }
 }

@@ -255,6 +255,7 @@ dependencies {
             "org.jetbrains.idea.maven",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
+            "com.intellij.diagram",
             "JavaScript",
             "JUnit",
         )
