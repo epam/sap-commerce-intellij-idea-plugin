@@ -37,9 +37,9 @@ import sap.commerce.toolset.cockpitNG.model.wizardConfig.AdditionalParam
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.ComposedHandler
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.Property
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.PropertyList
+import sap.commerce.toolset.cockpitNG.settings.CngFoldingSettings
+import sap.commerce.toolset.cockpitNG.settings.state.CngFoldingSettingsState
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
-import sap.commerce.toolset.settings.state.CngFoldingSettingsState
-import sap.commerce.toolset.settings.yDeveloperSettings
 import java.util.*
 
 class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Config>(Config::class.java), DumbAware {
@@ -66,9 +66,7 @@ class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Con
         }
     }
 
-    override fun initSettings(project: Project) = project.yDeveloperSettings
-        .cngSettings
-        .folding
+    override fun initSettings(project: Project) = CngFoldingSettings.getInstance().state
 
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
