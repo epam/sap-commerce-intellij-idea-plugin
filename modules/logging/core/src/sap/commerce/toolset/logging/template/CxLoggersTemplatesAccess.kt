@@ -31,7 +31,6 @@ object CxLoggersTemplatesAccess {
         "ENABLE" to HybrisIcons.Log.Template.ENABLE
     )
 
-
     fun bundledLoggerTemplates(): List<CxLoggersTemplateModel> {
         return ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
             .let { Gson().fromJson(it, CxLoggersTemplatesDto::class.java) }

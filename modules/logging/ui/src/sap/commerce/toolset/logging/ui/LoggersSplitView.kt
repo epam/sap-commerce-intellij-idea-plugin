@@ -35,7 +35,6 @@ import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
-import sap.commerce.toolset.logging.ui.tree.listener.LoggersOptionsTreeListener
 import sap.commerce.toolset.logging.ui.tree.nodes.*
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
@@ -72,10 +71,6 @@ class LoggersSplitView(
                 override fun onModified(connection: HacConnectionSettingsState) = tree.update()
                 override fun onAdded(connection: HacConnectionSettingsState) = tree.update()
                 override fun onRemoved(connection: HacConnectionSettingsState) = tree.update()
-            })
-
-            subscribe(LoggersOptionsTreeListener.TOPIC, object : LoggersOptionsTreeListener {
-                override fun onBundledLoggersTemplatesChanged() = tree.update()
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {

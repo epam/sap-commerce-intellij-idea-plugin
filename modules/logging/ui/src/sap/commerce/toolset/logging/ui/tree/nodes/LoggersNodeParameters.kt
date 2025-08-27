@@ -20,4 +20,6 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
-data class LoggersNodeParameters(val connections: Map<HacConnectionSettingsState, Boolean>)
+data class LoggersNodeParameters(
+    val connections: Map<HacConnectionSettingsState, Boolean>
+)

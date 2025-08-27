@@ -19,6 +19,7 @@
 package sap.commerce.toolset.logging.ui.tree
 
 import com.intellij.openapi.Disposable
+import com.intellij.ui.tree.BaseTreeModel
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
@@ -29,7 +30,7 @@ import javax.swing.tree.TreePath
 
 class LoggersOptionsModel(
     private val rootTreeNode: LoggersOptionsTreeNode
-) : com.intellij.ui.tree.BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
+) : BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
 
     private var connections: Map<HacConnectionSettingsState, Boolean>? = null
     private val nodes = mutableMapOf<LoggersNode, LoggersOptionsTreeNode>()

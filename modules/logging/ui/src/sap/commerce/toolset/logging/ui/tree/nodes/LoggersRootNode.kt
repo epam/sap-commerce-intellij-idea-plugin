@@ -32,6 +32,6 @@ class LoggersRootNode(project: Project, private val coroutineScope: CoroutineSco
 
     override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
         RemoteHacInstancesLoggersOptionsNode(project),
-        BundledLoggersTemplateGroupNode(project, coroutineScope)
+        BundledLoggersTemplateGroupNode(project)
     ).associateBy { it.name }
 }
