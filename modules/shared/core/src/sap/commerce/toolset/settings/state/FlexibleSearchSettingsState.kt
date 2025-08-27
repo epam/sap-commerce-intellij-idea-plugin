@@ -29,7 +29,6 @@ data class FlexibleSearchSettingsState(
     @JvmField @OptionTag val defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
 
     @JvmField @OptionTag val completion: FlexibleSearchCompletionSettingsState = FlexibleSearchCompletionSettingsState(),
-    @JvmField @OptionTag val folding: FlexibleSearchFoldingSettingsState = FlexibleSearchFoldingSettingsState(),
     @JvmField @OptionTag val documentation: FlexibleSearchDocumentationSettingsState = FlexibleSearchDocumentationSettingsState(),
 ) {
 
@@ -39,7 +38,6 @@ data class FlexibleSearchSettingsState(
         fallbackToTableNameIfNoAliasProvided = fallbackToTableNameIfNoAliasProvided,
         defaultCaseForReservedWords = defaultCaseForReservedWords,
         completion = completion.mutable(),
-        folding = folding.mutable(),
         documentation = documentation.mutable(),
     )
 
@@ -49,7 +47,6 @@ data class FlexibleSearchSettingsState(
         var fallbackToTableNameIfNoAliasProvided: Boolean,
         var defaultCaseForReservedWords: ReservedWordsCase,
         var completion: FlexibleSearchCompletionSettingsState.Mutable,
-        var folding: FlexibleSearchFoldingSettingsState.Mutable,
         var documentation: FlexibleSearchDocumentationSettingsState.Mutable,
     ) {
         fun immutable() = FlexibleSearchSettingsState(
@@ -58,7 +55,6 @@ data class FlexibleSearchSettingsState(
             fallbackToTableNameIfNoAliasProvided = fallbackToTableNameIfNoAliasProvided,
             defaultCaseForReservedWords = defaultCaseForReservedWords,
             completion = completion.immutable(),
-            folding = folding.immutable(),
             documentation = documentation.immutable(),
         )
     }

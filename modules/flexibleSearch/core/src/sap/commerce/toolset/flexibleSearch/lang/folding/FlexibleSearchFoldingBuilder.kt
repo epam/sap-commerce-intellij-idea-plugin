@@ -32,6 +32,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.flexibleSearch.psi.*
+import sap.commerce.toolset.flexibleSearch.settings.FlexibleSearchFoldingSettings
 import sap.commerce.toolset.settings.yDeveloperSettings
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
@@ -39,8 +40,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = FlexibleSearchFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val developerSettings = root.project.yDeveloperSettings
-        val foldingSettings = developerSettings.flexibleSearchSettings.folding
+        val foldingSettings = FlexibleSearchFoldingSettings.getInstance()
         if (!foldingSettings.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {
@@ -57,7 +57,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 results,
                 root.containingFile,
                 ProjectRootModificationTracker.getInstance(root.project),
-                developerSettings
+                foldingSettings
             )
         }
     }
@@ -122,12 +122,13 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private fun getColumnPlaceholderText(node: ASTNode, columnNameType: IElementType, tableAliasType: IElementType): String {
         val fxsSettings = node.psi.project.yDeveloperSettings.flexibleSearchSettings
+        val foldingSettings = FlexibleSearchFoldingSettings.getInstance()
         val columnName = node.findChildByType(columnNameType)
             ?.text
             ?.trim()
             ?: "?"
 
-        val alias = fxsSettings.folding.showSelectedTableNameForYColumn
+        val alias = foldingSettings.showSelectedTableNameForYColumn
             .takeIf { it }
             ?.let { node.findChildByType(tableAliasType) }
             ?.text
@@ -135,7 +136,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
             ?.let { it + fxsSettings.completion.defaultTableAliasSeparator }
             ?: ""
 
-        val language = fxsSettings.folding.showLanguageForYColumn
+        val language = foldingSettings.showLanguageForYColumn
             .takeIf { it }
             ?.let { node.findChildByType(FlexibleSearchTypes.COLUMN_LOCALIZED_NAME) }
             ?.text

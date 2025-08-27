@@ -34,6 +34,9 @@
 ### `ImpEx` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1548](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1548)
 
+### `FlexibleSearch` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1549)
+
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)

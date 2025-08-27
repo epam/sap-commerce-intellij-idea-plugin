@@ -25,7 +25,7 @@ import javax.swing.Icon
 
 object FlexibleSearchFileType : LanguageFileType(FlexibleSearchLanguage) {
 
-    override fun getName() = "FlexibleSearch file"
+    override fun getName() = "Flexible Search"
     override fun getDescription() = "FlexibleSearch language file"
     override fun getDefaultExtension() = "fxs"
     override fun getIcon(): Icon = HybrisIcons.FlexibleSearch.FILE

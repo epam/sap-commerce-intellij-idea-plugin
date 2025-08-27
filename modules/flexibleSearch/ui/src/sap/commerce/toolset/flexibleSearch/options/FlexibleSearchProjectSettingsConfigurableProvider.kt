@@ -50,7 +50,6 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
 
         private val reservedWordsModel = EnumComboBoxModel(ReservedWordsCase::class.java)
         private val tableAliasSeparatorsModel = CollectionComboBoxModel(listOf(".", ":"))
-        private lateinit var foldingEnableCheckBox: JCheckBox
         private lateinit var documentationEnableCheckBox: JCheckBox
 
         override fun createPanel() = panel {
@@ -113,25 +112,6 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
                     )
                         .label("Default [y] separator")
                         .bindItem(mutableSettings.completion::defaultTableAliasSeparator.toNullableProperty())
-                }
-            }
-            group("Code Folding") {
-                row {
-                    foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(mutableSettings.folding::enabled)
-                        .component
-                }
-                row {
-                    checkBox("Show table alias for folded [y] attributes")
-                        .comment("If checked attribute <code>{alias.name[en]}</code> will be represented as <code>alias.name</code>")
-                        .bindSelected(mutableSettings.folding::showSelectedTableNameForYColumn)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Show language for folded [y] attribute")
-                        .bindSelected(mutableSettings.folding::showLanguageForYColumn)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                        .comment("If checked localized attribute <code>{name[en]}</code> will be represented as <code>name:en</code>")
                 }
             }
             group("Documentation") {

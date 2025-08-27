@@ -21,6 +21,7 @@
         <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.editor.FxSReservedWordsCaseEditorNotificationProvider"/>
         <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.editor.FxSTableAliasSeparatorEditorNotificationProvider"/>
 
+        <codeFoldingOptionsProvider instance="sap.commerce.toolset.flexibleSearch.options.FlexibleSearchCodeFoldingOptionsProvider"/>
         <projectConfigurable id="hybris.project.fxs.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.fxs.title"

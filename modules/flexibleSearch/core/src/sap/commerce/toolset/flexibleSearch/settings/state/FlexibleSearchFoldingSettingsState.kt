@@ -16,22 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.acl.settings.state
+package sap.commerce.toolset.flexibleSearch.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-data class AclSettingsState(
-    @JvmField @OptionTag val folding: AclFoldingSettingsState = AclFoldingSettingsState(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
-    )
-
-    data class Mutable(
-        var folding: AclFoldingSettingsState.Mutable,
-    ) {
-        fun immutable() = AclSettingsState(
-            folding = folding.immutable(),
-        )
-    }
-}
+data class FlexibleSearchFoldingSettingsState(
+    @OptionTag override val enabled: Boolean = true,
+    @JvmField @OptionTag val showSelectedTableNameForYColumn: Boolean = true,
+    @JvmField @OptionTag val showLanguageForYColumn: Boolean = true,
+) : FoldingSettings

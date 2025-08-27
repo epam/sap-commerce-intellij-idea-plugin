@@ -23,16 +23,4 @@ import sap.commerce.toolset.settings.state.FoldingSettings
 
 data class AclFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true
-) : FoldingSettings {
-    fun mutable() = Mutable(
-        enabled = enabled,
-    )
-
-    data class Mutable(
-        var enabled: Boolean,
-    ) {
-        fun immutable() = AclFoldingSettingsState(
-            enabled = enabled,
-        )
-    }
-}
+) : FoldingSettings

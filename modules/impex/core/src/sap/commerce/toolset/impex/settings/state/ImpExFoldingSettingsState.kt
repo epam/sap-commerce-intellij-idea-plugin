@@ -25,22 +25,4 @@ data class ImpExFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val useSmartFolding: Boolean = true,
     @JvmField @OptionTag val foldMacroInParameters: Boolean = true,
-) : FoldingSettings {
-    fun mutable() = Mutable(
-        enabled = enabled,
-        useSmartFolding = useSmartFolding,
-        foldMacroInParameters = foldMacroInParameters,
-    )
-
-    data class Mutable(
-        var enabled: Boolean,
-        var useSmartFolding: Boolean,
-        var foldMacroInParameters: Boolean,
-    ) {
-        fun immutable() = ImpExFoldingSettingsState(
-            enabled = enabled,
-            useSmartFolding = useSmartFolding,
-            foldMacroInParameters = foldMacroInParameters,
-        )
-    }
-}
+) : FoldingSettings
