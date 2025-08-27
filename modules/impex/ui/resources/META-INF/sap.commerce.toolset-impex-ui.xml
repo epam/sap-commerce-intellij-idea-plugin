@@ -26,6 +26,7 @@
         <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="sap.commerce.toolset.impex.editor.ImpExToAclEditorNotificationProvider"/>
         <editorFactoryListener implementation="sap.commerce.toolset.impex.editor.event.ImpExLineEditorFactoryListener"/>
 
+        <codeFoldingOptionsProvider instance="sap.commerce.toolset.impex.options.ImpExCodeFoldingOptionsProvider"/>
         <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.impex.title"

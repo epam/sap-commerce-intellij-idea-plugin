@@ -32,7 +32,7 @@ import sap.commerce.toolset.impex.ImpExConstants;
 import sap.commerce.toolset.impex.psi.ImpExFile;
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine;
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec;
-import sap.commerce.toolset.settings.DeveloperSettings;
+import sap.commerce.toolset.impex.settings.ImpExFoldingSettings;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -48,12 +48,12 @@ public class ImpExMacroFoldingBuilder implements FoldingBuilder {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
 
-        final var foldingSettings = DeveloperSettings.getInstance(root.getProject()).getImpexSettings().folding;
+        final var foldingSettings = ImpExFoldingSettings.getInstance();
 
         if (!foldingSettings.getEnabled()) return FoldingDescriptor.EMPTY_ARRAY;
 
         final var foldMacroInParameters = foldingSettings
-            .foldMacroInParameters;
+            .getFoldMacroInParameters();
 
         final var macroUsages = PsiTreeUtil.findChildrenOfAnyType(root, ImpExMacroUsageDec.class).stream()
             .map(it -> acceptMacroUsage(it, foldMacroInParameters))

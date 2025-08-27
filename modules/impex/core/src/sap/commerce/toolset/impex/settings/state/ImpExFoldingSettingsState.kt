@@ -16,12 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.impex.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.FoldingSettings
 
-@Tag("ImpexFoldingSettings")
 data class ImpExFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val useSmartFolding: Boolean = true,

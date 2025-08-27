@@ -31,6 +31,9 @@
 ### `Access Control Lists` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1547)
 
+### `ImpEx` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1548](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1548)
+
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)

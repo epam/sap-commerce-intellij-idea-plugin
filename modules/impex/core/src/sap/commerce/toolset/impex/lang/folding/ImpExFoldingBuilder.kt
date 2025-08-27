@@ -28,7 +28,7 @@ import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
 
     override fun buildFoldRegionsInternal(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val filter = ImpExPsiElementFilterFactory.getPsiElementFilter(psi.project)
+        val filter = ImpExPsiElementFilterFactory.getPsiElementFilter()
 
         val psiElements = SyntaxTraverser.psiTraverser(psi)
             .filter { filter.isAccepted(it) }
@@ -55,7 +55,7 @@ class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
 
     override fun getPlaceholderText(node: ASTNode): String {
         val psi = node.psi
-        return ImpExFoldingPlaceholderBuilderFactory.getPlaceholderBuilder(psi.project)
+        return ImpExFoldingPlaceholderBuilderFactory.getPlaceholderBuilder()
             .getPlaceholder(psi)
     }
 

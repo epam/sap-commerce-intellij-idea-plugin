@@ -43,7 +43,6 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
         private val mutableSettings = developerSettings.impexSettings.mutable()
         private var originalGroupLocalizedFiles = mutableSettings.groupLocalizedFiles
 
-        private lateinit var foldingEnableCheckBox: JCheckBox
         private lateinit var documentationEnableCheckBox: JCheckBox
 
         override fun createPanel() = panel {
@@ -62,24 +61,6 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                         .bindSelected(mutableSettings.editMode::trimWhitespace)
                 }
             }.rowComment("This functionality relies and expects that 'intellij.grid.plugin' is available and enabled.")
-
-            group("Code Folding") {
-                row {
-                    foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(mutableSettings.folding::enabled)
-                        .component
-                }
-                row {
-                    checkBox("Use smart folding")
-                        .bindSelected(mutableSettings.folding::useSmartFolding)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Fold macro usages in the parameters")
-                        .bindSelected(mutableSettings.folding::foldMacroInParameters)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-            }
 
             group("Code Completion") {
                 row {
