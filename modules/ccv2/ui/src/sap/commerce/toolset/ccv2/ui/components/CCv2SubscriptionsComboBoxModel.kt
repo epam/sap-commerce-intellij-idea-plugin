@@ -24,6 +24,7 @@ import java.io.Serial
 import javax.swing.DefaultComboBoxModel
 
 class CCv2SubscriptionsComboBoxModel(
+    private val allowBlank: Boolean = false,
     private val onSelectedItem: ((Any?) -> Unit)? = null
 ) : DefaultComboBoxModel<CCv2Subscription>() {
 
@@ -32,10 +33,10 @@ class CCv2SubscriptionsComboBoxModel(
         onSelectedItem?.invoke(anObject)
     }
 
-    fun refresh() {
+    fun refresh(subscriptions: List<CCv2Subscription> = CCv2ProjectSettings.getInstance().subscriptions) {
         removeAllElements()
-        val subscriptions = CCv2ProjectSettings.getInstance().ccv2Subscriptions
-        addAll(subscriptions.sortedBy { it.toString() })
+        if (allowBlank) addElement(null)
+        addAll(subscriptions.sortedBy { it.presentableName })
     }
 
     companion object {

@@ -25,7 +25,6 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.utils.Processor;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 
 import java.io.File;

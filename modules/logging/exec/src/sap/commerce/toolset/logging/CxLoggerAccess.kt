@@ -75,9 +75,11 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecResult) -> Unit = { _, _ -> }) {
         val server = HacExecConnectionService.getInstance(project).activeConnection
         val context = LoggingExecContext(
+            connection = server,
             executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName}]...",
             loggerName = loggerName,
             logLevel = logLevel,
+            timeout = server.timeout,
         )
         fetching = true
         LoggingExecClient.getInstance(project).execute(context) { coroutineScope, result ->
@@ -102,16 +104,17 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun fetch() = fetch(
-        HacExecConnectionService.getInstance(project).activeConnection
-    )
+    fun fetch() = fetch(HacExecConnectionService.getInstance(project).activeConnection)
 
     fun fetch(server: HacConnectionSettingsState) {
-        val scriptContent = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT)
         val context = GroovyExecContext(
+            connection = server,
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
-            content = scriptContent,
-            transactionMode = TransactionMode.ROLLBACK
+            content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
+            settings = GroovyExecContext.defaultSettings(server).copy(
+                transactionMode = TransactionMode.ROLLBACK,
+                timeout = server.timeout,
+            )
         )
 
         executeGroovyLoggersScript(context, server) { _, groovyScriptResult ->
@@ -220,6 +223,29 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 callback.invoke(coroutineScope, LoggersGroovyScriptExecResult(loggers, result))
 
                 project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
+
+                when {
+                    result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
+                        """
+                            <p>${result.errorMessage}</p>
+                            <p>Server: ${server.shortenConnectionName}</p>
+                        """.trimIndent()
+                    }
+
+                    loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
+                        """
+                            <p>No Loggers information returned from the remote server or is in the incorrect format.</p>
+                            <p>Server: ${server.shortenConnectionName}</p>
+                        """.trimIndent()
+                    }
+
+                    else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
+                        """
+                            <p>Declared loggers: ${loggers.size}</p>
+                            <p>Server: ${server.shortenConnectionName}</p>
+                        """.trimIndent()
+                    }
+                }
             }
         }
     }

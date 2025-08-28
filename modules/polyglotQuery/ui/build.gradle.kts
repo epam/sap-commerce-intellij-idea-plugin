@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":console-core"))
     implementation(project(":console-ui"))
     implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
     implementation(project(":hac-ui"))
     implementation(project(":groovy-exec"))
     implementation(project(":impex-core"))

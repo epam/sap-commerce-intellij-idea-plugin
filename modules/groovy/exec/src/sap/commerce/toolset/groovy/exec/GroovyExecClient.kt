@@ -22,7 +22,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -35,8 +34,6 @@ import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.IOException
 import java.io.Serial
@@ -45,20 +42,14 @@ import java.nio.charset.StandardCharsets
 @Service(Service.Level.PROJECT)
 class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<GroovyExecContext>(project, coroutineScope) {
 
-    var connectionContext: GroovyReplicaAwareContext
-        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, GroovyReplicaAwareContext.auto())
-        set(value) {
-            putUserData(KEY_REMOTE_CONNECTION_CONTEXT, value)
-        }
-
     override suspend fun execute(context: GroovyExecContext): DefaultExecResult {
-        val settings = HacExecConnectionService.getInstance(project).activeConnection
+        val settings = context.connection
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
+            .post(actionUrl, params, true, context.settings.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
@@ -110,7 +101,6 @@ class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : Defau
     companion object {
         @Serial
         private const val serialVersionUID: Long = 3297887080603991051L
-        val KEY_REMOTE_CONNECTION_CONTEXT = Key.create<GroovyReplicaAwareContext>("hybris.http.remote.connection.context")
 
         fun getInstance(project: Project): GroovyExecClient = project.service()
     }

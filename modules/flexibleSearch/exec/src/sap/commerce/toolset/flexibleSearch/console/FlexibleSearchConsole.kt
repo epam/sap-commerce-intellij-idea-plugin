@@ -43,7 +43,7 @@ class FlexibleSearchConsole(
         val myPanel = panel {
             row {
                 maxRowsSpinner = spinner(1..Integer.MAX_VALUE)
-                    .label("Rows: ")
+                    .label("Max rows: ")
                     .component
                     .apply { value = 200 }
             }
@@ -53,12 +53,13 @@ class FlexibleSearchConsole(
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
+        connection =  activeConnection(),
         content = content,
         transactionMode = TransactionMode.ROLLBACK,
         queryMode = QueryMode.FlexibleSearch,
-        settings = FlexibleSearchExecContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
-                maxCount = maxRowsSpinner.value.toString().toInt()
+                maxCount = maxRowsSpinner.number
             }
             .immutable()
     )

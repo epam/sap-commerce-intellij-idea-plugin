@@ -33,6 +33,21 @@ data class GroovyReplicaAwareContext(
     val description
         get() = replicaSelectionMode.previewDescription.invoke(this)
 
+    fun mutable() = Mutable(
+            replicaSelectionMode = replicaSelectionMode,
+            replicaContexts = replicaContexts.map { it.mutable() }.toMutableList()
+        )
+
+    data class Mutable(
+        var replicaSelectionMode: ReplicaSelectionMode,
+        var replicaContexts: MutableCollection<ReplicaContext.Mutable>,
+    ) {
+        fun immutable() = GroovyReplicaAwareContext(
+                replicaSelectionMode = replicaSelectionMode,
+                replicaContexts = replicaContexts.map { it.immutable() }
+            )
+    }
+
     companion object {
         fun auto() = GroovyReplicaAwareContext(GroovyExecConstants.auto)
 

@@ -44,7 +44,7 @@ abstract class CCv2FetchAction<T : CCv2Dto>(
 
         val subscriptions = CCv2DeveloperSettings.getInstance(project).getActiveCCv2Subscription()
             ?.let { listOf(it) }
-            ?: CCv2ProjectSettings.getInstance().ccv2Subscriptions
+            ?: CCv2ProjectSettings.getInstance().subscriptions
                 .sortedBy { it.toString() }
 
         fetching = true

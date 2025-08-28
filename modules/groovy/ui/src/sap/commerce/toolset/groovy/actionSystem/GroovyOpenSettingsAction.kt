@@ -19,11 +19,11 @@
 package sap.commerce.toolset.groovy.actionSystem
 
 import sap.commerce.toolset.actionSystem.OpenSettingsAction
-import sap.commerce.toolset.groovy.options.ProjectGroovySettingsConfigurableProvider
+import sap.commerce.toolset.groovy.options.GroovyProjectSettingsConfigurableProvider
 import sap.commerce.toolset.i18n
 
 class GroovyOpenSettingsAction : OpenSettingsAction(
-    configurableClass = ProjectGroovySettingsConfigurableProvider.SettingsConfigurable::class.java,
+    configurableClass = GroovyProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
     text = i18n("hybris.groovy.actions.open_settings"),
     description = i18n("hybris.groovy.actions.open_settings.description")
 )

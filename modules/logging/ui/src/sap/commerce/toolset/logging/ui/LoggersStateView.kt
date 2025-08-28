@@ -50,6 +50,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.CxLoggersConstants
 import sap.commerce.toolset.logging.LogLevel
 import sap.commerce.toolset.ui.addItemListener
 import sap.commerce.toolset.ui.addKeyListener
@@ -207,15 +208,21 @@ class LoggersStateView(
                                 }
                             }
                         }
+                            .comment(cxLogger.presentableParent)
                     } else {
                         label(cxLogger.name)
+                            .comment(cxLogger.presentableParent)
                     }
-
-                    label(cxLogger.parentName ?: "")
                 }
                     .layout(RowLayout.PARENT_GRID)
             }
     }
+
+    private val CxLoggerModel.presentableParent
+        get() = this.parentName
+            ?.takeIf { it.isNotEmpty() }
+            ?.takeIf { it != CxLoggersConstants.ROOT_LOGGER_NAME }
+            ?.let { "child of $it" }
 
     private fun newLoggerPanel(): DialogPanel {
         lateinit var dPanel: DialogPanel

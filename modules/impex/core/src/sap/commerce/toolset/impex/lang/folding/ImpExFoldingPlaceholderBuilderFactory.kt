@@ -17,18 +17,15 @@
  */
 package sap.commerce.toolset.impex.lang.folding
 
-import com.intellij.openapi.project.Project
 import sap.commerce.toolset.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder
 import sap.commerce.toolset.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder
-import sap.commerce.toolset.settings.yDeveloperSettings
+import sap.commerce.toolset.impex.settings.ImpExFoldingSettings
 
 object ImpExFoldingPlaceholderBuilderFactory {
 
-    fun getPlaceholderBuilder(project: Project) = if (isUseSmartFolding(project)) ImpExSmartFoldingPlaceholderBuilder.getInstance()
+    fun getPlaceholderBuilder() = if (isUseSmartFolding()) ImpExSmartFoldingPlaceholderBuilder.getInstance()
     else ImpExSimpleFoldingPlaceholderBuilder.getInstance()
 
-    private fun isUseSmartFolding(project: Project) = project.yDeveloperSettings
-        .impexSettings
-        .folding
+    private fun isUseSmartFolding() = ImpExFoldingSettings.getInstance()
         .useSmartFolding
 }

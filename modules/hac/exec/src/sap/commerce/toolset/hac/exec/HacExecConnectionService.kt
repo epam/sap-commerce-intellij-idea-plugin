@@ -48,13 +48,13 @@ class HacExecConnectionService(private val project: Project) : ExecConnectionSer
             project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(value)
         }
 
-    override val connections: Set<HacConnectionSettingsState>
-        get() = buildSet {
+    override val connections: List<HacConnectionSettingsState>
+        get() = buildList {
             addAll(HacExecDeveloperSettings.getInstance(project).connections)
             addAll(HacExecProjectSettings.getInstance(project).connections)
         }
             .takeIf { it.isNotEmpty() }
-            ?: setOf(default())
+            ?: listOf(default())
 
     override fun add(settings: HacConnectionSettingsState) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
@@ -74,7 +74,6 @@ class HacExecConnectionService(private val project: Project) : ExecConnectionSer
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
-                .toSet()
 
             project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
@@ -82,15 +81,14 @@ class HacExecConnectionService(private val project: Project) : ExecConnectionSer
         ExecConnectionScope.PROJECT -> with(HacExecProjectSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
-                .toSet()
 
             project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(settings)
         }
     }
 
-    override fun save(settings: Map<ExecConnectionScope, Set<HacConnectionSettingsState>>) {
-        HacExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptySet() }
-        HacExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptySet() }
+    override fun save(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) {
+        HacExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
+        HacExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
 
         project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onSave(settings)
     }

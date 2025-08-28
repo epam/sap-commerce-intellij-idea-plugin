@@ -92,7 +92,7 @@ class CCv2FetchEnvironmentAction(
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabled = !fetching && CCv2ProjectSettings.getInstance().ccv2Subscriptions.isNotEmpty()
+        e.presentation.isEnabled = !fetching && CCv2ProjectSettings.getInstance().subscriptions.isNotEmpty()
         e.presentation.text = if (fetching) "Fetching..." else "Fetch Environment"
         e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH
     }
@@ -141,7 +141,7 @@ class CCv2FetchEnvironmentServiceAction(
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabled = !fetching && CCv2ProjectSettings.getInstance().ccv2Subscriptions.isNotEmpty()
+        e.presentation.isEnabled = !fetching && CCv2ProjectSettings.getInstance().subscriptions.isNotEmpty()
         e.presentation.text = if (fetching) "Fetching..." else "Fetch Service"
         e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH
     }

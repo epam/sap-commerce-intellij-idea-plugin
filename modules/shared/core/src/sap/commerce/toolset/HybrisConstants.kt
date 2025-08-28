@@ -127,9 +127,6 @@ object HybrisConstants {
     const val PLATFORM_LIBRARY_GROUP = "Platform Bootstrap"
     const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
-    const val TOMCAT_WRAPPER_CONFIG_DIR = "conf"
-    const val DEFAULT_WRAPPER_FILENAME = "wrapper.conf"
-
     const val NODE_MODULES_DIRECTORY = "node_modules"
     const val JS_TARGET_DIRECTORY = "jsTarget"
     const val BOWER_COMPONENTS_DIRECTORY = "bower_components"
@@ -301,7 +298,6 @@ object HybrisConstants {
     const val ATTRIBUTE_NAME = "name"
     const val ATTRIBUTE_PK = "pk"
 
-    const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
     const val FXS_TABLE_ALIAS_SEPARATOR_DOT = "."
     const val FXS_TABLE_ALIAS_SEPARATOR_COLON = ":"
     const val FXS_TABLE_POSTFIX_EXCLAMATION_MARK = "!"
@@ -575,59 +571,6 @@ object HybrisConstants {
         Use ANT_OPTS to override ant properties. Current default value is
         ANT_OPTS=-Xmx512m -Dfile.encoding=UTF-8
         """.trimIndent()
-
-    @JvmField
-    val DICTIONARY_WORDS = setOf(
-        "creationtime",
-        "modifiedtime",
-        "argumenttype",
-        "atomictype",
-        "autocreate",
-        "backoffice",
-        "beanutils",
-        "builddate",
-        "cockpitng",
-        "collectiontype",
-        "columntype",
-        "creationmode",
-        "cronjobs",
-        "defaultvalue",
-        "dontoptimize",
-        "elementtype",
-        "extname",
-        "hybris",
-        "impex",
-        "itemtype",
-        "jalo",
-        "jaloclass",
-        "jaloonly",
-        "jalosession",
-        "jspc",
-        "jstl",
-        "maptypes",
-        "metatype",
-        "metatype",
-        "nimda",
-        "NOPMD",
-        "partof",
-        "pojos",
-        "positiveshort",
-        "postgresql",
-        "propertytable",
-        "releasedate",
-        "returntype",
-        "servicelayer",
-        "solr",
-        "solrconfig",
-        "sqlserver",
-        "taglibs",
-        "typecode",
-        "typegroup",
-        "typesystem",
-        "webroot",
-        "ybackoffice",
-        "ybootstrap"
-    )
 
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/ActionsBundle.properties
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/EditorBundle.properties

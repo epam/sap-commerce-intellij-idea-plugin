@@ -22,5 +22,5 @@ import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.exec.settings.state.ExecProjectSettingsState
 
 data class HacExecProjectSettingsState(
-    @OptionTag override val connections: Set<HacConnectionSettingsState> = emptySet(),
+    @OptionTag override val connections: List<HacConnectionSettingsState> = emptyList(),
 ) : ExecProjectSettingsState<HacConnectionSettingsState>

@@ -27,13 +27,17 @@ import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import javax.swing.LayoutFocusTraversalPolicy
 
-class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecContext.ModifiableSettings>() {
+class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecContext.Settings.Mutable>() {
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
+    override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings {
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        ImpExExecContext.defaultSettings(connectionSettings)
+    }
         .let {
             """<pre>
  · validation mode:       ${it.validationMode.title}
@@ -47,14 +51,17 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         }
 
     override fun settings(e: AnActionEvent, project: Project) = e
-        .impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
-        .modifiable()
+        .impexExecutionContextSettings {
+            val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+            ImpExExecContext.defaultSettings(connectionSettings)
+        }
+        .mutable()
 
-    override fun applySettings(editor: Editor, settings: ImpExExecContext.ModifiableSettings) {
+    override fun applySettings(editor: Editor, settings: ImpExExecContext.Settings.Mutable) {
         editor.putUserData(ImpExExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
-    override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecContext.ModifiableSettings) = panel {
+    override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecContext.Settings.Mutable) = panel {
         row {
             comboBox(
                 EnumComboBoxModel(ImpExExecContext.ValidationMode::class.java),

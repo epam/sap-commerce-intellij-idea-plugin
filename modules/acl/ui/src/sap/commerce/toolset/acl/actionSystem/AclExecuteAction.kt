@@ -28,6 +28,7 @@ import sap.commerce.toolset.acl.AclLanguage
 import sap.commerce.toolset.acl.editor.AclSplitEditorEx
 import sap.commerce.toolset.acl.editor.aclSplitEditor
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
@@ -46,8 +47,10 @@ class AclExecuteAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>(
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-        val settings = e.impexExecutionContextSettings { ImpExExecContext.DEFAULT_SETTINGS }
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        val settings = e.impexExecutionContextSettings { ImpExExecContext.defaultSettings(connectionSettings) }
         val context = ImpExExecContext(
+            connection = connectionSettings,
             content = content,
             dialect = ImpExExecContext.Dialect.ACL,
             settings = settings

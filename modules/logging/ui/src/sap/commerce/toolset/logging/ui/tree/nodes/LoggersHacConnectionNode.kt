@@ -24,6 +24,7 @@ import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.settings.state.connectionName
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.logging.CxLoggerAccess
 
 class LoggersHacConnectionNode(
     val connectionSettings: HacConnectionSettingsState,
@@ -40,7 +41,12 @@ class LoggersHacConnectionNode(
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         if (activeConnection) {
-            presentation.addText(ColoredFragment(" (active)", SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
+            val tip = CxLoggerAccess.getInstance(project).state(connectionSettings)
+                .get()
+                ?.size
+                ?.let { size -> " active | $size logger(s)"}
+                ?: " (active)"
+            presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
         }
         presentation.setIcon(connectionIcon)
     }

@@ -57,7 +57,7 @@ class CxLoggersState {
         val parentLogger = loggerIdentifier.substringBeforeLast('.', "")
             .takeIf { it.isNotBlank() }
             ?.let { get(it) }
-            ?: _loggers[CxLoggerModel.ROOT_LOGGER_NAME]
+            ?: _loggers[CxLoggersConstants.ROOT_LOGGER_NAME]
             ?: CxLoggerModel.rootFallback()
 
         return _loggers.getOrPut(loggerIdentifier) {

@@ -31,25 +31,28 @@ import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
 
 @State(
     name = "[y] CCv2 Project Settings",
     category = SettingsCategory.PLUGINS,
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.DISABLED)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service
 class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2ApplicationSettingsState>(CCv2ApplicationSettingsState()), ModificationTracker {
 
-    var ccv2ReadTimeout: Int
-        get() = state.ccv2ReadTimeout
+    var readTimeout: Int
+        get() = state.readTimeout
         set(value) {
-            updateState { it.copy(ccv2ReadTimeout = value) }
+            updateState { it.copy(readTimeout = value) }
         }
-    var ccv2Subscriptions: List<CCv2Subscription>
-        get() = state.ccv2Subscriptions
+    var subscriptions: List<CCv2Subscription>
+        get() = state.subscriptions
         set(value) {
-            updateState { it.copy(ccv2Subscriptions = value) }
+            updateState { it.copy(subscriptions = value) }
+
+            application.messageBus
+                .syncPublisher(CCv2SettingsListener.TOPIC)
+                .onChange(state)
         }
 
     fun getCCv2Token(subscriptionUUID: String? = null) = PasswordSafe.instance.get(getCredentials(subscriptionUUID))
@@ -86,22 +89,15 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
         })
     }
 
-    fun getCCv2Subscription(uuid: String) = ccv2Subscriptions
+    fun getCCv2Subscription(uuid: String) = subscriptions
         .find { it.uuid == uuid }
-
-    fun setCCv2Subscriptions(subscriptionDtos: List<CCv2SubscriptionDto>) {
-        val subscriptions = subscriptionDtos.map { it.toModel() }
-
-        ccv2Subscriptions = subscriptions
-        application.messageBus
-            .syncPublisher(CCv2SettingsListener.TOPIC)
-            .onSubscriptionsChanged(subscriptions)
-    }
 
     private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
     else CredentialAttributes(subscriptionUUID, CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
 
     override fun getModificationCount() = stateModificationCount
+
+    fun mutable() = state.mutable()
 
     companion object {
         @JvmStatic

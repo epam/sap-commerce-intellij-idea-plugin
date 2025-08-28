@@ -26,7 +26,7 @@ import sap.commerce.toolset.settings.state.DeveloperSettingsState
 
 @State(
     name = "HybrisDeveloperSpecificProjectSettings",
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
 class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
@@ -36,35 +36,10 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(typeSystemDiagramSettings = value) }
         }
-    var beanSystemSettings
-        get() = state.beanSystemSettings
-        set(value) {
-            updateState { it.copy(beanSystemSettings = value) }
-        }
-    var typeSystemSettings
-        get() = state.typeSystemSettings
-        set(value) {
-            updateState { it.copy(typeSystemSettings = value) }
-        }
-    var cngSettings
-        get() = state.cngSettings
-        set(value) {
-            updateState { it.copy(cngSettings = value) }
-        }
-    var bpSettings
-        get() = state.bpSettings
-        set(value) {
-            updateState { it.copy(bpSettings = value) }
-        }
     var flexibleSearchSettings
         get() = state.flexibleSearchSettings
         set(value) {
             updateState { it.copy(flexibleSearchSettings = value) }
-        }
-    var aclSettings
-        get() = state.aclSettings
-        set(value) {
-            updateState { it.copy(aclSettings = value) }
         }
     var polyglotQuerySettings
         get() = state.polyglotQuerySettings
@@ -80,11 +55,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         get() = state.groovySettings
         set(value) {
             updateState { it.copy(groovySettings = value) }
-        }
-    var jspSettings
-        get() = state.jspSettings
-        set(value) {
-            updateState { it.copy(jspSettings = value) }
         }
 
     override fun getModificationCount() = stateModificationCount

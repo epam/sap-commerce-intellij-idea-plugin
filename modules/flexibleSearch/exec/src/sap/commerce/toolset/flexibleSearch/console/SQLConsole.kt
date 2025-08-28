@@ -53,7 +53,7 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
                 commitCheckbox = checkBox("Commit mode")
                     .component
                 maxRowsSpinner = spinner(1..Int.MAX_VALUE)
-                    .label("Rows:")
+                    .label("Max rows:")
                     .component
                     .also { it.value = 200 }
 
@@ -64,12 +64,13 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecContext(
+        connection = activeConnection(),
         content = content,
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         queryMode = QueryMode.SQL,
-        settings = FlexibleSearchExecContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
-                maxCount = maxRowsSpinner.value.toString().toInt()
+                maxCount = maxRowsSpinner.number
             }
             .immutable()
     )

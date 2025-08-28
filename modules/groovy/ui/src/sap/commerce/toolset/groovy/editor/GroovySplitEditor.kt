@@ -19,8 +19,10 @@
 package sap.commerce.toolset.groovy.editor
 
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
@@ -35,6 +37,7 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -43,6 +46,19 @@ import javax.swing.JPanel
 
 fun AnActionEvent.groovySplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<GroovySplitEditor>()
+
+fun AnActionEvent.groovyExecContextSettings(fallback: () -> GroovyExecContext.Settings) = this.getData(CommonDataKeys.EDITOR)
+    ?.groovyExecContextSettings(fallback)
+    ?: fallback()
+
+fun Editor.groovyExecContextSettings(fallback: () -> GroovyExecContext.Settings) = this.getUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS)
+    ?: fallback()
+
+var Editor.groovyExecContextSettings
+    get() = this.getUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS)
+    set(value) {
+        this.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, value)
+    }
 
 class GroovySplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 

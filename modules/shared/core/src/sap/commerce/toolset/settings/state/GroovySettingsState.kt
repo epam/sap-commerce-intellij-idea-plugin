@@ -26,26 +26,22 @@ data class GroovySettingsState(
     @JvmField @OptionTag val enableActionsToolbar: Boolean = true,
     @JvmField @OptionTag val enableActionsToolbarForGroovyTest: Boolean = false,
     @JvmField @OptionTag val enableActionsToolbarForGroovyIdeConsole: Boolean = false,
-    @JvmField @OptionTag val txMode: TransactionMode = TransactionMode.ROLLBACK,
 ) {
     fun mutable() = Mutable(
         enableActionsToolbar = enableActionsToolbar,
         enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
         enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
-        txMode = txMode,
     )
 
     data class Mutable(
         var enableActionsToolbar: Boolean,
         var enableActionsToolbarForGroovyTest: Boolean,
         var enableActionsToolbarForGroovyIdeConsole: Boolean,
-        var txMode: TransactionMode,
     ) {
         fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
             enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
             enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
-            txMode = txMode,
         )
     }
 }

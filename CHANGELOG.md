@@ -9,6 +9,7 @@
 
 ### `SAP CX Logging` enhancements
 - Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
+- Display parent non-root logger below the logger entry [#1556](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1556)
 
 ### `xDebugger` enhancements
 - Create type renderer: The item type is not present in the `*items.xml` files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
@@ -16,12 +17,54 @@
 - Refresh type renderer: The item type is not present in the `*items.xml` files [#1533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1533)
 - Refresh type renderer: The class for the item type was not found [#1534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1534)
 
-### Fixes
-- Enhance JVM Parameters only with Standalone JDK Module Exports during Integrationtestse [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
-- Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
+### `CCv2` enhancements
+- Use own configuration pane for CCv2-related connection settings [#1542](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1542)
+
+### `hAC` enhancements
+- Use own configuration pane for hAC-related connection settings [#1543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1543)
+
+### `Solr` enhancements
+- Use own configuration pane for Solr-related connection settings [#1541](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1541)
+
+### `Groovy` enhancements
+- Introduced possibility to specify execution context parameters [#1544](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1544)
+
+### `Access Control Lists` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1547)
+
+### `ImpEx` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1548](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1548)
+
+### `FlexibleSearch` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1549)
+
+### `Business Process` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1550)
+
+### `Cockpit NG` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1551](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1551)
+
+### `Polyglot Query` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1552](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1552)
+
+### `Bean System` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1553](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1553)
+
+### `Type System` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1554](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1554)
+
+### `JSP` enhancements
+- Use IntelliJ extension point for Code Folding settings [#1555](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1555)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
+- Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)
+- Add dependency on a newly extracted Jetbrains module `intellij.spellchecker` [#1546](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1546)
+
+### Fixes
+- Enhance JVM Parameters only with Standalone JDK Module Exports during Integration Tests [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
+- Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
+- NCDFE: CngReferenceContributor.registerReferenceProviders -> `com/intellij/lang/properties/PropertiesReferenceProvider` [#1545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1545)
 
 ## [2025.2.2]
 

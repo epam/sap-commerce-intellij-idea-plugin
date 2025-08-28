@@ -35,10 +35,10 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.project.HybrisProjectService
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.services.HybrisProjectService
 import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.io.File

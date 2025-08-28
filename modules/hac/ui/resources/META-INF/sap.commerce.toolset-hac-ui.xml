@@ -17,11 +17,19 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable id="sap.commerce.toolset.hac.exec.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             displayName="hAC"
+                             provider="sap.commerce.toolset.hac.options.HacExecProjectSettingsConfigurableProvider"/>
+    </extensions>
+
     <actions>
         <group id="sap.commerce.toolset.hac.chooseConnection" popup="true" searchable="false"
                class="sap.commerce.toolset.hac.actionSystem.ChooseHacConnectionAction">
             <action class="sap.commerce.toolset.hac.actionSystem.AddHacConnectionAction"/>
             <action class="sap.commerce.toolset.hac.actionSystem.EditActiveHacConnectionAction"/>
+            <action class="sap.commerce.toolset.hac.actionSystem.OpenHacSettingsAction"/>
 
             <add-to-group anchor="first" group-id="hybris.console.actionGroup"/>
         </group>

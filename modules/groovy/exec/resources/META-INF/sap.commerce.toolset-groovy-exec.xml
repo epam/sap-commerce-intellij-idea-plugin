@@ -17,13 +17,6 @@
   -->
 <idea-plugin>
 
-
-    <extensionPoints>
-        <extensionPoint qualifiedName="sap.commerce.toolset.groovy.exec.replicaSelectionModeProvider"
-                        interface="sap.commerce.toolset.groovy.exec.ReplicaSelectionModeProvider"
-                        dynamic="false"/>
-    </extensionPoints>
-
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <consoleProvider implementation="sap.commerce.toolset.groovy.console.GroovyConsoleProvider"/>
     </extensions>

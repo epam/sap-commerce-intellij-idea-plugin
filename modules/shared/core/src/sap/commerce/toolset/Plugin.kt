@@ -46,7 +46,8 @@ enum class Plugin(val id: String, val url: String? = null) {
     JAVAEE_EL("com.intellij.javaee.el", "https://plugins.jetbrains.com/plugin/20208-jakarta-ee-expression-language-el-"),
     SPRING("com.intellij.spring", "https://plugins.jetbrains.com/plugin/20221-spring"),
     CRON("com.intellij.cron", "https://plugins.jetbrains.com/plugin/24438-cron-expressions"),
-    GRID("intellij.grid.plugin");
+    GRID("intellij.grid.plugin"),
+    JAVA_I18N("com.intellij.java-i18n");
 
     val pluginId: PluginId
         get() = PluginId.getId(id)
@@ -68,8 +69,4 @@ enum class Plugin(val id: String, val url: String? = null) {
     fun <T> service(clazz: Class<T>): T? = ifActive { application.getService(clazz) }
     fun <T> service(project: Project, clazz: Class<T>): T? = ifActive { project.getService(clazz) }
 
-    /**
-     * Support annotation to indicate dependencies in the code, ensure correct instantiation and access in the runtime
-     */
-    annotation class DependsOn(vararg val plugins: Plugin)
 }

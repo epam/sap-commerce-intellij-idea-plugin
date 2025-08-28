@@ -19,10 +19,13 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
-import sap.commerce.toolset.settings.yDeveloperSettings
 
 abstract class GroovyTransactionAction(text: String, description: String, private val transactionMode: TransactionMode) : CheckboxAction(
     text, description, null
@@ -31,16 +34,21 @@ abstract class GroovyTransactionAction(text: String, description: String, privat
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        val project = e.project ?: return false
-        return project.yDeveloperSettings.groovySettings.txMode == transactionMode
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return false
+        val currentTransactionMode = editor.groovyExecContextSettings
+            ?.transactionMode
+            ?: TransactionMode.ROLLBACK
+        return currentTransactionMode == transactionMode
     }
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
 
-        with(project.yDeveloperSettings) {
-            groovySettings = groovySettings.copy(txMode = transactionMode)
-        }
+        editor.groovyExecContextSettings = editor.groovyExecContextSettings {
+            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+            GroovyExecContext.defaultSettings(activeConnection)
+        }.copy(transactionMode = transactionMode)
     }
 }
 

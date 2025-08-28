@@ -17,39 +17,46 @@
  */
 package sap.commerce.toolset.ccv2.settings.state
 
-import com.intellij.openapi.components.BaseState
+import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Transient
 import java.util.*
 
-class CCv2Subscription : BaseState(), Comparable<CCv2Subscription> {
-    var uuid by string(UUID.randomUUID().toString())
-    var id by string()
-    var name by string(null)
+data class CCv2Subscription(
+    @JvmField @OptionTag val uuid: String = UUID.randomUUID().toString(),
+    @JvmField @OptionTag val id: String? = null,
+    @JvmField @OptionTag val name: String? = null,
+) : Comparable<CCv2Subscription> {
 
-    override fun compareTo(other: CCv2Subscription) = toString().compareTo(other.toString())
+    fun mutable() = Mutable(
+        uuid,
+        id,
+        name
+    )
 
-    override fun toString() = name
-        ?: id
-        ?: "?"
+    val presentableName
+        @Transient
+        get() = name
+            ?.takeIf { it.isNotEmpty() }
+            ?: id ?: "?"
 
-    fun toDto() = CCv2SubscriptionDto(uuid ?: UUID.randomUUID().toString(), id, name)
-}
+    override fun compareTo(other: CCv2Subscription) = presentableName.compareTo(other.presentableName)
 
-data class CCv2SubscriptionDto(
-    var uuid: String = UUID.randomUUID().toString(),
-    var id: String? = null,
-    var name: String? = null,
-    var ccv2Token: String? = null,
-) {
-    fun toModel() = CCv2Subscription()
-        .also {
-            it.uuid = uuid
-            it.id = id
-            it.name = name
-        }
+    data class Mutable(
+        var uuid: String,
+        var id: String?,
+        var name: String?,
+        var ccv2Token: String? = null,
+    ) {
+        fun immutable() = CCv2Subscription(
+            uuid = uuid,
+            id = id,
+            name = name,
+        )
 
-    fun copy() = CCv2SubscriptionDto(uuid, id, name, ccv2Token)
-
-    override fun toString() = name
-        ?: id
-        ?: "?"
+        val presentableName
+            @Transient
+            get() = name
+                ?.takeIf { it.isNotEmpty() }
+                ?: id ?: "?"
+    }
 }

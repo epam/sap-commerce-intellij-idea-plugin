@@ -43,7 +43,7 @@ class CCv1Api {
 
     private val apiClient by lazy {
         ApiClient.builder
-            .readTimeout(CCv2ProjectSettings.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+            .readTimeout(CCv2ProjectSettings.getInstance().readTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }

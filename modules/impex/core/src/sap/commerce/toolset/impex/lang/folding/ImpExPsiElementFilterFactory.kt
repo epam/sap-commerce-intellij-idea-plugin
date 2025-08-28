@@ -17,12 +17,11 @@
  */
 package sap.commerce.toolset.impex.lang.folding
 
-import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.util.application
 import sap.commerce.toolset.impex.lang.folding.util.ImpExSimpleFoldingBlocksFilter
 import sap.commerce.toolset.impex.lang.folding.util.ImpExSmartFoldingBlocksFilter
-import sap.commerce.toolset.settings.yDeveloperSettings
+import sap.commerce.toolset.impex.settings.ImpExFoldingSettings
 
 class ImpExPsiElementFilterFactory private constructor() {
     init {
@@ -30,14 +29,12 @@ class ImpExPsiElementFilterFactory private constructor() {
     }
 
     companion object {
-        fun getPsiElementFilter(project: Project): PsiElementFilter = if (isUseSmartFolding(project))
+        fun getPsiElementFilter(): PsiElementFilter = if (isUseSmartFolding())
             application.getService(ImpExSmartFoldingBlocksFilter::class.java)
         else
             application.getService(ImpExSimpleFoldingBlocksFilter::class.java)
 
-        private fun isUseSmartFolding(project: Project) = project.yDeveloperSettings
-            .impexSettings
-            .folding
+        private fun isUseSmartFolding() = ImpExFoldingSettings.getInstance()
             .useSmartFolding
 
     }

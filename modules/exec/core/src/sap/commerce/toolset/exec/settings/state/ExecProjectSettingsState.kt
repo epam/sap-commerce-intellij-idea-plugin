@@ -19,5 +19,5 @@
 package sap.commerce.toolset.exec.settings.state
 
 interface ExecProjectSettingsState<T : ExecConnectionSettingsState> {
-    val connections: Set<T>
+    val connections: List<T>
 }

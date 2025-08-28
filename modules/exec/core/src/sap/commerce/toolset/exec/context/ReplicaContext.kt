@@ -21,9 +21,23 @@ package sap.commerce.toolset.exec.context
 data class ReplicaContext(
     val replicaId: String,
     val cookieName: String = "ROUTE",
-    var content: String = ""
 ) {
     val replicaCookie: String
         get() = if (replicaId.startsWith(".")) replicaId
         else ".$replicaId"
+
+    fun mutable() = Mutable(
+        replicaId = replicaId,
+        cookieName = cookieName,
+    )
+
+    data class Mutable(
+        var replicaId: String,
+        var cookieName: String,
+    ) {
+        fun immutable() = ReplicaContext(
+            replicaId = replicaId,
+            cookieName = cookieName,
+        )
+    }
 }

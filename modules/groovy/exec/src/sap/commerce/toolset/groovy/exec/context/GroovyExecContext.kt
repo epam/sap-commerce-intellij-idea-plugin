@@ -18,27 +18,58 @@
 
 package sap.commerce.toolset.groovy.exec.context
 
+import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.hac.HacConstants
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
 
 data class GroovyExecContext(
+    val connection: HacConnectionSettingsState,
     override val executionTitle: String = DEFAULT_TITLE,
     private val content: String,
-    private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
-    val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
+    val settings: Settings,
     val replicaContext: ReplicaContext? = null
 ) : ExecContext {
 
     fun params(): Map<String, String> = buildMap {
         put("scriptType", "groovy")
-        put("commit", BooleanUtils.toStringTrueFalse(transactionMode == TransactionMode.COMMIT))
+        put("commit", BooleanUtils.toStringTrueFalse(settings.transactionMode == TransactionMode.COMMIT))
         put("script", content)
     }
 
+    data class Settings(
+        override val timeout: Int,
+        val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
+        val replicaContext: GroovyReplicaAwareContext = GroovyReplicaAwareContext.auto()
+    ) : ExecContext.Settings {
+        override fun mutable() = Mutable(
+            timeout = timeout,
+            transactionMode = transactionMode,
+            replicaContext = replicaContext,
+        )
+
+        data class Mutable(
+            override var timeout: Int,
+            var transactionMode: TransactionMode,
+            var replicaContext: GroovyReplicaAwareContext
+        ) : ExecContext.Settings.Mutable {
+            override fun immutable() = Settings(
+                timeout = timeout,
+                transactionMode = transactionMode,
+                replicaContext = replicaContext,
+            )
+        }
+    }
+
     companion object {
+        val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.groovy.execution.settings")
         const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce instance..."
+
+        fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null) = Settings(
+            timeout = connectionSettings?.timeout ?: 0,
+            transactionMode = TransactionMode.ROLLBACK
+        )
     }
 }

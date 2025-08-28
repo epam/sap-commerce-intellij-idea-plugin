@@ -40,12 +40,12 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
-import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
+import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
@@ -98,7 +98,7 @@ class HybrisSolrSearchConsole(
         this.setInputText("*:*")
     }
 
-    override fun activeConnection(): ExecConnectionSettingsState = SolrExecConnectionService.getInstance(project).activeConnection
+    override fun activeConnection(): SolrConnectionSettingsState = SolrExecConnectionService.getInstance(project).activeConnection
 
     override fun onSelection() {
         val selectedCore = coresComboBox.selectedItem.asSafely<SolrCoreData>()
@@ -146,7 +146,7 @@ class HybrisSolrSearchConsole(
     }
 
     private fun retrieveListOfCores() = try {
-        SolrExecClient.getInstance(project).coresData().toList()
+        SolrExecClient.getInstance(project).coresData(activeConnection()).toList()
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,
@@ -161,6 +161,7 @@ class HybrisSolrSearchConsole(
         && coresComboBox.selectedItem.asSafely<SolrCoreData>() != null
 
     override fun currentExecutionContext(content: String) = SolrQueryExecContext(
+        connection = activeConnection(),
         content = content,
         core = (coresComboBox.selectedItem as SolrCoreData).core,
         rows = maxRowsSpinner.value as Int

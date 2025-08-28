@@ -39,8 +39,6 @@ data class CxLoggerModel(
 
     companion object {
 
-        const val ROOT_LOGGER_NAME = "root"
-
         fun of(
             name: String,
             effectiveLevel: String,
@@ -51,7 +49,7 @@ data class CxLoggerModel(
         ): CxLoggerModel = CxLoggerModel(
             name = name,
             effectiveLevel = effectiveLevel,
-            parentName = if (name == ROOT_LOGGER_NAME) null else parentName,
+            parentName = if (name == CxLoggersConstants.ROOT_LOGGER_NAME) null else parentName,
             inherited = inherited,
             icon = icon?.asSafely<DeferredIcon>()?.baseIcon ?: icon ?: HybrisIcons.Log.Identifier.NA,
             psiElementPointer = psiElementPointer
@@ -64,6 +62,6 @@ data class CxLoggerModel(
             inherited = true,
         )
 
-        fun rootFallback() = of(name = ROOT_LOGGER_NAME, effectiveLevel = "undefined")
+        fun rootFallback() = of(name = CxLoggersConstants.ROOT_LOGGER_NAME, effectiveLevel = "undefined")
     }
 }

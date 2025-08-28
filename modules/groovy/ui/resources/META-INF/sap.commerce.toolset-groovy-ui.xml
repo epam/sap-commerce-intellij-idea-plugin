@@ -21,11 +21,15 @@
         <projectConfigurable id="hybris.project.groovy.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.groovy.title"
-                             provider="sap.commerce.toolset.groovy.options.ProjectGroovySettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.groovy.options.GroovyProjectSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>
         <group id="hybris.groovy.toolbar.left">
+            <action class="sap.commerce.toolset.groovy.actionSystem.GroovyExecutionContextSettingsAction"/>
+
+            <separator/>
+
             <action id="hybris.groovy.execute" class="sap.commerce.toolset.groovy.actionSystem.GroovyExecuteAction">
                 <keyboard-shortcut first-keystroke="control shift alt ENTER" keymap="$default"/>
             </action>

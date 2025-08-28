@@ -143,7 +143,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                         return@map setOf(FxSLookupElementFactory.build(tableAliasName, addComma, nonYColumnAliasSeparator))
                     } else {
                         // TODO: not sure what to do if there is no table alias
-                        return@map setOf<LookupElementBuilder>()
+                        return@map setOf()
                     }
                 }
                 ?.flatten()

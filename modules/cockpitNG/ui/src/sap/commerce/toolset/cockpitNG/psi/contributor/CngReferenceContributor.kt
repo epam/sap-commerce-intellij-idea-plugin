@@ -77,7 +77,7 @@ class CngReferenceContributor : PsiReferenceContributor() {
             CngWidgetSettingReferenceProvider()
         )
 
-        Plugin.PROPERTIES.ifActive {
+        Plugin.JAVA_I18N.ifActive {
             registrar.registerReferenceProvider(
                 CngPatterns.I18N_PROPERTY,
                 PropertiesReferenceProvider()

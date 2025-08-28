@@ -33,8 +33,8 @@ import sap.commerce.toolset.acl.psi.AclTypes
 import sap.commerce.toolset.acl.psi.AclUserRights
 import sap.commerce.toolset.acl.psi.AclUserRightsBody
 import sap.commerce.toolset.acl.psi.AclUserRightsValueLines
+import sap.commerce.toolset.acl.settings.AclFoldingSettings
 import sap.commerce.toolset.psi.FoldablePsiElement
-import sap.commerce.toolset.settings.yDeveloperSettings
 
 class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
@@ -46,8 +46,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val developerSettings = root.project.yDeveloperSettings
-        val foldingSettings = developerSettings.aclSettings.folding
+        val foldingSettings = AclFoldingSettings.getInstance()
         if (!foldingSettings.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {
@@ -70,7 +69,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 results,
                 PsiModificationTracker.MODIFICATION_COUNT,
                 ProjectRootModificationTracker.getInstance(root.project),
-                developerSettings
+                foldingSettings
             )
         }
     }

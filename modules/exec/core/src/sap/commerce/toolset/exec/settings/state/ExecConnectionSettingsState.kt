@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.exec.settings.state
 
+import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
+import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.openapi.util.text.StringUtil
 import sap.commerce.toolset.exec.generateUrl
 
@@ -30,11 +32,13 @@ interface ExecConnectionSettingsState {
     val host: String
     val port: String?
     val webroot: String
+    val timeout: Int
 
     val credentials: Credentials?
     val username: String
     val password: String
 
+    fun retrieveCredentials() = retrieveCredentials(uuid)
     fun mutable(): Mutable
 
     interface Mutable {
@@ -42,15 +46,19 @@ interface ExecConnectionSettingsState {
         var uuid: String
         var name: String?
         var ssl: Boolean
+        var timeout: Int
         var host: String
         var port: String?
         var webroot: String
-        var username: String
-        var password: String
+        val username: String
+        val password: String
 
+        fun retrieveCredentials() = retrieveCredentials(uuid)
         fun immutable(): ExecConnectionSettingsState
     }
 }
+
+private fun retrieveCredentials(uuid: String) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
 
 val ExecConnectionSettingsState.generatedURL: String
     get() = generateUrl(ssl, host, port, webroot)

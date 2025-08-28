@@ -19,7 +19,6 @@
 package sap.commerce.toolset.groovy.console
 
 import com.intellij.openapi.project.Project
-import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +26,6 @@ import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.hac.HacConstants
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
@@ -39,17 +37,12 @@ class HybrisGroovyConsole(
 ) : HybrisConsole<GroovyExecContext>(project, "[y] Groovy Console", GroovyLanguage, coroutineScope) {
 
     private lateinit var commitCheckbox: JBCheckBox
-    private lateinit var timeoutSpinner: JBIntSpinner
 
     init {
         val myPanel = panel {
             row {
                 commitCheckbox = checkBox("Commit mode")
                     .component
-                timeoutSpinner = spinner(1..3600, 10)
-                    .label("Timeout (seconds):")
-                    .component
-                    .apply { value = HacConstants.DEFAULT_TIMEOUT / 1000 }
             }
         }
 
@@ -57,9 +50,12 @@ class HybrisGroovyConsole(
     }
 
     override fun currentExecutionContext(content: String) = GroovyExecContext(
+        connection = activeConnection(),
         content = content,
-        transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
-        timeout = timeoutSpinner.value.toString().toInt() * 1000,
+        settings = GroovyExecContext.defaultSettings(activeConnection()).copy(
+            timeout = activeConnection().timeout,
+            transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK
+        ),
     )
 
     override fun title() = "Groovy Scripting"

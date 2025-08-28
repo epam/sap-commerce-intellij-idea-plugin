@@ -24,7 +24,6 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.jsp.JspFile;
@@ -39,7 +38,7 @@ import com.intellij.util.ObjectUtils;
 import com.intellij.util.SmartList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sap.commerce.toolset.settings.DeveloperSettings;
+import sap.commerce.toolset.java.settings.JspFoldingSettings;
 
 import java.util.*;
 
@@ -56,7 +55,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
     public FoldingDescriptor[] buildFoldRegions(
         @NotNull final PsiElement root, @NotNull final Document document, final boolean quick
     ) {
-        if (quick || !isFoldingEnabled(root.getProject())) {
+        if (quick || !isFoldingEnabled()) {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
         if (!(root instanceof XmlFile)) {
@@ -115,14 +114,11 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
 
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
-        return isFoldingEnabled(node.getPsi().getProject());
+        return isFoldingEnabled();
     }
 
-    private boolean isFoldingEnabled(final @NotNull Project project) {
-        return DeveloperSettings.getInstance(project)
-            .getJspSettings()
-            .folding
-            .getEnabled();
+    private boolean isFoldingEnabled() {
+        return JspFoldingSettings.getInstance().getEnabled();
     }
 
     @Nullable

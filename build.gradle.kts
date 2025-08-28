@@ -193,6 +193,7 @@ intellijPlatformTesting {
         val runIdeCommunity by registering {
             type = IntelliJPlatformType.IntellijIdeaCommunity
             version = properties("intellij.version")
+            useInstaller = false
 
             task {
                 jvmArgs = projectJvmArguments
@@ -228,9 +229,10 @@ dependencies {
         rootProject.childProjects.keys.forEach {
             pluginComposedModule(implementation(project(it)))
         }
-
         bundledModules(
-            "intellij.grid.impl"
+            "intellij.grid.impl",
+            "intellij.spellchecker",
+            "intellij.spellchecker.xml",
         )
 
         // printBundledPlugins for bundled plugins
@@ -253,6 +255,7 @@ dependencies {
             "org.jetbrains.idea.maven",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
+            "com.intellij.diagram",
             "JavaScript",
             "JUnit",
         )

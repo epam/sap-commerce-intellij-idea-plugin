@@ -20,10 +20,10 @@ package sap.commerce.toolset.polyglotQuery.actionSystem
 
 import sap.commerce.toolset.actionSystem.OpenSettingsAction
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.polyglotQuery.options.ProjectPolyglotQuerySettingsConfigurableProvider
+import sap.commerce.toolset.polyglotQuery.options.PolyglotQueryProjectSettingsConfigurableProvider
 
 class PolyglotQueryOpenSettingsAction : OpenSettingsAction(
-    configurableClass = ProjectPolyglotQuerySettingsConfigurableProvider.SettingsConfigurable::class.java,
+    configurableClass = PolyglotQueryProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
     text = i18n("hybris.pgq.actions.open_settings"),
     description = i18n("hybris.pgq.actions.open_settings.description"),
 )

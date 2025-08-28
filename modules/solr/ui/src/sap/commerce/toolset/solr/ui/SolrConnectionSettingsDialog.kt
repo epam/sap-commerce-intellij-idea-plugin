@@ -21,6 +21,7 @@ package sap.commerce.toolset.solr.ui
 import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
@@ -35,6 +36,8 @@ class SolrConnectionSettingsDialog(
     parentComponent: Component,
     settings: SolrConnectionSettingsState.Mutable
 ) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SOLR Instance") {
+
+    private lateinit var socketTimeoutIntSpinner: JBIntSpinner
 
     override fun panel() = panel {
         row {
@@ -54,6 +57,20 @@ class SolrConnectionSettingsDialog(
                 renderer = SimpleListCellRenderer.create("?") { it.title }
             )
                 .bindItem(mutableSettings::scope.toNullableProperty(ExecConnectionScope.PROJECT_PERSONAL))
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            timeoutIntSpinner = spinner(1000..Int.MAX_VALUE, 1000)
+                .label("Connection Timeout (ms):")
+                .bindIntValue(mutableSettings::timeout)
+                .component
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            socketTimeoutIntSpinner = spinner(1000..Int.MAX_VALUE, 1000)
+                .label("Socket Timeout (ms):")
+                .bindIntValue(mutableSettings::socketTimeout)
+                .component
         }.layout(RowLayout.PARENT_GRID)
 
         group("Full URL Preview", false) {
@@ -143,6 +160,8 @@ class SolrConnectionSettingsDialog(
             host = hostTextField.text,
             port = portTextField.text,
             ssl = sslProtocolCheckBox.isSelected,
+            timeout = timeoutIntSpinner.number,
+            socketTimeout = timeoutIntSpinner.number,
             webroot = webrootTextField.text,
             credentials = Credentials(usernameTextField.text, String(passwordTextField.password)),
         )

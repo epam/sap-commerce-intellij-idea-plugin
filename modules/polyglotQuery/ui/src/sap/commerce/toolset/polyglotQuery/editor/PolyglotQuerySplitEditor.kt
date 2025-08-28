@@ -203,7 +203,4 @@ class PolyglotQuerySplitEditorEx(override val textEditor: TextEditor, private va
     override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
 
-    private fun getText(): String = editor.selectionModel.selectedText
-        .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
-        ?: editor.document.text
 }

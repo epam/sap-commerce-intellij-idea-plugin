@@ -30,7 +30,7 @@ import sap.commerce.toolset.project.settings.state.ProjectSettingsState
 @State(
     name = "HybrisProjectSettings",
     storages = [
-        Storage(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED),
+        Storage(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL),
     ]
 )
 @Service(Service.Level.PROJECT)

@@ -18,7 +18,6 @@
 package sap.commerce.toolset.codeInsight.injection
 
 import com.intellij.lang.javascript.JavascriptLanguage
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
@@ -66,6 +65,5 @@ class JavaScriptLanguageInjector : LanguageInjector {
 
     companion object {
         private const val QUOTE_SYMBOL_LENGTH = 1
-        private val LOG = Logger.getInstance(JavaScriptLanguageInjector::class.java)
     }
 }

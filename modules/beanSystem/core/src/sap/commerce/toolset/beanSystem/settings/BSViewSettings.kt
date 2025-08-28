@@ -26,7 +26,7 @@ import sap.commerce.toolset.beanSystem.settings.state.BSViewSettingsState
 import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 
 @State(name = "[y] Bean System View settings", category = SettingsCategory.PLUGINS)
-@Storage(value = HybrisConstants.STORAGE_HYBRIS_BS_VIEW, roamingType = RoamingType.DISABLED)
+@Storage(value = HybrisConstants.STORAGE_HYBRIS_BS_VIEW, roamingType = RoamingType.LOCAL)
 @Service(Service.Level.PROJECT)
 class BSViewSettings(private val project: Project) : SerializablePersistentStateComponent<BSViewSettingsState>(BSViewSettingsState()) {
 

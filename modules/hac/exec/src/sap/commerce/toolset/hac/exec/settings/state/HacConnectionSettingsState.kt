@@ -26,6 +26,7 @@ import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.hac.HacConstants
 import java.util.*
 
 data class HacConnectionSettingsState(
@@ -37,6 +38,7 @@ data class HacConnectionSettingsState(
     @OptionTag override val port: String? = null,
     @OptionTag override val webroot: String = "",
     @OptionTag override val ssl: Boolean = true,
+    @OptionTag override val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
 
     @Transient
     override val credentials: Credentials? = null,
@@ -52,10 +54,10 @@ data class HacConnectionSettingsState(
             ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
     override val username
         @Transient
-        get() = dynamicCredentials?.userName ?: "admin"
+        get() = dynamicCredentials?.userName ?: DEFAULT_USERNAME
     override val password
         @Transient
-        get() = dynamicCredentials?.getPasswordAsString() ?: "password"
+        get() = dynamicCredentials?.getPasswordAsString() ?: DEFAULT_PASSWORD
 
     override fun mutable() = Mutable(
         uuid = uuid,
@@ -65,8 +67,7 @@ data class HacConnectionSettingsState(
         port = port,
         webroot = webroot,
         ssl = ssl,
-        username = username,
-        password = password,
+        timeout = timeout,
         wsl = wsl,
         sslProtocol = sslProtocol,
         sessionCookieName = sessionCookieName
@@ -80,12 +81,21 @@ data class HacConnectionSettingsState(
         override var port: String?,
         override var webroot: String,
         override var ssl: Boolean,
-        override var username: String,
-        override var password: String,
+        override var timeout: Int,
         var wsl: Boolean,
         var sslProtocol: String,
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
+
+        override val username
+            get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.userName
+                ?: DEFAULT_USERNAME
+        override val password
+            get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.getPasswordAsString()
+                ?: DEFAULT_PASSWORD
+
         override fun immutable() = HacConnectionSettingsState(
             uuid = uuid,
             scope = scope,
@@ -94,9 +104,15 @@ data class HacConnectionSettingsState(
             port = port,
             webroot = webroot,
             ssl = ssl,
+            timeout = timeout,
             wsl = wsl,
             sslProtocol = sslProtocol,
             sessionCookieName = sessionCookieName
         )
+    }
+
+    companion object {
+        private const val DEFAULT_USERNAME = "admin"
+        private const val DEFAULT_PASSWORD = "nimda"
     }
 }

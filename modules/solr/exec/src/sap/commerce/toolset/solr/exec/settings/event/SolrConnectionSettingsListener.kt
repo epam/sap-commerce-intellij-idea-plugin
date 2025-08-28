@@ -28,7 +28,7 @@ interface SolrConnectionSettingsListener : ExecConnectionListener<SolrConnection
     override fun onActiveConnectionChanged(connection: SolrConnectionSettingsState) = Unit
     override fun onAdded(connection: SolrConnectionSettingsState) = Unit
     override fun onModified(connection: SolrConnectionSettingsState) = Unit
-    override fun onSave(settings: Map<ExecConnectionScope, Set<SolrConnectionSettingsState>>) = Unit
+    override fun onSave(settings: Map<ExecConnectionScope, List<SolrConnectionSettingsState>>) = Unit
     override fun onRemoved(connection: SolrConnectionSettingsState) = Unit
 
     companion object {

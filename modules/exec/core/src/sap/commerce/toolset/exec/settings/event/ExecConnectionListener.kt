@@ -26,7 +26,7 @@ interface ExecConnectionListener<T : ExecConnectionSettingsState> {
     fun onActiveConnectionChanged(connection: T) = Unit
     fun onAdded(connection: T) = Unit
     fun onModified(connection: T) = Unit
-    fun onSave(settings: Map<ExecConnectionScope, Set<T>>) = Unit
+    fun onSave(settings: Map<ExecConnectionScope, List<T>>) = Unit
     fun onRemoved(connection: T) = Unit
 
 }

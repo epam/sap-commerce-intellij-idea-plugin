@@ -54,6 +54,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
             DIAGRAM,
             JAVASCRIPT,
             CRON,
+            ANGULAR,
         )
             .map { it.id }
     }
@@ -72,6 +73,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         JAVAEE.id to JAVAEE,
         MAVEN.id to MAVEN,
         ANT_SUPPORT.id to ANT_SUPPORT,
+        ANGULAR.id to ANGULAR,
         JREBEL.id to JREBEL,
         JAVASCRIPT.id to JAVASCRIPT,
         INTELLILANG.id to INTELLILANG,

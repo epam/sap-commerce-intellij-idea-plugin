@@ -42,6 +42,7 @@ idea {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
+    implementation(project(":java-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

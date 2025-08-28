@@ -22,6 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -42,7 +43,8 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 import java.awt.BorderLayout
 import java.awt.Component
@@ -50,11 +52,15 @@ import javax.swing.JComponent
 
 class CCv2ReplicaSelectionDialog(
     private val project: Project,
-    replicaContexts: Collection<ReplicaContext>,
+    private val editor: Editor,
+    private val currentSettings: GroovyExecContext.Settings,
     parentComponent: Component,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
-    private val previousReplicaIds = replicaContexts.map { it.replicaId }
+    private val replicaContext = currentSettings.replicaContext
+        .takeIf { it.replicaSelectionMode == CCv2ExecConstants.ccv2 }
+        ?: GroovyReplicaAwareContext(CCv2ExecConstants.ccv2)
+    private val previousReplicaIds = replicaContext.replicaContexts.map { it.replicaId }
     private val selectedReplicaIds = mutableSetOf<String>()
     private val editable = AtomicBooleanProperty(true)
     private val ccv2TreeTable by lazy {
@@ -122,7 +128,7 @@ class CCv2ReplicaSelectionDialog(
                 renderer = SimpleListCellRenderer.create { label, value, _ ->
                     if (value != null) {
                         label.icon = HybrisIcons.Module.CCV2
-                        label.text = value.toString()
+                        label.text = value.presentableName
                     }
                 }
             )
@@ -156,8 +162,14 @@ class CCv2ReplicaSelectionDialog(
     }
 
     override fun applyFields() {
-        GroovyExecClient.getInstance(project).connectionContext = if (selectedReplicaIds.isEmpty()) GroovyReplicaAwareContext.auto()
-        else GroovyReplicaAwareContext(CCv2ExecConstants.ccv2, selectedReplicaIds.map { ReplicaContext(it) })
+        super.applyFields()
+
+        val context = selectedReplicaIds
+            .takeIf { it.isNotEmpty() }
+            ?.let { replicas -> GroovyReplicaAwareContext(CCv2ExecConstants.ccv2, replicas.map { ReplicaContext(it) }) }
+            ?: GroovyReplicaAwareContext.auto()
+
+        editor.groovyExecContextSettings = currentSettings.copy(replicaContext = context)
     }
 
     override fun dispose() {

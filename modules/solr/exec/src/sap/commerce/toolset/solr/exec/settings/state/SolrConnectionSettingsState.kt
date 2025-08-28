@@ -18,14 +18,13 @@
 
 package sap.commerce.toolset.solr.exec.settings.state
 
-import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.solr.SolrConstants
 import java.util.*
 
 data class SolrConnectionSettingsState(
@@ -36,6 +35,8 @@ data class SolrConnectionSettingsState(
     @OptionTag override val port: String? = null,
     @OptionTag override val webroot: String = "solr",
     @OptionTag override val ssl: Boolean = true,
+    @OptionTag override val timeout: Int = SolrConstants.CONNECTION_TIMEOUT_MILLIS,
+    @OptionTag val socketTimeout: Int = SolrConstants.SOCKET_TIMEOUT_MILLIS,
 
     @Transient
     override val credentials: Credentials? = null,
@@ -43,8 +44,7 @@ data class SolrConnectionSettingsState(
 
     private val dynamicCredentials
         @Transient
-        get() = credentials
-            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+        get() = credentials ?: retrieveCredentials()
     override val username
         @Transient
         get() = dynamicCredentials?.userName ?: "solrserver"
@@ -60,8 +60,8 @@ data class SolrConnectionSettingsState(
         port = port,
         webroot = webroot,
         ssl = ssl,
-        username = username,
-        password = password,
+        timeout = timeout,
+        socketTimeout = socketTimeout,
     )
 
     data class Mutable(
@@ -72,9 +72,15 @@ data class SolrConnectionSettingsState(
         override var port: String?,
         override var webroot: String,
         override var ssl: Boolean,
-        override var username: String,
-        override var password: String,
+        override var timeout: Int,
+        var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
+
+        override val username
+            get() = retrieveCredentials()?.userName ?: "solrserver"
+        override val password
+            get() = retrieveCredentials()?.getPasswordAsString() ?: "server123"
+
         override fun immutable() = SolrConnectionSettingsState(
             uuid = uuid,
             scope = scope,
@@ -83,6 +89,8 @@ data class SolrConnectionSettingsState(
             port = port,
             webroot = webroot,
             ssl = ssl,
+            timeout = timeout,
+            socketTimeout = socketTimeout,
         )
     }
 }

@@ -28,12 +28,13 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
-import sap.commerce.toolset.settings.yDeveloperSettings
 
 class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
     GroovyLanguage,
@@ -49,24 +50,27 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val fileEditor = fileEditor(e) ?: return
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
         val prefix = fileName ?: "script"
+        val execClient = GroovyExecClient.getInstance(project)
+        val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
+        val execContextSettings = e.groovyExecContextSettings { GroovyExecContext.defaultSettings(connectionSettings) }
 
-        val transactionMode = project.yDeveloperSettings.groovySettings.txMode
-        val executionClient = GroovyExecClient.getInstance(project)
-        val contexts = executionClient.connectionContext.replicaContexts
+        val contexts = execContextSettings.replicaContext.replicaContexts
             .map {
                 GroovyExecContext(
+                    connection = connectionSettings,
                     executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
-                    transactionMode = transactionMode,
-                    replicaContext = it
+                    replicaContext = it,
+                    settings = execContextSettings
                 )
             }
             .takeIf { it.isNotEmpty() }
             ?: listOf(
                 GroovyExecContext(
+                    connection = connectionSettings,
                     executionTitle = "$prefix | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
-                    transactionMode = transactionMode
+                    settings = execContextSettings
                 )
             )
 
@@ -75,7 +79,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
             fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecContext.DEFAULT_TITLE}")
             var completed = 0
 
-            executionClient.execute(
+            execClient.execute(
                 contexts = contexts,
                 resultCallback = { _, _ ->
                     completed++
@@ -98,7 +102,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         } else {
             val console = openConsole(project, content) ?: return
 
-            executionClient.execute(
+            execClient.execute(
                 contexts = contexts,
                 resultCallback = { _, result -> console.print(result, false) },
                 afterCallback = { _, _ -> console.afterExecution() }
@@ -109,9 +113,13 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
     override fun update(e: AnActionEvent) {
         super.update(e)
 
-        val project = e.project ?: return
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
 
-        when (project.yDeveloperSettings.groovySettings.txMode) {
+        val transactionMode = (editor.groovyExecContextSettings
+            ?.transactionMode
+            ?: TransactionMode.ROLLBACK)
+
+        when (transactionMode) {
             TransactionMode.ROLLBACK -> {
                 e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE_ROLLBACK
                 e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>"
