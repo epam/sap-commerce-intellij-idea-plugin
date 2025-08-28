@@ -59,7 +59,7 @@ class LoggersTemplatesStateView(
 
                 row {
                     label("Effective level")
-                        .bold()
+                        .bold().gap(RightGap.SMALL)
                     label("Logger (package or class name)")
                         .bold()
                         .align(AlignX.FILL)
