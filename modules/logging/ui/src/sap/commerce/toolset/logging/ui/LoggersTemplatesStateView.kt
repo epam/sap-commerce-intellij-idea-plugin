@@ -19,18 +19,27 @@
 package sap.commerce.toolset.logging.ui
 
 import com.intellij.ide.IdeBundle
+import com.intellij.ide.projectView.ProjectView
+import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiPackage
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.startOffset
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.logging.CxLoggerModel
 import javax.swing.JPanel
 
@@ -43,7 +52,6 @@ class LoggersTemplatesStateView(
     private val showNoLoggerTemplates = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
-    private val canApply = AtomicBooleanProperty(false)
 
     private lateinit var dataScrollPane: JBScrollPane
     private val panel by lazy {
@@ -59,11 +67,10 @@ class LoggersTemplatesStateView(
 
                 row {
                     label("Effective level")
-                        .bold().gap(RightGap.SMALL)
+                        .bold().gap(RightGap.COLUMNS)
                     label("Logger (package or class name)")
                         .bold()
                         .align(AlignX.FILL)
-
                 }
                     .visibleIf(showDataPanel)
                     .layout(RowLayout.PARENT_GRID)
@@ -72,7 +79,6 @@ class LoggersTemplatesStateView(
                     .visibleIf(showDataPanel)
 
                 row {
-                    //
                     dataScrollPane = JBScrollPane(JPanel())
                         .apply { border = null }
 
@@ -146,75 +152,37 @@ class LoggersTemplatesStateView(
                 },
                 {
                     icon(r.icon)
-                    label(r.name)
+                    if (r.resolved) {
+                        link(r.name) {
+                            r.psiElementPointer?.element?.let { psiElement ->
+                                when (psiElement) {
+                                    is PsiPackage -> {
+                                        coroutineScope.launch {
+                                            val directory = readAction {
+                                                psiElement.getDirectories(GlobalSearchScope.allScope(project))
+                                                    .firstOrNull()
+                                            } ?: return@launch
+
+                                            edtWriteAction {
+                                                ProjectView.getInstance(project).selectPsiElement(directory, true)
+                                            }
+                                        }
+                                    }
+
+                                    is PsiClass -> PsiNavigationSupport.getInstance()
+                                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
+                                        .navigate(true)
+                                }
+                            }
+                        }.resizableColumn()
+                    } else {
+                        label(r.name)
+                    }
                 }
             ).layout(RowLayout.PARENT_GRID)
         }
     }
 
-
-//        private fun loggersView(loggers: Map<String, CxLoggerModel>) = panel {
-//
-//            row {
-//                cellNoData(AtomicBooleanProperty(loggers.isNotEmpty()), "").bold()
-//                cellNoData(AtomicBooleanProperty(loggers.isNotEmpty()), "Effective level").bold()
-//                cellNoData(AtomicBooleanProperty(loggers.isNotEmpty()), "").bold()
-//                cellNoData(AtomicBooleanProperty(loggers.isNotEmpty()), "Logger (package or class name)").bold()
-//            }
-//                .visibleIf(initialized.and(showDataPanel))
-//                .layout(RowLayout.PARENT_GRID)
-//
-//
-//            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-//                .visibleIf(showDataPanel.and(initialized))
-//
-//            loggers.values
-//                .filterNot { it.inherited }
-//                .sortedBy { it.name }
-//                .forEach { cxLogger ->
-//                    row {
-//                        icon(cxLogger.level.icon)
-//                            .customize(UnscaledGaps(0, 0, 0, 16))
-//
-//                        label(cxLogger.level.name)
-//                            .align(AlignX.FILL)
-//                            .enabledIf(initialized)
-//
-//                        icon(cxLogger.icon)
-//                            .customize(UnscaledGaps(0, 0, 0, 16))
-//
-//                        if (cxLogger.resolved) {
-//                            link(cxLogger.name) {
-//                                cxLogger.psiElementPointer?.element?.let { psiElement ->
-//                                    when (psiElement) {
-//                                        is PsiPackage -> {
-//                                            coroutineScope.launch {
-//                                                val directory = readAction {
-//                                                    psiElement.getDirectories(GlobalSearchScope.allScope(project))
-//                                                        .firstOrNull()
-//                                                } ?: return@launch
-//
-//                                                edtWriteAction {
-//                                                    ProjectView.getInstance(project).selectPsiElement(directory, true)
-//                                                }
-//                                            }
-//                                        }
-//
-//                                        is PsiClass -> PsiNavigationSupport.getInstance()
-//                                            .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
-//                                            .navigate(true)
-//                                    }
-//                                }
-//                            }.resizableColumn()
-//                        } else {
-//                            label(cxLogger.name)
-//                        }
-//
-//                        label(cxLogger.parentName ?: "")
-//                    }
-//                        .layout(RowLayout.PARENT_GRID)
-//                }
-//        }
 
     override fun dispose() = panel.drop()
 
