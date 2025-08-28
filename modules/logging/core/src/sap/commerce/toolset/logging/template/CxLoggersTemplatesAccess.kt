@@ -19,10 +19,12 @@
 package sap.commerce.toolset.logging.template
 
 import com.google.gson.Gson
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.CxLoggersConstants
+import sap.commerce.toolset.logging.getIcon2
 
 object CxLoggersTemplatesAccess {
 
@@ -31,7 +33,7 @@ object CxLoggersTemplatesAccess {
         "ENABLE" to HybrisIcons.Log.Template.ENABLE
     )
 
-    fun bundledLoggerTemplates(): List<CxLoggersTemplateModel> {
+    fun bundledLoggerTemplates(project: Project): List<CxLoggersTemplateModel> {
         return ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
             .let { Gson().fromJson(it, CxLoggersTemplatesDto::class.java) }
             .templates
@@ -43,7 +45,8 @@ object CxLoggersTemplatesAccess {
                         .map { logConfig ->
                             CxLoggerModel.of(
                                 name = logConfig.identifier,
-                                effectiveLevel = logConfig.effectiveLevel
+                                effectiveLevel = logConfig.effectiveLevel,
+                                icon = getIcon2(project, logConfig.identifier)
                             )
                         },
                     icon = item.iconName

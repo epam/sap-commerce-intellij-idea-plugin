@@ -23,14 +23,17 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.settings.state.connectionName
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLoggerAccess
 
 class LoggersHacConnectionNode(
     val connectionSettings: HacConnectionSettingsState,
-    val activeConnection: Boolean,
     project: Project
 ) : LoggersNode(project) {
+
+    val activeConnection: Boolean
+        get() = connectionSettings.uuid == HacExecConnectionService.getInstance(project).activeConnection.uuid
 
     override fun getName() = connectionSettings.connectionName
 
@@ -50,4 +53,24 @@ class LoggersHacConnectionNode(
         }
         presentation.setIcon(connectionIcon)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LoggersHacConnectionNode
+
+        if (activeConnection != other.activeConnection) return false
+        if (connectionSettings != other.connectionSettings) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = activeConnection.hashCode()
+        result = 31 * result + connectionSettings.hashCode()
+        return result
+    }
+
+
 }

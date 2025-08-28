@@ -28,7 +28,7 @@ class BundledLoggersTemplateGroupNode(private val project: Project) :
     LoggersOptionsNode("Bundled Loggers Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
 
     override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> {
-        return CxLoggersTemplatesAccess.bundledLoggerTemplates()
+        return CxLoggersTemplatesAccess.bundledLoggerTemplates(project)
             .associate { item ->
                 item.name to BundledLoggersTemplateItemNode(item.name, item.icon, item.loggers, project)
             }

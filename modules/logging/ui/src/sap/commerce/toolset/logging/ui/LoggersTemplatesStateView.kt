@@ -97,6 +97,7 @@ class LoggersTemplatesStateView(
     val view: DialogPanel
         get() = panel.value
 
+    fun renderNothingSelected() = toggleView(showNothingSelected)
     fun renderNoLoggerTemplates() = toggleView(showNoLoggerTemplates)
 
     fun renderLoggersTemplate(loggers: Map<String, CxLoggerModel>) {

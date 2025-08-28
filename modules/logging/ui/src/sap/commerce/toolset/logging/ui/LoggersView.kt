@@ -45,6 +45,10 @@ class LoggersView(
         Disposer.register(this, treePane)
     }
 
+    fun updateLoggers() {
+        treePane.updateTree()
+    }
+
 
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {

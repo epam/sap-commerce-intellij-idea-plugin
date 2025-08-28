@@ -26,6 +26,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.application
 import javax.swing.Icon
 
 fun findPsiElement(project: Project, loggerIdentifier: String): PsiElement? = with(JavaPsiFacade.getInstance(project)) {
@@ -34,6 +35,10 @@ fun findPsiElement(project: Project, loggerIdentifier: String): PsiElement? = wi
 }
 
 suspend fun getIcon(project: Project, loggerIdentifier: String): Icon? = readAction {
+    findPsiElement(project, loggerIdentifier)?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
+}
+
+fun getIcon2(project: Project, loggerIdentifier: String): Icon? = application.runReadAction<Icon?> {
     findPsiElement(project, loggerIdentifier)?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
 }
 

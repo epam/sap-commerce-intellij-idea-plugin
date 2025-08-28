@@ -65,15 +65,14 @@ class LoggersSplitView(
         Disposer.register(this, loggersTemplatesStateView)
 
         // TODO: review this logic, let's NOT build the tree on init, instead render it on first show
-        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
-        updateTree(activeConnection)
+        //updateTree()
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = updateTree(connection)
-                override fun onModified(connection: HacConnectionSettingsState) = tree.update()
-                override fun onAdded(connection: HacConnectionSettingsState) = tree.update()
-                override fun onRemoved(connection: HacConnectionSettingsState) = tree.update()
+                override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = updateTree()
+                override fun onModified(connection: HacConnectionSettingsState) = updateTree()
+                override fun onAdded(connection: HacConnectionSettingsState) = updateTree()
+                override fun onRemoved(connection: HacConnectionSettingsState) = updateTree()
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
@@ -89,9 +88,9 @@ class LoggersSplitView(
         }
     }
 
-    private fun updateTree(settings: HacConnectionSettingsState) {
+    fun updateTree() {
         val connections = HacExecConnectionService.getInstance(project).connections
-            .associateWith { (it == settings) }
+            .associateWith { it == HacExecConnectionService.getInstance(project).activeConnection }
         tree.update(connections)
     }
 
@@ -138,7 +137,7 @@ class LoggersSplitView(
                 is BundledLoggersTemplateGroupNode -> {
                     secondComponent = loggersTemplatesStateView.view
 
-                    loggersTemplatesStateView.renderNoLoggerTemplates()
+                    loggersTemplatesStateView.renderNothingSelected()
                 }
                 is CustomLoggersTemplateLoggersOptionsNode -> {
                     secondComponent = loggersTemplatesStateView.view

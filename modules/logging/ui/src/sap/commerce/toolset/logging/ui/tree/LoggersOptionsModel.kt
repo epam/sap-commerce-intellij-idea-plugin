@@ -32,6 +32,7 @@ class LoggersOptionsModel(
     private val rootTreeNode: LoggersOptionsTreeNode
 ) : BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
 
+    //map of connections to their active state
     private var connections: Map<HacConnectionSettingsState, Boolean>? = null
     private val nodes = mutableMapOf<LoggersNode, LoggersOptionsTreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)

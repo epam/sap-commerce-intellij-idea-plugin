@@ -24,6 +24,9 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
+import com.intellij.ui.content.ContentManagerEvent
+import com.intellij.ui.content.ContentManagerListener
+import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +52,17 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
                     createCCv2CLIContent(toolWindow, project, CCv2View(project)),
                     createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
                 ).forEach { toolWindow.contentManager.addContent(it) }
+
+                toolWindow.contentManager.addContentManagerListener(object: ContentManagerListener {
+                    override fun selectionChanged(event: ContentManagerEvent) {
+                        println("Tool window content selection changed: ${event.content.displayName}")
+                        if (event.content.displayName == LoggersView.ID) {
+                            event.content.component
+                                .asSafely<LoggersView>()
+                                ?.updateLoggers()
+                        }
+                    }
+                })
             }
         }
     }
