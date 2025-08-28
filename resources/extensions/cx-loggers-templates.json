@@ -8,6 +8,36 @@
           "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",
           "effectiveLevel": "DEBUG"
 
+        },
+        {
+          "identifier": "de.hybris.platform.solrfacetsearch.search.impl.",
+          "effectiveLevel": "INFO"
+
+        },
+        {
+          "identifier": "de.hybris.platform.solrfacetsearch.search",
+          "effectiveLevel": "OFF"
+
+        },
+        {
+          "identifier": "de.hybris.platform.solrfacetsearch",
+          "effectiveLevel": "FATAL"
+
+        },
+        {
+          "identifier": "test",
+          "effectiveLevel": "TRACE"
+
+        },
+        {
+          "identifier": "test2",
+          "effectiveLevel": "ERROR"
+
+        },
+        {
+          "identifier": "test3",
+          "effectiveLevel": "WARN"
+
         }
       ]
     },
