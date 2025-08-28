@@ -9,6 +9,7 @@
 
 ### `SAP CX Logging` enhancements
 - Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
+- Display parent non-root logger below the logger entry [#1556](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1556)
 
 ### `xDebugger` enhancements
 - Create type renderer: The item type is not present in the `*items.xml` files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)

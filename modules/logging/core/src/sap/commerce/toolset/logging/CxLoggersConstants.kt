@@ -22,6 +22,7 @@ import com.intellij.openapi.actionSystem.DataKey
 
 object CxLoggersConstants {
 
+    const val ROOT_LOGGER_NAME = "root"
     const val EXTENSION_STATE_SCRIPT = "cx-loggers-state.groovy"
     val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
 }
