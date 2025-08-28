@@ -214,6 +214,9 @@ public final class HacHttpClient {
             return "Unable to obtain sessionId for " + hostHacURL;
         }
         final var csrfToken = getCsrfToken(hostHacURL, settings, cookiesKey);
+        if (csrfToken == null) {
+            return "Unable to obtain csrfToken for " + hostHacURL;
+        }
         final var params = List.of(
             new BasicNameValuePair("j_username", settings.getUsername()),
             new BasicNameValuePair("j_password", settings.getPassword()),
