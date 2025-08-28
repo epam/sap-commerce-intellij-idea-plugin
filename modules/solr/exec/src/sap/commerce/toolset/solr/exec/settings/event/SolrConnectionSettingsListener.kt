@@ -25,9 +25,8 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 
 interface SolrConnectionSettingsListener : ExecConnectionListener<SolrConnectionSettingsState> {
 
-    override fun onActiveConnectionChanged(connection: SolrConnectionSettingsState) = Unit
+    override fun onActive(connection: SolrConnectionSettingsState) = Unit
     override fun onAdded(connection: SolrConnectionSettingsState) = Unit
-    override fun onModified(connection: SolrConnectionSettingsState) = Unit
     override fun onSave(settings: Map<ExecConnectionScope, List<SolrConnectionSettingsState>>) = Unit
     override fun onRemoved(connection: SolrConnectionSettingsState) = Unit
 

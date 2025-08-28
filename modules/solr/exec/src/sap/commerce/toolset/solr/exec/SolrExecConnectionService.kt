@@ -31,7 +31,7 @@ import sap.commerce.toolset.solr.exec.settings.event.SolrConnectionSettingsListe
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 
 @Service(Service.Level.PROJECT)
-class SolrExecConnectionService(private val project: Project) : ExecConnectionService<SolrConnectionSettingsState>() {
+class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrConnectionSettingsState>(project) {
 
     override var activeConnection: SolrConnectionSettingsState
         get() = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
@@ -40,12 +40,12 @@ class SolrExecConnectionService(private val project: Project) : ExecConnectionSe
                 SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
                 add(it)
 
-                project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onActiveConnectionChanged(it)
+                onActivate(it)
             }
         set(value) {
             SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
 
-            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onActiveConnectionChanged(value)
+            onActivate(value)
         }
 
     override val connections: List<SolrConnectionSettingsState>
@@ -56,41 +56,44 @@ class SolrExecConnectionService(private val project: Project) : ExecConnectionSe
             .takeIf { it.isNotEmpty() }
             ?: listOf(default())
 
-    override fun add(settings: SolrConnectionSettingsState) = when (settings.scope) {
+    override val listener: SolrConnectionSettingsListener
+        get() = project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC)
+
+    override fun add(settings: SolrConnectionSettingsState, notify: Boolean) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
             connections = connections + settings
 
-            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onAdded(settings)
+            onAdd(settings, notify)
         }
 
         ExecConnectionScope.PROJECT -> with(SolrExecProjectSettings.getInstance(project)) {
             connections = connections + settings
 
-            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onAdded(settings)
+            onAdd(settings, notify)
         }
     }
 
-    override fun remove(settings: SolrConnectionSettingsState, scope: ExecConnectionScope) = when (settings.scope) {
+    override fun remove(settings: SolrConnectionSettingsState, scope: ExecConnectionScope, notify: Boolean) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
 
-            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onRemoved(settings)
+            onRemove(settings, notify)
         }
 
         ExecConnectionScope.PROJECT -> with(SolrExecProjectSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
 
-            project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onRemoved(settings)
+            onRemove(settings, notify)
         }
     }
 
-    override fun save(settings: Map<ExecConnectionScope, List<SolrConnectionSettingsState>>) {
+    override fun save(settings: Map<ExecConnectionScope, List<SolrConnectionSettingsState>>, notify: Boolean) {
         SolrExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
         SolrExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
 
-        project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC).onSave(settings)
+        onSave(settings, notify)
     }
 
     override fun default(): SolrConnectionSettingsState {

@@ -69,8 +69,7 @@ class LoggersSplitView(
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = updateTree(connection)
-                override fun onModified(connection: HacConnectionSettingsState) = tree.update()
+                override fun onActive(connection: HacConnectionSettingsState) = updateTree(connection)
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {

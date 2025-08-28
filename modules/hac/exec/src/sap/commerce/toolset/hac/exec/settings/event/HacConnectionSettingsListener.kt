@@ -25,9 +25,8 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 interface HacConnectionSettingsListener : ExecConnectionListener<HacConnectionSettingsState> {
 
-    override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = Unit
+    override fun onActive(connection: HacConnectionSettingsState) = Unit
     override fun onAdded(connection: HacConnectionSettingsState) = Unit
-    override fun onModified(connection: HacConnectionSettingsState) = Unit
     override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = Unit
     override fun onRemoved(connection: HacConnectionSettingsState) = Unit
 

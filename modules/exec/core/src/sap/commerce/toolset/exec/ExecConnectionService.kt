@@ -19,19 +19,27 @@
 package sap.commerce.toolset.exec
 
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.exec.settings.event.ExecConnectionListener
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.project.PropertyService
 
-abstract class ExecConnectionService<T : ExecConnectionSettingsState> {
+abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected val project: Project) {
 
     abstract var activeConnection: T
     abstract val connections: List<T>
 
+    protected abstract val listener: ExecConnectionListener<T>
+    protected abstract fun save(settings: Map<ExecConnectionScope, List<T>>, notify: Boolean = true)
+
+    protected fun onActivate(settings: T, notify: Boolean = true) = if (notify) listener.onActive(settings) else Unit
+    protected fun onAdd(settings: T, notify: Boolean = true) = if (notify) listener.onAdded(settings) else Unit
+    protected fun onRemove(settings: T, notify: Boolean = true) = if (notify) listener.onRemoved(settings) else Unit
+    protected fun onSave(settings: Map<ExecConnectionScope, List<T>>, notify: Boolean = true) = if (notify) listener.onSave(settings) else Unit
+
     abstract fun default(): T
-    abstract fun add(settings: T)
-    abstract fun remove(settings: T, scope: ExecConnectionScope = settings.scope)
-    abstract fun save(settings: Map<ExecConnectionScope, List<T>>)
+    abstract fun add(settings: T, notify: Boolean = true)
+    abstract fun remove(settings: T, scope: ExecConnectionScope = settings.scope, notify: Boolean = true)
 
     fun save(settings: Collection<T>) = save(
         settings.groupBy { it.scope }
@@ -39,8 +47,16 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState> {
     )
 
     fun save(settings: T) {
-        remove(settings)
-        add(settings)
+        remove(
+            settings = settings,
+            notify = false,
+        )
+        add(
+            settings = settings,
+            notify = false
+        )
+
+        onSave(mapOf(settings.scope to listOf(settings)))
     }
 
     fun getPropertyOrDefault(project: Project, key: String, fallback: String) = PropertyService.getInstance(project)
