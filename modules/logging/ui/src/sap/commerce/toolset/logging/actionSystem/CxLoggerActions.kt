@@ -20,15 +20,13 @@ package sap.commerce.toolset.logging.actionSystem
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.DumbAware
-import com.intellij.util.asSafely
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.CxLoggersConstants
 import sap.commerce.toolset.logging.LogLevel
-import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
+import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateItemNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateLoggersOptionsNode
-import javax.swing.tree.DefaultMutableTreeNode
 
 abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 
@@ -98,10 +96,3 @@ class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
         }
     }
 }
-
- fun AnActionEvent.selectedNode(): Any? = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-    ?.asSafely<LoggersOptionsTree>()
-    ?.selectionPath
-    ?.lastPathComponent
-    ?.asSafely<DefaultMutableTreeNode>()
-    ?.userObject
