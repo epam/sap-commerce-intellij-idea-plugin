@@ -21,7 +21,9 @@ import de.hybris.platform.hac.facade.HacLog4JFacade
 /*
 ======= Version: 2025.1.6 =======
 
-This script is being used by the Plugin to retrieve current Loggers details from the remote server via hAC API.
+This script is being used by the Plugin to update Loggers and retrieve the current state of all Loggers
+ from the remote server via hAC API. The list of loggers that must be updated should be specified instead of placeholder
+ '[loggersMapToBeReplacedPlaceholder]'.
 
 The following contract is expected:
  - script must print the results as a return value of the script
