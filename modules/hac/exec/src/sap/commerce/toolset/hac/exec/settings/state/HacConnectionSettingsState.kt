@@ -21,6 +21,8 @@ package sap.commerce.toolset.hac.exec.settings.state
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
@@ -82,19 +84,12 @@ data class HacConnectionSettingsState(
         override var webroot: String,
         override var ssl: Boolean,
         override var timeout: Int,
+        override val username: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_USERNAME),
+        override val password: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_PASSWORD),
         var wsl: Boolean,
         var sslProtocol: String,
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
-
-        override val username
-            get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
-                ?.userName
-                ?: DEFAULT_USERNAME
-        override val password
-            get() = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
-                ?.getPasswordAsString()
-                ?: DEFAULT_PASSWORD
 
         override fun immutable() = HacConnectionSettingsState(
             uuid = uuid,
@@ -108,7 +103,7 @@ data class HacConnectionSettingsState(
             wsl = wsl,
             sslProtocol = sslProtocol,
             sessionCookieName = sessionCookieName,
-            credentials = Credentials(username, password)
+            credentials = Credentials(username.get(), password.get())
         )
     }
 

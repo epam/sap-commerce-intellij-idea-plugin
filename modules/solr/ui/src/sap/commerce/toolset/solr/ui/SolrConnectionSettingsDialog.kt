@@ -140,7 +140,8 @@ class SolrConnectionSettingsDialog(
                 label("Username:")
                 usernameTextField = textField()
                     .align(AlignX.FILL)
-                    .enabled(false)
+                    .bindText(mutable.username)
+                    .enabledIf(editableCredentials)
                     .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -149,7 +150,8 @@ class SolrConnectionSettingsDialog(
                 label("Password:")
                 passwordTextField = passwordField()
                     .align(AlignX.FILL)
-                    .enabled(false)
+                    .bindText(mutable.password)
+                    .enabledIf(editableCredentials)
                     .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -164,7 +166,7 @@ class SolrConnectionSettingsDialog(
             timeout = timeoutIntSpinner.number,
             socketTimeout = timeoutIntSpinner.number,
             webroot = webrootTextField.text,
-            credentials = Credentials(usernameTextField.text, String(passwordTextField.password)),
+            credentials = Credentials(mutable.username.get(), mutable.password.get()),
         )
 
         SolrExecClient.getInstance(project).listOfCores(testSettings)

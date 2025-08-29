@@ -20,6 +20,7 @@ package sap.commerce.toolset.exec.ui
 
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -46,13 +47,14 @@ import javax.swing.JLabel
 
 const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
 
-abstract class ConnectionSettingsDialog<T: ExecConnectionSettingsState.Mutable>(
+abstract class ConnectionSettingsDialog<T : ExecConnectionSettingsState.Mutable>(
     protected val project: Project,
     parentComponent: Component,
     protected val mutable: T,
     dialogTitle: String
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
 
+    protected val editableCredentials = AtomicBooleanProperty(false)
     protected lateinit var connectionNameTextField: JBTextField
     protected lateinit var urlPreviewLabel: JLabel
     protected lateinit var hostTextField: JBTextField
@@ -124,11 +126,14 @@ abstract class ConnectionSettingsDialog<T: ExecConnectionSettingsState.Mutable>(
     private fun loadCredentials() {
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
             override fun run(indicator: ProgressIndicator) {
-                passwordTextField.text = mutable.password
-                passwordTextField.isEnabled = true
+                val credentials = mutable.retrieveCredentials()
 
-                usernameTextField.text = mutable.username
-                usernameTextField.isEnabled = true
+                if (credentials != null) {
+                    mutable.username.set(credentials.userName ?: mutable.username.get())
+                    mutable.password.set(credentials.getPasswordAsString() ?: mutable.password.get())
+                }
+
+                editableCredentials.set(true)
             }
         })
     }

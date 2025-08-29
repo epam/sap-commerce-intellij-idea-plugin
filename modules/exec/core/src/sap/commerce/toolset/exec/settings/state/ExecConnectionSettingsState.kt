@@ -21,6 +21,7 @@ package sap.commerce.toolset.exec.settings.state
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
+import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.util.text.StringUtil
 import sap.commerce.toolset.exec.generateUrl
 
@@ -50,8 +51,8 @@ interface ExecConnectionSettingsState {
         var host: String
         var port: String?
         var webroot: String
-        val username: String
-        val password: String
+        val username: ObservableMutableProperty<String>
+        val password: ObservableMutableProperty<String>
 
         fun retrieveCredentials() = retrieveCredentials(uuid)
         fun immutable(): ExecConnectionSettingsState

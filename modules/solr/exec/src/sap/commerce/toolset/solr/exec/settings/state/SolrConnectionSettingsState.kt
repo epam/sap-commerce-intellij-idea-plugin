@@ -19,6 +19,8 @@
 package sap.commerce.toolset.solr.exec.settings.state
 
 import com.intellij.credentialStore.Credentials
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
@@ -47,10 +49,10 @@ data class SolrConnectionSettingsState(
         get() = credentials ?: retrieveCredentials()
     override val username
         @Transient
-        get() = dynamicCredentials?.userName ?: "solrserver"
+        get() = dynamicCredentials?.userName ?: DEFAULT_USERNAME
     override val password
         @Transient
-        get() = dynamicCredentials?.getPasswordAsString() ?: "server123"
+        get() = dynamicCredentials?.getPasswordAsString() ?: DEFAULT_PASSWORD
 
     override fun mutable() = Mutable(
         uuid = uuid,
@@ -73,13 +75,10 @@ data class SolrConnectionSettingsState(
         override var webroot: String,
         override var ssl: Boolean,
         override var timeout: Int,
+        override val username: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_USERNAME),
+        override val password: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_PASSWORD),
         var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
-
-        override val username
-            get() = retrieveCredentials()?.userName ?: "solrserver"
-        override val password
-            get() = retrieveCredentials()?.getPasswordAsString() ?: "server123"
 
         override fun immutable() = SolrConnectionSettingsState(
             uuid = uuid,
@@ -91,7 +90,12 @@ data class SolrConnectionSettingsState(
             ssl = ssl,
             timeout = timeout,
             socketTimeout = socketTimeout,
-            credentials = Credentials(username, password)
+            credentials = Credentials(username.get(), password.get())
         )
+    }
+
+    companion object {
+        private const val DEFAULT_USERNAME = "solrserver"
+        private const val DEFAULT_PASSWORD = "server123"
     }
 }

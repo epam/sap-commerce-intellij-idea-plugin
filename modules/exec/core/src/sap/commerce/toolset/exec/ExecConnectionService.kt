@@ -39,10 +39,10 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected 
     protected fun onActivate(settings: T, notify: Boolean = true) = if (notify) listener.onActive(settings) else Unit
     protected fun onRemove(settings: T, notify: Boolean = true) = if (notify) listener.onRemoved(settings) else Unit
 
-    protected fun onAdd(settings: T, notify: Boolean = true) {
+    protected fun onAdd(settings: T, notify: Boolean = true) = if (notify) {
         saveCredentials(settings)
-        if (notify) listener.onAdded(settings) else Unit
-    }
+        listener.onAdded(settings)
+    } else Unit
 
     protected fun onSave(settings: List<T>, notify: Boolean = true) {
         settings.forEach { saveCredentials(it) }
