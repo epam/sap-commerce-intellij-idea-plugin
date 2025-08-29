@@ -40,18 +40,6 @@ class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
 
     override fun update(e: AnActionEvent) {
         val selectedNode = e.selectedNode()
-        when (selectedNode) {
-            is BundledLoggersTemplateItemNode -> {
-                e.presentation.isEnabledAndVisible = true
-            }
-
-            is CustomLoggersTemplateLoggersOptionsNode -> {
-                e.presentation.isEnabledAndVisible = true
-            }
-
-            else -> {
-                e.presentation.isEnabledAndVisible = false
-            }
-        }
+        e.presentation.isEnabledAndVisible = selectedNode is BundledLoggersTemplateItemNode || selectedNode is CustomLoggersTemplateLoggersOptionsNode
     }
 }
