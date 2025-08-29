@@ -33,14 +33,17 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 @Service(Service.Level.PROJECT)
 class HacExecConnectionService(project: Project) : ExecConnectionService<HacConnectionSettingsState>(project) {
 
-    override var activeConnection: HacConnectionSettingsState
-        get() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
-            ?.let { uuid -> connections.find { it.uuid == uuid } }
-            ?: default().also {
-                HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                add(it)
+    private val lock = Any()
 
-                onActivate(it)
+    override var activeConnection: HacConnectionSettingsState
+        get() = findActiveConnection()
+            ?: synchronized(lock) {
+                findActiveConnection()
+                    ?: default().also {
+                        HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+                        add(it, false)
+                        onActivate(it)
+                    }
             }
         set(value) {
             HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
@@ -49,11 +52,7 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         }
 
     override val connections: List<HacConnectionSettingsState>
-        get() = buildList {
-            addAll(HacExecDeveloperSettings.getInstance(project).connections)
-            addAll(HacExecProjectSettings.getInstance(project).connections)
-        }
-            .takeIf { it.isNotEmpty() }
+        get() = persistedConnections()
             ?: listOf(default())
 
     override val listener: HacConnectionSettingsListener
@@ -96,17 +95,23 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         onSave(settings, notify)
     }
 
-    override fun default(): HacConnectionSettingsState {
-        val connectionSettings = HacConnectionSettingsState(
-            port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002"),
-            webroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, ""),
-            credentials = Credentials(
-                "admin",
-                getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
-            )
+    override fun default() = HacConnectionSettingsState(
+        port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002"),
+        webroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, ""),
+        credentials = Credentials(
+            "admin",
+            getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
         )
-        return connectionSettings
+    )
+
+    private fun persistedConnections() = buildList {
+        addAll(HacExecDeveloperSettings.getInstance(project).connections)
+        addAll(HacExecProjectSettings.getInstance(project).connections)
     }
+        .takeIf { it.isNotEmpty() }
+
+    private fun findActiveConnection() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
+        ?.let { uuid -> persistedConnections()?.find { it.uuid == uuid } }
 
     companion object {
         fun getInstance(project: Project): HacExecConnectionService = project.service()
