@@ -24,7 +24,6 @@ import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersRootNode
@@ -35,7 +34,7 @@ import javax.swing.tree.TreePath
 private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
-class LoggersOptionsTree(myProject: Project, coroutineScope: CoroutineScope) : Tree(), Disposable {
+class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
 
     private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(myProject)))
 

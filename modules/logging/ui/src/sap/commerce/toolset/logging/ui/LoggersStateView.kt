@@ -112,7 +112,6 @@ class LoggersStateView(
         get() = panel.value
 
     fun renderFetchLoggers() = toggleView(showFetchLoggers)
-    fun renderNoLoggerTemplates() = toggleView(showNoLogger)
     fun renderNothingSelected() = toggleView(showNothingSelected)
     fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
         val view = if (loggers.isEmpty()) noLoggersView()

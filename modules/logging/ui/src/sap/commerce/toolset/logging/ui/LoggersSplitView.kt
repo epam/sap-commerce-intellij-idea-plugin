@@ -51,7 +51,7 @@ class LoggersSplitView(
     private val coroutineScope: CoroutineScope
 ) : OnePixelSplitter(false, 0.25f), Disposable {
 
-    private val tree = LoggersOptionsTree(project, coroutineScope).apply { registerListeners(this) }
+    private val tree = LoggersOptionsTree(project).apply { registerListeners(this) }
     private val loggersStateView = LoggersStateView(project, coroutineScope)
     private val loggersTemplatesStateView = LoggersTemplatesStateView(project, coroutineScope)
 
