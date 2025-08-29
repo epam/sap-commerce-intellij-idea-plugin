@@ -128,57 +128,33 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             )
         )
 
-        GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-            coroutineScope.launch {
-                val loggers = result.result
-                    ?.split("\n")
-                    ?.map { it.split(" | ") }
-                    ?.filter { it.size == 3 }
-                    ?.map {
-                        val loggerIdentifier = it[0]
-                        val effectiveLevel = it[1]
-                        val parentName = it[2]
+        executeLoggersGroovyScript(context, server) { _, groovyScriptResult ->
+            val result = groovyScriptResult.result
+            val loggers = groovyScriptResult.loggers
 
-                        val psiElementPointer = getPsiElementPointer(project, loggerIdentifier)
-                        val icon = resolveIcon(project, loggerIdentifier)
-
-                        CxLoggerModel.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
-                    }
-                    ?.distinctBy { it.name }
-                    ?.associateBy { it.name }
-                    ?.takeIf { it.isNotEmpty() }
-
-                if (loggers == null || result.hasError) {
-                    clearState(server.uuid)
-                } else {
-                    updateState(loggers, server.uuid)
+            when {
+                result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
+                    """
+                                <p>${result.errorMessage}</p>
+                                <p>Server: ${server.shortenConnectionName}</p>
+                            """.trimIndent()
                 }
 
-                project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
+                loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
+                    """
+                                <p>No Loggers information returned from the remote server or is in the incorrect format.</p>
+                                <p>Server: ${server.shortenConnectionName}</p>
+                            """.trimIndent()
+                }
 
-                when {
-                    result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
-                        """
-                            <p>${result.errorMessage}</p>
-                            <p>Server: ${server.shortenConnectionName}</p>
-                        """.trimIndent()
-                    }
-
-                    loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
-                        """
-                            <p>No Loggers information returned from the remote server or is in the incorrect format.</p>
-                            <p>Server: ${server.shortenConnectionName}</p>
-                        """.trimIndent()
-                    }
-
-                    else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
-                        """
-                            <p>Declared loggers: ${loggers.size}</p>
-                            <p>Server: ${server.shortenConnectionName}</p>
-                        """.trimIndent()
-                    }
+                else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
+                    """
+                                <p>Declared loggers: ${loggers.size}</p>
+                                <p>Server: ${server.shortenConnectionName}</p>
+                            """.trimIndent()
                 }
             }
+
         }
     }
 
@@ -201,10 +177,13 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             )
         )
 
-        executeGroovyLoggersScript(
+        executeLoggersGroovyScript(
             context,
             server
         ) { _, groovyScriptResult ->
+
+            callback.invoke(coroutineScope, groovyScriptResult.result)
+
             val result = groovyScriptResult.result
             val loggers = groovyScriptResult.loggers
 
@@ -230,13 +209,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    private fun executeGroovyLoggersScript(
-        context: GroovyExecContext,
-        server: HacConnectionSettingsState,
+    private fun executeLoggersGroovyScript(
+        context: GroovyExecContext, server: HacConnectionSettingsState,
         callback: (CoroutineScope, LoggersGroovyScriptExecResult) -> Unit = { _, _ -> }
     ) {
-        fetching = true
-
         GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
             coroutineScope.launch {
                 val loggers = result.result
@@ -266,29 +242,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 callback.invoke(coroutineScope, LoggersGroovyScriptExecResult(loggers, result))
 
                 project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
-
-                when {
-                    result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
-                        """
-                            <p>${result.errorMessage}</p>
-                            <p>Server: ${server.shortenConnectionName}</p>
-                        """.trimIndent()
-                    }
-
-                    loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
-                        """
-                            <p>No Loggers information returned from the remote server or is in the incorrect format.</p>
-                            <p>Server: ${server.shortenConnectionName}</p>
-                        """.trimIndent()
-                    }
-
-                    else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
-                        """
-                            <p>Declared loggers: ${loggers.size}</p>
-                            <p>Server: ${server.shortenConnectionName}</p>
-                        """.trimIndent()
-                    }
-                }
             }
         }
     }

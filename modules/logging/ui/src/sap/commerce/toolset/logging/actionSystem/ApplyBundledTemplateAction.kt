@@ -42,9 +42,7 @@ class ApplyBundledTemplateAction : AnAction() {
             ?.asSafely<BundledLoggersTemplateItemNode>()
             ?.loggers
             ?.let {
-                CxLoggerAccess.getInstance(project).setLoggers(it) { _, result ->
-                    println(result)
-                }
+                CxLoggerAccess.getInstance(project).setLoggers(it)
             }
     }
 
