@@ -18,10 +18,7 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionGroup
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.DumbAware
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateItemNode
@@ -33,7 +30,7 @@ class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
         val selectedNode = e?.selectedNode() ?: return emptyArray()
         return when (selectedNode) {
-            is BundledLoggersTemplateItemNode -> arrayOf(ApplyBundledTemplateAction())
+            is BundledLoggersTemplateItemNode -> arrayOf(ActionManager.getInstance().getAction("sap.cx.loggers.apply.bundle.template"))
             else -> emptyArray()
         }
     }

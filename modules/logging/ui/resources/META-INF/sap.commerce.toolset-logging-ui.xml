@@ -25,6 +25,8 @@
     <actions>
         <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.FetchLoggersStateAction"/>
 
+        <action id="sap.cx.loggers.apply.bundle.template" class="sap.commerce.toolset.logging.actionSystem.ApplyBundledTemplateAction"/>
+
         <group id="sap.cx.loggers.toolbar.actions" searchable="false">
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
             <reference ref="sap.cx.fetch.loggers.action"/>
