@@ -55,7 +55,6 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
 
                 toolWindow.contentManager.addContentManagerListener(object: ContentManagerListener {
                     override fun selectionChanged(event: ContentManagerEvent) {
-                        println("Tool window content selection changed: ${event.content.displayName}")
                         if (event.content.displayName == LoggersView.ID) {
                             event.content.component
                                 .asSafely<LoggersView>()

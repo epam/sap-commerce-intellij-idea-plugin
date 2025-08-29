@@ -49,7 +49,6 @@ class LoggersView(
         treePane.updateTree()
     }
 
-
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
