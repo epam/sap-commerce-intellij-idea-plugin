@@ -26,7 +26,7 @@ import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
-import sap.commerce.toolset.hac.HacConstants
+import sap.commerce.toolset.hac.HacExecConstants
 import java.util.*
 
 data class HacConnectionSettingsState(
@@ -38,7 +38,7 @@ data class HacConnectionSettingsState(
     @OptionTag override val port: String? = null,
     @OptionTag override val webroot: String = "",
     @OptionTag override val ssl: Boolean = true,
-    @OptionTag override val timeout: Int = HacConstants.DEFAULT_TIMEOUT,
+    @OptionTag override val timeout: Int = HacExecConstants.DEFAULT_TIMEOUT,
 
     @Transient
     override val credentials: Credentials? = null,

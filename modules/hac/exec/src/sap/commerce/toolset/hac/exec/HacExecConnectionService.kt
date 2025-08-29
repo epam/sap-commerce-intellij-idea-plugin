@@ -33,14 +33,20 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 @Service(Service.Level.PROJECT)
 class HacExecConnectionService(project: Project) : ExecConnectionService<HacConnectionSettingsState>(project) {
 
-    override var activeConnection: HacConnectionSettingsState
-        get() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
-            ?.let { uuid -> connections.find { it.uuid == uuid } }
-            ?: default().also {
-                HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                add(it)
+    private val lock = Any()
 
-                onActivate(it)
+    override var activeConnection: HacConnectionSettingsState
+        get() = findActiveConnection(connections)
+            ?: synchronized(lock) {
+                with(connections) {
+                    findActiveConnection(this)
+                    // connections must be not empty and fallback to single-connection list
+                        ?: this.first().also {
+                            HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+
+                            onActivate(it)
+                        }
+                }
             }
         set(value) {
             HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
@@ -107,6 +113,9 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         )
         return connectionSettings
     }
+
+    private fun findActiveConnection(connections: List<HacConnectionSettingsState>) = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
+        ?.let { uuid -> connections.find { it.uuid == uuid } }
 
     companion object {
         fun getInstance(project: Project): HacExecConnectionService = project.service()

@@ -33,14 +33,20 @@ import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 @Service(Service.Level.PROJECT)
 class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrConnectionSettingsState>(project) {
 
-    override var activeConnection: SolrConnectionSettingsState
-        get() = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
-            ?.let { uuid -> connections.find { it.uuid == uuid } }
-            ?: default().also {
-                SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                add(it)
+    private val lock = Any()
 
-                onActivate(it)
+    override var activeConnection: SolrConnectionSettingsState
+        get() = findActiveConnection(connections)
+            ?: synchronized(lock) {
+                with(connections) {
+                    findActiveConnection(this)
+                    // connections must be not empty and fallback to single-connection list
+                        ?: this.first().also {
+                            SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+
+                            onActivate(it)
+                        }
+                }
             }
         set(value) {
             SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
@@ -106,6 +112,9 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         )
         return connectionSettings
     }
+
+    private fun findActiveConnection(connections: List<SolrConnectionSettingsState>) = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
+        ?.let { uuid -> connections.find { it.uuid == uuid } }
 
     companion object {
         fun getInstance(project: Project): SolrExecConnectionService = project.service()

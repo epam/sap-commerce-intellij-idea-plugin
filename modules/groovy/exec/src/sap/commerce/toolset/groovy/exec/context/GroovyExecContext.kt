@@ -22,6 +22,7 @@ import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
 
@@ -68,7 +69,7 @@ data class GroovyExecContext(
         const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce instance..."
 
         fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null) = Settings(
-            timeout = connectionSettings?.timeout ?: 0,
+            timeout = connectionSettings?.timeout ?: HacExecConstants.DEFAULT_TIMEOUT,
             transactionMode = TransactionMode.ROLLBACK
         )
     }
