@@ -39,7 +39,7 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected 
 
     abstract fun default(): T
     abstract fun add(settings: T, notify: Boolean = true)
-    abstract fun remove(settings: T, scope: ExecConnectionScope = settings.scope, notify: Boolean = true)
+    abstract fun remove(settings: T, notify: Boolean = true)
 
     fun save(settings: Collection<T>) = save(
         settings.groupBy { it.scope }

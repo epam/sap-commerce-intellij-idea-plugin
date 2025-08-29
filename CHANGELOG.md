@@ -25,6 +25,7 @@
 - Use own configuration pane for hAC-related connection settings [#1543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1543)
 - Extracted HacHttpClient Cache and adjusted notifications [#1557](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1557)
 - Ensure single connection settings creation in case of no active connection [#1558](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1558)
+- Resolved duplicate connection settings after changing the connection scope [#1559](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1559)
 
 ### `Solr` enhancements
 - Use own configuration pane for Solr-related connection settings [#1541](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1541)
