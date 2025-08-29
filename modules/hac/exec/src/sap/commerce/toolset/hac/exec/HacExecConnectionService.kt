@@ -38,11 +38,12 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
     override var activeConnection: HacConnectionSettingsState
         get() = findActiveConnection()
             ?: synchronized(lock) {
-                findActiveConnection() ?: default().also {
-                    HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                    add(it, false)
-                    onActivate(it)
-                }
+                findActiveConnection()
+                    ?: default().also {
+                        HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+                        add(it, false)
+                        onActivate(it)
+                    }
             }
         set(value) {
             HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
