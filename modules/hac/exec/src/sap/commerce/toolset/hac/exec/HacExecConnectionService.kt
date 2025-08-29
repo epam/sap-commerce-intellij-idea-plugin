@@ -43,6 +43,8 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
                     ?: default().also {
                         HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
 
+                        add(it, false)
+
                         onActivate(it)
                     }
             }

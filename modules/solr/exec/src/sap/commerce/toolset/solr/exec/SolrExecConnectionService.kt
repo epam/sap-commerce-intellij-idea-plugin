@@ -43,6 +43,8 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
                     ?: default().also {
                         SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
 
+                        add(it, false)
+
                         onActivate(it)
                     }
             }
