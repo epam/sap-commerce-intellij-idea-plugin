@@ -35,6 +35,7 @@ import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleProvider
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
@@ -43,7 +44,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 @Service(Service.Level.PROJECT)
-class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope) : SimpleToolWindowPanel(true), Disposable {
+class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope) : SimpleToolWindowPanel(true), ContentActivationAware, Disposable {
 
     override fun dispose() {
         //NOP

@@ -49,9 +49,10 @@ import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFac
 import sap.commerce.toolset.ccv2.ui.view.CCv2BuildsDataView
 import sap.commerce.toolset.ccv2.ui.view.CCv2DeploymentsDataView
 import sap.commerce.toolset.ccv2.ui.view.CCv2EnvironmentsDataView
+import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
 import java.io.Serial
 
-class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), Disposable {
+class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), ContentActivationAware, Disposable {
 
     override fun dispose() = Unit
 

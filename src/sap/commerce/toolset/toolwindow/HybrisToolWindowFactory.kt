@@ -37,6 +37,7 @@ import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.logging.ui.LoggersView
 import sap.commerce.toolset.typeSystem.ui.TSView
+import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
 
 class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
 
@@ -53,13 +54,18 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
                     createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
                 ).forEach { toolWindow.contentManager.addContent(it) }
 
-                toolWindow.contentManager.addContentManagerListener(object: ContentManagerListener {
+                toolWindow.contentManager.addContentManagerListener(object : ContentManagerListener {
                     override fun selectionChanged(event: ContentManagerEvent) {
-                        if (event.content.displayName == LoggersView.ID) {
-                            event.content.component
-                                .asSafely<LoggersView>()
-                                ?.updateLoggers()
-                        }
+                        event.content.component
+                            .asSafely<ContentActivationAware>()
+                            ?.onActivated()
+                        toolWindow.contentManager.contents
+                            .filter { it.displayName != event.content.displayName }
+                            .forEach {
+                                it.component
+                                    .asSafely<ContentActivationAware>()
+                                    ?.onDeactivated()
+                            }
                     }
                 })
             }

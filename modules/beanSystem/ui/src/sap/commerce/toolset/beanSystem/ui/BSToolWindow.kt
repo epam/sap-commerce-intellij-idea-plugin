@@ -42,10 +42,11 @@ import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 import sap.commerce.toolset.beanSystem.settings.event.BSViewSettingsListener
 import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
 import java.awt.GridBagLayout
 import java.io.Serial
 
-class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
+class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, true), ContentActivationAware, Disposable {
 
     private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BSViewSettings.getInstance(project)

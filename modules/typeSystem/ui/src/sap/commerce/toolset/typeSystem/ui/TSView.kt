@@ -40,10 +40,11 @@ import sap.commerce.toolset.typeSystem.settings.TSViewSettings
 import sap.commerce.toolset.typeSystem.settings.event.TSViewSettingsListener
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.components.TSTreePanel
+import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
 import java.awt.GridBagLayout
 import java.io.Serial
 
-class TSView(private val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
+class TSView(private val project: Project) : SimpleToolWindowPanel(false, true), ContentActivationAware, Disposable {
 
     private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
     private val mySettings = TSViewSettings.getInstance(project)
