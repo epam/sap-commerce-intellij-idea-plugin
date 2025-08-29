@@ -19,6 +19,7 @@
 package sap.commerce.toolset.logging.template
 
 import com.google.gson.Gson
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.extensions.ExtensionsService
@@ -26,33 +27,39 @@ import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.CxLoggersConstants
 import sap.commerce.toolset.logging.resolveIconBlocking
 
-object CxLoggersTemplatesAccess {
+@Service(Service.Level.PROJECT)
+class CxLoggersTemplatesService(private val project: Project) {
 
     private val iconsMap = mapOf(
         "DISABLE" to HybrisIcons.Log.Template.DISABLE,
         "ENABLE" to HybrisIcons.Log.Template.ENABLE
     )
 
-    fun bundledLoggerTemplates(project: Project): List<CxLoggersTemplateModel> = ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
-            .let { Gson().fromJson(it, CxLoggersTemplatesDto::class.java) }
-            .templates
-            .takeIf { it.isNotEmpty() }
-            ?.map { item ->
-                CxLoggersTemplateModel(
-                    name = item.name,
-                    loggers = item.loggers
-                        .map { logConfig ->
-                            CxLoggerModel.of(
-                                name = logConfig.identifier,
-                                effectiveLevel = logConfig.effectiveLevel,
-                                icon = resolveIconBlocking(project, logConfig.identifier)
-                            )
-                        },
-                    icon = item.iconName
-                        ?.let { iconsMap.getOrElse(it) { HybrisIcons.Log.Template.DEFAULT } }
-                        ?: HybrisIcons.Log.Template.DEFAULT
+    fun bundledLoggerTemplates(): List<CxLoggersTemplateModel> = ExtensionsService.getInstance()
+        .findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
+        .let { Gson().fromJson(it, CxLoggersTemplatesDto::class.java) }
+        .templates
+        .takeIf { it.isNotEmpty() }
+        ?.map { item ->
+            CxLoggersTemplateModel(
+                name = item.name,
+                loggers = item.loggers
+                    .map { logConfig ->
+                        CxLoggerModel.of(
+                            name = logConfig.identifier,
+                            effectiveLevel = logConfig.effectiveLevel,
+                            icon = resolveIconBlocking(project, logConfig.identifier)
+                        )
+                    },
+                icon = item.iconName
+                    ?.let { iconsMap.getOrElse(it) { HybrisIcons.Log.Template.DEFAULT } }
+                    ?: HybrisIcons.Log.Template.DEFAULT
 
-                )
-            }
-            ?: emptyList()
+            )
+        }
+        ?: emptyList()
+
+    companion object {
+        fun getInstance(project: Project): CxLoggersTemplatesService = project.getService(CxLoggersTemplatesService::class.java)
     }
+}

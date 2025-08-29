@@ -21,14 +21,14 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.template.CxLoggersTemplatesAccess
+import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 import javax.swing.Icon
 
 class BundledLoggersTemplateGroupNode(private val project: Project) :
     LoggersOptionsNode("Bundled Loggers Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
 
     override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> {
-        return CxLoggersTemplatesAccess.bundledLoggerTemplates(project)
+        return CxLoggersTemplatesService.getInstance(project).bundledLoggerTemplates()
             .associate { item ->
                 item.name to BundledLoggersTemplateItemNode(item.name, item.icon, item.loggers, project)
             }
