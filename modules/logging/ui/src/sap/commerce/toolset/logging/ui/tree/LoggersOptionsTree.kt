@@ -53,7 +53,7 @@ class LoggersOptionsTree(myProject: Project, coroutineScope: CoroutineScope) : T
 
     override fun dispose() = Unit
 
-    fun update(connections: Map<HacConnectionSettingsState, Boolean>) = myTreeModel.reload(connections)
+    fun update(connections: List<HacConnectionSettingsState>) = myTreeModel.reload(connections)
     fun update() = myTreeModel.reload()
 
     companion object {

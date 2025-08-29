@@ -51,7 +51,9 @@ import java.util.*
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
 
     private var fetching: Boolean = false
-    private val loggersStates = WeakHashMap<HacConnectionSettingsState, CxLoggersState>()
+
+    //map: key is HacConnectionSettingsState.UUID value is a Pair of CxLoggersState and HacConnectionSettingsState
+    private val loggersStates = WeakHashMap<String, CxLoggersState>()
 
     val ready: Boolean
         get() = !fetching
@@ -59,7 +61,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     val stateInitialized: Boolean
         get() {
             val server = HacExecConnectionService.getInstance(project).activeConnection
-            return state(server).initialized
+            return state(server.uuid).initialized
         }
 
     init {
@@ -68,43 +70,47 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 override fun onActive(connection: HacConnectionSettingsState) = refresh()
                 override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = settings.values
                     .flatten()
-                    .forEach { clearState(it) }
+                    .forEach { clearState(it.uuid) }
+
+                override fun onRemoved(connection: HacConnectionSettingsState) {
+                    loggersStates.remove(connection.uuid)
+                }
             })
         }
     }
 
     fun logger(loggerIdentifier: String): CxLoggerModel? {
-        val server = HacExecConnectionService.getInstance(project).activeConnection
-        return if (stateInitialized) state(server).get(loggerIdentifier) else null
+        val connection = HacExecConnectionService.getInstance(project).activeConnection
+        return if (stateInitialized) state(connection.uuid).get(loggerIdentifier) else null
     }
 
     fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecResult) -> Unit = { _, _ -> }) {
-        val server = HacExecConnectionService.getInstance(project).activeConnection
+        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
         val context = LoggingExecContext(
-            connection = server,
-            executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName}]...",
+            connection = activeConnection,
+            executionTitle = "Update Log Level Status for SAP Commerce [${activeConnection.shortenConnectionName}]...",
             loggerName = loggerName,
             logLevel = logLevel,
-            timeout = server.timeout,
+            timeout = activeConnection.timeout,
         )
         fetching = true
         LoggingExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-            updateState(result.loggers, server)
+            updateState(result.loggers, activeConnection.uuid)
             callback.invoke(coroutineScope, result)
 
-            project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
+            project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(activeConnection)
 
             if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
                 <p>${result.errorMessage}</p>
-                <p>Server: ${server.shortenConnectionName}</p>
+                <p>Server: ${activeConnection.shortenConnectionName}</p>
             """.trimIndent()
             }
             else notify(NotificationType.INFORMATION, "Log Level Updated") {
                 """
                 <p>Level : $logLevel</p>
                 <p>Logger: $loggerName</p>
-                <p>Server: ${server.shortenConnectionName}</p>
+                <p>Server: ${activeConnection.shortenConnectionName}</p>
             """.trimIndent()
             }
         }
@@ -151,9 +157,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                         ?.takeIf { it.isNotEmpty() }
 
                     if (loggers == null || result.hasError) {
-                        clearState(server)
+                        clearState(server.uuid)
                     } else {
-                        updateState(loggers, server)
+                        updateState(loggers, server.uuid)
                     }
 
                     project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
@@ -261,9 +267,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     ?.takeIf { it.isNotEmpty() }
 
                 if (loggers == null || result.hasError) {
-                    clearState(server)
+                    clearState(server.uuid)
                 } else {
-                    updateState(loggers, server)
+                    updateState(loggers, server.uuid)
                 }
 
                 callback.invoke(coroutineScope, LoggersGroovyScriptExecResult(loggers, result))
@@ -296,13 +302,13 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun state(settings: HacConnectionSettingsState): CxLoggersState = loggersStates
-        .computeIfAbsent(settings) { CxLoggersState() }
+    fun state(settingsUUID: String): CxLoggersState = loggersStates
+        .computeIfAbsent(settingsUUID) { CxLoggersState() }
 
-    private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: HacConnectionSettingsState) {
+    private fun updateState(loggers: Map<String, CxLoggerModel>?, settingsUUID: String) {
         coroutineScope.launch {
 
-            state(settings).update(loggers ?: emptyMap())
+            state(settingsUUID).update(loggers ?: emptyMap())
 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
@@ -322,8 +328,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         loggersStates.clear()
     }
 
-    private fun clearState(settings: HacConnectionSettingsState) {
-        val logState = loggersStates[settings]
+    private fun clearState(settingsUUID: String) {
+        val logState = loggersStates[settingsUUID]
         logState?.clear()
 
         coroutineScope.launch {
@@ -351,6 +357,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         fun getInstance(project: Project): CxLoggerAccess = project.service()
     }
 }
+
 private data class LoggersGroovyScriptExecResult(
     val loggers: Map<String, CxLoggerModel>? = null,
     val result: DefaultExecResult

@@ -20,11 +20,12 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 
 class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote hAC Instances", HybrisIcons.Y.REMOTES, project) {
 
     override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersHacConnectionNode> = nodeParameters.connections
-        .filter { it.value } // only active connections
-        .map { (connection, active) -> LoggersHacConnectionNode(connection, project) }
-        .associateBy { "${it.hashCode()}" }
+        .filter { it == HacExecConnectionService.getInstance(project).activeConnection } // only active connections
+        .map { LoggersHacConnectionNode(it.uuid, project) }
+        .associateBy { it.connectionUUID }
 }

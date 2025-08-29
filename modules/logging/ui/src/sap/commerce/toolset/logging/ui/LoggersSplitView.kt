@@ -79,7 +79,7 @@ class LoggersSplitView(
                         ?.asSafely<LoggersOptionsTreeNode>()
                         ?.userObject
                         ?.asSafely<LoggersHacConnectionNode>()
-                        ?.takeIf { it.connectionSettings == remoteConnection }
+                        ?.takeIf { it.connectionUUID == remoteConnection.uuid }
                         ?.let { updateSecondComponent(it) }
                 }
             })
@@ -87,9 +87,7 @@ class LoggersSplitView(
     }
 
     fun updateTree() {
-        val connections = HacExecConnectionService.getInstance(project).connections
-            .associateWith { it == HacExecConnectionService.getInstance(project).activeConnection }
-        tree.update(connections)
+        tree.update(HacExecConnectionService.getInstance(project).connections)
     }
 
     private fun registerListeners(tree: LoggersOptionsTree) = tree
@@ -114,7 +112,9 @@ class LoggersSplitView(
                     ?.pathData(LoggersHacConnectionNode::class)
                     ?.let {
                         e.consume()
-                        CxLoggerAccess.getInstance(project).fetch(it.connectionSettings)
+                        HacExecConnectionService.getInstance(project).connections
+                            .find { connection -> connection.uuid == it.connectionUUID}
+                            ?.let { connection -> CxLoggerAccess.getInstance(project).fetch(connection) }
                     }
             }
         })
@@ -127,7 +127,7 @@ class LoggersSplitView(
                 is LoggersHacConnectionNode -> {
                     secondComponent = loggersStateView.view
 
-                    CxLoggerAccess.getInstance(project).state(node.connectionSettings).get()
+                    CxLoggerAccess.getInstance(project).state(node.connectionUUID).get()
                         ?.let { loggersStateView.renderLoggers(it) }
                         ?: loggersStateView.renderFetchLoggers()
                 }
