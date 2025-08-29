@@ -24,8 +24,11 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 
 class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote hAC Instances", HybrisIcons.Y.REMOTES, project) {
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersHacConnectionNode> = nodeParameters.connections
-        .filter { it == HacExecConnectionService.getInstance(project).activeConnection } // only active connections
-        .map { LoggersHacConnectionNode(it.uuid, project) }
-        .associateBy { it.connectionUUID }
+    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersHacConnectionNode> {
+        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+        return nodeParameters.connections
+            .filter { it == activeConnection } // only active connections
+            .map { LoggersHacConnectionNode(it.uuid, project) }
+            .associateBy { it.connectionUUID }
+    }
 }
