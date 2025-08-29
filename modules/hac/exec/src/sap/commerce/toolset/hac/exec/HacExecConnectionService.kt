@@ -102,17 +102,14 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         onSave(settings, notify)
     }
 
-    override fun default(): HacConnectionSettingsState {
-        val connectionSettings = HacConnectionSettingsState(
-            port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002"),
-            webroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, ""),
-            credentials = Credentials(
-                "admin",
-                getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
-            )
+    override fun default() = HacConnectionSettingsState(
+        port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002"),
+        webroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, ""),
+        credentials = Credentials(
+            "admin",
+            getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
         )
-        return connectionSettings
-    }
+    )
 
     private fun findActiveConnection(connections: List<HacConnectionSettingsState>) = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
         ?.let { uuid -> connections.find { it.uuid == uuid } }

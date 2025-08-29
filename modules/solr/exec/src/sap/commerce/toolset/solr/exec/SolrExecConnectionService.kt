@@ -102,16 +102,13 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         onSave(settings, notify)
     }
 
-    override fun default(): SolrConnectionSettingsState {
-        val connectionSettings = SolrConnectionSettingsState(
-            port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"),
-            credentials = Credentials(
-                getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"),
-                getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
-            )
+    override fun default() = SolrConnectionSettingsState(
+        port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"),
+        credentials = Credentials(
+            getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"),
+            getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
         )
-        return connectionSettings
-    }
+    )
 
     private fun findActiveConnection(connections: List<SolrConnectionSettingsState>) = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
         ?.let { uuid -> connections.find { it.uuid == uuid } }
