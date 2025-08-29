@@ -79,3 +79,22 @@ val ExecConnectionSettingsState.connectionName: String
 val ExecConnectionSettingsState.shortenConnectionName: String
     get() = connectionName
         .let { StringUtil.shortenPathWithEllipsis(it, 20) }
+
+val ExecConnectionSettingsState.Mutable.generatedURL: String
+    get() = generateUrl(ssl, host, port, webroot)
+
+val ExecConnectionSettingsState.Mutable.presentationName: String
+    get() = (name
+        ?.takeIf { it.isNotBlank() }
+        ?: generatedURL
+            .replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS)
+            .takeIf { it.isNotBlank() }
+        )
+        .let { scope.shortTitle + " : " + it }
+
+val ExecConnectionSettingsState.Mutable.connectionName: String
+    get() = name ?: generatedURL
+
+val ExecConnectionSettingsState.Mutable.shortenConnectionName: String
+    get() = connectionName
+        .let { StringUtil.shortenPathWithEllipsis(it, 20) }

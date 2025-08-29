@@ -56,6 +56,7 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
         private var originalActiveConnection = HacExecConnectionService.getInstance(project).activeConnection
 
         override fun createPanel(): DialogPanel {
+            activeServerModel = ConnectionComboBoxModel()
             connectionsListPanel = HacConnectionSettingsListPanel(project, disposable) {
                 val previousSelectedItem = activeServerModel.selectedItem?.asSafely<HacConnectionSettingsState>()?.uuid
                 val modifiedConnections = connectionsListPanel.data.map { it.immutable() }
@@ -63,7 +64,6 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
                 activeServerModel.selectedItem = modifiedConnections.find { it.uuid == previousSelectedItem }
                 activeServerComboBox.repaint()
             }
-
 
             return panel {
                 row {

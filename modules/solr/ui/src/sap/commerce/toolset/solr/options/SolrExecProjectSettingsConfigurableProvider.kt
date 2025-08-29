@@ -22,6 +22,7 @@ import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
@@ -53,24 +54,35 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
         private var originalConnections = SolrExecConnectionService.getInstance(project).connections.map { it.mutable() }
         private var originalActiveConnection = SolrExecConnectionService.getInstance(project).activeConnection
 
-        override fun createPanel() = panel {
-            row {
-                icon(HybrisIcons.Console.SOLR)
-                activeServerComboBox = comboBox(
-                    activeServerModel,
-                    renderer = SimpleListCellRenderer.create("?") { it.presentationName }
-                )
-                    .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
-                    .onIsModified { originalActiveConnection.uuid != activeServerComboBox.selectedItem?.asSafely<SolrConnectionSettingsState>()?.uuid }
-                    .align(AlignX.FILL)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
+        override fun createPanel(): DialogPanel {
+            activeServerModel = ConnectionComboBoxModel()
+            connectionsListPanel = SolrConnectionSettingsListPanel(project, disposable) {
+                val previousSelectedItem = activeServerModel.selectedItem?.asSafely<SolrConnectionSettingsState>()?.uuid
+                val modifiedConnections = connectionsListPanel.data.map { it.immutable() }
+                activeServerModel.refresh(modifiedConnections)
+                activeServerModel.selectedItem = modifiedConnections.find { it.uuid == previousSelectedItem }
+                activeServerComboBox.repaint()
+            }
 
-            group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
+            return panel {
                 row {
-                    cell(connectionsListPanel)
-                        .onIsModified { connectionsListPanel.data != originalConnections }
-                        .align(Align.FILL)
+                    icon(HybrisIcons.Console.SOLR)
+                    activeServerComboBox = comboBox(
+                        activeServerModel,
+                        renderer = SimpleListCellRenderer.create("?") { it.presentationName }
+                    )
+                        .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
+                        .onIsModified { originalActiveConnection.uuid != activeServerComboBox.selectedItem?.asSafely<SolrConnectionSettingsState>()?.uuid }
+                        .align(AlignX.FILL)
+                        .component
+                }.layout(RowLayout.PARENT_GRID)
+
+                group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
+                    row {
+                        cell(connectionsListPanel)
+                            .onIsModified { connectionsListPanel.data != originalConnections }
+                            .align(Align.FILL)
+                    }
                 }
             }
         }

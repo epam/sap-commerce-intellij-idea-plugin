@@ -69,7 +69,7 @@ abstract class ConnectionsListPanel<T: ExecConnectionSettingsState.Mutable>(
             myListCellRenderer = object : DefaultListCellRenderer() {
 
                 override fun getListCellRendererComponent(list: JList<*>, value: Any, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
-                    val name = value.asSafely<ExecConnectionSettingsState>()
+                    val name = value.asSafely<ExecConnectionSettingsState.Mutable>()
                         ?.presentationName
                         ?: value.toString()
                     val comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
