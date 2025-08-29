@@ -26,5 +26,5 @@ class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNod
     override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersHacConnectionNode> = nodeParameters.connections
         .filter { it.value } // only active connections
         .map { (connection, active) -> LoggersHacConnectionNode(connection, project) }
-        .associateBy { "${it.connectionSettings.uuid}_|_${it.activeConnection}" }
+        .associateBy { "${it.hashCode()}" }
 }
