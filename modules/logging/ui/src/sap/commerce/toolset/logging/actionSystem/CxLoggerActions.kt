@@ -18,15 +18,14 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.CxLoggersConstants
 import sap.commerce.toolset.logging.LogLevel
-import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateItemNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateLoggersOptionsNode
 
 abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 
@@ -68,31 +67,3 @@ class WarnLoggerAction : CxLoggerAction(LogLevel.WARN)
 class ErrorLoggerAction : CxLoggerAction(LogLevel.ERROR)
 class FatalLoggerAction : CxLoggerAction(LogLevel.FATAL)
 
-class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun getChildren(e: AnActionEvent?): Array<AnAction> {
-        val selectedNode = e?.selectedNode() ?: return emptyArray()
-        return when (selectedNode) {
-            is BundledLoggersTemplateItemNode -> arrayOf(ApplyBundledTemplateAction())
-            else -> emptyArray()
-        }
-    }
-
-    override fun update(e: AnActionEvent) {
-        val selectedNode = e.selectedNode()
-        when (selectedNode) {
-            is BundledLoggersTemplateItemNode -> {
-                e.presentation.isEnabledAndVisible = true
-            }
-
-            is CustomLoggersTemplateLoggersOptionsNode -> {
-                e.presentation.isEnabledAndVisible = true
-            }
-
-            else -> {
-                e.presentation.isEnabledAndVisible = false
-            }
-        }
-    }
-}
