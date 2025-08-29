@@ -23,8 +23,8 @@ import sap.commerce.toolset.logging.CxLoggerModel
 import javax.swing.Icon
 
 class BundledLoggersTemplateItemNode(
+    val loggers: List<CxLoggerModel>,
     text: String,
     icon: Icon?,
-    val loggers: List<CxLoggerModel>,
     project: Project
 ) : LoggersOptionsNode(text, icon, project)

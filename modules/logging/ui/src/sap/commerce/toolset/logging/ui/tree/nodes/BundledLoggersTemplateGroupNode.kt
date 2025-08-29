@@ -27,7 +27,7 @@ class BundledLoggersTemplateGroupNode(private val project: Project) :
 
     override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLoggersTemplatesService.getInstance(project).bundledLoggerTemplates()
         .associate { item ->
-            item.name to BundledLoggersTemplateItemNode(item.name, item.icon, item.loggers, project)
+            item.name to BundledLoggersTemplateItemNode(item.loggers, item.name, item.icon, project)
         }
 }
 
