@@ -33,7 +33,6 @@ class BundledLoggersTemplateGroupNode(private val project: Project) :
                 item.name to BundledLoggersTemplateItemNode(item.name, item.icon, item.loggers, project)
             }
     }
-
 }
 
 class BundledLoggersTemplateItemNode(
