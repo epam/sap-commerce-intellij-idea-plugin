@@ -34,13 +34,16 @@ fun findPsiElement(project: Project, loggerIdentifier: String): PsiElement? = wi
         ?: findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
 }
 
-suspend fun getIcon(project: Project, loggerIdentifier: String): Icon? = readAction {
-    findPsiElement(project, loggerIdentifier)?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
+suspend fun resolveIcon(project: Project, loggerIdentifier: String): Icon? = readAction {
+    computeIcon(project, loggerIdentifier)
 }
 
-fun getIcon2(project: Project, loggerIdentifier: String): Icon? = application.runReadAction<Icon?> {
-    findPsiElement(project, loggerIdentifier)?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
+fun resolveIconBlocking(project: Project, loggerIdentifier: String): Icon? = application.runReadAction<Icon?> {
+    computeIcon(project, loggerIdentifier)
 }
+
+private fun computeIcon(project: Project, loggerIdentifier: String): Icon? =
+    findPsiElement(project, loggerIdentifier)?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
 
 suspend fun getPsiElementPointer(project: Project, loggerIdentifier: String): SmartPsiElementPointer<PsiElement>? = readAction {
     findPsiElement(project, loggerIdentifier)

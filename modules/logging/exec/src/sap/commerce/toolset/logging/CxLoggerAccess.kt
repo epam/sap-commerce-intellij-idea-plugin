@@ -142,7 +142,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                             val parentName = it[2]
 
                             val psiElementPointer = getPsiElementPointer(project, loggerIdentifier)
-                            val icon = getIcon(project, loggerIdentifier)
+                            val icon = resolveIcon(project, loggerIdentifier)
 
                             CxLoggerModel.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
                         }
@@ -252,7 +252,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                         val parentName = it[2]
 
                         val psiElementPointer = getPsiElementPointer(project, loggerIdentifier)
-                        val icon = getIcon(project, loggerIdentifier)
+                        val icon = resolveIcon(project, loggerIdentifier)
 
                         CxLoggerModel.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
                     }

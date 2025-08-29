@@ -24,7 +24,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.CxLoggersConstants
-import sap.commerce.toolset.logging.getIcon2
+import sap.commerce.toolset.logging.resolveIconBlocking
 
 object CxLoggersTemplatesAccess {
 
@@ -46,7 +46,7 @@ object CxLoggersTemplatesAccess {
                             CxLoggerModel.of(
                                 name = logConfig.identifier,
                                 effectiveLevel = logConfig.effectiveLevel,
-                                icon = getIcon2(project, logConfig.identifier)
+                                icon = resolveIconBlocking(project, logConfig.identifier)
                             )
                         },
                     icon = item.iconName

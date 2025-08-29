@@ -38,8 +38,8 @@ import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.exec.context.LoggingExecContext
 import sap.commerce.toolset.logging.exec.context.LoggingExecResult
-import sap.commerce.toolset.logging.getIcon
 import sap.commerce.toolset.logging.getPsiElementPointer
+import sap.commerce.toolset.logging.resolveIcon
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -79,7 +79,7 @@ class LoggingExecClient(project: Project, coroutineScope: CoroutineScope) : Exec
                     val effectiveLevel = it.jsonObject["effectiveLevel"]?.jsonObject["standardLevel"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val parentName = it.jsonObject["parentName"]?.jsonPrimitive?.content
                     val psiElementPointer = getPsiElementPointer(project, name)
-                    val icon = getIcon(project, name)
+                    val icon = resolveIcon(project, name)
 
                     CxLoggerModel.of(name, effectiveLevel, parentName, false, icon, psiElementPointer)
                 }
