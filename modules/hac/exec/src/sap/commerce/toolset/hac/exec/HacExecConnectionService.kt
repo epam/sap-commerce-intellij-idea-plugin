@@ -36,17 +36,15 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
     private val lock = Any()
 
     override var activeConnection: HacConnectionSettingsState
-        get() = findActiveConnection(connections)
+        get() = findActiveConnection()
             ?: synchronized(lock) {
-                with(connections) {
-                    findActiveConnection(this)
-                    // connections must be not empty and fallback to single-connection list
-                        ?: this.first().also {
-                            HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+                findActiveConnection()
+                // connections must be not empty and fallback to single-connection list
+                    ?: default().also {
+                        HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
 
-                            onActivate(it)
-                        }
-                }
+                        onActivate(it)
+                    }
             }
         set(value) {
             HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
@@ -55,11 +53,7 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         }
 
     override val connections: List<HacConnectionSettingsState>
-        get() = buildList {
-            addAll(HacExecDeveloperSettings.getInstance(project).connections)
-            addAll(HacExecProjectSettings.getInstance(project).connections)
-        }
-            .takeIf { it.isNotEmpty() }
+        get() = persistedConnections()
             ?: listOf(default())
 
     override val listener: HacConnectionSettingsListener
@@ -111,8 +105,14 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         )
     )
 
-    private fun findActiveConnection(connections: List<HacConnectionSettingsState>) = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
-        ?.let { uuid -> connections.find { it.uuid == uuid } }
+    private fun persistedConnections() = buildList {
+        addAll(HacExecDeveloperSettings.getInstance(project).connections)
+        addAll(HacExecProjectSettings.getInstance(project).connections)
+    }
+        .takeIf { it.isNotEmpty() }
+
+    private fun findActiveConnection() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
+        ?.let { uuid -> persistedConnections()?.find { it.uuid == uuid } }
 
     companion object {
         fun getInstance(project: Project): HacExecConnectionService = project.service()

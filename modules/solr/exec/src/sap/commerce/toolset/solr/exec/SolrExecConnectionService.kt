@@ -36,17 +36,15 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
     private val lock = Any()
 
     override var activeConnection: SolrConnectionSettingsState
-        get() = findActiveConnection(connections)
+        get() = findActiveConnection()
             ?: synchronized(lock) {
-                with(connections) {
-                    findActiveConnection(this)
-                    // connections must be not empty and fallback to single-connection list
-                        ?: this.first().also {
-                            SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+                findActiveConnection()
+                // connections must be not empty and fallback to single-connection list
+                    ?: default().also {
+                        SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
 
-                            onActivate(it)
-                        }
-                }
+                        onActivate(it)
+                    }
             }
         set(value) {
             SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
@@ -55,11 +53,7 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         }
 
     override val connections: List<SolrConnectionSettingsState>
-        get() = buildList {
-            addAll(SolrExecDeveloperSettings.getInstance(project).connections)
-            addAll(SolrExecProjectSettings.getInstance(project).connections)
-        }
-            .takeIf { it.isNotEmpty() }
+        get() = persistedConnections()
             ?: listOf(default())
 
     override val listener: SolrConnectionSettingsListener
@@ -110,8 +104,14 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         )
     )
 
-    private fun findActiveConnection(connections: List<SolrConnectionSettingsState>) = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
-        ?.let { uuid -> connections.find { it.uuid == uuid } }
+    private fun persistedConnections() = buildList {
+        addAll(SolrExecDeveloperSettings.getInstance(project).connections)
+        addAll(SolrExecProjectSettings.getInstance(project).connections)
+    }
+        .takeIf { it.isNotEmpty() }
+
+    private fun findActiveConnection() = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
+        ?.let { uuid -> persistedConnections()?.find { it.uuid == uuid } }
 
     companion object {
         fun getInstance(project: Project): SolrExecConnectionService = project.service()
