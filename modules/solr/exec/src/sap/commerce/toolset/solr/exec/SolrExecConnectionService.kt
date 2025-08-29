@@ -39,12 +39,9 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         get() = findActiveConnection()
             ?: synchronized(lock) {
                 findActiveConnection()
-                // connections must be not empty and fallback to single-connection list
                     ?: default().also {
                         SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-
                         add(it, false)
-
                         onActivate(it)
                     }
             }
