@@ -68,10 +68,10 @@ class SUserDetailsDialog(
 
     override fun applyFields() {
         val developerSettings = CCv2DeveloperSettings.getInstance(project)
-        val mutableSettings = developerSettings.ccv2Settings.mutable()
-        mutableSettings.sUsers[sUser.id] = sUserDto.immutable()
+        val mutable = developerSettings.ccv2Settings.mutable()
+        mutable.sUsers[sUser.id] = sUserDto.immutable()
 
-        developerSettings.ccv2Settings = mutableSettings.immutable()
+        developerSettings.ccv2Settings = mutable.immutable()
     }
 
     override fun getStyle() = DialogStyle.COMPACT

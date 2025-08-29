@@ -15,16 +15,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package sap.commerce.toolset.exec.settings.event
+package sap.commerce.toolset.exec.ui
 
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.presentationName
+import java.io.Serial
+import javax.swing.DefaultComboBoxModel
 
-interface ExecConnectionListener<T : ExecConnectionSettingsState> {
+class ConnectionComboBoxModel<T : ExecConnectionSettingsState>(
+    private val allowBlank: Boolean = false,
+    private val onSelectedItem: ((Any?) -> Unit)? = null
+) : DefaultComboBoxModel<T>() {
 
-    fun onActive(connection: T) = Unit
-    fun onAdded(connection: T) = Unit
-    fun onSave(settings: List<T>) = Unit
-    fun onRemoved(connection: T) = Unit
+    override fun setSelectedItem(anObject: Any?) {
+        super.setSelectedItem(anObject)
+        onSelectedItem?.invoke(anObject)
+    }
 
+    fun refresh(subscriptions: List<T>) {
+        removeAllElements()
+        if (allowBlank) addElement(null)
+        addAll(subscriptions.sortedBy { (it as ExecConnectionSettingsState).presentationName })
+    }
+
+    companion object {
+        @Serial
+        private val serialVersionUID: Long = 4646717472092758251L
+    }
 }

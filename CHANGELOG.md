@@ -26,9 +26,11 @@
 - Extracted HacHttpClient Cache and adjusted notifications [#1557](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1557)
 - Ensure single connection settings creation in case of no active connection [#1558](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1558)
 - Resolved duplicate connection settings after changing the connection scope [#1559](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1559)
+- Unified Connection configuration API [#1560](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1560)
 
 ### `Solr` enhancements
 - Use own configuration pane for Solr-related connection settings [#1541](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1541)
+- Unified Connection configuration API [#1560](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1560)
 
 ### `Groovy` enhancements
 - Introduced possibility to specify execution context parameters [#1544](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1544)

@@ -29,7 +29,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.exec.context.DefaultExecResult
-import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.shortenConnectionName
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
@@ -65,10 +64,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActive(connection: HacConnectionSettingsState) = refresh()
-                override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = settings.values
-                    .flatten()
-                    .forEach { clearState(it.uuid) }
-
+                override fun onSave(settings: List<HacConnectionSettingsState>) = settings.forEach { clearState(it.uuid) }
                 override fun onRemoved(connection: HacConnectionSettingsState) {
                     loggersStates.remove(connection.uuid)
                 }
@@ -76,11 +72,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun logger(loggerIdentifier: String): CxLoggerModel? {
-        return if (stateInitialized)
-            state(HacExecConnectionService.getInstance(project).activeConnection.uuid).get(loggerIdentifier)
-        else null
-    }
+    fun logger(loggerIdentifier: String) = if (stateInitialized) {
+        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+        state(activeConnection.uuid).get(loggerIdentifier)
+    } else null
 
     fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecResult) -> Unit = { _, _ -> }) {
         val activeConnection = HacExecConnectionService.getInstance(project).activeConnection

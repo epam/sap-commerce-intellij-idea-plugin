@@ -21,7 +21,6 @@ package sap.commerce.toolset.extensions
 import com.intellij.ide.extensionResources.ExtensionsRootType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.util.application
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
@@ -42,10 +41,6 @@ class ExtensionsService {
         if (path == null || !Files.exists(path)) {
             extensionsRootType.extractBundledResources(pluginId, "")
             path = extensionsRootType.findResource(pluginId, fqn)
-
-            if (path != null) {
-                LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)
-            }
         }
 
         return path?.takeIf { Files.exists(it) }

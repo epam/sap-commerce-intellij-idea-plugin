@@ -91,6 +91,7 @@ data class SolrConnectionSettingsState(
             ssl = ssl,
             timeout = timeout,
             socketTimeout = socketTimeout,
+            credentials = Credentials(username, password)
         )
     }
 }

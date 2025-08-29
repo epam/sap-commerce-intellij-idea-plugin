@@ -34,8 +34,9 @@ import java.awt.Component
 class SolrConnectionSettingsDialog(
     project: Project,
     parentComponent: Component,
-    settings: SolrConnectionSettingsState.Mutable
-) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, "Remote SOLR Instance") {
+    settings: SolrConnectionSettingsState.Mutable,
+    dialogTitle: String,
+) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, dialogTitle) {
 
     private lateinit var socketTimeoutIntSpinner: JBIntSpinner
 
@@ -45,7 +46,7 @@ class SolrConnectionSettingsDialog(
                 .bold()
             connectionNameTextField = textField()
                 .align(AlignX.FILL)
-                .bindText(mutableSettings::name.toNonNullableProperty(""))
+                .bindText(mutable::name.toNonNullableProperty(""))
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
@@ -56,26 +57,26 @@ class SolrConnectionSettingsDialog(
                 EnumComboBoxModel(ExecConnectionScope::class.java),
                 renderer = SimpleListCellRenderer.create("?") { it.title }
             )
-                .bindItem(mutableSettings::scope.toNullableProperty(ExecConnectionScope.PROJECT_PERSONAL))
+                .bindItem(mutable::scope.toNullableProperty(ExecConnectionScope.PROJECT_PERSONAL))
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             timeoutIntSpinner = spinner(1000..Int.MAX_VALUE, 1000)
                 .label("Connection Timeout (ms):")
-                .bindIntValue(mutableSettings::timeout)
+                .bindIntValue(mutable::timeout)
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             socketTimeoutIntSpinner = spinner(1000..Int.MAX_VALUE, 1000)
                 .label("Socket Timeout (ms):")
-                .bindIntValue(mutableSettings::socketTimeout)
+                .bindIntValue(mutable::socketTimeout)
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
         group("Full URL Preview", false) {
             row {
-                urlPreviewLabel = label(mutableSettings.immutable().generatedURL)
+                urlPreviewLabel = label(mutable.immutable().generatedURL)
                     .bold()
                     .align(AlignX.FILL)
                     .component
@@ -96,7 +97,7 @@ class SolrConnectionSettingsDialog(
                 hostTextField = textField()
                     .comment("Host name or IP address")
                     .align(AlignX.FILL)
-                    .bindText(mutableSettings::host)
+                    .bindText(mutable::host)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
@@ -106,7 +107,7 @@ class SolrConnectionSettingsDialog(
                 label("Port:")
                 portTextField = textField()
                     .align(AlignX.FILL)
-                    .bindText(mutableSettings::port.toNonNullableProperty(""))
+                    .bindText(mutable::port.toNonNullableProperty(""))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Port should be blank or in a range of 1..65535.") {
                         if (it.text.isNullOrBlank()) return@addValidationRule false
@@ -119,7 +120,7 @@ class SolrConnectionSettingsDialog(
 
             row {
                 sslProtocolCheckBox = checkBox("SSL")
-                    .bindSelected(mutableSettings::ssl)
+                    .bindSelected(mutable::ssl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -128,7 +129,7 @@ class SolrConnectionSettingsDialog(
                 label("Webroot:")
                 webrootTextField = textField()
                     .align(AlignX.FILL)
-                    .bindText(mutableSettings::webroot)
+                    .bindText(mutable::webroot)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)

@@ -234,11 +234,11 @@ abstract class CCv2ShowBuildWithStatusAction(status: CCv2BuildStatus) : CCv2Show
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val ccv2DeveloperSettings = CCv2DeveloperSettings.getInstance(project)
-        val mutableSettings = ccv2DeveloperSettings.ccv2Settings.mutable()
-        if (state) mutableSettings.showBuildStatuses.add(status)
-        else mutableSettings.showBuildStatuses.remove(status)
+        val mutable = ccv2DeveloperSettings.ccv2Settings.mutable()
+        if (state) mutable.showBuildStatuses.add(status)
+        else mutable.showBuildStatuses.remove(status)
 
-        ccv2DeveloperSettings.ccv2Settings = mutableSettings.immutable()
+        ccv2DeveloperSettings.ccv2Settings = mutable.immutable()
     }
 }
 

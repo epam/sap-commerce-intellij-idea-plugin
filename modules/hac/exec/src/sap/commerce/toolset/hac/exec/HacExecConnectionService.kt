@@ -51,9 +51,18 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
             onActivate(value)
         }
 
-    override val connections: List<HacConnectionSettingsState>
+    override var connections: List<HacConnectionSettingsState>
         get() = persistedConnections()
             ?: listOf(default())
+        set(value) {
+            val groupedSettings = value.groupBy { it.scope }
+
+            HacExecProjectSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
+            HacExecDeveloperSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
+
+            onSave(value, true)
+        }
+
 
     override val listener: HacConnectionSettingsListener
         get() = project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC)
@@ -73,21 +82,14 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
     }
 
     override fun remove(settings: HacConnectionSettingsState, notify: Boolean) {
-        HacExecDeveloperSettings.getInstance(project)
-            .connections = connections
+        val developerSettings = HacExecDeveloperSettings.getInstance(project)
+        val projectSettings = HacExecProjectSettings.getInstance(project)
+        developerSettings.connections = developerSettings.connections
             .filterNot { it.uuid == settings.uuid }
-        HacExecProjectSettings.getInstance(project)
-            .connections = connections
+        projectSettings.connections = projectSettings.connections
             .filterNot { it.uuid == settings.uuid }
 
         onRemove(settings, notify)
-    }
-
-    override fun save(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>, notify: Boolean) {
-        HacExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
-        HacExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
-
-        onSave(settings, notify)
     }
 
     override fun default() = HacConnectionSettingsState(

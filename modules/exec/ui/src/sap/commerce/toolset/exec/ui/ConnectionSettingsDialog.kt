@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.exec.ui
 
-import com.intellij.credentialStore.CredentialAttributes
-import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProgressIndicator
@@ -52,7 +49,7 @@ const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
 abstract class ConnectionSettingsDialog<T: ExecConnectionSettingsState.Mutable>(
     protected val project: Project,
     parentComponent: Component,
-    protected val mutableSettings: T,
+    protected val mutable: T,
     dialogTitle: String
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
 
@@ -118,17 +115,6 @@ abstract class ConnectionSettingsDialog<T: ExecConnectionSettingsState.Mutable>(
         super.init()
     }
 
-    override fun applyFields() {
-        super.applyFields()
-
-        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
-            override fun run(indicator: ProgressIndicator) {
-                val credentialAttributes = CredentialAttributes("SAP CX - ${mutableSettings.uuid}")
-                PasswordSafe.instance.set(credentialAttributes, Credentials(usernameTextField.text, String(passwordTextField.password)))
-            }
-        })
-    }
-
     override fun createCenterPanel() = with(panel()) {
         border = JBUI.Borders.empty(16)
         loadCredentials()
@@ -138,10 +124,10 @@ abstract class ConnectionSettingsDialog<T: ExecConnectionSettingsState.Mutable>(
     private fun loadCredentials() {
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
             override fun run(indicator: ProgressIndicator) {
-                passwordTextField.text = mutableSettings.password
+                passwordTextField.text = mutable.password
                 passwordTextField.isEnabled = true
 
-                usernameTextField.text = mutableSettings.username
+                usernameTextField.text = mutable.username
                 usernameTextField.isEnabled = true
             }
         })

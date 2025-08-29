@@ -51,9 +51,17 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
             onActivate(value)
         }
 
-    override val connections: List<SolrConnectionSettingsState>
+    override var connections: List<SolrConnectionSettingsState>
         get() = persistedConnections()
             ?: listOf(default())
+        set(value) {
+            val groupedSettings = value.groupBy { it.scope }
+                .mapValues { (_, v) -> v.toList() }
+            SolrExecProjectSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
+            SolrExecDeveloperSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
+
+            onSave(value, true)
+        }
 
     override val listener: SolrConnectionSettingsListener
         get() = project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC)
@@ -73,21 +81,14 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
     }
 
     override fun remove(settings: SolrConnectionSettingsState, notify: Boolean) {
-        SolrExecDeveloperSettings.getInstance(project)
-            .connections = connections
+        val developerSettings = SolrExecDeveloperSettings.getInstance(project)
+        val projectSettings = SolrExecProjectSettings.getInstance(project)
+        developerSettings.connections = developerSettings.connections
             .filterNot { it.uuid == settings.uuid }
-        SolrExecProjectSettings.getInstance(project)
-            .connections = connections
+        projectSettings.connections = projectSettings.connections
             .filterNot { it.uuid == settings.uuid }
 
         onRemove(settings, notify)
-    }
-
-    override fun save(settings: Map<ExecConnectionScope, List<SolrConnectionSettingsState>>, notify: Boolean) {
-        SolrExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
-        SolrExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
-
-        onSave(settings, notify)
     }
 
     override fun default() = SolrConnectionSettingsState(

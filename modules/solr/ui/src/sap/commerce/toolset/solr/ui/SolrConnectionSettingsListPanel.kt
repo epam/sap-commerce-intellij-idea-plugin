@@ -18,38 +18,39 @@
 
 package sap.commerce.toolset.solr.ui
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
+import sap.commerce.toolset.exec.ui.ConnectionsListPanel
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.io.Serial
+import javax.swing.event.ListDataEvent
 
 class SolrConnectionSettingsListPanel(
     project: Project,
-    private val onDataChanged: (EventType, Set<SolrConnectionSettingsState>) -> Unit = { _, _ -> }
-) : RemoteInstancesListPanel<SolrConnectionSettingsState>(project, HybrisIcons.Console.SOLR) {
+    disposable: Disposable?, listener: (ListDataEvent) -> Unit
+) : ConnectionsListPanel<SolrConnectionSettingsState.Mutable>(project, disposable, listener) {
 
-    override fun editSelectedItem(item: SolrConnectionSettingsState): SolrConnectionSettingsState? {
-        val mutableSettings = item.mutable()
-        return if (SolrConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
-        else null
-    }
+    override fun getIcon(item: SolrConnectionSettingsState.Mutable) = HybrisIcons.Console.SOLR
+    override fun newMutable() = SolrExecConnectionService.getInstance(project).default().mutable()
 
-    override fun addItem() {
-        val mutableSettings = SolrExecConnectionService.getInstance(myProject).default().mutable()
-        if (SolrConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) {
-            addElement(mutableSettings.immutable())
-        }
-    }
+    override fun createDialog(mutable: SolrConnectionSettingsState.Mutable) = SolrConnectionSettingsDialog(
+        project = project,
+        parentComponent = this,
+        settings = mutable,
+        "Create Solr Connection Settings"
+    )
 
-    override fun onDataChanged(
-        eventType: EventType,
-        data: Set<SolrConnectionSettingsState>
-    ) = onDataChanged.invoke(eventType, data)
+    override fun editDialog(mutable: SolrConnectionSettingsState.Mutable) = SolrConnectionSettingsDialog(
+        project = project,
+        parentComponent = this,
+        settings = mutable,
+        "Edit Solr Connection Settings"
+    )
 
     companion object {
         @Serial
-        private val serialVersionUID = -6666004870055817895L
+        private val serialVersionUID = -4192832265110127713L
     }
 }

@@ -44,7 +44,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.flexibleSearchSettings.mutable()
+        private val mutable = developerSettings.flexibleSearchSettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
 
@@ -56,20 +56,19 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
             group("Language") {
                 row {
                     checkBox("Resolve non-aliased [y] column by root aliased Type in the where clause")
-                        .bindSelected(mutableSettings::fallbackToTableNameIfNoAliasProvided)
+                        .bindSelected(mutable::fallbackToTableNameIfNoAliasProvided)
                         .comment("When table has alias, [y] column can be resolved without corresponding alias. Such fallback will target only first Type specified in the where clause.")
                 }
                 row {
                     checkBox("Verify used table alias separator")
-                        .bindSelected(mutableSettings::verifyUsedTableAliasSeparator)
+                        .bindSelected(mutable::verifyUsedTableAliasSeparator)
                         .comment("Usage of the default table alias separator will be verified when the file is being opened for the first time")
                 }
                 row {
-                    verifyCaseCheckBox =
-                        checkBox("Verify case of the reserved words")
-                            .bindSelected(mutableSettings::verifyCaseForReservedWords)
-                            .comment("Case will be verified when the file is being opened for the first time")
-                            .component
+                    verifyCaseCheckBox = checkBox("Verify case of the reserved words")
+                        .bindSelected(mutable::verifyCaseForReservedWords)
+                        .comment("Case will be verified when the file is being opened for the first time")
+                        .component
                 }
                 row {
                     comboBox(
@@ -77,7 +76,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
                         renderer = SimpleListCellRenderer.create("?") { i18n("hybris.fxs.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
-                        .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())
+                        .bindItem(mutable::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
                 }.rowComment("Existing case-related notifications will be closed for all related editors.<br>Verification of the case will be re-triggered on the next re-opening of the file")
 
@@ -85,19 +84,19 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
             group("Code Completion") {
                 row {
                     checkBox("Automatically inject separator after table alias")
-                        .bindSelected(mutableSettings.completion::injectTableAliasSeparator)
+                        .bindSelected(mutable.completion::injectTableAliasSeparator)
                 }
                 row {
                     checkBox("Automatically inject comma after expression")
-                        .bindSelected(mutableSettings.completion::injectCommaAfterExpression)
+                        .bindSelected(mutable.completion::injectCommaAfterExpression)
                 }
                 row {
                     checkBox("Automatically inject space after keywords")
-                        .bindSelected(mutableSettings.completion::injectSpaceAfterKeywords)
+                        .bindSelected(mutable.completion::injectSpaceAfterKeywords)
                 }
                 row {
                     checkBox("Suggest table alias name after AS keyword")
-                        .bindSelected(mutableSettings.completion::suggestTableAliasNames)
+                        .bindSelected(mutable.completion::suggestTableAliasNames)
                 }
                 row {
                     comboBox(
@@ -111,13 +110,13 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
                         }
                     )
                         .label("Default [y] separator")
-                        .bindItem(mutableSettings.completion::defaultTableAliasSeparator.toNullableProperty())
+                        .bindItem(mutable.completion::defaultTableAliasSeparator.toNullableProperty())
                 }
             }
             group("Documentation") {
                 row {
                     documentationEnableCheckBox = checkBox("Enable documentation")
-                        .bindSelected(mutableSettings.documentation::enabled)
+                        .bindSelected(mutable.documentation::enabled)
                         .component
                 }
                 row {
@@ -127,7 +126,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
                             When enabled short description of the type will be shown on-hover as a tooltip for type used in the <code>FROM {}</code> clause.
                         """.trimIndent()
                         )
-                        .bindSelected(mutableSettings.documentation::showTypeDocumentation)
+                        .bindSelected(mutable.documentation::showTypeDocumentation)
                         .enabledIf(documentationEnableCheckBox.selected)
                 }
             }
@@ -136,7 +135,7 @@ class FlexibleSearchProjectSettingsConfigurableProvider(private val project: Pro
         override fun apply() {
             super.apply()
 
-            developerSettings.flexibleSearchSettings = mutableSettings.immutable()
+            developerSettings.flexibleSearchSettings = mutable.immutable()
 
             EditorNotificationProvider.EP_NAME.findExtension(FxSReservedWordsCaseEditorNotificationProvider::class.java, project)
                 ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }

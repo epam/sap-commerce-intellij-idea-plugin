@@ -27,7 +27,6 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -67,7 +66,9 @@ class LoggersSplitView(
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActive(connection: HacConnectionSettingsState) = updateTree()
-                override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = updateTree()
+                override fun onSave(settings: List<HacConnectionSettingsState>) = updateTree()
+                override fun onAdded(connection: HacConnectionSettingsState) = updateTree()
+                override fun onRemoved(connection: HacConnectionSettingsState) = updateTree()
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
@@ -110,7 +111,7 @@ class LoggersSplitView(
                     ?.let {
                         e.consume()
                         HacExecConnectionService.getInstance(project).connections
-                            .find { connection -> connection.uuid == it.connectionUUID}
+                            .find { connection -> connection.uuid == it.connectionUUID }
                             ?.let { connection -> CxLoggerAccess.getInstance(project).fetch(connection) }
                     }
             }
@@ -134,16 +135,19 @@ class LoggersSplitView(
 
                     loggersTemplatesStateView.renderNothingSelected()
                 }
+
                 is CustomLoggersTemplateLoggersOptionsNode -> {
                     secondComponent = loggersTemplatesStateView.view
 
                     loggersTemplatesStateView.renderNoLoggerTemplates()
                 }
+
                 is BundledLoggersTemplateItemNode -> {
                     secondComponent = loggersTemplatesStateView.view
 
                     node.loggers.associateBy { it.name }.let {
-                        loggersTemplatesStateView.renderLoggersTemplate(it) }
+                        loggersTemplatesStateView.renderLoggersTemplate(it)
+                    }
                 }
 
                 else -> {

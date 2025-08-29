@@ -21,19 +21,21 @@ package sap.commerce.toolset.solr.options
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.presentationName
+import sap.commerce.toolset.exec.ui.ConnectionComboBoxModel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import sap.commerce.toolset.solr.ui.SolrConnectionSettingsListPanel
-import javax.swing.DefaultComboBoxModel
 
 class SolrExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
@@ -44,68 +46,52 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
         "Solr", "sap.commerce.toolset.solr.exec.settings"
     ) {
 
-        @Volatile
-        private var isReset = false
-        private val currentActiveConnection = SolrExecConnectionService.getInstance(project).activeConnection
+        private lateinit var connectionsListPanel: SolrConnectionSettingsListPanel
+        private lateinit var activeServerComboBox: ComboBox<SolrConnectionSettingsState>
+        private lateinit var activeServerModel: ConnectionComboBoxModel<SolrConnectionSettingsState>
 
-        private val activeServerModel = DefaultComboBoxModel<SolrConnectionSettingsState>()
-
-        private val servers = SolrConnectionSettingsListPanel(project) { _, connections ->
-            if (!isReset) {
-                SolrExecConnectionService.getInstance(project).save(connections)
-
-                updateModel(activeServerModel, activeServerModel.selectedItem as SolrConnectionSettingsState?, connections)
-            }
-        }
+        private var originalConnections = SolrExecConnectionService.getInstance(project).connections.map { it.mutable() }
+        private var originalActiveConnection = SolrExecConnectionService.getInstance(project).activeConnection
 
         override fun createPanel() = panel {
             row {
                 icon(HybrisIcons.Console.SOLR)
-                comboBox(
+                activeServerComboBox = comboBox(
                     activeServerModel,
                     renderer = SimpleListCellRenderer.create("?") { it.presentationName }
                 )
                     .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
-                    .onApply {
-                        (activeServerModel.selectedItem as SolrConnectionSettingsState?)
-                            ?.let { settings -> SolrExecConnectionService.getInstance(project).activeConnection = settings }
-                    }
-                    .onIsModified {
-                        (activeServerModel.selectedItem as SolrConnectionSettingsState?)
-                            ?.let { it.uuid != SolrExecConnectionService.getInstance(project).activeConnection.uuid }
-                            ?: false
-                    }
+                    .onIsModified { originalActiveConnection.uuid != activeServerComboBox.selectedItem?.asSafely<SolrConnectionSettingsState>()?.uuid }
                     .align(AlignX.FILL)
+                    .component
             }.layout(RowLayout.PARENT_GRID)
 
             group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
                 row {
-                    cell(servers)
-                        .align(AlignX.FILL)
+                    cell(connectionsListPanel)
+                        .onIsModified { connectionsListPanel.data != originalConnections }
+                        .align(Align.FILL)
                 }
             }
         }
 
         override fun reset() {
-            isReset = true
-
-            servers.setData(SolrExecConnectionService.getInstance(project).connections)
-
-            updateModel(activeServerModel, currentActiveConnection, servers.data)
-
-            isReset = false
+            activeServerModel.refresh(originalConnections.map { it.immutable() })
+            connectionsListPanel.data = originalConnections.map { it.copy() }
+            activeServerComboBox.selectedItem = originalActiveConnection
         }
 
-        private fun <T : ExecConnectionSettingsState> updateModel(
-            model: DefaultComboBoxModel<T>,
-            activeConnection: T?,
-            connectionSettings: Collection<T>
-        ) {
-            model.removeAllElements()
-            model.addAll(connectionSettings)
+        override fun apply() {
+            super.apply()
 
-            model.selectedItem = if (model.getIndexOf(activeConnection) != -1) model.getElementAt(model.getIndexOf(activeConnection))
-            else model.getElementAt(0)
+            val connectionService = SolrExecConnectionService.getInstance(project)
+
+            connectionService.connections = connectionsListPanel.data.map { it.immutable() }
+            connectionService.activeConnection = activeServerComboBox.selectedItem as SolrConnectionSettingsState
+
+            originalActiveConnection = connectionService.activeConnection
+            originalConnections = connectionService.connections.map { it.mutable() }
         }
+
     }
 }

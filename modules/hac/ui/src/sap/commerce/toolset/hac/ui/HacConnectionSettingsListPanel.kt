@@ -18,37 +18,36 @@
 
 package sap.commerce.toolset.hac.ui
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
+import sap.commerce.toolset.exec.ui.ConnectionsListPanel
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.io.Serial
+import javax.swing.event.ListDataEvent
 
 class HacConnectionSettingsListPanel(
     project: Project,
-    private val onDataChanged: (EventType, Set<HacConnectionSettingsState>) -> Unit
-) : RemoteInstancesListPanel<HacConnectionSettingsState>(project, HybrisIcons.Y.REMOTE) {
+    disposable: Disposable?, listener: (ListDataEvent) -> Unit
+) : ConnectionsListPanel<HacConnectionSettingsState.Mutable>(project, disposable, listener) {
 
-    override fun addItem() {
-        val settings = HacExecConnectionService.getInstance(myProject).default()
-        val mutableSettings = settings.mutable()
-        val dialog = HacConnectionSettingsDialog(myProject, this, mutableSettings)
-        if (dialog.showAndGet()) {
-            addElement(mutableSettings.immutable())
-        }
-    }
+    override fun getIcon(item: HacConnectionSettingsState.Mutable) = HybrisIcons.Y.REMOTE
+    override fun newMutable() = HacExecConnectionService.getInstance(project).default().mutable()
 
-    override fun onDataChanged(
-        eventType: EventType,
-        data: Set<HacConnectionSettingsState>
-    ) = onDataChanged.invoke(eventType, data)
+    override fun createDialog(mutable: HacConnectionSettingsState.Mutable) = HacConnectionSettingsDialog(
+        project = project,
+        parentComponent = this,
+        settings = mutable,
+        "Create SAP CX Connection Settings"
+    )
 
-    override fun editSelectedItem(item: HacConnectionSettingsState): HacConnectionSettingsState? {
-        val mutableSettings = item.mutable()
-        return if (HacConnectionSettingsDialog(myProject, this, mutableSettings).showAndGet()) mutableSettings.immutable()
-        else null
-    }
+    override fun editDialog(mutable: HacConnectionSettingsState.Mutable) = HacConnectionSettingsDialog(
+        project = project,
+        parentComponent = this,
+        settings = mutable,
+        "Edit SAP CX Connection Settings"
+    )
 
     companion object {
         @Serial

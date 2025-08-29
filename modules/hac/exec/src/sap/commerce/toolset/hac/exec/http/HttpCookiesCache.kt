@@ -23,7 +23,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.util.concurrent.ConcurrentHashMap
@@ -37,9 +36,7 @@ class HttpCookiesCache(private val project: Project) : Disposable {
     init {
         project.messageBus.connect().subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
             override fun onRemoved(connection: HacConnectionSettingsState) = invalidateCookies(connection)
-            override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = settings.values
-                .flatten()
-                .forEach { invalidateCookies(it) }
+            override fun onSave(settings: List<HacConnectionSettingsState>) = settings.forEach { invalidateCookies(it) }
         })
     }
 

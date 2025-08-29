@@ -107,7 +107,8 @@ data class HacConnectionSettingsState(
             timeout = timeout,
             wsl = wsl,
             sslProtocol = sslProtocol,
-            sessionCookieName = sessionCookieName
+            sessionCookieName = sessionCookieName,
+            credentials = Credentials(username, password)
         )
     }
 

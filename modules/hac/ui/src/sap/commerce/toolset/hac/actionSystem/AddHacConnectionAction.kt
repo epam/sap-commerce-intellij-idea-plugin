@@ -35,10 +35,10 @@ class AddHacConnectionAction : HacConnectionAction("Create new connection", Hybr
             ?: return
 
         val execService = HacExecConnectionService.getInstance(project)
-        val mutableSettings = execService.default().mutable()
+        val mutable = execService.default().mutable()
 
-        if (HacConnectionSettingsDialog(project, component, mutableSettings).showAndGet()) {
-            execService.add(mutableSettings.immutable())
+        if (HacConnectionSettingsDialog(project, component, mutable, "Create SAP CX Connection Settings").showAndGet()) {
+            execService.add(mutable.immutable())
         }
     }
 }

@@ -40,25 +40,25 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.impexSettings.mutable()
-        private var originalGroupLocalizedFiles = mutableSettings.groupLocalizedFiles
+        private val mutable = developerSettings.impexSettings.mutable()
+        private var originalGroupLocalizedFiles = mutable.groupLocalizedFiles
 
         private lateinit var documentationEnableCheckBox: JCheckBox
 
         override fun createPanel() = panel {
             row {
                 checkBox("Group localized ImpEx files")
-                    .bindSelected(mutableSettings::groupLocalizedFiles)
+                    .bindSelected(mutable::groupLocalizedFiles)
             }
 
             group("Data Edit Mode") {
                 row {
                     checkBox("First row is header")
-                        .bindSelected(mutableSettings.editMode::firstRowIsHeader)
+                        .bindSelected(mutable.editMode::firstRowIsHeader)
                 }
                 row {
                     checkBox("Trim whitespace")
-                        .bindSelected(mutableSettings.editMode::trimWhitespace)
+                        .bindSelected(mutable.editMode::trimWhitespace)
                 }
             }.rowComment("This functionality relies and expects that 'intellij.grid.plugin' is available and enabled.")
 
@@ -71,7 +71,7 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                             Sample: <code>principal(<strong>Principal.</strong>uid)</code>
                             """.trimIndent()
                         )
-                        .bindSelected(mutableSettings.completion::showInlineTypes)
+                        .bindSelected(mutable.completion::showInlineTypes)
                 }
                 row {
                     checkBox("Automatically add '.' char after inline type")
@@ -80,7 +80,7 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                             When enabled and '.' char is not present, it will be injected automatically
                             """.trimIndent()
                         )
-                        .bindSelected(mutableSettings.completion::addCommaAfterInlineType)
+                        .bindSelected(mutable.completion::addCommaAfterInlineType)
                 }
                 row {
                     checkBox("Automatically add '=' char after type and attribute modifier")
@@ -90,13 +90,13 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                             In addition to that, code completion will be automatically triggered for modifier values.
                             """.trimIndent()
                         )
-                        .bindSelected(mutableSettings.completion::addEqualsAfterModifier)
+                        .bindSelected(mutable.completion::addEqualsAfterModifier)
                 }
             }
             group("Documentation") {
                 row {
                     documentationEnableCheckBox = checkBox("Enable documentation")
-                        .bindSelected(mutableSettings.documentation::enabled)
+                        .bindSelected(mutable.documentation::enabled)
                         .component
                 }
                 row {
@@ -106,7 +106,7 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                             When enabled short description of the type will be shown on-hover as a tooltip for type in the header or sub-type in the value line.
                         """.trimIndent()
                         )
-                        .bindSelected(mutableSettings.documentation::showTypeDocumentation)
+                        .bindSelected(mutable.documentation::showTypeDocumentation)
                         .enabledIf(documentationEnableCheckBox.selected)
                 }
                 row {
@@ -116,7 +116,7 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                             When enabled short description of the modifier will be shown on-hover as a tooltip for type or attribute modifier in the header.
                         """.trimIndent()
                         )
-                        .bindSelected(mutableSettings.documentation::showModifierDocumentation)
+                        .bindSelected(mutable.documentation::showModifierDocumentation)
                         .enabledIf(documentationEnableCheckBox.selected)
                 }
             }
@@ -125,11 +125,11 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
         override fun apply() {
             super.apply()
 
-            developerSettings.impexSettings = mutableSettings.immutable()
+            developerSettings.impexSettings = mutable.immutable()
 
-            if (mutableSettings.groupLocalizedFiles != originalGroupLocalizedFiles) {
+            if (mutable.groupLocalizedFiles != originalGroupLocalizedFiles) {
                 // TODO: do we need this?
-                originalGroupLocalizedFiles = mutableSettings.groupLocalizedFiles
+                originalGroupLocalizedFiles = mutable.groupLocalizedFiles
 
                 ProjectView.getInstance(project).refresh()
             }

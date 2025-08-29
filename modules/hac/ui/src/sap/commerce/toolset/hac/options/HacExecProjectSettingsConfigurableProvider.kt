@@ -22,20 +22,22 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.presentationName
+import sap.commerce.toolset.exec.ui.ConnectionComboBoxModel
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.ui.HacConnectionSettingsListPanel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
-import javax.swing.DefaultComboBoxModel
 
 class HacExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
 
@@ -46,68 +48,60 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
         "hAC", "sap.commerce.toolset.hac.exec.settings"
     ) {
 
-        @Volatile
-        private var isReset = false
-        private val currentActiveConnection = HacExecConnectionService.getInstance(project).activeConnection
+        private lateinit var connectionsListPanel: HacConnectionSettingsListPanel
+        private lateinit var activeServerComboBox: ComboBox<HacConnectionSettingsState>
+        private lateinit var activeServerModel: ConnectionComboBoxModel<HacConnectionSettingsState>
 
-        private val activeServerModel = DefaultComboBoxModel<HacConnectionSettingsState>()
+        private var originalConnections = HacExecConnectionService.getInstance(project).connections.map { it.mutable() }
+        private var originalActiveConnection = HacExecConnectionService.getInstance(project).activeConnection
 
-        private val servers = HacConnectionSettingsListPanel(project) { _, connections ->
-            if (!isReset) {
-                HacExecConnectionService.getInstance(project).save(connections)
-
-                updateModel(activeServerModel, activeServerModel.selectedItem as HacConnectionSettingsState?, connections)
+        override fun createPanel(): DialogPanel {
+            connectionsListPanel = HacConnectionSettingsListPanel(project, disposable) {
+                val previousSelectedItem = activeServerModel.selectedItem?.asSafely<HacConnectionSettingsState>()?.uuid
+                val modifiedConnections = connectionsListPanel.data.map { it.immutable() }
+                activeServerModel.refresh(modifiedConnections)
+                activeServerModel.selectedItem = modifiedConnections.find { it.uuid == previousSelectedItem }
+                activeServerComboBox.repaint()
             }
-        }
 
-        override fun createPanel() = panel {
-            row {
-                icon(HybrisIcons.Y.REMOTE_GREEN)
-                comboBox(
-                    activeServerModel,
-                    renderer = SimpleListCellRenderer.create("?") { it.presentationName }
-                )
-                    .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
-                    .onApply {
-                        activeServerModel.selectedItem
-                            ?.asSafely<HacConnectionSettingsState>()
-                            ?.let { settings -> HacExecConnectionService.getInstance(project).activeConnection = settings }
-                    }
-                    .onIsModified {
-                        activeServerModel.selectedItem
-                            ?.asSafely<HacConnectionSettingsState>()
-                            ?.let { it.uuid != HacExecConnectionService.getInstance(project).activeConnection.uuid }
-                            ?: false
-                    }
-                    .align(AlignX.FILL)
-            }.layout(RowLayout.PARENT_GRID)
 
-            row {
-                cell(servers)
-                    .align(AlignX.FILL)
+            return panel {
+                row {
+                    icon(HybrisIcons.Y.REMOTE_GREEN)
+                    activeServerComboBox = comboBox(
+                        activeServerModel,
+                        renderer = SimpleListCellRenderer.create("?") { it.presentationName }
+                    )
+                        .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
+                        .onIsModified { originalActiveConnection.uuid != activeServerComboBox.selectedItem?.asSafely<HacConnectionSettingsState>()?.uuid }
+                        .align(AlignX.FILL)
+                        .component
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
+                    cell(connectionsListPanel)
+                        .onIsModified { connectionsListPanel.data != originalConnections }
+                        .align(Align.FILL)
+                }
             }
         }
 
         override fun reset() {
-            isReset = true
-
-            servers.setData(HacExecConnectionService.getInstance(project).connections)
-
-            updateModel(activeServerModel, currentActiveConnection, servers.data)
-
-            isReset = false
+            activeServerModel.refresh(originalConnections.map { it.immutable() })
+            connectionsListPanel.data = originalConnections.map { it.copy() }
+            activeServerComboBox.selectedItem = originalActiveConnection
         }
 
-        private fun <T : ExecConnectionSettingsState> updateModel(
-            model: DefaultComboBoxModel<T>,
-            activeConnection: T?,
-            connectionSettings: Collection<T>
-        ) {
-            model.removeAllElements()
-            model.addAll(connectionSettings)
+        override fun apply() {
+            super.apply()
 
-            model.selectedItem = if (model.getIndexOf(activeConnection) != -1) model.getElementAt(model.getIndexOf(activeConnection))
-            else model.getElementAt(0)
+            val connectionService = HacExecConnectionService.getInstance(project)
+
+            connectionService.connections = connectionsListPanel.data.map { it.immutable() }
+            connectionService.activeConnection = activeServerComboBox.selectedItem as HacConnectionSettingsState
+
+            originalActiveConnection = connectionService.activeConnection
+            originalConnections = connectionService.connections.map { it.mutable() }
         }
     }
 

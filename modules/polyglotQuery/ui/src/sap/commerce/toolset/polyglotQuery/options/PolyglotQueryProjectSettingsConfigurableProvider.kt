@@ -47,7 +47,7 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
     ) {
 
         private val developerSettings = project.yDeveloperSettings
-        private val mutableSettings = developerSettings.polyglotQuerySettings.mutable()
+        private val mutable = developerSettings.polyglotQuerySettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
 
@@ -56,11 +56,10 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
         override fun createPanel() = panel {
             group("Language") {
                 row {
-                    verifyCaseCheckBox =
-                        checkBox("Verify case of the reserved words")
-                            .bindSelected(mutableSettings::verifyCaseForReservedWords)
-                            .comment("Case will be verified when the file is being opened for the first time")
-                            .component
+                    verifyCaseCheckBox = checkBox("Verify case of the reserved words")
+                        .bindSelected(mutable::verifyCaseForReservedWords)
+                        .comment("Case will be verified when the file is being opened for the first time")
+                        .component
                 }
                 row {
                     comboBox(
@@ -68,7 +67,7 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
                         renderer = SimpleListCellRenderer.create("?") { i18n("hybris.pgq.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
-                        .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())
+                        .bindItem(mutable::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
                 }.rowComment("Existing case-related notifications will be closed for all related editors.<br>Verification of the case will be re-triggered on the next re-opening of the file")
             }
@@ -77,7 +76,7 @@ class PolyglotQueryProjectSettingsConfigurableProvider(private val project: Proj
         override fun apply() {
             super.apply()
 
-            developerSettings.polyglotQuerySettings = mutableSettings.immutable()
+            developerSettings.polyglotQuerySettings = mutable.immutable()
 
             EditorNotificationProvider.EP_NAME.findExtension(PolyglotQueryEditorNotificationProvider::class.java, project)
                 ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
