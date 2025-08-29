@@ -21,9 +21,8 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import kotlinx.coroutines.CoroutineScope
 
-class LoggersRootNode(project: Project, private val coroutineScope: CoroutineScope) : LoggersNode(project) {
+class LoggersRootNode(project: Project) : LoggersNode(project) {
 
     override fun getName() = "root"
     override fun update(presentation: PresentationData) {

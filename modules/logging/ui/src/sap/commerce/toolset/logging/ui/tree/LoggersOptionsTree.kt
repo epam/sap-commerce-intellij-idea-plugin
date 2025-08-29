@@ -37,7 +37,7 @@ private const val SEARCH_CAN_EXPAND = true
 
 class LoggersOptionsTree(myProject: Project, coroutineScope: CoroutineScope) : Tree(), Disposable {
 
-    private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(myProject, coroutineScope)))
+    private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(myProject)))
 
     init {
         isRootVisible = false
