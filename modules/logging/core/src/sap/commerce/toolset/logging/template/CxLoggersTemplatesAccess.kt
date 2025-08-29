@@ -28,13 +28,12 @@ import sap.commerce.toolset.logging.resolveIconBlocking
 
 object CxLoggersTemplatesAccess {
 
-    val iconsMap = mapOf(
+    private val iconsMap = mapOf(
         "DISABLE" to HybrisIcons.Log.Template.DISABLE,
         "ENABLE" to HybrisIcons.Log.Template.ENABLE
     )
 
-    fun bundledLoggerTemplates(project: Project): List<CxLoggersTemplateModel> {
-        return ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
+    fun bundledLoggerTemplates(project: Project): List<CxLoggersTemplateModel> = ExtensionsService.getInstance().findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
             .let { Gson().fromJson(it, CxLoggersTemplatesDto::class.java) }
             .templates
             .takeIf { it.isNotEmpty() }
@@ -57,4 +56,3 @@ object CxLoggersTemplatesAccess {
             }
             ?: emptyList()
     }
-}
