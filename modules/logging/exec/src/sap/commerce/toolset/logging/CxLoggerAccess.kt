@@ -77,8 +77,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     }
 
     fun logger(loggerIdentifier: String): CxLoggerModel? {
-        val connection = HacExecConnectionService.getInstance(project).activeConnection
-        return if (stateInitialized) state(connection.uuid).get(loggerIdentifier) else null
+        return if (stateInitialized)
+            state(HacExecConnectionService.getInstance(project).activeConnection.uuid).get(loggerIdentifier)
+        else null
     }
 
     fun setLogger(loggerName: String, logLevel: LogLevel, callback: (CoroutineScope, LoggingExecResult) -> Unit = { _, _ -> }) {
