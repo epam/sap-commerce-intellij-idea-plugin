@@ -31,7 +31,7 @@ import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListene
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 @Service(Service.Level.PROJECT)
-class HacExecConnectionService(private val project: Project) : ExecConnectionService<HacConnectionSettingsState>() {
+class HacExecConnectionService(project: Project) : ExecConnectionService<HacConnectionSettingsState>(project) {
 
     override var activeConnection: HacConnectionSettingsState
         get() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
@@ -40,12 +40,12 @@ class HacExecConnectionService(private val project: Project) : ExecConnectionSer
                 HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
                 add(it)
 
-                project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(it)
+                onActivate(it)
             }
         set(value) {
             HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
 
-            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(value)
+            onActivate(value)
         }
 
     override val connections: List<HacConnectionSettingsState>
@@ -56,41 +56,44 @@ class HacExecConnectionService(private val project: Project) : ExecConnectionSer
             .takeIf { it.isNotEmpty() }
             ?: listOf(default())
 
-    override fun add(settings: HacConnectionSettingsState) = when (settings.scope) {
+    override val listener: HacConnectionSettingsListener
+        get() = project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC)
+
+    override fun add(settings: HacConnectionSettingsState, notify: Boolean) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
             connections = connections + settings
 
-            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onAdded(settings)
+            onAdd(settings, notify)
         }
 
         ExecConnectionScope.PROJECT -> with(HacExecProjectSettings.getInstance(project)) {
             connections = connections + settings
 
-            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onAdded(settings)
+            onAdd(settings, notify)
         }
     }
 
-    override fun remove(settings: HacConnectionSettingsState, scope: ExecConnectionScope) = when (settings.scope) {
+    override fun remove(settings: HacConnectionSettingsState, scope: ExecConnectionScope, notify: Boolean) = when (settings.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
 
-            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(settings)
+            onRemove(settings, notify)
         }
 
         ExecConnectionScope.PROJECT -> with(HacExecProjectSettings.getInstance(project)) {
             connections = connections
                 .filterNot { it.uuid == settings.uuid }
 
-            project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onRemoved(settings)
+            onRemove(settings, notify)
         }
     }
 
-    override fun save(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) {
+    override fun save(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>, notify: Boolean) {
         HacExecProjectSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
         HacExecDeveloperSettings.getInstance(project).connections = settings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
 
-        project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC).onSave(settings)
+        onSave(settings, notify)
     }
 
     override fun default(): HacConnectionSettingsState {

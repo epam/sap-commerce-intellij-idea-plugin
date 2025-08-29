@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.logging.ui
 
-
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -28,6 +27,7 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -69,10 +69,8 @@ class LoggersSplitView(
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = updateTree()
-                override fun onModified(connection: HacConnectionSettingsState) = updateTree()
-                override fun onAdded(connection: HacConnectionSettingsState) = updateTree()
-                override fun onRemoved(connection: HacConnectionSettingsState) = updateTree()
+                override fun onActive(connection: HacConnectionSettingsState) = updateTree()
+                override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = updateTree()
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {

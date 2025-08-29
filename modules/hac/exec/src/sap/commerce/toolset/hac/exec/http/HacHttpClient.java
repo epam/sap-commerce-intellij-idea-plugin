@@ -22,7 +22,6 @@ package sap.commerce.toolset.hac.exec.http;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.UserDataHolderBase;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -54,7 +53,6 @@ import org.jsoup.select.Elements;
 import sap.commerce.toolset.exec.ExecConstants;
 import sap.commerce.toolset.exec.context.ReplicaContext;
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsStateKt;
-import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener;
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -62,7 +60,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.io.Serial;
 import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -82,12 +79,10 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
 @Service(Service.Level.PROJECT)
-public final class HacHttpClient extends UserDataHolderBase {
+public final class HacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(HacHttpClient.class);
-
-    @Serial
-    private static final long serialVersionUID = -4915832410081381025L;
+    private final Project project;
 
     private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
 
@@ -108,22 +103,17 @@ public final class HacHttpClient extends UserDataHolderBase {
 
     private final Map<String, Map<String, String>> cookiesPerSettings = new ConcurrentHashMap<>();
 
+    public HacHttpClient(final Project project) {
+        this.project = project;
+    }
+
     public static HacHttpClient getInstance(final Project project) {
         return project.getService(HacHttpClient.class);
     }
 
-    public HacHttpClient(final Project project) {
-        project.getMessageBus().connect().subscribe(HacConnectionSettingsListener.Companion.getTOPIC(), new HacConnectionSettingsListener() {
-            @Override
-            public void onModified(@NotNull final HacConnectionSettingsState connection) {
-                invalidateCookies(connection, null);
-            }
-        });
-    }
-
     @NotNull
     public String testConnection(@NotNull final HacConnectionSettingsState settings) {
-        final var cookiesKey = getCookiesKey(settings, null);
+        final var cookiesKey = HttpCookiesCache.Companion.getInstance(project).getKey(settings, null);
         final var result = login(settings, null, cookiesKey);
         cookiesPerSettings.remove(cookiesKey);
         return result;
@@ -138,7 +128,7 @@ public final class HacHttpClient extends UserDataHolderBase {
         final HacConnectionSettingsState settings,
         @Nullable final ReplicaContext replicaContext
     ) {
-        final var cookiesKey = getCookiesKey(settings, replicaContext);
+        final var cookiesKey = HttpCookiesCache.Companion.getInstance(project).getKey(settings, replicaContext);
         final String cookieName = getCookieName(settings);
         var cookies = cookiesPerSettings.get(cookiesKey);
         if (cookies == null || !cookies.containsKey(cookieName)) {
@@ -224,6 +214,9 @@ public final class HacHttpClient extends UserDataHolderBase {
             return "Unable to obtain sessionId for " + hostHacURL;
         }
         final var csrfToken = getCsrfToken(hostHacURL, settings, cookiesKey);
+        if (csrfToken == null) {
+            return "Unable to obtain csrfToken for " + hostHacURL;
+        }
         final var params = List.of(
             new BasicNameValuePair("j_username", settings.getUsername()),
             new BasicNameValuePair("j_password", settings.getPassword()),
@@ -338,6 +331,7 @@ public final class HacHttpClient extends UserDataHolderBase {
         }
     }
 
+    @Nullable
     private String getCsrfToken(
         final @NotNull String hacURL,
         final @NotNull HacConnectionSettingsState settings,
@@ -363,17 +357,5 @@ public final class HacHttpClient extends UserDataHolderBase {
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());
         return Jsoup.connect(url);
-    }
-
-    private String getCookiesKey(final HacConnectionSettingsState settings, @Nullable final ReplicaContext context) {
-        return "%s_%s".formatted(
-            settings.getUuid(),
-            context == null ? "auto" : context.getReplicaId()
-        );
-    }
-
-    private void invalidateCookies(@NotNull final HacConnectionSettingsState settings, @Nullable final ReplicaContext replicaContext) {
-        final var cookiesKey = getCookiesKey(settings, replicaContext);
-        cookiesPerSettings.remove(cookiesKey);
     }
 }

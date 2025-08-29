@@ -21,14 +21,18 @@ package sap.commerce.toolset.logging
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.shortenConnectionName
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
@@ -61,8 +65,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     init {
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
-                override fun onActiveConnectionChanged(connection: HacConnectionSettingsState) = refresh()
-                override fun onModified(connection: HacConnectionSettingsState) = clearState(connection)
+                override fun onActive(connection: HacConnectionSettingsState) = refresh()
+                override fun onSave(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>) = settings.values
+                    .flatten()
+                    .forEach { clearState(it) }
             })
         }
     }
@@ -107,39 +113,75 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun fetch() = fetch(HacExecConnectionService.getInstance(project).activeConnection)
 
     fun fetch(server: HacConnectionSettingsState) {
-        val context = GroovyExecContext(
-            connection = server,
-            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
-            content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
-            settings = GroovyExecContext.defaultSettings(server).copy(
-                transactionMode = TransactionMode.ROLLBACK,
-                timeout = server.timeout
-            )
-        )
+        fetching = true
 
-        executeGroovyLoggersScript(context, server) { _, groovyScriptResult ->
-            val result = groovyScriptResult.result
-            val loggers = groovyScriptResult.loggers
-
-            when {
-                result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
-                    "<p>${result.errorMessage}</p>"
-                    "<p>Server: ${server.shortenConnectionName}</p>"
-                }
-
-                loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
-                    "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>" +
-                        "<p>Server: ${server.shortenConnectionName}</p>"
-                }
-
-                else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
-                    """
-                        <p>Declared loggers: ${loggers.size}</p>
-                        <p>Server: ${server.shortenConnectionName}</p>
-                    """.trimIndent()
-                }
+        coroutineScope.launch {
+            val content = withContext(Dispatchers.IO) {
+                readAction { ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT) }
             }
 
+            val context = GroovyExecContext(
+                connection = server,
+                executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
+                content = content,
+                settings = GroovyExecContext.defaultSettings(server).copy(
+                    transactionMode = TransactionMode.ROLLBACK,
+                    timeout = server.timeout,
+                )
+            )
+
+            GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
+                coroutineScope.launch {
+                    val loggers = result.result
+                        ?.split("\n")
+                        ?.map { it.split(" | ") }
+                        ?.filter { it.size == 3 }
+                        ?.map {
+                            val loggerIdentifier = it[0]
+                            val effectiveLevel = it[1]
+                            val parentName = it[2]
+
+                            val psiElementPointer = getPsiElementPointer(project, loggerIdentifier)
+                            val icon = getIcon(project, loggerIdentifier)
+
+                            CxLoggerModel.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
+                        }
+                        ?.distinctBy { it.name }
+                        ?.associateBy { it.name }
+                        ?.takeIf { it.isNotEmpty() }
+
+                    if (loggers == null || result.hasError) {
+                        clearState(server)
+                    } else {
+                        updateState(loggers, server)
+                    }
+
+                    project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
+
+                    when {
+                        result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
+                            """
+                            <p>${result.errorMessage}</p>
+                            <p>Server: ${server.shortenConnectionName}</p>
+                        """.trimIndent()
+                        }
+
+                        loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
+                            """
+                            <p>No Loggers information returned from the remote server or is in the incorrect format.</p>
+                            <p>Server: ${server.shortenConnectionName}</p>
+                        """.trimIndent()
+                        }
+
+                        else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
+                            """
+                            <p>Declared loggers: ${loggers.size}</p>
+                            <p>Server: ${server.shortenConnectionName}</p>
+                        """.trimIndent()
+                        }
+                    }
+                }
+            }
         }
     }
 
