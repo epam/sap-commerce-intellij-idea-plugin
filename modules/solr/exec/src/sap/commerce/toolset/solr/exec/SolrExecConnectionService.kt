@@ -73,20 +73,14 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
     }
 
     override fun remove(settings: SolrConnectionSettingsState, notify: Boolean) {
-        with(SolrExecDeveloperSettings.getInstance(project)) {
-            connections = connections
-                .filterNot { it.uuid == settings.uuid }
+        SolrExecDeveloperSettings.getInstance(project)
+            .connections = connections
+            .filterNot { it.uuid == settings.uuid }
+        SolrExecProjectSettings.getInstance(project)
+            .connections = connections
+            .filterNot { it.uuid == settings.uuid }
 
-            onRemove(settings, notify)
-        }
-
-        with(SolrExecProjectSettings.getInstance(project)) {
-            connections = connections
-                .filterNot { it.uuid == settings.uuid }
-
-            onRemove(settings, notify)
-        }
-
+        onRemove(settings, notify)
     }
 
     override fun save(settings: Map<ExecConnectionScope, List<SolrConnectionSettingsState>>, notify: Boolean) {

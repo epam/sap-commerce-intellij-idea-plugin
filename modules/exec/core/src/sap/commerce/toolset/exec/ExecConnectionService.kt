@@ -47,14 +47,8 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected 
     )
 
     fun save(settings: T) {
-        remove(
-            settings = settings,
-            notify = false,
-        )
-        add(
-            settings = settings,
-            notify = false
-        )
+        remove(settings, notify = false)
+        add(settings, notify = false)
 
         onSave(mapOf(settings.scope to listOf(settings)))
     }

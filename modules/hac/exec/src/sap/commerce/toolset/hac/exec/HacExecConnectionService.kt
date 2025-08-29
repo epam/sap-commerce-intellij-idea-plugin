@@ -73,19 +73,14 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
     }
 
     override fun remove(settings: HacConnectionSettingsState, notify: Boolean) {
-        with(HacExecDeveloperSettings.getInstance(project)) {
-            connections = connections
-                .filterNot { it.uuid == settings.uuid }
+        HacExecDeveloperSettings.getInstance(project)
+            .connections = connections
+            .filterNot { it.uuid == settings.uuid }
+        HacExecProjectSettings.getInstance(project)
+            .connections = connections
+            .filterNot { it.uuid == settings.uuid }
 
-            onRemove(settings, notify)
-        }
-
-        with(HacExecProjectSettings.getInstance(project)) {
-            connections = connections
-                .filterNot { it.uuid == settings.uuid }
-
-            onRemove(settings, notify)
-        }
+        onRemove(settings, notify)
     }
 
     override fun save(settings: Map<ExecConnectionScope, List<HacConnectionSettingsState>>, notify: Boolean) {
