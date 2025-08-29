@@ -17,7 +17,7 @@
       "loggers": [
         {
           "identifier": "de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy",
-          "effectiveLevel": "DISABLE"
+          "effectiveLevel": "OFF"
         }
       ]
     },

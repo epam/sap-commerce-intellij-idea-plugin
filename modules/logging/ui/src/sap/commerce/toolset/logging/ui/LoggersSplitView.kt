@@ -64,9 +64,6 @@ class LoggersSplitView(
         Disposer.register(this, loggersStateView)
         Disposer.register(this, loggersTemplatesStateView)
 
-        // TODO: review this logic, let's NOT build the tree on init, instead render it on first show
-        //updateTree()
-
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActive(connection: HacConnectionSettingsState) = updateTree()
