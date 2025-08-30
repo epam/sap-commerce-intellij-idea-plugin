@@ -37,14 +37,6 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
 
     override var activeConnection: SolrConnectionSettingsState
         get() = findActiveConnection()
-        //            ?: synchronized(lock) {
-//                findActiveConnection()
-//                    ?: default().also {
-//                        SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-//                        create(it to defaultCredentials(), false)
-//                        onActivate(it)
-//                    }
-//            }
         set(value) {
             SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
 
