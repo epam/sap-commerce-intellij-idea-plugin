@@ -1,7 +1,7 @@
 {
   "templates" : [
     {
-      "name": "Enabled Solr loggers",
+      "name": "Enable Solr",
       "icon": "ENABLE",
       "loggers": [
         {
@@ -12,7 +12,7 @@
       ]
     },
     {
-      "name": "Disabled Solr loggers",
+      "name": "Disable Solr",
       "icon": "DISABLE",
       "loggers": [
         {
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "name": "Enable FlexibleSearch loggers",
+      "name": "Enable FlexibleSearch",
       "icon": "ENABLE",
       "loggers": [
         {
@@ -32,7 +32,7 @@
       ]
     },
     {
-      "name": "Disable FlexibleSearch loggers",
+      "name": "Disable FlexibleSearch",
       "icon": "DISABLE",
       "loggers": [
         {

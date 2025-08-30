@@ -21,11 +21,11 @@ package sap.commerce.toolset.logging.template
 import com.google.gson.Gson
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import com.intellij.util.ResourceUtil
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.CxLoggersConstants
 import sap.commerce.toolset.logging.resolveIconBlocking
+import java.io.InputStreamReader
 
 @Service(Service.Level.PROJECT)
 class CxLoggersTemplatesService(private val project: Project) {
@@ -35,9 +35,16 @@ class CxLoggersTemplatesService(private val project: Project) {
         "ENABLE" to HybrisIcons.Log.Template.ENABLE
     )
 
-    fun bundledLoggerTemplates(): List<CxLoggersTemplateModel> = ExtensionsService.getInstance()
-        .findResource(CxLoggersConstants.CX_LOGGERS_BUNDLED)
-        .let { Gson().fromJson(it, CxLoggersTemplatesDto::class.java) }
+    fun bundledLoggerTemplates(): List<CxLoggersTemplateModel> = ResourceUtil.getResourceAsStream(
+        this.javaClass.classLoader,
+        "cx-loggers",
+        "templates.json"
+    )
+        .use { input ->
+            InputStreamReader(input, Charsets.UTF_8).use { reader ->
+                Gson().fromJson(reader, CxLoggersTemplatesDto::class.java)
+            }
+        }
         .templates
         .takeIf { it.isNotEmpty() }
         ?.map { item ->

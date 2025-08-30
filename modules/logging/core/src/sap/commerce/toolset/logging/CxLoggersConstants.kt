@@ -25,6 +25,5 @@ object CxLoggersConstants {
     const val ROOT_LOGGER_NAME = "root"
     const val EXTENSION_STATE_SCRIPT = "cx-loggers-state.groovy"
     const val UPDATE_CX_LOGGERS_STATE = "update-cx-loggers-state.groovy"
-    const val CX_LOGGERS_BUNDLED = "cx-loggers-templates.json"
     val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
 }
