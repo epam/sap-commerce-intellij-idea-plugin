@@ -105,9 +105,10 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
                 originalConnections = connectionService.connections.map { it.mutable() }
                 originalActiveConnection = connectionService.activeConnection
             } else {
-                originalConnections = connectionsListPanel.data.map { it.copy() }
+                originalConnections = newSettings.map { it.first.mutable() }
                 originalActiveConnection = activeServerComboBox.selectedItem as SolrConnectionSettingsState
-                connectionService.activeConnection = activeServerComboBox.selectedItem as SolrConnectionSettingsState
+
+                connectionService.activeConnection = originalActiveConnection
             }
 
             reset()
