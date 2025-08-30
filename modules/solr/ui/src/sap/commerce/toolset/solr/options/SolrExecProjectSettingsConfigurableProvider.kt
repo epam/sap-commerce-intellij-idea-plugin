@@ -95,13 +95,15 @@ class SolrExecProjectSettingsConfigurableProvider(private val project: Project) 
             super.apply()
 
             val connectionService = SolrExecConnectionService.getInstance(project)
+            val newSettings = connectionsListPanel.data.map { it.immutable() }
 
-            connectionService.save(connectionsListPanel.data.map { it.immutable() }.associate { it.first to it.second })
-            activeServerComboBox.selectedItem.asSafely<SolrConnectionSettingsState>()
-                ?.let { connectionService.activeConnection = it }
+            connectionService.save(newSettings.associate { it.first to it.second })
 
-            originalActiveConnection = connectionService.activeConnection
             originalConnections = connectionService.connections.map { it.mutable() }
+            originalActiveConnection = connectionService.activeConnection
+
+            connectionsListPanel.data = originalConnections
+            activeServerComboBox.selectedItem = originalActiveConnection
         }
 
     }
