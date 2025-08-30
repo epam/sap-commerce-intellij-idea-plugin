@@ -37,51 +37,50 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
 
     override var activeConnection: HacConnectionSettingsState
         get() = findActiveConnection()
-            ?: synchronized(lock) {
-                findActiveConnection()
-                    ?: default().also {
-                        HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                        add(it, false)
-                        onActivate(it)
-                    }
-            }
+        //            ?: synchronized(lock) {
+//                findActiveConnection()
+//                    ?: default().also {
+//                        HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+//                        create(it to defaultCredentials(), false)
+//                        onActivate(it)
+//                    }
+//            }
         set(value) {
             HacExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
 
             onActivate(value)
         }
 
-    override var connections: List<HacConnectionSettingsState>
+    override val connections: List<HacConnectionSettingsState>
         get() = persistedConnections()
-            ?: listOf(default())
-        set(value) {
-            val groupedSettings = value.groupBy { it.scope }
+            ?: synchronized(lock) {
+                persistedConnections()
+                    ?: listOf(default()).also {
+                        val defaultSettings = it.first()
 
-            HacExecProjectSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
-            HacExecDeveloperSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
-
-            onSave(value, true)
-        }
-
+                        HacExecDeveloperSettings.getInstance(project).connections = it
+                        activeConnection = defaultSettings
+                    }
+            }
 
     override val listener: HacConnectionSettingsListener
         get() = project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC)
 
-    override fun add(settings: HacConnectionSettingsState, notify: Boolean) = when (settings.scope) {
+    override fun create(settings: Pair<HacConnectionSettingsState, Credentials>, notify: Boolean) = when (settings.first.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
-            connections = connections + settings
+            connections = connections + settings.first
 
-            onAdd(settings, notify)
+            onCreate(settings, notify)
         }
 
         ExecConnectionScope.PROJECT -> with(HacExecProjectSettings.getInstance(project)) {
-            connections = connections + settings
+            connections = connections + settings.first
 
-            onAdd(settings, notify)
+            onCreate(settings, notify)
         }
     }
 
-    override fun remove(settings: HacConnectionSettingsState, notify: Boolean) {
+    override fun delete(settings: HacConnectionSettingsState, notify: Boolean) {
         val developerSettings = HacExecDeveloperSettings.getInstance(project)
         val projectSettings = HacExecProjectSettings.getInstance(project)
         developerSettings.connections = developerSettings.connections
@@ -89,16 +88,32 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         projectSettings.connections = projectSettings.connections
             .filterNot { it.uuid == settings.uuid }
 
-        onRemove(settings, notify)
+        onDelete(settings, notify)
+    }
+
+    override fun save(settings: Map<HacConnectionSettingsState, Credentials>) {
+        val groupedSettings = settings.keys.groupBy { it.scope }
+        val projectSettings = HacExecProjectSettings.getInstance(project)
+        val developerSettings = HacExecDeveloperSettings.getInstance(project)
+
+        // remove persisted credentials for previous connections
+        projectSettings.connections.forEach { removeCredentials(it) }
+        developerSettings.connections.forEach { removeCredentials(it) }
+
+        projectSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
+        developerSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
+
+        onSave(settings)
     }
 
     override fun default() = HacConnectionSettingsState(
         port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002"),
         webroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, ""),
-        credentials = Credentials(
-            "admin",
-            getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
-        )
+    )
+
+    override fun defaultCredentials(settings: HacConnectionSettingsState) = Credentials(
+        "admin",
+        getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
     )
 
     private fun persistedConnections() = buildList {
@@ -108,7 +123,8 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         .takeIf { it.isNotEmpty() }
 
     private fun findActiveConnection() = HacExecDeveloperSettings.getInstance(project).activeConnectionUUID
-        ?.let { uuid -> persistedConnections()?.find { it.uuid == uuid } }
+        ?.let { uuid -> connections.find { it.uuid == uuid } }
+        ?: connections.first()
 
     companion object {
         fun getInstance(project: Project): HacExecConnectionService = project.service()

@@ -36,7 +36,6 @@ import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import java.io.Serial
 import javax.swing.Icon
 

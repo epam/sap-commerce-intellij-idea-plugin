@@ -21,6 +21,7 @@ package sap.commerce.toolset.flexibleSearch.exec.context
 import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
 
@@ -91,8 +92,8 @@ data class FlexibleSearchExecContext(
             maxCount = 200,
             locale = "en",
             dataSource = "master",
-            user = connectionSettings?.username ?: "from active connection",
-            timeout = connectionSettings?.timeout ?: 0,
+            user = "from active connection",
+            timeout = connectionSettings?.timeout ?: HacExecConstants.DEFAULT_TIMEOUT,
         )
     }
 }

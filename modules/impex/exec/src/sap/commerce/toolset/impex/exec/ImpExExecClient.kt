@@ -30,7 +30,6 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import java.io.IOException

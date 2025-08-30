@@ -18,16 +18,15 @@
 
 package sap.commerce.toolset.solr.ui
 
-import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.solr.exec.SolrExecClient
+import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.awt.Component
 
@@ -39,6 +38,9 @@ class SolrConnectionSettingsDialog(
 ) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, dialogTitle) {
 
     private lateinit var socketTimeoutIntSpinner: JBIntSpinner
+
+    override fun retrieveCredentials(mutable: SolrConnectionSettingsState.Mutable) = SolrExecConnectionService.getInstance(project)
+        .getCredentials(mutable.immutable().first)
 
     override fun panel() = panel {
         row {
@@ -76,7 +78,7 @@ class SolrConnectionSettingsDialog(
 
         group("Full URL Preview", false) {
             row {
-                urlPreviewLabel = label(mutable.immutable().generatedURL)
+                urlPreviewLabel = label(mutable.generatedURL)
                     .bold()
                     .align(AlignX.FILL)
                     .component
@@ -166,10 +168,13 @@ class SolrConnectionSettingsDialog(
             timeout = timeoutIntSpinner.number,
             socketTimeout = timeoutIntSpinner.number,
             webroot = webrootTextField.text,
-            credentials = Credentials(mutable.username.get(), mutable.password.get()),
         )
 
-        SolrExecClient.getInstance(project).listOfCores(testSettings)
+        SolrExecClient.getInstance(project).testConnection(
+            testSettings,
+            mutable.username.get(),
+            mutable.password.get(),
+        )
 
         null
     } catch (e: Exception) {

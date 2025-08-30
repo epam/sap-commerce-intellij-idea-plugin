@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.hac.ui
 
-import com.intellij.credentialStore.Credentials
 import com.intellij.execution.wsl.WSLDistribution
 import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.openapi.project.Project
@@ -32,9 +31,9 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.exec.ui.WSL_PROXY_CONNECT_LOCALHOST
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.awt.Component
@@ -59,6 +58,9 @@ class HacConnectionSettingsDialog(
     private lateinit var wslDistributionText: Cell<JLabel>
     private var isWslCheckBox: JBCheckBox? = null
 
+    override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
+        .getCredentials(mutable.immutable().first)
+
     override fun testConnection(): String = HacHttpClient.getInstance(project).testConnection(
         HacConnectionSettingsState(
             host = hostTextField.text,
@@ -69,8 +71,9 @@ class HacConnectionSettingsDialog(
             webroot = webrootTextField.text,
             timeout = timeoutIntSpinner.number,
             sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
-            credentials = Credentials(mutable.username.get(), mutable.password.get()),
-        )
+        ),
+        mutable.username.get(),
+        mutable.password.get()
     )
 
     override fun panel() = panel {
@@ -102,7 +105,7 @@ class HacConnectionSettingsDialog(
 
         group("Full URL Preview", false) {
             row {
-                urlPreviewLabel = label(mutable.immutable().generatedURL)
+                urlPreviewLabel = label(mutable.generatedURL)
                     .bold()
                     .align(AlignX.FILL)
                     .component

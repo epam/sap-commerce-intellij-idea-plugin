@@ -32,7 +32,6 @@ import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.ExecClient
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.logging.CxLoggerModel

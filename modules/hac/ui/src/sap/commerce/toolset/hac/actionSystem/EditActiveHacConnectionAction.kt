@@ -37,7 +37,7 @@ class EditActiveHacConnectionAction : HacConnectionAction("Edit active connectio
         val execService = HacExecConnectionService.getInstance(project)
         val mutable = execService.activeConnection.mutable()
         if (HacConnectionSettingsDialog(project, component, mutable, "Edit SAP CX Connection Settings").showAndGet()) {
-            execService.save(mutable.immutable())
+            execService.update(mutable.immutable())
         }
     }
 }

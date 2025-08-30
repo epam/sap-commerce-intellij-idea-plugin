@@ -22,7 +22,6 @@ import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Transient
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
@@ -39,20 +38,7 @@ data class SolrConnectionSettingsState(
     @OptionTag override val ssl: Boolean = true,
     @OptionTag override val timeout: Int = SolrConstants.CONNECTION_TIMEOUT_MILLIS,
     @OptionTag val socketTimeout: Int = SolrConstants.SOCKET_TIMEOUT_MILLIS,
-
-    @Transient
-    override val credentials: Credentials? = null,
 ) : ExecConnectionSettingsState {
-
-    private val dynamicCredentials
-        @Transient
-        get() = credentials ?: retrieveCredentials()
-    override val username
-        @Transient
-        get() = dynamicCredentials?.userName ?: DEFAULT_USERNAME
-    override val password
-        @Transient
-        get() = dynamicCredentials?.getPasswordAsString() ?: DEFAULT_PASSWORD
 
     override fun mutable() = Mutable(
         uuid = uuid,
@@ -75,6 +61,7 @@ data class SolrConnectionSettingsState(
         override var webroot: String,
         override var ssl: Boolean,
         override var timeout: Int,
+        override var modified: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_USERNAME),
         override val password: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_PASSWORD),
         var socketTimeout: Int,
@@ -90,8 +77,7 @@ data class SolrConnectionSettingsState(
             ssl = ssl,
             timeout = timeout,
             socketTimeout = socketTimeout,
-            credentials = Credentials(username.get(), password.get())
-        )
+        ) to Credentials(username.get(), password.get())
     }
 
     companion object {

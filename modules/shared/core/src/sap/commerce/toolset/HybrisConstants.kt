@@ -162,8 +162,12 @@ object HybrisConstants {
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"
     const val PROPERTY_ADMIN_INITIAL_PASSWORD = "initialpassword.admin"
     const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
+
+    @Deprecated("move to Solr module")
     const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
+    @Deprecated("move to Solr module")
     const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
+    @Deprecated("move to Solr module")
     const val PROPERTY_SOLR_DEFAULT_PASSWORD = "solrserver.instances.default.password"
     const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
     const val PROPERTY_BUILD_COMPILER = "build.compiler"

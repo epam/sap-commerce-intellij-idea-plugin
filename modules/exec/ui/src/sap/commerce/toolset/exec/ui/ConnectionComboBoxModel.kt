@@ -18,7 +18,6 @@
 package sap.commerce.toolset.exec.ui
 
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.presentationName
 import java.io.Serial
 import javax.swing.DefaultComboBoxModel
 

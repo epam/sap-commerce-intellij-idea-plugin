@@ -146,7 +146,11 @@ class HybrisSolrSearchConsole(
     }
 
     private fun retrieveListOfCores() = try {
-        SolrExecClient.getInstance(project).coresData(activeConnection()).toList()
+        val activeConnection = activeConnection()
+        val credentials = SolrExecConnectionService.getInstance(project).getCredentials(activeConnection)
+        val username = credentials.userName ?: ""
+        val password = credentials.getPasswordAsString() ?: ""
+        SolrExecClient.getInstance(project).coresData(activeConnection, username, password).toList()
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,

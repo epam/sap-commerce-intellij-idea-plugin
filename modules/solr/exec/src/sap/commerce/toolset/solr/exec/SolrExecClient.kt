@@ -36,7 +36,6 @@ import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
 import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
@@ -66,14 +65,18 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
             }
     }
 
-    fun listOfCores(solrConnectionSettings: SolrConnectionSettingsState) = coresData(solrConnectionSettings)
+    fun testConnection(solrConnectionSettings: SolrConnectionSettingsState, username: String, password: String) = coresData(
+        solrConnectionSettings,
+        username,
+        password
+    )
         .map { it.core }
         .toTypedArray()
 
-    fun coresData(settings: SolrConnectionSettingsState) = CoreAdminRequest()
+    fun coresData(settings: SolrConnectionSettingsState, username: String, password: String) = CoreAdminRequest()
         .apply {
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
-            setBasicAuthCredentials(settings.username, settings.password)
+            setBasicAuthCredentials(username, password)
         }
         .runCatching { process(buildHttpSolrClient(settings, settings.generatedURL)) }
         .map { parseCoreResponse(it) }
@@ -100,8 +103,13 @@ class SolrExecClient(project: Project, coroutineScope: CoroutineScope) : Default
         .withSocketTimeout(settings.socketTimeout)
         .build()
 
-    private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: SolrConnectionSettingsState) = QueryRequest(solrQuery).apply {
-        setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)
+    private fun buildQueryRequest(solrQuery: SolrQuery, settings: SolrConnectionSettingsState) = QueryRequest(solrQuery).apply {
+        val credentials = SolrExecConnectionService.getInstance(project).getCredentials(settings)
+        val username = credentials.userName ?: ""
+        val password = credentials.getPasswordAsString() ?: ""
+
+        setBasicAuthCredentials(username, password)
+
         method = SolrRequest.METHOD.POST
         // https://issues.apache.org/jira/browse/SOLR-5530
         // https://stackoverflow.com/questions/28374428/return-solr-response-in-json-format/37212234#37212234

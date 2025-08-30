@@ -37,50 +37,50 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
 
     override var activeConnection: SolrConnectionSettingsState
         get() = findActiveConnection()
-            ?: synchronized(lock) {
-                findActiveConnection()
-                    ?: default().also {
-                        SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
-                        add(it, false)
-                        onActivate(it)
-                    }
-            }
+        //            ?: synchronized(lock) {
+//                findActiveConnection()
+//                    ?: default().also {
+//                        SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = it.uuid
+//                        create(it to defaultCredentials(), false)
+//                        onActivate(it)
+//                    }
+//            }
         set(value) {
             SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID = value.uuid
 
             onActivate(value)
         }
 
-    override var connections: List<SolrConnectionSettingsState>
+    override val connections: List<SolrConnectionSettingsState>
         get() = persistedConnections()
-            ?: listOf(default())
-        set(value) {
-            val groupedSettings = value.groupBy { it.scope }
-                .mapValues { (_, v) -> v.toList() }
-            SolrExecProjectSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
-            SolrExecDeveloperSettings.getInstance(project).connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
+            ?: synchronized(lock) {
+                persistedConnections()
+                    ?: listOf(default()).also {
+                        val defaultSettings = it.first()
 
-            onSave(value, true)
-        }
+                        SolrExecDeveloperSettings.getInstance(project).connections = it
+                        activeConnection = defaultSettings
+                    }
+            }
 
     override val listener: SolrConnectionSettingsListener
         get() = project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC)
 
-    override fun add(settings: SolrConnectionSettingsState, notify: Boolean) = when (settings.scope) {
+    override fun create(settings: Pair<SolrConnectionSettingsState, Credentials>, notify: Boolean) = when (settings.first.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
-            connections = connections + settings
+            connections = connections + settings.first
 
-            onAdd(settings, notify)
+            onCreate(settings, notify)
         }
 
         ExecConnectionScope.PROJECT -> with(SolrExecProjectSettings.getInstance(project)) {
-            connections = connections + settings
+            connections = connections + settings.first
 
-            onAdd(settings, notify)
+            onCreate(settings, notify)
         }
     }
 
-    override fun remove(settings: SolrConnectionSettingsState, notify: Boolean) {
+    override fun delete(settings: SolrConnectionSettingsState, notify: Boolean) {
         val developerSettings = SolrExecDeveloperSettings.getInstance(project)
         val projectSettings = SolrExecProjectSettings.getInstance(project)
         developerSettings.connections = developerSettings.connections
@@ -88,15 +88,32 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         projectSettings.connections = projectSettings.connections
             .filterNot { it.uuid == settings.uuid }
 
-        onRemove(settings, notify)
+        onDelete(settings, notify)
     }
 
     override fun default() = SolrConnectionSettingsState(
         port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"),
-        credentials = Credentials(
-            getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"),
-            getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
-        )
+    )
+
+    override fun save(settings: Map<SolrConnectionSettingsState, Credentials>) {
+        val groupedSettings = settings.keys.groupBy { it.scope }
+            .mapValues { (_, v) -> v.toList() }
+        val projectSettings = SolrExecProjectSettings.getInstance(project)
+        val developerSettings = SolrExecDeveloperSettings.getInstance(project)
+
+        // remove persisted credentials for previous connections
+        projectSettings.connections.forEach { removeCredentials(it) }
+        developerSettings.connections.forEach { removeCredentials(it) }
+
+        projectSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT) { emptyList() }
+        developerSettings.connections = groupedSettings.getOrElse(ExecConnectionScope.PROJECT_PERSONAL) { emptyList() }
+
+        onSave(settings)
+    }
+
+    override fun defaultCredentials(settings: SolrConnectionSettingsState) = Credentials(
+        getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"),
+        getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
     )
 
     private fun persistedConnections() = buildList {
@@ -106,7 +123,8 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         .takeIf { it.isNotEmpty() }
 
     private fun findActiveConnection() = SolrExecDeveloperSettings.getInstance(project).activeConnectionUUID
-        ?.let { uuid -> persistedConnections()?.find { it.uuid == uuid } }
+        ?.let { uuid -> connections.find { it.uuid == uuid } }
+        ?: connections.first()
 
     companion object {
         fun getInstance(project: Project): SolrExecConnectionService = project.service()

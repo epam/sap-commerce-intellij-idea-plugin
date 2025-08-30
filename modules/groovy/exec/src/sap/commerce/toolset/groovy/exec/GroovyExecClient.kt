@@ -32,7 +32,6 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.IOException

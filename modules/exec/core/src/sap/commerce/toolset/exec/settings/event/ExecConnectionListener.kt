@@ -23,8 +23,9 @@ import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 interface ExecConnectionListener<T : ExecConnectionSettingsState> {
 
     fun onActive(connection: T) = Unit
-    fun onAdded(connection: T) = Unit
-    fun onSave(settings: List<T>) = Unit
-    fun onRemoved(connection: T) = Unit
+    fun onCreate(connection: T) = Unit
+    fun onUpdate(settings: Collection<T>) = Unit
+    fun onSave(settings: Collection<T>) = Unit
+    fun onDelete(connection: T) = Unit
 
 }

@@ -27,9 +27,6 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.HybrisActionPlaces
 import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsoleService
-import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.exec.settings.state.presentationName
-import sap.commerce.toolset.exec.settings.state.shortenConnectionName
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription

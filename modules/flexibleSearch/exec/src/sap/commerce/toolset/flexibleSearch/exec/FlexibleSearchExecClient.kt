@@ -27,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.exec.ExecClient
-import sap.commerce.toolset.exec.settings.state.generatedURL
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.flexibleSearch.exec.context.TableBuilder

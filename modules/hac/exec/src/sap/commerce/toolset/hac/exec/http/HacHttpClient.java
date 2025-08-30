@@ -52,7 +52,7 @@ import org.jsoup.helper.ValidationException;
 import org.jsoup.select.Elements;
 import sap.commerce.toolset.exec.ExecConstants;
 import sap.commerce.toolset.exec.context.ReplicaContext;
-import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsStateKt;
+import sap.commerce.toolset.hac.exec.HacExecConnectionService;
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -112,9 +112,13 @@ public final class HacHttpClient {
     }
 
     @NotNull
-    public String testConnection(@NotNull final HacConnectionSettingsState settings) {
+    public String testConnection(
+        final @NotNull HacConnectionSettingsState settings,
+        final @NotNull String username,
+        final @NotNull String password
+    ) {
         final var cookiesKey = HttpCookiesCache.Companion.getInstance(project).getKey(settings, null);
-        final var result = login(settings, null, cookiesKey);
+        final var result = login(settings, null, cookiesKey, username, password);
         cookiesPerSettings.remove(cookiesKey);
         return result;
     }
@@ -132,7 +136,10 @@ public final class HacHttpClient {
         final String cookieName = getCookieName(settings);
         var cookies = cookiesPerSettings.get(cookiesKey);
         if (cookies == null || !cookies.containsKey(cookieName)) {
-            final String errorMessage = login(settings, replicaContext, cookiesKey);
+            final var credentials = HacExecConnectionService.Companion.getInstance(project).getCredentials(settings);
+            final var username = credentials.getUserName() !=  null ? credentials.getUserName() : "";
+            final var password = credentials.getPasswordAsString() !=  null ? credentials.getPasswordAsString() : "";
+            final var errorMessage = login(settings, replicaContext, cookiesKey, username, password);
             if (StringUtils.isNotBlank(errorMessage)) {
                 return createErrorResponse(errorMessage);
             }
@@ -141,7 +148,7 @@ public final class HacHttpClient {
         if (cookies == null) return createErrorResponse("Unable to authenticate request.");
 
         final var sessionId = cookies.get(cookieName);
-        final var generatedURL = ExecConnectionSettingsStateKt.getGeneratedURL(settings);
+        final var generatedURL = settings.getGeneratedURL();
         final var csrfToken = getCsrfToken(generatedURL, settings, cookiesKey);
         if (csrfToken == null) {
             cookiesPerSettings.remove(cookiesKey);
@@ -200,9 +207,11 @@ public final class HacHttpClient {
     private String login(
         @NotNull final HacConnectionSettingsState settings,
         @Nullable final ReplicaContext replicaContext,
-        final String cookiesKey
+        final String cookiesKey,
+        final @NotNull String username,
+        final @NotNull String password
     ) {
-        final var hostHacURL = ExecConnectionSettingsStateKt.getGeneratedURL(settings);
+        final var hostHacURL = settings.getGeneratedURL();
 
         retrieveCookies(hostHacURL, settings, replicaContext, cookiesKey);
 
@@ -218,8 +227,8 @@ public final class HacHttpClient {
             return "Unable to obtain csrfToken for " + hostHacURL;
         }
         final var params = List.of(
-            new BasicNameValuePair("j_username", settings.getUsername()),
-            new BasicNameValuePair("j_password", settings.getPassword()),
+            new BasicNameValuePair("j_username", username),
+            new BasicNameValuePair("j_password", password),
             new BasicNameValuePair("_csrf", csrfToken)
         );
         final var loginURL = hostHacURL + "/j_spring_security_check";

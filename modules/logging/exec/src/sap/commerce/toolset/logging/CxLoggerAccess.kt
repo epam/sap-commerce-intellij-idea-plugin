@@ -29,7 +29,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.exec.context.DefaultExecResult
-import sap.commerce.toolset.exec.settings.state.shortenConnectionName
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
@@ -64,8 +63,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActive(connection: HacConnectionSettingsState) = refresh()
-                override fun onSave(settings: List<HacConnectionSettingsState>) = settings.forEach { clearState(it.uuid) }
-                override fun onRemoved(connection: HacConnectionSettingsState) {
+                override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it.uuid) }
+                override fun onDelete(connection: HacConnectionSettingsState) {
                     loggersStates.remove(connection.uuid)
                 }
             })

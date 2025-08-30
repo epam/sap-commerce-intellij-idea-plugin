@@ -29,7 +29,8 @@ import javax.swing.event.ListDataEvent
 
 class SolrConnectionSettingsListPanel(
     project: Project,
-    disposable: Disposable?, listener: (ListDataEvent) -> Unit
+    disposable: Disposable?,
+    listener: (ListDataEvent) -> Unit
 ) : ConnectionsListPanel<SolrConnectionSettingsState.Mutable>(project, disposable, listener) {
 
     override fun getIcon(item: SolrConnectionSettingsState.Mutable) = HybrisIcons.Console.SOLR

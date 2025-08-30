@@ -22,7 +22,6 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.settings.state.connectionName
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.logging.CxLoggerAccess
 

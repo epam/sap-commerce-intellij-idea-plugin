@@ -25,8 +25,6 @@ import kotlinx.html.p
 import kotlinx.html.stream.createHTML
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
-import sap.commerce.toolset.exec.settings.state.generatedURL
-import sap.commerce.toolset.exec.settings.state.presentationName
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription

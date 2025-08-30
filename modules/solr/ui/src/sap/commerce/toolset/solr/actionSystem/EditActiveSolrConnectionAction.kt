@@ -37,7 +37,7 @@ class EditActiveSolrConnectionAction : SolrConnectionAction("Edit active connect
         val execService = SolrExecConnectionService.getInstance(project)
         val mutable = execService.activeConnection.mutable()
         if (SolrConnectionSettingsDialog(project, component, mutable, "Edit Solr Connection Settings").showAndGet()) {
-            execService.save(mutable.immutable())
+            execService.update(mutable.immutable())
         }
     }
 }

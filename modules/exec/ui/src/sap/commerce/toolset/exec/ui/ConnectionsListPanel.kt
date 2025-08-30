@@ -26,17 +26,16 @@ import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.presentationName
 import java.awt.Component
 import java.io.Serial
 import javax.swing.*
 import javax.swing.event.ListDataEvent
 
-abstract class ConnectionsListPanel<T: ExecConnectionSettingsState.Mutable>(
+abstract class ConnectionsListPanel<M: ExecConnectionSettingsState.Mutable>(
     protected val project: Project,
     disposable: Disposable?,
     listener: (ListDataEvent) -> Unit
-) : AddEditDeleteListPanel<T>(null, emptyList()) {
+) : AddEditDeleteListPanel<M>(null, emptyList()) {
 
     private var myListCellRenderer: ListCellRenderer<*>? = null
 
@@ -48,18 +47,18 @@ abstract class ConnectionsListPanel<T: ExecConnectionSettingsState.Mutable>(
         }
     }
 
-    abstract fun getIcon(item: T): Icon
-    abstract fun newMutable(): T
-    abstract fun createDialog(mutable: T): ConnectionSettingsDialog<T>
-    abstract fun editDialog(mutable: T): ConnectionSettingsDialog<T>
+    abstract fun getIcon(item: M): Icon
+    abstract fun newMutable(): M
+    abstract fun createDialog(mutable: M): ConnectionSettingsDialog<M>
+    abstract fun editDialog(mutable: M): ConnectionSettingsDialog<M>
 
-    override fun findItemToAdd(): T? {
+    override fun findItemToAdd(): M? {
         val mutable = newMutable()
         return if (createDialog(mutable).showAndGet()) mutable
         else null
     }
 
-    override fun editSelectedItem(item: T): T? {
+    override fun editSelectedItem(item: M): M? {
         return if (editDialog(item).showAndGet()) item
         else null
     }
@@ -74,7 +73,7 @@ abstract class ConnectionsListPanel<T: ExecConnectionSettingsState.Mutable>(
                         ?: value.toString()
                     val comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
                     (comp as JComponent).border = JBEmptyBorder(5)
-                    icon = getIcon(value as T)
+                    icon = getIcon(value as M)
                     text = name
 
                     return comp
@@ -87,7 +86,7 @@ abstract class ConnectionsListPanel<T: ExecConnectionSettingsState.Mutable>(
         return myListCellRenderer!!
     }
 
-    var data: List<T>
+    var data: List<M>
         get() = myListModel.elements().toList()
         set(itemList) {
             myListModel.clear()

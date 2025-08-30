@@ -29,7 +29,8 @@ import javax.swing.event.ListDataEvent
 
 class HacConnectionSettingsListPanel(
     project: Project,
-    disposable: Disposable?, listener: (ListDataEvent) -> Unit
+    disposable: Disposable?,
+    listener: (ListDataEvent) -> Unit
 ) : ConnectionsListPanel<HacConnectionSettingsState.Mutable>(project, disposable, listener) {
 
     override fun getIcon(item: HacConnectionSettingsState.Mutable) = HybrisIcons.Y.REMOTE

@@ -18,83 +18,34 @@
 
 package sap.commerce.toolset.exec.settings.state
 
-import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
-import com.intellij.openapi.util.text.StringUtil
-import sap.commerce.toolset.exec.generateUrl
 
-interface ExecConnectionSettingsState {
-    val scope: ExecConnectionScope
-    val uuid: String
-    val name: String?
-    val ssl: Boolean
-    val host: String
-    val port: String?
-    val webroot: String
-    val timeout: Int
+interface ExecConnectionSettingsState : ConnectionSettingsState {
+    override val scope: ExecConnectionScope
+    override val uuid: String
+    override val name: String?
+    override val ssl: Boolean
+    override val host: String
+    override val port: String?
+    override val webroot: String
+    override val timeout: Int
 
-    val credentials: Credentials?
-    val username: String
-    val password: String
-
-    fun retrieveCredentials() = retrieveCredentials(uuid)
     fun mutable(): Mutable
 
-    interface Mutable {
-        var scope: ExecConnectionScope
-        var uuid: String
-        var name: String?
-        var ssl: Boolean
-        var timeout: Int
-        var host: String
-        var port: String?
-        var webroot: String
+    interface Mutable : ConnectionSettingsState {
+        override var scope: ExecConnectionScope
+        override var uuid: String
+        override var name: String?
+        override var ssl: Boolean
+        override var timeout: Int
+        override var host: String
+        override var port: String?
+        override var webroot: String
+        var modified: Boolean
         val username: ObservableMutableProperty<String>
         val password: ObservableMutableProperty<String>
 
-        fun retrieveCredentials() = retrieveCredentials(uuid)
-        fun immutable(): ExecConnectionSettingsState
+        fun immutable(): Pair<ExecConnectionSettingsState, Credentials>
     }
 }
-
-private fun retrieveCredentials(uuid: String) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
-
-val ExecConnectionSettingsState.generatedURL: String
-    get() = generateUrl(ssl, host, port, webroot)
-
-val ExecConnectionSettingsState.presentationName: String
-    get() = (name
-        ?.takeIf { it.isNotBlank() }
-        ?: generatedURL
-            .replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS)
-            .takeIf { it.isNotBlank() }
-        )
-        .let { scope.shortTitle + " : " + it }
-
-val ExecConnectionSettingsState.connectionName: String
-    get() = name ?: generatedURL
-
-val ExecConnectionSettingsState.shortenConnectionName: String
-    get() = connectionName
-        .let { StringUtil.shortenPathWithEllipsis(it, 20) }
-
-val ExecConnectionSettingsState.Mutable.generatedURL: String
-    get() = generateUrl(ssl, host, port, webroot)
-
-val ExecConnectionSettingsState.Mutable.presentationName: String
-    get() = (name
-        ?.takeIf { it.isNotBlank() }
-        ?: generatedURL
-            .replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS)
-            .takeIf { it.isNotBlank() }
-        )
-        .let { scope.shortTitle + " : " + it }
-
-val ExecConnectionSettingsState.Mutable.connectionName: String
-    get() = name ?: generatedURL
-
-val ExecConnectionSettingsState.Mutable.shortenConnectionName: String
-    get() = connectionName
-        .let { StringUtil.shortenPathWithEllipsis(it, 20) }
