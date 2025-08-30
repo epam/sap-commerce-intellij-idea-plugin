@@ -64,6 +64,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActive(connection: HacConnectionSettingsState) = refresh()
                 override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it.uuid) }
+                override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it.uuid) }
                 override fun onDelete(connection: HacConnectionSettingsState) {
                     loggersStates.remove(connection.uuid)
                 }

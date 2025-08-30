@@ -67,6 +67,7 @@ class LoggersSplitView(
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActive(connection: HacConnectionSettingsState) = updateTree()
                 override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = updateTree()
+                override fun onSave(settings: Collection<HacConnectionSettingsState>) = updateTree()
                 override fun onCreate(connection: HacConnectionSettingsState) = updateTree()
                 override fun onDelete(connection: HacConnectionSettingsState) = updateTree()
             })

@@ -38,6 +38,7 @@ class HttpCookiesCache(private val project: Project) : Disposable {
         project.messageBus.connect().subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
             override fun onDelete(connection: HacConnectionSettingsState) = invalidateCookies(connection)
             override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { invalidateCookies(it) }
+            override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { invalidateCookies(it) }
         })
     }
 
