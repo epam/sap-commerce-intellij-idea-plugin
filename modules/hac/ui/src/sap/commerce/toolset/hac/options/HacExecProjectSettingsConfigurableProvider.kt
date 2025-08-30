@@ -61,6 +61,7 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
                 val modifiedConnections = connectionsListPanel.data.map { it.immutable() }
                 activeServerModel.refresh(modifiedConnections.map { it.first })
                 activeServerModel.selectedItem = modifiedConnections.find { it.first.uuid == previousSelectedItem }
+                    ?.first
                 activeServerComboBox.repaint()
             }
 
