@@ -73,7 +73,7 @@ class HacConnectionSettingsDialog(
             sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
         ),
         mutable.username.get(),
-        mutable.password.get()
+        mutable.password.get(),
     )
 
     override fun panel() = panel {

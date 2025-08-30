@@ -133,15 +133,21 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
         super.applyFields()
         // always modified if user clicked Apply button
         mutable.modified = true
+        mutable.modifiedCredentials = true
     }
 
     private fun loadCredentials() {
+        if (mutable.modifiedCredentials) {
+            editableCredentials.set(true)
+            return
+        }
+
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
             override fun run(indicator: ProgressIndicator) {
                 val credentials = retrieveCredentials(mutable)
 
-                mutable.username.set(credentials.userName ?: mutable.username.get())
-                mutable.password.set(credentials.getPasswordAsString() ?: mutable.password.get())
+                mutable.username.set(credentials.userName ?: "")
+                mutable.password.set(credentials.getPasswordAsString() ?: "")
 
                 editableCredentials.set(true)
             }

@@ -62,8 +62,9 @@ data class SolrConnectionSettingsState(
         override var ssl: Boolean,
         override var timeout: Int,
         override var modified: Boolean = false,
-        override val username: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_USERNAME),
-        override val password: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_PASSWORD),
+        override var modifiedCredentials: Boolean = false,
+        override val username: ObservableMutableProperty<String> = AtomicProperty(""),
+        override val password: ObservableMutableProperty<String> = AtomicProperty(""),
         var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
 
@@ -78,10 +79,5 @@ data class SolrConnectionSettingsState(
             timeout = timeout,
             socketTimeout = socketTimeout,
         ) to Credentials(username.get(), password.get())
-    }
-
-    companion object {
-        private const val DEFAULT_USERNAME = "solrserver"
-        private const val DEFAULT_PASSWORD = "server123"
     }
 }

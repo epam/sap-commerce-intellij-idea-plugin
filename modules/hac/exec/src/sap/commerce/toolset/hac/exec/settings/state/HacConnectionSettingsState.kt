@@ -68,8 +68,9 @@ data class HacConnectionSettingsState(
         override var ssl: Boolean,
         override var timeout: Int,
         override var modified: Boolean = false,
-        override val username: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_USERNAME),
-        override val password: ObservableMutableProperty<String> = AtomicProperty(DEFAULT_PASSWORD),
+        override var modifiedCredentials: Boolean = false,
+        override val username: ObservableMutableProperty<String> = AtomicProperty(""),
+        override val password: ObservableMutableProperty<String> = AtomicProperty(""),
         var wsl: Boolean,
         var sslProtocol: String,
         var sessionCookieName: String,
@@ -88,10 +89,5 @@ data class HacConnectionSettingsState(
             sslProtocol = sslProtocol,
             sessionCookieName = sessionCookieName,
         ) to Credentials(username.get(), password.get())
-    }
-
-    companion object {
-        private const val DEFAULT_USERNAME = "admin"
-        private const val DEFAULT_PASSWORD = "nimda"
     }
 }

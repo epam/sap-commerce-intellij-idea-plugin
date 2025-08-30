@@ -42,6 +42,27 @@ class SolrConnectionSettingsDialog(
     override fun retrieveCredentials(mutable: SolrConnectionSettingsState.Mutable) = SolrExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
 
+    override fun testConnection(): String? = try {
+        val testSettings = SolrConnectionSettingsState(
+            host = hostTextField.text,
+            port = portTextField.text,
+            ssl = sslProtocolCheckBox.isSelected,
+            timeout = timeoutIntSpinner.number,
+            socketTimeout = timeoutIntSpinner.number,
+            webroot = webrootTextField.text,
+        )
+
+        SolrExecClient.getInstance(project).testConnection(
+            testSettings,
+            mutable.username.get(),
+            mutable.password.get(),
+        )
+
+        null
+    } catch (e: Exception) {
+        e.message ?: ""
+    }
+
     override fun panel() = panel {
         row {
             label("Connection name:")
@@ -158,26 +179,5 @@ class SolrConnectionSettingsDialog(
                     .component
             }.layout(RowLayout.PARENT_GRID)
         }
-    }
-
-    override fun testConnection(): String? = try {
-        val testSettings = SolrConnectionSettingsState(
-            host = hostTextField.text,
-            port = portTextField.text,
-            ssl = sslProtocolCheckBox.isSelected,
-            timeout = timeoutIntSpinner.number,
-            socketTimeout = timeoutIntSpinner.number,
-            webroot = webrootTextField.text,
-        )
-
-        SolrExecClient.getInstance(project).testConnection(
-            testSettings,
-            mutable.username.get(),
-            mutable.password.get(),
-        )
-
-        null
-    } catch (e: Exception) {
-        e.message ?: ""
     }
 }
