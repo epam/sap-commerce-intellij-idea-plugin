@@ -133,11 +133,10 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
         super.applyFields()
         // always modified if user clicked Apply button
         mutable.modified = true
-        mutable.modifiedCredentials = true
     }
 
     private fun loadCredentials() {
-        if (mutable.modifiedCredentials) {
+        if (mutable.modified) {
             editableCredentials.set(true)
             return
         }

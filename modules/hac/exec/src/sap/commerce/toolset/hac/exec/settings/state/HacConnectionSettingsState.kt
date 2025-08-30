@@ -68,7 +68,6 @@ data class HacConnectionSettingsState(
         override var ssl: Boolean,
         override var timeout: Int,
         override var modified: Boolean = false,
-        override var modifiedCredentials: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(""),
         override val password: ObservableMutableProperty<String> = AtomicProperty(""),
         var wsl: Boolean,

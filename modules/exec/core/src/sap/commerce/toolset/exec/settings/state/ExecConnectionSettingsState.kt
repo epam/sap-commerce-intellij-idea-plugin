@@ -43,7 +43,6 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
         override var port: String?
         override var webroot: String
         var modified: Boolean
-        var modifiedCredentials: Boolean
         val username: ObservableMutableProperty<String>
         val password: ObservableMutableProperty<String>
 
