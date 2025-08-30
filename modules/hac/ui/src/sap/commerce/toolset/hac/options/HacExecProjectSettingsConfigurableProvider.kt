@@ -62,6 +62,7 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
                 activeServerModel.refresh(modifiedConnections.map { it.first })
                 activeServerModel.selectedItem = modifiedConnections.find { it.first.uuid == previousSelectedItem }
                     ?.first
+                    ?: modifiedConnections.firstOrNull()?.first
                 activeServerComboBox.repaint()
             }
 
@@ -99,11 +100,16 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
 
             connectionService.save(newSettings.associate { it.first to it.second })
 
-            originalConnections = connectionService.connections.map { it.mutable() }
-            originalActiveConnection = connectionService.activeConnection
+            if (newSettings.isEmpty()) {
+                originalConnections = connectionService.connections.map { it.mutable() }
+                originalActiveConnection = connectionService.activeConnection
+            } else {
+                originalConnections = connectionsListPanel.data.map { it.copy() }
+                originalActiveConnection = activeServerComboBox.selectedItem as HacConnectionSettingsState
+                connectionService.activeConnection = activeServerComboBox.selectedItem as HacConnectionSettingsState
+            }
 
-            connectionsListPanel.data = originalConnections
-            activeServerComboBox.selectedItem = originalActiveConnection
+            reset()
         }
     }
 
