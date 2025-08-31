@@ -35,7 +35,6 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
 
 /**
  * Incredibly simple handling of the Spring beans.
@@ -104,7 +103,6 @@ class SimpleSpringService(private val project: Project) : SpringService {
     }
 
     companion object {
-        fun getService(project: Project): SimpleSpringService? = Plugin.SPRING
-            .ifDisabled { project.getService(SimpleSpringService::class.java) }
+        fun getService(project: Project): SimpleSpringService = project.getService(SimpleSpringService::class.java)
     }
 }

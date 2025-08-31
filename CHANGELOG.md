@@ -13,6 +13,9 @@
 - Display bundled loggers templates in the Loggers toolwindow [#1538](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1538)
 - Preserve view position on reloading remote loggers [#1561](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1561)
 
+### `Spring` enhancements
+- Improved simple Spring bean resolution for IntelliJ Community edition [#1563](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1563)
+
 ### `xDebugger` enhancements
 - Create type renderer: The item type is not present in the `*items.xml` files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
 - Create type renderer: The class for the item type was not found [#1532](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1532)
