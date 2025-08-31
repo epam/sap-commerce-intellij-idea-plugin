@@ -19,7 +19,9 @@
 package sap.commerce.toolset.impex.exec.context
 
 enum class ImpExToggle(val value: String, val booleanValue: Boolean) {
-    ON("on", true), OFF("off", false);
+
+    ON("on", true),
+    OFF("off", false);
 
     companion object {
         fun of(value: Boolean) = if (value) ON else OFF
