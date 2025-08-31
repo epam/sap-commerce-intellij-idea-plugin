@@ -41,6 +41,7 @@ import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.logging.CxLoggerModel
+import java.awt.Dimension
 import javax.swing.JPanel
 
 class LoggersTemplatesStateView(
@@ -67,13 +68,15 @@ class LoggersTemplatesStateView(
 
                 row {
                     label("Effective level")
-                        .bold().gap(RightGap.COLUMNS)
+                        .bold()
+                        .applyToComponent {
+                            preferredSize = Dimension(JBUI.scale(100), preferredSize.height)
+                        }
                     label("Logger (package or class name)")
                         .bold()
                         .align(AlignX.FILL)
                 }
                     .visibleIf(showDataPanel)
-                    .layout(RowLayout.PARENT_GRID)
 
                 separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
                     .visibleIf(showDataPanel)
@@ -146,41 +149,41 @@ class LoggersTemplatesStateView(
 
     fun createLoggersPanel(data: Collection<CxLoggerModel>) = panel {
         data.forEach { r ->
-            twoColumnsRow(
-                {
-                    icon(r.level.icon)
-                    label(r.level.name)
-                },
-                {
-                    icon(r.icon)
-                    if (r.resolved) {
-                        link(r.name) {
-                            r.psiElementPointer?.element?.let { psiElement ->
-                                when (psiElement) {
-                                    is PsiPackage -> {
-                                        coroutineScope.launch {
-                                            val directory = readAction {
-                                                psiElement.getDirectories(GlobalSearchScope.allScope(project))
-                                                    .firstOrNull()
-                                            } ?: return@launch
+            row {
+                icon(r.level.icon)
+                label(r.level.name)
+                    .applyToComponent {
+                        preferredSize = Dimension(JBUI.scale(68), preferredSize.height)
+                    }
 
-                                            edtWriteAction {
-                                                ProjectView.getInstance(project).selectPsiElement(directory, true)
-                                            }
+                icon(r.icon)
+                if (r.resolved) {
+                    link(r.name) {
+                        r.psiElementPointer?.element?.let { psiElement ->
+                            when (psiElement) {
+                                is PsiPackage -> {
+                                    coroutineScope.launch {
+                                        val directory = readAction {
+                                            psiElement.getDirectories(GlobalSearchScope.allScope(project))
+                                                .firstOrNull()
+                                        } ?: return@launch
+
+                                        edtWriteAction {
+                                            ProjectView.getInstance(project).selectPsiElement(directory, true)
                                         }
                                     }
-
-                                    is PsiClass -> PsiNavigationSupport.getInstance()
-                                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
-                                        .navigate(true)
                                 }
+
+                                is PsiClass -> PsiNavigationSupport.getInstance()
+                                    .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
+                                    .navigate(true)
                             }
-                        }.resizableColumn()
-                    } else {
-                        label(r.name)
-                    }
+                        }
+                    }.resizableColumn()
+                } else {
+                    label(r.name)
                 }
-            ).layout(RowLayout.PARENT_GRID)
+            }
         }
     }
 

@@ -24,6 +24,7 @@ import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
@@ -57,6 +58,7 @@ import sap.commerce.toolset.ui.addKeyListener
 import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.event.KeyEvent
 import javax.swing.JPanel
+
 
 class LoggersStateView(
     private val project: Project,
@@ -113,11 +115,19 @@ class LoggersStateView(
 
     fun renderFetchLoggers() = toggleView(showFetchLoggers)
     fun renderNothingSelected() = toggleView(showNothingSelected)
-    fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
-        val view = if (loggers.isEmpty()) noLoggersView()
-        else loggersView(loggers)
 
-        dataScrollPane.setViewportView(view)
+    fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
+        if (loggers.isEmpty()) dataScrollPane.setViewportView(noLoggersView())
+        else {
+            val viewport = dataScrollPane.getViewport()
+            val pos = viewport.getViewPosition()
+
+            dataScrollPane.setViewportView(loggersView(loggers))
+
+            invokeLater {
+                viewport.viewPosition = pos
+            }
+        }
 
         toggleView(showDataPanel)
     }
