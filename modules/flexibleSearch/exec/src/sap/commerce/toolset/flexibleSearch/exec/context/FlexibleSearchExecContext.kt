@@ -30,8 +30,30 @@ data class FlexibleSearchExecContext(
     private val content: String = "",
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
-    val settings: Settings,
+    val maxCount: Int,
+    val locale: String,
+    val dataSource: String,
+    val user: String,
+    val timeout: Int,
 ) : ExecContext {
+
+    constructor(
+        connection: HacConnectionSettingsState,
+        content: String = "",
+        transactionMode: TransactionMode = TransactionMode.ROLLBACK,
+        queryMode: QueryMode = QueryMode.FlexibleSearch,
+        settings: Settings,
+    ) : this(
+        connection = connection,
+        content = content,
+        transactionMode = transactionMode,
+        queryMode = queryMode,
+        maxCount = settings.maxCount,
+        locale = settings.locale,
+        dataSource = settings.dataSource,
+        user = settings.user,
+        timeout = settings.timeout,
+    )
 
     override val executionTitle: String
         get() = "Executing ${queryMode.title} on the remote SAP Commerce instance…"
@@ -39,10 +61,10 @@ data class FlexibleSearchExecContext(
     fun params(): Map<String, String> = buildMap {
         put("scriptType", "flexibleSearch")
         put("commit", BooleanUtils.toStringTrueFalse(transactionMode == TransactionMode.COMMIT))
-        put("maxCount", settings.maxCount.toString())
-        put("user", settings.user)
-        put("dataSource", settings.dataSource)
-        put("locale", settings.locale)
+        put("maxCount", maxCount.toString())
+        put("user", user)
+        put("dataSource", dataSource)
+        put("locale", locale)
 
         if (queryMode == QueryMode.SQL) {
             put("flexibleSearchQuery", "")

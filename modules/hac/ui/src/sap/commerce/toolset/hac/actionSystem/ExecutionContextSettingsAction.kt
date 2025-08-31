@@ -60,7 +60,7 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
 
         lateinit var myPopup: JBPopup
 
-        JBPopupFactory.getInstance().createComponentPopupBuilder(settingsPanel, null)
+        JBPopupFactory.getInstance().createComponentPopupBuilder(settingsPanel, settingsPanel.preferredFocusedComponent)
             .setMovable(false)
             .setResizable(false)
             .setRequestFocus(true)
@@ -93,5 +93,4 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
                 popup.showUnderneathOf(inputEvent.component)
             }
     }
-
 }

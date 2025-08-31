@@ -31,7 +31,9 @@ import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecClient
+import sap.commerce.toolset.impex.exec.context.ImpExDialect
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
 
 class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>(
     AclLanguage,
@@ -46,12 +48,11 @@ class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-
         val context = ImpExExecContext(
             connection = connectionSettings,
             content = content,
-            executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
-            dialect = ImpExExecContext.Dialect.ACL,
+            executionMode = ImpExExecutionMode.VALIDATE,
+            dialect = ImpExDialect.ACL,
             settings = ImpExExecContext.defaultSettings(connectionSettings)
         )
 

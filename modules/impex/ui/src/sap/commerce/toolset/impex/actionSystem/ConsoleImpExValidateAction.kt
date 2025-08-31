@@ -30,6 +30,7 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
 
 class ConsoleImpExValidateAction : AnAction() {
 
@@ -44,7 +45,7 @@ class ConsoleImpExValidateAction : AnAction() {
         val context = ImpExExecContext(
             connection = connectionSettings,
             content = console.content,
-            executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
+            executionMode = ImpExExecutionMode.VALIDATE,
             settings = ImpExExecContext.defaultSettings(connectionSettings)
         )
 

@@ -30,6 +30,8 @@ import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.exec.context.ImpExToggle
+import sap.commerce.toolset.impex.exec.context.ImpExValidationMode
 import javax.swing.LayoutFocusTraversalPolicy
 
 class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecContext.Settings.Mutable>() {
@@ -46,7 +48,8 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
  · legacy mode:           ${it.legacyMode.value}
  · enable code execution: ${it.enableCodeExecution.value}
  · direct persistence:    ${it.sldEnabled.value}
- · distributed mode:      ${it.distributedMode.value}</pre>
+ · distributed mode:      ${it.distributedMode.value}
+ · timeout:               ${it.timeout} ms</pre>
                 """.trimIndent()
         }
 
@@ -64,15 +67,16 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecContext.Settings.Mutable) = panel {
         row {
             comboBox(
-                EnumComboBoxModel(ImpExExecContext.ValidationMode::class.java),
+                EnumComboBoxModel(ImpExValidationMode::class.java),
                 renderer = SimpleListCellRenderer.create { label, value, _ ->
                     label.text = value.title
                 })
+                .focused()
                 .align(AlignX.FILL)
                 .label("Validation mode:")
                 .comment("Read more about ImpEx validation modes <a href='link'>here</a>.")
                 { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/c703c0bd88bd4281a09163658c66fac8.html?locale=en-US") }
-                .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ImpExExecContext.ValidationMode.IMPORT_STRICT })
+                .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ImpExValidationMode.IMPORT_STRICT })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -100,13 +104,13 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         row {
             checkBox("Enable code execution")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.enableCodeExecution.booleanValue }, { value -> settings.enableCodeExecution = ImpExExecContext.Toggle.of(value) })
+                .bindSelected({ settings.enableCodeExecution.booleanValue }, { value -> settings.enableCodeExecution = ImpExToggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             checkBox("Legacy mode")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = ImpExExecContext.Toggle.of(value) })
+                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = ImpExToggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -114,7 +118,7 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
                 .align(AlignX.FILL)
                 .comment("Enables the <a href='link'>Service Layer Direct</a> mode.")
                 { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/ccf4dd14636b4f7eac2416846ffd5a70.html?locale=en-US") }
-                .bindSelected({ settings.sldEnabled.booleanValue }, { value -> settings.sldEnabled = ImpExExecContext.Toggle.of(value) })
+                .bindSelected({ settings.sldEnabled.booleanValue }, { value -> settings.sldEnabled = ImpExToggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -122,7 +126,18 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
                 .align(AlignX.FILL)
                 .comment("Read more about distributed ImpEx <a href='link'>here</a>.")
                 { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/f849db85d68740ed870e729a3688a19d.html?locale=en-US") }
-                .bindSelected({ settings.distributedMode.booleanValue }, { value -> settings.distributedMode = ImpExExecContext.Toggle.of(value) })
+                .bindSelected({ settings.distributedMode.booleanValue }, { value -> settings.distributedMode = ImpExToggle.of(value) })
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            textField()
+                .align(AlignX.FILL)
+                .label("Timeout (ms):")
+                .validationOnInput {
+                    if (it.text.toIntOrNull() == null) error(UIBundle.message("please.enter.a.number.from.0.to.1", 1, Int.MAX_VALUE))
+                    else null
+                }
+                .bindIntText(settings::timeout)
         }.layout(RowLayout.PARENT_GRID)
     }
         .apply {

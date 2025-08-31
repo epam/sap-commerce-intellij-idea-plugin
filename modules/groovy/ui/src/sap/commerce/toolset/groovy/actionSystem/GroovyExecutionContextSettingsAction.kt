@@ -20,7 +20,6 @@ package sap.commerce.toolset.groovy.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
@@ -38,7 +37,7 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
     override fun previewSettings(e: AnActionEvent, project: Project): String = e.groovyExecContextSettings { GroovyExecContext.defaultSettings() }
         .let {
             """<pre>
- · timeout:   ${it.timeout}</pre>
+ · timeout: ${it.timeout} ms</pre>
                 """.trimIndent()
         }
 
@@ -55,23 +54,22 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
         editor.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
-    override fun settingsPanel(e: AnActionEvent, project: Project, settings: GroovyExecContext.Settings.Mutable): DialogPanel {
-        return panel {
-            row {
-                textField()
-                    .align(AlignX.FILL)
-                    .label("Timeout (ms):")
-                    .validationOnInput {
-                        if (it.text.toIntOrNull() == null) error(UIBundle.message("please.enter.a.number.from.0.to.1", 1, Int.MAX_VALUE))
-                        else null
-                    }
-                    .bindIntText(settings::timeout)
-            }.layout(RowLayout.PARENT_GRID)
-        }
-            .apply {
-                border = JBUI.Borders.empty(8, 16)
-                focusTraversalPolicy = LayoutFocusTraversalPolicy()
-                isFocusCycleRoot = true
-            }
+    override fun settingsPanel(e: AnActionEvent, project: Project, settings: GroovyExecContext.Settings.Mutable) = panel {
+        row {
+            textField()
+                .align(AlignX.FILL)
+                .label("Timeout (ms):")
+                .validationOnInput {
+                    if (it.text.toIntOrNull() == null) error(UIBundle.message("please.enter.a.number.from.0.to.1", 1, Int.MAX_VALUE))
+                    else null
+                }
+                .focused()
+                .bindIntText(settings::timeout)
+        }.layout(RowLayout.PARENT_GRID)
     }
+        .apply {
+            border = JBUI.Borders.empty(8, 16)
+            focusTraversalPolicy = LayoutFocusTraversalPolicy()
+            isFocusCycleRoot = true
+        }
 }

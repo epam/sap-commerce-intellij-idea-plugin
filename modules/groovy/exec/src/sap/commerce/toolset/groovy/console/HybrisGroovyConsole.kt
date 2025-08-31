@@ -52,10 +52,8 @@ class HybrisGroovyConsole(
     override fun currentExecutionContext(content: String) = GroovyExecContext(
         connection = activeConnection(),
         content = content,
-        settings = GroovyExecContext.defaultSettings(activeConnection()).copy(
-            timeout = activeConnection().timeout,
-            transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK
-        ),
+        transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
+        timeout = activeConnection().timeout,
     )
 
     override fun title() = "Groovy Scripting"

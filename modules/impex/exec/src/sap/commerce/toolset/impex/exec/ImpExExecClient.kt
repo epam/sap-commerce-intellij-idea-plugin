@@ -32,6 +32,7 @@ import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -42,14 +43,14 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
     override suspend fun execute(context: ImpExExecContext): DefaultExecResult {
         val settings = context.connection
         val actionUrl = when (context.executionMode) {
-            ImpExExecContext.ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
-            ImpExExecContext.ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
+            ImpExExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
+            ImpExExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
         }
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, false, context.settings.timeout, settings, null)
+            .post(actionUrl, params, false, context.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
@@ -62,7 +63,7 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
 
             return when (context.executionMode) {
-                ImpExExecContext.ExecutionMode.IMPORT -> processResponse(document, "impexResult") { element ->
+                ImpExExecutionMode.IMPORT -> processResponse(document, "impexResult") { element ->
                     if (element.attr("data-level") == "error") DefaultExecResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = element.attr("data-result").takeIf { it.isNotBlank() },
@@ -75,7 +76,7 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
                     )
                 }
 
-                ImpExExecContext.ExecutionMode.VALIDATE -> processResponse(document, "validationResultMsg") { element ->
+                ImpExExecutionMode.VALIDATE -> processResponse(document, "validationResultMsg") { element ->
                     if ("error" == element.attr("data-level")) DefaultExecResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = element.attr("data-result").takeIf { it.isNotBlank() }

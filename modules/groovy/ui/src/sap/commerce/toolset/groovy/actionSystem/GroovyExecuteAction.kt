@@ -61,7 +61,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                     executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
                     replicaContext = it,
-                    settings = execContextSettings
+                    settings = execContextSettings,
                 )
             }
             .takeIf { it.isNotEmpty() }
@@ -70,7 +70,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                     connection = connectionSettings,
                     executionTitle = "$prefix | ${GroovyExecContext.DEFAULT_TITLE}",
                     content = content,
-                    settings = execContextSettings
+                    settings = execContextSettings,
                 )
             )
 

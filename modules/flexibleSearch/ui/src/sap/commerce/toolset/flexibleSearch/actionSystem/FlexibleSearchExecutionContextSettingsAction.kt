@@ -43,10 +43,11 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
     override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings() }
         .let {
             """<pre>
- · rows:   ${it.maxCount}
- · user:   ${it.user}
- · locale: ${it.locale}
- · tenant: ${it.dataSource}</pre>
+ · rows:    ${it.maxCount}
+ · user:    ${it.user}
+ · locale:  ${it.locale}
+ · tenant:  ${it.dataSource}
+ · timeout: ${it.timeout} ms</pre>
                 """.trimIndent()
         }
 
@@ -86,6 +87,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                         if (it.text.toIntOrNull() == null) error(UIBundle.message("please.enter.a.number.from.0.to.1", 1, Int.MAX_VALUE))
                         else null
                     }
+                    .focused()
                     .bindIntText({ settings.maxCount }, { value -> settings.maxCount = value })
             }.layout(RowLayout.PARENT_GRID)
 
@@ -118,6 +120,17 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                     .label("Tenant:")
                     .align(AlignX.FILL)
                     .bindItem({ settings.dataSource }, { value -> settings.dataSource = value ?: "master" })
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                textField()
+                    .align(AlignX.FILL)
+                    .label("Timeout (ms):")
+                    .validationOnInput {
+                        if (it.text.toIntOrNull() == null) error(UIBundle.message("please.enter.a.number.from.0.to.1", 1, Int.MAX_VALUE))
+                        else null
+                    }
+                    .bindIntText(settings::timeout)
             }.layout(RowLayout.PARENT_GRID)
         }
             .apply {

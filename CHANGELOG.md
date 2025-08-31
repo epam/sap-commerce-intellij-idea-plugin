@@ -67,6 +67,7 @@
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 - Added possibility to specify `timeout` per connection settings [#1540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1540)
 - Add dependency on a newly extracted Jetbrains module `intellij.spellchecker` [#1546](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1546)
+- Unified contracts for execution settings [#1562](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1562)
 
 ### Fixes
 - Enhance JVM Parameters only with Standalone JDK Module Exports during Integration Tests [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)

@@ -33,6 +33,8 @@ import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.exec.ImpExExecClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.exec.context.ImpExToggle
+import sap.commerce.toolset.impex.exec.context.ImpExValidationMode
 import java.awt.BorderLayout
 import java.io.Serial
 
@@ -47,7 +49,7 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
     private lateinit var enableCodeExecutionCheckbox: JBCheckBox
     private lateinit var directPersistenceCheckbox: JBCheckBox
     private lateinit var maxThreadsSpinner: JBIntSpinner
-    private lateinit var importModeComboBox: ComboBox<ImpExExecContext.ValidationMode>
+    private lateinit var importModeComboBox: ComboBox<ImpExValidationMode>
 
     init {
         val myPanel = panel {
@@ -55,12 +57,12 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
                 label("UTF-8")
 
                 importModeComboBox = comboBox(
-                    model = EnumComboBoxModel(ImpExExecContext.ValidationMode::class.java),
+                    model = EnumComboBoxModel(ImpExValidationMode::class.java),
                     renderer = SimpleListCellRenderer.create("...") { value -> value.name }
                 )
                     .label("Validation mode:")
                     .component
-                    .apply { selectedItem = ImpExExecContext.ValidationMode.IMPORT_STRICT }
+                    .apply { selectedItem = ImpExValidationMode.IMPORT_STRICT }
 
                 maxThreadsSpinner = spinner(1..Int.MAX_VALUE)
                     .label("Max threads:")
@@ -88,12 +90,12 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
         content = content,
         settings = ImpExExecContext.defaultSettings(activeConnection()).mutable()
             .apply {
-                validationMode = importModeComboBox.selectedItem as ImpExExecContext.ValidationMode
+                validationMode = importModeComboBox.selectedItem as ImpExValidationMode
                 maxThreads = maxThreadsSpinner.number
-                legacyMode = if (legacyModeCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
-                enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
-                sldEnabled = if (directPersistenceCheckbox.isSelected) ImpExExecContext.Toggle.ON else ImpExExecContext.Toggle.OFF
-                distributedMode = ImpExExecContext.Toggle.ON
+                legacyMode = if (legacyModeCheckbox.isSelected) ImpExToggle.ON else ImpExToggle.OFF
+                enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) ImpExToggle.ON else ImpExToggle.OFF
+                sldEnabled = if (directPersistenceCheckbox.isSelected) ImpExToggle.ON else ImpExToggle.OFF
+                distributedMode = ImpExToggle.ON
             }.immutable()
     )
 

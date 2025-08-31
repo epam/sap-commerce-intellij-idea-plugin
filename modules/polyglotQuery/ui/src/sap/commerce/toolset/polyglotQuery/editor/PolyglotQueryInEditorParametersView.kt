@@ -87,13 +87,8 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
         }
 
         return panel {
-            notificationPanel()
-
-            if (virtualParameters.isEmpty()) {
-                notResultsPanel()
-            } else {
-                parametersPanel(virtualParameters, fileEditor, parentDisposable)
-            }
+            if (virtualParameters.isEmpty()) notResultsPanel()
+            else parametersPanel(virtualParameters, fileEditor, parentDisposable)
         }
             .apply {
                 border = JBUI.Borders.empty(5, 16, 10, 16)
@@ -106,24 +101,6 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
                 isFocusCycleRoot = true
             }
     }
-
-    private fun Panel.notificationPanel() = panel {
-        row {
-            cell(
-                InlineBanner(
-                    """
-                            <html><body style='width: 100%'>
-                            <p>This feature may be unstable. Use with caution.</p>
-                            <p>Submit issues or suggestions to project's GitHub <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/new">repository</a>.</p>
-                            </body></html>
-                        """.trimIndent(),
-                    EditorNotificationPanel.Status.Promo
-                )
-            )
-                .align(Align.FILL)
-                .resizableColumn()
-        }.topGap(TopGap.SMALL)
-    }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.notResultsPanel() = panel {
         row {

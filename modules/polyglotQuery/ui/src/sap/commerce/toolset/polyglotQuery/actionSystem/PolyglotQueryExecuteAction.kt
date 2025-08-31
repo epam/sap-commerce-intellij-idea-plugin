@@ -45,6 +45,7 @@ import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.editor.polyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
+import sap.commerce.toolset.settings.state.TransactionMode
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole, PolyglotQuerySplitEditorEx>(
     PolyglotQueryLanguage,
@@ -189,9 +190,8 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     
                             $scriptOutputLogic
                         """.trimIndent(),
-            settings = GroovyExecContext.Settings(
-                timeout = executionContextSettings.timeout,
-            )
+            transactionMode = TransactionMode.ROLLBACK,
+            timeout = executionContextSettings.timeout,
         )
 
         if (fileEditor.inEditorResults) {

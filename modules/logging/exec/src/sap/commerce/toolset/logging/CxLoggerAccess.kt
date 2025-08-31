@@ -118,10 +118,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             connection = server,
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
             content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
-            settings = GroovyExecContext.defaultSettings(server).copy(
-                transactionMode = TransactionMode.ROLLBACK,
-                timeout = server.timeout,
-            )
+            transactionMode = TransactionMode.ROLLBACK,
+            timeout = server.timeout,
         )
 
         executeLoggersGroovyScript(context, server) { _, groovyScriptResult ->
@@ -167,10 +165,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             connection = server,
             executionTitle = "Applying the Loggers Template for SAP Commerce [${server.shortenConnectionName}]...",
             content = groovyScriptContent,
-            settings = GroovyExecContext.defaultSettings(server).copy(
-                transactionMode = TransactionMode.ROLLBACK,
-                timeout = server.timeout
-            )
+            transactionMode = TransactionMode.ROLLBACK,
+            timeout = server.timeout,
         )
 
         executeLoggersGroovyScript(

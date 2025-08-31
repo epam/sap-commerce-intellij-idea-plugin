@@ -30,13 +30,29 @@ data class GroovyExecContext(
     val connection: HacConnectionSettingsState,
     override val executionTitle: String = DEFAULT_TITLE,
     private val content: String,
-    val settings: Settings,
+    val timeout: Int,
+    val transactionMode: TransactionMode,
     val replicaContext: ReplicaContext? = null
 ) : ExecContext {
 
+    constructor(
+        connection: HacConnectionSettingsState,
+        executionTitle: String = DEFAULT_TITLE,
+        content: String,
+        replicaContext: ReplicaContext? = null,
+        settings: Settings,
+    ) : this(
+        connection = connection,
+        executionTitle = executionTitle,
+        content = content,
+        timeout = settings.timeout,
+        transactionMode = settings.transactionMode,
+        replicaContext = replicaContext,
+    )
+
     fun params(): Map<String, String> = buildMap {
         put("scriptType", "groovy")
-        put("commit", BooleanUtils.toStringTrueFalse(settings.transactionMode == TransactionMode.COMMIT))
+        put("commit", BooleanUtils.toStringTrueFalse(transactionMode == TransactionMode.COMMIT))
         put("script", content)
     }
 

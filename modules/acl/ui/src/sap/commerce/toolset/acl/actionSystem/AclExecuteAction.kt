@@ -33,6 +33,7 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.ImpExExecClient
+import sap.commerce.toolset.impex.exec.context.ImpExDialect
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 
 class AclExecuteAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>(
@@ -52,7 +53,7 @@ class AclExecuteAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>(
         val context = ImpExExecContext(
             connection = connectionSettings,
             content = content,
-            dialect = ImpExExecContext.Dialect.ACL,
+            dialect = ImpExDialect.ACL,
             settings = settings
         )
 

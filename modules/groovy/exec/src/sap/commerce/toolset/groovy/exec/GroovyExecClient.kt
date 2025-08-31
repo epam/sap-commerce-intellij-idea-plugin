@@ -48,7 +48,7 @@ class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : Defau
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, true, context.settings.timeout, settings, context.replicaContext)
+            .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 

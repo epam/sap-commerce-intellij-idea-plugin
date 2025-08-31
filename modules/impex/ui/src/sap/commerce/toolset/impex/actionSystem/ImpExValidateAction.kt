@@ -32,6 +32,7 @@ import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.editor.impexSplitEditorEx
 import sap.commerce.toolset.impex.exec.ImpExExecClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
 
 class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditorEx>(
     ImpExLanguage,
@@ -50,7 +51,7 @@ class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEdito
         val context = ImpExExecContext(
             connection = connectionSettings,
             content = content,
-            executionMode = ImpExExecContext.ExecutionMode.VALIDATE,
+            executionMode = ImpExExecutionMode.VALIDATE,
             settings = settings
         )
 

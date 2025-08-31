@@ -27,40 +27,67 @@ import java.nio.charset.StandardCharsets
 data class ImpExExecContext(
     val connection: HacConnectionSettingsState,
     private val content: String = "",
-    val dialect: Dialect = Dialect.IMPEX,
-    val executionMode: ExecutionMode = ExecutionMode.IMPORT,
-    val settings: Settings
+    val dialect: ImpExDialect = ImpExDialect.IMPEX,
+    val executionMode: ImpExExecutionMode = ImpExExecutionMode.IMPORT,
+    val validationMode: ImpExValidationMode,
+    val maxThreads: Int,
+    val timeout: Int,
+    val encoding: String,
+    val legacyMode: ImpExToggle,
+    val enableCodeExecution: ImpExToggle,
+    val sldEnabled: ImpExToggle,
+    val distributedMode: ImpExToggle,
 ) : ExecContext {
+
+    constructor(
+        connection: HacConnectionSettingsState,
+        content: String = "",
+        dialect: ImpExDialect = ImpExDialect.IMPEX,
+        executionMode: ImpExExecutionMode = ImpExExecutionMode.IMPORT,
+        settings: Settings,
+    ) : this(
+        connection = connection,
+        content = content,
+        dialect = ImpExDialect.ACL,
+        validationMode = settings.validationMode,
+        maxThreads = settings.maxThreads,
+        timeout = settings.timeout,
+        encoding = settings.encoding,
+        legacyMode = settings.legacyMode,
+        enableCodeExecution = settings.enableCodeExecution,
+        sldEnabled = settings.sldEnabled,
+        distributedMode = settings.distributedMode,
+    )
 
     override val executionTitle: String
         get() = when (executionMode) {
-            ExecutionMode.IMPORT -> "Importing ${dialect.title} on the remote SAP Commerce instance…"
-            ExecutionMode.VALIDATE -> "Validating ${dialect.title} on the remote SAP Commerce instance…"
+            ImpExExecutionMode.IMPORT -> "Importing ${dialect.title} on the remote SAP Commerce instance…"
+            ImpExExecutionMode.VALIDATE -> "Validating ${dialect.title} on the remote SAP Commerce instance…"
         }
 
     fun params(): Map<String, String> = buildMap {
         put("scriptContent", content)
-        put("validationEnum", settings.validationMode.name)
-        put("encoding", settings.encoding)
-        put("maxThreads", settings.maxThreads.toString())
-        put("legacyMode", BooleanUtils.toStringTrueFalse(settings.legacyMode.booleanValue))
-        put("enableCodeExecution", BooleanUtils.toStringTrueFalse(settings.enableCodeExecution.booleanValue))
-        put("sldEnabled", BooleanUtils.toStringTrueFalse(settings.sldEnabled.booleanValue))
-        put("_sldEnabled", settings.sldEnabled.value)
-        put("_enableCodeExecution", settings.enableCodeExecution.value)
-        put("_legacyMode", settings.legacyMode.value)
-        put("_distributedMode", settings.distributedMode.value)
+        put("validationEnum", validationMode.name)
+        put("encoding", encoding)
+        put("maxThreads", maxThreads.toString())
+        put("legacyMode", BooleanUtils.toStringTrueFalse(legacyMode.booleanValue))
+        put("enableCodeExecution", BooleanUtils.toStringTrueFalse(enableCodeExecution.booleanValue))
+        put("sldEnabled", BooleanUtils.toStringTrueFalse(sldEnabled.booleanValue))
+        put("_sldEnabled", sldEnabled.value)
+        put("_enableCodeExecution", enableCodeExecution.value)
+        put("_legacyMode", legacyMode.value)
+        put("_distributedMode", distributedMode.value)
     }
 
     data class Settings(
-        val validationMode: ValidationMode,
+        val validationMode: ImpExValidationMode,
         val maxThreads: Int,
         override val timeout: Int,
         val encoding: String,
-        val legacyMode: Toggle,
-        val enableCodeExecution: Toggle,
-        val sldEnabled: Toggle,
-        val distributedMode: Toggle,
+        val legacyMode: ImpExToggle,
+        val enableCodeExecution: ImpExToggle,
+        val sldEnabled: ImpExToggle,
+        val distributedMode: ImpExToggle,
     ) : ExecContext.Settings {
         override fun mutable() = Mutable(
             validationMode = validationMode,
@@ -74,14 +101,14 @@ data class ImpExExecContext(
         )
 
         data class Mutable(
-            var validationMode: ValidationMode,
+            var validationMode: ImpExValidationMode,
             var maxThreads: Int,
             override var timeout: Int,
             var encoding: String,
-            var legacyMode: Toggle,
-            var enableCodeExecution: Toggle,
-            var sldEnabled: Toggle,
-            var distributedMode: Toggle,
+            var legacyMode: ImpExToggle,
+            var enableCodeExecution: ImpExToggle,
+            var sldEnabled: ImpExToggle,
+            var distributedMode: ImpExToggle,
         ) : ExecContext.Settings.Mutable {
             override fun immutable() = Settings(
                 validationMode = validationMode,
@@ -96,41 +123,19 @@ data class ImpExExecContext(
         }
     }
 
-    enum class Dialect(val title: String) {
-        IMPEX("ImpEx"),
-        ACL("ACL")
-    }
-
-    enum class ExecutionMode {
-        IMPORT, VALIDATE
-    }
-
-    enum class ValidationMode(val title: String) {
-        IMPORT_STRICT("Strict"),
-        IMPORT_RELAXED("Relaxed"),
-    }
-
-    enum class Toggle(val value: String, val booleanValue: Boolean) {
-        ON("on", true), OFF("off", false);
-
-        companion object {
-            fun of(value: Boolean) = if (value) ON else OFF
-        }
-    }
-
     companion object {
         val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.impex.execution.settings")
 
         fun defaultSettings(connectionSettings: HacConnectionSettingsState): Settings =
             Settings(
-                validationMode = ValidationMode.IMPORT_STRICT,
+                validationMode = ImpExValidationMode.IMPORT_STRICT,
                 maxThreads = 20,
                 timeout = connectionSettings.timeout,
                 encoding = StandardCharsets.UTF_8.name(),
-                legacyMode = Toggle.OFF,
-                enableCodeExecution = Toggle.ON,
-                sldEnabled = Toggle.OFF,
-                distributedMode = Toggle.OFF,
+                legacyMode = ImpExToggle.OFF,
+                enableCodeExecution = ImpExToggle.ON,
+                sldEnabled = ImpExToggle.OFF,
+                distributedMode = ImpExToggle.OFF,
             )
     }
 }
