@@ -132,27 +132,31 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
         }
     }
 
-    override fun isElementEnabled(element: ModuleDescriptor?) = when {
-        element is PlatformModuleDescriptor -> false
-        element is YPlatformExtModuleDescriptor -> false
-        element is ConfigModuleDescriptor && element.isPreselected() -> false
+    override fun isElementEnabled(element: ModuleDescriptor?) = when (element) {
+        is PlatformModuleDescriptor -> false
+        is YPlatformExtModuleDescriptor -> false
+        is ConfigModuleDescriptor if element.isPreselected() && element.isMainConfig -> false
         else -> super.isElementEnabled(element)
     }
 
     override fun getElementIcon(item: ModuleDescriptor?) = when {
         item == null -> HybrisIcons.Y.LOGO_BLUE
+
         isInConflict(item) -> HybrisIcons.Extension.CONFLICT
-        item is YCustomRegularModuleDescriptor -> HybrisIcons.Extension.CUSTOM
-        item is ConfigModuleDescriptor -> HybrisIcons.Extension.CONFIG
-        item is PlatformModuleDescriptor -> HybrisIcons.Extension.PLATFORM
-        item is YPlatformExtModuleDescriptor -> HybrisIcons.Extension.EXT
-        item is YOotbRegularModuleDescriptor -> HybrisIcons.Extension.OOTB
-        item is YWebSubModuleDescriptor -> HybrisIcons.Extension.WEB
-        item is YCommonWebSubModuleDescriptor -> HybrisIcons.Extension.COMMON_WEB
-        item is YAcceleratorAddonSubModuleDescriptor -> HybrisIcons.Extension.ADDON
-        item is YBackofficeSubModuleDescriptor -> HybrisIcons.Extension.BACKOFFICE
-        item is YHacSubModuleDescriptor -> HybrisIcons.Extension.HAC
-        item is YHmcSubModuleDescriptor -> HybrisIcons.Extension.HMC
+
+        item is YCustomRegularModuleDescriptor
+            || item is ConfigModuleDescriptor
+            || item is PlatformModuleDescriptor
+            || item is YPlatformExtModuleDescriptor
+            || item is YOotbRegularModuleDescriptor -> item.descriptorType.icon
+
+        item is YWebSubModuleDescriptor
+            || item is YCommonWebSubModuleDescriptor
+            || item is YAcceleratorAddonSubModuleDescriptor
+            || item is YBackofficeSubModuleDescriptor
+            || item is YHacSubModuleDescriptor
+            || item is YHmcSubModuleDescriptor -> item.subModuleDescriptorType.icon
+
         else -> HybrisIcons.Y.LOGO_BLUE
     }
 

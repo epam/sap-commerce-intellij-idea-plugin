@@ -79,6 +79,7 @@ object HybrisIcons {
     }
 
     object Module {
+        val NONE = AllIcons.Modules.UnloadedModule
         val ECLIPSE = AllIcons.Providers.Eclipse
         val MAVEN = OpenapiIcons.RepositoryLibraryLogo
         val CONFLICT = AllIcons.Actions.Cancel

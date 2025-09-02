@@ -1,11 +1,11 @@
 ## [2025.2.3]
 
-### <!> BREAKING CHANGE <!>
+### `<!>` BREAKING CHANGE `<!>`
 
-> Due severe API changes it is highly advised to backup project and import it from the scratch.
+> Due severe API changes it is highly advised to backup the project and import it from the scratch.
 > Please, report any issues via project's Slack or GitHub.
 
-- With over ~270 commits complete rework of the project to Gradle multi-modular architecture [#1528](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1528)
+- With over ~270 commits complete rework of the Plugin to Gradle multi-modular architecture [#1528](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1528)
 
 ### `SAP CX Logging` enhancements
 - Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
@@ -65,6 +65,9 @@
 
 ### `JSP` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1555](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1555)
+
+### `Project Import` enhancements
+- Allow unselecting the non-main `config` module during the import [#1564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1564)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)

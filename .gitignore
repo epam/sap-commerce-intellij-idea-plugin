@@ -17,7 +17,7 @@
 
 .kotlin
 
-/out/
+**/out/
 /build/
 /modules/**/build
 /buildsrc/build

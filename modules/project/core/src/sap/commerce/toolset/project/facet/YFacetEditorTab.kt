@@ -24,6 +24,7 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.dsl.builder.text
+import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
@@ -179,5 +180,5 @@ class YFacetEditorTab(
                 }.layout(RowLayout.PARENT_GRID)
             }
         }
-    }
+    }.withBorder(JBUI.Borders.empty(10, 10, 0, 10))
 }

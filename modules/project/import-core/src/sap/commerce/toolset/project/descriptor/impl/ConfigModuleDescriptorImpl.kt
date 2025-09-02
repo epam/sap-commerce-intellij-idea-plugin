@@ -39,5 +39,5 @@ class ConfigModuleDescriptorImpl(
 
     override val descriptorType: ModuleDescriptorType
         get() = if (isMainConfig) ModuleDescriptorType.CONFIG
-        else ModuleDescriptorType.CUSTOM
+        else ModuleDescriptorType.NONE
 }
