@@ -40,6 +40,7 @@ object CCv2Constants {
     )
 
     val CLOUD_EXTENSIONS = arrayOf(
+        "azurehac",
         "azurecloudhotfolder",
         "cloudmediaconversion",
         "cloudcommons",
@@ -49,6 +50,7 @@ object CCv2Constants {
         "cloudstorefulfilmentprocess",
         "cloudstorefacades",
         "cloudstorecore",
-        "cloudstorecockpits"
+        "cloudstorecockpits",
+        "governor",
     )
 }

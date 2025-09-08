@@ -23,7 +23,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.localextensions.model.Hybrisconfig
 
-abstract class LeSLineMarkerProvider : ExtensionLineMarkerProvider() {
+abstract class LeLineMarkerProvider : ExtensionLineMarkerProvider() {
 
     final override fun canProcess(psi: PsiFile) = (psi as? XmlFile)
         ?.let { DomManager.getDomManager(psi.project).getFileElement(it, Hybrisconfig::class.java) != null }

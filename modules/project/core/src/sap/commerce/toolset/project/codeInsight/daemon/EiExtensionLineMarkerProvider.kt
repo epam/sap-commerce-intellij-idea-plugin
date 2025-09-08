@@ -21,7 +21,7 @@ package sap.commerce.toolset.project.codeInsight.daemon
 import sap.commerce.toolset.extensioninfo.model.Extension
 import sap.commerce.toolset.i18n
 
-class EiExtensionLineMarkerProvider : EiSLineMarkerProvider() {
+class EiExtensionLineMarkerProvider : EiLineMarkerProvider() {
 
     override fun getParentTagName() = Extension.REQUIRES_EXTENSION
     override fun getName() = i18n("hybris.editor.gutter.ei.extension.name")

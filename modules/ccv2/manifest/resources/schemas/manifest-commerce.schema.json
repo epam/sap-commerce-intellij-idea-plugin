@@ -26,18 +26,27 @@
                 "type": "string"
               },
               "keepPriorPatchCount": {
-                "type": "string"
+                "type": "number",
+                "description": "Allows you to specify and use earlier patch versions if you don't want to automatically upgrade to the latest version. For example, if 2205.6 is the latest update, specifying 2 as the value of the keepPriorPatchCount ensures that SAP Commerce Cloud uses the 2205.4 update instead."
               }
             }
           }
         }
       ]
     },
+    "commerceSuitePreviewVersion": {
+      "type": "string",
+      "description": "Defines the preview version of the SAP Commerce Cloud artifact to download."
+    },
     "enableImageProcessingService": {
       "type": "boolean",
       "description": "Enables the image processing service in media conversion."
     },
     "solrVersion": {
+      "type": "string",
+      "description": "The Solr version expressed by two numbers separated with a dot, for example “8.6”. For more information about compatibility with Solr, refer to Selecting Solr Server Version in https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/d7294323e5e542b7b37f48dd83565321.html?locale=en-US&state=PRODUCTION&version=v2211."
+    },
+    "commerceSuiteArtifact": {
       "type": "string"
     },
     "extensionPacks": {
@@ -64,7 +73,7 @@
     },
     "disableImageReuse": {
       "type": "boolean",
-      "description": "Disables the image reuse mechanism.\nBy default, disableImageReuse is set to false, which means the ability to resuse images is enabled. In this case, the build process checks in the target Docker Registry whether the Solr and Zookeeper images are already built, and if they are, it skips the rebuild process.\n\nIf the disableImageReuse flag is set to true, then the mechanism is disabled. In this case, the build process generates new Solr and Zookeeper images with every build."
+      "description": "Disables the image reuse mechanism.\nBy default, disableImageReuse is set to false, which means the ability to reuse images is enabled. In this case, the build process checks in the target Docker Registry whether the Solr and Zookeeper images are already built, and if they are, it skips the rebuild process.\n\nIf the disableImageReuse flag is set to true, then the mechanism is disabled. In this case, the build process generates new Solr and Zookeeper images with every build."
     },
     "keepPriorPatchCount": {
       "type": "number",

@@ -21,19 +21,19 @@ package sap.commerce.toolset.project.descriptor
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE) {
-    CONFIG(HybrisIcons.Extension.CONFIG),
-    CUSTOM(HybrisIcons.Extension.CUSTOM),
-    EXT(HybrisIcons.Extension.EXT),
-    NONE(HybrisIcons.Module.NONE),
-    OOTB(HybrisIcons.Extension.OOTB),
-    PLATFORM(HybrisIcons.Extension.PLATFORM),
-    ECLIPSE(HybrisIcons.Module.ECLIPSE),
-    MAVEN(HybrisIcons.Module.MAVEN),
-    GRADLE(HybrisIcons.Module.GRADLE),
-    CCV2_EXTERNAL(HybrisIcons.Extension.CLOUD),
-    CCV2_STOREFRONT(HybrisIcons.Module.CCV2),
-    CCV2_CORE(HybrisIcons.Module.CCV2),
-    CCV2_DATAHUB(HybrisIcons.Module.CCV2),
-    ANGULAR(HybrisIcons.Module.ANGULAR),
+enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE, val title: String) {
+    CONFIG(HybrisIcons.Extension.CONFIG, "Config"),
+    CUSTOM(HybrisIcons.Extension.CUSTOM, "Custom"),
+    EXT(HybrisIcons.Extension.EXT, "Ext"),
+    NONE(HybrisIcons.Module.NONE, "None"),
+    OOTB(HybrisIcons.Extension.OOTB, "Ootb"),
+    PLATFORM(HybrisIcons.Extension.PLATFORM, "Platform"),
+    ECLIPSE(HybrisIcons.Module.ECLIPSE, "Eclipse"),
+    MAVEN(HybrisIcons.Module.MAVEN, "Maven"),
+    GRADLE(HybrisIcons.Module.GRADLE, "Gradle"),
+    CCV2_EXTERNAL(HybrisIcons.Extension.CLOUD, "CCv2 External"),
+    CCV2_STOREFRONT(HybrisIcons.Module.CCV2, "CCv2 Storefront"),
+    CCV2_CORE(HybrisIcons.Module.CCV2, "CCv2 Core"),
+    CCV2_DATAHUB(HybrisIcons.Module.CCV2, "CCv2 DataHub"),
+    ANGULAR(HybrisIcons.Module.ANGULAR, "Angular"),
 }

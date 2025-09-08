@@ -24,6 +24,7 @@
 
 ### `CCv2` enhancements
 - Use own configuration pane for CCv2-related connection settings [#1542](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1542)
+- Updated commerce manifest.json & v2 API [#1565](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1565)
 
 ### `hAC` enhancements
 - Use own configuration pane for hAC-related connection settings [#1543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1543)

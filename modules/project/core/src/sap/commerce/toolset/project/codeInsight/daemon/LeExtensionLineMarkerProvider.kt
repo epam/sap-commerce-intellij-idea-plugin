@@ -21,7 +21,7 @@ package sap.commerce.toolset.project.codeInsight.daemon
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.localextensions.model.Extensions
 
-class LeExtensionLineMarkerProvider : LeSLineMarkerProvider() {
+class LeExtensionLineMarkerProvider : LeLineMarkerProvider() {
 
     override fun getParentTagName() = Extensions.EXTENSION
     override fun getName() = i18n("hybris.editor.gutter.le.extension.name")

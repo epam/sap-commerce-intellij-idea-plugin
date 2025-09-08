@@ -27,7 +27,7 @@ object ExtensionLookupElementFactory {
 
     fun build(ed: ExtensionDescriptor) = LookupElementBuilder.create(ed.name)
         .withTailText(tail(ed), true)
-        .withTypeText(ed.type.name, true)
+        .withTypeText(ed.type.title, true)
         .withIcon(ed.type.icon)
         .let {
             PrioritizedLookupElement.withPriority(

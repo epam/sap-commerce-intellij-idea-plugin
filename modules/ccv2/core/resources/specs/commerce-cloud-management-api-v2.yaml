@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: 2.0.11
+  version: 2.0.12
   title: 'SAP Commerce Cloud - Management API'
   description: 'The API to manage your SAP Commerce environments in the cloud, including provisioning, building releases, deploying, operating and more.'
   license:
@@ -11,15 +11,12 @@ x-sap-shortText: Manage Commerce Cloud Automation.
 x-sap-stateInfo:
   state: Beta
 servers:
-  - url: https://{uri}/{version}
+  - url: https://{uri}/v2
     description: Environment URL
     variables:
       uri:
         default: 'portalrotapi.hana.ondemand.com'
         description: Environment URI
-      version:
-        default: 'v2'
-        description: API version
 tags:
   - name: build
     description: Endpoints for managing builds
@@ -31,6 +28,8 @@ tags:
     description: Endpoints for managing environments
   - name: endpoint
     description: Endpoints for managing endpoints
+  - name: scheduledActivity
+    description: Endpoints for managing customer scheduled activities
 paths:
   /subscriptions/{subscriptionCode}/environments/{environmentCode}/services/{serviceCode}/properties/{propertyCode}:
     parameters:
@@ -914,8 +913,211 @@ paths:
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/scheduledactivities:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - scheduledActivity
+      description: List scheduled activities for an environment
+      operationId: getScheduledActivities
+      parameters:
+        - $ref: '#/components/parameters/ScheduledActivityTypeFilter'
+        - $ref: '#/components/parameters/ScheduledActivityStatusFilter'
+        - $ref: '#/components/parameters/PaginationTop'
+        - $ref: '#/components/parameters/PaginationSkip'
+        - $ref: '#/components/parameters/OrderBy'
+      responses:
+        '200':
+          description: List of scheduled activities detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduledActivityDetailsDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+    post:
+      tags:
+        - scheduledActivity
+      description: Create a scheduled activity for a given environment
+      operationId: createScheduledActivity
+      requestBody:
+        description: Create a new scheduled activity
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateScheduledActivityRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduledActivityDetailDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/scheduledactivities/{activityCode}:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment code in the subscription
+        required: true
+        schema:
+          type: string
+      - name: activityCode
+        in: path
+        description: Activity code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - scheduledActivity
+      description: Fetch scheduled activity for an environment
+      operationId: getScheduledActivity
+      responses:
+        '200':
+          description: Scheduled activity detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduledActivityDetailDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+    patch:
+      tags:
+        - scheduledActivity
+      description: Update scheduled activity for an environment
+      operationId: updateScheduledActivity
+      requestBody:
+        description: Date to reschedule scheduled activity
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateScheduledActivityRequestDTO'
+      responses:
+        '200':
+          description: Updated scheduled activity detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduledActivityDetailDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/scheduledactivities/{activityCode}/cancel:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment code in the subscription
+        required: true
+        schema:
+          type: string
+      - name: activityCode
+        in: path
+        description: Activity code
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - scheduledActivity
+      description: Cancels a scheduled activity
+      operationId: cancelScheduledActivity
+      responses:
+        '200':
+          description: Updated scheduled activity detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduledActivityDetailDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/billingConfiguration:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - billingConfiguration
+      description: Get BillingConfiguration for a given Environment
+      operationId: getBillingConfiguration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentBillingConfigurationDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+    put:
+      tags:
+        - billingConfiguration
+      description: Updates the BillingConfiguration SAP Product Number as well as the CRM tenant ID for a given environment
+      operationId: putBillingConfiguration
+      requestBody:
+        description: Updates the BillingConfiguration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEnvironmentBillingConfigurationDTO'
+      responses:
+        '200':
+          description: BillingConfiguration has been changed
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
 security:
-  - OAuth2: [ ]
+  - OAuth2: []
 components:
   securitySchemes:
     OAuth2:
@@ -923,10 +1125,28 @@ components:
       flows:
         authorizationCode:
           scopes:
-            { }
+            {}
           authorizationUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/authorize'
           tokenUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/token'
   parameters:
+    ScheduledActivityTypeFilter:
+      name: activityType
+      in: query
+      description: The activity type by which to filter scheduled activities
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    ScheduledActivityStatusFilter:
+      name: status
+      in: query
+      description: The status by which to filter scheduled activities
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
     DeploymentStatusFilter:
       name: status
       in: query
@@ -1297,6 +1517,43 @@ components:
           type: string
           enum:
             - CANCEL
+    EnvironmentBillingConfigurationDTO:
+      description: Read only view of the BillingConfiguration of given Environment. Only used in get requests, not for updating the data
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Describes if the BillingConfiguration is active
+          default: false
+        enabled:
+          type: boolean
+          description: Describes if the BillingConfiguration is enabled
+          default: false
+        sapProductNumber:
+          type: string
+          description: SAP Product Number
+        crmTenantId:
+          type: string
+          description: SAP CRM tenant ID
+        dataStream:
+          type: string
+          description: DataStream name
+        tenant:
+          type: string
+          description: Tenant name
+    UpdateEnvironmentBillingConfigurationDTO:
+      description: Update the BillingConfiguration of given Environment
+      type: object
+      properties:
+        sapProductNumber:
+          type: string
+          description: SAP Product Number
+        crmTenantId:
+          type: string
+          description: SAP CRM tenant ID
+      required:
+        - sapProductNumber
+        - crmTenantId
     PropertyDTO:
       description: Property key and value pair
       type: object
@@ -1867,3 +2124,118 @@ components:
         url:
           description: Endpoint url
           type: string
+    CreateScheduledActivityRequestDTO:
+      description: Create scheduled activity request
+      type: object
+      required:
+        - activityType
+        - scheduledTimestamp
+      properties:
+        activityType:
+          description: Type of the activity to schedule
+          type: string
+        scheduledTimestamp:
+          description: Time the activity is scheduled for
+          type: string
+          format: date-time
+    ScheduledActivityDetailDTO:
+      description: Details of a scheduled activity
+      type: object
+      required:
+        - code
+        - subscriptionCode
+        - environmentCode
+        - activityType
+        - scheduledTimestamp
+        - status
+      properties:
+        code:
+          description: Scheduled activity code
+          type: string
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        environmentCode:
+          description: Code of the environment for which the activity is scheduled for
+          type: string
+        activityType:
+          description: Type of activity
+          type: string
+        scheduledTimestamp:
+          description: Time the activity is scheduled for.
+          type: string
+          format: date-time
+        startedTimestamp:
+          description: Time the scheduled activity was started
+          type: string
+          format: date-time
+        finishedTimestamp:
+          description: Time the scheduled activity was finished
+          type: string
+          format: date-time
+        status:
+          description: Status of the scheduled activity
+          type: string
+          enum:
+            - SCHEDULED
+            - QUEUED
+            - QUEUED_AWAITING_LOCK
+            - RUNNING
+            - SUCCESS
+            - ERROR
+            - CANCELING
+            - CANCELED
+        readOnly:
+          description: Describes if the scheduled activity is editable or read-only
+          type: boolean
+        updatable:
+          description: Describes if the scheduled activity is updatable/re-schedulable by the user
+          type: boolean
+        cancelable:
+          description: Describes if the scheduled activity is cancelable by the user
+          type: boolean
+        createdBy:
+          description: User that created the scheduled activity
+          type: string
+        createdTimestamp:
+          description: Scheduled activity creation timestamp
+          type: string
+          format: date-time
+        lastModifiedBy:
+          description: Last user that modified the scheduled activity
+          type: string
+        lastModifiedTimestamp:
+          description: Last time the scheduled activity was modified
+          type: string
+          format: date-time
+        activityName:
+          description: Name of the scheduled activity
+          type: string
+        activityNotes:
+          description: Notes for the scheduled activity
+          type: string
+        activityImpactNotes:
+          description: Impact notes for the scheduled activity
+          type: string
+    ScheduledActivityDetailsDTO:
+      description: Collection of scheduled activity details
+      type: object
+      properties:
+        value:
+          description: Array of scheduled activity details
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduledActivityDetailDTO'
+        count:
+          description: The total number of scheduled activities
+          type: integer
+    UpdateScheduledActivityRequestDTO:
+      description: Update scheduled activity request
+      type: object
+      required:
+        - scheduledTimestamp
+      properties:
+        scheduledTimestamp:
+          description: Time the activity is scheduled for
+          type: string
+          format: date-time
