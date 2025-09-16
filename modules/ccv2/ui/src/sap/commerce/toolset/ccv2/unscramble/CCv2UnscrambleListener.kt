@@ -21,16 +21,25 @@ package sap.commerce.toolset.ccv2.unscramble
 import com.intellij.openapi.application.ClipboardAnalyzeListener
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.registry.Registry
+import com.intellij.openapi.wm.IdeFrame
 import com.intellij.unscramble.UnscrambleDialog
 import java.awt.event.ActionEvent
 
 class CCv2UnscrambleListener : ClipboardAnalyzeListener() {
 
-    val ccv2UnscrambleHelper: CCv2JsonUnscrambleHelper = CCv2JsonUnscrambleHelper()
-
-    override fun canHandle(value: String): Boolean {
-        return ccv2UnscrambleHelper.canHandle(value)
+    override fun applicationActivated(ideFrame: IdeFrame) {
+        if (!Registry.`is`("analyze.exceptions.on.the.fly")) return
+        super.applicationActivated(ideFrame)
     }
+
+    override fun applicationDeactivated(ideFrame: IdeFrame) {
+        if (!Registry.`is`("analyze.exceptions.on.the.fly")) return
+        super.applicationDeactivated(ideFrame)
+    }
+
+    override fun canHandle(value: String) = CCv2UnscrambleService.getInstance()
+        .canHandle(value)
 
     override fun handle(project: Project, value: String) {
         val dialog = CCv2UnscrambleDialog(project)

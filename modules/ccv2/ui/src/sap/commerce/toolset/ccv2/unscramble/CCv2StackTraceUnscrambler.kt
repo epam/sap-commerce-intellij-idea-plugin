@@ -23,17 +23,11 @@ import com.intellij.unscramble.UnscrambleSupport
 import sap.commerce.toolset.i18n
 import javax.swing.JComponent
 
-class CCv2JSONStackTraceUnscrambler : UnscrambleSupport<JComponent> {
+class CCv2StackTraceUnscrambler : UnscrambleSupport<JComponent> {
 
-    val name: String = i18n("hybris.project.ccv2.unscramble.jsonStacktrace.name")
-    val helper: CCv2JsonUnscrambleHelper = CCv2JsonUnscrambleHelper()
+    override fun unscramble(project: Project, text: String, logName: String, jComponent: JComponent?) = CCv2UnscrambleService.getInstance()
+        .buildStackTraceString(text)
 
-    override fun unscramble(project: Project, json: String, logName: String, jComponent: JComponent?): String? {
-        return helper.buildStackTraceString(json)
-    }
-
-    override fun getPresentableName(): String {
-        return name
-    }
+    override fun getPresentableName() = i18n("hybris.project.ccv2.unscramble.jsonStacktrace.name")
 
 }
