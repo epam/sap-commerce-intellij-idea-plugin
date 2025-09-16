@@ -48,5 +48,8 @@ dependencies {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+        bundledPlugins(
+            "com.intellij.java",
+        )
     }
 }

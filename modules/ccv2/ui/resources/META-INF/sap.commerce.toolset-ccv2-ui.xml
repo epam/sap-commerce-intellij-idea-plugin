@@ -24,6 +24,9 @@
                              nonDefaultProject="true" dynamic="true"
                              displayName="CCv2" order="first"
                              provider="sap.commerce.toolset.ccv2.options.CCv2ExecProjectSettingsConfigurableProvider"/>
+
+        <unscrambleSupport implementation="sap.commerce.toolset.ccv2.unscramble.CCv2JSONStackTraceUnscrambler"/>
+
     </extensions>
 
     <actions>
@@ -76,5 +79,10 @@
             <add-to-group group-id="hybris.groovy.toolbar.mode"/>
         </action>
     </actions>
+
+    <applicationListeners>
+        <listener class="sap.commerce.toolset.ccv2.unscramble.CCv2UnscrambleListener"
+                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+    </applicationListeners>
 
 </idea-plugin>
