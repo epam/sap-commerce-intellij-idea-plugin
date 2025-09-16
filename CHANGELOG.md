@@ -12,6 +12,7 @@
 - Display parent non-root logger below the logger entry [#1556](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1556)
 - Display bundled loggers templates in the Loggers toolwindow [#1538](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1538)
 - Preserve view position on reloading remote loggers [#1561](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1561)
+- Added unscrambler for JSON Stacktraces from SAP CX Cloud Logging [#1567](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1567)
 
 ### `Spring` enhancements
 - Improved simple Spring bean resolution for IntelliJ Community edition [#1563](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1563)
