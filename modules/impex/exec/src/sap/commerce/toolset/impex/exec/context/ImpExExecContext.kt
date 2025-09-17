@@ -48,7 +48,7 @@ data class ImpExExecContext(
     ) : this(
         connection = connection,
         content = content,
-        dialect = ImpExDialect.ACL,
+        dialect = dialect,
         validationMode = settings.validationMode,
         maxThreads = settings.maxThreads,
         timeout = settings.timeout,

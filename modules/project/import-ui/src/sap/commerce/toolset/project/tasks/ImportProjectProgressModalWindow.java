@@ -71,10 +71,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setIndeterminate(false);
         indicator.setFraction(0d);
+
         final var chosenModuleDescriptors = hybrisProjectDescriptor.getChosenModuleDescriptors();
+        final var moduleImportConfigurators = ModuleImportConfigurator.Companion.getEP().getExtensionList();
+        final var moduleFacetConfigurators = ModuleFacetConfigurator.Companion.getEP().getExtensionList();
+
         chosenModuleDescriptors.stream()
             .map(moduleDescriptor ->
-                ModuleImportConfigurator.Companion.getEP().getExtensionList().stream()
+                moduleImportConfigurators.stream()
                     .filter(configurator -> configurator.isApplicable(moduleDescriptor))
                     .findFirst()
                     .map(configurator -> {
@@ -87,7 +91,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                             final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
                             final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
 
-                            ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(facetConfigurator ->
+                            moduleFacetConfigurators.forEach(facetConfigurator ->
                                 facetConfigurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
                             );
                             return module;

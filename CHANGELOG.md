@@ -46,6 +46,7 @@
 
 ### `ImpEx` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1548](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1548)
+- Re-new authentication for execution client on timeout [#1569](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1569)
 
 ### `FlexibleSearch` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1549)

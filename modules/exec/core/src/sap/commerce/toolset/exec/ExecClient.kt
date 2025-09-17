@@ -22,7 +22,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.platform.util.progress.reportProgress
+import com.intellij.platform.util.progress.reportProgressScope
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ExecResult
@@ -81,7 +81,7 @@ abstract class ExecClient<E : ExecContext, R : ExecResult>(
         context: E,
         resultCallback: (CoroutineScope, R) -> Unit
     ) = withBackgroundProgress(project, context.executionTitle, true) {
-        val result = reportProgress { progressReporter ->
+        val result = reportProgressScope { _ ->
             try {
                 execute(context)
             } catch (t: Throwable) {

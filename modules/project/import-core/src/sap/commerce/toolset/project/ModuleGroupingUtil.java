@@ -177,7 +177,7 @@ public final class ModuleGroupingUtil {
             final List<String> path;
             try {
                 path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for OOTB module '%s' because its root directory '%s' is not under Hybris bin directory '%s'.",
                     moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory

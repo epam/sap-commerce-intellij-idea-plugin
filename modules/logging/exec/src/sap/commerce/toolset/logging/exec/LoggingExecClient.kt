@@ -54,7 +54,7 @@ class LoggingExecClient(project: Project, coroutineScope: CoroutineScope) : Exec
 
         val actionUrl = connectionSettings.generatedURL + "/platform/log4j/changeLevel/"
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, false, context.timeout, connectionSettings, null)
+            .post(actionUrl, params, true, context.timeout, connectionSettings, null)
 
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode

@@ -34,6 +34,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgress
+import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.util.io.ZipUtil
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
@@ -636,7 +637,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 var totalProgress = 0
                 val ccv2Token = getCCv2Token(subscription)
 
-                reportProgress { progressReporter ->
+                reportProgressScope { progressReporter ->
                     try {
                         while (buildStatus == CCv2BuildStatus.UNKNOWN || buildStatus == CCv2BuildStatus.SCHEDULED) {
                             checkCanceled()
@@ -713,7 +714,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 var totalProgress = 0
                 val ccv2Token = getCCv2Token(subscription)
 
-                reportProgress { progressReporter ->
+                reportProgressScope { progressReporter ->
                     while (totalProgress < 100) {
                         checkCanceled()
 

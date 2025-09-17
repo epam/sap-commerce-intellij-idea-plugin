@@ -50,7 +50,7 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HacHttpClient.getInstance(project)
-            .post(actionUrl, params, false, context.timeout, settings, null)
+            .post(actionUrl, params, true, context.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
