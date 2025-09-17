@@ -18,66 +18,57 @@
 
 package sap.commerce.toolset.ccv2.unscramble
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.*
 
 @Service
 class CCv2UnscrambleService {
 
-    fun canHandle(text: String = ""): Boolean {
-        try {
-            val rootNode: JsonObject = Json.parseToJsonElement(text).jsonObject
-            val thrownNode = rootNode["thrown"]?.jsonObject
+    fun canHandle(text: String) = getThrown(text) != null
 
-            return thrownNode != null && thrownNode.containsKey("extendedStackTrace") && thrownNode.containsKey("cause")
-        } catch (e: Exception) {
-            return false;
-        }
-    }
+    fun buildStackTraceString(text: String): String? = getThrown(text)
+        ?.let { buildStackTraceString(it) }
 
-    fun buildStackTraceString(text: String = ""): String? {
-        if (canHandle(text)) {
-            val rootNode: JsonObject = Json.parseToJsonElement(text).jsonObject
-            val thrownNode = rootNode["thrown"]
-
-            return buildStackTraceString(thrownNode)
-        }
-        return null;
-    }
-
-    private fun buildStackTraceString(node: JsonElement?, indent: String = ""): String {
-        if (node == null || node is JsonNull) return ""
-
-        val obj = node.jsonObject  // <-- ensure it's a JsonObject
-
+    private fun buildStackTraceString(obj: JsonObject, indent: String = ""): String = buildString {
         val name = obj["name"]?.jsonPrimitive?.contentOrNull ?: "java.lang.Exception"
         val message = obj["message"]?.jsonPrimitive?.contentOrNull ?: ""
 
-        val sb = StringBuilder()
-        sb.append("$indent$name: $message\n")
+        append("$indent$name: $message\n")
 
-        val stackTraceNodes = obj["extendedStackTrace"]?.jsonArray
-        if (stackTraceNodes != null) {
-            for (elem in stackTraceNodes) {
-                val elemObj = elem.jsonObject
-                val className = elemObj["class"]?.jsonPrimitive?.contentOrNull ?: "UnknownClass"
-                val methodName = elemObj["method"]?.jsonPrimitive?.contentOrNull ?: "unknownMethod"
-                val fileName = elemObj["file"]?.jsonPrimitive?.contentOrNull ?: "UnknownFile"
-                val lineNumber = elemObj["line"]?.jsonPrimitive?.intOrNull ?: -1
+        obj["extendedStackTrace"]
+            ?.jsonArray
+            ?.map { it.jsonObject }
+            ?.forEach {
+                val className = it["class"]?.jsonPrimitive?.contentOrNull ?: "UnknownClass"
+                val methodName = it["method"]?.jsonPrimitive?.contentOrNull ?: "unknownMethod"
+                val fileName = it["file"]?.jsonPrimitive?.contentOrNull ?: "UnknownFile"
+                val lineNumber = it["line"]?.jsonPrimitive?.intOrNull ?: -1
                 val lineStr = if (lineNumber >= 0) "$fileName:$lineNumber" else fileName
-                sb.append("$indent\tat $className.$methodName($lineStr)\n")
+
+                append("$indent\tat $className.$methodName($lineStr)\n")
             }
-        }
 
-        val causeNode = obj["cause"]
-        if (causeNode != null && causeNode !is JsonNull) {
-            sb.append("${indent}Caused by: ${buildStackTraceString(causeNode, indent)}")
-        }
 
-        return sb.toString()
+        obj["cause"]
+            ?.takeUnless { it is JsonNull }
+            ?.jsonObject
+            ?.let {
+                append("${indent}Caused by: ${buildStackTraceString(it, indent)}")
+            }
+    }
+
+
+    private fun getThrown(text: String) = try {
+        Json.parseToJsonElement(text)
+            .jsonObject["thrown"]
+            ?.takeUnless { it is JsonNull }
+            ?.jsonObject
+            ?.takeIf { it.containsKey("extendedStackTrace") && it.containsKey("cause") }
+    } catch (_: SerializationException) {
+        null
     }
 
     companion object {
