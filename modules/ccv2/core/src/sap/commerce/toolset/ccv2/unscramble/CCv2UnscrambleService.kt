@@ -66,7 +66,7 @@ class CCv2UnscrambleService {
             .jsonObject["thrown"]
             ?.takeUnless { it is JsonNull }
             ?.jsonObject
-            ?.takeIf { it.containsKey("extendedStackTrace") && it.containsKey("cause") }
+            ?.takeIf { it.containsKey("extendedStackTrace") }
     } catch (_: SerializationException) {
         null
     }
