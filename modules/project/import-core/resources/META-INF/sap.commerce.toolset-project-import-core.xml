@@ -28,8 +28,9 @@
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ModuleDependenciesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.LoadedModulesConfigurator"/>
+
+        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
 
         <project.module.facetConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
     </extensions>

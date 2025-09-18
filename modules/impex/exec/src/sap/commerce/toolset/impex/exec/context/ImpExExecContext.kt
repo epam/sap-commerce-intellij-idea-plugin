@@ -67,7 +67,7 @@ data class ImpExExecContext(
 
     fun params(): Map<String, String> = buildMap {
         put("scriptContent", content)
-        put("validationEnum", validationMode.name)
+        put("validationEnum", validationMode.name.lowercase())
         put("encoding", encoding)
         put("maxThreads", maxThreads.toString())
         put("legacyMode", BooleanUtils.toStringTrueFalse(legacyMode.booleanValue))

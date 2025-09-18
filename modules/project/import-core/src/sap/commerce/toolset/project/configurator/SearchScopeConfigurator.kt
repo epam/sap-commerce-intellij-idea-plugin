@@ -20,8 +20,6 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.find.FindSettings
 import com.intellij.ide.projectView.impl.ModuleGroup
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet
 import com.intellij.psi.search.scope.packageSet.NamedScope
@@ -35,16 +33,13 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
 import javax.swing.Icon
 
-class SearchScopeConfigurator : ProjectImportConfigurator {
+class SearchScopeConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Search Scope"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    ) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor): List<() -> Unit> {
+        val project = hybrisProjectDescriptor.project ?: return emptyList()
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris
@@ -104,14 +99,14 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
             FilePatternPackageSet(null, "*//*${HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING}")
         )
 
-        ApplicationManager.getApplication().invokeLater {
+        return listOf {
             addOrReplaceScopes(project, newScopes)
-        }
 
-        val defaultScope = customScope ?: hybrisScope ?: platformScope
-        defaultScope?.let {
-            FindSettings.getInstance().customScope = it.presentableName
-            FindSettings.getInstance().defaultScopeName = it.presentableName
+            val defaultScope = customScope ?: hybrisScope ?: platformScope
+            defaultScope?.let {
+                FindSettings.getInstance().customScope = it.presentableName
+                FindSettings.getInstance().defaultScopeName = it.presentableName
+            }
         }
     }
 

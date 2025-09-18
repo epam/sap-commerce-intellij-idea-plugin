@@ -70,6 +70,7 @@
 - Use IntelliJ extension point for Code Folding settings [#1555](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1555)
 
 ### `Project Import` enhancements
+- Configure custom search scopes after project import [1570](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1570)
 - Allow unselecting the non-main `config` module during the import [#1564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1564)
 
 ### `Other` enhancements
