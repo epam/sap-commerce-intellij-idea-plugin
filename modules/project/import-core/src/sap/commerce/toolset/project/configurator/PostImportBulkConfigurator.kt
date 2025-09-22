@@ -19,37 +19,45 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.intellij.util.concurrency.AppExecutorUtil
+import com.intellij.platform.util.progress.reportProgressScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 
 @Service(Service.Level.PROJECT)
-class PostImportBulkConfigurator(private val project: Project) {
+class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
+
+    private val logger = thisLogger()
 
     fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        ReadAction
-            .nonBlocking<List<() -> Unit>> {
-                if (project.isDisposed) return@nonBlocking emptyList()
+        coroutineScope.launch {
+            if (project.isDisposed) return@launch
 
-                ProjectPostImportConfigurator.EP.extensionList
-                    .map { it.postImport(hybrisProjectDescriptor) }
-                    .flatten()
+            val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
+            reportProgressScope(postImportConfigurators.size) { progressReporter ->
+                postImportConfigurators
+                    .map {
+                        val progressText = "Configuring project using '${it.name}' Configurator..."
+                        logger.info(progressText)
+                        async {
+                            progressReporter.itemStep(progressText) {
+                                it.postImport(hybrisProjectDescriptor)
+                            }
+                        }
+                    }
+                    .awaitAll()
             }
-            .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
-                if (project.isDisposed) return@finishOnUiThread
 
-                actions.forEach { it() }
-
-                notifyImportFinished(project, hybrisProjectDescriptor.refresh)
-            }
-            .inSmartMode(project)
-            .submit(AppExecutorUtil.getAppExecutorService())
+            notifyImportFinished(project, hybrisProjectDescriptor.refresh)
+        }
     }
 
     private fun notifyImportFinished(project: Project, refresh: Boolean) {

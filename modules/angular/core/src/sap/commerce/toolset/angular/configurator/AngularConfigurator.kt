@@ -17,6 +17,8 @@
  */
 package sap.commerce.toolset.angular.configurator
 
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VfsUtil
@@ -30,23 +32,31 @@ class AngularConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Angular"
 
-    override fun postImport(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val project = hybrisProjectDescriptor.project
+            ?.takeUnless { it.isDisposed }
+            ?: return
 
-        return hybrisProjectDescriptor.chosenModuleDescriptors
-            .filterIsInstance<AngularModuleDescriptor>()
-            .mapNotNull {
+        val angularModuleDescriptors = (hybrisProjectDescriptor.chosenModuleDescriptors.filterIsInstance<AngularModuleDescriptor>()
+            .takeIf { it.isNotEmpty() }
+            ?: return)
+
+        val modulesToCreate = readAction {
+            angularModuleDescriptors.mapNotNull {
                 val vfs = VfsUtil.findFileByIoFile(it.moduleRootDirectory, true)
                     ?: return@mapNotNull null
                 val moduleRef = ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName())
                     ?.let { module -> Ref.create(module) }
                     ?: return@mapNotNull null
 
-                {
-                    Angular2ProjectConfigurator().configureProject(project, vfs, moduleRef, true)
-                }
+                vfs to moduleRef
             }
+        }
+
+        invokeLater {
+            modulesToCreate.forEach {
+                Angular2ProjectConfigurator().configureProject(project, it.first, it.second, true)
+            }
+        }
     }
 }

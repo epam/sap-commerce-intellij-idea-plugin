@@ -20,6 +20,8 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.compiler.CompilerConfiguration
 import com.intellij.compiler.CompilerConfigurationImpl
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.util.asSafely
 import org.jetbrains.jps.model.java.compiler.JavaCompilers
 import sap.commerce.toolset.HybrisConstants
@@ -32,23 +34,21 @@ class JavaCompilerConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Java Compiler"
 
-    override fun postImport(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val project = hybrisProjectDescriptor.project ?: return
         val compilerConfiguration = CompilerConfiguration.getInstance(project)
-            .asSafely<CompilerConfigurationImpl>() ?: return emptyList()
-        val compilerVersion = PropertyService.getInstance(project).findProperty(HybrisConstants.PROPERTY_BUILD_COMPILER)
-            ?: return emptyList()
+            .asSafely<CompilerConfigurationImpl>() ?: return
+        val compilerVersion = smartReadAction(project) {
+            PropertyService.getInstance(project).findProperty(HybrisConstants.PROPERTY_BUILD_COMPILER)
+        }
+            ?: return
 
-        return listOf(
-            {
-                when (compilerVersion) {
-                    "org.eclipse.jdt.core.JDTCompilerAdapter" -> applyCompiler(compilerConfiguration, JavaCompilers.ECLIPSE_ID)
-                    "modern" -> applyCompiler(compilerConfiguration, JavaCompilers.JAVAC_ID)
-                }
+        edtWriteAction {
+            when (compilerVersion) {
+                "org.eclipse.jdt.core.JDTCompilerAdapter" -> applyCompiler(compilerConfiguration, JavaCompilers.ECLIPSE_ID)
+                "modern" -> applyCompiler(compilerConfiguration, JavaCompilers.JAVAC_ID)
             }
-        )
+        }
     }
 
     private fun applyCompiler(compilerConfiguration: CompilerConfigurationImpl, id: String) {

@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.maven.configurator
 
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.vfs.VfsUtil
 import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
 import org.jetbrains.idea.maven.model.MavenConstants
@@ -32,33 +33,26 @@ class MavenConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Maven"
 
-    override fun postImport(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val project = hybrisProjectDescriptor.project ?: return
         val mavenModules = hybrisProjectDescriptor.chosenModuleDescriptors
             .filterIsInstance<MavenModuleDescriptor>()
             .takeIf { it.isNotEmpty() }
-            ?: return emptyList()
+            ?: return
 
-        val actions = mavenModules
-            .asSequence()
-            .map { it.moduleRootDirectory }
-            .map { File(it, MavenConstants.POM_XML) }
-            .filter { it.exists() && it.isFile }
-            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
-            .map {
-                {
-                    MavenProjectAsyncBuilder().commitSync(project, it, null)
-                    Unit
-                }
-            }
-            .toMutableList()
-
-        actions.add {
-            MavenProjectsManager.getInstance(project).scheduleUpdateAllMavenProjects(MavenSyncSpec.full("MavenProjectsManager.importProjects"))
+        val modules = readAction {
+            mavenModules
+                .asSequence()
+                .map { it.moduleRootDirectory }
+                .map { File(it, MavenConstants.POM_XML) }
+                .filter { it.exists() && it.isFile }
+                .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
         }
 
-        return actions
+        modules.forEach {
+            MavenProjectAsyncBuilder().commitSync(project, it, null)
+        }
+
+        MavenProjectsManager.getInstance(project).scheduleUpdateAllMavenProjects(MavenSyncSpec.full("MavenProjectsManager.importProjects"))
     }
 }

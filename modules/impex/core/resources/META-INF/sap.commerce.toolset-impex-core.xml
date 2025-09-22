@@ -20,7 +20,7 @@
     <extensionPoints>
         <extensionPoint qualifiedName="sap.commerce.toolset.impex.interceptorProvider"
                         interface="sap.commerce.toolset.impex.constants.modifier.InterceptorProvider"
-                        dynamic="false"/>
+                        dynamic="true"/>
     </extensionPoints>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">

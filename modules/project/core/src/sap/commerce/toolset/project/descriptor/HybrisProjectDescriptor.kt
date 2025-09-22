@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.configurator.ImportSpecificProperties
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import java.io.File
 
@@ -65,7 +64,6 @@ interface HybrisProjectDescriptor {
     var excludedFromScanning: MutableSet<String>
     val excludedFromScanningDirectories: MutableSet<File>?
 
-    val properties: ImportSpecificProperties
     val yModuleDescriptorsToImport: Map<String, YModuleDescriptor>
     val moduleDescriptorsToImport: Map<String, ModuleDescriptor>
 

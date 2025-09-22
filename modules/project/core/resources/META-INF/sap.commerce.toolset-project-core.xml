@@ -20,28 +20,28 @@
     <extensionPoints>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.preImportConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator"
-                        dynamic="false"/>
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.importConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectImportConfigurator"
-                        dynamic="false"/>
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator"
-                        dynamic="false"/>
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.startupConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectStartupConfigurator"
-                        dynamic="false"/>
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.refreshConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator"
-                        dynamic="false"/>
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.importConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ModuleImportConfigurator"
-                        dynamic="false"/>
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.facetConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ModuleFacetConfigurator"
-                        dynamic="false"/>
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.descriptorProvider"
                         interface="sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider"
-                        dynamic="false"/>
+                        dynamic="true"/>
     </extensionPoints>
 
     <extensions defaultExtensionNs="com.intellij">

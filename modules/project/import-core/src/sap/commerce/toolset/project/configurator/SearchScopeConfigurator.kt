@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.find.FindSettings
 import com.intellij.ide.projectView.impl.ModuleGroup
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet
 import com.intellij.psi.search.scope.packageSet.NamedScope
@@ -38,8 +39,8 @@ class SearchScopeConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Search Scope"
 
-    override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val project = hybrisProjectDescriptor.project ?: return
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris
@@ -99,7 +100,7 @@ class SearchScopeConfigurator : ProjectPostImportConfigurator {
             FilePatternPackageSet(null, "*//*${HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING}")
         )
 
-        return listOf {
+        edtWriteAction {
             addOrReplaceScopes(project, newScopes)
 
             val defaultScope = customScope ?: hybrisScope ?: platformScope

@@ -19,21 +19,17 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.execution.RunManager
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
 import sap.commerce.toolset.project.runConfigurations.createRunConfiguration
 
-class LocalSapCxRunConfigurationConfigurator : ProjectImportConfigurator {
+class LocalSapCxRunConfigurationConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Run Configurations - Local SAP CX"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    ) {
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val runManager = RunManager.getInstance(project)
 

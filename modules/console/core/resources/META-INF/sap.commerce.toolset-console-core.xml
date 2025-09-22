@@ -20,6 +20,6 @@
     <extensionPoints>
         <extensionPoint qualifiedName="sap.commerce.toolset.consoleProvider"
                         interface="sap.commerce.toolset.console.HybrisConsoleProvider"
-                        dynamic="false"/>
+                        dynamic="true"/>
     </extensionPoints>
 </idea-plugin>

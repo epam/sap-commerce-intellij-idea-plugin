@@ -20,7 +20,7 @@
     <extensionPoints>
         <extensionPoint qualifiedName="sap.commerce.toolset.shared.springService"
                         interface="sap.commerce.toolset.spring.SpringService"
-                        dynamic="false"/>
+                        dynamic="true"/>
     </extensionPoints>
 
 </idea-plugin>

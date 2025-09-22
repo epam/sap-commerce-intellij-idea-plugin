@@ -19,8 +19,9 @@
 package sap.commerce.toolset.jrebel.configurator
 
 import com.intellij.facet.FacetType
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.project.Project
@@ -50,17 +51,40 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
     override val name: String
         get() = "JRebel"
 
-    override fun postImport(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
-        return hybrisProjectDescriptor.chosenModuleDescriptors
-            .filter {
-                it is YCustomRegularModuleDescriptor
-                    || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val project = hybrisProjectDescriptor.project ?: return
+
+        val moduleDescriptors = hybrisProjectDescriptor.chosenModuleDescriptors
+            .filter { it is YCustomRegularModuleDescriptor || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor) }
+        val modules = readAction {
+            moduleDescriptors
+                .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
+        }
+
+        modules.forEach { javaModule ->
+            readAction { JRebelFacet.getInstance(javaModule) } ?: return@forEach
+            readAction {
+                FacetType.findInstance(JRebelFacetType::class.java)
+                    .takeUnless { it.isSuitableModuleType(ModuleType.get(javaModule)) }
+            } ?: return@forEach
+
+            // To ensure regeneration of the rebel.xml,
+            // we may need to remove backup created by the JRebel plugin on module removal during the Project Refresh.
+            val xml = readAction { RebelXML.getInstance(javaModule) }
+            val backupHash = xml.backupHash()
+
+            val backupDirectory = readAction {
+                File(JRebelConfiguration.getUserHomeDir(), "xml-backups/$backupHash")
+                    .takeIf { it.exists() && it.isDirectory }
+                    ?.toPath()
             }
-            .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
-            .mapNotNull { configure(it) }
+
+            edtWriteAction {
+                backupDirectory?.let { FileUtil.deleteRecursively(it) }
+
+                ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)
+            }
+        }
     }
 
     override fun onStartup(project: Project) {
@@ -87,30 +111,6 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
             IOUtils.write(content, FileOutputStream(compilingXml), StandardCharsets.UTF_8)
         } catch (e: IOException) {
             thisLogger().error(e)
-        }
-    }
-
-    private fun configure(javaModule: Module): (() -> Unit)? {
-        val facet = JRebelFacet.getInstance(javaModule)
-
-        if (facet != null) return null
-
-        val facetType = FacetType.findInstance(JRebelFacetType::class.java)
-
-        if (!facetType.isSuitableModuleType(ModuleType.get(javaModule))) return null
-
-        return {
-            // To ensure regeneration of the rebel.xml,
-            // we may need to remove backup created by the JRebel plugin on module removal during the Project Refresh.
-            val xml = RebelXML.getInstance(javaModule)
-            val backupHash = xml.backupHash()
-
-            val backupDirectory = File(JRebelConfiguration.getUserHomeDir(), "xml-backups/$backupHash")
-            if (backupDirectory.exists() && backupDirectory.isDirectory) {
-                FileUtil.deleteRecursively(backupDirectory.toPath())
-            }
-
-            ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)
         }
     }
 

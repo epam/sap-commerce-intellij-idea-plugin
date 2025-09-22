@@ -19,7 +19,9 @@ package sap.commerce.toolset.kotlin.configurator
 
 import com.intellij.facet.FacetManager
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressManager
@@ -40,7 +42,6 @@ import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.yExtensionName
 
 class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
 
@@ -56,71 +57,72 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
             .anyMatch { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
-        setKotlinCompilerVersion(project, HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
+        application.runReadAction {
+            setKotlinCompilerVersion(project, HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
+        }
         setKotlinJvmTarget(project)
     }
 
-    override fun postImport(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
-        val hasKotlinnatureExtension = ModuleManager.getInstance(project).modules
-            .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.yExtensionName() }
-        if (!hasKotlinnatureExtension) return emptyList()
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val project = hybrisProjectDescriptor.project ?: return
+        hybrisProjectDescriptor.chosenModuleDescriptors
+            .find { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
+            ?: return
 
-        val compilerVersion = PropertyService.getInstance(project)
-            .findProperty(HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
-            ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
-        setKotlinCompilerVersion(project, compilerVersion)
+        smartReadAction(project) {
+            val compilerVersion = PropertyService.getInstance(project)
+                .findProperty(HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
+                ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
 
-        return registerKotlinLibrary(project)
+            setKotlinCompilerVersion(project, compilerVersion)
+        }
+
+        registerKotlinLibrary(project)
     }
 
-    private fun registerKotlinLibrary(project: Project): List<() -> Unit> {
-        val kotlinAwareModules = ModuleManager.getInstance(project).modules
-            .filter { FacetManager.getInstance(it).getFacetByType(KotlinFacetType.TYPE_ID) != null }
-            .toSet()
-
-        if (kotlinAwareModules.isEmpty()) return emptyList()
+    private suspend fun registerKotlinLibrary(project: Project) {
+        val kotlinAwareModules = readAction {
+            ModuleManager.getInstance(project).modules
+                .filter { FacetManager.getInstance(it).getFacetByType(KotlinFacetType.TYPE_ID) != null }
+                .toSet()
+        }
+            .takeIf { it.isNotEmpty() }
+            ?: return
 
         val collector = NotificationMessageCollector.create(project)
-        val actions = mutableListOf<() -> Unit>()
 
-        actions.add {
-            val writeActions = mutableListOf<() -> Unit>()
+        edtWriteAction {
+            KotlinJavaModuleConfigurator.instance.getOrCreateKotlinLibrary(project, collector)
+        }
 
-            runWriteAction {
-                KotlinJavaModuleConfigurator.instance.getOrCreateKotlinLibrary(project, collector)
-            }
+        val writeActions = mutableListOf<() -> Unit>()
 
-            ActionUtil.underModalProgress(project, KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")) {
-                val progressIndicator = ProgressManager.getGlobalProgressIndicator()
+        ActionUtil.underModalProgress(project, KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")) {
+            val progressIndicator = ProgressManager.getGlobalProgressIndicator()
 
-                for ((index, module) in kotlinAwareModules.withIndex()) {
-                    if (!isUnitTestMode()) {
-                        progressIndicator?.let {
-                            it.checkCanceled()
-                            it.fraction = index * 1.0 / kotlinAwareModules.size
-                            it.text = KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")
-                            it.text2 = KotlinProjectConfigurationBundle.message("configure.kotlin.in.module.0.progress.text", module.name)
-                        }
+            for ((index, module) in kotlinAwareModules.withIndex()) {
+                if (!isUnitTestMode()) {
+                    progressIndicator?.let {
+                        it.checkCanceled()
+                        it.fraction = index * 1.0 / kotlinAwareModules.size
+                        it.text = KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")
+                        it.text2 = KotlinProjectConfigurationBundle.message("configure.kotlin.in.module.0.progress.text", module.name)
                     }
-                    KotlinJavaModuleConfigurator.instance.configureModule(module, collector, writeActions)
                 }
+                KotlinJavaModuleConfigurator.instance.configureModule(module, collector, writeActions)
             }
+        }
 
+        edtWriteAction {
             writeActions.forEach { it() }
         }
-        return actions
     }
 
     // Kotlin compiler version will be updated after project import / refresh in BGT
     // we have to have indexes ready to be able to get the correct value of the project property responsible for a custom Kotlin compiler version
     private fun setKotlinCompilerVersion(project: Project, compilerVersion: String) {
-        application.runReadAction {
-            KotlinJpsPluginSettings.getInstance(project).update {
-                version = compilerVersion
-            }
+        KotlinJpsPluginSettings.getInstance(project).update {
+            version = compilerVersion
         }
     }
 

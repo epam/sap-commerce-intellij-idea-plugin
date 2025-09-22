@@ -7,6 +7,11 @@
 
 - With over ~270 commits complete rework of the Plugin to Gradle multi-modular architecture [#1528](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1528)
 
+### `Project Import` enhancements
+- Migrated post import configurators to kotlin coroutines [1571](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1571)
+- Configure custom search scopes after project import [1570](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1570)
+- Allow unselecting the non-main `config` module during the import [#1564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1564)
+
 ### `SAP CX Logging` enhancements
 - Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
 - Display parent non-root logger below the logger entry [#1556](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1556)
@@ -68,10 +73,6 @@
 
 ### `JSP` enhancements
 - Use IntelliJ extension point for Code Folding settings [#1555](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1555)
-
-### `Project Import` enhancements
-- Configure custom search scopes after project import [1570](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1570)
-- Allow unselecting the non-main `config` module during the import [#1564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1564)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)

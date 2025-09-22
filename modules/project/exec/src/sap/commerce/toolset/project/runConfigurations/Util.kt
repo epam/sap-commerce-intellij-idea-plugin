@@ -22,13 +22,13 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.ConfigurationTypeUtil
-import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.application.edtWriteAction
 
-fun <T : ConfigurationType> createRunConfiguration(
+suspend fun <T : ConfigurationType> createRunConfiguration(
     runManager: RunManager,
     configurationType: Class<T>,
     configurationName: String,
+    activate: Boolean = false,
     configurationConsumer: (RunnerAndConfigurationSettings) -> Unit = {}
 ) {
     if (runManager.findConfigurationByName(configurationName) != null) return
@@ -36,19 +36,19 @@ fun <T : ConfigurationType> createRunConfiguration(
     val confType = ConfigurationTypeUtil.findConfigurationType(configurationType)
     val configurationFactory = confType.configurationFactories.first()
 
-    invokeLater {
-        runWriteAction {
-            val runner = runManager.createConfiguration(
-                configurationName,
-                configurationFactory
-            )
+    return edtWriteAction {
+        val runner = runManager.createConfiguration(
+            configurationName,
+            configurationFactory
+        )
 
-            configurationConsumer.invoke(runner)
+        configurationConsumer.invoke(runner)
 
-            runner.isActivateToolWindowBeforeRun = true
-            runner.storeInDotIdeaFolder()
+        runner.isActivateToolWindowBeforeRun = true
+        runner.storeInDotIdeaFolder()
 
-            runManager.addConfiguration(runner)
-        }
+        runManager.addConfiguration(runner)
+
+        if (activate) runManager.selectedConfiguration = runner
     }
 }

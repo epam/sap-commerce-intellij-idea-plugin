@@ -49,7 +49,6 @@ import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig;
 import sap.commerce.toolset.localextensions.jaxb.ObjectFactory;
 import sap.commerce.toolset.localextensions.jaxb.ScanType;
 import sap.commerce.toolset.project.HybrisProjectService;
-import sap.commerce.toolset.project.configurator.ImportSpecificProperties;
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor;
@@ -125,7 +124,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private boolean withStandardProvidedSources;
     private boolean ignoreNonExistingSourceDirectories;
     private boolean useFakeOutputPathForCustomExtensions;
-    private final ImportSpecificProperties properties = new ImportSpecificProperties();
 
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
@@ -133,11 +131,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private PlatformModuleDescriptor platformHybrisModuleDescriptor;
     @Nullable
     private ModuleDescriptor kotlinNatureModuleDescriptor;
-
-    @Override
-    public @NotNull ImportSpecificProperties getProperties() {
-        return properties;
-    }
 
     @Override
     public @NotNull Map<@NotNull String, @NotNull YModuleDescriptor> getYModuleDescriptorsToImport() {
@@ -1005,7 +998,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.foundModules.clear();
         this.modulesChosenForImport.clear();
         this.vcs.clear();
-        this.properties.clear();
     }
 
     @Nullable

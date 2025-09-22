@@ -21,16 +21,15 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.execution.RunManager
 import com.intellij.execution.remote.RemoteConfiguration
 import com.intellij.execution.remote.RemoteConfigurationType
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.application.smartReadAction
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.runConfigurations.createRunConfiguration
-import java.io.File
 
-class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator{
+class RemoteDebugRunConfigurationConfigurator : ProjectPostImportConfigurator {
     private val regexSpace = " ".toRegex()
     private val regexComma = ",".toRegex()
     private val regexEquals = "=".toRegex()
@@ -38,59 +37,37 @@ class RemoteDebugRunConfigurationConfigurator : ProjectImportConfigurator, Proje
     override val name: String
         get() = "Run Configurations - Debug"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    ) {
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val runManager = RunManager.getInstance(project)
+        val configurationName = i18n("hybris.project.run.configuration.remote.debug")
+
+        if (hybrisProjectDescriptor.refresh && runManager.findConfigurationByName(configurationName) != null) return
+
+        val debugPort = findPortProperty(project) ?: HybrisConstants.DEBUG_PORT
 
         createRunConfiguration(
             runManager,
             RemoteConfigurationType::class.java,
-            i18n("hybris.project.run.configuration.remote.debug")
+            configurationName
         ) {
             val remoteConfiguration = it.configuration as RemoteConfiguration
-            remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, hybrisProjectDescriptor.properties)
+            remoteConfiguration.PORT = debugPort
             remoteConfiguration.isAllowRunningInParallel = false
         }
     }
 
-    override fun postImport(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
-        if (hybrisProjectDescriptor.refresh) return emptyList()
-
-        return listOf {
-            val debugConfiguration = i18n("hybris.project.run.configuration.remote.debug")
-            val runManager = RunManager.getInstance(project)
-
-            runManager.findConfigurationByName(debugConfiguration)
-                ?.let { runManager.selectedConfiguration = it }
-        }
+    private suspend fun findPortProperty(project: Project) = smartReadAction(project) {
+        PropertyService.getInstance(project)
+            .findProperty(HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS)
+            ?.split(regexSpace)
+            ?.dropLastWhile { it.isEmpty() }
+            ?.firstOrNull { it.startsWith(HybrisConstants.X_RUNJDWP_TRANSPORT) }
+            ?.split(regexComma)
+            ?.dropLastWhile { it.isEmpty() }
+            ?.firstOrNull { it.startsWith(HybrisConstants.ADDRESS) }
+            ?.split(regexEquals)
+            ?.dropLastWhile { it.isEmpty() }
+            ?.getOrNull(1)
     }
-
-    private fun getDebugPort(hybrisProjectDescriptor: HybrisProjectDescriptor, cache: ImportSpecificProperties) = hybrisProjectDescriptor.configHybrisModuleDescriptor
-        ?.let { findPortProperty(it, HybrisConstants.LOCAL_PROPERTIES_FILE, cache) }
-        ?: hybrisProjectDescriptor
-            .foundModules
-            .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
-            ?.let { findPortProperty(it, HybrisConstants.PROJECT_PROPERTIES_FILE, cache) }
-        ?: HybrisConstants.DEBUG_PORT
-
-
-    private fun findPortProperty(moduleDescriptor: ModuleDescriptor, fileName: String, cache: ImportSpecificProperties) = cache.findPropertyInFile(
-        File(moduleDescriptor.moduleRootDirectory, fileName),
-        HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS
-    )
-        ?.split(regexSpace)
-        ?.dropLastWhile { it.isEmpty() }
-        ?.firstOrNull { it.startsWith(HybrisConstants.X_RUNJDWP_TRANSPORT) }
-        ?.split(regexComma)
-        ?.dropLastWhile { it.isEmpty() }
-        ?.firstOrNull { it.startsWith(HybrisConstants.ADDRESS) }
-        ?.split(regexEquals)
-        ?.dropLastWhile { it.isEmpty() }
-        ?.getOrNull(1)
 }

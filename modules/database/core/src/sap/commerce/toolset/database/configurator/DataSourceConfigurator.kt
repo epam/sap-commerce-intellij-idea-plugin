@@ -27,6 +27,8 @@ import com.intellij.database.dataSource.LocalDataSourceManager
 import com.intellij.database.model.DasDataSource
 import com.intellij.database.util.DataSourceUtil
 import com.intellij.database.util.DbImplUtil
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
@@ -44,16 +46,14 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Database - Data Sources"
 
-    override fun postImport(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit> {
-        val project = hybrisProjectDescriptor.project ?: return emptyList()
-        val projectProperties = PropertyService.getInstance(project).findAllProperties()
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val project = hybrisProjectDescriptor.project ?: return
+        val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
-
         dataSourceRegistry.setImportedFlag(false)
-        dataSourceRegistry.builder
+
+        val dataSourceDetectorBuilder = dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
             .withUrl(projectProperties["db.url"]?.replace("\\", ""))
@@ -68,9 +68,10 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
                     }
                 }
             })
-            .commit()
 
-        return listOf {
+        edtWriteAction {
+            dataSourceDetectorBuilder.commit()
+
             DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, DatabaseCredentials.getInstance())
 
             for (dataSource in dataSources) {
