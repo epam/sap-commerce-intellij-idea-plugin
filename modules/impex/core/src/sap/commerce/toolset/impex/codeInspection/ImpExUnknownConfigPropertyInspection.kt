@@ -76,6 +76,7 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
                 val prevLeaf = PsiTreeUtil.prevLeaf(macroValue)
                 if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
                     val key = macroValue.text
+                    // TODO: why not plugin-specific "PropertyService" ?
                     val properties = PropertiesImplUtil.findPropertiesByKey(declaration.project, key)
                     if (properties.isEmpty()) {
                         problemsHolder.registerProblem(

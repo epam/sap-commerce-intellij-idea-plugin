@@ -11,6 +11,7 @@
 - Migrated post import configurators to kotlin coroutines [1571](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1571)
 - Configure custom search scopes after project import [1570](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1570)
 - Allow unselecting the non-main `config` module during the import [#1564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1564)
+- Load optional properties files [#1572](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1572)
 
 ### `SAP CX Logging` enhancements
 - Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
