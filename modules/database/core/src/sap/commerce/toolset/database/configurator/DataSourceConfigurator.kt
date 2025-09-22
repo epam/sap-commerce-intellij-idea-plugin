@@ -83,16 +83,6 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
         }
 
         for (dataSource in dataSources) {
-            /**
-             * @deprecated Use performAutoIntrospection
-             * Yann Cébron
-             * :jetbrains:  Aug 1st at 10:53 AM
-             * the specified method is the replacement
-             * The only difference is that method is suspend
-             * you need to call it from coroutine context
-             * the current version returning AsyncTask (completable future) is deprecated
-             */
-            // see replacement: https://intellij-support.jetbrains.com/hc/en-us/community/posts/21964027826706-Replacement-from-DataSourceUiUtil-performAutoSyncTask
             performAutoIntrospection(LoaderContext.selectGeneralTask(project, dataSource), true)
         }
     }
