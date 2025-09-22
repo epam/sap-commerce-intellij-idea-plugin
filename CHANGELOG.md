@@ -86,6 +86,9 @@
 - Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
 - NCDFE: CngReferenceContributor.registerReferenceProviders -> `com/intellij/lang/properties/PropertiesReferenceProvider` [#1545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1545)
 
+### Deprecated
+- Migrated data source configurator to up-to-date API [#1573](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1573)
+
 ## [2025.2.2]
 
 ### `SAP CX Logging` enhancements

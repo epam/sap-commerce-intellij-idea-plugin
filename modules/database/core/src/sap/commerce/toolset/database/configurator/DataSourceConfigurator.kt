@@ -25,8 +25,9 @@ import com.intellij.database.dataSource.DatabaseAuthProviderNames
 import com.intellij.database.dataSource.LocalDataSource
 import com.intellij.database.dataSource.LocalDataSourceManager
 import com.intellij.database.model.DasDataSource
-import com.intellij.database.util.DataSourceUtil
 import com.intellij.database.util.DbImplUtil
+import com.intellij.database.util.LoaderContext
+import com.intellij.database.util.performAutoIntrospection
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.module.ModuleManager
@@ -76,19 +77,23 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
 
             for (dataSource in dataSources) {
                 LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
-                /**
-                 * @deprecated Use performAutoIntrospection
-                 * Yann Cébron
-                 * :jetbrains:  Aug 1st at 10:53 AM
-                 * the specified method is the replacement
-                 * The only difference is that method is suspend
-                 * you need to call it from coroutine context
-                 * the current version returning AsyncTask (completable future) is deprecated
-                 */
-                // see replacement: https://intellij-support.jetbrains.com/hc/en-us/community/posts/21964027826706-Replacement-from-DataSourceUiUtil-performAutoSyncTask
-                DataSourceUtil.performAutoSyncTask(project, dataSource)
+
                 loadDatabaseDriver(project, dataSource)
             }
+        }
+
+        for (dataSource in dataSources) {
+            /**
+             * @deprecated Use performAutoIntrospection
+             * Yann Cébron
+             * :jetbrains:  Aug 1st at 10:53 AM
+             * the specified method is the replacement
+             * The only difference is that method is suspend
+             * you need to call it from coroutine context
+             * the current version returning AsyncTask (completable future) is deprecated
+             */
+            // see replacement: https://intellij-support.jetbrains.com/hc/en-us/community/posts/21964027826706-Replacement-from-DataSourceUiUtil-performAutoSyncTask
+            performAutoIntrospection(LoaderContext.selectGeneralTask(project, dataSource), true)
         }
     }
 
