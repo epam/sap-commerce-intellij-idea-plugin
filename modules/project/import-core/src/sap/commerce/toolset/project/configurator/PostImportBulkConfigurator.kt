@@ -45,10 +45,8 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
             reportProgressScope(postImportConfigurators.size) { progressReporter ->
                 postImportConfigurators
                     .map {
-                        val progressText = "Configuring project using '${it.name}' Configurator..."
-                        logger.info(progressText)
                         async {
-                            progressReporter.itemStep(progressText) {
+                            progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
                                 it.postImport(hybrisProjectDescriptor)
                             }
                         }
