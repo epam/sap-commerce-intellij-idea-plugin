@@ -68,7 +68,6 @@ class PropertyService(private val project: Project) {
             var localPropsFile: PropertiesFile? = null
 
             val propertiesFiles = ArrayList<PropertiesFile>()
-            val platformHomeFiles = ArrayList<PropertiesFile>()
 
             // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
             FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
@@ -80,7 +79,7 @@ class PropertyService(private val project: Project) {
                         HybrisConstants.ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
                         HybrisConstants.LOCAL_PROPERTIES_FILE -> localPropsFile = file
                         HybrisConstants.PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
-                        HybrisConstants.PLATFORMHOME_PROPERTIES_FILE -> platformHomeFiles.add(file)
+                        HybrisConstants.PLATFORMHOME_PROPERTIES_FILE -> propertiesFiles.add(file)
                     }
                 }
 
@@ -89,7 +88,6 @@ class PropertyService(private val project: Project) {
             envPropsFile?.let { propertiesFiles.add(0, it) }
 
             propertiesFiles.forEach { addPropertyFile(result, it) }
-            platformHomeFiles.forEach { addPropertyFile(result, it) }
 
             loadHybrisRuntimeProperties(result)
             loadHybrisOptionalConfigDir(result)
@@ -256,16 +254,13 @@ class PropertyService(private val project: Project) {
 
     private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
-            .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE }
-        val platformHomePropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
-            .filter { it.name == HybrisConstants.PLATFORMHOME_PROPERTIES_FILE }
+            .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE || it.name == HybrisConstants.PLATFORMHOME_PROPERTIES_FILE}
         val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ENV_PROPERTIES_FILE }
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ADVANCED_PROPERTIES_FILE }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == HybrisConstants.LOCAL_PROPERTIES_FILE }
 
         return envPropertiesScope
             .or(advancedPropertiesScope)
-            .or(platformHomePropertiesScope)
             .or(localPropertiesScope)
             .or(projectPropertiesScope)
     }

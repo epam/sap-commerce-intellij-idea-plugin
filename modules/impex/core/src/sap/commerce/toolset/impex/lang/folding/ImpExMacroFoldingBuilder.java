@@ -139,7 +139,7 @@ public class ImpExMacroFoldingBuilder implements FoldingBuilder {
             }
         }
 
-        return resolvedValue;
+        return StringUtils.defaultIfBlank(resolvedValue, " ");
     }
 
     @NotNull

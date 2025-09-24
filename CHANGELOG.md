@@ -1,5 +1,8 @@
 ## [2025.2.4]
 
+### `ImpEx` enhancements
+- Show ` ` when the `$config-` property is blank [#1575](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1575)
+
 ### Other
 - Use custom icon for `lib` directory in the Project Tree [#1574](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1574)
 
