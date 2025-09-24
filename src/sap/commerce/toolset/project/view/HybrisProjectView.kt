@@ -39,6 +39,10 @@ import sap.commerce.toolset.project.HybrisProjectService
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
+import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
+import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
+import sap.commerce.toolset.project.view.nodes.YProjectViewModuleGroupNode
 import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.io.File
@@ -194,9 +198,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         return YFacet.getState(module)
             ?.let {
                 // show CCv2 Angular modules only under js-storefront
-                if (it.type == ModuleDescriptorType.ANGULAR
-                    && module.name.contains(CCv2Constants.JS_STOREFRONT_NAME)
-                ) parent !is YProjectViewModuleGroupNode
+                if (it.type == ModuleDescriptorType.ANGULAR && module.name.contains(CCv2Constants.JS_STOREFRONT_NAME)) parent !is YProjectViewModuleGroupNode
                 else if (it.subModuleType == null) true
                 else parent !is ProjectViewModuleGroupNode
             }

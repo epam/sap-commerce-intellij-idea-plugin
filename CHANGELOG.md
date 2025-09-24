@@ -1,3 +1,8 @@
+## [2025.2.4]
+
+### Other
+- Use custom icon for `lib` directory in the Project Tree [#1574](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1574)
+
 ## [2025.2.3]
 
 ### `<!>` BREAKING CHANGE `<!>`

@@ -91,6 +91,7 @@ object HybrisIcons {
         val PLATFORM_GROUP = Y.LOGO_ORANGE
         val CUSTOM_GROUP = Y.LOGO_BLUE
         val EXTERNAL_GROUP = AllIcons.Nodes.ModuleGroup
+        val LIB = AllIcons.Nodes.PpLibFolder
 
         object Diagram {
             val PROPERTY = BeanSystem.PROPERTY

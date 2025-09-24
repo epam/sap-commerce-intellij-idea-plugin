@@ -22,6 +22,8 @@ import com.intellij.ide.IconProvider
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.xml.XmlFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
@@ -52,6 +54,7 @@ class HybrisProjectIconProvider : IconProvider() {
         return when (directory.name) {
             "tomcat" if (parentName == HybrisConstants.EXTENSION_NAME_CONFIG || parentName == HybrisConstants.EXTENSION_NAME_PLATFORM) -> HybrisIcons.Tools.TOMCAT
             "solr" if parentName == HybrisConstants.EXTENSION_NAME_CONFIG -> HybrisIcons.Tools.SOLR
+            "lib" if (directory.parentDirectory?.childrenOfType<XmlFile>()?.any { it.name == HybrisConstants.EXTENSION_INFO_XML } ?: false) -> HybrisIcons.Module.LIB
             else -> null
         }
     }

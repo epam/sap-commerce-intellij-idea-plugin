@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.view
 
-import com.intellij.ide.projectView.*
+package sap.commerce.toolset.project.view.nodes
+
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.ide.projectView.ProjectViewNode
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.ProjectViewPane
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.settings.ApplicationSettings
 
-class ExternalProjectViewNode(
+class JunkProjectViewNode(
     project: Project,
     children: List<AbstractTreeNode<*>>,
     viewSettings: ViewSettings?
@@ -35,20 +37,17 @@ class ExternalProjectViewNode(
 
     override fun getChildren(): Collection<AbstractTreeNode<*>> = this.value
 
-    override fun contains(file: VirtualFile) = this.value
-        .filterIsInstance<ProjectViewNode<*>>()
-        .mapNotNull { it.virtualFile }
-        .any { it == file && file.path.startsWith(it.path) }
+    override fun contains(file: VirtualFile) = ProjectViewPane.canBeSelectedInProjectView(myProject, file)
 
     public override fun update(presentation: PresentationData) {
         with(presentation) {
-            setIcon(HybrisIcons.Module.EXTERNAL_GROUP)
-            val groupNameExternalModules = ApplicationSettings.getInstance().groupNameExternalModules
-                .takeIf { it.isNotBlank() }
-                ?: i18n("hybris.project.view.external.module.directory.name")
-            addText(groupNameExternalModules, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+            setIcon(HybrisIcons.ProjectView.NODE_JUNK)
+            addText(
+                ColoredFragment(
+                    i18n("hybris.project.view.junk.directory.name"),
+                    SimpleTextAttributes.EXCLUDED_ATTRIBUTES
+                )
+            )
         }
     }
-
-    override fun getSortOrder(settings: NodeSortSettings) = NodeSortOrder.MODULE_ROOT
 }

@@ -21,6 +21,10 @@
         <runLineMarkerContributor language="XML"
                                   implementationClass="sap.commerce.toolset.project.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
 
+        <iconProvider order="first" implementation="sap.commerce.toolset.project.HybrisProjectIconProvider"/>
+
+        <projectViewNodeDecorator order="last" implementation="sap.commerce.toolset.project.view.HybrisProjectViewNodeDecorator"/>
+
         <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
                              dynamic="true"
                              bundle="i18n.HybrisBundle"

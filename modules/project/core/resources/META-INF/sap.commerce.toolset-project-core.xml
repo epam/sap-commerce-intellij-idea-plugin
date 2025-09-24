@@ -47,8 +47,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <facetType implementation="sap.commerce.toolset.project.facet.YFacetType"/>
 
-        <iconProvider order="first" implementation="sap.commerce.toolset.project.HybrisProjectIconProvider"/>
-
         <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.EiCompletionContributor"/>
         <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.LeCompletionContributor"/>
 

@@ -34,7 +34,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <treeStructureProvider id="hybris.project.root.tree.structure.provider" order="first"
                                implementation="sap.commerce.toolset.project.view.HybrisProjectView"/>
-        <projectViewNodeDecorator order="last" implementation="sap.commerce.toolset.project.view.HybrisProjectViewNodeDecorator"/>
+
         <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
                         serviceImplementation="sap.commerce.toolset.project.view.impl.HybrisProjectViewDirectoryHelper"
                         order="last"
