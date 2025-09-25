@@ -38,9 +38,11 @@ class CCv2DeveloperSettings(private val project: Project) : SerializablePersiste
         set(value) {
             updateState { it.copy(activeCCv2SubscriptionID = value) }
 
-            project.messageBus
-                .syncPublisher(CCv2SettingsListener.TOPIC)
-                .onActivation(getActiveCCv2Subscription())
+            if (state.activeCCv2SubscriptionID != value) {
+                project.messageBus
+                    .syncPublisher(CCv2SettingsListener.TOPIC)
+                    .onActivation(getActiveCCv2Subscription())
+            }
         }
     var ccv2Settings
         get() = state.ccv2Settings

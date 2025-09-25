@@ -1,3 +1,8 @@
+## [2025.2.4.1]
+
+### `CCv2` enhancements
+- Addressed stackoverflow exception when CCv2 tab is open and user modifies CCv2 settings [#1577](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1577) -> 
+
 ## [2025.2.4]
 
 ### `ImpEx` enhancements
