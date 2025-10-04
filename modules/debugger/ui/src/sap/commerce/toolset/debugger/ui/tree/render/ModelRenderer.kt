@@ -39,12 +39,12 @@ open class ModelRenderer(
     override fun isEnabled() = true
 
     override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> = Function { t ->
-        CompletableFuture.completedFuture(t?.name().equals(className))
+        CompletableFuture.completedFuture(t?.name().equals(myClassName))
     }
 
     override fun getChildrenRenderer(): ChildrenRenderer = EnumerationChildrenRenderer().apply {
         isAppendDefaultChildren = true
-        refreshInfos(this, project, className)
+        refreshInfos(this, project, myClassName)
     }
 
     override fun getIconRenderer() = ModelValueIconRenderer()

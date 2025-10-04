@@ -1,3 +1,8 @@
+## [2025.2.4.2]
+
+### `xDebugger` enhancements
+- Renderer is not always created first time [#1578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1578)
+
 ## [2025.2.4.1]
 
 ### `CCv2` enhancements
