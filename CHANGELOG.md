@@ -3,6 +3,7 @@
 ### `xDebugger` enhancements
 - Re-implemented model debugger to lazy-evaluation of the fields [#1579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1579)
 - Renderer is not always created first time [#1578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1578)
+- Handle non-property fields, such as `PK` [#1580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1580)
 
 ## [2025.2.4.1]
 

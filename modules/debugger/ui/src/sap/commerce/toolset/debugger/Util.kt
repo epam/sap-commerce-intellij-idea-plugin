@@ -49,7 +49,7 @@ fun createChildInfo(
     debuggerUtils: DebuggerUtils
 ) = EnumerationChildrenRenderer.ChildInfo(
     "$attributeName (relation - ${relation.end.name.lowercase()})",
-    debuggerUtils.createExpressionWithImports("getProperty(\"$fieldName\")"),
+    debuggerUtils.createExpressionWithImports(getExpression(fieldName)),
     true
 )
 
@@ -59,7 +59,7 @@ fun createChildInfo(
     fieldName: String,
     metaAccess: TSMetaModelAccess,
     debuggerUtils: DebuggerUtils
-) = with(debuggerUtils.createExpressionWithImports("getProperty(\"$fieldName\")")) {
+) = with(debuggerUtils.createExpressionWithImports(getExpression(fieldName))) {
     when {
         attribute.isDynamic -> EnumerationChildrenRenderer.ChildInfo("$attributeName (dynamic)", this, true)
         metaAccess.findMetaCollectionByName(attribute.type) != null -> EnumerationChildrenRenderer.ChildInfo("$attributeName (collection)", this, true)
