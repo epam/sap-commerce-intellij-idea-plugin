@@ -81,6 +81,28 @@ object HybrisConstants {
     const val EXTENSION_META_KEY_EXT_GEN = "extgen-template-extension"
     const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
 
+    val PLATFORM_EXTENSION_NAMES = setOf(
+        "advancedsavedquery",
+        "catalog",
+        "comments",
+        "commons",
+        "core",
+        "deliveryzone",
+        "europe1",
+        "hac",
+        "impex",
+        "maintenanceweb",
+        "mediaweb",
+        "oauth2",
+        "paymentstandard",
+        "platformservices",
+        "processing",
+        "scripting",
+        "testweb",
+        "validation",
+        "workflow",
+    )
+
     val EXTENSION_INFO_META_KEYS = listOf(
         EXTENSION_META_KEY_BACKOFFICE_MODULE,
         EXTENSION_META_KEY_HAC_MODULE,
@@ -165,8 +187,10 @@ object HybrisConstants {
 
     @Deprecated("move to Solr module")
     const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
+
     @Deprecated("move to Solr module")
     const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
+
     @Deprecated("move to Solr module")
     const val PROPERTY_SOLR_DEFAULT_PASSWORD = "solrserver.instances.default.password"
     const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
@@ -636,6 +660,7 @@ object HybrisConstants {
                 .toSortedSet()
         }
     }
+
     const val IMPEX_FILE_EXTENSION = "impex"
     const val HYBRIS_IMPEX_XML_FILE_ENDING = ".${IMPEX_FILE_EXTENSION}"
 }

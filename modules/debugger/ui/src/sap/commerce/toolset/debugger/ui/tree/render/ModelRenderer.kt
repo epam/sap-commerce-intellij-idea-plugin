@@ -26,11 +26,18 @@ import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
 import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.ValueIconRenderer
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
 import com.intellij.util.PsiNavigateUtil
-import com.intellij.util.application
-import com.intellij.xdebugger.impl.ui.DebuggerUIUtil
 import com.sun.jdi.ClassType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.debugger.toTypeCode
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class ModelRenderer : CompoundRendererProvider() {
 
@@ -38,7 +45,16 @@ class ModelRenderer : CompoundRendererProvider() {
     override fun getClassName() = "de.hybris.platform.servicelayer.model.AbstractItemModel"
     override fun isEnabled() = true
     override fun getChildrenRenderer(): ChildrenRenderer = ModelChildrenRenderer()
-    override fun getIconRenderer() = ValueIconRenderer { _, _, _ -> HybrisIcons.Y.LOGO_BLUE }
+    override fun getIconRenderer() = ValueIconRenderer { x, y, t ->
+        val typeCode = x.type?.name()?.toTypeCode() ?: return@ValueIconRenderer HybrisIcons.Y.LOGO_GREEN
+        val meta = TSMetaModelAccess.getInstance(y.project).findMetaItemByName(typeCode) ?: return@ValueIconRenderer HybrisIcons.Y.LOGO_GREEN
+
+        return@ValueIconRenderer when {
+            meta.isCustom -> HybrisIcons.Y.LOGO_BLUE
+            HybrisConstants.PLATFORM_EXTENSION_NAMES.contains(meta.extensionName) -> HybrisIcons.Y.LOGO_ORANGE
+            else -> HybrisIcons.Y.LOGO_GREEN
+        }
+    }
 
     override fun getFullValueEvaluatorProvider(): FullValueEvaluatorProvider =
         FullValueEvaluatorProvider { evaluationContext: EvaluationContextImpl, valueDescriptor: ValueDescriptorImpl ->
@@ -47,9 +63,20 @@ class ModelRenderer : CompoundRendererProvider() {
                     val value = valueDescriptor.getValue()
                     val type = value.type() as ClassType
                     callback.evaluated("")
-                    application.runReadAction {
-                        val psiClass = DebuggerUtils.findClass(type.name(), valueDescriptor.project, evaluationContext!!.debugProcess.searchScope)
-                        if (psiClass != null) DebuggerUIUtil.invokeLater { PsiNavigateUtil.navigate(psiClass) }
+
+                    CoroutineScope(Dispatchers.Default).launch {
+                        val name = type.name()
+                        val psiClass = readAction { DebuggerUtils.findClass(name, valueDescriptor.project, evaluationContext.debugProcess.searchScope) }
+                            ?: return@launch
+                        val navigationElement = readAction { psiClass.navigationElement }
+                        val navigatable = readAction { PsiNavigateUtil.getNavigatable(navigationElement) }
+                            ?: return@launch
+
+                        withContext(Dispatchers.EDT) {
+                            navigatable.navigate(true)
+//                            PsiNavigateUtil.navigate(navigationElement)
+//                            DebuggerUIUtil.invokeLater { PsiNavigateUtil.navigate(navigationElement) }
+                        }
                     }
                 }
 

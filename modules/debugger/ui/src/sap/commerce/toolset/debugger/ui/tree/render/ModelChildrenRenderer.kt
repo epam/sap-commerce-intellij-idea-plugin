@@ -66,9 +66,7 @@ class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer
         val type = objectReference.referenceType()
 
         if (DumbService.isDumb(project)) {
-            builder.addChildren(listOf(nodeManager.createMessageNode("[y] Complete list of the Model fields will be available after full re-index.")), false)
             DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
-
             return
         }
 
