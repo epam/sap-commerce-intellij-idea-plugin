@@ -8,7 +8,7 @@
 - Added type-aware custom icons for each value node [#1582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1582)
 - Renderer is not always created first time [#1578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1578)
 - Handle non-property fields, such as `PK` [#1580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1580)
-- Added `Navigate` to the Class for the model variable [#1581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1581)
+- Added `Navigate` to the Class for the model variable [#1583](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1583)
 
 ### `Type System` enhancements
 - Introduced custom icon for `dynamic` attributes [#1582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1582)
