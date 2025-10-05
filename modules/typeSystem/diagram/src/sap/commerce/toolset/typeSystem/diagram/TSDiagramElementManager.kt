@@ -26,7 +26,6 @@ import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ifHybrisProject
 import sap.commerce.toolset.typeSystem.diagram.node.graph.*
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
 
 class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
 
@@ -75,11 +74,8 @@ class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
         is TSGraphFieldDeployment -> HybrisIcons.TypeSystem.Diagram.DEPLOYMENT
         is TSGraphFieldAttribute -> HybrisIcons.TypeSystem.ATTRIBUTE
         is TSGraphFieldCustomProperty -> HybrisIcons.TypeSystem.CUSTOM_PROPERTY
-        is TSGraphFieldRelationEnd -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TypeSystem.RELATION_SOURCE
-        else HybrisIcons.TypeSystem.RELATION_TARGET
-
-        is TSGraphFieldRelationElement -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TypeSystem.RELATION_SOURCE
-        else HybrisIcons.TypeSystem.RELATION_TARGET
+        is TSGraphFieldRelationEnd -> nodeItem.meta.end.icon
+        is TSGraphFieldRelationElement -> nodeItem.meta.end.icon
 
         is TSGraphFieldIndex -> {
             if (nodeItem.meta.isRemove) HybrisIcons.TypeSystem.INDEX_REMOVE

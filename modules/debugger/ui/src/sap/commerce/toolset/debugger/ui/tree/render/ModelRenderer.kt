@@ -15,40 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package sap.commerce.toolset.debugger.ui.tree.render
 
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
 import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
-import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
-import com.intellij.debugger.ui.tree.render.NodeRendererImpl
-import com.intellij.openapi.project.Project
-import com.sun.jdi.Type
-import sap.commerce.toolset.debugger.engine.ModelFullValueEvaluatorProvider
-import sap.commerce.toolset.debugger.refreshInfos
-import java.util.concurrent.CompletableFuture
-import java.util.function.Function
+import com.intellij.debugger.ui.tree.render.ValueIconRenderer
+import sap.commerce.toolset.HybrisIcons
 
-open class ModelRenderer(
-    private val myClassName: String,
-    private val project: Project,
-) : CompoundRendererProvider() {
+class ModelRenderer : CompoundRendererProvider() {
 
-    override fun getName() = NodeRendererImpl.DEFAULT_NAME
-    override fun getClassName() = myClassName
+    override fun getName() = "[y] Model Renderer"
+    override fun getClassName() = "de.hybris.platform.servicelayer.model.AbstractItemModel"
     override fun isEnabled() = true
-
-    override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> = Function { t ->
-        CompletableFuture.completedFuture(t?.name().equals(myClassName))
-    }
-
-    override fun getChildrenRenderer(): ChildrenRenderer = EnumerationChildrenRenderer().apply {
-        isAppendDefaultChildren = true
-        refreshInfos(this, project, myClassName)
-    }
-
-    override fun getIconRenderer() = ModelValueIconRenderer()
-    override fun getFullValueEvaluatorProvider() = ModelFullValueEvaluatorProvider()
-    override fun toString() = "ModelRenderer(className='$myClassName')"
+    override fun getChildrenRenderer(): ChildrenRenderer = ModelChildrenRenderer()
+    override fun getIconRenderer() = ValueIconRenderer { _, _, _ -> HybrisIcons.Y.LOGO_BLUE }
 
 }

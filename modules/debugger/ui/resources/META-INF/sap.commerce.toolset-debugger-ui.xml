@@ -18,9 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <debugger.compoundRendererProvider implementation="sap.commerce.toolset.debugger.ui.tree.render.DefaultModelRenderer"/>
-
-        <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.debugger.startup.HybrisJavaTypeRenderersStartupActivity"/>
+        <debugger.compoundRendererProvider implementation="sap.commerce.toolset.debugger.ui.tree.render.ModelRenderer"/>
     </extensions>
 
 </idea-plugin>

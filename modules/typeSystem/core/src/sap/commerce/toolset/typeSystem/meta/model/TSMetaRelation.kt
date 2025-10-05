@@ -73,8 +73,9 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
         var type: String
     }
 
-    enum class RelationEnd {
-        SOURCE, TARGET
+    enum class RelationEnd(val icon: Icon) {
+        SOURCE(HybrisIcons.TypeSystem.RELATION_SOURCE),
+        TARGET(HybrisIcons.TypeSystem.RELATION_TARGET)
     }
 }
 

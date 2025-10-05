@@ -115,12 +115,7 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it)
                 .withStrikeoutness(meta.isDeprecated)
                 .withTypeText(meta.flattenType)
-                .withIcon(
-                    when (meta.end) {
-                        TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.TypeSystem.RELATION_SOURCE
-                        TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TypeSystem.RELATION_TARGET
-                    }
-                )
+                .withIcon(meta.end.icon)
                 .withCaseSensitivity(false)
         }
 
