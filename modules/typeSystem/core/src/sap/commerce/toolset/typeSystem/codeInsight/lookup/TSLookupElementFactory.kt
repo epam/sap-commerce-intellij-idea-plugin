@@ -93,8 +93,11 @@ object TSLookupElementFactory {
 
     fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute, name: String) = LookupElementBuilder.create(name.trim { it <= ' ' })
         .withStrikeoutness(meta.isDeprecated)
-        .withIcon(HybrisIcons.TypeSystem.ATTRIBUTE)
-        .withTailText(meta.persistence.type?.takeUnless { it == PersistenceType.PROPERTY }?.value?.let { " ($it)"}, true)
+        .withIcon(
+            if (meta.isDynamic) HybrisIcons.TypeSystem.DYNAMIC_ATTRIBUTE
+            else HybrisIcons.TypeSystem.ATTRIBUTE
+        )
+        .withTailText(meta.persistence.type?.takeUnless { it == PersistenceType.PROPERTY }?.value?.let { " ($it)" }, true)
         .withTypeText(
             meta.flattenType,
             if (meta.isLocalized) HybrisIcons.TypeSystem.LOCALIZED

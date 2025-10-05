@@ -26,12 +26,14 @@ import com.intellij.debugger.ui.tree.DescriptorWithParentObject
 import com.intellij.openapi.project.Project
 import com.sun.jdi.Method
 import com.sun.jdi.ObjectReference
+import javax.swing.Icon
 
 open class MethodValueDescriptor(
     private val parentObject: ObjectReference,
     private val method: Method,
     private val presentationName: String,
-    project: Project
+    project: Project,
+    private val icon: Icon? = null,
 ) : ValueDescriptorImpl(project), DescriptorWithParentObject {
 
     override fun calcValue(evaluationContext: EvaluationContextImpl?) = evaluationContext
@@ -41,4 +43,5 @@ open class MethodValueDescriptor(
     override fun getName() = presentationName
     override fun getObject() = parentObject
     override fun getDescriptorEvaluation(context: DebuggerContext?) = throw EvaluateException("Getter evaluation is not supported")
+    override fun getValueIcon() = icon
 }

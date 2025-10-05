@@ -22,13 +22,15 @@ import com.intellij.debugger.ui.tree.render.OnDemandRenderer
 import com.intellij.openapi.project.Project
 import com.sun.jdi.Method
 import com.sun.jdi.ObjectReference
+import javax.swing.Icon
 
 class LazyMethodValueDescriptor(
     parentObject: ObjectReference,
     method: Method,
     presentationName: String,
-    project: Project
-) : MethodValueDescriptor(parentObject, method, presentationName, project) {
+    project: Project,
+    icon: Icon? = null,
+) : MethodValueDescriptor(parentObject, method, presentationName, project, icon) {
 
     init {
         putUserData(OnDemandRenderer.ON_DEMAND_CALCULATED, false)

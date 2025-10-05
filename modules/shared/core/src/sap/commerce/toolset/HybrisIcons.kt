@@ -233,6 +233,7 @@ object HybrisIcons {
         val CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg")
         val ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg")
         val ORDERING_ATTRIBUTE = getIcon("/icons/typeSystem/orderingAttribute.svg")
+        val DYNAMIC_ATTRIBUTE = getIcon("/icons/typeSystem/dynamicAttribute.svg")
         val RELATION_SOURCE = getIcon("/icons/typeSystem/relationSource.svg")
         val RELATION_TARGET = getIcon("/icons/typeSystem/relationTarget.svg")
         val INDEX = getIcon("/icons/typeSystem/index.svg")

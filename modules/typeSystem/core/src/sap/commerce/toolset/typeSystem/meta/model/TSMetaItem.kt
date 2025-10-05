@@ -122,6 +122,7 @@ interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTyp
         override val declarations: MutableSet<TSMetaItem.TSMetaItemAttribute>
         override val icon: Icon
             get() = if (isLocalized) HybrisIcons.TypeSystem.LOCALIZED
+            else if (isDynamic) HybrisIcons.TypeSystem.DYNAMIC_ATTRIBUTE
             else HybrisIcons.TypeSystem.ATTRIBUTE
     }
 }

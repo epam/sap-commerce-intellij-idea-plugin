@@ -30,6 +30,7 @@ import com.intellij.debugger.ui.tree.ValueDescriptor
 import com.intellij.debugger.ui.tree.render.ChildrenBuilder
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
 import com.intellij.debugger.ui.tree.render.ReferenceRenderer
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import com.sun.jdi.Method
@@ -63,6 +64,14 @@ class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer
         val nodeManager = builder.nodeManager
         val project = parentDescriptor.project
         val type = objectReference.referenceType()
+
+        if (DumbService.isDumb(project)) {
+            builder.addChildren(listOf(nodeManager.createMessageNode("[y] Complete list of the Model fields will be available after full re-index.")), false)
+            DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
+
+            return
+        }
+
         val meta = getMeta(project, type.name()) ?: return
         val metaAccess = TSMetaModelAccess.getInstance(project)
 
@@ -116,20 +125,21 @@ class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer
         val attributeName = attribute.name
 
         return when {
-            attribute.isDynamic -> LazyMethodValueDescriptor(value, method, "$attributeName (dynamic)", project)
+            attribute.isDynamic -> LazyMethodValueDescriptor(value, method, "$attributeName (dynamic)", project, attribute.icon)
 
-            attribute.isLocalized -> LazyMethodValueDescriptor(value, method, "$attributeName (localized)", project)
+            attribute.isLocalized -> LazyMethodValueDescriptor(value, method, "$attributeName (localized)", project, attribute.icon)
 
             metaAccess.findMetaCollectionByName(attribute.type) != null -> LazyMethodValueDescriptor(
                 value,
                 method,
                 "$attributeName (collection)",
-                project
+                project,
+                attribute.icon
             )
 
-            metaAccess.findMetaMapByName(attribute.type) != null -> LazyMethodValueDescriptor(value, method, "$attributeName (map)", project)
+            metaAccess.findMetaMapByName(attribute.type) != null -> LazyMethodValueDescriptor(value, method, "$attributeName (map)", project, attribute.icon)
 
-            else -> MethodValueDescriptor(value, method, attributeName, project)
+            else -> MethodValueDescriptor(value, method, attributeName, project, attribute.icon)
         }
     }
 
@@ -141,7 +151,7 @@ class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer
             else null)
             ?: return null
 
-        return LazyMethodValueDescriptor(value, method, "${relation.name} (relation - ${relation.end.name.lowercase()})", project)
+        return LazyMethodValueDescriptor(value, method, "${relation.name} (relation - ${relation.end.name.lowercase()})", project, relation.end.icon)
     }
 
     override fun getChildValueExpression(node: DebuggerTreeNode, context: DebuggerContext) = node.descriptor
