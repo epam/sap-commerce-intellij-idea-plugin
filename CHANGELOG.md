@@ -9,6 +9,9 @@
 - Renderer is not always created first time [#1578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1578)
 - Handle non-property fields, such as `PK` [#1580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1580)
 
+### `Type System` enhancements
+- Introduced custom icon for `dynamic` attributes [#1582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1582)
+
 ## [2025.2.4.1]
 
 ### `CCv2` enhancements
