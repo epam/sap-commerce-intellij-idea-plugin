@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.debugger
 
-import com.intellij.debugger.engine.DebuggerUtils
-import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.ui.popup.Balloon
@@ -29,8 +27,11 @@ import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
 import java.awt.MouseInfo
+
+internal fun String.toTypeCode() = this
+    .substringAfterLast('.')
+    .removeSuffix(HybrisConstants.MODEL_SUFFIX)
 
 internal fun getMeta(project: Project, classNameFqn: String): TSGlobalMetaItem? {
     val typeCode = classNameFqn.toTypeCode()
@@ -40,39 +41,6 @@ internal fun getMeta(project: Project, classNameFqn: String): TSGlobalMetaItem? 
     if (meta == null) notifyError("The item type $typeCode is not present in the *items.xml files.")
 
     return meta
-}
-
-fun createChildInfo(
-    attributeName: String,
-    relation: TSMetaRelation.TSMetaRelationElement,
-    fieldName: String,
-    debuggerUtils: DebuggerUtils
-) = EnumerationChildrenRenderer.ChildInfo(
-    "$attributeName (relation - ${relation.end.name.lowercase()})",
-    debuggerUtils.createExpressionWithImports(getExpression(fieldName)),
-    true
-)
-
-fun createChildInfo(
-    attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute,
-    attributeName: String,
-    fieldName: String,
-    metaAccess: TSMetaModelAccess,
-    debuggerUtils: DebuggerUtils
-) = with(debuggerUtils.createExpressionWithImports(getExpression(fieldName))) {
-    when {
-        attribute.isDynamic -> EnumerationChildrenRenderer.ChildInfo("$attributeName (dynamic)", this, true)
-        metaAccess.findMetaCollectionByName(attribute.type) != null -> EnumerationChildrenRenderer.ChildInfo("$attributeName (collection)", this, true)
-        metaAccess.findMetaMapByName(attribute.type) != null -> EnumerationChildrenRenderer.ChildInfo("$attributeName (map)", this, true)
-        else -> EnumerationChildrenRenderer.ChildInfo(attributeName, this, false)
-    }
-}
-
-private fun getExpression(fieldName: String): String = when (fieldName.lowercase()) {
-    "pk" -> "getPk()"
-    "itemtype" -> "getItemtype()"
-    "tenantid" -> "getTenantId()"
-    else -> "getProperty(\"$fieldName\")"
 }
 
 private fun notifyError(errorMessage: String) {
@@ -89,7 +57,3 @@ private fun notifyError(errorMessage: String) {
         balloon.show(RelativePoint.fromScreen(mouseLoc), Balloon.Position.above)
     }
 }
-
-private fun String.toTypeCode() = this
-    .substringAfterLast('.')
-    .removeSuffix(HybrisConstants.MODEL_SUFFIX)

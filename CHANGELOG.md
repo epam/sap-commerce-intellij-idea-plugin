@@ -2,6 +2,8 @@
 
 ### `xDebugger` enhancements
 - Re-implemented model debugger to lazy-evaluation of the fields [#1579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1579)
+- Re-implemented model debugger to rely on methods of the class [#1581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1581)
+- Added grouping of the fields by the superclass [#1581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1581)
 - Renderer is not always created first time [#1578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1578)
 - Handle non-property fields, such as `PK` [#1580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1580)
 

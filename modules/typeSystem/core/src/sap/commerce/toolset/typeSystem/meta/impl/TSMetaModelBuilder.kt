@@ -160,7 +160,9 @@ class TSMetaModelBuilder(
         return TSMetaRelationImpl.TSMetaRelationElementImpl(
             dom, moduleName, extensionName, custom, end,
             modifiers = create(dom.modifiers),
-            customProperties = create(dom.customProperties)
+            customProperties = create(dom.customProperties),
+            customGetters = create(dom.model.getters),
+            customSetters = create(dom.model.setters),
         )
     }
 
@@ -171,6 +173,11 @@ class TSMetaModelBuilder(
 
     private fun create(dom: Modifiers): TSMetaModifiers {
         return TSMetaModifiersImpl(dom, moduleName, extensionName, custom)
+    }
+
+    private fun create(dom: ModelMethod): TSMetaModelMethod? {
+        val name = TSMetaModelNameProvider.extract(dom) ?: return null
+        return TSMetaModelMethodImpl(dom, moduleName, extensionName, name, custom)
     }
 
     private fun create(dom: EnumValue): TSMetaEnum.TSMetaEnumValue? {
@@ -208,10 +215,16 @@ class TSMetaModelBuilder(
         return TSMetaItemImpl.TSMetaItemAttributeImpl(
             dom, moduleName, extensionName, name, custom,
             customProperties = create(dom.customProperties),
+            customGetters = create(dom.model.getters),
+            customSetters = create(dom.model.setters),
             persistence = create(itemTypeDom, dom, dom.persistence),
-            modifiers = create(dom.modifiers)
+            modifiers = create(dom.modifiers),
         )
     }
+
+    private fun create(dom: Collection<ModelMethod>): Map<String, TSMetaModelMethod> = dom
+        .mapNotNull { create(it) }
+        .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun create(itemTypeDom: ItemType, dom: Attributes): Map<String, TSMetaItem.TSMetaItemAttribute> = dom.attributes
         .mapNotNull { attr -> create(itemTypeDom, attr) }

@@ -57,7 +57,9 @@ internal class TSMetaRelationImpl(
         override var isCustom: Boolean,
         override val end: TSMetaRelation.RelationEnd,
         override val modifiers: TSMetaModifiers,
-        override val customProperties: Map<String, TSMetaCustomProperty>
+        override val customProperties: Map<String, TSMetaCustomProperty>,
+        override val customGetters: Map<String, TSMetaModelMethod>,
+        override val customSetters: Map<String, TSMetaModelMethod>,
     ) : TSMetaRelation.TSMetaRelationElement {
 
         override lateinit var owner: TSMetaRelation

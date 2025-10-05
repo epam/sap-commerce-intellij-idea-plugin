@@ -33,5 +33,6 @@ object TSMetaModelNameProvider {
     fun extract(dom: Index): String? = dom.name.stringValue?.takeIf { it.isNotBlank() }
     fun extract(dom: Attribute): String? = dom.qualifier.stringValue?.takeIf { it.isNotBlank() }
     fun extract(dom: Persistence): String? = dom.type.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: ModelMethod): String? = dom.name.stringValue?.takeIf { it.isNotBlank() }
 
 }

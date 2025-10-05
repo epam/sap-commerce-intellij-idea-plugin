@@ -89,7 +89,9 @@ internal class TSMetaItemImpl(
         override var isCustom: Boolean,
         override val persistence: TSMetaPersistence,
         override val modifiers: TSMetaModifiers,
-        override val customProperties: Map<String, TSMetaCustomProperty>
+        override val customProperties: Map<String, TSMetaCustomProperty>,
+        override val customGetters: Map<String, TSMetaModelMethod>,
+        override val customSetters: Map<String, TSMetaModelMethod>,
     ) : TSMetaItemAttribute {
 
         override val domAnchor: DomAnchor<Attribute> = DomService.getInstance().createAnchor(dom)
@@ -249,6 +251,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
         TSGlobalMetaItem.TSGlobalMetaItemAttribute {
 
         override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
+        override val customGetters = CaseInsensitiveConcurrentHashMap<String, TSMetaModelMethod>()
+        override val customSetters = CaseInsensitiveConcurrentHashMap<String, TSMetaModelMethod>()
         override val name: String = localMeta.name
         override var moduleName = localMeta.moduleName
         override var extensionName = localMeta.extensionName
@@ -271,9 +275,13 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
 
         init {
             mergeCustomProperties(localMeta)
+            mergeCustomGetters(localMeta)
+            mergeCustomSetters(localMeta)
         }
 
         private fun mergeCustomProperties(localMeta: TSMetaItemAttribute) = customProperties.putAll(localMeta.customProperties)
+        private fun mergeCustomGetters(localMeta: TSMetaItemAttribute) = customGetters.putAll(localMeta.customGetters)
+        private fun mergeCustomSetters(localMeta: TSMetaItemAttribute) = customSetters.putAll(localMeta.customSetters)
 
         override fun mergeInternally(localMeta: TSMetaItemAttribute) {
             if (localMeta.isRedeclare) {
@@ -284,6 +292,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
                 isDynamic = localMeta.isDynamic
 
                 mergeCustomProperties(localMeta)
+                mergeCustomGetters(localMeta)
+                mergeCustomSetters(localMeta)
             }
         }
 

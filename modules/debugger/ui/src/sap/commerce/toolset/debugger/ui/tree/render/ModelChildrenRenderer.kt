@@ -21,24 +21,26 @@ package sap.commerce.toolset.debugger.ui.tree.render
 import com.intellij.debugger.DebuggerContext
 import com.intellij.debugger.engine.DebugProcessImpl
 import com.intellij.debugger.engine.DebuggerManagerThreadImpl
-import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.engine.evaluation.EvaluationContext
 import com.intellij.debugger.impl.DebuggerUtilsAsync
-import com.intellij.debugger.impl.descriptors.data.UserExpressionData
 import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.DebuggerTreeNode
 import com.intellij.debugger.ui.tree.NodeDescriptor
 import com.intellij.debugger.ui.tree.ValueDescriptor
 import com.intellij.debugger.ui.tree.render.ChildrenBuilder
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
-import com.intellij.debugger.ui.tree.render.OnDemandRenderer
 import com.intellij.debugger.ui.tree.render.ReferenceRenderer
+import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
+import com.sun.jdi.Method
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Value
-import sap.commerce.toolset.debugger.createChildInfo
 import sap.commerce.toolset.debugger.getMeta
+import sap.commerce.toolset.debugger.toTypeCode
+import sap.commerce.toolset.debugger.ui.tree.LazyMethodValueDescriptor
+import sap.commerce.toolset.debugger.ui.tree.MethodValueDescriptor
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import java.util.concurrent.CompletableFuture
 
 class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer.model.AbstractItemModel"), ChildrenRenderer {
@@ -57,43 +59,89 @@ class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer
         DebuggerManagerThreadImpl.assertIsManagerThread()
 
         val objectReference = value.asSafely<ObjectReference>() ?: return
-        val debuggerUtils = DebuggerUtils.getInstance()
+        val parentDescriptor = builder.parentDescriptor as? ValueDescriptorImpl ?: return
         val nodeManager = builder.nodeManager
-        val descriptorFactory = builder.descriptorManager
-        val parentDescriptor = builder.parentDescriptor as ValueDescriptorImpl
         val project = parentDescriptor.project
         val type = objectReference.referenceType()
         val meta = getMeta(project, type.name()) ?: return
         val metaAccess = TSMetaModelAccess.getInstance(project)
 
-        DebuggerUtilsAsync.allFields(type).thenApply { allFields ->
-            val children = allFields.filterNot { it.name().startsWith("_") }
-                .mapIndexedNotNull { index, field ->
-                    val attributeName = field.name()
+        DebuggerUtilsAsync.allMethods(type).thenApply { allMethods ->
+            val excluded = setOf("<init>", "writeReplace", "readResolve")
 
-                    val info = (meta.allAttributes[attributeName]
-                        ?.takeIf { it.modifiers.isRead }
-                        ?.let { attribute ->
-                            createChildInfo(attribute, attribute.name, attributeName, metaAccess, debuggerUtils) }
-                        ?: meta.allRelationEnds
-                            .filter { relation -> relation.isNavigable }
-                            .find { relation -> relation.name.equals(attributeName, true) }
-                            ?.takeIf { it.modifiers.isRead }
-                            ?.let { relation -> createChildInfo(relation.name!!, relation, attributeName, debuggerUtils) }
-                        )
-                        ?: return@mapIndexedNotNull null
+            val groupedMethods = allMethods
+                .filter { method -> method.argumentTypeNames().isEmpty() }
+                .filter { method -> !method.isAbstract }
+                .filterNot { method -> excluded.contains(method.name()) }
+                .filter { method -> method.declaringType().name() != "java.lang.Object" }
+                .distinctBy { method -> method.name() }
+                .groupBy { method -> method.declaringType().name() }
 
-                    UserExpressionData(parentDescriptor, type.name(), info.myName, info.myExpression)
-                        .also { it.setEnumerationIndex(index) }
-                        .let { descriptorFactory.getUserExpressionDescriptor(parentDescriptor, it) }
-                        .also { if (info.myOnDemand) it.putUserData(OnDemandRenderer.ON_DEMAND_CALCULATED, false) }
-                        .let { nodeManager.createNode(it, evaluationContext) }
-                }
+            groupedMethods.forEach { (type, methods) ->
+                val typeName = type.toTypeCode()
+                val descriptors = methods
+                    .mapNotNull { method ->
+                        val methodName = method.name()
 
-            builder.addChildren(children, false)
+                        attributeNodeDescriptor(project, meta, value, method, metaAccess, methodName)
+                            ?: relationNodeDescriptor(project, meta, value, method, methodName)
+                            ?: MethodValueDescriptor(value, method, methodName, project)
+                    }
+                val groupNode = nodeManager.createMessageNode("$typeName | ${descriptors.size} fields")
+                val nodes = descriptors
+                    .map { descriptor -> nodeManager.createNode(descriptor, evaluationContext) }
 
+                builder.addChildren(listOf(groupNode), false)
+                builder.addChildren(nodes, false)
+            }
+
+            builder.addChildren(listOf(nodeManager.createMessageNode("Fields")), false)
             DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
         }
+    }
+
+    private fun attributeNodeDescriptor(
+        project: Project,
+        meta: TSGlobalMetaItem,
+        value: ObjectReference,
+        method: Method,
+        metaAccess: TSMetaModelAccess,
+        methodName: String
+    ): NodeDescriptor? {
+        val attribute = (meta.allAttributes.values
+            .find { attribute -> attribute.customGetters.contains(methodName) }
+            ?: if (methodName.startsWith("get")) meta.allAttributes[methodName.substring("get".length)]
+            else meta.allAttributes[methodName.substring("is".length)])
+            ?: return null
+        val attributeName = attribute.name
+
+        return when {
+            attribute.isDynamic -> LazyMethodValueDescriptor(value, method, "$attributeName (dynamic)", project)
+
+            attribute.isLocalized -> LazyMethodValueDescriptor(value, method, "$attributeName (localized)", project)
+
+            metaAccess.findMetaCollectionByName(attribute.type) != null -> LazyMethodValueDescriptor(
+                value,
+                method,
+                "$attributeName (collection)",
+                project
+            )
+
+            metaAccess.findMetaMapByName(attribute.type) != null -> LazyMethodValueDescriptor(value, method, "$attributeName (map)", project)
+
+            else -> MethodValueDescriptor(value, method, attributeName, project)
+        }
+    }
+
+    private fun relationNodeDescriptor(project: Project, meta: TSGlobalMetaItem, value: ObjectReference, method: Method, methodName: String): NodeDescriptor? {
+        val relation = (meta.allRelationEnds
+            .find { attribute -> attribute.customGetters.contains(methodName) }
+            ?: if (methodName.startsWith("get")) meta.allRelationEnds
+                .find { it.name?.equals(methodName.substring("get".length), true) ?: false }
+            else null)
+            ?: return null
+
+        return LazyMethodValueDescriptor(value, method, "${relation.name} (relation - ${relation.end.name.lowercase()})", project)
     }
 
     override fun getChildValueExpression(node: DebuggerTreeNode, context: DebuggerContext) = node.descriptor

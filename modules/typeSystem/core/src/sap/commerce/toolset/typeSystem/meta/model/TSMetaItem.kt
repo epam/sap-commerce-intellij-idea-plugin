@@ -54,6 +54,8 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     interface TSMetaItemAttribute : TSMetaClassifier<Attribute> {
         override val name: String
         val customProperties: Map<String, TSMetaCustomProperty>
+        val customGetters: Map<String, TSMetaModelMethod>
+        val customSetters: Map<String, TSMetaModelMethod>
         val persistence: TSMetaPersistence
         val modifiers: TSMetaModifiers
         val description: String?

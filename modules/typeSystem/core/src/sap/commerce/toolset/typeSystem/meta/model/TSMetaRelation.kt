@@ -42,6 +42,8 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
         val type: String
         val modifiers: TSMetaModifiers
         val customProperties: Map<String, TSMetaCustomProperty>
+        val customGetters: Map<String, TSMetaModelMethod>
+        val customSetters: Map<String, TSMetaModelMethod>
         val collectionType: Type
         val cardinality: Cardinality
         val description: String?
