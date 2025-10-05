@@ -17,9 +17,19 @@
  */
 package sap.commerce.toolset.debugger.ui.tree.render
 
+import com.intellij.debugger.JavaDebuggerBundle
+import com.intellij.debugger.engine.DebuggerUtils
+import com.intellij.debugger.engine.FullValueEvaluatorProvider
+import com.intellij.debugger.engine.JavaValue.JavaFullValueEvaluator
+import com.intellij.debugger.engine.evaluation.EvaluationContextImpl
+import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
 import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.ValueIconRenderer
+import com.intellij.util.PsiNavigateUtil
+import com.intellij.util.application
+import com.intellij.xdebugger.impl.ui.DebuggerUIUtil
+import com.sun.jdi.ClassType
 import sap.commerce.toolset.HybrisIcons
 
 class ModelRenderer : CompoundRendererProvider() {
@@ -30,4 +40,20 @@ class ModelRenderer : CompoundRendererProvider() {
     override fun getChildrenRenderer(): ChildrenRenderer = ModelChildrenRenderer()
     override fun getIconRenderer() = ValueIconRenderer { _, _, _ -> HybrisIcons.Y.LOGO_BLUE }
 
+    override fun getFullValueEvaluatorProvider(): FullValueEvaluatorProvider =
+        FullValueEvaluatorProvider { evaluationContext: EvaluationContextImpl, valueDescriptor: ValueDescriptorImpl ->
+            object : JavaFullValueEvaluator(JavaDebuggerBundle.message("message.node.navigate"), evaluationContext) {
+                override fun evaluate(callback: XFullValueEvaluationCallback) {
+                    val value = valueDescriptor.getValue()
+                    val type = value.type() as ClassType
+                    callback.evaluated("")
+                    application.runReadAction {
+                        val psiClass = DebuggerUtils.findClass(type.name(), valueDescriptor.project, evaluationContext!!.debugProcess.searchScope)
+                        if (psiClass != null) DebuggerUIUtil.invokeLater { PsiNavigateUtil.navigate(psiClass) }
+                    }
+                }
+
+                override fun isShowValuePopup() = false
+            }
+        }
 }
