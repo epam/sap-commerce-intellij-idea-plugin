@@ -26,6 +26,7 @@ import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
 import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.ValueIconRenderer
+import com.intellij.debugger.ui.tree.render.ValueLabelRenderer
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
 import com.intellij.util.PsiNavigateUtil
@@ -45,6 +46,7 @@ class ModelRenderer : CompoundRendererProvider() {
     override fun getClassName() = "de.hybris.platform.servicelayer.model.AbstractItemModel"
     override fun isEnabled() = true
     override fun getChildrenRenderer(): ChildrenRenderer = ModelChildrenRenderer()
+    override fun getValueLabelRenderer(): ValueLabelRenderer = ModelNodeRenderer()
     override fun getIconRenderer() = ValueIconRenderer { x, y, t ->
         val typeCode = x.type?.name()?.toTypeCode() ?: return@ValueIconRenderer HybrisIcons.Y.LOGO_GREEN
         val meta = TSMetaModelAccess.getInstance(y.project).findMetaItemByName(typeCode) ?: return@ValueIconRenderer HybrisIcons.Y.LOGO_GREEN
@@ -74,8 +76,6 @@ class ModelRenderer : CompoundRendererProvider() {
 
                         withContext(Dispatchers.EDT) {
                             navigatable.navigate(true)
-//                            PsiNavigateUtil.navigate(navigationElement)
-//                            DebuggerUIUtil.invokeLater { PsiNavigateUtil.navigate(navigationElement) }
                         }
                     }
                 }
