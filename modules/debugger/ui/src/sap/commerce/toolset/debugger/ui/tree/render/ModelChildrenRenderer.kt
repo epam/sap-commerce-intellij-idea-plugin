@@ -44,7 +44,7 @@ import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import java.util.concurrent.CompletableFuture
 
-class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer.model.AbstractItemModel"), ChildrenRenderer {
+internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.servicelayer.model.AbstractItemModel"), ChildrenRenderer {
 
     override fun getUniqueId() = "[y] Item Type Children Renderer"
 

@@ -28,7 +28,7 @@ import com.sun.jdi.Method
 import com.sun.jdi.ObjectReference
 import javax.swing.Icon
 
-open class MethodValueDescriptor(
+internal open class MethodValueDescriptor(
     private val parentObject: ObjectReference,
     private val method: Method,
     private val presentationName: String,

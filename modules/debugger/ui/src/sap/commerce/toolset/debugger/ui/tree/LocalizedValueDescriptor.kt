@@ -24,7 +24,7 @@ import com.sun.jdi.Method
 import com.sun.jdi.ObjectReference
 import javax.swing.Icon
 
-class LocalizedValueDescriptor(
+internal class LocalizedValueDescriptor(
     parentObject: ObjectReference,
     method: Method,
     presentationName: String,
