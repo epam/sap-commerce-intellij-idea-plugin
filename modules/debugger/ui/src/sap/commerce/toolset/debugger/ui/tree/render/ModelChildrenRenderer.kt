@@ -66,11 +66,17 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
         val type = objectReference.referenceType()
 
         if (DumbService.isDumb(project)) {
+//            builder.addChildren(listOf(nodeManager.createMessageNode("Direct fields access is not available during the re-index...")), false)
             DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
             return
         }
 
-        val meta = getMeta(project, type.name()) ?: return
+        val meta = getMeta(project, type.name())
+        if (meta == null) {
+//            builder.addChildren(listOf(nodeManager.createNode(MessageDescriptor("Item type is not available in the local type system.", MessageDescriptor.ERROR), evaluationContext)), false)
+//            DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
+            return
+        }
         val metaAccess = TSMetaModelAccess.getInstance(project)
 
         DebuggerUtilsAsync.allMethods(type).thenApply { allMethods ->

@@ -139,6 +139,8 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
         }
         ?: false
 
+    fun getTypecode2Mapping() = TSMetaModelStateService.state(project).getTypecode2Getters()
+
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? = TSMetaModelStateService.state(project)
         .getMetaType<T>(metaType)[name]
 

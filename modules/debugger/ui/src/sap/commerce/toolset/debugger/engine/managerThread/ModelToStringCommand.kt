@@ -38,8 +38,6 @@ import com.sun.jdi.Value
 import sap.commerce.toolset.debugger.DebuggerConstants
 import sap.commerce.toolset.debugger.toTypeCode
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 internal class ModelToStringCommand(
     private val valueDescriptor: ValueDescriptor,
@@ -100,41 +98,11 @@ internal class ModelToStringCommand(
 
     private fun fallbackToTypeSystem(type: Type, project: Project): String? {
         val typeCode = type.name().toTypeCode()
-        val modelAccess = TSMetaModelAccess.getInstance(project)
-        val mappingTypecode2Getters = modelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .filter { it.name != null }
-            .associate {
-                it.isCatalogAware
-
-                it.name!! to it.allAttributes.values
-                    .filter { attr -> attr.modifiers.isUnique }
-                    .mapNotNull { attr ->
-                        val getter = attr.customGetters.keys.firstOrNull()
-                            ?: attr.name
-                        val getterName = getter.replaceFirstChar { c -> c.uppercase() }
-                        val attrType = attr.type ?: return@mapNotNull null
-
-                        when (attrType) {
-                            "boolean" -> "is$getterName()"
-                            "String", "java.lang.String", "java.lang.Boolean",
-                            "char", "java.lang.Character",
-                            "byte", "java.lang.Byte",
-                            "short", "java.lang.Short",
-                            "int", "java.lang.Integer",
-                            "float", "java.lang.Float",
-                            "double", "java.lang.Double",
-                            "long", "java.lang.Long",
-                            "java.util.Date" -> "get$getterName()"
-
-                            else -> null
-                        }
-                    }
-                    .take(3)
-                    .sorted()
-            }
-            .filter { it.value.isNotEmpty() }
+        val mappingTypecode2Getters = TSMetaModelAccess.getInstance(project).getTypecode2Mapping()
 
         val getters = mappingTypecode2Getters[typeCode]
+            ?.take(3)
+            ?.sorted()
             ?.joinToString(" + \" | \" + ") { it }
             ?: return null
 

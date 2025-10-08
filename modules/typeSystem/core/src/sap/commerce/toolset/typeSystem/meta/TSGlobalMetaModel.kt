@@ -29,6 +29,7 @@ class TSGlobalMetaModel : GlobalMetaModel {
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitiveMap.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
     private val myDeploymentTables = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>()
+    private val myTypecode2Getters = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, Collection<String>>()
     private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>()
 
     fun getDeploymentForTable(table: String?): TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
@@ -52,6 +53,8 @@ class TSGlobalMetaModel : GlobalMetaModel {
 
     fun getAllRelations() = myReferencesBySourceTypeName
     fun getDeploymentTypeCodes() = myDeploymentTypeCodes
+
+    fun getTypecode2Getters() = myTypecode2Getters
 
     fun addDeployment(deployment: TSMetaDeployment) {
         myDeploymentTables[deployment.table] = deployment

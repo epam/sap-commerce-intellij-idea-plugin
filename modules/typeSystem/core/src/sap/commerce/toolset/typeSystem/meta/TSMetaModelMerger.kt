@@ -88,6 +88,10 @@ object TSMetaModelMerger {
 
             meta.addMetasToHierarchy(itemHierarchy)
         }
+
+        // init typecode 2 getters mapping
+        getTypecode2Getters().clear()
+        getTypecode2Getters().putAll(mapGetters(this))
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -126,5 +130,34 @@ object TSMetaModelMerger {
             .filter { it.table != null && it.typeCode != null }
             .forEach { globalMetaModel.addDeployment(it) }
     }
+
+    private fun mapGetters(globalMetaModel: TSGlobalMetaModel) = globalMetaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
+        .filter { it.name != null }
+        .associate {
+            it.name!! to it.allAttributes.values
+                .filter { attr -> attr.modifiers.isUnique }
+                .mapNotNull { attr ->
+                    val getter = attr.customGetters.keys.firstOrNull()
+                        ?: attr.name
+                    val getterName = getter.replaceFirstChar { c -> c.uppercase() }
+                    val attrType = attr.type ?: return@mapNotNull null
+
+                    when (attrType) {
+                        "boolean" -> "is$getterName()"
+                        "String", "java.lang.String", "java.lang.Boolean",
+                        "char", "java.lang.Character",
+                        "byte", "java.lang.Byte",
+                        "short", "java.lang.Short",
+                        "int", "java.lang.Integer",
+                        "float", "java.lang.Float",
+                        "double", "java.lang.Double",
+                        "long", "java.lang.Long",
+                        "java.util.Date" -> "get$getterName()"
+
+                        else -> null
+                    }
+                }
+        }
+        .filter { it.value.isNotEmpty() }
 
 }
