@@ -61,7 +61,7 @@ object TSMetaHelper {
             type = type.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
         }
         var flattenType = allTypes[type]?.flattenType ?: plainType
-        flattenType = if (localized) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType
+        flattenType = if (localized && !flattenType.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX)) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType
         else flattenType
 
         return escapeType(flattenType)

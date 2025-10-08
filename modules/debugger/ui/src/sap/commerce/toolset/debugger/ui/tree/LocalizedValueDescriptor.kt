@@ -18,21 +18,41 @@
 
 package sap.commerce.toolset.debugger.ui.tree
 
+import com.intellij.debugger.engine.DebuggerUtils
+import com.intellij.debugger.ui.impl.watch.UserExpressionDescriptorImpl
+import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.render.OnDemandRenderer
 import com.intellij.openapi.project.Project
-import com.sun.jdi.Method
-import com.sun.jdi.ObjectReference
-import javax.swing.Icon
+import sap.commerce.toolset.HybrisIcons
 
 internal class LocalizedValueDescriptor(
-    parentObject: ObjectReference,
-    method: Method,
+    parentObject: ValueDescriptorImpl,
     presentationName: String,
     project: Project,
-    icon: Icon? = null,
-) : MethodValueDescriptor(parentObject, method, presentationName, project, icon) {
+    methodName: String,
+) : UserExpressionDescriptorImpl(
+    project, parentObject, "java.util.HashMap", presentationName,
+    DebuggerUtils.getInstance().createExpressionWithImports(methodName.toExpression),
+    0
+) {
 
     init {
         putUserData(OnDemandRenderer.ON_DEMAND_CALCULATED, false)
     }
+
+    override fun getValueIcon() = HybrisIcons.TypeSystem.LOCALIZED
 }
+
+private val String.toExpression
+    get() = """
+            de.hybris.platform.servicelayer.i18n.CommonI18NService commonI18NService = de.hybris.platform.core.Registry.getApplicationContext().getBean(de.hybris.platform.servicelayer.i18n.CommonI18NService.class);
+        
+            final HashMap<Locale, Object> values = new HashMap<>();
+        
+            for (final de.hybris.platform.core.model.c2l.LanguageModel languageModel : commonI18NService.getAllLanguages()) {
+                Locale locale = commonI18NService.getLocaleForLanguage(languageModel);
+                values.put(locale, $this(locale));
+            }
+        
+            values
+        """.trimIndent()

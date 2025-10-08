@@ -40,6 +40,7 @@ import com.sun.jdi.Value
 import sap.commerce.toolset.debugger.getMeta
 import sap.commerce.toolset.debugger.toTypeCode
 import sap.commerce.toolset.debugger.ui.tree.LazyMethodValueDescriptor
+import sap.commerce.toolset.debugger.ui.tree.LocalizedValueDescriptor
 import sap.commerce.toolset.debugger.ui.tree.MethodValueDescriptor
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
@@ -67,24 +68,26 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
         val type = objectReference.referenceType()
 
         if (DumbService.isDumb(project)) {
-            builder.addChildren(listOf(nodeManager.createMessageNode("Direct fields access is not available during the re-index...")), false)
+            val message = "Direct fields access is not available during the re-index..."
+            builder.addChildren(listOf(nodeManager.createMessageNode(message)), false)
             DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
             return
         }
 
         val meta = getMeta(project, type.name())
         if (meta == null) {
-            builder.addChildren(listOf(nodeManager.createNode(MessageDescriptor("Item type is not available in the local type system.", MessageDescriptor.ERROR), evaluationContext)), false)
+            val message = "Item type is not available in the local type system."
+            builder.addChildren(listOf(nodeManager.createNode(MessageDescriptor(message, MessageDescriptor.ERROR), evaluationContext)), false)
             DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
             return
         }
         val metaAccess = TSMetaModelAccess.getInstance(project)
 
         DebuggerUtilsAsync.allMethods(type).thenApply { allMethods ->
-            val excluded = setOf("<init>", "writeReplace", "readResolve")
+            val excluded = setOf("<init>", "writeReplace", "readResolve", "getProperty")
 
             val groupedMethods = allMethods
-                .filter { method -> method.argumentTypeNames().isEmpty() }
+                .filter { method -> method.name().startsWith("get") || method.name().startsWith("is") }
                 .filter { method -> !method.isAbstract }
                 .filterNot { method -> excluded.contains(method.name()) }
                 .filter { method -> method.declaringType().name() != "java.lang.Object" }
@@ -97,10 +100,15 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
                     .mapNotNull { method ->
                         val methodName = method.name()
 
-                        attributeNodeDescriptor(project, meta, value, method, metaAccess, methodName)
+                        val argumentTypes = method.argumentTypes()
+                        if (argumentTypes.size > 1) return@mapNotNull null
+                        if (argumentTypes.size == 1 && !argumentTypes.get(0).name().equals("java.util.Locale")) return@mapNotNull null
+
+                        attributeNodeDescriptor(project, meta, value, parentDescriptor, method, metaAccess, methodName)
                             ?: relationNodeDescriptor(project, meta, value, method, methodName)
                             ?: MethodValueDescriptor(value, method, methodName, project)
                     }
+                    .distinctBy { it.name }
                 val groupNode = nodeManager.createMessageNode("$typeName | ${descriptors.size} fields")
                 val nodes = descriptors
                     .map { descriptor -> nodeManager.createNode(descriptor, evaluationContext) }
@@ -118,45 +126,109 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
         project: Project,
         meta: TSGlobalMetaItem,
         value: ObjectReference,
+        parentDescriptor: ValueDescriptorImpl,
         method: Method,
         metaAccess: TSMetaModelAccess,
         methodName: String
     ): NodeDescriptor? {
-        val attribute = (meta.allAttributes.values
-            .find { attribute -> attribute.customGetters.contains(methodName) }
-            ?: if (methodName.startsWith("get")) meta.allAttributes[methodName.substring("get".length)]
-            else meta.allAttributes[methodName.substring("is".length)])
+        val possibleAttributeName = getPossibleAttributeName(methodName)
+        val attribute = meta.allAttributes.values
+            .find { attribute -> attribute.customGetters.contains(possibleAttributeName) }
+            ?: meta.allAttributes[possibleAttributeName]
             ?: return null
+
         val attributeName = attribute.name
 
         return when {
-            attribute.isDynamic -> LazyMethodValueDescriptor(value, method, "$attributeName (dynamic)", project, attribute.icon)
+            attribute.isLocalized -> LocalizedValueDescriptor(
+                parentDescriptor,
+                buildString {
+                    append(attributeName)
+                    append(" (")
+//                    append(attribute.flattenType ?: "localized")
+                    append("localized")
+//                    if (attribute.isDynamic) append(" | dynamic")
+                    if (attribute.isDynamic) append(" & dynamic")
+                    append(")")
+                },
+                project,
+                methodName
+            )
 
-            attribute.isLocalized -> LazyMethodValueDescriptor(value, method, "$attributeName (localized)", project, attribute.icon)
-
-            metaAccess.findMetaCollectionByName(attribute.type) != null -> LazyMethodValueDescriptor(
+            attribute.isDynamic -> LazyMethodValueDescriptor(
                 value,
                 method,
-                "$attributeName (collection)",
+                buildString {
+                    append(attributeName)
+                    append(" (")
+//                    attribute.flattenType
+//                        ?.let {
+//                            append(it)
+//                            append(" | dynamic")
+//                        }
+//                        ?: append("dynamic")
+                    append("dynamic")
+                    append(")")
+                },
                 project,
                 attribute.icon
             )
 
-            metaAccess.findMetaMapByName(attribute.type) != null -> LazyMethodValueDescriptor(value, method, "$attributeName (map)", project, attribute.icon)
+            metaAccess.findMetaCollectionByName(attribute.type) != null -> LazyMethodValueDescriptor(
+                value,
+                method,
+                buildString {
+                    append(attributeName)
+                    append(" (")
+//                    append(attribute.flattenType ?: "collection")
+                    append("collection")
+                    append(")")
+                },
+                project,
+                attribute.icon
+            )
+
+            metaAccess.findMetaMapByName(attribute.type) != null -> LazyMethodValueDescriptor(
+                value,
+                method,
+                buildString {
+                    append(attributeName)
+                    append(" (")
+//                    append(attribute.flattenType ?: "map")
+                    append("map")
+                    append(")")
+                },
+                project,
+                attribute.icon
+            )
 
             else -> MethodValueDescriptor(value, method, attributeName, project, attribute.icon)
         }
     }
 
+    private fun getPossibleAttributeName(methodName: String) = when {
+        methodName.startsWith("get") -> methodName.removePrefix("get")
+        methodName.startsWith("is") -> methodName.removePrefix("is")
+        else -> null
+    }
+
     private fun relationNodeDescriptor(project: Project, meta: TSGlobalMetaItem, value: ObjectReference, method: Method, methodName: String): NodeDescriptor? {
-        val relation = (meta.allRelationEnds
-            .find { attribute -> attribute.customGetters.contains(methodName) }
-            ?: if (methodName.startsWith("get")) meta.allRelationEnds
-                .find { it.name?.equals(methodName.substring("get".length), true) ?: false }
-            else null)
+        val possibleAttributeName = getPossibleAttributeName(methodName)
+        val relation = meta.allRelationEnds
+            .find { attribute -> attribute.customGetters.contains(possibleAttributeName) }
+            ?: meta.allRelationEnds.find { it.name?.equals(possibleAttributeName, true) ?: false }
             ?: return null
 
-        return LazyMethodValueDescriptor(value, method, "${relation.name} (relation - ${relation.end.name.lowercase()})", project, relation.end.icon)
+        val presentationName = buildString {
+            append(relation.name)
+            append(" (")
+            append("relation - ")
+            append(relation.end.name.lowercase())
+            append(")")
+//            append(relation.flattenType ?: relation.end.name.lowercase())
+//            append(" | relation)")
+        }
+        return LazyMethodValueDescriptor(value, method, presentationName, project, relation.end.icon)
     }
 
     override fun getChildValueExpression(node: DebuggerTreeNode, context: DebuggerContext) = node.descriptor
