@@ -34,6 +34,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.jetbrains.rd.util.firstOrNull
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Type
+import com.sun.jdi.Value
 import sap.commerce.toolset.debugger.DebuggerConstants
 
 internal class ModelToStringCommand(
@@ -73,7 +74,16 @@ internal class ModelToStringCommand(
             val valueAsString = DebuggerUtils.getValueAsString(evaluationContext, calcValue)
             evaluationResult(valueAsString)
         } catch (e: EvaluateException) {
-            thisLogger().error(e)
+            thisLogger().warn(e)
+            fallback(evaluationContext, value)
+        }
+    }
+
+    private fun fallback(evaluationContext: EvaluationContext, value: Value) {
+        try {
+            val valueAsString = DebuggerUtils.getValueAsString(evaluationContext, value)
+            evaluationResult(valueAsString)
+        } catch (e: EvaluateException) {
             evaluationError(e.message)
         }
     }

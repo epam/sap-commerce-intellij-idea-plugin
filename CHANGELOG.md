@@ -12,6 +12,7 @@
 - Display extension scope specific icons for model [#1584](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1584)
 - Introduced customized and informative `toString` for crucial OOTB models [#1585](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1585)
 - Extended `toString` for various OOTB models [#1586](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1586)
+- Fallback to JDI `toString` when there is no model class available [#1587](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1587)
 
 ### `Type System` enhancements
 - Introduced custom icon for `dynamic` attributes [#1582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1582)

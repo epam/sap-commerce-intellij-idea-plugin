@@ -107,8 +107,12 @@ internal object DebuggerConstants {
     )
 
     private const val PK = """
-        String toString = toString();
-        String pk = toString.substring(toString.indexOf("(") + 1, toString.length() - 1);
+        de.hybris.platform.core.PK _pk = getPk();
+        String pk = "(<unsaved>)"
+        
+        if (_pk != null) {
+            pk = _pk + " | rev: " + getPersistenceContext().getPersistenceVersion()
+        }
     """
 
     const val ITEM = """

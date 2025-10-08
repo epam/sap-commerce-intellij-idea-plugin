@@ -45,8 +45,6 @@ internal class ModelNodeRenderer : ReferenceRenderer(), ValueLabelRenderer {
             ?: return fallbackRenderer.calcLabel(valueDescriptor, evaluationContext, labelListener)
 
         DebuggerUtils.ensureNotInsideObjectConstructor(value, evaluationContext)
-//        BatchEvaluator.getBatchEvaluator(evaluationContext)
-//            .invoke(ModelToStringCommand(valueDescriptor, labelListener, evaluationContext, value))
 
         val suspendContext = evaluationContext.suspendContext as SuspendContextImpl
         suspendContext.managerThread.invokeCommand(ModelToStringCommand(valueDescriptor, labelListener, evaluationContext, value))
