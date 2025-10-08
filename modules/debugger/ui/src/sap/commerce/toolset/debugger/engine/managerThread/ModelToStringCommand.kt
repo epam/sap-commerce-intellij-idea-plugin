@@ -29,13 +29,17 @@ import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.ValueDescriptor
 import com.intellij.debugger.ui.tree.render.DescriptorLabelListener
 import com.intellij.debugger.ui.tree.render.ToStringCommand
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.jetbrains.rd.util.firstOrNull
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Type
 import com.sun.jdi.Value
 import sap.commerce.toolset.debugger.DebuggerConstants
+import sap.commerce.toolset.debugger.toTypeCode
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 internal class ModelToStringCommand(
     private val valueDescriptor: ValueDescriptor,
@@ -58,7 +62,7 @@ internal class ModelToStringCommand(
 
     override fun action() {
         val project = evaluationContext.project
-        val expression = value.type().toStringExpression.trimIndent()
+        val expression = toStringExpression(value.type(), project).trimIndent()
         val text = DebuggerUtils.getInstance().createExpressionWithImports(expression)
 
         val descriptor = UserExpressionData(
@@ -73,8 +77,7 @@ internal class ModelToStringCommand(
             val calcValue = descriptor.calcValue(evaluationContext as EvaluationContextImpl)
             val valueAsString = DebuggerUtils.getValueAsString(evaluationContext, calcValue)
             evaluationResult(valueAsString)
-        } catch (e: EvaluateException) {
-            thisLogger().warn(e)
+        } catch (_: EvaluateException) {
             fallback(evaluationContext, value)
         }
     }
@@ -88,10 +91,57 @@ internal class ModelToStringCommand(
         }
     }
 
-    private val Type.toStringExpression
-        get() = DebuggerConstants.TO_STRING_MAPPING
-            .filterKeys { DebuggerUtils.instanceOf(this, it) }
-            .firstOrNull()
-            ?.value
-            ?: DebuggerConstants.ITEM;
+    private fun toStringExpression(type: Type, project: Project) = DebuggerConstants.TO_STRING_MAPPING
+        .filterKeys { DebuggerUtils.instanceOf(type, it) }
+        .firstOrNull()
+        ?.value
+        ?: fallbackToTypeSystem(type, project)
+        ?: DebuggerConstants.ITEM;
+
+    private fun fallbackToTypeSystem(type: Type, project: Project): String? {
+        val typeCode = type.name().toTypeCode()
+        val modelAccess = TSMetaModelAccess.getInstance(project)
+        val mappingTypecode2Getters = modelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+            .filter { it.name != null }
+            .associate {
+                it.isCatalogAware
+
+                it.name!! to it.allAttributes.values
+                    .filter { attr -> attr.modifiers.isUnique }
+                    .mapNotNull { attr ->
+                        val getter = attr.customGetters.keys.firstOrNull()
+                            ?: attr.name
+                        val getterName = getter.replaceFirstChar { c -> c.uppercase() }
+                        val attrType = attr.type ?: return@mapNotNull null
+
+                        when (attrType) {
+                            "boolean" -> "is$getterName()"
+                            "String", "java.lang.String", "java.lang.Boolean",
+                            "char", "java.lang.Character",
+                            "byte", "java.lang.Byte",
+                            "short", "java.lang.Short",
+                            "int", "java.lang.Integer",
+                            "float", "java.lang.Float",
+                            "double", "java.lang.Double",
+                            "long", "java.lang.Long",
+                            "java.util.Date" -> "get$getterName()"
+
+                            else -> null
+                        }
+                    }
+                    .take(3)
+                    .sorted()
+            }
+            .filter { it.value.isNotEmpty() }
+
+        val getters = mappingTypecode2Getters[typeCode]
+            ?.joinToString(" + \" | \" + ") { it }
+            ?: return null
+
+        return """
+            ${DebuggerConstants.PK}
+            
+            pk + " | " + $getters
+        """.trimIndent()
+    }
 }

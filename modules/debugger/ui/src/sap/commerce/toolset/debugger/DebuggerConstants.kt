@@ -106,7 +106,7 @@ internal object DebuggerConstants {
         "de.hybris.platform.cronjob.model.TriggerModel" to toString("getCronExpression()"),
     )
 
-    private const val PK = """
+    const val PK = """
         de.hybris.platform.core.PK _pk = getPk();
         String pk = "(<unsaved>)"
         
