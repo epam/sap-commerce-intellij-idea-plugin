@@ -14,6 +14,7 @@
 - Extended `toString` for various OOTB models [#1586](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1586)
 - Fallback to JDI `toString` when there is no model class available [#1587](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1587)
 - Auto-generate `toString` for atomic unique attributes for non-preconfigured models [#1588](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1588)
+- Inform about obsolete and not available anymore Item Types [#1589](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1589)
 
 ### `Type System` enhancements
 - Introduced custom icon for `dynamic` attributes [#1582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1582)

@@ -23,6 +23,7 @@ import com.intellij.debugger.engine.DebugProcessImpl
 import com.intellij.debugger.engine.DebuggerManagerThreadImpl
 import com.intellij.debugger.engine.evaluation.EvaluationContext
 import com.intellij.debugger.impl.DebuggerUtilsAsync
+import com.intellij.debugger.ui.impl.watch.MessageDescriptor
 import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.DebuggerTreeNode
 import com.intellij.debugger.ui.tree.NodeDescriptor
@@ -66,15 +67,15 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
         val type = objectReference.referenceType()
 
         if (DumbService.isDumb(project)) {
-//            builder.addChildren(listOf(nodeManager.createMessageNode("Direct fields access is not available during the re-index...")), false)
+            builder.addChildren(listOf(nodeManager.createMessageNode("Direct fields access is not available during the re-index...")), false)
             DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
             return
         }
 
         val meta = getMeta(project, type.name())
         if (meta == null) {
-//            builder.addChildren(listOf(nodeManager.createNode(MessageDescriptor("Item type is not available in the local type system.", MessageDescriptor.ERROR), evaluationContext)), false)
-//            DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
+            builder.addChildren(listOf(nodeManager.createNode(MessageDescriptor("Item type is not available in the local type system.", MessageDescriptor.ERROR), evaluationContext)), false)
+            DebugProcessImpl.getDefaultRenderer(value).buildChildren(value, builder, evaluationContext)
             return
         }
         val metaAccess = TSMetaModelAccess.getInstance(project)
