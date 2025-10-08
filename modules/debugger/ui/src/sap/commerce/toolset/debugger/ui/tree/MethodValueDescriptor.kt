@@ -19,17 +19,25 @@
 package sap.commerce.toolset.debugger.ui.tree
 
 import com.intellij.debugger.DebuggerContext
+import com.intellij.debugger.JavaDebuggerBundle
 import com.intellij.debugger.engine.evaluation.EvaluateException
 import com.intellij.debugger.engine.evaluation.EvaluationContextImpl
+import com.intellij.debugger.ui.impl.watch.LocalVariableDescriptorImpl
+import com.intellij.debugger.ui.impl.watch.ThisDescriptorImpl
 import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.DescriptorWithParentObject
+import com.intellij.debugger.ui.tree.ValueDescriptor
 import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiExpression
+import com.intellij.util.IncorrectOperationException
 import com.sun.jdi.Method
 import com.sun.jdi.ObjectReference
 import javax.swing.Icon
 
 internal open class MethodValueDescriptor(
     private val parentObject: ObjectReference,
+    private val parentDescriptor: ValueDescriptor,
     private val method: Method,
     private val presentationName: String,
     project: Project,
@@ -42,6 +50,24 @@ internal open class MethodValueDescriptor(
 
     override fun getName() = presentationName
     override fun getObject() = parentObject
-    override fun getDescriptorEvaluation(context: DebuggerContext?) = throw EvaluateException("Getter evaluation is not supported")
     override fun getValueIcon() = icon
+
+    override fun getDescriptorEvaluation(context: DebuggerContext?): PsiExpression? {
+        val methodName = method.name()
+        val parentType = parentDescriptor.type?.name()
+        val parent = when (parentDescriptor) {
+            is ThisDescriptorImpl -> parentType
+                ?.let { "(($it) this)" }
+                ?: "this"
+            is LocalVariableDescriptorImpl -> parentType
+                ?.let { "(($it) ${parentDescriptor.localVariable.variable.name()})" }
+                ?: parentDescriptor.localVariable.variable.name()
+            else -> throw EvaluateException("Getter evaluation is not supported")
+        }
+        try {
+            return JavaPsiFacade.getElementFactory(myProject).createExpressionFromText("$parent.$methodName()", null)
+        } catch (e: IncorrectOperationException) {
+            throw EvaluateException(JavaDebuggerBundle.message("error.invalid.field.name", methodName), e)
+        }
+    }
 }

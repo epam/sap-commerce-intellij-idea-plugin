@@ -105,8 +105,8 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
                         if (argumentTypes.size == 1 && !argumentTypes.get(0).name().equals("java.util.Locale")) return@mapNotNull null
 
                         attributeNodeDescriptor(project, meta, value, parentDescriptor, method, metaAccess, methodName)
-                            ?: relationNodeDescriptor(project, meta, value, method, methodName)
-                            ?: MethodValueDescriptor(value, method, methodName, project)
+                            ?: relationNodeDescriptor(project, meta, value, parentDescriptor, method, methodName)
+                            ?: MethodValueDescriptor(value, parentDescriptor, method, methodName, project)
                     }
                     .distinctBy { it.name }
                 val groupNode = nodeManager.createMessageNode("$typeName | ${descriptors.size} fields")
@@ -145,9 +145,7 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
                 buildString {
                     append(attributeName)
                     append(" (")
-//                    append(attribute.flattenType ?: "localized")
                     append("localized")
-//                    if (attribute.isDynamic) append(" | dynamic")
                     if (attribute.isDynamic) append(" & dynamic")
                     append(")")
                 },
@@ -157,16 +155,11 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
 
             attribute.isDynamic -> LazyMethodValueDescriptor(
                 value,
+                parentDescriptor,
                 method,
                 buildString {
                     append(attributeName)
                     append(" (")
-//                    attribute.flattenType
-//                        ?.let {
-//                            append(it)
-//                            append(" | dynamic")
-//                        }
-//                        ?: append("dynamic")
                     append("dynamic")
                     append(")")
                 },
@@ -176,11 +169,11 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
 
             metaAccess.findMetaCollectionByName(attribute.type) != null -> LazyMethodValueDescriptor(
                 value,
+                parentDescriptor,
                 method,
                 buildString {
                     append(attributeName)
                     append(" (")
-//                    append(attribute.flattenType ?: "collection")
                     append("collection")
                     append(")")
                 },
@@ -190,11 +183,11 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
 
             metaAccess.findMetaMapByName(attribute.type) != null -> LazyMethodValueDescriptor(
                 value,
+                parentDescriptor,
                 method,
                 buildString {
                     append(attributeName)
                     append(" (")
-//                    append(attribute.flattenType ?: "map")
                     append("map")
                     append(")")
                 },
@@ -202,7 +195,7 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
                 attribute.icon
             )
 
-            else -> MethodValueDescriptor(value, method, attributeName, project, attribute.icon)
+            else -> MethodValueDescriptor(value, parentDescriptor, method, attributeName, project, attribute.icon)
         }
     }
 
@@ -212,7 +205,14 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
         else -> null
     }
 
-    private fun relationNodeDescriptor(project: Project, meta: TSGlobalMetaItem, value: ObjectReference, method: Method, methodName: String): NodeDescriptor? {
+    private fun relationNodeDescriptor(
+        project: Project,
+        meta: TSGlobalMetaItem,
+        value: ObjectReference,
+        parentDescriptor: ValueDescriptorImpl,
+        method: Method,
+        methodName: String
+    ): NodeDescriptor? {
         val possibleAttributeName = getPossibleAttributeName(methodName)
         val relation = meta.allRelationEnds
             .find { attribute -> attribute.customGetters.contains(possibleAttributeName) }
@@ -225,10 +225,8 @@ internal class ModelChildrenRenderer : ReferenceRenderer("de.hybris.platform.ser
             append("relation - ")
             append(relation.end.name.lowercase())
             append(")")
-//            append(relation.flattenType ?: relation.end.name.lowercase())
-//            append(" | relation)")
         }
-        return LazyMethodValueDescriptor(value, method, presentationName, project, relation.end.icon)
+        return LazyMethodValueDescriptor(value, parentDescriptor, method, presentationName, project, relation.end.icon)
     }
 
     override fun getChildValueExpression(node: DebuggerTreeNode, context: DebuggerContext) = node.descriptor

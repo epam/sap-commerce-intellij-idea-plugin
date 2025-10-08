@@ -16,6 +16,7 @@
 - Auto-generate `toString` for atomic unique attributes for non-preconfigured models [#1588](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1588)
 - Inform about obsolete and not available anymore Item Types [#1589](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1589)
 - Enhanced support of the `localized` fields by showing the values in all locales [#1590](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1590)
+- Added simple evaluation for basic fields [#1591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1591)
 
 ### `Type System` enhancements
 - Introduced custom icon for `dynamic` attributes [#1582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1582)

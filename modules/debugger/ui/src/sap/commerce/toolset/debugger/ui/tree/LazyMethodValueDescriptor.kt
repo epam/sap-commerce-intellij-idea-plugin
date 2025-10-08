@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.debugger.ui.tree
 
+import com.intellij.debugger.ui.tree.ValueDescriptor
 import com.intellij.debugger.ui.tree.render.OnDemandRenderer
 import com.intellij.openapi.project.Project
 import com.sun.jdi.Method
@@ -26,11 +27,12 @@ import javax.swing.Icon
 
 internal class LazyMethodValueDescriptor(
     parentObject: ObjectReference,
+    parentDescriptor: ValueDescriptor,
     method: Method,
     presentationName: String,
     project: Project,
     icon: Icon? = null,
-) : MethodValueDescriptor(parentObject, method, presentationName, project, icon) {
+) : MethodValueDescriptor(parentObject,parentDescriptor, method, presentationName, project, icon) {
 
     init {
         putUserData(OnDemandRenderer.ON_DEMAND_CALCULATED, false)
