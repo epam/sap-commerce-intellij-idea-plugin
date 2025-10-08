@@ -111,7 +111,7 @@ internal object DebuggerConstants {
         String pk = toString.substring(toString.indexOf("(") + 1, toString.length() - 1);
     """
 
-    const val TO_STRING_ITEM = """
+    const val ITEM = """
         $PK
         pk
     """

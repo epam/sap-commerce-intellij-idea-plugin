@@ -83,5 +83,5 @@ internal class ModelToStringCommand(
             .filterKeys { DebuggerUtils.instanceOf(this, it) }
             .firstOrNull()
             ?.value
-            ?: DebuggerConstants.TO_STRING_ITEM;
+            ?: DebuggerConstants.ITEM;
 }
