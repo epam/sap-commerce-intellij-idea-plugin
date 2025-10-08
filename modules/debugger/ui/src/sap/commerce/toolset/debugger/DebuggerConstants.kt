@@ -29,15 +29,9 @@ internal object DebuggerConstants {
     private val NAME = toString("getName()")
 
     val TO_STRING_MAPPING = mapOf(
-        "de.hybris.platform.core.model.product.ProductModel" to PRODUCT,
-        "de.hybris.platform.core.model.order.AbstractOrderModel" to ABSTRACT_ORDER,
-        "de.hybris.platform.core.model.order.AbstractOrderEntryModel" to ABSTRACT_ORDER_ENTRY,
-        "de.hybris.platform.core.model.media.MediaModel" to MEDIA,
-        "de.hybris.platform.core.model.type.AttributeDescriptorModel" to ATTRIBUTE_DESCRIPTOR,
         "de.hybris.platform.core.model.type.ComposedTypeModel" to CODE,
         "de.hybris.platform.core.model.AbstractDynamicContentModel" to CODE,
         "de.hybris.platform.core.model.flexiblesearch.SavedQueryModel" to CODE,
-        "de.hybris.platform.catalog.model.CatalogVersionModel" to CATALOG_VERSION,
         "de.hybris.platform.processengine.model.BusinessProcessModel" to CODE,
         "de.hybris.platform.cronjob.model.CronJobModel" to CODE,
         "de.hybris.platform.cronjob.model.JobModel" to CODE,
@@ -93,6 +87,12 @@ internal object DebuggerConstants {
         "de.hybris.platform.cms2.model.contents.CMSItemModel" to CMS_ITEM,
         "de.hybris.platform.solrfacetsearch.model.config.SolrIndexedPropertyModel" to SOLR_INDEXED_PROPERTY,
         "de.hybris.platform.core.model.link.LinkModel" to LINK,
+        "de.hybris.platform.core.model.product.ProductModel" to PRODUCT,
+        "de.hybris.platform.core.model.order.AbstractOrderModel" to ABSTRACT_ORDER,
+        "de.hybris.platform.core.model.order.AbstractOrderEntryModel" to ABSTRACT_ORDER_ENTRY,
+        "de.hybris.platform.core.model.media.MediaModel" to MEDIA,
+        "de.hybris.platform.core.model.type.AttributeDescriptorModel" to ATTRIBUTE_DESCRIPTOR,
+        "de.hybris.platform.catalog.model.CatalogVersionModel" to CATALOG_VERSION,
 
         "de.hybris.platform.solrfacetsearch.model.config.SolrEndpointUrlModel" to toString("getUrl()"),
         "de.hybris.platform.apiregistryservices.model.events.EventPropertyConfigurationModel" to toString("getPropertyName()"),
