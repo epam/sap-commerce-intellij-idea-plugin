@@ -1,7 +1,7 @@
 ## [2025.2.4.3]
 
 ### `External Dependencies` enhancements
-- Re-enabled possibility to download new dependencies via IDE [#1592](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1592)
+- Re-enabled possibility to download new dependencies via IDE [#1593](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1593)
 
 ## [2025.2.4.2]
 
