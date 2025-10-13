@@ -126,6 +126,7 @@
     <depends optional="true" config-file="sap.commerce.toolset-kotlin-core.xml">org.jetbrains.kotlin</depends>
     <depends optional="true" config-file="sap.commerce.toolset-gradle-core.xml">com.intellij.gradle</depends>
     <depends optional="true" config-file="sap.commerce.toolset-maven-core.xml">org.jetbrains.idea.maven</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-externalDependencies-core.xml">org.jetbrains.idea.maven</depends>
     <depends optional="true" config-file="sap.commerce.toolset-eclipse-core.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="sap.commerce.toolset-angular-core.xml">AngularJS</depends>
     <depends optional="true" config-file="sap.commerce.toolset-junit-core.xml">JUnit</depends>
