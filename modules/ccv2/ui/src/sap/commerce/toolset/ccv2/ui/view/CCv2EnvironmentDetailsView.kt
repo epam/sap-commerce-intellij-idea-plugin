@@ -354,7 +354,7 @@ class CCv2EnvironmentDetailsView(
                 val environmentCode = if (environment.name != environment.code) "${environment.code} - ${environment.name}"
                 else environment.name
 
-                label("$subscription - $environmentCode")
+                label("${subscription.presentableName} - $environmentCode")
                     .comment("Environment")
                     .bold()
                     .component.also {

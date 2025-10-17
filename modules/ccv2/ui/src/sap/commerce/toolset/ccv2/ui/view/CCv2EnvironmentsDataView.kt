@@ -47,7 +47,7 @@ object CCv2EnvironmentsDataView : CCv2DataView<CCv2EnvironmentDto>() {
     private fun panel(project: Project, data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>, showBuilds: Boolean = false): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, environments) ->
-            collapsibleGroup(subscription.toString()) {
+            collapsibleGroup(subscription.presentableName) {
                 if (environments.isEmpty()) {
                     noData()
                 } else {

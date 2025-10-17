@@ -40,7 +40,7 @@ object CCv2BuildsDataView : CCv2DataView<CCv2BuildDto>() {
     override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2BuildDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, builds) ->
-            collapsibleGroup(subscription.toString()) {
+            collapsibleGroup(subscription.presentableName) {
                 if (builds.isEmpty()) {
                     noData()
                 } else {

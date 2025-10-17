@@ -75,7 +75,7 @@ class CCv2Api {
             ?: subscriptions2Permissions[subscriptionCode]
             ?: return emptyList()
 
-        return progressReporter.sizedStep(1, "Fetching Environments for subscription: $subscription") {
+        return progressReporter.sizedStep(1, "Fetching Environments for subscription: ${subscription.presentableName}") {
             statuses
                 .map { status ->
                     async {
@@ -127,7 +127,7 @@ class CCv2Api {
     ) {
         environments.forEach { environment ->
             coroutineScope.launch {
-                progressReporter.sizedStep(1, "Fetching Deployment details for ${environment.name} of the $subscription") {
+                progressReporter.sizedStep(1, "Fetching Deployment details for ${environment.name} of the ${subscription.presentableName}") {
                     fetchEnvironmentBuild(ccv2Token, subscription, environment)
                 }
             }
@@ -167,7 +167,7 @@ class CCv2Api {
         subscription: CCv2Subscription,
         statusNot: List<String>?,
         progressReporter: ProgressReporter
-    ) = progressReporter.sizedStep(1, "Fetching Builds for subscription: $subscription") {
+    ) = progressReporter.sizedStep(1, "Fetching Builds for subscription: ${subscription.presentableName}") {
         buildApi
             .getBuilds(
                 subscriptionCode = subscription.id!!,
@@ -184,7 +184,7 @@ class CCv2Api {
         ccv2Token: String,
         subscription: CCv2Subscription,
         progressReporter: ProgressReporter
-    ) = progressReporter.sizedStep(1, "Fetching Deployments for subscription: $subscription") {
+    ) = progressReporter.sizedStep(1, "Fetching Deployments for subscription: ${subscription.presentableName}") {
         val subscriptionCode = subscription.id!!
 
         deploymentApi
@@ -211,7 +211,7 @@ class CCv2Api {
         buildCode: String,
         ccv2Token: String,
         progressReporter: ProgressReporter
-    ) = progressReporter.sizedStep(1, "Fetching Deployments for subscription: $subscription") {
+    ) = progressReporter.sizedStep(1, "Fetching Deployments for subscription: ${subscription.presentableName}") {
 
         deploymentApi
             .getDeployments(subscription.id!!, buildCode, dollarTop = 20, requestHeaders = createRequestParams(ccv2Token))

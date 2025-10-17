@@ -60,7 +60,7 @@ fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Cr
     icon(icon)
         .gap(RightGap.SMALL)
     val sUser = CCv2DeveloperSettings.getInstance(project).getSUser(sUserId)
-    link(sUser.toString()) { SUserDetailsDialog(project, sUser).showAndGet() }
+    link(sUser.presentableName) { SUserDetailsDialog(project, sUser).showAndGet() }
         .comment(label)
         .applyToComponent {
             HelpTooltip()

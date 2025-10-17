@@ -417,7 +417,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                 "CCv2: Build has been deleted.",
                                 """
                                     Code: ${build.code}<br>
-                                    Subscription: $subscription<br>
+                                    Subscription: ${subscription.presentableName}<br>
                                 """.trimIndent()
                             )
                                 .hideAfter(10)
@@ -449,7 +449,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                     Replica: ${replica.name}<br>
                                     Service: ${service.name}<br>
                                     Environment: ${environment.name}<br>
-                                    Subscription: $subscription<br>
+                                    Subscription: ${subscription.presentableName}<br>
                                 """.trimIndent()
                             )
                                 .hideAfter(10)
@@ -495,7 +495,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                     "CCv2: Build deployment has been requested.",
                                     """
                                     Code: ${build.code}<br>
-                                    Subscription: $subscription<br>
+                                    Subscription: ${subscription.presentableName}<br>
                                 """.trimIndent()
                                 )
                                     .hideAfter(10)
@@ -679,7 +679,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             NotificationType.INFORMATION,
                             "CCv2: Build Failed",
                             """
-                                Subscription: $subscription<br>
+                                Subscription: ${subscription.presentableName}<br>
                                 Build $buildCode has been failed.
                             """.trimIndent()
                         )
@@ -691,7 +691,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             NotificationType.INFORMATION,
                             "CCv2: Build Completed",
                             """
-                                Subscription: $subscription<br>
+                                Subscription: ${subscription.presentableName}<br>
                                 Build $buildCode has been completed with ${buildStatus.title}.
                             """.trimIndent()
                         )
@@ -746,7 +746,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             NotificationType.INFORMATION,
                             "CCv2: Deployment Completed",
                             """
-                                Subscription: $subscription<br>
+                                Subscription: ${subscription.presentableName}<br>
                                 Deployment $buildCode has been completed.
                             """.trimIndent()
                         )
@@ -784,7 +784,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 NotificationType.WARNING,
                 "CCv2: Request interrupted on timeout",
                 """
-                    Subscription: $subscription<br>
+                    Subscription: ${subscription.presentableName}<br>
                     Exceeded current read timeout, it can be adjusted via CCv2 settings.
                 """.trimIndent()
             )
@@ -800,7 +800,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 NotificationType.WARNING,
                 "CCv2: Unable to process request",
                 """
-                    Subscription: $subscription<br>
+                    Subscription: ${subscription.presentableName}<br>
                     ${e.message ?: ""}
                 """.trimIndent()
             )

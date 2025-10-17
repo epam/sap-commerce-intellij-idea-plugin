@@ -38,7 +38,7 @@ abstract class CCv2DataView<T : CCv2Dto> {
 
     fun fetchingInProgressPanel(subscriptions: Collection<CCv2Subscription>): DialogPanel = panel {
         subscriptions.forEach {
-            collapsibleGroup(it.toString()) {
+            collapsibleGroup(it.presentableName) {
                 row {
                     label("Fetching ${tab.title} data, Please wait...")
                         .align(Align.CENTER)

@@ -134,7 +134,7 @@ class CCv2BuildDetailsView(
     private fun rootPanel(build: CCv2BuildDto) = panel {
         indent {
             row {
-                label("$subscription - ${build.code}").comment("Build").bold().component.also {
+                label("${subscription.presentableName} - ${build.code}").comment("Build").bold().component.also {
                     it.font = JBUI.Fonts.label(26f)
                 }.horizontalAlignment = CENTER
             }

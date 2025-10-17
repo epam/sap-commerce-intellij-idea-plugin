@@ -23,6 +23,9 @@ data class SUser(
     @JvmField @OptionTag val id: String,
     @JvmField @OptionTag val alias: String? = null
 ) {
+    val presentableName
+        get() = alias ?: id
+
     fun mutable() = Mutable(
         id = id,
         alias = alias

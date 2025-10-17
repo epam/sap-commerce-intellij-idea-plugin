@@ -121,7 +121,7 @@ class CCv2DeleteBuildAction(
         if (Messages.showYesNoDialog(
                 project,
                 """
-                    Are you certain that you want to delete build '${build.code}' within the '$subscription' subscription?<br>
+                    Are you certain that you want to delete build '${build.code}' within the '${subscription.presentableName}' subscription?<br>
                     The build will be deleted permanently in 14 day(s).<br>
                     During this period you can request a restore via ticket to your system administrator.
                 """.trimIndent(),

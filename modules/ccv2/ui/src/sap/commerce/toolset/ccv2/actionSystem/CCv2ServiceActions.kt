@@ -79,7 +79,7 @@ class CCv2ServiceRestartReplicaAction(
 
         if (Messages.showYesNoDialog(
                 project,
-                "This action will terminate the '${replica.name}' pod associated with this replica and create a new pod to maintain the desired replica count for '${service.name}' service, '${environment.name}' environment within the '$subscription' subscription.",
+                "This action will terminate the '${replica.name}' pod associated with this replica and create a new pod to maintain the desired replica count for '${service.name}' service, '${environment.name}' environment within the '${subscription.presentableName}' subscription.",
                 "Restart the Pod",
                 HybrisIcons.CCv2.Service.Actions.RESTART_POD
             ) != Messages.YES
