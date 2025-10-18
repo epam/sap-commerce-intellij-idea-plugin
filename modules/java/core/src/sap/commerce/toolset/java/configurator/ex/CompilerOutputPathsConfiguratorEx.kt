@@ -35,11 +35,12 @@ internal object CompilerOutputPathsConfiguratorEx {
         val fakeOutputPath = rootProjectDescriptor.isUseFakeOutputPathForCustomExtensions
         val ootbReadonlyMode = rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
 
-        val output =  if (fakeOutputPath) {
-            if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM || !ootbReadonlyMode) HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH
+        val output = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) {
+            if (fakeOutputPath) HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH
             else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
         } else {
-            HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
+            if (ootbReadonlyMode || fakeOutputPath) HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH
+            else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
         }
 
         val outputDirectory = File(moduleDescriptor.moduleRootDirectory, output)
