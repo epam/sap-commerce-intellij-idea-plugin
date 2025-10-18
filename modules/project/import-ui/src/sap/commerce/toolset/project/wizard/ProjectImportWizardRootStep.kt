@@ -218,12 +218,12 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     .component
             }.layout(RowLayout.PARENT_GRID)
             row {
-                useFakeOutputPathForCustomExtensionsCheckbox = checkBox("Use fake output path for custom extensions")
-                    .comment("When enabled the `eclipsebin’ folder will be used as an output path for both custom and OOTB extensions")
+                useFakeOutputPathForCustomExtensionsCheckbox = checkBox("Use fake output path")
+                    .comment("When enabled the `eclipsebin’ folder will be used as an output path for extensions")
                     .component
             }.layout(RowLayout.PARENT_GRID)
             row {
-                importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode test")
+                importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode")
                     .component
             }.layout(RowLayout.PARENT_GRID)
 

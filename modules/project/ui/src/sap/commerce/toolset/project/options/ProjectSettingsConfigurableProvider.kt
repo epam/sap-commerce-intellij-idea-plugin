@@ -112,8 +112,8 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .bindSelected(projectSettings::removeExternalModulesOnRefresh)
                 }
                 row {
-                    checkBox("Use fake output path for custom extensions")
-                        .comment("When enabled the ‘eclipsebin’ folder will be used as an output path for both custom and OOTB extensions.")
+                    checkBox("Use fake output path")
+                        .comment("When enabled the ‘eclipsebin’ folder will be used as an output path for extensions.")
                         .bindSelected(projectSettings::useFakeOutputPathForCustomExtensions)
                 }
                 row {
