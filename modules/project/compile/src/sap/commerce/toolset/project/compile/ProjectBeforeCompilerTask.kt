@@ -178,8 +178,8 @@ class ProjectBeforeCompilerTask : CompileTask {
             Files.walkFileTree(
                 bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY),
                 object : SimpleFileVisitor<Path>() {
-                    override fun visitFile(file: Path?, attrs: BasicFileAttributes?): FileVisitResult {
-                        if (file?.extension == "java" && file.name != "package-info.java") sourceFiles.add(file.toFile())
+                    override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
+                        if (file.extension == "java" && file.name != "package-info.java") sourceFiles.add(file.toFile())
                         return super.visitFile(file, attrs)
                     }
                 })
