@@ -35,7 +35,7 @@ data class ApplicationSettingsState(
     @JvmField @OptionTag val ignoreNonExistingSourceDirectories: Boolean = false,
     @JvmField @OptionTag val withStandardProvidedSources: Boolean = true,
     @JvmField @OptionTag val scanThroughExternalModule: Boolean = true,
-    @JvmField @OptionTag val excludeTestSources: Boolean = false,
+    @JvmField @OptionTag val excludeTestSources: Boolean = true,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
     @JvmField @OptionTag val groupHybris: String = "Hybris",
     @JvmField @OptionTag val groupOtherHybris: String = "Hybris/Unused",
