@@ -300,5 +300,5 @@ fun RunIdeTask.applyRunIdeSystemSettings() {
     systemProperty("ide.show.tips.on.startup.default.value", false)
     systemProperty("idea.trust.all.projects", true)
     systemProperty("jb.consents.confirmation.enabled", false)
-//    systemProperty("compiler.process.debug.port", "5005")
+    systemProperty("compiler.process.debug.port", "5005")
 }
