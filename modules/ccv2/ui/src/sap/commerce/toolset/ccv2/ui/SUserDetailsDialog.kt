@@ -35,7 +35,7 @@ class SUserDetailsDialog(
     private val sUserDto: SUser.Mutable = sUser.mutable()
 ) : DialogWrapper(project), Disposable {
 
-    private lateinit var idTextField: JBTextField
+    private lateinit var focusedComponent: JBTextField
 
     init {
         title = "Define an Alias for the S-User"
@@ -46,16 +46,13 @@ class SUserDetailsDialog(
 
     override fun createCenterPanel() = panel {
         row {
-            idTextField = textField()
-                .label("S-User:")
-                .align(AlignX.FILL)
-                .enabled(false)
-                .component
-                .also { it.text = sUserDto.id }
+            label("S-User:")
+            label(sUserDto.id)
+                .bold()
         }.layout(RowLayout.PARENT_GRID)
 
         row {
-            textField()
+            focusedComponent = textField()
                 .label("Alias:")
                 .align(AlignX.FILL)
                 .onChanged { sUserDto.alias = it.text }
@@ -69,11 +66,16 @@ class SUserDetailsDialog(
     override fun applyFields() {
         val developerSettings = CCv2DeveloperSettings.getInstance(project)
         val mutable = developerSettings.ccv2Settings.mutable()
-        mutable.sUsers[sUser.id] = sUserDto.immutable()
+
+        if (sUserDto.alias?.isBlank() ?: true) {
+            mutable.sUsers.remove(sUser.id)
+        } else {
+            mutable.sUsers[sUser.id] = sUserDto.immutable()
+        }
 
         developerSettings.ccv2Settings = mutable.immutable()
     }
 
     override fun getStyle() = DialogStyle.COMPACT
-    override fun getPreferredFocusedComponent() = idTextField
+    override fun getPreferredFocusedComponent() = focusedComponent
 }

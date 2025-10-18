@@ -4,7 +4,8 @@
 - Re-enabled possibility to download new dependencies via IDE [#1593](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1593)
 
 ### Fixed
-- Fixed CCv2 `subscription` and `s-user` representation [#1594](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1594)
+- Fixed CCv2 `subscription` and `S-User` representation [#1594](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1594)
+- Fixed CCv2 `S-User` persistence [#1595](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1595)
 
 ## [2025.2.4.2]
 

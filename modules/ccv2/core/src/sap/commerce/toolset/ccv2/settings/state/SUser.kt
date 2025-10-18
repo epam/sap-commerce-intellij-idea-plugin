@@ -20,7 +20,7 @@ package sap.commerce.toolset.ccv2.settings.state
 import com.intellij.util.xmlb.annotations.OptionTag
 
 data class SUser(
-    @JvmField @OptionTag val id: String,
+    @JvmField @OptionTag val id: String = "required for serialization",
     @JvmField @OptionTag val alias: String? = null
 ) {
     val presentableName
