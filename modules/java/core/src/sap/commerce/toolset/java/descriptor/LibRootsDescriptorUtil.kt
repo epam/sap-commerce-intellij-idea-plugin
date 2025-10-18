@@ -326,7 +326,7 @@ private fun getWebLibraryDescriptors(
         .forEach { sourceFiles.add(it) }
 
     if (descriptor.owner.name != HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
-        if (descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) {
+        if (descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor is YWebSubModuleDescriptor) {
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${descriptor.name} - $libName Classes",
