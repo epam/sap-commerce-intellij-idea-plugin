@@ -116,9 +116,9 @@ public final class ContentRootConfiguratorEx {
                 JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
                 dirsToIgnore, appSettings
             );
-        }
 
-        configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore, appSettings);
+            configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore, appSettings);
+        }
 
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
