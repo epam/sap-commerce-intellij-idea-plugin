@@ -1,5 +1,8 @@
 ## [2025.2.4.3]
 
+### `CCv2` enhancements
+- Added `S-User` alias for service `modified by` characteristic [#1596](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1596)
+
 ### `External Dependencies` enhancements
 - Re-enabled possibility to download new dependencies via IDE [#1593](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1593)
 

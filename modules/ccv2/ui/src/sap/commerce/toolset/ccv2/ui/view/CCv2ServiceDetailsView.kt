@@ -33,6 +33,7 @@ import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentServiceAction
 import sap.commerce.toolset.ccv2.actionSystem.CCv2ServiceRestartReplicaAction
@@ -241,7 +242,11 @@ class CCv2ServiceDetailsView(
                 panel { ccv2ServiceReplicasRow(service) }
                     .gap(RightGap.COLUMNS)
 
-                panel { ccv2ServiceModifiedByRow(service) }
+                panel {
+                    row {
+                        sUser(project, service.modifiedBy, HybrisIcons.CCv2.Service.MODIFIED_BY, "Modified by")
+                    }
+                }
                     .gap(RightGap.COLUMNS)
 
                 panel { ccv2ServiceModifiedTimeRow(service) }

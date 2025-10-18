@@ -266,7 +266,9 @@ class CCv2EnvironmentDetailsView(
                     .gap(RightGap.COLUMNS)
 
                 panel {
-                    ccv2ServiceModifiedByRow(service)
+                    row {
+                        sUser(project, service.modifiedBy, HybrisIcons.CCv2.Service.MODIFIED_BY, "Modified by")
+                    }
                 }
                     .gap(RightGap.COLUMNS)
 
