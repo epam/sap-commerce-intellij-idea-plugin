@@ -214,6 +214,7 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.dtdparser)
     implementation(libs.maven.model)
+    implementation(project(":jps-plugin"))
     testImplementation(kotlin("test"))
     testRuntimeOnly("junit:junit:4.13.2")
 
@@ -226,9 +227,11 @@ dependencies {
 
         pluginVerifier()
 
-        rootProject.childProjects.keys.forEach {
-            pluginComposedModule(implementation(project(it)))
-        }
+        rootProject.childProjects.keys
+            .filter { it != "jps-plugin" }
+            .forEach {
+                pluginComposedModule(implementation(project(it)))
+            }
         bundledModules(
             "intellij.grid.impl",
             "intellij.spellchecker",

@@ -37,6 +37,8 @@ dependencyResolutionManagement {
     }
 }
 
+include(":jps-plugin")
+
 // auto-import sub-mobules
 File(rootDir, "modules").walk()
     .maxDepth(4)

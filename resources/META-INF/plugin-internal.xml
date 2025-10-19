@@ -23,6 +23,9 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
+<!--        <jps.plugin/>-->
+        <compileServer.plugin id="sap.commerce.developers.toolset.jps" classpath="SAP Commerce Developers Toolset.jps-plugin.jar"/>
+
         <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
 
         <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>

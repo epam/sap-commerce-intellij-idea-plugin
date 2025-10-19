@@ -20,6 +20,7 @@
 **/out/
 /build/
 /modules/**/build
+/jps-plugin/build
 /buildsrc/build
 /buildsrc/.gradle
 /common/build/

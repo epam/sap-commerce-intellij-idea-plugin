@@ -8,7 +8,7 @@
     <option name="PORT" value="5005" />
     <option name="AUTO_RESTART" value="false" />
     <RunnerSettings RunnerId="Debug">
-      <option name="DEBUG_PORT" value="54691" />
+      <option name="DEBUG_PORT" value="5005" />
       <option name="LOCAL" value="false" />
     </RunnerSettings>
     <method v="2" />
