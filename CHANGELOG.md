@@ -5,6 +5,7 @@
 - Adjusted compiler output paths in case of the readonly OOTB extensions [#1599](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1599)
 - Always register `Web Classes` library for non-custom extensions [#1600](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1600)
 - Do not register `resources` directory for OOTB extensions in the readonly mode [#1601](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1601)
+- Adjusted default project & application settings [#1602](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1602)
 
 ### `CCv2` enhancements
 - Added `S-User` alias for service `modified by` characteristic [#1596](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1596)
