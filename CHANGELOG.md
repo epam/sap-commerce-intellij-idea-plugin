@@ -3,6 +3,7 @@
 ### `Project Import` enhancements
 - Auto-configure `UTF-8` as a charset for properties files [#1597](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1597)
 - Adjusted compiler output paths in case of the readonly OOTB extensions [#1599](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1599)
+- Always register `Web Classes` library for non-custom extensions [#1600](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1600)
 
 ### `CCv2` enhancements
 - Added `S-User` alias for service `modified by` characteristic [#1596](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1596)
