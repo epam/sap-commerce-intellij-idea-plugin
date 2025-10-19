@@ -33,7 +33,5 @@ class JpsHybrisFacetConfigurationSerializer : JpsFacetConfigurationSerializer<Jp
         name: String?,
         parent: JpsElement?,
         module: JpsModule?
-    ): JpsHybrisFacetElement {
-        return JpsHybrisFacetElement(JpsHybrisFacetSettings())
-    }
+    ) = JpsHybrisFacetElement(JpsHybrisFacetSettings())
 }
