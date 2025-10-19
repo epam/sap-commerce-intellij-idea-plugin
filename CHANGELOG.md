@@ -9,6 +9,9 @@
 ### `External Dependencies` enhancements
 - Re-enabled possibility to download new dependencies via IDE [#1593](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1593)
 
+### Other
+- Introduced run configuration for the Plugin Build process [#1598](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1598)
+
 ### Fixed
 - Fixed CCv2 `subscription` and `S-User` representation [#1594](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1594)
 - Fixed CCv2 `S-User` persistence [#1595](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1595)
