@@ -53,7 +53,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 <!-- Plugin description end -->
 
-### Quick start ##
+### Quick start
 
 * Fork and checkout most-active branch the project
 * Refresh gradle dependencies
@@ -67,6 +67,13 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
   * or if `clean` was executed, because `clean` task will delete `build/idea-sandbox`
   * once installed, restart IDE
 * By default, IDEA Ultimate version will be started. To be able to start IDEA Community edition `ideDir` has to be configured for `runIde` Gradle task
+
+### Build process debugging
+
+* Start the sandbox
+* Enable `Debug Build Process` via actions menu
+* Start the build via sandbox
+* Start `Debug - Build` run configuration via Plugin development IDE
 
 ### Contributors and Developers
 
