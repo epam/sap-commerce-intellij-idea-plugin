@@ -26,17 +26,14 @@ import sap.commerce.toolset.jps.model.JpsHybrisExtensionService
 
 class JpsHybrisModuleBasedBuildTargetType : ModuleBasedBuildTargetType<ModuleBuildTarget>("hybris-build-target") {
     override fun computeAllTargets(model: JpsModel): List<ModuleBuildTarget> {
-        val extensionService = JpsHybrisExtensionService.getInstance() ?: return emptyList()
+        JpsHybrisExtensionService.getInstance() // this will register ResourcesBuilder customization
 
         return emptyList()
     }
 
-    override fun createLoader(model: JpsModel): BuildTargetLoader<ModuleBuildTarget> {
-        return object : BuildTargetLoader<ModuleBuildTarget>() {
-            override fun createTarget(targetId: String): ModuleBuildTarget? {
-//                val module = modules.get(targetId) as JpsModule?
-                return null
-            }
-        };
-    }
+    override fun createLoader(model: JpsModel): BuildTargetLoader<ModuleBuildTarget> = object : BuildTargetLoader<ModuleBuildTarget>() {
+        override fun createTarget(targetId: String): ModuleBuildTarget? {
+            return null
+        }
+    };
 }
