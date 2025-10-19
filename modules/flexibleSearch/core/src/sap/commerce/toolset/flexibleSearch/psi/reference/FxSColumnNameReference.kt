@@ -178,6 +178,12 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             ?.parentOfType<FlexibleSearchSelectCoreSelect>()
             ?.resultColumns
             ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchColumnAliasName::class.java) }
+            ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java)
+                ?.parentOfType<FlexibleSearchSelectStatement>()
+                ?.selectCoreSelectList
+                ?.mapNotNull { it.resultColumns }
+                ?.map { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchColumnAliasName::class.java) }
+                ?.flatten()
     }
 
 }
