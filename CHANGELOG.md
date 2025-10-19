@@ -1,7 +1,7 @@
 ## [2025.2.4.3]
 
 ### `JPS - Build` enhancement
-- Introduced Hybris-specific JPS implementation to exclude resources content from the compile output directories [#1598](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1598)
+- Introduced Hybris-specific JPS implementation to exclude resources content from the compile output directories [#1603](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1603)
 
 ### `Project Import` enhancements
 - Auto-configure `UTF-8` as a charset for properties files [#1597](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1597)
