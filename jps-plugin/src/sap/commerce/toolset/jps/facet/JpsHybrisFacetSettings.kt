@@ -19,4 +19,9 @@
 package sap.commerce.toolset.jps.facet
 
 class JpsHybrisFacetSettings {
+    var type: String? = null
+    var subType: String? = null
+    var backofficeModule: Boolean = false
+    var webModule: Boolean = false
+    var readonly: Boolean = false
 }

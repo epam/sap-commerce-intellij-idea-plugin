@@ -36,10 +36,7 @@ import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.*;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import java.io.File;
@@ -131,7 +128,12 @@ public final class ContentRootConfiguratorEx {
     ) {
         final var resourcesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), RESOURCES_DIRECTORY);
 
-        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore, appSettings);
+        final var rootType = JavaResourceRootType.RESOURCE;
+        final var properties = moduleDescriptor instanceof YBackofficeSubModuleDescriptor
+            ? JpsJavaExtensionService.getInstance().createResourceRootProperties("cockpitng", false)
+            : rootType.createDefaultProperties();
+
+        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, rootType, properties, dirsToIgnore, appSettings);
 
         final var extensionsResourcesToExcludeList = appSettings.getExtensionsResourcesToExclude();
         final var shouldExcludeResourcesDir = CollectionUtils.isNotEmpty(extensionsResourcesToExcludeList)

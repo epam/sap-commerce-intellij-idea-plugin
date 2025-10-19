@@ -28,7 +28,19 @@ class JpsHybrisExtensionServiceImpl : JpsHybrisExtensionService {
         /*
             do not copy <extension>/resources -> <extension>/<out directory> when module has SAP Commerce Facet
             <out directory> can be "classes" or "eclipsebin"
+
+            used in the "ResourcesBuilder.isResourceProcessingEnabled"
          */
-        ResourcesBuilder.registerEnabler { module -> module.container.getChild(JpsHybrisFacetElementChildRole.INSTANCE) == null }
+        ResourcesBuilder.registerEnabler { module ->
+            val facetSettings = module.container.getChild(JpsHybrisFacetElementChildRole.INSTANCE)
+                ?.settings
+                ?: return@registerEnabler true
+
+            when {
+                facetSettings.readonly -> false
+                facetSettings.backofficeModule && facetSettings.subType == "BACKOFFICE" -> true
+                else -> false
+            }
+        }
     }
 }

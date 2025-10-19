@@ -2,6 +2,7 @@
 
 ### `JPS - Build` enhancement
 - Introduced Hybris-specific JPS implementation to exclude `resources` content from the compile output directories [#1603](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1603)
+- Replicated Hybris build output directory for backoffice sub-modules by using `<compile output>/cockpitng` [#1604](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1604)
 
 ### `Project Import` enhancements
 - Auto-configure `UTF-8` as a charset for properties files [#1597](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1597)

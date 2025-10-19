@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.jps.model.serialization
 
+import fleet.util.associateNotNull
 import org.jdom.Element
 import org.jetbrains.jps.model.JpsElement
 import org.jetbrains.jps.model.module.JpsModule
@@ -33,5 +34,26 @@ class JpsHybrisFacetConfigurationSerializer : JpsFacetConfigurationSerializer<Jp
         name: String?,
         parent: JpsElement?,
         module: JpsModule?
-    ) = JpsHybrisFacetElement(JpsHybrisFacetSettings())
+    ) = JpsHybrisFacetElement(JpsHybrisFacetSettings().apply {
+        // for all possible values see -> ExtensionDescriptor
+        val settings = facetConfigurationElement.settings
+
+        type = settings["type"]
+        subType = settings["subModuleType"]
+        backofficeModule = settings["backofficeModule"].toBoolean()
+        webModule = settings["webModule"].toBoolean()
+        readonly = settings["readonly"].toBoolean()
+    })
+
+    private val Element.settings
+        get() = getChildren("option")
+            .associateNotNull {
+                val name = it.getAttribute("name")
+                    ?.value
+                    ?: return@associateNotNull null
+                val value = it.getAttribute("value")
+                    ?.value
+                    ?: return@associateNotNull null
+                name to value
+            }
 }
