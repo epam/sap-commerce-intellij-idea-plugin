@@ -13,7 +13,7 @@
 <!-- Plugin description -->
 This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [IntelliJ IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 
-> **Valuable Note**: This is an open-source project. Since around 2023, its maintenance and evolution have been driven by a small group of dedicated contributors volunteering their time outside of regular working hours.
+> **Valuable Note**: This is an open-source project. Since around 2023, its maintenance and evolution have been driven by a very small group of dedicated contributors volunteering their time outside of regular working hours.
 > 
 > Please take a moment to acknowledge the contributors listed on the project’s [Contributors & Insights](https://github.com/epam/sap-commerce-intellij-idea-plugin/graphs/contributors?from=10%2F07%2F2022) page!   
 
