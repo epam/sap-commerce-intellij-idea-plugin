@@ -19,6 +19,7 @@
 
 ### `Gradle` enhancements
 - Refresh linked projects on project refresh [#1606](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1606)
+- Respect child Gradle projects on project refresh [#1607](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1607)
 
 ### `External Dependencies` enhancements
 - Re-enabled possibility to download new dependencies via IDE [#1593](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1593)

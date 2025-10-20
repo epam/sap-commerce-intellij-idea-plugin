@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.eclipse.descriptor
 
+import com.intellij.openapi.project.Project
 import org.jetbrains.idea.eclipse.EclipseProjectFinder
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -34,7 +35,7 @@ class EclipseModuleDescriptor(
 ) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(moduleRootDirectory: File): Boolean {
+        override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
             if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX))  return false
 
             return File(moduleRootDirectory, HybrisConstants.DOT_PROJECT).isFile()

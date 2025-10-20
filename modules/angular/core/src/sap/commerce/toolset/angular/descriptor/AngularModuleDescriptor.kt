@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.angular.descriptor
 
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ModuleGroupingUtil
 import sap.commerce.toolset.project.descriptor.*
@@ -52,7 +53,7 @@ class AngularModuleDescriptor(
     }
 
     class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(moduleRootDirectory: File) = File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
+        override fun isApplicable(project: Project?, moduleRootDirectory: File) = File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
 
         override fun create(
             moduleRootDirectory: File,

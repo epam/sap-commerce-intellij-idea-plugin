@@ -22,20 +22,17 @@ import com.intellij.ide.projectView.TreeStructureProvider
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
-import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.isNotHybrisProject
-import sap.commerce.toolset.project.HybrisProjectService
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
@@ -119,7 +116,6 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         val otherNodes = mutableListOf<AbstractTreeNode<*>>()
         val treeNodes = mutableListOf<AbstractTreeNode<*>>()
 
-        val projectService: HybrisProjectService = application.service()
         val projectRootManager = ProjectRootManager.getInstance(project)
         for (child in children) {
             if (child is PsiDirectoryNode) {
@@ -130,7 +126,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                 val yFacet = projectRootManager.fileIndex.getModuleForFile(virtualFile)
                     ?.let { YFacet.get(it) }
 
-                if (yFacet == null && ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(file) }) {
+                if (yFacet == null && ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(project, file) }) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)

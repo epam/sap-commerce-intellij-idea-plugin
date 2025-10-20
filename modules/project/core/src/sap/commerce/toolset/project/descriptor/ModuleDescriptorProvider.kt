@@ -19,11 +19,13 @@
 package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 import java.io.File
 
 interface ModuleDescriptorProvider {
 
-    fun isApplicable(moduleRootDirectory: File): Boolean
+    fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean
+
     fun create(
         moduleRootDirectory: File,
         rootProjectDescriptor: HybrisProjectDescriptor,

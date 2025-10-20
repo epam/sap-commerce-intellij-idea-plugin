@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.ccv2.descriptor
 
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
@@ -32,7 +33,7 @@ class CCv2DatahubModuleDescriptor(
 ) : CCv2ModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(moduleRootDirectory: File): Boolean {
+        override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
             val absolutePath = moduleRootDirectory.absolutePath
 
             return absolutePath.contains(CCv2Constants.DATAHUB_NAME)

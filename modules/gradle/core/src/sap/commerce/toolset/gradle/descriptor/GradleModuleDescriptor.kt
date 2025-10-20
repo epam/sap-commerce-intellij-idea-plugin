@@ -18,6 +18,9 @@
 
 package sap.commerce.toolset.gradle.descriptor
 
+import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
+import com.intellij.openapi.project.Project
+import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
@@ -34,11 +37,13 @@ open class GradleModuleDescriptor(
 
     class Provider : ModuleDescriptorProvider {
 
-        override fun isApplicable(moduleRootDirectory: File): Boolean {
+        override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
             if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
 
-            return File(moduleRootDirectory, HybrisConstants.GRADLE_SETTINGS).isFile ||
-                File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD).isFile
+            return File(moduleRootDirectory, HybrisConstants.GRADLE_SETTINGS).isFile
+                || File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD).isFile
+                // project refresh case
+                || (project != null && ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID).getLinkedProjectSettings(moduleRootDirectory.path) != null)
         }
 
         override fun create(

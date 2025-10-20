@@ -25,10 +25,6 @@ public class HybrisConfigurationException extends Exception {
         super(message);
     }
 
-    public HybrisConfigurationException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
     public HybrisConfigurationException(final Throwable cause) {
         super(cause);
     }

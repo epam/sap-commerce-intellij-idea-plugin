@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.gradle.descriptor
 
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
@@ -34,10 +35,11 @@ class GradleKtsModuleDescriptor(
 
     class Provider : ModuleDescriptorProvider {
 
-        override fun isApplicable(moduleRootDirectory: File): Boolean {
+        override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
             if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
 
-            return File(moduleRootDirectory, HybrisConstants.GRADLE_SETTINGS_KTS).isFile ||
+            return File(moduleRootDirectory, HybrisConstants.GRADLE_SETTINGS_KTS).isFile
+                ||
                 File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS).isFile
         }
 

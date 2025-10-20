@@ -103,7 +103,7 @@ object ModuleDescriptorFactory {
 
             else -> {
                 ModuleDescriptorProvider.EP.extensionList
-                    .firstOrNull { it.isApplicable(resolvedFile) }
+                    .firstOrNull { it.isApplicable(rootProjectDescriptor.project, resolvedFile) }
                     ?.create(resolvedFile, rootProjectDescriptor)
                     ?: throw HybrisConfigurationException("Could not find suitable module descriptor provider for $path")
             }
