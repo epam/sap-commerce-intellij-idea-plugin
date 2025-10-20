@@ -18,14 +18,16 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
+import actionButton
 import com.intellij.ide.HelpTooltip
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.actionSystem.CCv2ShowEnvironmentDetailsAction
+import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentStatusEnum
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
@@ -66,9 +68,12 @@ object CCv2EnvironmentsDataView : CCv2DataView<CCv2EnvironmentDto>() {
             panel {
                 row {
                     actionButton(
-                        CCv2ShowEnvironmentDetailsAction(subscription, environment),
+                        ActionManager.getInstance().getAction("ccv2.environment.showDetails.action"),
                         ActionPlaces.TOOLWINDOW_CONTENT
-                    )
+                    ) {
+                        it[CCv2UiConstants.DataKeys.Subscription] = subscription
+                        it[CCv2UiConstants.DataKeys.Environment] = environment
+                    }
                 }
             }.gap(RightGap.SMALL)
 

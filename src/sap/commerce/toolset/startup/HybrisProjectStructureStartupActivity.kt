@@ -22,11 +22,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.i18n
-import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.project.actionSystem.ProjectRefreshAction
+import sap.commerce.toolset.*
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
 
@@ -52,7 +48,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
                 )
             )
                 .important(true)
-                .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
+                .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> project.triggerAction("sap.commerce.toolset.yRefresh") }
                 .notify(project)
         }
 

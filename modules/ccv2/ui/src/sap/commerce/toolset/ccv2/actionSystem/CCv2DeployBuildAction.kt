@@ -15,31 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.typeSystem.actionSystem
 
-import com.intellij.diagram.DiagramAction
-import com.intellij.idea.ActionsBundle
+package sap.commerce.toolset.ccv2.actionSystem
+
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.triggerAction
-import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramDataModel
+import sap.commerce.toolset.ccv2.CCv2UiConstants
+import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2DeployBuildDialog
 
-class ExpandAllDiagramAction : DiagramAction(
-    ActionsBundle.message("action.ExpandAll.text"),
-    null,
-    HybrisIcons.Actions.EXPAND_ALL
+class CCv2DeployBuildAction : CCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Deploy Build",
+    icon = HybrisIcons.CCv2.Build.Actions.DEPLOY
 ) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val build = e.getData(CCv2UiConstants.DataKeys.Build) ?: return
 
-    override fun perform(event: AnActionEvent) {
-        val dataModel = getBuilder(event)
-            ?.dataModel
-            ?.asSafely<TSDiagramDataModel>() ?: return
-
-        dataModel.expandAllNodes()
-
-        triggerAction("Diagram.RefreshDataModelManually", event)
+        CCv2DeployBuildDialog(project, subscription, build).showAndGet()
     }
 
-    override fun getActionName(): String = ActionsBundle.message("action.ExpandAll.text")
+    override fun isEnabled(e: AnActionEvent) = super.isEnabled(e)
+        && (e.getData(CCv2UiConstants.DataKeys.Build)?.canDeploy() ?: false)
 }

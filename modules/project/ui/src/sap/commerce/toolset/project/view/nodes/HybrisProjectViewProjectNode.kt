@@ -30,6 +30,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiManager
+import sap.commerce.toolset.directory
 
 // TODO: remove this class and migrate to new Workspace Model API
 class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings) : ProjectViewProjectNode(project, viewSettings) {
@@ -46,7 +47,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
 
         val nodes = modulesAndGroups(modules).toMutableList()
 
-        project.basePath
+        project.directory
             ?.let { LocalFileSystem.getInstance().findFileByPath(it) }
             ?.let { baseDir ->
                 val psiManager = PsiManager.getInstance(project)

@@ -19,60 +19,19 @@
 
 package sap.commerce.toolset.project.actionSystem;
 
-import com.intellij.ide.DataManager;
-import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ex.ActionUtil;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.CompilerProjectExtension;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.libraries.LibraryTable;
-import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisIcons;
-import sap.commerce.toolset.project.HybrisProjectImportProvider;
-import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator;
-import sap.commerce.toolset.project.facet.YFacet;
-import sap.commerce.toolset.project.settings.ProjectSettings;
-import sap.commerce.toolset.project.wizard.RefreshSupport;
+import sap.commerce.toolset.project.ProjectRefreshService;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class ProjectRefreshAction extends AnAction {
-
-    public static void triggerAction() {
-        final DataManager dataManager = DataManager.getInstance();
-        if (dataManager != null) {
-            dataManager.getDataContextFromFocusAsync()
-                .onSuccess(ProjectRefreshAction::triggerAction);
-        }
-    }
-
-    public static void triggerAction(final DataContext dataContext) {
-        ApplicationManager.getApplication().invokeLater(() -> {
-            final AnAction action = new ProjectRefreshAction();
-            final AnActionEvent actionEvent = AnActionEvent.createEvent(
-                action,
-                dataContext,
-                null,
-                ActionPlaces.UNKNOWN,
-                ActionUiKind.NONE,
-                null
-            );
-
-            ActionUtil.performAction(action, actionEvent);
-        }, ModalityState.nonModal());
-    }
 
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
@@ -81,16 +40,12 @@ public class ProjectRefreshAction extends AnAction {
 
     @Override
     public void actionPerformed(final @NotNull AnActionEvent e) {
-        final var project = getEventProject(e);
+        final var project = e.getProject();
 
         if (project == null) return;
 
-        removeOldProjectData(project);
-
         try {
-            createWizard(project)
-                .getProjectBuilder()
-                .commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
+            ProjectRefreshService.Companion.getInstance(project).refresh();
         } catch (final ConfigurationException ex) {
             Messages.showErrorDialog(
                 project,
@@ -116,65 +71,5 @@ public class ProjectRefreshAction extends AnAction {
     @Override
     public boolean isDumbAware() {
         return true;
-    }
-
-    private static void removeOldProjectData(@NotNull final Project project) {
-        final var moduleModel = ModuleManager.getInstance(project).getModifiableModel();
-        final var projectSettings = ProjectSettings.getInstance(project);
-        final var removeExternalModulesOnRefresh = projectSettings.getRemoveExternalModulesOnRefresh();
-
-        for (Module module : moduleModel.getModules()) {
-            if (removeExternalModulesOnRefresh || YFacet.Companion.getState(module) != null) {
-                moduleModel.disposeModule(module);
-            }
-        }
-        final LibraryTable.ModifiableModel libraryModel = LibraryTablesRegistrar.getInstance().getLibraryTable(project).getModifiableModel();
-
-        for (Library library : libraryModel.getLibraries()) {
-            libraryModel.removeLibrary(library);
-        }
-        ApplicationManager.getApplication().runWriteAction(() -> {
-            moduleModel.commit();
-            libraryModel.commit();
-        });
-
-        ProjectRefreshConfigurator.Companion.getEP().getExtensionList()
-            .forEach(configurator -> configurator.beforeRefresh(project));
-    }
-
-    private AddModuleWizard createWizard(final Project project) throws ConfigurationException {
-        final var provider = getHybrisProjectImportProvider();
-        final var projectName = project.getName();
-        final var jdk = ProjectRootManager.getInstance(project).getProjectSdk();
-        final var compilerOutputUrl = CompilerProjectExtension.getInstance(project).getCompilerOutputUrl();
-        final var projectSettings = ProjectSettings.getInstance(project);
-
-        final var wizard = new AddModuleWizard(project, project.getBasePath(), provider) {
-
-            @Override
-            protected void init() {
-                // non GUI mode
-            }
-        };
-        final var wizardContext = wizard.getWizardContext();
-        wizardContext.setProjectJdk(jdk);
-        wizardContext.setProjectName(projectName);
-        wizardContext.setCompilerOutputDirectory(compilerOutputUrl);
-
-        for (final var step : wizard.getSequence().getAllSteps()) {
-            if (step instanceof final RefreshSupport refreshStep) {
-                refreshStep.refresh(projectSettings);
-            }
-        }
-        return wizard;
-    }
-
-    private ProjectImportProvider getHybrisProjectImportProvider() {
-        for (final ProjectImportProvider provider : ProjectImportProvider.PROJECT_IMPORT_PROVIDER.getExtensionsIfPointIsRegistered()) {
-            if (provider instanceof HybrisProjectImportProvider) {
-                return provider;
-            }
-        }
-        return null;
     }
 }

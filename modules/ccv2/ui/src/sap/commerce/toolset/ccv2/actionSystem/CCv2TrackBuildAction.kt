@@ -21,36 +21,24 @@ package sap.commerce.toolset.ccv2.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
-import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.ccv2.CCv2UiConstants
+import sap.commerce.toolset.ccv2.dto.CCv2BuildRequest
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 
-class CCv2FetchDeploymentsAction : CCv2FetchAction<CCv2DeploymentDto>(
-    tab = CCv2Tab.DEPLOYMENTS,
-    text = "Fetch Deployments",
-    icon = HybrisIcons.CCv2.Actions.FETCH,
-    fetch = { project, subscriptions, onCompleteCallback ->
-        CCv2Service.getInstance(project).fetchDeployments(subscriptions, onCompleteCallback)
-    }
-)
-
-class CCv2TrackDeploymentAction(
-    private val subscription: CCv2Subscription,
-    private val deployment: CCv2DeploymentDto
-) : CCv2Action(
-    tab = CCv2Tab.DEPLOYMENTS,
-    text = "Track Deployment",
-    icon = HybrisIcons.CCv2.Deployment.Actions.WATCH
+class CCv2TrackBuildAction : CCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Track Build",
+    icon = HybrisIcons.CCv2.Build.Actions.WATCH
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val build = e.getData(CCv2UiConstants.DataKeys.Build) ?: return
 
-        CCv2Service.getInstance(project).trackDeployment(project, subscription, deployment.code, deployment.buildCode)
+        val buildRequest = CCv2BuildRequest(subscription, build.name, build.branch, build.canTrack())
+        CCv2Service.getInstance(project).trackBuild(project, buildRequest, build.code)
     }
 
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-
-        e.presentation.isEnabled = e.presentation.isEnabled && deployment.canTrack()
-    }
+    override fun isEnabled(e: AnActionEvent) = super.isEnabled(e)
+        && (e.getData(CCv2UiConstants.DataKeys.Build)?.canTrack() ?: false)
 }

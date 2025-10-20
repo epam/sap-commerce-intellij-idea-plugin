@@ -18,9 +18,11 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
+import actionsButton
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
@@ -35,8 +37,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentServiceAction
-import sap.commerce.toolset.ccv2.actionSystem.CCv2ServiceRestartReplicaAction
+import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceProperties
@@ -52,7 +53,7 @@ class CCv2ServiceDetailsView(
     private val project: Project,
     private val subscription: CCv2Subscription,
     private val environment: CCv2EnvironmentDto,
-    service: CCv2ServiceDto,
+    private val service: CCv2ServiceDto,
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val showCustomerProperties by lazy { AtomicBooleanProperty(service.customerProperties != null) }
@@ -80,24 +81,27 @@ class CCv2ServiceDetailsView(
         initPanel(service)
     }
 
+    override fun uiDataSnapshot(sink: DataSink) {
+        super.uiDataSnapshot(sink)
+
+        sink[CCv2UiConstants.DataKeys.Subscription] = subscription
+        sink[CCv2UiConstants.DataKeys.Environment] = environment
+        sink[CCv2UiConstants.DataKeys.Service] = service
+        sink[CCv2UiConstants.DataKeys.ServiceCallback] = {
+            // hard reset service details on re-fetch
+            it.initialPasswords = null
+            it.customerProperties = null
+            it.greenDeploymentSupported = null
+
+            initPanel(it)
+        }
+    }
+
     private fun installToolbar(service: CCv2ServiceDto) {
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
 
-            add(
-                CCv2FetchEnvironmentServiceAction(
-                    subscription,
-                    environment,
-                    service,
-                    {
-                        // hard reset service details on re-fetch
-                        it.initialPasswords = null
-                        it.customerProperties = null
-                        it.greenDeploymentSupported = null
-
-                        initPanel(it)
-                    }
-                ))
+            add(actionManager.getAction("ccv2.environment.fetchService.action"))
             add(actionManager.getAction("ccv2.reset.cache.action"))
 
             addSeparator()
@@ -283,10 +287,15 @@ class CCv2ServiceDetailsView(
                                 row {
                                     actionsButton(
                                         actions = listOfNotNull(
-                                            CCv2ServiceRestartReplicaAction(subscription, environment, service, replica),
+                                            ActionManager.getInstance().getAction("ccv2.service.restartReplica.action"),
                                         ).toTypedArray(),
                                         ActionPlaces.TOOLWINDOW_CONTENT
-                                    )
+                                    ) {
+                                        it[CCv2UiConstants.DataKeys.Subscription] = subscription
+                                        it[CCv2UiConstants.DataKeys.Environment] = environment
+                                        it[CCv2UiConstants.DataKeys.Service] = service
+                                        it[CCv2UiConstants.DataKeys.ServiceReplica] = replica
+                                    }
                                 }
                             }.gap(RightGap.SMALL)
 

@@ -18,12 +18,17 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
+import actionsButton
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Panel
+import com.intellij.ui.dsl.builder.RightGap
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.actionSystem.CCv2TrackDeploymentAction
+import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
@@ -57,10 +62,13 @@ object CCv2DeploymentsDataView : CCv2DataView<CCv2DeploymentDto>() {
                 row {
                     actionsButton(
                         actions = listOfNotNull(
-                            CCv2TrackDeploymentAction(subscription, deployment)
+                            ActionManager.getInstance().getAction("ccv2.deployment.track.action")
                         ).toTypedArray(),
                         ActionPlaces.TOOLWINDOW_CONTENT
-                    )
+                    ) {
+                        it[CCv2UiConstants.DataKeys.Subscription] = subscription
+                        it[CCv2UiConstants.DataKeys.Deployment] = deployment
+                    }
                 }
             }.gap(RightGap.SMALL)
             panel {

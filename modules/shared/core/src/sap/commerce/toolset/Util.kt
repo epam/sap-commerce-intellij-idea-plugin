@@ -18,9 +18,10 @@
 
 package sap.commerce.toolset
 
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.jetbrains.annotations.PropertyKey
@@ -31,6 +32,9 @@ val PsiElement.isHybrisProject: Boolean
 
 val PsiElement.isNotHybrisProject: Boolean
     get() = project.isNotHybrisProject
+
+val Project.directory: String?
+    get() = PathMacroManager.getInstance(this).expandPath($$"$PROJECT_DIR$")
 
 val Project.isHybrisProject: Boolean
     get() = WorkspaceSettings.getInstance(this).hybrisProject
@@ -60,3 +64,27 @@ fun i18nFallback(
     fallback: String,
     vararg params: Any
 ) = HybrisI18NBundleUtils.messageFallback(key, fallback, *params)
+
+fun Project.triggerAction(
+    actionId: String,
+    place: String = ActionPlaces.UNKNOWN,
+    uiKind: ActionUiKind = ActionUiKind.NONE,
+    dataContextProvider: () -> DataContext = { SimpleDataContext.getProjectContext(this) }
+) {
+    ActionManager.getInstance().getAction(actionId)
+        ?.let {
+            val event = AnActionEvent.createEvent(
+                it, dataContextProvider.invoke(),
+                null, place, uiKind, null
+            );
+            ActionUtil.performAction(it, event)
+        }
+}
+
+fun triggerAction(
+    actionId: String,
+    event: AnActionEvent,
+) {
+    ActionManager.getInstance().getAction(actionId)
+        ?.let { ActionUtil.performAction(it, event) }
+}

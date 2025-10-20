@@ -18,42 +18,36 @@
 
 package sap.commerce.toolset.ccv2.actionSystem
 
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
-import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
-import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
-import sap.commerce.toolset.ccv2.dto.CCv2ServiceReplicaDto
-import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.ui.view.CCv2ServiceDetailsView
+import sap.commerce.toolset.ccv2.CCv2UiConstants
+import sap.commerce.toolset.ccv2.ui.view.CCv2EnvironmentDetailsView
 
-class CCv2ShowServiceDetailsAction(
-    private val subscription: CCv2Subscription,
-    private val environment: CCv2EnvironmentDto,
-    private val service: CCv2ServiceDto,
-) : DumbAwareAction("Show Service Details", null, HybrisIcons.CCv2.Service.Actions.SHOW_DETAILS) {
+class CCv2ShowEnvironmentDetailsAction : DumbAwareAction("Show Environment Details", null, HybrisIcons.CCv2.Environment.Actions.SHOW_DETAILS) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val environment = e.getData(CCv2UiConstants.DataKeys.Environment) ?: return
         val toolWindow = ToolWindowManager.getInstance(project)
             .getToolWindow(HybrisConstants.TOOLWINDOW_ID) ?: return
         val contentManager = toolWindow.contentManager
-        val panel = CCv2ServiceDetailsView(project, subscription, environment, service)
+        val panel = CCv2EnvironmentDetailsView(project, subscription, environment)
         val content = contentManager.factory
-            .createContent(panel, service.name, true)
+            .createContent(panel, environment.name, true)
             .also {
                 it.isCloseable = true
                 it.isPinnable = true
-                it.icon = HybrisIcons.CCv2.Service.Actions.SHOW_DETAILS
+                it.icon = HybrisIcons.CCv2.Environment.Actions.SHOW_DETAILS
                 it.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
             }
 
@@ -63,28 +57,10 @@ class CCv2ShowServiceDetailsAction(
         contentManager.setSelectedContent(content)
     }
 
-}
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
 
-class CCv2ServiceRestartReplicaAction(
-    private val subscription: CCv2Subscription,
-    private val environment: CCv2EnvironmentDto,
-    private val service: CCv2ServiceDto,
-    private val replica: CCv2ServiceReplicaDto
-) : DumbAwareAction("Restart Pod", null, HybrisIcons.CCv2.Service.Actions.RESTART_POD) {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-
-        if (Messages.showYesNoDialog(
-                project,
-                "This action will terminate the '${replica.name}' pod associated with this replica and create a new pod to maintain the desired replica count for '${service.name}' service, '${environment.name}' environment within the '${subscription.presentableName}' subscription.",
-                "Restart the Pod",
-                HybrisIcons.CCv2.Service.Actions.RESTART_POD
-            ) != Messages.YES
-        ) return
-
-        CCv2Service.getInstance(project).restartServicePod(project, subscription, environment, service, replica)
+        e.presentation.isEnabled = e.getData(CCv2UiConstants.DataKeys.Environment)?.accessible ?: false
     }
 }

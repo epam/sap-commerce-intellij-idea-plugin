@@ -27,6 +27,7 @@
 ### Other
 - Introduced run configuration for the Plugin Build process [#1598](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1598)
 - Rely on a new approach on identifying enabled/disabled plugins [#1608](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1608)
+- Introduced `DataKey`-aware **Dsl** actions [#1609](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1609)
 
 ### Fixed
 - Fixed CCv2 `subscription` and `S-User` representation [#1594](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1594)

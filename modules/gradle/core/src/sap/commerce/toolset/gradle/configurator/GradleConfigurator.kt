@@ -18,8 +18,7 @@
 package sap.commerce.toolset.gradle.configurator
 
 import com.intellij.ide.util.PropertiesComponent
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
@@ -38,6 +37,7 @@ import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.triggerAction
 
 class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator, ProjectRefreshConfigurator {
 
@@ -71,16 +71,13 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         if (!hybrisProjectDescriptor.refresh) return
         val project = hybrisProjectDescriptor.project ?: return
 
-        val actionManager = ActionManager.getInstance()
-        val action = actionManager.getAction("ExternalSystem.RefreshAllProjects") ?: return
-        val dataContext = SimpleDataContext.builder()
-            .add(CommonDataKeys.PROJECT, project)
-            .add(ExternalSystemDataKeys.EXTERNAL_SYSTEM_ID, GradleConstants.SYSTEM_ID)
-            .build()
-        val event = AnActionEvent(dataContext, Presentation(), "", ActionUiKind.NONE, null, 0, actionManager)
-
         edtWriteAction {
-            ActionUtil.performAction(action, event)
+            project.triggerAction("ExternalSystem.RefreshAllProjects") {
+                SimpleDataContext.builder()
+                    .add(CommonDataKeys.PROJECT, project)
+                    .add(ExternalSystemDataKeys.EXTERNAL_SYSTEM_ID, GradleConstants.SYSTEM_ID)
+                    .build()
+            }
         }
     }
 

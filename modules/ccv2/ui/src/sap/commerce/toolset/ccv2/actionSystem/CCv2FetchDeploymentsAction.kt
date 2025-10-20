@@ -15,16 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.vfs
 
-import com.intellij.openapi.fileEditor.impl.NonProjectFileWritingAccessExtension
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-import sap.commerce.toolset.directory
+package sap.commerce.toolset.ccv2.actionSystem
 
-class HybrisNonProjectFileWritingAccessExtension(val project: Project) : NonProjectFileWritingAccessExtension {
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.CCv2Service
+import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
+import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 
-    override fun isWritable(file: VirtualFile) = project.directory
-        ?.let { file.parent.path == it }
-        ?: false
-}
+class CCv2FetchDeploymentsAction : CCv2FetchAction<CCv2DeploymentDto>(
+    tab = CCv2Tab.DEPLOYMENTS,
+    text = "Fetch Deployments",
+    icon = HybrisIcons.CCv2.Actions.FETCH,
+    fetch = { project, subscriptions, onCompleteCallback ->
+        CCv2Service.getInstance(project).fetchDeployments(subscriptions, onCompleteCallback)
+    }
+)

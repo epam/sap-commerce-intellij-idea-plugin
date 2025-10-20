@@ -25,8 +25,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.io.FileUtilRt
+import com.intellij.openapi.util.io.NioFiles
 import com.zeroturnaround.javarebel.idea.plugin.actions.ToggleRebelFacetAction
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacet
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
@@ -34,6 +34,7 @@ import com.zeroturnaround.javarebel.idea.plugin.xml.RebelXML
 import org.apache.commons.io.IOUtils
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -80,7 +81,7 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
             }
 
             edtWriteAction {
-                backupDirectory?.let { FileUtil.deleteRecursively(it) }
+                backupDirectory?.let { NioFiles.deleteRecursively(it) }
 
                 ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)
             }
@@ -89,12 +90,9 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
 
     override fun onStartup(project: Project) {
         val projectSettings = ProjectSettings.getInstance(project)
-        val compilingXml = File(
-            FileUtilRt.toSystemDependentName(
-                project.basePath + "/" + projectSettings.hybrisDirectory
-                    + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
-            )
-        )
+        val projectDirectory = project.directory ?: return
+        val path = projectDirectory + "/" + projectSettings.hybrisDirectory + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
+        val compilingXml = File(FileUtilRt.toSystemDependentName(path))
         if (!compilingXml.isFile) return
 
         var content = try {

@@ -18,12 +18,17 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
+import actionsButton
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Panel
+import com.intellij.ui.dsl.builder.RightGap
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.actionSystem.*
+import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
@@ -56,17 +61,22 @@ object CCv2BuildsDataView : CCv2DataView<CCv2BuildDto>() {
         row {
             panel {
                 row {
+                    val actionManager = ActionManager.getInstance()
+
                     actionsButton(
                         actions = listOfNotNull(
-                            if (build.canTrack()) CCv2TrackBuildAction(subscription, build) else null,
-                            CCv2ShowBuildDetailsAction(subscription, build),
-                            CCv2RedoBuildAction(subscription, build),
-                            if (build.canDeploy()) CCv2DeployBuildAction(subscription, build) else null,
-                            if (build.canDownloadLogs()) CCv2DownloadBuildLogsAction(subscription, build) else null,
-                            if (build.canDelete()) CCv2DeleteBuildAction(subscription, build) else null
+                            actionManager.getAction("ccv2.build.track.action"),
+                            actionManager.getAction("ccv2.build.showDetails.action"),
+                            actionManager.getAction("ccv2.build.redo.action"),
+                            actionManager.getAction("ccv2.build.deploy.action"),
+                            actionManager.getAction("ccv2.build.downloadLogs.action"),
+                            actionManager.getAction("ccv2.build.delete.action"),
                         ).toTypedArray(),
                         ActionPlaces.TOOLWINDOW_CONTENT
-                    )
+                    ) {
+                        it[CCv2UiConstants.DataKeys.Subscription] = subscription
+                        it[CCv2UiConstants.DataKeys.Build] = build
+                    }
                 }
             }.gap(RightGap.SMALL)
 

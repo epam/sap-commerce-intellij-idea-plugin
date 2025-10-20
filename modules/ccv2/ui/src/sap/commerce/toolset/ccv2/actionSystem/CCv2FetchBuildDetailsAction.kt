@@ -21,30 +21,45 @@ package sap.commerce.toolset.ccv2.actionSystem
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.DumbAwareAction
-import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-import sap.commerce.toolset.ccv2.toolwindow.CCv2View
-import javax.swing.Icon
+import com.intellij.ui.AnimatedIcon
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.CCv2Service
+import sap.commerce.toolset.ccv2.CCv2UiConstants
 
-abstract class CCv2Action(
-    val tab: CCv2Tab,
-    text: String,
-    description: String? = null,
-    icon: Icon
-) : DumbAwareAction(text, description, icon) {
+class CCv2FetchBuildDetailsAction : DumbAwareAction("Fetch Build", null, HybrisIcons.CCv2.Actions.FETCH) {
+
+    private var fetching = false
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val build = e.getData(CCv2UiConstants.DataKeys.Build) ?: return
+        val buildCallback = e.getData(CCv2UiConstants.DataKeys.BuildCallback) ?: return
+
+        fetching = true
+
+        CCv2Service.getInstance(project).fetchBuildWithCode(
+            subscription, build.code,
+            { response ->
+                fetching = false
+
+                invokeLater {
+                    buildCallback.invoke(response)
+                }
+            }
+        )
+    }
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
 
-        e.presentation.isEnabled = isEnabled(e)
-        e.presentation.isVisible = e.project
-            ?.let { CCv2View.getActiveTab(it) == tab }
-            ?: false
+        e.presentation.isEnabled = !fetching
+        e.presentation.text = if (fetching) "Fetching" else "Fetch Build"
+        e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH
     }
-
-    protected open fun isEnabled(e: AnActionEvent) = CCv2ProjectSettings.getInstance().subscriptions.isNotEmpty()
 }

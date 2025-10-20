@@ -15,30 +15,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.ccv2.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
+import sap.commerce.toolset.ccv2.CCv2UiConstants
 
-class CCv2ResetCacheAction : DumbAwareAction("Reset Cached CCv2 Details", null, HybrisIcons.Actions.FORCE_REFRESH) {
+class CCv2ServiceRestartReplicaAction : DumbAwareAction("Restart Pod", null, HybrisIcons.CCv2.Service.Actions.RESTART_POD) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        CCv2Service.getInstance(project).resetCache()
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val environment = e.getData(CCv2UiConstants.DataKeys.Environment) ?: return
+        val service = e.getData(CCv2UiConstants.DataKeys.Service) ?: return
+        val replica = e.getData(CCv2UiConstants.DataKeys.ServiceReplica) ?: return
+
+        if (Messages.showYesNoDialog(
+                project,
+                "This action will terminate the '${replica.name}' pod associated with this replica and create a new pod to maintain the desired replica count for '${service.name}' service, '${environment.name}' environment within the '${subscription.presentableName}' subscription.",
+                "Restart the Pod",
+                HybrisIcons.CCv2.Service.Actions.RESTART_POD
+            ) != Messages.YES
+        ) return
+
+        CCv2Service.getInstance(project).restartServicePod(project, subscription, environment, service, replica)
     }
 
     override fun update(e: AnActionEvent) {
-        val project = e.project ?: return
-
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
-
-        e.presentation.isEnabled = CCv2Service.getInstance(project).cached()
     }
 }

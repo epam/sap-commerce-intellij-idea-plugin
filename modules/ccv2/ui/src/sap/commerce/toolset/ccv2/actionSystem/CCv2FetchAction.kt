@@ -66,6 +66,6 @@ abstract class CCv2FetchAction<T : CCv2Dto>(
         e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else icon
     }
 
-    override fun isEnabled() = !fetching && super.isEnabled()
+    override fun isEnabled(e: AnActionEvent) = !fetching && super.isEnabled(e)
 
 }

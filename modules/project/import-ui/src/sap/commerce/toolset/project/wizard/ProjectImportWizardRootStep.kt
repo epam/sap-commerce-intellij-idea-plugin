@@ -40,6 +40,7 @@ import org.apache.commons.lang3.StringUtils
 import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.directory
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -479,10 +480,10 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         context.cleanup()
 
         with(context.getHybrisProjectDescriptor()) {
-            this.hybrisVersion = project?.basePath
+            this.hybrisVersion = project?.directory
                 ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), false) }
                 ?: projectSettings.hybrisVersion
-            this.javadocUrl = project?.basePath
+            this.javadocUrl = project?.directory
                 ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), true) }
                 ?.let { getDefaultJavadocUrl(it) }
                 ?.takeIf { it.isNotBlank() }

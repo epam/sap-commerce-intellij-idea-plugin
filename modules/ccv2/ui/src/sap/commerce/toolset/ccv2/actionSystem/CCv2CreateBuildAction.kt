@@ -16,25 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.actionSystem
+package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.actionSystem.impl.SimpleDataContext
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
+import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2CreateBuildDialog
 
-fun Project.triggerAction(
-    actionId: String,
-    place: String = ActionPlaces.UNKNOWN,
-    uiKind: ActionUiKind = ActionUiKind.NONE,
-    dataContext: () -> DataContext = { SimpleDataContext.getProjectContext(this) }
+class CCv2CreateBuildAction : CCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Schedule Build",
+    icon = HybrisIcons.CCv2.Build.Actions.CREATE
 ) {
-    ActionManager.getInstance().getAction(actionId)
-        ?.let {
-            val event = AnActionEvent.createEvent(
-                it, dataContext.invoke(),
-                null, place, uiKind, null
-            );
-            ActionUtil.performAction(it, event)
-        }
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val subscription = e.dataContext.getData(subscriptionKey)
+            ?: CCv2DeveloperSettings.Companion.getInstance(project).getActiveCCv2Subscription()
+        val build = e.dataContext.getData(buildKey)
+
+        CCv2CreateBuildDialog(project, subscription, build).showAndGet()
+    }
 }

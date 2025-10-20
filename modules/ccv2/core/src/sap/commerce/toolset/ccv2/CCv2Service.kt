@@ -33,7 +33,6 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.ProgressReporter
-import com.intellij.platform.util.progress.reportProgress
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.util.io.ZipUtil
 import kotlinx.coroutines.*
@@ -50,7 +49,7 @@ import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.project.actionSystem.triggerAction
+import sap.commerce.toolset.triggerAction
 import java.io.Serial
 import java.net.SocketTimeoutException
 import java.nio.file.Files
@@ -106,7 +105,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environments...", true) {
                 val environments = sortedMapOf<CCv2Subscription, Collection<CCv2EnvironmentDto>>()
-                reportProgress(subscriptions.size) { progressReporter ->
+                reportProgressScope(subscriptions.size) { progressReporter ->
                     coroutineScope {
                         subscriptions
                             .map { subscription ->
@@ -160,7 +159,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             withBackgroundProgress(project, "Fetching CCv2 Environments Build Details...", true) {
                 val environments = subscriptions.values.flatten()
 
-                reportProgress(environments.size) { progressReporter ->
+                reportProgressScope(environments.size) { progressReporter ->
                     coroutineScope {
                         subscriptions.forEach { (subscription, environments) ->
                             try {
@@ -289,7 +288,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Builds...", true) {
                 val builds = sortedMapOf<CCv2Subscription, Collection<CCv2BuildDto>>()
-                reportProgress(subscriptions.size) { progressReporter ->
+                reportProgressScope(subscriptions.size) { progressReporter ->
                     coroutineScope {
                         subscriptions
                             .map { subscription ->
@@ -329,7 +328,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Deployments...", true) {
                 val deployments = sortedMapOf<CCv2Subscription, Collection<CCv2DeploymentDto>>()
-                reportProgress(subscriptions.size) { progressReporter ->
+                reportProgressScope(subscriptions.size) { progressReporter ->
                     coroutineScope {
                         subscriptions
                             .map { subscription ->
@@ -611,7 +610,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         var deployments: List<CCv2DeploymentDto>
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching Deployment for build - $buildCode...", true) {
-                reportProgress(1) { progressReporter ->
+                reportProgressScope(1) { progressReporter ->
                     val ccv2Token = getCCv2Token(subscription)
                     try {
                         deployments = CCv2Api.getInstance().fetchDeploymentsForBuild(subscription, buildCode, ccv2Token!!, progressReporter)

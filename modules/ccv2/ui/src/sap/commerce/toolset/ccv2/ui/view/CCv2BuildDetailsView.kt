@@ -20,6 +20,7 @@ package sap.commerce.toolset.ccv2.ui.view
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
@@ -32,7 +33,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.actionSystem.*
+import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
@@ -48,7 +49,7 @@ import javax.swing.SwingConstants.CENTER
 class CCv2BuildDetailsView(
     private val project: Project,
     private val subscription: CCv2Subscription,
-    build: CCv2BuildDto
+    private val build: CCv2BuildDto,
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val deploymentHistoryPanel = JBPanel<JBPanel<*>>(GridBagLayout())
@@ -64,29 +65,30 @@ class CCv2BuildDetailsView(
         initPanel(build)
     }
 
+    override fun uiDataSnapshot(sink: DataSink) {
+        super.uiDataSnapshot(sink)
+
+        sink[CCv2UiConstants.DataKeys.Build] = build
+        sink[CCv2UiConstants.DataKeys.BuildDetailsView] = this
+        sink[CCv2UiConstants.DataKeys.BuildCallback] = {
+            initPanel(build)
+        }
+    }
+
     private fun installToolbar(build: CCv2BuildDto) {
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
 
-            add(
-                CCv2FetchBuildDetailsAction(subscription, build, {
-                    initPanel(it)
-                })
-            )
-            add(CCv2RedoBuildAction(subscription, build))
-            if (build.canDeploy()) {
-                add(CCv2DeployBuildAction(subscription, build))
-            }
-            if (build.canDownloadLogs()) {
-                add(CCv2DownloadBuildLogsAction(subscription, build))
-            }
-            if (build.canDelete()) {
-                add(CCv2DeleteBuildAction(subscription, build))
-            }
+            add(actionManager.getAction("ccv2.build.fetchDetails.action"))
+            add(actionManager.getAction("ccv2.build.redo.action"))
+            add(actionManager.getAction("ccv2.build.deploy.action"))
+            add(actionManager.getAction("ccv2.build.downloadLogs.action"))
+            add(actionManager.getAction("ccv2.build.delete.action"))
             add(actionManager.getAction("ccv2.reset.cache.action"))
 
             addSeparator()
             add(actionManager.getAction("ccv2.environment.toolbar.actions"))
+
             actionManager.createActionToolbar("SAP_CX_CCv2_ENVIRONMENT_${System.identityHashCode(build)}", this, false)
         }
         toolbar.targetComponent = this

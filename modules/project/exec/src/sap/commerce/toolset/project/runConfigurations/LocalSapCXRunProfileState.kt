@@ -31,6 +31,7 @@ import org.apache.commons.lang3.SystemUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisConstants.DEBUG_HOST
 import sap.commerce.toolset.HybrisConstants.DEBUG_PORT
+import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.IOException
 import java.net.Socket
@@ -42,20 +43,20 @@ class LocalSapCXRunProfileState(
 ) : CommandLineState(environment), JavaCommandLine, RemoteConnectionCreator {
 
     private fun getScriptPath(): String {
-        val basePath = project.basePath ?: ""
+        val projectDirectory = project.directory ?: ""
         val settings = ProjectSettings.getInstance(project)
         val hybrisDirectory = settings.hybrisDirectory ?: ""
         val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
 
-        return Paths.get(basePath, hybrisDirectory, script).toString()
+        return Paths.get(projectDirectory, hybrisDirectory, script).toString()
     }
 
     private fun getWorkDirectory(): String {
-        val basePath = project.basePath ?: ""
+        val projectDirectory = project.directory ?: ""
         val settings = ProjectSettings.getInstance(project)
         val hybrisDirectory = settings.hybrisDirectory ?: ""
 
-        return Paths.get(basePath, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
+        return Paths.get(projectDirectory, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
     }
 
     override fun startProcess(): ProcessHandler {

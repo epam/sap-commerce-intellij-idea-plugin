@@ -15,16 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.vfs
 
-import com.intellij.openapi.fileEditor.impl.NonProjectFileWritingAccessExtension
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-import sap.commerce.toolset.directory
+package sap.commerce.toolset.ccv2.actionSystem
 
-class HybrisNonProjectFileWritingAccessExtension(val project: Project) : NonProjectFileWritingAccessExtension {
+import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.CCv2UiConstants
+import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2CreateBuildDialog
 
-    override fun isWritable(file: VirtualFile) = project.directory
-        ?.let { file.parent.path == it }
-        ?: false
+class CCv2RedoBuildAction : CCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Redo Build",
+    icon = HybrisIcons.CCv2.Build.Actions.REDO
+) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val build = e.getData(CCv2UiConstants.DataKeys.Build) ?: return
+
+        CCv2CreateBuildDialog(project, subscription, build).showAndGet()
+    }
 }

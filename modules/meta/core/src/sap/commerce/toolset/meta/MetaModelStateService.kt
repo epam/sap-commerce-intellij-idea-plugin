@@ -23,7 +23,7 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.platform.util.progress.reportProgress
+import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -78,7 +78,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
             val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
                 val collectedDependencies = metaCollector.collectDependencies()
 
-                val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
+                val localMetaModels = reportProgressScope(collectedDependencies.size) { progressReporter ->
                     collectedDependencies
                         .map {
                             progressReporter.sizedStep(1, "Processing: ${it.representationName}...") {

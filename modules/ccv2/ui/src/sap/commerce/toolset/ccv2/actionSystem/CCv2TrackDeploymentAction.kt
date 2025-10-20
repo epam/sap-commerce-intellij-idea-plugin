@@ -15,31 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.typeSystem.actionSystem
 
-import com.intellij.diagram.DiagramAction
-import com.intellij.idea.ActionsBundle
+package sap.commerce.toolset.ccv2.actionSystem
+
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.triggerAction
-import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramDataModel
+import sap.commerce.toolset.ccv2.CCv2Service
+import sap.commerce.toolset.ccv2.CCv2UiConstants
+import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 
-class ExpandAllDiagramAction : DiagramAction(
-    ActionsBundle.message("action.ExpandAll.text"),
-    null,
-    HybrisIcons.Actions.EXPAND_ALL
+class CCv2TrackDeploymentAction : CCv2Action(
+    tab = CCv2Tab.DEPLOYMENTS,
+    text = "Track Deployment",
+    icon = HybrisIcons.CCv2.Deployment.Actions.WATCH
 ) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val deployment = e.getData(CCv2UiConstants.DataKeys.Deployment) ?: return
 
-    override fun perform(event: AnActionEvent) {
-        val dataModel = getBuilder(event)
-            ?.dataModel
-            ?.asSafely<TSDiagramDataModel>() ?: return
-
-        dataModel.expandAllNodes()
-
-        triggerAction("Diagram.RefreshDataModelManually", event)
+        CCv2Service.getInstance(project).trackDeployment(project, subscription, deployment.code, deployment.buildCode)
     }
 
-    override fun getActionName(): String = ActionsBundle.message("action.ExpandAll.text")
+    override fun isEnabled(e: AnActionEvent) = super.isEnabled(e)
+        && (e.getData(CCv2UiConstants.DataKeys.Deployment)?.canTrack() ?: false)
 }

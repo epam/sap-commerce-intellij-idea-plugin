@@ -18,12 +18,11 @@
 package sap.commerce.toolset.typeSystem.actionSystem
 
 import com.intellij.diagram.DiagramAction
-import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.ex.ActionUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.yDeveloperSettings
+import sap.commerce.toolset.triggerAction
 import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramNode
 
 class ExcludeTypeNameDiagramAction : DiagramAction(
@@ -45,8 +44,7 @@ class ExcludeTypeNameDiagramAction : DiagramAction(
                 typeSystemDiagramSettings = typeSystemDiagramSettings.copy(excludedTypeNames = newExcludedTypeNames)
             }
 
-            val action = ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually")
-            ActionUtil.performAction(action, event)
+            triggerAction("Diagram.RefreshDataModelManually", event)
         }
     }
 

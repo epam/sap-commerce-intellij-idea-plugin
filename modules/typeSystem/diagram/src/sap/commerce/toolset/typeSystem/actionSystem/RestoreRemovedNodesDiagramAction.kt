@@ -18,12 +18,11 @@
 package sap.commerce.toolset.typeSystem.actionSystem
 
 import com.intellij.diagram.DiagramAction
-import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.triggerAction
 import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramDataModel
 
 class RestoreRemovedNodesDiagramAction : DiagramAction(
@@ -33,14 +32,13 @@ class RestoreRemovedNodesDiagramAction : DiagramAction(
 ) {
 
     override fun perform(event: AnActionEvent) {
-        getBuilder(event)
+        val dataModel = getBuilder(event)
             ?.dataModel
-            ?.asSafely<TSDiagramDataModel>()
-            ?.let {
-                it.removedNodes.clear()
-                val action = ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually")
-                ActionUtil.performAction(action, event)
-            }
+            ?.asSafely<TSDiagramDataModel>() ?: return
+
+        dataModel.removedNodes.clear()
+
+        triggerAction("Diagram.RefreshDataModelManually", event)
     }
 
     override fun getActionName() = i18n("hybris.diagram.ts.provider.actions.restore_removed_nodes")

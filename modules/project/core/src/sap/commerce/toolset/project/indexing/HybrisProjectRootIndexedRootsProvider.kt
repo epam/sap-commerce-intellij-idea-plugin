@@ -24,11 +24,12 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.util.indexing.IndexableSetContributor
+import sap.commerce.toolset.directory
 import java.nio.file.Path
 
 class HybrisProjectRootIndexedRootsProvider : IndexableSetContributor() {
 
-    override fun getAdditionalProjectRootsToIndex(project: Project) = project.basePath
+    override fun getAdditionalProjectRootsToIndex(project: Project) = project.directory
         ?.let { Path.of(it) }
         ?.let { LocalFileSystem.getInstance().findFileByNioFile(it) }
         ?.let { VfsUtil.getChildren(it) { child -> child.isFile } }

@@ -79,6 +79,7 @@ class HybrisImpExMonitorConsole(
     @Deprecated("Resolve DATA_DIRECTORY by property")
     private fun obtainDataFolder(project: Project): String {
         val settings = ProjectSettings.getInstance(project)
+        // TODO
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 
@@ -91,7 +92,6 @@ class HybrisImpExMonitorConsole(
                 ConsoleViewUtil.printAsFileType(this, "No imported ImpEx files found ${timeOption.name}.", PlainTextFileType.INSTANCE)
             }
         }
-
     }
 
     override fun currentExecutionContext(content: String) = ImpExMonitorExecContext(

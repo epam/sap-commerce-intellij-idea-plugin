@@ -33,6 +33,23 @@
         <action id="ccv2.open.settings.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2OpenSettingsAction"/>
         <action id="ccv2.reset.cache.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ResetCacheAction"/>
 
+        <action id="ccv2.environment.fetch.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentAction"/>
+        <action id="ccv2.environment.fetchService.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentServiceAction"/>
+        <action id="ccv2.environment.showDetails.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ShowEnvironmentDetailsAction"/>
+
+        <action id="ccv2.service.showDetails.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ShowServiceDetailsAction"/>
+        <action id="ccv2.service.restartReplica.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ServiceRestartReplicaAction"/>
+
+        <action id="ccv2.build.redo.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2RedoBuildAction"/>
+        <action id="ccv2.build.showDetails.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ShowBuildDetailsAction"/>
+        <action id="ccv2.build.track.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2TrackBuildAction"/>
+        <action id="ccv2.build.deploy.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2DeployBuildAction"/>
+        <action id="ccv2.build.downloadLogs.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2DownloadBuildLogsAction"/>
+        <action id="ccv2.build.delete.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2DeleteBuildAction"/>
+        <action id="ccv2.build.fetchDetails.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2FetchBuildDetailsAction"/>
+
+        <action id="ccv2.deployment.track.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2TrackDeploymentAction"/>
+
         <group id="ccv2.toolbar.actions">
             <action class="sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentsAction"/>
             <action class="sap.commerce.toolset.ccv2.actionSystem.CCv2FetchDeploymentsAction"/>

@@ -22,29 +22,29 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
-import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-import sap.commerce.toolset.ccv2.toolwindow.CCv2View
-import javax.swing.Icon
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.CCv2UiConstants
+import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 
-abstract class CCv2Action(
-    val tab: CCv2Tab,
-    text: String,
-    description: String? = null,
-    icon: Icon
-) : DumbAwareAction(text, description, icon) {
+class CCv2ShowBuildDetailsAction : DumbAwareAction(
+    "Show Build Details",
+    null,
+    HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
+) {
 
-    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+    override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
+        val build = e.getData(CCv2UiConstants.DataKeys.Build) ?: return
+
+        CCv2ViewUtil.showBuildDetailsTab(project, subscription, build)
+    }
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
-
-        e.presentation.isEnabled = isEnabled(e)
-        e.presentation.isVisible = e.project
-            ?.let { CCv2View.getActiveTab(it) == tab }
-            ?: false
     }
 
-    protected open fun isEnabled(e: AnActionEvent) = CCv2ProjectSettings.getInstance().subscriptions.isNotEmpty()
 }
