@@ -56,9 +56,7 @@ enum class Plugin(val id: String, val url: String? = null) {
         @Nullable
         get() = PluginManagerCore.getPlugin(pluginId)
 
-    fun isActive() = pluginDescriptor
-        ?.isEnabled
-        ?: false
+    fun isActive() = !PluginManagerCore.isDisabled(pluginId)
 
     fun <T> ifActive(operation: () -> T): T? = if (isActive()) operation() else null
 

@@ -183,7 +183,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                     return@map
                 }
                 PluginManagerCore.getPlugin(pluginId)
-                    ?.takeUnless { it.isEnabled }
+                    ?.takeIf { PluginManagerCore.isDisabled(pluginId) }
                     ?.let { notEnabledModel.add(pluginId) }
             }
 
