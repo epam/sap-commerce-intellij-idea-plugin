@@ -70,7 +70,7 @@ public class ProjectRefreshAction extends AnAction {
                 null
             );
 
-            ActionUtil.performActionDumbAwareWithCallbacks(action, actionEvent);
+            ActionUtil.performAction(action, actionEvent);
         }, ModalityState.nonModal());
     }
 

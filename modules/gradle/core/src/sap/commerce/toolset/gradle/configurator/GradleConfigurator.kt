@@ -18,7 +18,12 @@
 package sap.commerce.toolset.gradle.configurator
 
 import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.observation.launchTracked
@@ -26,13 +31,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.settings.GradleSettings
+import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
 
-class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator {
+class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator, ProjectRefreshConfigurator {
 
     override val name: String
         get() = "Gradle"
@@ -57,6 +64,23 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator
                 }
         } catch (e: Exception) {
             thisLogger().error("Can not import Gradle modules due to an error.", e)
+        }
+    }
+
+    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        if (!hybrisProjectDescriptor.refresh) return
+        val project = hybrisProjectDescriptor.project ?: return
+
+        val actionManager = ActionManager.getInstance()
+        val action = actionManager.getAction("ExternalSystem.RefreshAllProjects") ?: return
+        val dataContext = SimpleDataContext.builder()
+            .add(CommonDataKeys.PROJECT, project)
+            .add(ExternalSystemDataKeys.EXTERNAL_SYSTEM_ID, GradleConstants.SYSTEM_ID)
+            .build()
+        val event = AnActionEvent(dataContext, Presentation(), "", ActionUiKind.NONE, null, 0, actionManager)
+
+        edtWriteAction {
+            ActionUtil.performAction(action, event)
         }
     }
 

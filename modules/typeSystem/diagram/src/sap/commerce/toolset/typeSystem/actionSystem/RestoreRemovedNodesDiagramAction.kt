@@ -39,7 +39,7 @@ class RestoreRemovedNodesDiagramAction : DiagramAction(
             ?.let {
                 it.removedNodes.clear()
                 val action = ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually")
-                ActionUtil.performActionDumbAwareWithCallbacks(action, event)
+                ActionUtil.performAction(action, event)
             }
     }
 

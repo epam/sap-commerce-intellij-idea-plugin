@@ -17,6 +17,9 @@
 ### `CCv2` enhancements
 - Added `S-User` alias for service `modified by` characteristic [#1596](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1596)
 
+### `Gradle` enhancements
+- Refresh linked projects on project refresh [#1606](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1606)
+
 ### `External Dependencies` enhancements
 - Re-enabled possibility to download new dependencies via IDE [#1593](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1593)
 

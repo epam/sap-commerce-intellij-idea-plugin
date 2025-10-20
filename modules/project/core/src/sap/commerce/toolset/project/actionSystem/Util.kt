@@ -35,6 +35,6 @@ fun Project.triggerAction(
                 it, dataContext.invoke(),
                 null, place, uiKind, null
             );
-            ActionUtil.performActionDumbAwareWithCallbacks(it, event)
+            ActionUtil.performAction(it, event)
         }
 }

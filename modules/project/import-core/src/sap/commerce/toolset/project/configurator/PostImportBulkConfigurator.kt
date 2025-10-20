@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.util.progress.reportProgressScope
 import kotlinx.coroutines.CoroutineScope
@@ -34,8 +33,6 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 
 @Service(Service.Level.PROJECT)
 class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
-
-    private val logger = thisLogger()
 
     fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         coroutineScope.launch {
