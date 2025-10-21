@@ -68,6 +68,7 @@ class CCv2BuildDetailsView(
     override fun uiDataSnapshot(sink: DataSink) {
         super.uiDataSnapshot(sink)
 
+        sink[CCv2UiConstants.DataKeys.Subscription] = subscription
         sink[CCv2UiConstants.DataKeys.Build] = build
         sink[CCv2UiConstants.DataKeys.BuildDetailsView] = this
         sink[CCv2UiConstants.DataKeys.BuildCallback] = {
