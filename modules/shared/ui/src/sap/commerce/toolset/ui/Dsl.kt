@@ -43,9 +43,11 @@ fun Row.actionsButton(
     vararg actions: AnAction,
     actionPlace: String = ActionPlaces.UNKNOWN,
     icon: Icon = AllIcons.General.GearPlain,
+    title: String? = null,
+    showDisabledActions: Boolean = true,
     sinkExtender: (DataSink) -> Unit = {},
 ): Cell<ActionButton> {
-    val actionGroup = PopupActionGroup(arrayOf(*actions)).apply { templatePresentation.icon = icon }
+    val actionGroup = PopupActionGroup(arrayOf(*actions), title, icon, showDisabledActions)
     val presentation = actionGroup.templatePresentation.clone()
     val component = ActionButtonSink(actionGroup, presentation, actionPlace, ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE, sinkExtender)
 
@@ -69,18 +71,24 @@ private class ActionButtonSink(
     }
 }
 
-private class PopupActionGroup(private val actions: Array<AnAction>) : ActionGroup(), DumbAware {
+private class PopupActionGroup(
+    private val actions: Array<AnAction>,
+    private val title: String?,
+    private val icon: Icon,
+    private val showDisabledActions: Boolean,
+) : ActionGroup(), DumbAware {
     init {
         isPopup = true
         templatePresentation.isPerformGroup = actions.isNotEmpty()
+        templatePresentation.icon = icon
     }
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> = actions
 
     override fun actionPerformed(e: AnActionEvent) {
         val popup = JBPopupFactory.getInstance().createActionGroupPopup(
-            null, this, e.dataContext,
-            JBPopupFactory.ActionSelectionAid.MNEMONICS, true
+            title, this, e.dataContext,
+            JBPopupFactory.ActionSelectionAid.MNEMONICS, showDisabledActions
         )
         PopupUtil.showForActionButtonEvent(popup, e)
     }
