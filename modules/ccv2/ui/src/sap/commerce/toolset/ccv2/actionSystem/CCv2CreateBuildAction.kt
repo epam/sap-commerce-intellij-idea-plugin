@@ -31,10 +31,8 @@ class CCv2CreateBuildAction : CCv2Action(
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val subscription = e.dataContext.getData(subscriptionKey)
-            ?: CCv2DeveloperSettings.Companion.getInstance(project).getActiveCCv2Subscription()
-        val build = e.dataContext.getData(buildKey)
+        val subscription = CCv2DeveloperSettings.getInstance(project).getActiveCCv2Subscription()
 
-        CCv2CreateBuildDialog(project, subscription, build).showAndGet()
+        CCv2CreateBuildDialog(project, subscription).showAndGet()
     }
 }

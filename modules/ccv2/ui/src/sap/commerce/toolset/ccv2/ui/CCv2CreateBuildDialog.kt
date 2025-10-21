@@ -42,8 +42,8 @@ import javax.swing.Icon
 
 class CCv2CreateBuildDialog(
     private val project: Project,
-    private val subscription: CCv2Subscription?,
-    private val build: CCv2BuildDto?,
+    private val subscription: CCv2Subscription? = null,
+    private val build: CCv2BuildDto? = null,
 ) : DialogWrapper(project) {
 
     private class DeploymentOption(

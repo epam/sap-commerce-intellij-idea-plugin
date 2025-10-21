@@ -19,16 +19,10 @@
 package sap.commerce.toolset.ccv2.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataKey
-import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2SettingsState
-import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-
-val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
-val buildKey = DataKey.create<CCv2BuildDto>("build")
 
 abstract class CCv2ShowBuildWithStatusAction(status: CCv2BuildStatus) : CCv2ShowWithStatusAction<CCv2BuildStatus>(
     CCv2Tab.BUILDS,
