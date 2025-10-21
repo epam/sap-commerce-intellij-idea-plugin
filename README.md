@@ -39,7 +39,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
   - [ImpEx](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bee24e986691014b97bcd2c7e6ff732.html?locale=en-US&version=LATEST)
   - [Acl](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8b4aa00e866910148df2920f69d68b27.html?locale=en-US&version=LATEST)
   - [FlexibleSearch](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bc399c186691014b8fce25e96614547.html)
-  - [Polyglot Query.](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/651d603ed81247c2be1708f22baed11b.html)
+  - [Polyglot Query](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/651d603ed81247c2be1708f22baed11b.html)
 - Custom editors for `items.xml`, `beans.xml` & `cockpitng` with validation, best-practices analyses, quick-fix autosuggestion and easy navigation and custom automated IntelliJ refactorings actions.
 - Preview and customize Loggers per SAP Commerce instance.
 - Extended support for such files as: `external-dependencies.xml`, `extensioninfo.xml`, `localextensions.xml` and `core-advanced-deployment.xml`
