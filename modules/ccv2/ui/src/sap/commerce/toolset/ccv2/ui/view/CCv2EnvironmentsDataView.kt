@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
-import actionButton
 import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -34,6 +33,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.dynatrace
+import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.scrollPanel
 import java.util.*
 

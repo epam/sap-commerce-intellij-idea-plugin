@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
-import actionsButton
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -44,6 +43,7 @@ import sap.commerce.toolset.ccv2.dto.CCv2ServiceProperties
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
+import sap.commerce.toolset.ui.actionsButton
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.GridBagLayout
 import java.io.Serial

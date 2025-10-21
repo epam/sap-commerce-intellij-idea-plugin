@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
-import actionsButton
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
@@ -35,6 +34,7 @@ import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ccv2.ui.copyLink
 import sap.commerce.toolset.ccv2.ui.date
 import sap.commerce.toolset.ccv2.ui.sUser
+import sap.commerce.toolset.ui.actionsButton
 import sap.commerce.toolset.ui.scrollPanel
 
 object CCv2BuildsDataView : CCv2DataView<CCv2BuildDto>() {

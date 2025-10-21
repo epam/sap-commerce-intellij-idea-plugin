@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.ui.view
 
-import actionButton
 import com.intellij.ide.HelpTooltip
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
@@ -48,6 +47,7 @@ import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
+import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.GridBagLayout
 import java.awt.datatransfer.StringSelection
