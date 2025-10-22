@@ -1,8 +1,7 @@
 ## [2025.2.4.4]
 
 #### Release contributors
-
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.4+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.4+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Updated project import "Information" step [#1612](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1612)
@@ -13,7 +12,7 @@
 ## [2025.2.4.3]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.3+author%3Amlytvyn+is%3Apr)
+- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.3+author%3Amlytvyn+is%3Apr)
 
 ### `JPS - Build` enhancement
 - Introduced Hybris-specific JPS implementation to exclude `resources` content from the compile output directories [#1603](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1603)
@@ -51,7 +50,7 @@
 ## [2025.2.4.2]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.2+author%3Amlytvyn+is%3Apr)
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.2+author%3Amlytvyn+is%3Apr)
 
 ### `xDebugger` enhancements
 - Re-implemented model debugger to lazy-evaluation of the fields [#1579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1579)
@@ -77,7 +76,7 @@
 ## [2025.2.4.1]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.1+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.1+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Addressed stackoverflow exception when CCv2 tab is open and user modifies CCv2 settings [#1577](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1577) -> 
@@ -85,7 +84,7 @@
 ## [2025.2.4]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Show ` ` when the `$config-` property is blank [#1575](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1575)
@@ -96,9 +95,9 @@
 ## [2025.2.3]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3Amlytvyn+is%3Apr)
-- [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3AStefanKruk+is%3Apr)
-- [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3Aekalenchuk+is%3Apr)
+- 32 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3Amlytvyn+is%3Apr)
+- 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3Aekalenchuk+is%3Apr)
+- 4 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3AStefanKruk+is%3Apr)
 
 ### `<!>` BREAKING CHANGE `<!>`
 
@@ -191,7 +190,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.2.2]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.2+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.2+author%3Amlytvyn+is%3Apr)
 
 ### `SAP CX Logging` enhancements
 - Apply new logger by Enter within the new logger name field [#1523](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1523)
@@ -204,8 +203,8 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.2.1]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.1+author%3Amlytvyn+is%3Apr)
-- [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.1+author%3Aekalenchuk+is%3Apr)
+- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.1+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.1+author%3Aekalenchuk+is%3Apr)
 
 ### `Groovy` enhancements
 - Improved replica selection in case of active subscription [#1521](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1521)
@@ -230,7 +229,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.2.0]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.0+author%3Amlytvyn+is%3Apr)
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.0+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Pre-cache JVM SDKs before creating a Project Import Wizard [#1504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1504)
@@ -244,7 +243,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.7]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.7+author%3Amlytvyn+is%3Apr)
+- 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.7+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Display Welcome Screen on project import cancel [#1502](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1502)
@@ -266,8 +265,8 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.6]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.6+author%3Amlytvyn+is%3Apr)
-- [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.6+author%3Aekalenchuk+is%3Apr)
+- 47 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.6+author%3Amlytvyn+is%3Apr)
+- 7 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.6+author%3Aekalenchuk+is%3Apr)
 
 ### `CCv2` enhancements
 - Auto-retrieve environments on scheduling new build in case of selected Subscription [#1481](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1481)
@@ -356,9 +355,9 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.5]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Amlytvyn+is%3Apr)
-- [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Aekalenchuk+is%3Apr)
-- [Alessandro Antonini](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Aninopg+is%3Apr)
+- 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Aekalenchuk+is%3Apr)
+- 2 PR(s) by [Alessandro Antonini](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Aninopg+is%3Apr)
 
 ### `CCv2` enhancements
 - Added enforced caching for CCv2 details [#1432](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1432)
@@ -404,7 +403,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.4]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.4+author%3Amlytvyn+is%3Apr)
+- 22 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.4+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Introduced `Data Edit` mode per individual table statements per ImpEx file [#1392](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1392)
@@ -451,8 +450,8 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.3]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.3+author%3Amlytvyn+is%3Apr)
-- [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.3+author%3AStefanKruk+is%3Apr)
+- 38 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.3+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.3+author%3AStefanKruk+is%3Apr)
 
 ### `Project Import` enhancements
 - Ensure that `[y] Remote debug` Run Configuration selected after first project import [#1355](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1355)
@@ -518,8 +517,8 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.2]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.2+author%3Amlytvyn+is%3Apr)
-- [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.2+author%3Aekalenchuk+is%3Apr)
+- 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.2+author%3Aekalenchuk+is%3Apr)
+- 1 PR by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.2+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Added support of the Angular modules [#1337](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1337)
@@ -531,7 +530,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.1]
 
 #### Release contributors
-- [Mihai Botofei](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.1+author%3Amihaibv95+is%3Apr)
+- 1 PR by [Mihai Botofei](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.1+author%3Amihaibv95+is%3Apr)
 
 ### Other
 - Disable failing JRebelPlugin during build of the Searchable Options [#1325](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1325)
@@ -540,12 +539,26 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2025.1.0]
 
 #### Release contributors
-- [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.0+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.0+author%3Amlytvyn+is%3Apr)
 
 ### Other
 - Compatibility release [#1324](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1324)
 
+## [2024.3.8]
+
+#### Release contributors
+- 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.8+author%3AStefanKruk+is%3Apr)
+
+## [2024.3.7]
+
+#### Release contributors
+- 2 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.7+author%3AStefanKruk+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.7+author%3Amlytvyn+is%3Apr)
+
 ## [2024.3.6]
+
+#### Release contributors
+- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.6+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Introduced possibility to schedule an auto-deployment of the Build [#1311](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1311)
@@ -566,6 +579,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.5]
 
+#### Release contributors
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.5+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.5+author%3AStefanKruk+is%3Apr)
+
 ### `CCv2` enhancements
 - Added possibility to Track progress of the Build [#1304](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1304)
 - Show revision of the Build [#1305](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1305)
@@ -584,6 +601,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.4]
 
+#### Release contributors
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.4+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Burak Gürler](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.4+author%3Amburakgurler+is%3Apr)
+
 ### `Integrations` enhancements
 - Added Windows WSL support [#1292](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1292)
 
@@ -600,6 +621,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Respect no value in the key column for `No Unique Value` inspection rule [#1295](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1295)
 
 ## [2024.3.3]
+
+#### Release contributors
+- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.3+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Burak Gürler](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.3+author%3Amburakgurler+is%3Apr)
 
 ### `CCv2` enhancements
 - Unified UI elements [#1288](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1288)
@@ -618,6 +643,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.2]
 
+#### Release contributors
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.2+author%3Amlytvyn+is%3Apr)
+- 5 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.2+author%3Aekalenchuk+is%3Apr)
+- 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.2+author%3AStefanKruk+is%3Apr)
+
 ### `SAP CX Logging` enhancements
 - Fixed the notification message when a server is NULL [#1253](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1253)
 - Improved the notification type if the server responds with an error [#1254](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1254)
@@ -635,6 +665,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Fixed running Integration Tests via IntelliJ JUnit [#1279](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1279)
 
 ## [2024.3.1]
+
+#### Release contributors
+- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.1+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.1+author%3Aekalenchuk+is%3Apr)
+- 2 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.1+author%3AStefanKruk+is%3Apr)
 
 ### `Search Everywhere` enhancements
 - Introduced possibility to search through Type System via _Search Everywhere_ [#1267](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1267)
@@ -668,6 +703,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.0]
 
+#### Release contributors
+- 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.0+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.0+author%3AMykytaK4+is%3Apr)
+
 ### `SAP CX Logging` enhancements
 - Added an inlay hint to the logger popup, allowing users to select a log level and apply it to the active server [#1239](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1239)
 
@@ -693,6 +732,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Migrate Gradle project import API [#1243](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1243)
 
 ## [2024.2.4]
+
+#### Release contributors
+- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.4+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.4+author%3AMykytaK4+is%3Apr)
 
 ### `Type System` enhancements
 - Cache item and attribute references [#1221](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1221)
@@ -724,6 +767,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.2.3]
 
+#### Release contributors
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.3+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.3+author%3AMykytaK4+is%3Apr)
+
 ### `CCv2` enhancements
 - Build status view options are not displayed [#1202](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1202)
 - Show deployments as groups for the build [#1203](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1203)
@@ -735,6 +782,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.2.2]
 
+#### Release contributors
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.2+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.2+author%3AMykytaK4+is%3Apr)
+
 ### `CCv2` enhancements
 - Added icon for build details deployment status [#1196](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1196)
 - Added deployment date for build details [#1197](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1197)
@@ -745,6 +796,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Added folding for `core-advanced-deployment.xml` [#1198](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1198)
 
 ## [2024.2.1]
+
+#### Release contributors
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.1+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Abhishek Gawande](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.1+author%3AABHISHEKGAWANDE01+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.1+author%3AMykytaK4+is%3Apr)
 
 ### `CCv2` enhancements
 - Added build details sections to know more about the build [#1192](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1192)
@@ -761,7 +817,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 ### Fixes
 - Actions for CCv2 Build were not showing [#1191](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1191)
 
-## [2024.2.0]
+## [2024.2]
+
+#### Release contributors
+- 29 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2+author%3AMykytaK4+is%3Apr)
 
 ### `CCv2` enhancements
 - Introduced possibility to restart a service replica [#1183](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1183)
@@ -803,6 +863,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Added dependency on Foojay Toolchains Plugin [#1165](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1165)
 
 ## [2024.1.3]
+
+#### Release contributors
+- 30 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.3+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.3+author%3AMykytaK4+is%3Apr)
+- 1 PR by [Johannes Ballmann](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.3+author%3Afibsifan+is%3Apr)
 
 ### `Project Import` enhancements
 - Do not group external modules by default [#1152](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1152)
@@ -853,6 +918,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.1.2]
 
+#### Release contributors
+- 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.2+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.2+author%3AMykytaK4+is%3Apr)
+- 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.2+author%3Aviktor-yengovatov+is%3Apr)
+
 ### `CCv2` enhancements
 - Removed `SAP CCM` based integration [#1098](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1098)
 - Do not retrieve build for environments with `UNDEPLOYED` and `UNKNOWN` deployment status [#1101](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1101)
@@ -885,6 +955,14 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta1` [#1099](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1099)
 
 ## [2024.1.1]
+
+#### Release contributors
+- 60 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Jan Bucher](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3Adev-jan+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3AMykytaK4+is%3Apr)
+- 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3AStefanKruk+is%3Apr)
+- 1 PR by [Maryia Bogdanovich](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3Amaryia-bogdanovich+is%3Apr)
+- 1 PR by [Vitalii Ivanov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3Avaivanov95+is%3Apr)
 
 ### `Project Import` enhancements
 - Persist DB password forever during auto-configuration [#1046](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1046)
@@ -974,6 +1052,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.1.0]
 
+#### Release contributors
+- 41 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.0+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.0+author%3Aekalenchuk+is%3Apr)
+- 1 PR by [Yury Bich](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.0+author%3Ayurybich+is%3Apr)
+
 ### Features
 - Group all non-hybris gradle, ant, eclipse and maven modules in project view panel [#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967) | [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975) | [#980](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/980)
 - Use blue logo for custom module groups in the project view [#973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/973)
@@ -1036,7 +1119,16 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Fixed request param cast issue for ImpEx execution [#1002](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1002)
 - Fixed duplicated remote connections settings [#1005](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1005)
 
+## [2023.3.5]
+
+#### Release contributors
+- 1 PR by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.5+author%3Aekalenchuk+is%3Apr)
+
 ## [2023.3.4]
+
+#### Release contributors
+- 10 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.4+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.4+author%3AMykytaK4+is%3Apr)
 
 ### Features
 - Pre-load project properties on project startup [#957](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/957)
@@ -1059,6 +1151,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Fixed Kotlin library automatic registration [#961](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/961)
 
 ## [2023.3.3]
+
+#### Release contributors
+- 83 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.3+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.3+author%3AStefanKruk+is%3Apr)
 
 ### Features
 - Added `extends` information for Type System Item completion results [#892](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/892)
@@ -1189,6 +1285,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.3.2]
 
+#### Release contributors
+- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.2+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.2+author%3AMykytaK4+is%3Apr)
+
 ### `Project Import` enhancements
 - Do not scan `hidden` directories for extensions [#862](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/862)
 
@@ -1205,6 +1305,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Windows: Problems with Type System `items.xml` - Not Yet Generated Message [#860](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/860)
 
 ## [2023.3.1]
+
+#### Release contributors
+- 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.1+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.1+author%3AMykytaK4+is%3Apr)
 
 ### Features
 - Inject `Java` language into the `items.xml` custom properties value tags [#849](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/849)
@@ -1239,6 +1343,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.3.0]
 
+#### Release contributors
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.0+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.0+author%3AMykytaK4+is%3Apr)
+
 ### Other
 - Updated plugin dependencies for IntelliJ IDEA 2023.3 [#825](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/825)
 - Execute `intelliLang` startup activity on background read thread [#829](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/829)
@@ -1249,6 +1357,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Migrate `AnAction` API [#828](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/828)
 
 ## [2023.2.13]
+
+#### Release contributors
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.13+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.13+author%3AMykytaK4+is%3Apr)
 
 ### Features
 - Rely on `intelliLang` plugin to inject `FlexibleSearch` and `Polyglot Query` languages into the Java code [#817](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/817)
@@ -1278,6 +1390,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.12]
 
+#### Release contributors
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.12+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.12+author%3AMykytaK4+is%3Apr)
+
 ### `Project Import` enhancements
 - Auto-registration of the XSD namespace for `action-definition.xsd` [#806](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/806)
 - Auto-registration of the XSD namespace for `widget-definition.xsd` [#805](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/805)
@@ -1290,6 +1406,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Fixed type system Item's `extends` identification [#803](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/803)
 
 ## [2023.2.11]
+
+#### Release contributors
+- 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.11+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.11+author%3AMykytaK4+is%3Apr)
 
 ### `Project Import` enhancements
 - Introduced customization of the XSD schema for `y` namespace [#786](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/786)
@@ -1323,6 +1443,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 - OOTB `commonweb` sub-modules are not re-imported on project refresh [#795](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/795)
 
 ## [2023.2.10]
+
+#### Release contributors
+- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.10+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.10+author%3Aekalenchuk+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.10+author%3AMykytaK4+is%3Apr)
 
 ### `Project Import` enhancements
 - Register web spring files available due `ext.?.extension.webmodule.webroot` property [#776](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/776)
@@ -1359,10 +1484,17 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.9.1]
 
+#### Release contributors
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.9.1+author%3Amlytvyn+is%3Apr)
+
 ### Fixes
 - IntelliJ Community cannot build TypeSystem due dependency on Ultimate plugin [#754](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/754)
 
 ## [2023.2.9]
+
+#### Release contributors
+- 27 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.9+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.9+author%3AMykytaK4+is%3Apr)
 
 ### Features
 - Introduced pre-built `ysri` live template for **Java** [#730](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/730)
@@ -1408,6 +1540,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Do not validate `items.xml` for non-SAP Commerce projects [#745](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/745)
 
 ## [2023.2.8]
+
+#### Release contributors
+- 47 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.8+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.8+author%3Aekalenchuk+is%3Apr)
+- 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.8+author%3AMykytaK4+is%3Apr)
 
 ### Features
 - Introduced pre-built `log4j2` and `slf4j` live templates for **Java** [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
@@ -1489,6 +1626,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.7]
 
+#### Release contributors
+- 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.7+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.7+author%3AMykytaK4+is%3Apr)
+
 ### `items.xml` enhancements
 - Added configurable table-like folding for various tags [#660](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/660)
 
@@ -1518,6 +1659,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
 
 ## [2023.2.6]
+
+#### Release contributors
+- 88 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.6+author%3Amlytvyn+is%3Apr)
+- 6 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.6+author%3Aekalenchuk+is%3Apr)
+- 3 PR(s) by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.6+author%3Aviktor-yengovatov+is%3Apr)
 
 ### `OCC` enhancements
 - Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)
@@ -1648,6 +1794,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.5]
 
+#### Release contributors
+- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.5+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.5+author%3AMykytaK4+is%3Apr)
+
 ### Features
 - Added ordering attributes support for 1-to-m relations (those ending with `POS`) [#523](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/523)
 
@@ -1666,6 +1816,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Improve performance of the widely used `ModelsUtils` [#520](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/520)
 
 ## [2023.2.4]
+
+#### Release contributors
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.4+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.4+author%3Aviktor-yengovatov+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.4+author%3AMykytaK4+is%3Apr)
 
 ### `FlexibleSearch` enhancements
 - Improved language injection into Java files [#515](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/515)
@@ -1690,6 +1845,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Updated usage of the Diagram API
 
 ## [2023.2.3]
+
+#### Release contributors
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.3+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.3+author%3AMykytaK4+is%3Apr)
 
 ### Features
 - Automatically configure Database based on project settings during project import/refresh [#509](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/509)
@@ -1721,6 +1880,11 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.2]
 
+#### Release contributors
+- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.2+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.2+author%3Aabsinthminded+is%3Apr)
+- 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.2+author%3AMykytaK4+is%3Apr)
+
 ### `ImpEx` enhancements
 - Show documentation for Header line attribute modifiers [#487](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/487)
 - Show documentation for Header line type modifiers [#488](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/488)
@@ -1735,6 +1899,12 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Fixed NPE for refactored Kotlin classes [#491](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/491)
 
 ## [2023.2.1]
+
+#### Release contributors
+- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.1+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.1+author%3Aabsinthminded+is%3Apr)
+- 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.1+author%3AMykytaK4+is%3Apr)
+- 2 PR(s) by [Oleksandr Shkurat](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.1+author%3AOleksandrShkurat+is%3Apr)
 
 ### Features
 - Added folding for `items.xml` files [#478](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/478)
@@ -1774,7 +1944,12 @@ Due severe API changes it is highly advised to backup the project and import it 
 - [Kotlin plugins for Gradle](https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm): 1.8.20 -> 1.8.21
 - Added links for quick check of new versions availability
 
-## [2023.2.0]
+## [2023.2]
+
+#### Release contributors
+- 57 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2+author%3Aabsinthminded+is%3Apr)
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2+author%3AMykytaK4+is%3Apr)
 
 ### Features
 - Added 2023.2 IntelliJ IDEA support [#405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405)
@@ -1855,6 +2030,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.6]
 
+#### Release contributors
+- 25 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.6+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.6+author%3Aabsinthminded+is%3Apr)
+
 ### Features
 - Project import/refresh will register `groovysrc` as the source directory [#402](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/402)
 - Added navigate to the Dynamic Handler class for `dynamic` inlay hint on Ctrl + click [#396](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/396)
@@ -1908,6 +2087,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Respect FlexibleSearch settings responsible for table alias suggestions [#371](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371)
 
 ## [2023.1.5]
+
+#### Release contributors
+- 31 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.5+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.5+author%3Aabsinthminded+is%3Apr)
 
 ### Features
 - Added injection of the **Groovy** Language into `Script.content` in the ImpEx files [#361](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/361)
@@ -1975,6 +2158,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.4]
 
+#### Release contributors
+- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.4+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.4+author%3Aabsinthminded+is%3Apr)
+
 ### Features
 - Enabled Wizard-based Project Import from the Welcome Screen [#306](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/306)
 - Added possibility to specify custom Project Icon, if not selected default one will be used [#323](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/323)
@@ -2005,10 +2192,16 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.3]
 
+#### Release contributors
+- 1 PR by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.3+author%3Amlytvyn+is%3Apr)
+
 ### Fixes
 - Cannot refresh CCv2 Project [#305](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/305)
 
 ## [2023.1.2]
+
+#### Release contributors
+- 38 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.2+author%3Amlytvyn+is%3Apr)
 
 ### Features
 - Added node type specific icons for Business Process code completion [#297](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/297)
@@ -2074,6 +2267,9 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.1]
 
+#### Release contributors
+- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.1+author%3Amlytvyn+is%3Apr)
+
 ### Features
 - Added possibility to import CCv2 folders as modules [#238](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/238)
 - Added more custom icons [#237](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/237)
@@ -2097,6 +2293,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Decreased usage of the Deprecated API [#251](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/251)
 
 ## [2023.1.0]
+
+#### Release contributors
+- 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.0+author%3Aabsinthminded+is%3Apr)
+- 23 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.0+author%3Amlytvyn+is%3Apr)
 
 ### Features
 - Compatibility adjustments [#195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195)
@@ -2129,6 +2329,10 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Upgraded to Gradle 8 [#222](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/222)
 
 ## [2022.3.1]
+
+#### Release contributors
+- 1 PR by [Pawel Boron](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.1+author%3ARemilo7+is%3Apr)
+- 99 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.1+author%3Amlytvyn+is%3Apr)
 
 ### Features - IDEA Ultimate
 - Added navigation to TypeCode Interceptor declaration(s) [#188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/188)
@@ -2239,6 +2443,9 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2022.3.0]
 
+#### Release contributors
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.0+author%3Amlytvyn+is%3Apr)
+
 ### Features
 - Added 2022.3 IntelliJ IDEA support
 - Introduction the Type System Management - the powerful tool to observe SAP Commerce type system [#62](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62),
@@ -2262,7 +2469,43 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2022.2]
 
+#### Release contributors
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.2+author%3AMykytaK4+is%3Apr)
+
 ### Features
 - Added 2022.2 IntelliJ IDEA support
 - Feature Add inline actions for ImpEx & FlexibleSearch files [#53](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/53)
 - Do not index `node_modules` directories [#52](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/52)
+
+## [2022.1]
+
+#### Release contributors
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.1+author%3AMykytaK4+is%3Apr)
+
+## [2021.3.1]
+
+#### Release contributors
+- 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.3.1+author%3AMykytaK4+is%3Apr)
+- 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.3.1+author%3Aviktor-yengovatov+is%3Apr)
+
+## [2021.3]
+
+#### Release contributors
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.3+author%3AMykytaK4+is%3Apr)
+
+## [2021.2]
+
+#### Release contributors
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.2+author%3AMykytaK4+is%3Apr)
+- 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.2+author%3Aviktor-yengovatov+is%3Apr)
+
+## [2021.1.0]
+
+#### Release contributors
+- 3 PR(s) by [Rustam Burmenskyi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.1.0+author%3Arustam-burmenskyi+is%3Apr)
+- 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.1.0+author%3Aviktor-yengovatov+is%3Apr)
+
+## [2021.1]
+
+#### Release contributors
+- 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.1+author%3AMykytaK4+is%3Apr)
