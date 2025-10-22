@@ -66,6 +66,8 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 ### Quick start
 
+> [!TIP]
+> 
 > Useful [Technical Notes](TECH_NOTES.md) for special cases.
 
 * Fork and checkout most-active `main` branch the project
@@ -81,9 +83,10 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 ### Contributors and Developers
 
-This project exists thanks to all the people who <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/graphs/contributors" target="_blank">contribute</a>!
-
-List of all ever contributors can be found here: [CONTRIBUTING](CONTRIBUTING.md)
+> [!NOTE]
+> 
+> This project exists thanks to all the people who <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/graphs/contributors" target="_blank">contribute</a>!
+> List of all ever contributors can be found here: [CONTRIBUTING](CONTRIBUTING.md)
 
 ## Licence ##
 [GNU Lesser General Public License 3.0](https://www.gnu.org/licenses/)

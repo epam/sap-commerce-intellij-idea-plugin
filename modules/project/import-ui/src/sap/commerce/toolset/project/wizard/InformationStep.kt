@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,62 +16,112 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.wizard;
+package sap.commerce.toolset.project.wizard
 
-import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.projectImport.ProjectImportWizardStep;
-import com.intellij.ui.BrowserHyperlinkListener;
+import com.intellij.icons.AllIcons
+import com.intellij.ide.util.projectWizard.WizardContext
+import com.intellij.projectImport.ProjectImportWizardStep
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.panel
+import sap.commerce.toolset.HybrisIcons
 
-import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import java.awt.*;
+class InformationStep(wizardContext: WizardContext) : ProjectImportWizardStep(wizardContext) {
 
-public class InformationStep extends ProjectImportWizardStep {
+    override fun updateDataModel() = Unit
 
-    private JPanel rootPanel;
-    private JLabel importLabel;
-    private JLabel cvsLabel;
-    private JLabel jrebelLabel;
-    private JLabel jiraLabel;
-    private JEditorPane jiraEditorPane;
-    private JEditorPane informationEditorPane;
-    private JEditorPane cvsEditorPane;
-    private JEditorPane jrebelEditorPane;
+    override fun getComponent() = panel {
+        row {
+            label("Project")
+                .bold()
+                .align(AlignX.CENTER)
+        }
+        row {
+            icon(HybrisIcons.Y.LOGO_GREEN)
+            text(
+                """
+                    Imported project modules can be regrouped via <strong>hybris4intellij.properties</strong>, which will be auto-created on project import.
+                    <br>
+                """.trimIndent()
+            )
+        }
 
-    public InformationStep(final WizardContext wizardContext) {
-        super(wizardContext);
-    }
+        separator()
 
-    @Override
-    public JComponent getComponent() {
-        return rootPanel;
-    }
+        row {
+            label("Compilation")
+                .bold()
+                .align(AlignX.CENTER)
+        }
+        row {
+            icon(AllIcons.Actions.Compile)
+            text(
+                """
+                    Make sure the project is compiled by <b>ant clean all</b> prior to import.
+                    <br><br>
+                    IDE incremental compilation is fully supported. This will save time as only changed classes will be compiled.
+                    <br>
+                    To allow this feature you need to follow those rules:
+                    <ul>
+                        <li>When you add a new module, you need to execute <code>ant clean all</code>. You then need to trigger <code>Build -> Rebuild</code> project.</li>
+                        <li>Do not mix ant and IDE compilation. It can lead to "unknown" state. Whenever you execute <code>ant all</code> and would like to use IDE compilation then you need to trigger <code>Build -> Rebuild</code> project.</li>
+                        <li>Once compiled by IDE you don't need to compile by <code>ant</code> in order to run SAP Commerce.</li>
+                    </ul>
+                """.trimIndent()
+            )
+        }
 
-    @Override
-    public void updateDataModel() {
-    }
+        separator()
 
-    @Override
-    public boolean isStepVisible() {
-        return true;
-    }
+        row {
+            label("VCS")
+                .bold()
+                .align(AlignX.CENTER)
+        }
+        row {
+            icon(AllIcons.General.Vcs)
+            text(
+                """
+                    <a href="https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems">How to manage projects under Version Control Systems</a>
+                    <br>
+                    Make sure you commit project specific files within <i>.idea</i>. Especially <i>.idea/hybrisProjectSettings.xml</i> and <i>hybris4intellij.properties</i> must be in VCS.
+                    <br>
+                """.trimIndent()
+            )
+        }
 
-    private void createUIComponents() {
-        final Font font = UIManager.getFont("Label.font");
-        final String bodyRule = "body { font-family: " + font.getFamily() + "; " + "font-size: " + font.getSize() + "pt; }";
-        informationEditorPane = new JEditorPane();
-        informationEditorPane.setEditorKit(new HTMLEditorKit());
-        ((HTMLDocument) informationEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
-        cvsEditorPane = new JEditorPane();
-        cvsEditorPane.setEditorKit(new HTMLEditorKit());
-        ((HTMLDocument) cvsEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
-        jrebelEditorPane = new JEditorPane();
-        jrebelEditorPane.setEditorKit(new HTMLEditorKit());
-        ((HTMLDocument) jrebelEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
-        jiraEditorPane = new JEditorPane();
-        jiraEditorPane.setEditorKit(new HTMLEditorKit());
-        ((HTMLDocument) jiraEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
-        jiraEditorPane.addHyperlinkListener(BrowserHyperlinkListener.INSTANCE);
+        separator()
+
+        row {
+            label("JRebel && HotSwap")
+                .bold()
+                .align(AlignX.CENTER)
+        }
+        row {
+            icon(AllIcons.Actions.SwapPanels)
+            text(
+                """
+                    IDEA needs to build its own compile tree to enable hotSwap.
+                    <br>
+                    Once the project is imported and indexed you need to trigger <code>Build -> Rebuild</code> project once only.
+                    <br>
+                """.trimIndent()
+            )
+        }
+
+        separator()
+
+        row {
+            label("Feedback")
+                .bold()
+                .align(AlignX.CENTER)
+        }
+        row {
+            icon(AllIcons.General.User)
+            text(
+                """
+                    We'd love to hear from you! you can report any suggestion, feature request or a bug to us <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin">here</a>.
+                """.trimIndent()
+            )
+        }
     }
 }
