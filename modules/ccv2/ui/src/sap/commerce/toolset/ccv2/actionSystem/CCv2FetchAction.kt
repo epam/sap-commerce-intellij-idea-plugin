@@ -18,9 +18,15 @@
 
 package sap.commerce.toolset.ccv2.actionSystem
 
+import com.intellij.ide.ActivityTracker
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AnimatedIcon
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.ccv2.dto.CCv2Dto
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
@@ -57,6 +63,10 @@ abstract class CCv2FetchAction<T : CCv2Dto>(
 
     private fun onCompleteCallback(e: AnActionEvent): (SortedMap<CCv2Subscription, Collection<T>>) -> Unit = {
         fetching = false
+
+        CoroutineScope(Dispatchers.EDT).launch {
+            readAction { ActivityTracker.getInstance().inc() }
+        }
     }
 
     override fun update(e: AnActionEvent) {

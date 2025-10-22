@@ -1,3 +1,8 @@
+## [2025.2.4.4]
+
+### `CCv2` enhancements
+- Renew `fetch` icon right after completing the request [#1611](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1611)
+
 ## [2025.2.4.3]
 
 ### `JPS - Build` enhancement
