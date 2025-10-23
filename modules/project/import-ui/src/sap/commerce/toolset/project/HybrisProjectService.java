@@ -29,7 +29,6 @@ import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 
 import java.io.File;
 
-
 @Service
 public final class HybrisProjectService {
 

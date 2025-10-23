@@ -139,7 +139,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                     it.foreground = ColorUtil.withAlpha(JBColor(0x660000, 0xC93B48), 0.7)
                 }
         }
-        group("Following plugins are not enabled") {
+        group("Not Enabled Plugins") {
             row {
                 cell(notEnabledList)
             }
@@ -155,7 +155,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
             }
         }
 
-        group("Following plugins are not installed") {
+        group("Not Installed Plugins") {
             row {
                 cell(notInstalledList)
             }

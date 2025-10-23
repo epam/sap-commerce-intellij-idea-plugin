@@ -92,7 +92,7 @@ class InformationStep(wizardContext: WizardContext) : ProjectImportWizardStep(wi
         separator()
 
         row {
-            label("JRebel && HotSwap")
+            label("JRebel & HotSwap")
                 .bold()
                 .align(AlignX.CENTER)
         }

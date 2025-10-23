@@ -26,7 +26,7 @@ import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.ImageUtil;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder;
+import sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 
 import java.awt.*;
@@ -51,8 +51,8 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
     }
 
     @Override
-    public AbstractHybrisProjectImportBuilder getContext() {
-        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
+    public DefaultHybrisProjectImportBuilder getContext() {
+        return (DefaultHybrisProjectImportBuilder) this.getBuilder();
     }
 
     protected boolean isInConflict(@NotNull final ModuleDescriptor item) {

@@ -30,10 +30,7 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.textFieldWithBrowseButton
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.builder.selected
+import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import com.intellij.ui.scale.JBUIScale
 import org.apache.commons.lang3.StringUtils
@@ -42,7 +39,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.directory
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder
+import sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import sap.commerce.toolset.project.utils.FileUtils
@@ -53,6 +50,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.*
+import javax.swing.JLabel
 import javax.swing.JTextField
 import javax.swing.ScrollPaneConstants
 
@@ -61,7 +59,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private val logger = Logger.getInstance(ProjectImportWizardRootStep::class.java)
 
     private lateinit var projectNameTextField: JTextField
-    private lateinit var hybrisVersionTextField: JTextField
+    private lateinit var hybrisVersionTextField: JLabel
     private lateinit var javadocUrlTextField: JTextField
     private lateinit var ccv2TokenTextField: JBPasswordField
     private lateinit var hybrisDistributionDirectoryFilesInChooser: TextFieldWithBrowseButton
@@ -98,10 +96,11 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             projectNameTextField = textField()
                 .align(AlignX.FILL)
                 .component
-            hybrisVersionTextField = textField()
-                .label("SAP CX version:")
+            label("SAP CX version:")
                 .align(AlignX.RIGHT)
-                .enabled(false)
+                .gap(RightGap.SMALL)
+            hybrisVersionTextField = label("")
+                .bold()
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
@@ -326,7 +325,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
         wizardContext.projectName = projectNameTextField.text
 
-        with(context.hybrisProjectDescriptor) {
+        with(context.getHybrisProjectDescriptor()) {
             this.hybrisVersion = hybrisVersionTextField.text
             this.hybrisDistributionDirectory = FileUtils.toFile(hybrisDistributionDirectoryFilesInChooser.text)
 
@@ -620,5 +619,5 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private fun getDefaultJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, hybrisApiVersion)
     else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
-    private fun context() = builder as AbstractHybrisProjectImportBuilder
+    private fun context() = builder as DefaultHybrisProjectImportBuilder
 }

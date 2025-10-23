@@ -28,6 +28,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
+import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
@@ -54,16 +55,16 @@ import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.MANDATORY;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.UNUSED;
 
-public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
+public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<ModuleDescriptor> implements HybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
 
     protected final Lock lock = new ReentrantLock();
 
     @Nullable
-    protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
+    private volatile HybrisProjectDescriptor hybrisProjectDescriptor;
     private List<ModuleDescriptor> moduleList;
-    private List<ModuleDescriptor> hybrisModulesToImport;
+    private List<ModuleDescriptor> _hybrisModulesToImport;
 
     @Override
     @Nullable
@@ -273,7 +274,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public void setHybrisModulesToImport(final List<ModuleDescriptor> hybrisModules) {
-        hybrisModulesToImport = hybrisModules;
+        _hybrisModulesToImport = hybrisModules;
         try {
             setList(hybrisModules);
         } catch (ConfigurationException e) {
@@ -284,7 +285,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public List<ModuleDescriptor> getHybrisModulesToImport() {
-        return hybrisModulesToImport;
+        return _hybrisModulesToImport;
     }
 
     @Override

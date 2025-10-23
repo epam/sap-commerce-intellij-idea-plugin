@@ -58,7 +58,7 @@ class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectMod
         }
     }
 
-    override fun getAdditionalFixedElements(): MutableList<ModuleDescriptor> = context.getHybrisModulesToImport()
+    override fun getAdditionalFixedElements(): MutableList<ModuleDescriptor> = context.hybrisModulesToImport
 
     @Throws(ConfigurationException::class)
     override fun validate() = validateCommon()

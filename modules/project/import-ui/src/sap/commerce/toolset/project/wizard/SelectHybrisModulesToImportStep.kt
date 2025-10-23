@@ -115,8 +115,8 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
             ?.changeSelection(0, 0, false, false)
     }
 
-    override fun setList(allElements: MutableList<ModuleDescriptor>?) {
-        context.setHybrisModulesToImport(allElements)
+    override fun setList(allElements: MutableList<ModuleDescriptor>) {
+        context.hybrisModulesToImport = allElements
     }
 
     override fun open(projectSettings: ProjectSettings) {

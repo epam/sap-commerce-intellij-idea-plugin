@@ -16,60 +16,46 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.project.actionSystem
 
-package sap.commerce.toolset.project.actionSystem;
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.ex.ActionUtil.SHOW_TEXT_IN_TOOLBAR
+import com.intellij.openapi.options.ConfigurationException
+import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.ui.Messages
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.project.ProjectRefreshService
+import sap.commerce.toolset.settings.WorkspaceSettings
 
-import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.actionSystem.ex.ActionUtil;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.HybrisIcons;
-import sap.commerce.toolset.project.ProjectRefreshService;
-import sap.commerce.toolset.settings.WorkspaceSettings;
+class ProjectRefreshAction : DumbAwareAction(
+    "Refresh SAP Commerce Project",
+    "Re-imports the current hybris project with default values",
+    HybrisIcons.Y.LOGO_BLUE
+) {
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
-
-public class ProjectRefreshAction extends AnAction {
-
-    @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return ActionUpdateThread.BGT;
-    }
-
-    @Override
-    public void actionPerformed(final @NotNull AnActionEvent e) {
-        final var project = e.getProject();
-
-        if (project == null) return;
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
 
         try {
-            ProjectRefreshService.Companion.getInstance(project).refresh();
-        } catch (final ConfigurationException ex) {
+            ProjectRefreshService.getInstance(project).refresh()
+        } catch (ex: ConfigurationException) {
             Messages.showErrorDialog(
                 project,
                 ex.getMessageHtml().toString(),
                 message("hybris.project.import.error.unable.to.proceed")
-            );
+            )
         }
     }
 
-    @Override
-    public void update(final AnActionEvent e) {
-        final Project project = e.getData(CommonDataKeys.PROJECT);
-        final Presentation presentation = e.getPresentation();
-        if (project == null) {
-            presentation.setVisible(false);
-            return;
-        }
-        presentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true);
-        presentation.setIcon(HybrisIcons.Y.INSTANCE.getLOGO_BLUE());
-        presentation.setVisible(WorkspaceSettings.getInstance(project).getHybrisProject());
-    }
+    override fun update(e: AnActionEvent) {
+        val project = e.project ?: return
 
-    @Override
-    public boolean isDumbAware() {
-        return true;
+        with(e.presentation) {
+            putClientProperty(SHOW_TEXT_IN_TOOLBAR, true)
+            setVisible(WorkspaceSettings.getInstance(project).hybrisProject)
+        }
     }
 }

@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,55 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project;
+package sap.commerce.toolset.project
 
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory;
-import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.projectImport.ProjectImportBuilder;
-import com.intellij.projectImport.ProjectImportProvider;
-import com.intellij.projectImport.ProjectOpenProcessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import sap.commerce.toolset.project.wizard.*;
+import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory
+import com.intellij.ide.util.projectWizard.WizardContext
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.projectImport.ProjectImportBuilder
+import com.intellij.projectImport.ProjectImportProvider
+import com.intellij.projectImport.ProjectOpenProcessor
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.wizard.*
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+class HybrisProjectImportProvider : ProjectImportProvider() {
 
-public class HybrisProjectImportProvider extends ProjectImportProvider {
+    override fun getFileSample() = i18n("hybris.project.import.dialog.message")
 
-    @Override
-    protected boolean canImportFromFile(final VirtualFile file) {
-        return doGetProjectOpenProcessor().canOpenProject(file);
-    }
+    override fun canImportFromFile(file: VirtualFile): Boolean = ProjectOpenProcessor.EXTENSION_POINT_NAME
+        .findExtensionOrFail(HybrisProjectOpenProcessor::class.java)
+        .canOpenProject(file)
 
-    @Override
-    public ModuleWizardStep[] createSteps(final WizardContext context) {
-        final ProjectWizardStepFactory stepFactory = ProjectWizardStepFactory.getInstance();
+    override fun doGetBuilder(): DefaultHybrisProjectImportBuilder = ProjectImportBuilder.EXTENSIONS_POINT_NAME
+        .findExtensionOrFail(DefaultHybrisProjectImportBuilder::class.java)
 
-        return new ModuleWizardStep[]{
-            new CheckRequiredPluginsWizardStep(context),
-            new InformationStep(context),
-            new ProjectImportWizardRootStep(context),
-            new SelectHybrisModulesToImportStep(context),
-            new SelectOtherModulesToImportStep(context),
-            stepFactory.createProjectJdkStep(context)
-        };
-    }
-
-    private HybrisProjectOpenProcessor doGetProjectOpenProcessor() {
-        return ProjectOpenProcessor.EXTENSION_POINT_NAME.findExtensionOrFail(HybrisProjectOpenProcessor.class);
-    }
-
-    @NotNull
-    @Override
-    protected DefaultHybrisProjectImportBuilder doGetBuilder() {
-        return ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(DefaultHybrisProjectImportBuilder.class);
-    }
-
-    @Nullable
-    @Override
-    public String getFileSample() {
-        return message("hybris.project.import.dialog.message");
-    }
+    override fun createSteps(context: WizardContext) = arrayOf(
+        CheckRequiredPluginsWizardStep(context),
+        InformationStep(context),
+        ProjectImportWizardRootStep(context),
+        SelectHybrisModulesToImportStep(context),
+        SelectOtherModulesToImportStep(context),
+        ProjectWizardStepFactory.getInstance().createProjectJdkStep(context),
+    )
 }
