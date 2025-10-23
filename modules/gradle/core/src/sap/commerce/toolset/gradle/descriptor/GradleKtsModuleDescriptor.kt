@@ -39,8 +39,7 @@ class GradleKtsModuleDescriptor(
             if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
 
             return File(moduleRootDirectory, HybrisConstants.GRADLE_SETTINGS_KTS).isFile
-                ||
-                File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS).isFile
+                || File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS).isFile
         }
 
         override fun create(

@@ -1,7 +1,7 @@
 ## [2025.2.4.4]
 
 #### Release contributors
-- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.4+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.4+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Updated project import "Information" step [#1612](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1612)
@@ -9,6 +9,9 @@
 
 ### `CCv2` enhancements
 - Renew `fetch` icon right after completing the request [#1611](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1611)
+
+### Fixes
+- Adjusted detection of the disabled plugins according to new API [#1615](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1615)
 
 ## [2025.2.4.3]
 
