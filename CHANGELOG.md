@@ -5,6 +5,7 @@
 
 ### `CCv2` enhancements
 - Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
+- Display state of the `maintenance mode` of an endpoint [#1617](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1617)
 
 ## [2025.2.4.4]
 

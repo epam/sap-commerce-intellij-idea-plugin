@@ -45,6 +45,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
 import sap.commerce.toolset.ui.actionButton
+import sap.commerce.toolset.ui.contextHelp
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.GridBagLayout
 import java.awt.datatransfer.StringSelection
@@ -277,45 +278,53 @@ class CCv2EnvironmentDetailsView(
     }
 
     private fun endpointsPanel(endpoints: Collection<CCv2EndpointDto>) = panel {
-        endpoints.forEach { endpoint ->
-            row {
-                panel {
-                    row {
-                        browserLink(endpoint.name, endpoint.link)
-                            .bold()
-                            .comment("Name")
-                    }
-                }.gap(RightGap.COLUMNS)
+        endpoints
+            .sortedWith(compareBy<CCv2EndpointDto> { it.service }
+                .thenBy { it.name })
+            .forEach { endpoint ->
+                row {
+                    panel {
+                        row {
+                            if (endpoint.maintenanceMode) contextHelp(
+                                "Maintenance mode active",
+                                HybrisIcons.CCv2.Endpoint.MAINTENANCE_MODE
+                            )
+                                .gap(RightGap.SMALL)
+                            browserLink(endpoint.name, endpoint.link)
+                                .bold()
+                                .comment("Name")
+                        }
+                    }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        label(endpoint.webProxy)
-                            .comment("Web proxy")
-                    }
-                }.gap(RightGap.COLUMNS)
+                    panel {
+                        row {
+                            label(endpoint.webProxy)
+                                .comment("Web proxy")
+                        }
+                    }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        label(endpoint.service)
-                            .comment("Service")
-                    }
-                }.gap(RightGap.COLUMNS)
+                    panel {
+                        row {
+                            label(endpoint.service)
+                                .comment("Service")
+                        }
+                    }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        val url = if (endpoint.url.startsWith("http")) endpoint.url
-                        else "https://${endpoint.url}"
-                        val icon = if (url.startsWith("https")) HybrisIcons.CCv2.Endpoint.SECURE
-                        else HybrisIcons.CCv2.Endpoint.UNSECURE
+                    panel {
+                        row {
+                            val url = if (endpoint.url.startsWith("http")) endpoint.url
+                            else "https://${endpoint.url}"
+                            val icon = if (url.startsWith("https")) HybrisIcons.CCv2.Endpoint.SECURE
+                            else HybrisIcons.CCv2.Endpoint.UNSECURE
 
-                        icon(icon)
-                            .gap(RightGap.SMALL)
-                        browserLink(endpoint.url, url)
-                            .comment("URL")
-                    }
-                }.gap(RightGap.COLUMNS)
-            }.layout(RowLayout.PARENT_GRID)
-        }
+                            icon(icon)
+                                .gap(RightGap.SMALL)
+                            browserLink(endpoint.url, url)
+                                .comment("URL")
+                        }
+                    }.gap(RightGap.COLUMNS)
+                }.layout(RowLayout.PARENT_GRID)
+            }
     }
 
     private fun servicesPanel(environment: CCv2EnvironmentDto, services: Collection<CCv2ServiceDto>) = panel {

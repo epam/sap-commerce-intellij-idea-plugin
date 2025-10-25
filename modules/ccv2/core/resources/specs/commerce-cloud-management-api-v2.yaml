@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: 2.0.12
+  version: 2.0.13
   title: 'SAP Commerce Cloud - Management API'
   description: 'The API to manage your SAP Commerce environments in the cloud, including provisioning, building releases, deploying, operating and more.'
   license:
@@ -2108,6 +2108,7 @@ components:
         - webProxy
         - service
         - url
+        - maintenanceMode
       properties:
         code:
           description: Endpoint code
@@ -2124,6 +2125,9 @@ components:
         url:
           description: Endpoint url
           type: string
+        maintenanceMode:
+          description: Maintenance Mode
+          type: boolean
     CreateScheduledActivityRequestDTO:
       description: Create scheduled activity request
       type: object
