@@ -23,12 +23,27 @@ import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
+import com.intellij.ui.ContextHelpLabel
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Row
 import org.jetbrains.annotations.NonNls
 import java.awt.Dimension
 import java.io.Serial
 import javax.swing.Icon
+import javax.swing.JLabel
+
+fun Row.contextHelp(
+    description: String,
+    icon: Icon = AllIcons.General.ContextHelp,
+    title: String? = null
+): Cell<JLabel> {
+    val result = if (title == null) ContextHelpLabel.create(description)
+    else ContextHelpLabel.create(title, description)
+
+    result.icon = icon
+
+    return cell(result)
+}
 
 fun Row.actionButton(
     action: AnAction, @NonNls actionPlace: String = ActionPlaces.UNKNOWN,

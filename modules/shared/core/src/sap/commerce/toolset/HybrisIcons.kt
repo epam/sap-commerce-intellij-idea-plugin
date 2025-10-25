@@ -447,6 +447,7 @@ object HybrisIcons {
         object Endpoint {
             val SECURE = AllIcons.Nodes.Locked
             val UNSECURE = AllIcons.Ide.Readwrite
+            val MAINTENANCE_MODE = AllIcons.General.Warning
         }
     }
 

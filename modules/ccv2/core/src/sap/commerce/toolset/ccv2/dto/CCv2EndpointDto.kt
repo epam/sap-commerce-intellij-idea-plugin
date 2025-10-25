@@ -29,6 +29,7 @@ data class CCv2EndpointDto(
     val service: String,
     val url: String,
     val link: String,
+    val maintenanceMode: Boolean,
 ) {
     internal data class MappingDto(
         val subscription: CCv2Subscription,
@@ -47,6 +48,7 @@ data class CCv2EndpointDto(
                 webProxy = dto.webProxy,
                 service = dto.service,
                 url = dto.url,
+                maintenanceMode = dto.maintenanceMode,
                 link = "https://${CCv2Constants.DOMAIN}/subscription/${subscription.id}/applications/commerce-cloud/environments/${environment.code}/endpoints/${dto.code}/edit"
             )
         }
