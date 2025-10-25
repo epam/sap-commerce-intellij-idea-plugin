@@ -450,6 +450,7 @@ object HybrisIcons {
             val MAINTENANCE_MODE = AllIcons.General.Warning
             val MAINTENANCE_MODE_ACTIVATE = AllIcons.General.Warning
             val MAINTENANCE_MODE_DEACTIVATE = AllIcons.Actions.ToggleVisibility
+            val DELETE = AllIcons.General.Delete
         }
     }
 

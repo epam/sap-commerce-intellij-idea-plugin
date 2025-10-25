@@ -46,6 +46,7 @@ import sap.commerce.toolset.ccv2.event.CCv2BuildsListener
 import sap.commerce.toolset.ccv2.event.CCv2DeploymentsListener
 import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
+import sap.commerce.toolset.ccv2.model.EndpointUpdateDTO
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
@@ -794,7 +795,38 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 checkCanceled()
 
                 try {
-                    CCv1Api.getInstance().updateEndpointsMaintenanceMode(ccv2Token, subscription, environment, endpoint, !endpoint.maintenanceMode)
+                    val payload = EndpointUpdateDTO(
+                        maintenanceMode = !endpoint.maintenanceMode,
+                    )
+                    CCv2Api.getInstance().updateEndpoint(ccv2Token, subscription, environment, endpoint, payload)
+
+                    environment.endpoints = null
+                    resetCache(KEY_ENDPOINTS, ccv2Token, subscription, environment)
+
+                    project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onEndpointUpdate(environment)
+                } catch (e: SocketTimeoutException) {
+                    endpoint.actionsAllowed = true
+
+                    notifyOnTimeout(subscription, e)
+                } catch (e: RuntimeException) {
+                    endpoint.actionsAllowed = true
+
+                    notifyOnException(subscription, e)
+                }
+            }
+        }
+    }
+
+    fun deleteEndpoint(project: Project, subscription: CCv2Subscription, environment: CCv2EnvironmentDto, endpoint: CCv2EndpointDto) {
+        endpoint.actionsAllowed = false
+
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Deleting Endpoint - ${environment.code} - ${endpoint.name}", true) {
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                checkCanceled()
+
+                try {
+                    CCv2Api.getInstance().deleteEndpoint(ccv2Token, subscription, environment, endpoint)
 
                     environment.endpoints = null
                     resetCache(KEY_ENDPOINTS, ccv2Token, subscription, environment)

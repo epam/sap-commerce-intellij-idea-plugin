@@ -31,10 +31,7 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.invoker.infrastructure.ApiClient
-import sap.commerce.toolset.ccv2.model.CreateBuildRequestDTO
-import sap.commerce.toolset.ccv2.model.CreateDeploymentRequestDTO
-import sap.commerce.toolset.ccv2.model.DeploymentDetailDTO
-import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
+import sap.commerce.toolset.ccv2.model.*
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import java.io.File
@@ -337,6 +334,32 @@ class CCv2Api {
         )
         .value
         .let { serviceProperties.parseResponse(it) }
+
+    suspend fun updateEndpoint(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        endpoint: CCv2EndpointDto,
+        endpointUpdateDTO: EndpointUpdateDTO,
+    ): EndpointDTO = endpointApi.updateEndpoint(
+        subscriptionCode = subscription.id!!,
+        environmentCode = environment.code,
+        endpointCode = endpoint.code,
+        endpointUpdateDTO = endpointUpdateDTO,
+        requestHeaders = createRequestParams(ccv2Token),
+    )
+
+    suspend fun deleteEndpoint(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        endpoint: CCv2EndpointDto,
+    ) = endpointApi.deleteEndpoint(
+        subscriptionCode = subscription.id!!,
+        environmentCode = environment.code,
+        endpointCode = endpoint.code,
+        requestHeaders = createRequestParams(ccv2Token),
+    )
 
     private fun ccv2DeploymentDto(
         code: String?,

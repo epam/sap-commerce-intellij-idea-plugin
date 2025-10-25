@@ -51,6 +51,7 @@
         <action id="ccv2.deployment.track.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2TrackDeploymentAction"/>
 
         <action id="ccv2.endpoint.toggleMaintenanceMode.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2ToggleMaintenanceModeEndpointAction"/>
+        <action id="ccv2.endpoint.delete.action" class="sap.commerce.toolset.ccv2.actionSystem.CCv2DeleteEndpointAction"/>
 
         <group id="ccv2.toolbar.actions">
             <action class="sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentsAction"/>
