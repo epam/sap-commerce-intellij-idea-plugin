@@ -65,7 +65,7 @@ enum class WebProxy(val title: String) {
     companion object {
 
         fun tryValueOf(name: String?) = entries
-            .find { it.name == name }
+            .find { it.name.equals(name, true) }
             ?: UNKNOWN
     }
 }
