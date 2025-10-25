@@ -449,7 +449,58 @@ class CCv2EnvironmentDetailsView(
                 }.visibleIf(showBuild.not())
             }
 
-            group("Cloud Storage") {
+            collapsibleGroup("Public Endpoints") {
+                val endpoints = environment.endpoints
+                if (endpoints.isEmpty()) {
+                    row {
+                        label("No public endpoints found for environment.")
+                            .align(Align.FILL)
+                    }
+                } else {
+                    endpoints.forEach { endpoint ->
+                        row {
+                            panel {
+                                row {
+                                    browserLink(endpoint.name, endpoint.link)
+                                        .bold()
+                                        .comment("Name")
+                                }
+                            }.gap(RightGap.COLUMNS)
+
+                            panel {
+                                row {
+                                    label(endpoint.webProxy)
+                                        .comment("Web proxy")
+                                }
+                            }.gap(RightGap.COLUMNS)
+
+                            panel {
+                                row {
+                                    label(endpoint.service)
+                                        .comment("Service")
+                                }
+                            }.gap(RightGap.COLUMNS)
+
+                            panel {
+                                row {
+                                    val url = if (endpoint.url.startsWith("http")) endpoint.url
+                                    else "https://${endpoint.url}"
+                                    val icon = if (url.startsWith("https")) HybrisIcons.CCv2.Endpoint.SECURE
+                                    else HybrisIcons.CCv2.Endpoint.UNSECURE
+
+                                    icon(icon)
+                                        .gap(RightGap.SMALL)
+                                    browserLink(endpoint.url, url)
+                                        .comment("URL")
+                                }
+                            }.gap(RightGap.COLUMNS)
+                        }.layout(RowLayout.PARENT_GRID)
+                    }
+                }
+            }
+                .expanded = true
+
+            collapsibleGroup("Cloud Storage") {
                 val mediaStorages = environment.mediaStorages
                 if (mediaStorages.isEmpty()) {
                     row {
@@ -534,6 +585,7 @@ class CCv2EnvironmentDetailsView(
                     }
                 }
             }
+                .expanded = true
 
             collapsibleGroup("Services") {
                 row {

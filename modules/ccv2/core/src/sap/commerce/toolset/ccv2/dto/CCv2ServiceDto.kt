@@ -35,27 +35,42 @@ data class CCv2ServiceDto(
     val availableReplicas: Int?,
     val link: String,
     val replicas: Collection<CCv2ServiceReplicaDto>,
+    var endpoints: Collection<CCv2EndpointDto>,
     val supportedProperties: EnumSet<CCv2ServiceProperties> = CCv2ServiceProperties.getSupportedProperties(code),
     var customerProperties: Map<String, String>? = null,
     var securityProperties: Map<String, String>? = null,
     var initialPasswords: Map<String, String>? = null,
     var greenDeploymentSupported: Boolean? = null,
 ) {
+    internal data class MappingDto(
+        val subscription: CCv2Subscription,
+        var environment: CCv2EnvironmentDto,
+        var dto: ServiceDTO,
+    )
 
     companion object {
-        fun map(subscription: CCv2Subscription, environment: CCv2EnvironmentDto, dto: ServiceDTO) = CCv2ServiceDto(
-            code = dto.code,
-            name = dto.name,
-            modifiedBy = dto.modifiedBy,
-            modifiedTime = dto.modifiedTime,
-            customerScalableSupported = dto.customerScalableSupported,
-            runnable = dto.runnable,
-            desiredReplicas = dto.desiredReplicas,
-            availableReplicas = dto.availableReplicas,
-            link = "https://${CCv2Constants.DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas",
-            replicas = dto.replicas
-                ?.map { CCv2ServiceReplicaDto.map(it) }
-                ?: emptyList()
-        )
+        internal fun map(mappingDto: MappingDto): CCv2ServiceDto {
+            val dto = mappingDto.dto
+            val subscription = mappingDto.subscription
+            val environment = mappingDto.environment
+
+            return CCv2ServiceDto(
+                code = dto.code,
+                name = dto.name,
+                modifiedBy = dto.modifiedBy,
+                modifiedTime = dto.modifiedTime,
+                customerScalableSupported = dto.customerScalableSupported,
+                runnable = dto.runnable,
+                desiredReplicas = dto.desiredReplicas,
+                availableReplicas = dto.availableReplicas,
+                link = "https://${CCv2Constants.DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas",
+                replicas = dto.replicas
+                    ?.map { CCv2ServiceReplicaDto.map(it) }
+                    ?: emptyList(),
+                endpoints = environment.endpoints
+                    ?.filter { it.service == dto.code }
+                    ?: emptyList(),
+            )
+        }
     }
 }

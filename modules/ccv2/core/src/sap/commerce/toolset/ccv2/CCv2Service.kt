@@ -23,6 +23,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -110,35 +111,30 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                         subscriptions
                             .map { subscription ->
                                 async {
-                                    val environments = (getCCv2Token(subscription)
-                                        ?.let { ccv2Token ->
-                                            try {
-                                                val cachedEnvironments =
-                                                    fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
+                                    val ccv2Token = getCCv2Token(subscription) ?: return@async (subscription to emptyList())
+                                    try {
+                                        val cachedEnvironments =
+                                            fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
 
-                                                if (requestServices) {
-                                                    cachedEnvironments
-                                                        .filter { it.accessible }
-                                                        .map { environment ->
-                                                            async {
-                                                                environment.services = fetchCacheableEnvironmentServices(ccv2Token, subscription, environment)
-                                                            }
-                                                        }
-                                                        .awaitAll()
+                                        if (requestServices) {
+                                            cachedEnvironments
+                                                .filter { it.accessible }
+                                                .map { environment ->
+                                                    async {
+                                                        environment.services = fetchCacheableEnvironmentServices(ccv2Token, subscription, environment)
+                                                    }
                                                 }
-
-                                                return@let cachedEnvironments
-                                            } catch (e: SocketTimeoutException) {
-                                                notifyOnTimeout(subscription)
-                                            } catch (e: RuntimeException) {
-                                                notifyOnException(subscription, e)
-                                            }
-
-                                            return@let emptyList()
+                                                .awaitAll()
                                         }
-                                        ?: emptyList())
 
-                                    subscription to environments
+                                        return@async subscription to cachedEnvironments
+                                    } catch (e: SocketTimeoutException) {
+                                        notifyOnTimeout(subscription, e)
+                                    } catch (e: RuntimeException) {
+                                        notifyOnException(subscription, e)
+                                    }
+
+                                    subscription to emptyList()
                                 }
                             }
                             .awaitAll()
@@ -167,7 +163,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
                                 CCv2Api.getInstance().fetchEnvironmentsBuilds(ccv2Token, subscription, environments, this, progressReporter)
                             } catch (e: SocketTimeoutException) {
-                                notifyOnTimeout(subscription)
+                                notifyOnTimeout(subscription, e)
                             } catch (e: RuntimeException) {
                                 notifyOnException(subscription, e)
                             }
@@ -192,7 +188,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 try {
                     build = CCv2Api.getInstance().fetchEnvironmentBuild(ccv2Token, subscription, environment)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -215,7 +211,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 try {
                     services = fetchCacheableEnvironmentServices(ccv2Token, subscription, environment)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -239,7 +235,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     dataBackups = CCv2Api.getInstance().fetchEnvironmentDataBackups(ccv2Token, subscription, environment)
                         .sortedByDescending { it.createdTimestamp }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -264,7 +260,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 try {
                     properties = CCv2Api.getInstance().fetchServiceProperties(ccv2Token, subscription, environment, service, serviceProperties)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -298,7 +294,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                             try {
                                                 return@let CCv2Api.getInstance().fetchBuilds(ccv2Token, subscription, statusNot, progressReporter)
                                             } catch (e: SocketTimeoutException) {
-                                                notifyOnTimeout(subscription)
+                                                notifyOnTimeout(subscription, e)
                                             } catch (e: RuntimeException) {
                                                 notifyOnException(subscription, e)
                                             }
@@ -338,7 +334,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                             try {
                                                 return@let CCv2Api.getInstance().fetchDeployments(ccv2Token, subscription, progressReporter)
                                             } catch (e: SocketTimeoutException) {
-                                                notifyOnTimeout(subscription)
+                                                notifyOnTimeout(subscription, e)
                                             } catch (e: RuntimeException) {
                                                 notifyOnException(subscription, e)
                                             }
@@ -388,7 +384,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             }
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(buildRequest.subscription)
+                    notifyOnTimeout(buildRequest.subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(buildRequest.subscription, e)
                 }
@@ -424,7 +420,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                 .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -456,7 +452,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                 .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -503,7 +499,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             }
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -543,7 +539,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
                     onCompleteCallback.invoke(logFiles)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -570,7 +566,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                         .fetchMediaStoragePublicKey(ccv2Token, subscription, environment, mediaStorage)
                         .publicKey
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -592,7 +588,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     val build = CCv2Api.getInstance().fetchBuildForCode(ccv2Token, subscription, buildCode)
                     onCompleteCallback.invoke(build)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
                     notifyOnException(subscription, e)
                 }
@@ -616,7 +612,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                         deployments = CCv2Api.getInstance().fetchDeploymentsForBuild(subscription, buildCode, ccv2Token!!, progressReporter)
                         onCompleteCallback(deployments)
                     } catch (e: SocketTimeoutException) {
-                        notifyOnTimeout(subscription)
+                        notifyOnTimeout(subscription, e)
                     } catch (e: RuntimeException) {
                         notifyOnException(subscription, e)
                     }
@@ -666,7 +662,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             }
                         }
                     } catch (e: SocketTimeoutException) {
-                        notifyOnTimeout(subscription)
+                        notifyOnTimeout(subscription, e)
                     } catch (e: RuntimeException) {
                         notifyOnException(subscription, e)
                     }
@@ -732,7 +728,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                 }
                             }
                         } catch (e: SocketTimeoutException) {
-                            notifyOnTimeout(subscription)
+                            notifyOnTimeout(subscription, e)
                         } catch (e: RuntimeException) {
                             notifyOnException(subscription, e)
                         }
@@ -777,7 +773,9 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         return null
     }
 
-    private fun notifyOnTimeout(subscription: CCv2Subscription) {
+    private fun notifyOnTimeout(subscription: CCv2Subscription, e: SocketTimeoutException) {
+        thisLogger().warn(e)
+
         Notifications
             .create(
                 NotificationType.WARNING,
@@ -794,6 +792,8 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     }
 
     private fun notifyOnException(subscription: CCv2Subscription, e: RuntimeException) {
+        thisLogger().warn(e)
+
         Notifications
             .create(
                 NotificationType.WARNING,

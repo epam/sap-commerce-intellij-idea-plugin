@@ -443,6 +443,11 @@ object HybrisIcons {
                 val RESTART_POD = AllIcons.Actions.RestartFrame
             }
         }
+
+        object Endpoint {
+            val SECURE = AllIcons.Nodes.Locked
+            val UNSECURE = AllIcons.Ide.Readwrite
+        }
     }
 
     object Connection {

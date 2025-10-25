@@ -20,7 +20,9 @@ package sap.commerce.toolset.ccv2.dto
 
 import sap.commerce.toolset.ccv1.model.EnvironmentHealthDTO
 import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.ccv2.model.EndpointDetailDTO
 import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
+import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
 data class CCv2EnvironmentDto(
     val code: String,
@@ -37,6 +39,7 @@ data class CCv2EnvironmentDto(
     val mediaStorages: Collection<CCv2MediaStorageDto>,
     var services: Collection<CCv2ServiceDto>? = null,
     var dataBackups: Collection<CCv2DataBackupDto>? = null,
+    var endpoints: Collection<CCv2EndpointDto>,
 ) : CCv2Dto, Comparable<CCv2EnvironmentDto> {
 
     val accessible
@@ -54,14 +57,22 @@ data class CCv2EnvironmentDto(
 
     override fun compareTo(other: CCv2EnvironmentDto) = name.compareTo(other.name)
 
-    companion object {
+    internal data class MappingDto(
+        val subscription: CCv2Subscription,
+        val environment: EnvironmentDetailDTO,
+        var canAccess: Boolean,
+        var endpoints: Collection<EndpointDetailDTO> = emptyList(),
+        var v1Environment: sap.commerce.toolset.ccv1.model.EnvironmentDetailDTO? = null,
+        var v1EnvironmentHealth: EnvironmentHealthDTO? = null,
+    )
 
-        fun map(
-            environment: EnvironmentDetailDTO,
-            deploymentStatus: Boolean,
-            v1Environment: sap.commerce.toolset.ccv1.model.EnvironmentDetailDTO?,
-            v1EnvironmentHealth: EnvironmentHealthDTO?
-        ): CCv2EnvironmentDto {
+    companion object {
+        internal fun map(mappingDto: MappingDto): CCv2EnvironmentDto {
+            val subscription = mappingDto.subscription
+            val environment = mappingDto.environment
+            val canAccess = mappingDto.canAccess
+            val v1Environment = mappingDto.v1Environment
+            val v1EnvironmentHealth = mappingDto.v1EnvironmentHealth
             val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
             val code = environment.code
 
@@ -80,12 +91,15 @@ data class CCv2EnvironmentDto(
                 status = status,
                 type = CCv2EnvironmentType.tryValueOf(environment.type),
                 deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
-                deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT) && link != null,
+                deploymentAllowed = canAccess && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT) && link != null,
                 dynatraceLink = v1Environment?.dynatraceUrl,
                 loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
                 problems = v1EnvironmentHealth?.problems,
                 link = link,
-                mediaStorages = mediaStorages
+                mediaStorages = mediaStorages,
+                endpoints = mappingDto.endpoints
+                    .map { CCv2EndpointDto.MappingDto(subscription, environment, it) }
+                    .map { CCv2EndpointDto.map(it) },
             )
         }
     }
