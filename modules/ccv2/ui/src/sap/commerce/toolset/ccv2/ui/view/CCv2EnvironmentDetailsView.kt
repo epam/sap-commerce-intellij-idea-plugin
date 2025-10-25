@@ -297,7 +297,8 @@ class CCv2EnvironmentDetailsView(
                         row {
                             val actionManager = ActionManager.getInstance()
                             actionsButton(
-                                actionManager.getAction("ccv2.endpoint.toggleMaintenanceMode.action")
+                                actionManager.getAction("ccv2.endpoint.toggleMaintenanceMode.action"),
+                                actionManager.getAction("ccv2.endpoint.delete.action")
                             ) {
                                 it[CCv2UiConstants.DataKeys.Subscription] = subscription
                                 it[CCv2UiConstants.DataKeys.Environment] = environment
@@ -320,7 +321,7 @@ class CCv2EnvironmentDetailsView(
 
                     panel {
                         row {
-                            label(endpoint.webProxy)
+                            label(endpoint.webProxy.title)
                                 .comment("Web proxy")
                         }
                     }.gap(RightGap.COLUMNS)
