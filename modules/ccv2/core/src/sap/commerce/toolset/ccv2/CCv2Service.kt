@@ -75,10 +75,12 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
     fun cached() = getUserData(KEY_ENVIRONMENTS) != null
         || getUserData(KEY_SERVICES) != null
+        || getUserData(KEY_ENDPOINTS) != null
 
     fun resetCache() {
         removeUserData(KEY_ENVIRONMENTS)
         removeUserData(KEY_SERVICES)
+        removeUserData(KEY_ENDPOINTS)
 
         Notifications
             .create(
@@ -221,6 +223,29 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         }
     }
 
+    fun fetchEnvironmentEndpoints(
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        onCompleteCallback: (Collection<CCv2EndpointDto>?) -> Unit
+    ) {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Environment Endpoints...", true) {
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                var endpoints: Collection<CCv2EndpointDto>? = null
+
+                try {
+                    endpoints = fetchCacheableEnvironmentEndpoints(ccv2Token, subscription, environment)
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout(subscription, e)
+                } catch (e: RuntimeException) {
+                    notifyOnException(subscription, e)
+                }
+
+                onCompleteCallback.invoke(endpoints)
+            }
+        }
+    }
+
     fun fetchEnvironmentDataBackups(
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
@@ -233,7 +258,8 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
                 try {
                     dataBackups = CCv2Api.getInstance().fetchEnvironmentDataBackups(ccv2Token, subscription, environment)
-                        .sortedByDescending { it.createdTimestamp }
+                        ?.sortedByDescending { it.createdTimestamp }
+                        ?: emptyList()
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
@@ -818,7 +844,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         requestV1Details: Boolean,
         requestV1Health: Boolean
     ): Collection<CCv2EnvironmentDto> {
-        val cacheKey = getCacheKeyForEnvironments(ccv2Token, subscription, statuses)
+        val cacheKey = getCacheKey(ccv2Token, subscription, statuses)
         val allCachedEnvironments = getOrCreateUserDataUnsafe(KEY_ENVIRONMENTS) { mutableMapOf() }
         val cachedEnvironments = allCachedEnvironments[cacheKey]
 
@@ -839,7 +865,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
     ): Collection<CCv2ServiceDto> {
-        val cacheKey = getCacheKeyForServices(ccv2Token, subscription, environment)
+        val cacheKey = getCacheKey(ccv2Token, subscription, environment)
         val allCachedServices = getOrCreateUserDataUnsafe(KEY_SERVICES) { mutableMapOf() }
         val cachedServices = allCachedServices[cacheKey]
 
@@ -853,13 +879,33 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         return services
     }
 
-    private fun getCacheKeyForEnvironments(
+    private suspend fun fetchCacheableEnvironmentEndpoints(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto
+    ): Collection<CCv2EndpointDto>? {
+        val cacheKey = getCacheKey(ccv2Token, subscription, environment)
+        val mutableCache = getOrCreateUserDataUnsafe(KEY_ENDPOINTS) { mutableMapOf() }
+        val cachedValue = mutableCache[cacheKey]
+
+        if (cachedValue != null) return cachedValue
+
+        val endpoints = CCv2Api.getInstance()
+            .fetchEndpoints(ccv2Token, subscription, environment)
+
+        if (endpoints == null) mutableCache.remove(cacheKey)
+        else mutableCache[cacheKey] = endpoints
+
+        return endpoints
+    }
+
+    private fun getCacheKey(
         ccv2Token: String,
         subscription: CCv2Subscription,
         statuses: List<String>
     ): String = ccv2Token + "_" + subscription.uuid + "_" + statuses.joinToString("|")
 
-    private fun getCacheKeyForServices(
+    private fun getCacheKey(
         ccv2Token: String,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
@@ -868,8 +914,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     companion object {
         @Serial
         private const val serialVersionUID: Long = -7864373811369713373L
+
+        // in case of a new cached keys, always modify #cached and #resetCache methods
         private val KEY_ENVIRONMENTS = Key<MutableMap<String, Collection<CCv2EnvironmentDto>>>("CCV2_ENVIRONMENTS")
         private val KEY_SERVICES = Key<MutableMap<String, Collection<CCv2ServiceDto>>>("CCV2_SERVICES")
+        private val KEY_ENDPOINTS = Key<MutableMap<String, Collection<CCv2EndpointDto>>>("CCV2_ENDPOINTS")
 
         fun getInstance(project: Project): CCv2Service = project.service()
     }

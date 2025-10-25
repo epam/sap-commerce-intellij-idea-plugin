@@ -30,7 +30,10 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.invoker.infrastructure.ApiClient
-import sap.commerce.toolset.ccv2.model.*
+import sap.commerce.toolset.ccv2.model.CreateBuildRequestDTO
+import sap.commerce.toolset.ccv2.model.CreateDeploymentRequestDTO
+import sap.commerce.toolset.ccv2.model.DeploymentDetailDTO
+import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import java.io.File
@@ -92,7 +95,6 @@ class CCv2Api {
                         val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
                         CCv2EnvironmentDto.MappingDto(subscription, env, canAccess).apply {
                             listOf(
-                                async { this@apply.endpoints = getEndpoints(ccv2Token, subscription, env) ?: emptyList() },
                                 async { this@apply.v1Environment = if (requestV1Details) getV1Environment(canAccess, ccv1Api, ccv2Token, env) else null },
                                 async { this@apply.v1EnvironmentHealth = if (requestV1Health) getV1EnvironmentHealth(canAccess, ccv1Api, ccv2Token, env) else null }
                             ).awaitAll()
@@ -103,6 +105,19 @@ class CCv2Api {
                 .map { CCv2EnvironmentDto.map(it) }
         }
     }
+
+    suspend fun fetchEndpoints(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto
+    ) = endpointApi.getEndpoints(
+        subscriptionCode = subscription.id!!,
+        environmentCode = environment.code,
+        requestHeaders = createRequestParams(ccv2Token)
+    )
+        .value
+        ?.map { CCv2EndpointDto.MappingDto(subscription, environment, it) }
+        ?.map { CCv2EndpointDto.map(it) }
 
     suspend fun fetchEnvironmentDataBackups(
         ccv2Token: String,
@@ -115,7 +130,6 @@ class CCv2Api {
     )
         .value
         ?.map { CCv2DataBackupDto.map(it) }
-        ?: emptyList()
 
     fun fetchEnvironmentsBuilds(
         ccv2Token: String,
@@ -371,24 +385,6 @@ class CCv2Api {
             null
         }
     } else null
-
-    private suspend fun getEndpoints(
-        ccv2Token: String,
-        subscription: CCv2Subscription,
-        env: EnvironmentDetailDTO
-    ): List<EndpointDetailDTO>? = try {
-        val subscriptionCode = subscription.id ?: return null
-        val environmentCode = env.code ?: return null
-        endpointApi.getEndpoints(
-            subscriptionCode = subscriptionCode,
-            environmentCode = environmentCode,
-            requestHeaders = createRequestParams(ccv2Token)
-        )
-            .value
-    } catch (e: Exception) {
-        thisLogger().warn(e)
-        null
-    }
 
     companion object {
         fun getInstance(): CCv2Api = application.service()

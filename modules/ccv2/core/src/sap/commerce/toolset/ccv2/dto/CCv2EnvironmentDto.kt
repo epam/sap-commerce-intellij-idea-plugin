@@ -20,7 +20,6 @@ package sap.commerce.toolset.ccv2.dto
 
 import sap.commerce.toolset.ccv1.model.EnvironmentHealthDTO
 import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.ccv2.model.EndpointDetailDTO
 import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
@@ -39,7 +38,7 @@ data class CCv2EnvironmentDto(
     val mediaStorages: Collection<CCv2MediaStorageDto>,
     var services: Collection<CCv2ServiceDto>? = null,
     var dataBackups: Collection<CCv2DataBackupDto>? = null,
-    var endpoints: Collection<CCv2EndpointDto>,
+    var endpoints: Collection<CCv2EndpointDto>? = null,
 ) : CCv2Dto, Comparable<CCv2EnvironmentDto> {
 
     val accessible
@@ -61,14 +60,12 @@ data class CCv2EnvironmentDto(
         val subscription: CCv2Subscription,
         val environment: EnvironmentDetailDTO,
         var canAccess: Boolean,
-        var endpoints: Collection<EndpointDetailDTO> = emptyList(),
         var v1Environment: sap.commerce.toolset.ccv1.model.EnvironmentDetailDTO? = null,
         var v1EnvironmentHealth: EnvironmentHealthDTO? = null,
     )
 
     companion object {
         internal fun map(mappingDto: MappingDto): CCv2EnvironmentDto {
-            val subscription = mappingDto.subscription
             val environment = mappingDto.environment
             val canAccess = mappingDto.canAccess
             val v1Environment = mappingDto.v1Environment
@@ -97,9 +94,6 @@ data class CCv2EnvironmentDto(
                 problems = v1EnvironmentHealth?.problems,
                 link = link,
                 mediaStorages = mediaStorages,
-                endpoints = mappingDto.endpoints
-                    .map { CCv2EndpointDto.MappingDto(subscription, environment, it) }
-                    .map { CCv2EndpointDto.map(it) },
             )
         }
     }

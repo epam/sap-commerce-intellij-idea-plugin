@@ -20,7 +20,6 @@ package sap.commerce.toolset.ccv2.dto
 
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.model.EndpointDetailDTO
-import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
 data class CCv2EndpointDto(
@@ -33,7 +32,7 @@ data class CCv2EndpointDto(
 ) {
     internal data class MappingDto(
         val subscription: CCv2Subscription,
-        var environment: EnvironmentDetailDTO,
+        var environment: CCv2EnvironmentDto,
         var dto: EndpointDetailDTO,
     )
 
