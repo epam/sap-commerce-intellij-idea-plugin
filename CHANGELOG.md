@@ -1,6 +1,14 @@
 ## [2025.2.4.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
+
+### `CCv2` enhancements
+- Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
+
+## [2025.2.4.4]
+
+<cite>Release contributors</cite>
 - 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.4+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
@@ -15,7 +23,7 @@
 
 ## [2025.2.4.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.3+author%3Amlytvyn+is%3Apr)
 
 ### `JPS - Build` enhancement
@@ -53,7 +61,7 @@
 
 ## [2025.2.4.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.2+author%3Amlytvyn+is%3Apr)
 
 ### `xDebugger` enhancements
@@ -79,7 +87,7 @@
 
 ## [2025.2.4.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.1+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
@@ -87,7 +95,7 @@
 
 ## [2025.2.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
@@ -98,7 +106,7 @@
 
 ## [2025.2.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 32 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3Amlytvyn+is%3Apr)
 - 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3Aekalenchuk+is%3Apr)
 - 4 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.3+author%3AStefanKruk+is%3Apr)
@@ -193,7 +201,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.2.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.2+author%3Amlytvyn+is%3Apr)
 
 ### `SAP CX Logging` enhancements
@@ -206,7 +214,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.2.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.1+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.1+author%3Aekalenchuk+is%3Apr)
 
@@ -232,7 +240,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.2.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.0+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
@@ -246,7 +254,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.7]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.7+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
@@ -268,7 +276,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.6]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 47 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.6+author%3Amlytvyn+is%3Apr)
 - 7 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.6+author%3Aekalenchuk+is%3Apr)
 
@@ -358,7 +366,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.5]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Aekalenchuk+is%3Apr)
 - 2 PR(s) by [Alessandro Antonini](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.5+author%3Aninopg+is%3Apr)
@@ -406,7 +414,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 22 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.4+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
@@ -453,7 +461,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 38 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.3+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.3+author%3AStefanKruk+is%3Apr)
 
@@ -520,7 +528,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.2+author%3Aekalenchuk+is%3Apr)
 - 1 PR by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.2+author%3Amlytvyn+is%3Apr)
 
@@ -533,7 +541,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mihai Botofei](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.1+author%3Amihaibv95+is%3Apr)
 
 ### Other
@@ -542,7 +550,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2025.1.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.1.0+author%3Amlytvyn+is%3Apr)
 
 ### Other
@@ -550,18 +558,18 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.8]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.8+author%3AStefanKruk+is%3Apr)
 
 ## [2024.3.7]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 2 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.7+author%3AStefanKruk+is%3Apr)
 - 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.7+author%3Amlytvyn+is%3Apr)
 
 ## [2024.3.6]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.6+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
@@ -583,7 +591,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.5]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.5+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.5+author%3AStefanKruk+is%3Apr)
 
@@ -605,7 +613,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.4+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Burak Gürler](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.4+author%3Amburakgurler+is%3Apr)
 
@@ -626,7 +634,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.3+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Burak Gürler](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.3+author%3Amburakgurler+is%3Apr)
 
@@ -647,7 +655,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.2+author%3Amlytvyn+is%3Apr)
 - 5 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.2+author%3Aekalenchuk+is%3Apr)
 - 1 PR by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.2+author%3AStefanKruk+is%3Apr)
@@ -670,7 +678,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.1+author%3Amlytvyn+is%3Apr)
 - 3 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.1+author%3Aekalenchuk+is%3Apr)
 - 2 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.1+author%3AStefanKruk+is%3Apr)
@@ -707,7 +715,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.3.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.0+author%3Amlytvyn+is%3Apr)
 - 3 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.0+author%3AMykytaK4+is%3Apr)
 
@@ -737,7 +745,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.2.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.4+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.4+author%3AMykytaK4+is%3Apr)
 
@@ -771,7 +779,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.2.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.3+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.3+author%3AMykytaK4+is%3Apr)
 
@@ -786,7 +794,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.2.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.2+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.2+author%3AMykytaK4+is%3Apr)
 
@@ -801,7 +809,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.2.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.1+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Abhishek Gawande](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.1+author%3AABHISHEKGAWANDE01+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2.1+author%3AMykytaK4+is%3Apr)
@@ -823,7 +831,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 29 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.2+author%3AMykytaK4+is%3Apr)
 
@@ -868,7 +876,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.1.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 30 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.3+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.3+author%3AMykytaK4+is%3Apr)
 - 1 PR by [Johannes Ballmann](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.3+author%3Afibsifan+is%3Apr)
@@ -922,7 +930,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.1.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.2+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.2+author%3AMykytaK4+is%3Apr)
 - 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.2+author%3Aviktor-yengovatov+is%3Apr)
@@ -960,7 +968,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.1.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 60 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Jan Bucher](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3Adev-jan+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.1+author%3AMykytaK4+is%3Apr)
@@ -1056,7 +1064,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2024.1.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 41 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.0+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.0+author%3Aekalenchuk+is%3Apr)
 - 1 PR by [Yury Bich](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.0+author%3Ayurybich+is%3Apr)
@@ -1125,12 +1133,12 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.3.5]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.5+author%3Aekalenchuk+is%3Apr)
 
 ## [2023.3.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 10 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.4+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.4+author%3AMykytaK4+is%3Apr)
 
@@ -1156,7 +1164,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.3.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 83 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.3+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.3+author%3AStefanKruk+is%3Apr)
 
@@ -1289,7 +1297,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.3.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.2+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.2+author%3AMykytaK4+is%3Apr)
 
@@ -1310,7 +1318,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.3.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.1+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.1+author%3AMykytaK4+is%3Apr)
 
@@ -1347,7 +1355,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.3.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.0+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.3.0+author%3AMykytaK4+is%3Apr)
 
@@ -1362,7 +1370,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.13]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.13+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.13+author%3AMykytaK4+is%3Apr)
 
@@ -1394,7 +1402,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.12]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.12+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.12+author%3AMykytaK4+is%3Apr)
 
@@ -1411,7 +1419,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.11]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.11+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.11+author%3AMykytaK4+is%3Apr)
 
@@ -1448,7 +1456,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.10]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.10+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.10+author%3Aekalenchuk+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.10+author%3AMykytaK4+is%3Apr)
@@ -1488,7 +1496,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.9.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.9.1+author%3Amlytvyn+is%3Apr)
 
 ### Fixes
@@ -1496,7 +1504,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.9]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 27 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.9+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.9+author%3AMykytaK4+is%3Apr)
 
@@ -1545,7 +1553,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.8]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 47 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.8+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.8+author%3Aekalenchuk+is%3Apr)
 - 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.8+author%3AMykytaK4+is%3Apr)
@@ -1630,7 +1638,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.7]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.7+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.7+author%3AMykytaK4+is%3Apr)
 
@@ -1664,7 +1672,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.6]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 88 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.6+author%3Amlytvyn+is%3Apr)
 - 6 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.6+author%3Aekalenchuk+is%3Apr)
 - 3 PR(s) by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.6+author%3Aviktor-yengovatov+is%3Apr)
@@ -1798,7 +1806,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.5]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.5+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.5+author%3AMykytaK4+is%3Apr)
 
@@ -1821,7 +1829,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.4+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.4+author%3Aviktor-yengovatov+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.4+author%3AMykytaK4+is%3Apr)
@@ -1850,7 +1858,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.3+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.3+author%3AMykytaK4+is%3Apr)
 
@@ -1884,7 +1892,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.2+author%3Amlytvyn+is%3Apr)
 - 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.2+author%3Aabsinthminded+is%3Apr)
 - 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.2+author%3AMykytaK4+is%3Apr)
@@ -1904,7 +1912,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.1+author%3Amlytvyn+is%3Apr)
 - 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.1+author%3Aabsinthminded+is%3Apr)
 - 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2.1+author%3AMykytaK4+is%3Apr)
@@ -1950,7 +1958,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 57 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2+author%3Aabsinthminded+is%3Apr)
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.2+author%3AMykytaK4+is%3Apr)
@@ -2034,7 +2042,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.6]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 25 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.6+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.6+author%3Aabsinthminded+is%3Apr)
 
@@ -2092,7 +2100,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.5]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 31 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.5+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.5+author%3Aabsinthminded+is%3Apr)
 
@@ -2162,7 +2170,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.4]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.4+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.4+author%3Aabsinthminded+is%3Apr)
 
@@ -2196,7 +2204,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.3+author%3Amlytvyn+is%3Apr)
 
 ### Fixes
@@ -2204,7 +2212,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 38 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.2+author%3Amlytvyn+is%3Apr)
 
 ### Features
@@ -2271,7 +2279,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.1+author%3Amlytvyn+is%3Apr)
 
 ### Features
@@ -2298,7 +2306,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2023.1.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.0+author%3Aabsinthminded+is%3Apr)
 - 23 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.0+author%3Amlytvyn+is%3Apr)
 
@@ -2334,7 +2342,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2022.3.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Pawel Boron](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.1+author%3ARemilo7+is%3Apr)
 - 99 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.1+author%3Amlytvyn+is%3Apr)
 
@@ -2447,7 +2455,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2022.3.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.0+author%3Amlytvyn+is%3Apr)
 
 ### Features
@@ -2473,7 +2481,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2022.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.2+author%3AMykytaK4+is%3Apr)
 
 ### Features
@@ -2483,33 +2491,33 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ## [2022.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.1+author%3AMykytaK4+is%3Apr)
 
 ## [2021.3.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 2 PR(s) by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.3.1+author%3AMykytaK4+is%3Apr)
 - 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.3.1+author%3Aviktor-yengovatov+is%3Apr)
 
 ## [2021.3]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.3+author%3AMykytaK4+is%3Apr)
 
 ## [2021.2]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.2+author%3AMykytaK4+is%3Apr)
 - 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.2+author%3Aviktor-yengovatov+is%3Apr)
 
 ## [2021.1.0]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 3 PR(s) by [Rustam Burmenskyi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.1.0+author%3Arustam-burmenskyi+is%3Apr)
 - 1 PR by [Viktor Yengovatov](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.1.0+author%3Aviktor-yengovatov+is%3Apr)
 
 ## [2021.1]
 
-#### Release contributors
+<cite>Release contributors</cite>
 - 1 PR by [Mykyta Kostiuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2021.1+author%3AMykytaK4+is%3Apr)

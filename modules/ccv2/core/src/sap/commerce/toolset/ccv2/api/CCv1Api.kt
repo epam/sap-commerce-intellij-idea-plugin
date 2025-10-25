@@ -109,7 +109,8 @@ class CCv1Api {
             environmentCode = environment.code,
             requestHeaders = createRequestParams(accessToken)
         )
-        .map { CCv2ServiceDto.map(subscription, environment, it) }
+        .map { CCv2ServiceDto.MappingDto(subscription, environment, it) }
+        .map { CCv2ServiceDto.map(it) }
 
     suspend fun restartServiceReplica(
         accessToken: String,

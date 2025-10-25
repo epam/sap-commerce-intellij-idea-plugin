@@ -40,10 +40,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.CCv2UiConstants
-import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
-import sap.commerce.toolset.ccv2.dto.CCv2DataBackupDto
-import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
-import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
+import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
@@ -61,11 +58,14 @@ class CCv2EnvironmentDetailsView(
 
     private val showBuild = AtomicBooleanProperty(environment.deployedBuild != null)
     private val showServices = AtomicBooleanProperty(environment.services != null)
+    private val showEndpoints = AtomicBooleanProperty(environment.endpoints != null)
     private val showDataBackups = AtomicBooleanProperty(environment.dataBackups != null)
 
     private val buildPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private val servicesPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+        .also { border = JBUI.Borders.empty() }
+    private val endpointsPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private val dataBackupsPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
@@ -116,6 +116,7 @@ class CCv2EnvironmentDetailsView(
         installToolbar(environment)
 
         initBuildPanel(environment)
+        initEndpointsPanel(environment)
         initServicesPanel(environment)
         initDataBackupsPanel(environment)
     }
@@ -169,6 +170,33 @@ class CCv2EnvironmentDetailsView(
                     servicesPanel.removeAll()
                     servicesPanel.add(panel)
                     showServices.set(true)
+                }
+            }
+        )
+    }
+
+    private fun initEndpointsPanel(environment: CCv2EnvironmentDto) {
+        val endpoints = environment.endpoints
+        if (endpoints != null) {
+            endpointsPanel.removeAll()
+            endpointsPanel.add(endpointsPanel(endpoints))
+            return
+        }
+
+        showEndpoints.set(false)
+
+        CCv2Service.getInstance(project).fetchEnvironmentEndpoints(
+            subscription, environment,
+            {
+                environment.endpoints = it
+
+                invokeLater {
+                    val panel = if (it != null) endpointsPanel(it)
+                    else CCv2ViewUtil.noDataPanel("No public endpoints found")
+
+                    endpointsPanel.removeAll()
+                    endpointsPanel.add(panel)
+                    showEndpoints.set(true)
                 }
             }
         )
@@ -246,6 +274,48 @@ class CCv2EnvironmentDetailsView(
             }
         }
             .layout(RowLayout.PARENT_GRID)
+    }
+
+    private fun endpointsPanel(endpoints: Collection<CCv2EndpointDto>) = panel {
+        endpoints.forEach { endpoint ->
+            row {
+                panel {
+                    row {
+                        browserLink(endpoint.name, endpoint.link)
+                            .bold()
+                            .comment("Name")
+                    }
+                }.gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(endpoint.webProxy)
+                            .comment("Web proxy")
+                    }
+                }.gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(endpoint.service)
+                            .comment("Service")
+                    }
+                }.gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        val url = if (endpoint.url.startsWith("http")) endpoint.url
+                        else "https://${endpoint.url}"
+                        val icon = if (url.startsWith("https")) HybrisIcons.CCv2.Endpoint.SECURE
+                        else HybrisIcons.CCv2.Endpoint.UNSECURE
+
+                        icon(icon)
+                            .gap(RightGap.SMALL)
+                        browserLink(endpoint.url, url)
+                            .comment("URL")
+                    }
+                }.gap(RightGap.COLUMNS)
+            }.layout(RowLayout.PARENT_GRID)
+        }
     }
 
     private fun servicesPanel(environment: CCv2EnvironmentDto, services: Collection<CCv2ServiceDto>) = panel {
@@ -449,7 +519,22 @@ class CCv2EnvironmentDetailsView(
                 }.visibleIf(showBuild.not())
             }
 
-            group("Cloud Storage") {
+            collapsibleGroup("Public Endpoints") {
+                row {
+                    cell(endpointsPanel)
+                }.visibleIf(showEndpoints)
+
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving public endpoints...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showEndpoints.not())
+            }.expanded = true
+
+            collapsibleGroup("Cloud Storage") {
                 val mediaStorages = environment.mediaStorages
                 if (mediaStorages.isEmpty()) {
                     row {
@@ -534,6 +619,7 @@ class CCv2EnvironmentDetailsView(
                     }
                 }
             }
+                .expanded = true
 
             collapsibleGroup("Services") {
                 row {

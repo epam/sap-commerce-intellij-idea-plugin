@@ -20,13 +20,13 @@ package sap.commerce.toolset.ccv2.api
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.util.application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.ccv1.invoker.infrastructure.ClientException
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.invoker.infrastructure.ApiClient
@@ -48,6 +48,7 @@ class CCv2Api {
             .build()
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
+    private val endpointApi by lazy { EndpointApi(client = apiClient) }
     private val deploymentApi by lazy { DeploymentApi(client = apiClient) }
     private val buildApi by lazy { BuildApi(client = apiClient) }
     private val servicePropertiesApi by lazy { ServicePropertiesApi(client = apiClient) }
@@ -90,20 +91,33 @@ class CCv2Api {
                 .mapNotNull { it.value }
                 .flatten()
                 .map { env ->
-                    val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
                     async {
-                        val v1Env = if (requestV1Details) getV1Environment(canAccess, ccv1Api, ccv2Token, env) else null
-                        val v1EnvHealth = if (requestV1Health) getV1EnvironmentHealth(canAccess, ccv1Api, ccv2Token, env) else null
-
-                        env to Triple(canAccess, v1Env, v1EnvHealth)
+                        val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
+                        CCv2EnvironmentDto.MappingDto(subscription, env, canAccess).apply {
+                            listOf(
+                                async { this@apply.v1Environment = if (requestV1Details) getV1Environment(canAccess, ccv1Api, ccv2Token, env) else null },
+                                async { this@apply.v1EnvironmentHealth = if (requestV1Health) getV1EnvironmentHealth(canAccess, ccv1Api, ccv2Token, env) else null }
+                            ).awaitAll()
+                        }
                     }
                 }
                 .awaitAll()
-                .map { (environment, details) ->
-                    CCv2EnvironmentDto.map(environment, details.first, details.second, details.third)
-                }
+                .map { CCv2EnvironmentDto.map(it) }
         }
     }
+
+    suspend fun fetchEndpoints(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto
+    ) = endpointApi.getEndpoints(
+        subscriptionCode = subscription.id!!,
+        environmentCode = environment.code,
+        requestHeaders = createRequestParams(ccv2Token)
+    )
+        .value
+        ?.map { CCv2EndpointDto.MappingDto(subscription, environment, it) }
+        ?.map { CCv2EndpointDto.map(it) }
 
     suspend fun fetchEnvironmentDataBackups(
         ccv2Token: String,
@@ -116,7 +130,6 @@ class CCv2Api {
     )
         .value
         ?.map { CCv2DataBackupDto.map(it) }
-        ?: emptyList()
 
     fun fetchEnvironmentsBuilds(
         ccv2Token: String,
@@ -353,7 +366,8 @@ class CCv2Api {
     ) = if (canAccess) {
         try {
             ccv1Api.fetchEnvironment(ccv2Token, env)
-        } catch (e: ClientException) {
+        } catch (e: Exception) {
+            thisLogger().warn(e)
             null
         }
     } else null
@@ -366,7 +380,8 @@ class CCv2Api {
     ) = if (canAccess) {
         try {
             ccv1Api.fetchEnvironmentHealth(ccv2Token, env)
-        } catch (e: ClientException) {
+        } catch (e: Exception) {
+            thisLogger().warn(e)
             null
         }
     } else null
