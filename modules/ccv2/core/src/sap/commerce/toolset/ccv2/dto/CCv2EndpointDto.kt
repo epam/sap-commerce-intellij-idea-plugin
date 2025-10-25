@@ -30,6 +30,7 @@ data class CCv2EndpointDto(
     val url: String,
     val link: String,
     val maintenanceMode: Boolean,
+    var actionsAllowed: Boolean = true,
 ) {
     internal data class MappingDto(
         val subscription: CCv2Subscription,

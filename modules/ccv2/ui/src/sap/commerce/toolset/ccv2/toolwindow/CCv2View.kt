@@ -130,8 +130,8 @@ class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), Con
         with(project.messageBus.connect(this)) {
             // Environments data listeners
             subscribe(CCv2EnvironmentsListener.TOPIC, object : CCv2EnvironmentsListener {
-                override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.ENVIRONMENTS)
-                { CCv2EnvironmentsDataView.fetchingInProgressPanel(subscriptions) }
+                override fun onFetchingStarted(data: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.ENVIRONMENTS)
+                { CCv2EnvironmentsDataView.fetchingInProgressPanel(data) }
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 {
@@ -152,8 +152,8 @@ class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), Con
 
             // Builds data listeners
             subscribe(CCv2BuildsListener.TOPIC, object : CCv2BuildsListener {
-                override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.BUILDS)
-                { CCv2BuildsDataView.fetchingInProgressPanel(subscriptions) }
+                override fun onFetchingStarted(data: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.BUILDS)
+                { CCv2BuildsDataView.fetchingInProgressPanel(data) }
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2BuildDto>>) = onFetchingCompleted(CCv2Tab.BUILDS)
                 { CCv2BuildsDataView.dataPanel(project, data) }
@@ -161,8 +161,8 @@ class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), Con
 
             // Deployments data listeners
             subscribe(CCv2DeploymentsListener.TOPIC, object : CCv2DeploymentsListener {
-                override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.DEPLOYMENTS)
-                { CCv2DeploymentsDataView.fetchingInProgressPanel(subscriptions) }
+                override fun onFetchingStarted(data: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.DEPLOYMENTS)
+                { CCv2DeploymentsDataView.fetchingInProgressPanel(data) }
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2DeploymentDto>>) = onFetchingCompleted(CCv2Tab.DEPLOYMENTS)
                 { CCv2DeploymentsDataView.dataPanel(project, data) }

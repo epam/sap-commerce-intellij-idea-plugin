@@ -20,6 +20,7 @@ package sap.commerce.toolset.ccv2.ui.view
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
@@ -40,7 +41,12 @@ abstract class CCv2DataView<T : CCv2Dto> {
         subscriptions.forEach {
             collapsibleGroup(it.presentableName) {
                 row {
-                    label("Fetching ${tab.title} data, Please wait...")
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Fetching ${tab.title} data, Please wait...")
+                        }
+                    }
                         .align(Align.CENTER)
                         .resizableColumn()
                 }.resizableRow()

@@ -60,7 +60,7 @@ data class CCv2EnvironmentDto(
         val subscription: CCv2Subscription,
         val environment: EnvironmentDetailDTO,
         var canAccess: Boolean,
-        var v1Environment: sap.commerce.toolset.ccv1.model.EnvironmentDetailDTO? = null,
+        var v1Environment: sap.commerce.toolset.ccv1.model.EnvironmentDTO? = null,
         var v1EnvironmentHealth: EnvironmentHealthDTO? = null,
     )
 

@@ -21,18 +21,13 @@ package sap.commerce.toolset.ccv2.api
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import sap.commerce.toolset.ccv1.api.EndpointApi
 import sap.commerce.toolset.ccv1.api.EnvironmentApi
 import sap.commerce.toolset.ccv1.api.PermissionsApi
 import sap.commerce.toolset.ccv1.api.ServiceApi
 import sap.commerce.toolset.ccv1.invoker.infrastructure.ApiClient
-import sap.commerce.toolset.ccv1.model.EnvironmentHealthDTO
-import sap.commerce.toolset.ccv1.model.MediaStoragePublicKeyDTO
-import sap.commerce.toolset.ccv1.model.PermissionDTO
-import sap.commerce.toolset.ccv1.model.ServiceReplicaStatusDTO
-import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
-import sap.commerce.toolset.ccv2.dto.CCv2MediaStorageDto
-import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
-import sap.commerce.toolset.ccv2.dto.CCv2ServiceReplicaDto
+import sap.commerce.toolset.ccv1.model.*
+import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
@@ -49,6 +44,7 @@ class CCv1Api {
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
     private val permissionsApi by lazy { PermissionsApi(client = apiClient) }
     private val serviceApi by lazy { ServiceApi(client = apiClient) }
+    private val endpointApi by lazy { EndpointApi(client = apiClient) }
 
     suspend fun fetchPermissions(
         accessToken: String
@@ -59,7 +55,7 @@ class CCv1Api {
     suspend fun fetchEnvironment(
         accessToken: String,
         v2Environment: EnvironmentDetailDTO
-    ): sap.commerce.toolset.ccv1.model.EnvironmentDetailDTO? {
+    ): EnvironmentDTO? {
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
         val environmentCode = v2Environment.code ?: return null
 
@@ -126,6 +122,21 @@ class CCv1Api {
             replicaName = replica.name,
             requestHeaders = createRequestParams(accessToken)
         )
+
+    suspend fun updateEndpointsMaintenanceMode(
+        accessToken: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        endpoint: CCv2EndpointDto,
+        maintenanceMode: Boolean
+    ) = endpointApi.updateEndpointsMaintenanceMode(
+        subscriptionCode = subscription.id!!,
+        environmentCode = environment.code,
+        endpointsUpdateDTO = EndpointsUpdateDTO(
+            listOf(EndpointUpdateDTO(endpoint.code, endpoint.webProxy, maintenanceMode))
+        ),
+        requestHeaders = createRequestParams(accessToken)
+    )
 
     private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
 
