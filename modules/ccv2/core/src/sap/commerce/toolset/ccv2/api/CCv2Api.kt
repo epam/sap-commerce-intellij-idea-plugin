@@ -21,6 +21,7 @@ package sap.commerce.toolset.ccv2.api
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.util.application
 import kotlinx.coroutines.CoroutineScope
@@ -80,6 +81,7 @@ class CCv2Api {
             statuses
                 .map { status ->
                     async {
+                        checkCanceled()
                         environmentApi.getEnvironments(
                             subscriptionCode = subscriptionCode,
                             status = status,
@@ -92,6 +94,7 @@ class CCv2Api {
                 .flatten()
                 .map { env ->
                     async {
+                        checkCanceled()
                         val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
                         CCv2EnvironmentDto.MappingDto(subscription, env, canAccess).apply {
                             listOf(

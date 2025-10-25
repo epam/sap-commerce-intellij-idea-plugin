@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: 1.0.0
+  version: 1.0.1
   title: 'SAP Commerce Cloud - Management API'
   description: 'The API to manage your SAP Commerce environments in the cloud, including provisioning, building releases, deploying, operating and more.'
   license:
@@ -25,6 +25,8 @@ tags:
     description: Endpoints for managing permissions
   - name: environment
     description: Endpoints for managing environments
+  - name: endpoint
+    description: Endpoints for managing endpoints
 paths:
   /permissions:
     get:
@@ -74,7 +76,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnvironmentDetailDTO'
+                $ref: '#/components/schemas/EnvironmentDTO'
         '4XX':
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
@@ -229,6 +231,46 @@ paths:
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/endpoints:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    patch:
+      tags:
+        - endpoint
+      description: Update endpoints maintenance mode
+      operationId: updateEndpointsMaintenanceMode
+      parameters:
+        - $ref: '#/components/parameters/EndpointWebProxyFilter'
+        - $ref: '#/components/parameters/EndpointServiceFilter'
+      requestBody:
+        description: Endpoints maintenance mode info
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointsUpdateDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
 security:
   - OAuth2: [ ]
 components:
@@ -276,33 +318,6 @@ components:
           description: Human-readable explanation specific to this occurrence of the problem
           type: string
           readOnly: true
-    EnvironmentDetailDTO:
-      description: Entity to represent an environment
-      type: object
-      properties:
-        subscriptionCode:
-          description: Subscription code
-          type: string
-        name:
-          description: Environment name
-          type: string
-        code:
-          description: Environment code
-          type: string
-        live:
-          description: Live
-          type: boolean
-        loggingUrl:
-          description: Logging URL
-          type: string
-        dynatraceUrl:
-          description: Dynatrace URL
-          type: string
-        mediaStorages:
-          description: Media Storages
-          type: array
-          items:
-            $ref: '#/components/schemas/MediaStorageDTO'
     EnvironmentHealthDTO:
       description: Entity to represent problems of the environment
       type: object
@@ -310,27 +325,6 @@ components:
         problems:
           description: Dynatrace problems
           type: integer
-    MediaStorageDTO:
-      description: Entity to represent a media storage
-      type: object
-      required:
-        - code
-        - name
-        - accountName
-        - publicUrl
-      properties:
-        code:
-          description: Description
-          type: string
-        name:
-          description: Name
-          type: string
-        accountName:
-          description: Account Name
-          type: string
-        publicUrl:
-          description: Public URL
-          type: string
     PermissionsDetailDTO:
       description: Entity to represent permissions to all subscriptions of the current user
       type: object
@@ -453,4 +447,274 @@ components:
         replica:
           type: string
         serviceCode:
+          type: string
+    EndpointsUpdateDTO:
+      description: Entity to represent environments endpoints update request
+      type: object
+      required:
+        - endpoints
+      properties:
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointUpdateDTO'
+    EndpointUpdateDTO:
+      type: object
+      properties:
+        endpointCode:
+          type: string
+        webProxyCode:
+          type: string
+        maintenanceMode:
+          type: boolean
+
+    EnvironmentDTO:
+      type: object
+      properties:
+        locale:
+          type: string
+        timezone:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [ AVAILABLE, ... ]   # expand if needed
+        operation:
+          type: string
+          nullable: true
+        type:
+          type: string
+        webProxies:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebProxyDTO'
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointDTO'
+        envIpFilterSets:
+          type: array
+          items:
+            type: string
+        mediaStorages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaStorageDTO'
+        deploymentConfigurations:
+          type: array
+          items:
+            type: string
+        dataCaches:
+          type: array
+          items:
+            type: string
+        databaseSchemas:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatabaseSchemaDTO'
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterDTO'
+        live:
+          type: boolean
+        goLiveTime:
+          type: string
+          nullable: true
+          format: date-time
+        externalId:
+          type: string
+        disasterRecoveryType:
+          type: string
+          nullable: true
+        dynatraceUrl:
+          type: string
+        activeDatabaseType:
+          type: string
+        sapProductNumber:
+          type: string
+          nullable: true
+        crmTenantId:
+          type: string
+          nullable: true
+        cloudPortalDeepLink:
+          type: string
+        subscriptionCode:
+          type: string
+        locked:
+          type: boolean
+        internalCustomer:
+          type: boolean
+        loggingUrl:
+          type: string
+        environmentPermissions:
+          type: boolean
+        wafConfig:
+          nullable: true
+        maxNumberOfSnapshots:
+          type: integer
+        scalingByCustomerAllowed:
+          type: boolean
+        environmentTemplateCode:
+          type: string
+        failover:
+          type: boolean
+        applicationCode:
+          type: string
+        blockPublicOutgoingTrafficState:
+          type: string
+        hibernationStatus:
+          type: string
+        httpPortEnabled:
+          type: boolean
+    WebProxyDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        ipAddress:
+          type: string
+        defaultDnsEntry:
+          type: string
+        access:
+          type: string
+        ipFilteringSets:
+          type: array
+          items:
+            type: string
+        staticFileSet:
+          type: string
+          nullable: true
+        status:
+          type: string
+    EndpointDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        priority:
+          type: integer
+        domainName:
+          type: string
+        externalMonitoringPathUri:
+          type: string
+          nullable: true
+        protocol:
+          type: string
+        k8sService:
+          type: string
+        k8sServiceVersion:
+          type: string
+        proxyTimeOut:
+          type: integer
+          nullable: true
+        access:
+          type: string
+        sslCertificate:
+          type: string
+        mtlsCertificateCode:
+          type: string
+          nullable: true
+        mtlsAllowedDomains:
+          type: array
+          items:
+            type: string
+        ipFilteringSets:
+          type: array
+          items:
+            type: string
+        redirectSets:
+          type: array
+          items:
+            type: string
+        staticFileSet:
+          type: string
+          nullable: true
+        denyPathsSet:
+          type: string
+          nullable: true
+        webProxy:
+          type: string
+        responseHeaderSet:
+          type: string
+          nullable: true
+        customerAccessLevel:
+          type: string
+        maintenanceMode:
+          type: boolean
+        externalMonitoringStatus:
+          type: string
+        caching:
+          $ref: '#/components/schemas/CachingDTO'
+        wafConfig:
+          nullable: true
+        externallyMonitorable:
+          type: boolean
+    CachingDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        defaultExpire:
+          type: integer
+        maxExpire:
+          type: integer
+        paths:
+          type: string
+        enabled:
+          type: boolean
+    MediaStorageDTO:
+      type: object
+      required:
+        - code
+        - name
+        - accountName
+        - publicUrl
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        accountName:
+          type: string
+        publicUrl:
+          type: string
+        replication:
+          type: string
+        accessRestriction:
+          type: string
+        kind:
+          type: string
+    DatabaseSchemaDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        collation:
+          type: string
+        hyperscale:
+          type: boolean
+        oldestRestoreDate:
+          type: string
+          format: date-time
+    ClusterDTO:
+      type: object
+      properties:
+        code:
           type: string

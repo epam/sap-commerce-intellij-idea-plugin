@@ -41,10 +41,12 @@ import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.*
+import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
 import sap.commerce.toolset.ui.actionButton
+import sap.commerce.toolset.ui.actionsButton
 import sap.commerce.toolset.ui.contextHelp
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.GridBagLayout
@@ -77,6 +79,14 @@ class CCv2EnvironmentDetailsView(
 
     init {
         initPanel(environment)
+        subscribe()
+    }
+
+    private fun subscribe() = with(project.messageBus.connect(this)) {
+        subscribe(CCv2EnvironmentsListener.TOPIC, object : CCv2EnvironmentsListener {
+            override fun onEndpointUpdate(data: CCv2EnvironmentDto) = initEndpointsPanel(data)
+        }
+        )
     }
 
     override fun uiDataSnapshot(sink: DataSink) {
@@ -285,14 +295,26 @@ class CCv2EnvironmentDetailsView(
                 row {
                     panel {
                         row {
+                            val actionManager = ActionManager.getInstance()
+                            actionsButton(
+                                actionManager.getAction("ccv2.endpoint.toggleMaintenanceMode.action")
+                            ) {
+                                it[CCv2UiConstants.DataKeys.Subscription] = subscription
+                                it[CCv2UiConstants.DataKeys.Environment] = environment
+                                it[CCv2UiConstants.DataKeys.Endpoint] = endpoint
+                            }
+                        }
+                    }.gap(RightGap.SMALL)
+
+                    panel {
+                        row {
+                            browserLink(endpoint.name, endpoint.link)
+                                .bold()
+                                .comment("Name")
                             if (endpoint.maintenanceMode) contextHelp(
                                 "Maintenance mode active",
                                 HybrisIcons.CCv2.Endpoint.MAINTENANCE_MODE
                             )
-                                .gap(RightGap.SMALL)
-                            browserLink(endpoint.name, endpoint.link)
-                                .bold()
-                                .comment("Name")
                         }
                     }.gap(RightGap.COLUMNS)
 

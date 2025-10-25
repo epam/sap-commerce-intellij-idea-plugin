@@ -40,5 +40,7 @@ object CCv2UiConstants {
         val BuildCallback = DataKey.create<(CCv2BuildDto) -> Unit>("CCv2_BuildCallback")
 
         val Deployment = DataKey.create<CCv2DeploymentDto>("CCv2_Deployment")
+
+        val Endpoint = DataKey.create<CCv2EndpointDto>("CCv2_Endpoint")
     }
 }

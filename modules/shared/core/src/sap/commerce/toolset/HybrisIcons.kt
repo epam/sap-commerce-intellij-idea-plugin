@@ -448,6 +448,8 @@ object HybrisIcons {
             val SECURE = AllIcons.Nodes.Locked
             val UNSECURE = AllIcons.Ide.Readwrite
             val MAINTENANCE_MODE = AllIcons.General.Warning
+            val MAINTENANCE_MODE_ACTIVATE = AllIcons.General.Warning
+            val MAINTENANCE_MODE_DEACTIVATE = AllIcons.Actions.ToggleVisibility
         }
     }
 
