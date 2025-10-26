@@ -37,11 +37,12 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
 
     override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
+        val workspaceSettings = WorkspaceSettings.getInstance(project)
         val projectSettings = ProjectSettings.getInstance(project)
         WorkspaceSettings.getInstance(project).hybrisProject = true
 
         Plugin.HYBRIS.pluginDescriptor
-            ?.let { projectSettings.importedByVersion = it.version }
+            ?.let { workspaceSettings.importedByVersion = it.version }
 
         applySettings(hybrisProjectDescriptor)
 

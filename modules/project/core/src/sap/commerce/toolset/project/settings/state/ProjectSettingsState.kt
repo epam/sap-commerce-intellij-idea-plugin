@@ -27,7 +27,6 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val customDirectory: String? = null,
     @JvmField @OptionTag val hybrisDirectory: String? = null,
     @JvmField @OptionTag val configDirectory: String? = null,
-    @JvmField @OptionTag val importedByVersion: String? = null,
     @JvmField @OptionTag val hybrisVersion: String? = null,
     @JvmField @OptionTag val javadocUrl: String? = null,
     @JvmField @OptionTag val sourceCodeFile: String? = null,

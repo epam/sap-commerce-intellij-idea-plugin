@@ -24,4 +24,5 @@ import com.intellij.util.xmlb.annotations.Tag
 @Tag("HybrisProjectSettings")
 data class WorkspaceSettingsState(
     @JvmField @OptionTag val hybrisProject: Boolean = false,
+    @JvmField @OptionTag val importedByVersion: String? = null,
 )

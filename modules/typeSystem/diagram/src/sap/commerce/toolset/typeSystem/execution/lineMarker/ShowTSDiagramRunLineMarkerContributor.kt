@@ -27,11 +27,13 @@ import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.typeSystem.model.Items
 
 class ShowTSDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
 
     override fun getInfo(element: PsiElement): Info? {
+        if (element.project.isNotHybrisProject) return null
         val xmlFile = element.containingFile as? XmlFile ?: return null
         if (element !is XmlToken) return null
         if (element.parent !is XmlTag) return null
