@@ -24,13 +24,31 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.ui.ContextHelpLabel
-import com.intellij.ui.dsl.builder.Cell
-import com.intellij.ui.dsl.builder.Row
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.InlineBanner
+import com.intellij.ui.dsl.builder.*
 import org.jetbrains.annotations.NonNls
 import java.awt.Dimension
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JLabel
+
+fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) {
+    row {
+        inlineBanner(message, status)
+    }
+        .resizableRow()
+        .topGap(TopGap.MEDIUM)
+}
+
+fun Row.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) {
+    cell(
+        InlineBanner(message, status)
+            .showCloseButton(false)
+    )
+        .align(Align.CENTER)
+        .resizableColumn()
+}
 
 fun Row.contextHelp(
     icon: Icon = AllIcons.General.ContextHelp,

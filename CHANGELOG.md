@@ -1,7 +1,7 @@
 ## [2025.2.4.5]
 
 <cite>Release contributors</cite>
-- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
+- 10 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
@@ -11,6 +11,7 @@
 - Fetch & select subscription details instead of setting manually [#1620](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1620)
 - Change extension of the downloaded log files from `.txt` to `.log` [#1622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1622)
 - Display details of the fetched subscription [#1624](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1624)
+- Display restricted cluster details for an environment [#1625](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1625)
 
 ### Other
 - Allow dynamic unload of the Plugin [#1623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1623)

@@ -23,15 +23,13 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.view.CCv2BuildDetailsView
+import sap.commerce.toolset.ui.inlineBanner
 
 object CCv2ViewUtil {
 
@@ -56,15 +54,6 @@ object CCv2ViewUtil {
     }
 
     fun noDataPanel(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) = panel {
-        row {
-            cell(
-                InlineBanner(message, status)
-                    .showCloseButton(false)
-            )
-                .align(Align.CENTER)
-                .resizableColumn()
-        }
-            .resizableRow()
-            .topGap(TopGap.MEDIUM)
+        inlineBanner(message, status)
     }
 }

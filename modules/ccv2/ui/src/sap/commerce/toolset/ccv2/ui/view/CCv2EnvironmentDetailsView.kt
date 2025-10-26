@@ -31,7 +31,9 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.AnimatedIcon
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
@@ -45,10 +47,7 @@ import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
-import sap.commerce.toolset.ui.actionButton
-import sap.commerce.toolset.ui.actionsButton
-import sap.commerce.toolset.ui.contextHelp
-import sap.commerce.toolset.ui.scrollPanel
+import sap.commerce.toolset.ui.*
 import java.awt.GridBagLayout
 import java.awt.datatransfer.StringSelection
 import java.io.Serial
@@ -405,7 +404,7 @@ class CCv2EnvironmentDetailsView(
             row {
                 panel {
                     row {
-                        contextHelp(dataBackup.description)
+                        contextHelp(dataBackup.description).gap(RightGap.SMALL)
                         label(dataBackup.name)
                             .comment(dataBackup.dataBackupCode)
                     }
@@ -443,17 +442,17 @@ class CCv2EnvironmentDetailsView(
                     .gap(RightGap.COLUMNS)
 
                 panel {
-                    ccv2StatusYesNo(dataBackup.canBeRestored, "Can be restored")
+                    ccv2StatusYesNo(dataBackup.canBeRestored, "Restorable")
                 }
                     .gap(RightGap.SMALL)
 
                 panel {
-                    ccv2StatusYesNo(dataBackup.canBeCanceled, "Can be canceled")
+                    ccv2StatusYesNo(dataBackup.canBeCanceled, "Cancelable")
                 }
                     .gap(RightGap.SMALL)
 
                 panel {
-                    ccv2StatusYesNo(dataBackup.canBeDeleted, "Can be deleted")
+                    ccv2StatusYesNo(dataBackup.canBeDeleted, "Deletable")
                 }
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -505,6 +504,7 @@ class CCv2EnvironmentDetailsView(
                 panel {
                     row {
                         icon(environment.status.icon)
+                            .gap(RightGap.SMALL)
                         label(environment.status.title)
                             .comment("Status")
                     }
@@ -535,6 +535,35 @@ class CCv2EnvironmentDetailsView(
                 .layout(RowLayout.PARENT_GRID)
                 .topGap(TopGap.SMALL)
                 .bottomGap(BottomGap.SMALL)
+
+            val scaling = environment.clusterScaling?.firstOrNull()
+            val dbSchema = environment.databaseSchemas?.firstOrNull()
+            group("Cluster") {
+                if (scaling == null || dbSchema == null) {
+                    inlineBanner("Insufficient permissions to view cluster details", EditorNotificationPanel.Status.Warning)
+                } else {
+                    row {
+                        icon(HybrisIcons.CCv2.Environment.CLUSTER)
+                            .gap(RightGap.SMALL)
+                        label(scaling.workerName)
+                            .comment("Cluster")
+                            .gap(RightGap.COLUMNS)
+                            .align(AlignY.TOP)
+
+                        icon(HybrisIcons.CCv2.Environment.DATABASE_SCHEMA)
+                            .gap(RightGap.SMALL)
+                        label(dbSchema.performanceName)
+                            .comment("Database")
+                            .gap(RightGap.COLUMNS)
+                            .align(AlignY.TOP)
+
+                        icon(HybrisIcons.CCv2.Environment.DATABASE_SIZE)
+                            .gap(RightGap.SMALL)
+                        label(StringUtil.formatFileSize(dbSchema.maxSizeInMb * 1024 * 1024))
+                            .comment("Max size")
+                    }
+                }
+            }
 
             group("Build") {
                 row {
@@ -569,15 +598,14 @@ class CCv2EnvironmentDetailsView(
             collapsibleGroup("Cloud Storage") {
                 val mediaStorages = environment.mediaStorages
                 if (mediaStorages.isEmpty()) {
-                    row {
-                        label("No media storages found for environment.")
-                            .align(Align.FILL)
-                    }
+                    inlineBanner("No media storages found for environment.")
                 } else {
                     mediaStorages.forEach { mediaStorage ->
                         row {
                             panel {
                                 row {
+                                    icon(HybrisIcons.CCv2.Environment.BLOB_STORAGE)
+                                        .gap(RightGap.SMALL)
                                     browserLink(mediaStorage.name, mediaStorage.link)
                                         .bold()
                                         .comment("Name")

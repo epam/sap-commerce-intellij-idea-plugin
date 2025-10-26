@@ -412,6 +412,10 @@ object HybrisIcons {
 
         object Environment {
             val DATA_BACKUP_CREATED_BY = AllIcons.General.User
+            val CLUSTER = getIcon("/icons/ccv2/kubernetesY.svg")
+            val DATABASE_SCHEMA = getIcon("/icons/ccv2/databaseSchema.svg")
+            val DATABASE_SIZE = getIcon("/icons/ccv2/databaseSize.svg")
+            val BLOB_STORAGE = AllIcons.FileTypes.BinaryData
 
             object Actions {
                 val SHOW_DETAILS = getIcon("/icons/module/cloud.svg")
