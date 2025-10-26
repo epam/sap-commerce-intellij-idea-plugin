@@ -21,6 +21,7 @@ package sap.commerce.toolset.ccv2.dto
 import sap.commerce.toolset.ccv1.model.EnvironmentHealthDTO
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
+import sap.commerce.toolset.ccv2.model.EnvironmentScalingDetailDTO
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
 data class CCv2EnvironmentDto(
@@ -39,6 +40,8 @@ data class CCv2EnvironmentDto(
     var services: Collection<CCv2ServiceDto>? = null,
     var dataBackups: Collection<CCv2DataBackupDto>? = null,
     var endpoints: Collection<CCv2EndpointDto>? = null,
+    var clusterScaling: Collection<CCv2ClusterScalingDto>? = null,
+    var databaseSchemas: Collection<CCv2DatabaseSchemaDto>? = null,
 ) : CCv2Dto, Comparable<CCv2EnvironmentDto> {
 
     val accessible
@@ -62,6 +65,7 @@ data class CCv2EnvironmentDto(
         var canAccess: Boolean,
         var v1Environment: sap.commerce.toolset.ccv1.model.EnvironmentDTO? = null,
         var v1EnvironmentHealth: EnvironmentHealthDTO? = null,
+        var scaling: EnvironmentScalingDetailDTO? = null,
     )
 
     companion object {
@@ -94,8 +98,13 @@ data class CCv2EnvironmentDto(
                 problems = v1EnvironmentHealth?.problems,
                 link = link,
                 mediaStorages = mediaStorages,
+                clusterScaling = mappingDto.scaling
+                    ?.kubernetesClusters
+                    ?.mapNotNull { CCv2ClusterScalingDto.map(it) },
+                databaseSchemas = mappingDto.scaling
+                    ?.databaseSchemas
+                    ?.mapNotNull { CCv2DatabaseSchemaDto.map(it) },
             )
         }
     }
 }
-

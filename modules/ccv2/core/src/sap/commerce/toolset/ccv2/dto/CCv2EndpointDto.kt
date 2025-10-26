@@ -25,7 +25,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 data class CCv2EndpointDto(
     val code: String,
     val name: String,
-    val webProxy: WebProxy,
+    val webProxy: CCv2WebProxy,
     val service: String,
     val url: String,
     val link: String,
@@ -46,7 +46,7 @@ data class CCv2EndpointDto(
             return CCv2EndpointDto(
                 code = dto.code,
                 name = dto.name,
-                webProxy = WebProxy.tryValueOf(dto.webProxy),
+                webProxy = CCv2WebProxy.tryValueOf(dto.webProxy),
                 service = dto.service,
                 url = dto.url,
                 maintenanceMode = dto.maintenanceMode ?: false,
@@ -55,17 +55,4 @@ data class CCv2EndpointDto(
         }
     }
 
-}
-
-enum class WebProxy(val title: String) {
-    UNKNOWN("unknown"),
-    PUBLIC("Default"),
-    PRIVATE("Private"),
-    NAT("Nat");
-
-    companion object {
-        fun tryValueOf(name: String?) = entries
-            .find { it.name.equals(name, true) }
-            ?: UNKNOWN
-    }
 }
