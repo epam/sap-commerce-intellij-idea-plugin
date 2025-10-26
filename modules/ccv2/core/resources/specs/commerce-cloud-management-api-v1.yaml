@@ -21,6 +21,8 @@ servers:
         default: 'v1'
         description: API version
 tags:
+  - name: subscription
+    description: Endpoints for managing subscriptions
   - name: permissions
     description: Endpoints for managing permissions
   - name: environment
@@ -44,6 +46,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PermissionsDetailDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions:
+    get:
+      tags:
+        - subscription
+      description: Get list of available subscriptions
+      summary: 'Example: https://portal.commerce.ondemand.com/v1/subscriptions?$top=25&$skip=0&$count=true&$orderby=name%20asc&$search=%25SubscriptinoName%25'
+      operationId: getSubscriptions
+      parameters:
+        - name: $top
+          description: Maximum number of items to return.
+          in: query
+          schema:
+            type: integer
+            default: 25
+            minimum: 1
+        - name: $skip
+          description: Number of items to skip before starting the result set.
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+        - name: $count
+          description: Whether to include the total count of items.
+          in: query
+          schema:
+            type: boolean
+            default: true
+        - name: $orderby
+          description: Sorting for the returned collection.
+          in: query
+          schema:
+            type: string
+            default: name asc
+            example: "name asc"
+        - name: $search
+          description: Search keyword filter, supports wildcard matching.
+          in: query
+          schema:
+            type: string
+            example: "%test%"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionsDTO'
         '4XX':
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
@@ -717,4 +770,73 @@ components:
       type: object
       properties:
         code:
+          type: string
+
+    SubscriptionsDTO:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubscriptionDTO"
+        count:
+          type: integer
+
+    SubscriptionDTO:
+      type: object
+      required:
+        - code
+      properties:
+        externalCode:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          nullable: true
+        regionName:
+          type: string
+        customerCode:
+          type: string
+        customerName:
+          type: string
+        customerSapInternalId:
+          type: string
+          nullable: true
+        regionCode:
+          type: string
+        spcId:
+          type: string
+        internal:
+          type: boolean
+        environmentPermissions:
+          type: boolean
+        spn:
+          type: string
+          nullable: true
+        dynatraceSpn:
+          type: string
+          nullable: true
+        cloudPortalDeepLink:
+          type: string
+          format: uri
+        disasterRecoveryType:
+          type: string
+          nullable: true
+        digitalWalletActivated:
+          type: boolean
+          nullable: true
+        permission:
+          $ref: "#/components/schemas/SubscriptionPermissionDTO"
+
+    SubscriptionPermissionDTO:
+      type: object
+      properties:
+        level:
+          type: string
+        migrationStatus:
           type: string

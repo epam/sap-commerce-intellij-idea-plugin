@@ -68,7 +68,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
         override fun createPanel(): DialogPanel {
             // disposable is being created only now, do not move dependant items
             subscriptionsComboBoxModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true, disposable = disposable)
-            subscriptionListPanel = CCv2SubscriptionListPanel(disposable) {
+            subscriptionListPanel = CCv2SubscriptionListPanel(project, disposable, { defaultCCv2TokenTextField.password?.let { String(it) } }) {
                 val previousSelectedItem = subscriptionsComboBoxModel.selectedItem?.asSafely<CCv2Subscription>()?.uuid
                 val modifiedSubscriptions = subscriptionListPanel.data.map { it.immutable() }
                 subscriptionsComboBoxModel.refresh(modifiedSubscriptions)

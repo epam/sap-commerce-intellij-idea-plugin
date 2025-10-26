@@ -60,7 +60,8 @@ data class CCv2EndpointDto(
 enum class WebProxy(val title: String) {
     UNKNOWN("unknown"),
     PUBLIC("Default"),
-    PRIVATE("Private");
+    PRIVATE("Private"),
+    NAT("Nat");
 
     companion object {
         fun tryValueOf(name: String?) = entries
