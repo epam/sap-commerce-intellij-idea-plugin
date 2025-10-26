@@ -313,8 +313,8 @@ class CCv2EnvironmentDetailsView(
                                 .bold()
                                 .comment("Name")
                             if (endpoint.maintenanceMode) contextHelp(
-                                "Maintenance mode active",
-                                HybrisIcons.CCv2.Endpoint.MAINTENANCE_MODE
+                                HybrisIcons.CCv2.Endpoint.MAINTENANCE_MODE,
+                                "Maintenance mode active"
                             )
                         }
                     }.gap(RightGap.COLUMNS)

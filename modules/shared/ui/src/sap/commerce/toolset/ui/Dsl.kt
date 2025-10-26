@@ -33,8 +33,8 @@ import javax.swing.Icon
 import javax.swing.JLabel
 
 fun Row.contextHelp(
-    description: String,
     icon: Icon = AllIcons.General.ContextHelp,
+    description: String,
     title: String? = null
 ): Cell<JLabel> {
     val result = if (title == null) ContextHelpLabel.create(description)
