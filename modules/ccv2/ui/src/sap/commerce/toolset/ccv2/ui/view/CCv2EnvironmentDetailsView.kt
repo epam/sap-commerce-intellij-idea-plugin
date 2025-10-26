@@ -62,6 +62,7 @@ class CCv2EnvironmentDetailsView(
     private val showServices = AtomicBooleanProperty(environment.services != null)
     private val showEndpoints = AtomicBooleanProperty(environment.endpoints != null)
     private val showDataBackups = AtomicBooleanProperty(environment.dataBackups != null)
+    private val showScaling = AtomicBooleanProperty(environment.scaling != null)
 
     private val buildPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
@@ -71,19 +72,44 @@ class CCv2EnvironmentDetailsView(
         .also { border = JBUI.Borders.empty() }
     private val dataBackupsPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
+    private val scalingPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+        .also { border = JBUI.Borders.empty() }
 
     override fun dispose() {
         // NOP
     }
 
     init {
-        initPanel(environment)
         subscribe()
+
+        initPanel(environment)
     }
 
     private fun subscribe() = with(project.messageBus.connect(this)) {
         subscribe(CCv2EnvironmentsListener.TOPIC, object : CCv2EnvironmentsListener {
-            override fun onEndpointUpdate(data: CCv2EnvironmentDto) = initEndpointsPanel(data)
+            override fun onEndpointUpdate(data: CCv2EnvironmentDto) {
+                if (environment.link != data.link) return
+                initEndpointsPanel(data)
+            }
+
+            override fun onScalingFetched(environment: CCv2EnvironmentDto, data: CCv2EnvironmentScalingDto?) {
+                if (this@CCv2EnvironmentDetailsView.environment.link != environment.link) return
+                val panel = if (data != null) scalingPanel(data)
+                else CCv2ViewUtil.noDataPanel("No cluster details found for the given environment.")
+
+                scalingPanel.removeAll()
+                scalingPanel.add(panel)
+                showScaling.set(true)
+            }
+
+            override fun onScalingFetchingError(environment: CCv2EnvironmentDto, e: Throwable) {
+                if (this@CCv2EnvironmentDetailsView.environment.link != environment.link) return
+                val panel = CCv2ViewUtil.noDataPanel("Insufficient permissions to view scaling details", EditorNotificationPanel.Status.Warning)
+
+                scalingPanel.removeAll()
+                scalingPanel.add(panel)
+                showScaling.set(true)
+            }
         }
         )
     }
@@ -93,8 +119,10 @@ class CCv2EnvironmentDetailsView(
 
         sink[CCv2UiConstants.DataKeys.Subscription] = subscription
         sink[CCv2UiConstants.DataKeys.Environment] = environment
-        sink[CCv2UiConstants.DataKeys.EnvironmentCallback] = {
+        sink[CCv2UiConstants.DataKeys.EnvironmentFetchCallback] = {
             // hard reset env details on re-fetch
+            it.scaling = null
+            it.endpoints = null
             it.services = null
             it.dataBackups = null
             it.deployedBuild = null
@@ -125,10 +153,18 @@ class CCv2EnvironmentDetailsView(
         add(rootPanel(environment))
         installToolbar(environment)
 
+        initScalingPanel(environment)
         initBuildPanel(environment)
         initEndpointsPanel(environment)
         initServicesPanel(environment)
         initDataBackupsPanel(environment)
+    }
+
+    private fun initScalingPanel(environment: CCv2EnvironmentDto) {
+        scalingPanel.removeAll()
+        showScaling.set(false)
+
+        CCv2Service.getInstance(project).fetchEnvironmentScaling(subscription, environment)
     }
 
     private fun initBuildPanel(environment: CCv2EnvironmentDto) {
@@ -237,6 +273,32 @@ class CCv2EnvironmentDetailsView(
                 }
             }
         )
+    }
+
+    private fun scalingPanel(data: CCv2EnvironmentScalingDto) = panel {
+        // cluster will always contain at least one cluster and db schema
+        val cluster = data.kubernetesClusters.first()
+        val dbSchema = data.databaseSchemas.first()
+        row {
+            icon(HybrisIcons.CCv2.Environment.CLUSTER)
+                .gap(RightGap.SMALL)
+            label(cluster.workerName)
+                .comment("Cluster")
+                .gap(RightGap.COLUMNS)
+                .align(AlignY.TOP)
+
+            icon(HybrisIcons.CCv2.Environment.DATABASE_SCHEMA)
+                .gap(RightGap.SMALL)
+            label(dbSchema.performanceName)
+                .comment("Database")
+                .gap(RightGap.COLUMNS)
+                .align(AlignY.TOP)
+
+            icon(HybrisIcons.CCv2.Environment.DATABASE_SIZE)
+                .gap(RightGap.SMALL)
+            label(StringUtil.formatFileSize(dbSchema.maxSizeInMb * 1024 * 1024))
+                .comment("Max size")
+        }
     }
 
     private fun buildPanel(build: CCv2BuildDto) = panel {
@@ -404,7 +466,7 @@ class CCv2EnvironmentDetailsView(
             row {
                 panel {
                     row {
-                        contextHelp(dataBackup.description).gap(RightGap.SMALL)
+                        contextHelp(HybrisIcons.CCv2.BACKUPS, dataBackup.description).gap(RightGap.SMALL)
                         label(dataBackup.name)
                             .comment(dataBackup.dataBackupCode)
                     }
@@ -536,33 +598,19 @@ class CCv2EnvironmentDetailsView(
                 .topGap(TopGap.SMALL)
                 .bottomGap(BottomGap.SMALL)
 
-            val scaling = environment.clusterScaling?.firstOrNull()
-            val dbSchema = environment.databaseSchemas?.firstOrNull()
             group("Cluster") {
-                if (scaling == null || dbSchema == null) {
-                    inlineBanner("Insufficient permissions to view cluster details", EditorNotificationPanel.Status.Warning)
-                } else {
-                    row {
-                        icon(HybrisIcons.CCv2.Environment.CLUSTER)
-                            .gap(RightGap.SMALL)
-                        label(scaling.workerName)
-                            .comment("Cluster")
-                            .gap(RightGap.COLUMNS)
-                            .align(AlignY.TOP)
+                row {
+                    cell(scalingPanel)
+                }.visibleIf(showScaling)
 
-                        icon(HybrisIcons.CCv2.Environment.DATABASE_SCHEMA)
-                            .gap(RightGap.SMALL)
-                        label(dbSchema.performanceName)
-                            .comment("Database")
-                            .gap(RightGap.COLUMNS)
-                            .align(AlignY.TOP)
-
-                        icon(HybrisIcons.CCv2.Environment.DATABASE_SIZE)
-                            .gap(RightGap.SMALL)
-                        label(StringUtil.formatFileSize(dbSchema.maxSizeInMb * 1024 * 1024))
-                            .comment("Max size")
-                    }
-                }
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving scaling details...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showScaling.not())
             }
 
             group("Build") {

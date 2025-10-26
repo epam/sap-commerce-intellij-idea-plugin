@@ -37,6 +37,11 @@ class CCv2DeployBuildAction : CCv2Action(
         CCv2DeployBuildDialog(project, subscription, build).showAndGet()
     }
 
-    override fun isEnabled(e: AnActionEvent) = super.isEnabled(e)
-        && (e.getData(CCv2UiConstants.DataKeys.Build)?.canDeploy() ?: false)
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        if (e.presentation.isEnabledAndVisible) {
+            e.presentation.isVisible = e.getData(CCv2UiConstants.DataKeys.Build)?.canDeploy() ?: false
+        }
+    }
 }

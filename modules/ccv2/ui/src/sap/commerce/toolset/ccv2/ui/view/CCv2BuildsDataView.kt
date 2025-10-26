@@ -20,6 +20,7 @@ package sap.commerce.toolset.ccv2.ui.view
 
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.Separator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.Panel
@@ -65,11 +66,13 @@ object CCv2BuildsDataView : CCv2DataView<CCv2BuildDto>() {
 
                     actionsButton(
                         actions = listOfNotNull(
-                            actionManager.getAction("ccv2.build.track.action"),
                             actionManager.getAction("ccv2.build.showDetails.action"),
+                            Separator.getInstance(),
+                            actionManager.getAction("ccv2.build.track.action"),
                             actionManager.getAction("ccv2.build.redo.action"),
                             actionManager.getAction("ccv2.build.deploy.action"),
                             actionManager.getAction("ccv2.build.downloadLogs.action"),
+                            Separator.getInstance(),
                             actionManager.getAction("ccv2.build.delete.action"),
                         ).toTypedArray(),
                         ActionPlaces.TOOLWINDOW_CONTENT

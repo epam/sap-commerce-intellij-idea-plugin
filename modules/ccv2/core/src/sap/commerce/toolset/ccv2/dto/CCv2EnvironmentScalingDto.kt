@@ -18,27 +18,25 @@
 
 package sap.commerce.toolset.ccv2.dto
 
-import sap.commerce.toolset.ccv2.model.EnvironmentDatabaseSchemaScalingDetailDTO
+import sap.commerce.toolset.ccv2.model.EnvironmentScalingDetailDTO
 
-data class CCv2DatabaseSchemaDto(
-    val code: String,
-    val maxSizeInMb: Long,
-    val haReplicaCount: Int,
-    val performanceCode: String,
-    val performanceName: String,
+data class CCv2EnvironmentScalingDto(
+    var kubernetesClusters: Collection<CCv2EnvironmentClusterDto>,
+    var databaseSchemas: Collection<CCv2EnvironmentDatabaseSchemaDto>,
 ) {
     companion object {
-        internal fun map(dto: EnvironmentDatabaseSchemaScalingDetailDTO): CCv2DatabaseSchemaDto? {
-            val maxSizeInMb = dto.maxSizeInMb ?: return null
-            val haReplicaCount = dto.haReplicaCount ?: return null
-            val performance = dto.performance ?: return null
-            val performanceName = performance.name ?: return null
-            return CCv2DatabaseSchemaDto(
-                code = dto.code,
-                maxSizeInMb = maxSizeInMb,
-                haReplicaCount = haReplicaCount,
-                performanceCode = performance.code,
-                performanceName = performanceName,
+        internal fun map(dto: EnvironmentScalingDetailDTO): CCv2EnvironmentScalingDto? {
+            val kubernetesClusters = dto.kubernetesClusters
+                ?.mapNotNull { CCv2EnvironmentClusterDto.map(it) }
+                ?.takeIf { it.isNotEmpty() }
+                ?: return null
+            val databaseSchemas = dto.databaseSchemas
+                ?.mapNotNull { CCv2EnvironmentDatabaseSchemaDto.map(it) }
+                ?.takeIf { it.isNotEmpty() }
+                ?: return null
+            return CCv2EnvironmentScalingDto(
+                kubernetesClusters = kubernetesClusters,
+                databaseSchemas = databaseSchemas,
             )
         }
     }

@@ -41,11 +41,11 @@ class CCv2FetchEnvironmentAction : DumbAwareAction("Fetch Environment", null, Hy
         val project = e.project ?: return
         val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
         val environment = e.getData(CCv2UiConstants.DataKeys.Environment) ?: return
-        val environmentCallback = e.getData(CCv2UiConstants.DataKeys.EnvironmentCallback) ?: return
+        val environmentFetchCallback = e.getData(CCv2UiConstants.DataKeys.EnvironmentFetchCallback) ?: return
 
         fetching = true
 
-        CCv2Service.Companion.getInstance(project).fetchEnvironments(
+        CCv2Service.getInstance(project).fetchEnvironments(
             listOf(subscription),
             { response ->
                 fetching = false
@@ -55,9 +55,9 @@ class CCv2FetchEnvironmentAction : DumbAwareAction("Fetch Environment", null, Hy
                         ?.find { it.code == environment.code }
 
                     if (fetchedEnvironment != null) {
-                        environmentCallback.invoke(fetchedEnvironment)
+                        environmentFetchCallback(fetchedEnvironment)
                     } else {
-                        Notifications.Companion.create(
+                        Notifications.create(
                             NotificationType.WARNING,
                             "Unable to fetch environment",
                             "Environment ${environment.code} is not found."

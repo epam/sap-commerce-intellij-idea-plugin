@@ -19,7 +19,6 @@
 package sap.commerce.toolset.ccv2.event
 
 import sap.commerce.toolset.ccv2.dto.CCv2Dto
-import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
 sealed interface CCv2Listener<T : CCv2Dto> {
@@ -28,6 +27,4 @@ sealed interface CCv2Listener<T : CCv2Dto> {
 
     fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<T>>) = Unit
     fun onFetchingBuildDetailsCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
-
-    fun onEndpointUpdate(data: CCv2EnvironmentDto) = Unit
 }
