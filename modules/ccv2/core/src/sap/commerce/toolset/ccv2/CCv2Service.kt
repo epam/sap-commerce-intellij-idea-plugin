@@ -55,6 +55,7 @@ import java.nio.file.Files
 import java.util.*
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.pathString
 import kotlin.time.Duration.Companion.seconds
 
@@ -576,6 +577,10 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     buildLogsPath.deleteIfExists()
 
                     val logFiles = tempDirectory.listDirectoryEntries()
+                        .map {
+                            // rename <logFile>.txt to <logFile>.log
+                            Files.move(it, it.resolveSibling(it.nameWithoutExtension + ".log"))
+                        }
                         .onEach { it.toFile().deleteOnExit() }
                         .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.pathString) }
 

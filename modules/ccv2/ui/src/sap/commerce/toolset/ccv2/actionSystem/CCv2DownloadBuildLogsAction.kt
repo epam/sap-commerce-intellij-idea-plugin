@@ -45,12 +45,12 @@ class CCv2DownloadBuildLogsAction : CCv2Action(
         CCv2Service.getInstance(project).downloadBuildLogs(project, subscription, build, onCompleteCallback(project))
     }
 
-    private fun onCompleteCallback(project: Project): (Collection<VirtualFile>) -> Unit = {
+    private fun onCompleteCallback(project: Project): (Collection<VirtualFile>) -> Unit = { files ->
         fetching = false
 
         invokeLater {
-            it.forEach {
-                FileEditorManager.getInstance(project).openFile(it, true)
+            files.forEach { vf ->
+                FileEditorManager.getInstance(project).openFile(vf, true)
             }
         }
     }
