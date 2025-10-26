@@ -20,6 +20,7 @@ package sap.commerce.toolset.ccv2.ui.components
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.util.whenListChanged
+import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditDeleteListPanel
 import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.asSafely
@@ -35,7 +36,12 @@ import javax.swing.JList
 import javax.swing.ListCellRenderer
 import javax.swing.event.ListDataEvent
 
-internal class CCv2SubscriptionListPanel(disposable: Disposable?, listener: (ListDataEvent) -> Unit) : AddEditDeleteListPanel<CCv2Subscription.Mutable>(null, emptyList()) {
+internal class CCv2SubscriptionListPanel(
+    private val project: Project,
+    disposable: Disposable?,
+    private val ccv2TokenSupplier: () -> String?,
+    listener: (ListDataEvent) -> Unit
+) : AddEditDeleteListPanel<CCv2Subscription.Mutable>(null, emptyList()) {
 
     private var myListCellRenderer: ListCellRenderer<*>? = null
 
@@ -49,12 +55,12 @@ internal class CCv2SubscriptionListPanel(disposable: Disposable?, listener: (Lis
 
     override fun findItemToAdd(): CCv2Subscription.Mutable? {
         val mutable = CCv2Subscription().mutable()
-        return if (CCv2SubscriptionDialog(this, mutable, "Create CCv2 Subscription").showAndGet()) mutable
+        return if (CCv2SubscriptionDialog(project,this, mutable, "Create CCv2 Subscription", ccv2TokenSupplier).showAndGet()) mutable
         else null
     }
 
     override fun editSelectedItem(item: CCv2Subscription.Mutable): CCv2Subscription.Mutable? {
-        return if (CCv2SubscriptionDialog(this, item, "Edit CCv2 Subscription").showAndGet()) item
+        return if (CCv2SubscriptionDialog(project,this, item, "Edit CCv2 Subscription", ccv2TokenSupplier).showAndGet()) item
         else null
     }
 

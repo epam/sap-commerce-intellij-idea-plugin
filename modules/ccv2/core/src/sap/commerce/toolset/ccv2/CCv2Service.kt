@@ -42,10 +42,7 @@ import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.api.CCv1Api
 import sap.commerce.toolset.ccv2.api.CCv2Api
 import sap.commerce.toolset.ccv2.dto.*
-import sap.commerce.toolset.ccv2.event.CCv2BuildsListener
-import sap.commerce.toolset.ccv2.event.CCv2DeploymentsListener
-import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
-import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
+import sap.commerce.toolset.ccv2.event.*
 import sap.commerce.toolset.ccv2.model.EndpointUpdateDTO
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
@@ -89,6 +86,20 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 "CCv2 cache has been reset",
             )
             .notify(project)
+    }
+
+    fun fetchSubscriptions(ccv2Token: String) {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Subscriptions...", true) {
+                try {
+                    val subscriptions = CCv1Api.getInstance().fetchSubscriptions(ccv2Token)
+
+                    project.messageBus.syncPublisher(CCv2SubscriptionsListener.TOPIC).onFetchingComplete(subscriptions)
+                } catch (e: Throwable) {
+                    project.messageBus.syncPublisher(CCv2SubscriptionsListener.TOPIC).onFetchingError(e)
+                }
+            }
+        }
     }
 
     fun fetchEnvironments(
@@ -866,7 +877,15 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         return null
     }
 
-    private fun notifyOnTimeout(subscription: CCv2Subscription, e: SocketTimeoutException) {
+    private fun notifyOnTimeout(subscription: CCv2Subscription, e: SocketTimeoutException) = notifyOnTimeout(
+        "Subscription: ${subscription.presentableName}", e
+    )
+
+    private fun notifyOnException(subscription: CCv2Subscription, e: RuntimeException) = notifyOnException(
+        "Subscription: ${subscription.presentableName}", e
+    )
+
+    private fun notifyOnTimeout(content: String, e: SocketTimeoutException) {
         thisLogger().warn(e)
 
         Notifications
@@ -874,7 +893,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 NotificationType.WARNING,
                 "CCv2: Request interrupted on timeout",
                 """
-                    Subscription: ${subscription.presentableName}<br>
+                    $content<br>
                     Exceeded current read timeout, it can be adjusted via CCv2 settings.
                 """.trimIndent()
             )
@@ -884,7 +903,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             .notify(project)
     }
 
-    private fun notifyOnException(subscription: CCv2Subscription, e: RuntimeException) {
+    private fun notifyOnException(content: String, e: RuntimeException) {
         thisLogger().warn(e)
 
         Notifications
@@ -892,7 +911,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 NotificationType.WARNING,
                 "CCv2: Unable to process request",
                 """
-                    Subscription: ${subscription.presentableName}<br>
+                    $content<br>
                     ${e.message ?: ""}
                 """.trimIndent()
             )

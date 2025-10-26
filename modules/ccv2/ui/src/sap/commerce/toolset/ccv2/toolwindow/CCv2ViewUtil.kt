@@ -55,10 +55,10 @@ object CCv2ViewUtil {
         contentManager.setSelectedContent(content)
     }
 
-    fun noDataPanel(message: String) = panel {
+    fun noDataPanel(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) = panel {
         row {
             cell(
-                InlineBanner(message, EditorNotificationPanel.Status.Info)
+                InlineBanner(message, status)
                     .showCloseButton(false)
             )
                 .align(Align.CENTER)

@@ -21,10 +21,10 @@ package sap.commerce.toolset.ccv2.api
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
-import sap.commerce.toolset.ccv1.api.EndpointApi
 import sap.commerce.toolset.ccv1.api.EnvironmentApi
 import sap.commerce.toolset.ccv1.api.PermissionsApi
 import sap.commerce.toolset.ccv1.api.ServiceApi
+import sap.commerce.toolset.ccv1.api.SubscriptionApi
 import sap.commerce.toolset.ccv1.invoker.infrastructure.ApiClient
 import sap.commerce.toolset.ccv1.model.*
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
@@ -44,10 +44,19 @@ class CCv1Api {
             .readTimeout(CCv2ProjectSettings.getInstance().readTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
+    private val subscriptionApi by lazy { SubscriptionApi(client = apiClient) }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
     private val permissionsApi by lazy { PermissionsApi(client = apiClient) }
     private val serviceApi by lazy { ServiceApi(client = apiClient) }
-    private val endpointApi by lazy { EndpointApi(client = apiClient) }
+
+    suspend fun fetchSubscriptions(
+        accessToken: String,
+    ): List<SubscriptionDTO> = subscriptionApi
+        .getSubscriptions(
+            dollarTop = 100,
+            requestHeaders = createRequestParams(accessToken)
+        )
+        .value
 
     suspend fun fetchPermissions(
         accessToken: String
