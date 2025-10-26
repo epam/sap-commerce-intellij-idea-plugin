@@ -33,7 +33,7 @@ import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JLabel
 
-fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status) {
+fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) {
     row {
         inlineBanner(message, status)
     }

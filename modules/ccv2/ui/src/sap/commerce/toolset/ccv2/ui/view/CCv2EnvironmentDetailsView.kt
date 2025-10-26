@@ -404,7 +404,7 @@ class CCv2EnvironmentDetailsView(
             row {
                 panel {
                     row {
-                        contextHelp(dataBackup.description)
+                        contextHelp(dataBackup.description).gap(RightGap.SMALL)
                         label(dataBackup.name)
                             .comment(dataBackup.dataBackupCode)
                     }
@@ -442,17 +442,17 @@ class CCv2EnvironmentDetailsView(
                     .gap(RightGap.COLUMNS)
 
                 panel {
-                    ccv2StatusYesNo(dataBackup.canBeRestored, "Can be restored")
+                    ccv2StatusYesNo(dataBackup.canBeRestored, "Restorable")
                 }
                     .gap(RightGap.SMALL)
 
                 panel {
-                    ccv2StatusYesNo(dataBackup.canBeCanceled, "Can be canceled")
+                    ccv2StatusYesNo(dataBackup.canBeCanceled, "Cancelable")
                 }
                     .gap(RightGap.SMALL)
 
                 panel {
-                    ccv2StatusYesNo(dataBackup.canBeDeleted, "Can be deleted")
+                    ccv2StatusYesNo(dataBackup.canBeDeleted, "Deletable")
                 }
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -504,6 +504,7 @@ class CCv2EnvironmentDetailsView(
                 panel {
                     row {
                         icon(environment.status.icon)
+                            .gap(RightGap.SMALL)
                         label(environment.status.title)
                             .comment("Status")
                     }
@@ -542,19 +543,22 @@ class CCv2EnvironmentDetailsView(
                     inlineBanner("Insufficient permissions to view cluster details", EditorNotificationPanel.Status.Warning)
                 } else {
                     row {
-                        icon(HybrisIcons.CCv2.CLUSTER)
+                        icon(HybrisIcons.CCv2.Environment.CLUSTER)
+                            .gap(RightGap.SMALL)
                         label(scaling.workerName)
                             .comment("Cluster")
                             .gap(RightGap.COLUMNS)
                             .align(AlignY.TOP)
 
-                        icon(HybrisIcons.CCv2.DATABASE_SCHEMA)
+                        icon(HybrisIcons.CCv2.Environment.DATABASE_SCHEMA)
+                            .gap(RightGap.SMALL)
                         label(dbSchema.performanceName)
                             .comment("Database")
                             .gap(RightGap.COLUMNS)
                             .align(AlignY.TOP)
 
-                        icon(HybrisIcons.CCv2.DATABASE_SIZE)
+                        icon(HybrisIcons.CCv2.Environment.DATABASE_SIZE)
+                            .gap(RightGap.SMALL)
                         label(StringUtil.formatFileSize(dbSchema.maxSizeInMb * 1024 * 1024))
                             .comment("Max size")
                     }
@@ -594,15 +598,14 @@ class CCv2EnvironmentDetailsView(
             collapsibleGroup("Cloud Storage") {
                 val mediaStorages = environment.mediaStorages
                 if (mediaStorages.isEmpty()) {
-                    row {
-                        label("No media storages found for environment.")
-                            .align(Align.FILL)
-                    }
+                    inlineBanner("No media storages found for environment.")
                 } else {
                     mediaStorages.forEach { mediaStorage ->
                         row {
                             panel {
                                 row {
+                                    icon(HybrisIcons.CCv2.Environment.BLOB_STORAGE)
+                                        .gap(RightGap.SMALL)
                                     browserLink(mediaStorage.name, mediaStorage.link)
                                         .bold()
                                         .comment("Name")
