@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.view.nodes
 
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
-import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
@@ -31,6 +30,7 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiManager
 import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.view.HybrisProjectViewDirectoryHelper
 
 // TODO: remove this class and migrate to new Workspace Model API
 class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings) : ProjectViewProjectNode(project, viewSettings) {
@@ -41,7 +41,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
             return mutableListOf()
         }
 
-        val modules = ProjectViewDirectoryHelper.getInstance(project).getTopLevelRoots()
+        val modules = HybrisProjectViewDirectoryHelper.getInstance(project).getTopLevelRoots()
             .mapNotNull { ModuleUtilCore.findModuleForFile(it, project) }
             .map { LoadedModuleDescriptionImpl(it) }
 

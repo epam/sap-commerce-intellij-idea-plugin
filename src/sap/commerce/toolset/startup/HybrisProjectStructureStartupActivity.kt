@@ -19,32 +19,30 @@
 package sap.commerce.toolset.startup
 
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.util.text.VersionComparatorUtil
 import sap.commerce.toolset.*
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisProjectStructureStartupActivity : ProjectActivity {
 
-    private val logger = Logger.getInstance(HybrisProjectStructureStartupActivity::class.java)
-
     override suspend fun execute(project: Project) {
         if (project.isDisposed) return
-
-        val settingsComponent = ProjectSettings.getInstance(project)
         val isHybrisProject = project.isHybrisProject
-
         if (!isHybrisProject) return
+        val importedByVersion = WorkspaceSettings.getInstance(project).importedByVersion
 
-        if (settingsComponent.isOutdatedHybrisProject()) {
+        if (isOutdatedHybrisProject(importedByVersion)) {
             Notifications.create(
                 NotificationType.INFORMATION,
                 i18n("hybris.notification.project.open.outdated.title"),
                 i18n(
                     "hybris.notification.project.open.outdated.text",
-                    settingsComponent.importedByVersion ?: "old"
+                    importedByVersion ?: "old"
                 )
             )
                 .important(true)
@@ -52,17 +50,25 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
                 .notify(project)
         }
 
-        logVersion(project)
+        logVersion(project, importedByVersion)
         continueOpening(project)
     }
 
-    private fun logVersion(project: Project) {
+    fun isOutdatedHybrisProject(importedByVersion: String?): Boolean {
+        val lastImportVersion = importedByVersion ?: return true
+        val currentVersion = Plugin.HYBRIS.pluginDescriptor
+            ?.version
+            ?: return true
+
+        return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
+    }
+
+    private fun logVersion(project: Project, importedByVersion: String?) {
         val settings = ProjectSettings.getInstance(project)
-        val importedBy = settings.importedByVersion
         val hybrisVersion = settings.hybrisVersion
         val plugin = Plugin.HYBRIS.pluginDescriptor ?: return
         val pluginVersion = plugin.version
-        logger.info("Opening hybris version $hybrisVersion which was imported by $importedBy. Current plugin is $pluginVersion")
+        thisLogger().info("Opening hybris version $hybrisVersion which was imported by $importedByVersion. Current plugin is $pluginVersion")
     }
 
     private fun continueOpening(project: Project) {

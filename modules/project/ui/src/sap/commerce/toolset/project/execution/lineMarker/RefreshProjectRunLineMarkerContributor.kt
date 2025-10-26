@@ -29,6 +29,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.extensioninfo.model.Extension
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
+import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.localextensions.model.Extensions
 import sap.commerce.toolset.localextensions.model.Hybrisconfig
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -38,6 +39,7 @@ import sap.commerce.toolset.project.yExtensionName
 class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
 
     override fun getInfo(element: PsiElement): Info? {
+        if (element.project.isNotHybrisProject) return null
         if (element !is XmlToken || element.tokenType != XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN) return null
         val xmlAttributeValue = PsiTreeUtil.getParentOfType(element, XmlAttributeValue::class.java) ?: return null
         val xmlFile = element.containingFile as? XmlFile ?: return null

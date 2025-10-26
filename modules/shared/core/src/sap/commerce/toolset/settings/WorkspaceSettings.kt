@@ -35,6 +35,11 @@ class WorkspaceSettings : SerializablePersistentStateComponent<WorkspaceSettings
         set(value) {
             updateState { it.copy(hybrisProject = value) }
         }
+    var importedByVersion
+        get() = state.importedByVersion
+        set(value) {
+            updateState { it.copy(importedByVersion = value) }
+        }
 
     override fun getModificationCount() = stateModificationCount
 

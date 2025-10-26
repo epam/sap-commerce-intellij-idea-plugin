@@ -31,6 +31,7 @@ import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.beanSystem.model.Beans
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.*
 import javax.swing.ListCellRenderer
@@ -72,6 +73,7 @@ class SearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSEContribu
     }
 
     class Factory : SearchEverywhereContributorFactory<Any?> {
+        override fun isAvailable(project: Project?) = project?.isHybrisProject ?: false
         override fun createContributor(initEvent: AnActionEvent): com.intellij.ide.actions.searcheverywhere.SearchEverywhereContributor<Any?> {
             return PSIPresentationBgRendererWrapper.wrapIfNecessary(SearchEverywhereContributor(initEvent))
         }

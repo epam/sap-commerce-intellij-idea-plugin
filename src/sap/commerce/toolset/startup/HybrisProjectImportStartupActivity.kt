@@ -30,16 +30,16 @@ import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
-import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisProjectImportStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         if (project.isNotHybrisProject) {
-            if (ProjectSettings.getInstance(project).importedByVersion == null) return
+            val workspaceSettings = WorkspaceSettings.getInstance(project)
+            if (workspaceSettings.importedByVersion == null) return
             else {
-                WorkspaceSettings.getInstance(project).hybrisProject = true
+                workspaceSettings.hybrisProject = true
                 invokeLater {
                     Notifications
                         .error(

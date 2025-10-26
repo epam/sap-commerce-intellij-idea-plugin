@@ -21,9 +21,7 @@ package sap.commerce.toolset.project.settings
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.util.text.VersionComparatorUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.settings.state.ProjectSettingsState
 
@@ -50,11 +48,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         get() = state.configDirectory
         set(value) {
             updateState { it.copy(configDirectory = value) }
-        }
-    var importedByVersion
-        get() = state.importedByVersion
-        set(value) {
-            updateState { it.copy(importedByVersion = value) }
         }
     var hybrisVersion
         get() = state.hybrisVersion
@@ -168,15 +161,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(showFullModuleName = value) }
         }
-
-    fun isOutdatedHybrisProject(): Boolean {
-        val lastImportVersion = importedByVersion ?: return true
-        val currentVersion = Plugin.HYBRIS.pluginDescriptor
-            ?.version
-            ?: return true
-
-        return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
-    }
 
     override fun getModificationCount() = stateModificationCount
 

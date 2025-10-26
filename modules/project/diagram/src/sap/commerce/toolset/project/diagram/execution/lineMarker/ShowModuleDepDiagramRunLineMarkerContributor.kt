@@ -28,10 +28,12 @@ import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
+import sap.commerce.toolset.isNotHybrisProject
 
 class ShowModuleDepDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
 
     override fun getInfo(element: PsiElement): Info? {
+        if (element.project.isNotHybrisProject) return null
         val xmlFile = element.containingFile as? XmlFile ?: return null
         if (element !is XmlToken) return null
         if (element.parent !is XmlTag) return null

@@ -27,6 +27,7 @@ import com.intellij.openapi.roots.ProjectRootManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -42,7 +43,8 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
     private fun decorateModule(node: PsiDirectoryNode, data: PresentationData) {
         val vf = node.virtualFile ?: return
-        val module = ProjectRootManager.getInstance(node.project).fileIndex.getModuleForFile(vf) ?: return
+        val project = node.project.takeIf { it.isHybrisProject } ?: return
+        val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf) ?: return
         val projectSettings = ProjectSettings.getInstance(module.project)
 
         if (!projectSettings.showFullModuleName) {
