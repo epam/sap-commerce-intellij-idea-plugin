@@ -10,9 +10,10 @@
 - Added the ability to `delete` an endpoint [#1619](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1619)
 - Fetch & select subscription details instead of setting manually [#1620](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1620)
 - Change extension of the downloaded log files from `.txt` to `.log` [#1622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1622)
+- Display details of the fetched subscription [#1624](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1624)
 
 ### Other
-- Added dynamic unload of the Plugin [#1623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1623)
+- Allow dynamic unload of the Plugin [#1623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1623)
 
 ### Fixes
 - Fixed FlexibleSearch execution context-specific user impersonation capability [#1621](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1621)

@@ -22,6 +22,7 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBPanel
@@ -29,12 +30,14 @@ import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv1.model.SubscriptionDTO
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.event.CCv2SubscriptionsListener
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
+import sap.commerce.toolset.ui.contextHelp
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Component
 import java.awt.Dimension
@@ -169,14 +172,32 @@ internal class CCv2SubscriptionDialog(
                 row {
                     panel {
                         row {
-                            label(subscriptionDto.regionName ?: "N/A")
-                                .comment("Region")
+                            contextHelp(HybrisIcons.Module.CCV2, """
+                                <pre>
+ · code:                     ${subscriptionDto.code}
+ · name:                     ${subscriptionDto.name ?: "N/A"}
+ · external code:            ${subscriptionDto.externalCode ?: "N/A"}
+ · status:                   ${subscriptionDto.status ?: "N/A"}
+ · customer code:            ${subscriptionDto.customerCode ?: "N/A"}
+ · customer SAP Internal Id: ${subscriptionDto.customerSapInternalId ?: "N/A"}
+ · region code:              ${subscriptionDto.regionCode ?: "N/A"}
+ · spc id:                   ${subscriptionDto.spcId ?: "N/A"}
+ · internal:                 ${subscriptionDto.internal ?: "N/A"}
+ · spn:                      ${subscriptionDto.spn ?: "N/A"}
+ · disaster recovery type:   ${subscriptionDto.disasterRecoveryType ?: "N/A"}
+ · digital wallet:           ${subscriptionDto.digitalWalletActivated ?: "N/A"}</pre>
+                            """.trimIndent(),
+                                "Subscription Details"
+                            )
+                            label(subscriptionDto.customerName?.let { StringUtil.first(it, 40, true) } ?: "N/A")
+                                .comment("Name")
                         }
                     }.gap(RightGap.COLUMNS)
+
                     panel {
                         row {
-                            label(subscriptionDto.customerName ?: "N/A")
-                                .comment("Name")
+                            label(subscriptionDto.regionName ?: "N/A")
+                                .comment("Region")
                         }
                     }.gap(RightGap.COLUMNS)
 
