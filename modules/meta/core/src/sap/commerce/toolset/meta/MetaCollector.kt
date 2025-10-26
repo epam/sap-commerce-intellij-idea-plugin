@@ -45,11 +45,10 @@ abstract class MetaCollector<T : DomElement>(
     private val representationNameProvider: (VirtualFile, T) -> String = { vf, _ -> vf.name },
 ) {
 
-    private val myDomManager: DomManager = DomManager.getDomManager(project)
-    private val projectFileIndex = ProjectFileIndex.getInstance(project)
-    private val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
-
     open suspend fun collectDependencies(): Set<Meta<T>> {
+        val myDomManager: DomManager = DomManager.getDomManager(project)
+        val projectFileIndex = ProjectFileIndex.getInstance(project)
+        val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
         val files = HashSet<Meta<T>>()
 
         smartReadAction(project) {

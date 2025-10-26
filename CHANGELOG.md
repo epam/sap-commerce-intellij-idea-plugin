@@ -1,7 +1,7 @@
 ## [2025.2.4.5]
 
 <cite>Release contributors</cite>
-- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
+- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
@@ -9,6 +9,7 @@
 - Added the ability to toggle `maintenance mode` for an endpoint [#1618](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1618)
 - Added the ability to `delete` an endpoint [#1619](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1619)
 - Fetch & select subscription details instead of setting manually [#1620](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1620)
+- Change extension of the downloaded log files from `.txt` to `.log` [#1622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1622)
 
 ### Fixes
 - Fixed FlexibleSearch execution context-specific user impersonation capability [#1621](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1621)
