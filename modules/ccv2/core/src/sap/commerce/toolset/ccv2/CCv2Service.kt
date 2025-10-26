@@ -103,6 +103,30 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         }
     }
 
+    fun fetchEnvironmentScaling(subscription: CCv2Subscription, environment: CCv2EnvironmentDto) {
+        if (environment.scaling != null) {
+            project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onScalingFetched(environment, environment.scaling)
+            return
+        }
+
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Environment Scaling Details...", true) {
+                try {
+                    val ccv2Token = getCCv2Token(subscription)
+                    val scaling = if (ccv2Token != null) CCv2Api.getInstance().fetchEnvironmentScaling(ccv2Token, subscription, environment)
+                        .let { CCv2EnvironmentScalingDto.map(it) }
+                    else null
+
+                    environment.scaling = scaling
+
+                    project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onScalingFetched(environment, scaling)
+                } catch (e: Throwable) {
+                    project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onScalingFetchingError(environment, e)
+                }
+            }
+        }
+    }
+
     fun fetchEnvironments(
         subscriptions: Collection<CCv2Subscription>,
         onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2EnvironmentDto>>) -> Unit,

@@ -51,7 +51,17 @@ class CCv2Api {
     private val deploymentApi by lazy { DeploymentApi(client = apiClient) }
     private val buildApi by lazy { BuildApi(client = apiClient) }
     private val servicePropertiesApi by lazy { ServicePropertiesApi(client = apiClient) }
-    private val databackupApi by lazy { DatabackupApi(client = apiClient) }
+    private val dataBackupApi by lazy { DatabackupApi(client = apiClient) }
+
+    suspend fun fetchEnvironmentScaling(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+    ) = environmentScalingApi.getEnvironmentScalingDetail(
+        subscriptionCode = subscription.id!!,
+        environmentCode = environment.code,
+        requestHeaders = createRequestParams(ccv2Token),
+    )
 
     suspend fun fetchEnvironments(
         progressReporter: ProgressReporter,
@@ -100,7 +110,6 @@ class CCv2Api {
                             listOf(
                                 async { this@apply.v1Environment = if (requestV1Details) getV1Environment(canAccess, ccv1Api, ccv2Token, env) else null },
                                 async { this@apply.v1EnvironmentHealth = if (requestV1Health) getV1EnvironmentHealth(canAccess, ccv1Api, ccv2Token, env) else null },
-                                async { this@apply.scaling = fetchEnvironmentScaling(ccv2Token, subscriptionCode, environmentCode) },
                             ).awaitAll()
                         }
                     }
@@ -127,7 +136,7 @@ class CCv2Api {
         ccv2Token: String,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
-    ) = databackupApi.getDatabackups(
+    ) = dataBackupApi.getDatabackups(
         subscriptionCode = subscription.id!!,
         environmentCode = environment.code,
         requestHeaders = createRequestParams(ccv2Token)
@@ -415,17 +424,6 @@ class CCv2Api {
             null
         }
     } else null
-
-    private suspend fun fetchEnvironmentScaling(ccv2Token: String, subscriptionCode: String, environmentCode: String) = try {
-        environmentScalingApi.getEnvironmentScalingDetail(
-            subscriptionCode = subscriptionCode,
-            environmentCode = environmentCode,
-            requestHeaders = createRequestParams(ccv2Token),
-        )
-    } catch (e: Exception) {
-        thisLogger().warn(e)
-        null
-    }
 
     companion object {
         fun getInstance(): CCv2Api = application.service()

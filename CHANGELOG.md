@@ -12,6 +12,7 @@
 - Change extension of the downloaded log files from `.txt` to `.log` [#1622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1622)
 - Display details of the fetched subscription [#1624](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1624)
 - Display restricted cluster details for an environment [#1625](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1625)
+- Evaluate lazily environment scaling details & hide not available build actions [#1626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1626)
 
 ### Other
 - Allow dynamic unload of the Plugin [#1623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1623)

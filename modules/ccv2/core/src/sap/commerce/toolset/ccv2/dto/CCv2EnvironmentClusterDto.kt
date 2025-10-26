@@ -20,18 +20,18 @@ package sap.commerce.toolset.ccv2.dto
 
 import sap.commerce.toolset.ccv2.model.EnvironmentKubernetesClusterScalingDetailDTO
 
-data class CCv2ClusterScalingDto(
+data class CCv2EnvironmentClusterDto(
     val code: String,
     val maxWorkerCount: Int,
     val workerCode: String,
     val workerName: String,
 ) {
     companion object {
-        internal fun map(dto: EnvironmentKubernetesClusterScalingDetailDTO): CCv2ClusterScalingDto? {
+        internal fun map(dto: EnvironmentKubernetesClusterScalingDetailDTO): CCv2EnvironmentClusterDto? {
             val maxWorkerCount = dto.maxWorkerCount ?: return null
             val workerVmType = dto.workerVmType ?: return null
             val workerName = workerVmType.name ?: return null
-            return CCv2ClusterScalingDto(
+            return CCv2EnvironmentClusterDto(
                 code = dto.code,
                 maxWorkerCount = maxWorkerCount,
                 workerCode = workerVmType.code,

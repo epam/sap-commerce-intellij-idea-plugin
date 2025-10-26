@@ -37,6 +37,11 @@ class CCv2TrackDeploymentAction : CCv2Action(
         CCv2Service.getInstance(project).trackDeployment(project, subscription, deployment.code, deployment.buildCode)
     }
 
-    override fun isEnabled(e: AnActionEvent) = super.isEnabled(e)
-        && (e.getData(CCv2UiConstants.DataKeys.Deployment)?.canTrack() ?: false)
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        if (e.presentation.isEnabledAndVisible) {
+            e.presentation.isVisible = e.getData(CCv2UiConstants.DataKeys.Deployment)?.canTrack() ?: false
+        }
+    }
 }

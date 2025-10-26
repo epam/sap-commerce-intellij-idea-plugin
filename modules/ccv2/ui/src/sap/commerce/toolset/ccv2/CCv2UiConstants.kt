@@ -29,7 +29,7 @@ object CCv2UiConstants {
         val Subscription = DataKey.create<CCv2Subscription>("CCv2_Subscription")
 
         val Environment = DataKey.create<CCv2EnvironmentDto>("CCv2_Environment")
-        val EnvironmentCallback = DataKey.create<(CCv2EnvironmentDto) -> Unit>("CCv2_EnvironmentCallback")
+        val EnvironmentFetchCallback = DataKey.create<(CCv2EnvironmentDto) -> Unit>("CCv2_EnvironmentCallback")
 
         val Service = DataKey.create<CCv2ServiceDto>("CCv2_Service")
         val ServiceReplica = DataKey.create<CCv2ServiceReplicaDto>("CCv2_ServiceReplica")

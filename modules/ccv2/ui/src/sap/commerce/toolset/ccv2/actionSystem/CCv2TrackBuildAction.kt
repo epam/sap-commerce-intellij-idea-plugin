@@ -39,6 +39,11 @@ class CCv2TrackBuildAction : CCv2Action(
         CCv2Service.getInstance(project).trackBuild(project, buildRequest, build.code)
     }
 
-    override fun isEnabled(e: AnActionEvent) = super.isEnabled(e)
-        && (e.getData(CCv2UiConstants.DataKeys.Build)?.canTrack() ?: false)
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        if (e.presentation.isEnabledAndVisible) {
+            e.presentation.isVisible = e.getData(CCv2UiConstants.DataKeys.Build)?.canTrack() ?: false
+        }
+    }
 }

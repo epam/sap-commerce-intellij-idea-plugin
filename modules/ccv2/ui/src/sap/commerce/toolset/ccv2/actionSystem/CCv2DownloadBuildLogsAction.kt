@@ -55,7 +55,14 @@ class CCv2DownloadBuildLogsAction : CCv2Action(
         }
     }
 
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        if (e.presentation.isEnabledAndVisible) {
+            e.presentation.isVisible = e.getData(CCv2UiConstants.DataKeys.Build)?.canDownloadLogs() ?: false
+        }
+    }
+
     override fun isEnabled(e: AnActionEvent) = !fetching
         && super.isEnabled(e)
-        && (e.getData(CCv2UiConstants.DataKeys.Build)?.canDownloadLogs() ?: false)
 }

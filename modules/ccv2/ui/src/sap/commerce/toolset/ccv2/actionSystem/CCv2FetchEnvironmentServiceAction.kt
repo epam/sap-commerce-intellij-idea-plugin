@@ -46,7 +46,7 @@ class CCv2FetchEnvironmentServiceAction : DumbAwareAction("Fetch Service", null,
 
         fetching = true
 
-        CCv2Service.Companion.getInstance(project).fetchEnvironmentServices(
+        CCv2Service.getInstance(project).fetchEnvironmentServices(
             subscription,
             environment,
             { response ->

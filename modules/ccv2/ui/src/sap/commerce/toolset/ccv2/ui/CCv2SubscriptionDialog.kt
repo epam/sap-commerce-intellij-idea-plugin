@@ -82,7 +82,7 @@ internal class CCv2SubscriptionDialog(
 
         super.init()
 
-        initListeners()
+        subscribe()
 
         if (subscription.ccv2Token == null) {
             CCv2ProjectSettings.getInstance().loadCCv2Token(subscription.uuid) {
@@ -145,7 +145,7 @@ internal class CCv2SubscriptionDialog(
         }
     }
 
-    private fun initListeners() {
+    private fun subscribe() {
         project.messageBus.connect(disposable).subscribe(CCv2SubscriptionsListener.TOPIC, object : CCv2SubscriptionsListener {
             override fun onFetchingComplete(data: Collection<SubscriptionDTO>) {
                 val panel = if (data.isNotEmpty()) subscriptionsPanel(data)
