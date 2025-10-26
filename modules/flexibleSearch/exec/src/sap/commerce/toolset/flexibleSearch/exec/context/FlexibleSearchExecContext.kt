@@ -33,7 +33,7 @@ data class FlexibleSearchExecContext(
     val maxCount: Int,
     val locale: String,
     val dataSource: String,
-    val user: String,
+    val user: String?,
     val timeout: Int,
 ) : ExecContext {
 
@@ -62,9 +62,10 @@ data class FlexibleSearchExecContext(
         put("scriptType", "flexibleSearch")
         put("commit", BooleanUtils.toStringTrueFalse(transactionMode == TransactionMode.COMMIT))
         put("maxCount", maxCount.toString())
-        put("user", user)
         put("dataSource", dataSource)
         put("locale", locale)
+
+        if (user?.isNotBlank() ?: false) put("user", user)
 
         if (queryMode == QueryMode.SQL) {
             put("flexibleSearchQuery", "")
@@ -79,7 +80,7 @@ data class FlexibleSearchExecContext(
         val maxCount: Int,
         val locale: String,
         val dataSource: String,
-        val user: String,
+        val user: String?,
         override val timeout: Int
     ) : ExecContext.Settings {
         override fun mutable() = Mutable(
@@ -94,7 +95,7 @@ data class FlexibleSearchExecContext(
             var maxCount: Int,
             var locale: String,
             var dataSource: String,
-            var user: String,
+            var user: String?,
             override var timeout: Int
         ) : ExecContext.Settings.Mutable {
             override fun immutable() = Settings(
@@ -110,11 +111,11 @@ data class FlexibleSearchExecContext(
     companion object {
         val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.fxs.execution.settings")
 
-        fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null) = Settings(
+        fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null, user: String? = null) = Settings(
             maxCount = 200,
             locale = "en",
             dataSource = "master",
-            user = "from active connection",
+            user = user,
             timeout = connectionSettings?.timeout ?: HacExecConstants.DEFAULT_TIMEOUT,
         )
     }

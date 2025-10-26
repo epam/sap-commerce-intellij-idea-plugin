@@ -44,7 +44,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
         .let {
             """<pre>
  · rows:    ${it.maxCount}
- · user:    ${it.user}
+ · user:    ${it.user ?: "from active connection"}
  · locale:  ${it.locale}
  · tenant:  ${it.dataSource}
  · timeout: ${it.timeout} ms</pre>
@@ -54,7 +54,8 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
     override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecContext.Settings.Mutable {
         val settings = e.flexibleSearchExecutionContextSettings {
             val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-            FlexibleSearchExecContext.defaultSettings(connectionSettings)
+            val credentials = HacExecConnectionService.getInstance(project).getCredentials(connectionSettings)
+            FlexibleSearchExecContext.defaultSettings(connectionSettings, credentials.userName)
         }
 
         return settings.mutable()
@@ -99,7 +100,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                         if (it.text.isBlank()) error("Please enter a user name")
                         else null
                     }
-                    .bindText({ settings.user }, { value -> settings.user = value })
+                    .bindText({ settings.user ?: "" }, { value -> settings.user = value })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
