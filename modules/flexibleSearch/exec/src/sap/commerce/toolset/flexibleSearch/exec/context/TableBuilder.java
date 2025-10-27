@@ -68,6 +68,7 @@ public class TableBuilder {
         for (final String[] row : rows) {
             for (int colNum = 0; colNum < row.length; colNum++) {
                 final var cellValue = StringUtils.defaultString(row[colNum])
+                    .replace("\n", "\\n")
                     .replace("&quot;", "\"");
                 buf.append(
                     StringUtils.rightPad(
