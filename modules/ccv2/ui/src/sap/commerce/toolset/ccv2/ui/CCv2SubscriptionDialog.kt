@@ -131,6 +131,10 @@ internal class CCv2SubscriptionDialog(
 
         group("Available Subscriptions") {
             row {
+                comment("Select a subscription to fill-in the <cite>Subscription code</cite> and <cite>Name</cite>.")
+            }.bottomGap(BottomGap.SMALL)
+
+            row {
                 cell(subscriptionsPanel)
             }.visibleIf(showSubscriptions)
 
@@ -172,7 +176,8 @@ internal class CCv2SubscriptionDialog(
                 row {
                     panel {
                         row {
-                            contextHelp(HybrisIcons.Module.CCV2, """
+                            contextHelp(
+                                HybrisIcons.Module.CCV2, """
                                 <pre>
  · code:                     ${subscriptionDto.code}
  · name:                     ${subscriptionDto.name ?: "N/A"}

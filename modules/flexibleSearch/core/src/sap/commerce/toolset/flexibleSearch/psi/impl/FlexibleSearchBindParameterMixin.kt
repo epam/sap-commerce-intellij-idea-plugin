@@ -51,8 +51,8 @@ abstract class FlexibleSearchBindParameterMixin(node: ASTNode) : ASTWrapperPsiEl
         ?.asSafely<FlexibleSearchExpression>()
 
     override fun getItemType(): String? = expression
-        ?.let { PsiTreeUtil.getChildOfType(this, FlexibleSearchColumnRefYExpression::class.java) }
-        ?.let { PsiTreeUtil.getChildOfType(this, FlexibleSearchYColumnName::class.java) }
+        ?.let { PsiTreeUtil.getChildOfType(it, FlexibleSearchColumnRefYExpression::class.java) }
+        ?.let { PsiTreeUtil.getChildOfType(it, FlexibleSearchYColumnName::class.java) }
         ?.reference
         ?.asSafely<FxSYColumnReference>()
         ?.multiResolve(false)
