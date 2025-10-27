@@ -185,7 +185,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
                         }
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
-                            .text(parameter.sqlValue)
+                            .text(parameter.rawValue?.asSafely<String>() ?: "")
                             .onChanged { applyValue(fileEditor, parameter, it.text) }
                     }
 
