@@ -1,7 +1,7 @@
 ## [2025.2.4.5]
 
 <cite>Release contributors</cite>
-- 10 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
+- 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
@@ -19,6 +19,7 @@
 
 ### Fixes
 - Fixed FlexibleSearch execution context-specific user impersonation capability [#1621](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1621)
+- Fixed FlexibleSearch type-aware editor detection for virtual parameters [#1627](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1627)
 
 ## [2025.2.4.4]
 
