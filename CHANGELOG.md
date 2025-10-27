@@ -1,7 +1,7 @@
 ## [2025.2.4.5]
 
 <cite>Release contributors</cite>
-- 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
+- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
@@ -13,6 +13,9 @@
 - Display details of the fetched subscription [#1624](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1624)
 - Display restricted cluster details for an environment [#1625](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1625)
 - Evaluate lazily environment scaling details & hide not available build actions [#1626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1626)
+
+### `FlexibleSearch` enhancements
+- Display each value on a new line in the multiline editor for virtual parameters [#1628](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1628)
 
 ### Other
 - Allow dynamic unload of the Plugin [#1623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1623)
