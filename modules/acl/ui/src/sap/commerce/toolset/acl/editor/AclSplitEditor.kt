@@ -78,7 +78,7 @@ class AclSplitEditorEx(override val textEditor: TextEditor, private val project:
         add(verticalSplitter, BorderLayout.CENTER)
     }
 
-    fun renderExecutionResult(result: DefaultExecResult) = AclInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+    fun renderExecutionResult(execResult: DefaultExecResult) = AclInEditorResultsView.getInstance(project).resultView(this, execResult) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view

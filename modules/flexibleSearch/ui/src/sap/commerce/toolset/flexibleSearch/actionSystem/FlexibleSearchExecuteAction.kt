@@ -63,8 +63,8 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 
-            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-                fileEditor.renderExecutionResult(result)
+            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
+                fileEditor.renderExecutionResult(execResult)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
                 coroutineScope.launch {
@@ -74,8 +74,8 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole
         } else {
             val console = openConsole(project, content) ?: return
 
-            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-                console.print(result)
+            FlexibleSearchExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
+                console.print(execResult)
             }
         }
     }

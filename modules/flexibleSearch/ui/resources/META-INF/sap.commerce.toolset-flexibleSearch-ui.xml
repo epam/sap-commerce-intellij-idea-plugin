@@ -49,6 +49,7 @@
         <action id="hybris.fxs.toggleParameters" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorParametersAction"/>
         <action id="hybris.fxs.toggleInEditorResults" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorResultsAction"/>
         <action id="hybris.fxs.copyToClipboard" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchCopyToClipboardAction"/>
+        <action id="hybris.fxs.showRestrictions" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchShowRestrictionsAction"/>
         <action id="hybris.fxs.executionContextSettings" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchExecutionContextSettingsAction"/>
 
         <group id="hybris.fxs.toolbar.left">
@@ -57,6 +58,7 @@
             <reference ref="hybris.fxs.execute"/>
             <reference ref="hybris.fxs.openQuery"/>
             <reference ref="hybris.fxs.copyToClipboard"/>
+            <reference ref="hybris.fxs.showRestrictions"/>
             <separator/>
             <reference ref="hybris.fxs.toggleInEditorResults"/>
             <reference ref="hybris.fxs.toggleParameters"/>

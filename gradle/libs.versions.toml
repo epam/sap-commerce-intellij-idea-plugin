@@ -29,6 +29,8 @@ solrSolrj = "8.11.4"
 moshi = "1.15.2"
 # https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/
 okhttp = "5.1.0"
+# https://central.sonatype.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-core/1.9.0
+serialization = "1.9.0"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
@@ -57,6 +59,7 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshi" }
 moshi-kotin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+kotlinxJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 
 [bundles]
 commons = ["commons-io", "commons-codec", "commons-lang3", "commons-collections4"]
@@ -68,3 +71,4 @@ gradleIntelliJPlugin = { id = "org.jetbrains.intellij.platform", version.ref = "
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 openAPIGenerator = { id = "org.openapi.generator", version.ref = "openAPIGenerator" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }

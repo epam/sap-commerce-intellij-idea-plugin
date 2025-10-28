@@ -64,19 +64,19 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecResult>(protected val
             .customize(UnscaledGaps(16, 16, 16, 16))
     }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
 
-    fun resultView(fileEditor: E, result: R, applyView: (CoroutineScope, JComponent) -> Unit) = resultView(fileEditor, listOf(result), applyView)
+    fun resultView(fileEditor: E, execResult: R, applyView: (CoroutineScope, JComponent) -> Unit) = resultView(fileEditor, listOf(execResult), applyView)
 
-    fun resultView(fileEditor: E, results: Collection<R>, applyView: (CoroutineScope, JComponent) -> Unit) {
+    fun resultView(fileEditor: E, execResults: Collection<R>, applyView: (CoroutineScope, JComponent) -> Unit) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            val view = render(fileEditor, results)
+            val view = render(fileEditor, execResults)
 
             applyView(this, view)
         }
     }
 
-    protected abstract suspend fun render(fileEditor: E, results: Collection<R>): JComponent
+    protected abstract suspend fun render(fileEditor: E, execResults: Collection<R>): JComponent
 
     protected fun panelView(panelProvider: (Panel) -> Unit) = panel {
         panelProvider.invoke(this)

@@ -87,15 +87,15 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             timeout = activeConnection.timeout,
         )
         fetching = true
-        LoggingExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-            updateState(result.loggers, activeConnection.uuid)
-            callback.invoke(coroutineScope, result)
+        LoggingExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
+            updateState(execResult.loggers, activeConnection.uuid)
+            callback.invoke(coroutineScope, execResult)
 
             project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(activeConnection)
 
-            if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
+            if (execResult.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
-                <p>${result.errorMessage}</p>
+                <p>${execResult.errorMessage}</p>
                 <p>Server: ${activeConnection.shortenConnectionName}</p>
             """.trimIndent()
             }
@@ -205,9 +205,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         context: GroovyExecContext, server: HacConnectionSettingsState,
         callback: (CoroutineScope, LoggersGroovyScriptExecResult) -> Unit = { _, _ -> }
     ) {
-        GroovyExecClient.getInstance(project).execute(context) { coroutineScope, result ->
+        GroovyExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
             coroutineScope.launch {
-                val loggers = result.result
+                val loggers = execResult.result
                     ?.split("\n")
                     ?.map { it.split(" | ") }
                     ?.filter { it.size == 3 }
@@ -225,13 +225,13 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     ?.associateBy { it.name }
                     ?.takeIf { it.isNotEmpty() }
 
-                if (loggers == null || result.hasError) {
+                if (loggers == null || execResult.hasError) {
                     clearState(server.uuid)
                 } else {
                     updateState(loggers, server.uuid)
                 }
 
-                callback.invoke(coroutineScope, LoggersGroovyScriptExecResult(loggers, result))
+                callback.invoke(coroutineScope, LoggersGroovyScriptExecResult(loggers, execResult))
 
                 project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
             }

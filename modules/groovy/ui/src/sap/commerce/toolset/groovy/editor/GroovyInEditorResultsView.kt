@@ -41,9 +41,9 @@ import kotlin.takeIf
 @Service(Service.Level.PROJECT)
 class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<GroovySplitEditor, DefaultExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: GroovySplitEditor, results: Collection<DefaultExecResult>): JComponent {
-        return results.firstOrNull()
-            .takeIf { results.size == 1 }
+    override suspend fun render(fileEditor: GroovySplitEditor, execResults: Collection<DefaultExecResult>): JComponent {
+        return execResults.firstOrNull()
+            .takeIf { execResults.size == 1 }
             ?.let { result ->
                 panelView {
                     when {
@@ -62,7 +62,7 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
                 }
             }
             ?: panelView {
-                val resultsWithErrors = results.count { result -> result.hasError }
+                val resultsWithErrors = execResults.count { result -> result.hasError }
 
                 if (resultsWithErrors > 0) {
                     it.panel {
@@ -70,7 +70,7 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
                             cell(
                                 InlineBanner(
                                     """
-                                        Groovy script execution resulted to an error on $resultsWithErrors of ${results.size} replicas.<br>
+                                        Groovy script execution resulted to an error on $resultsWithErrors of ${execResults.size} replicas.<br>
                                         Details of each individual execution result can be found below.
                                         """.trimIndent(),
                                     EditorNotificationPanel.Status.Warning,
@@ -83,7 +83,7 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
                         .customize(UnscaledGaps(16, 16, 16, 16))
                 }
 
-                results
+                execResults
                     .sortedBy { result -> result.replicaContext?.replicaId }
                     .forEach { result ->
                         it.collapsibleGroup("Replica: ${result.replicaContext?.replicaId ?: ""}") {

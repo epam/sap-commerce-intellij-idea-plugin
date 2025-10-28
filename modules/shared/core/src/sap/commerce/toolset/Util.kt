@@ -26,6 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.jetbrains.annotations.PropertyKey
 import sap.commerce.toolset.settings.WorkspaceSettings
+import java.nio.charset.StandardCharsets
 
 val PsiElement.isHybrisProject: Boolean
     get() = project.isHybrisProject
@@ -88,3 +89,7 @@ fun triggerAction(
     ActionManager.getInstance().getAction(actionId)
         ?.let { ActionUtil.performAction(it, event) }
 }
+
+fun Any.readResource(resourcePath: String) = javaClass.classLoader.getResourceAsStream(resourcePath)
+    ?.bufferedReader(StandardCharsets.UTF_8)?.use { it.readText() }
+    ?: throw IllegalStateException("Resource not found: $resourcePath")

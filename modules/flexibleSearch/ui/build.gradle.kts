@@ -21,6 +21,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 plugins {
     id("org.jetbrains.intellij.platform.module")
     alias(libs.plugins.kotlin) // Kotlin support
+    alias(libs.plugins.serialization) // Kotlin support
 }
 
 sourceSets {
@@ -47,6 +48,7 @@ dependencies {
     implementation(project(":groovy-exec"))
     implementation(project(":flexibleSearch-core"))
     implementation(project(":flexibleSearch-exec"))
+    implementation(libs.kotlinxJson)
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
