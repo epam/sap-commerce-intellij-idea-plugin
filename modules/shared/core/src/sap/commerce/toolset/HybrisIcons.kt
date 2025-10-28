@@ -173,7 +173,7 @@ object HybrisIcons {
         val FILE = getIcon("/icons/fileTypes/flexibleSearchFile.svg")
         val SQL = getIcon("/icons/flexibleSearch/sql.svg")
 
-        val PERMISSIONS = getIcon("/icons/flexibleSearch/permissions.svg")
+        val RESTRICTIONS = getIcon("/icons/flexibleSearch/restrictions.svg")
         val TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg")
         val COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg")
         val OUTER_JOIN = getIcon("/icons/flexibleSearch/outerJoin.svg")
