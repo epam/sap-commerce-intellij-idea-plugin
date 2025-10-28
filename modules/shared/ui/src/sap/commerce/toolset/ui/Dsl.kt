@@ -18,20 +18,42 @@
 package sap.commerce.toolset.ui
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.HelpTooltip
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
+import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.ui.ContextHelpLabel
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
+import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
 import org.jetbrains.annotations.NonNls
+import sap.commerce.toolset.Notifications
 import java.awt.Dimension
+import java.awt.datatransfer.StringSelection
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JLabel
+
+fun Row.copyLink(project: Project, label: String?, value: String, confirmationMessage: String = "Copied to clipboard"): Cell<ActionLink> {
+    return link(value) {
+        CopyPasteManager.getInstance().setContents(StringSelection(value))
+        Notifications.create(NotificationType.INFORMATION, confirmationMessage, "")
+            .hideAfter(10)
+            .notify(project)
+    }
+        .comment(label)
+        .applyToComponent {
+            HelpTooltip()
+                .setTitle("Click to copy to clipboard")
+                .installOn(this)
+        }
+}
 
 fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) {
     row {

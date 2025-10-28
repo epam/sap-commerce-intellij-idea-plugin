@@ -42,8 +42,12 @@ import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceProperties
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
-import sap.commerce.toolset.ccv2.ui.*
+import sap.commerce.toolset.ccv2.ui.ccv2ServiceModifiedTimeRow
+import sap.commerce.toolset.ccv2.ui.ccv2ServiceReplicasRow
+import sap.commerce.toolset.ccv2.ui.ccv2ServiceStatusRow
+import sap.commerce.toolset.ccv2.ui.sUser
 import sap.commerce.toolset.ui.actionsButton
+import sap.commerce.toolset.ui.copyLink
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.GridBagLayout
 import java.io.Serial

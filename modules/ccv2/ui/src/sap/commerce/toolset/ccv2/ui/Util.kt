@@ -19,41 +19,22 @@
 package sap.commerce.toolset.ccv2.ui
 
 import com.intellij.ide.HelpTooltip
-import com.intellij.notification.NotificationType
-import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBColor
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.Row
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.formatTime
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
-import java.awt.datatransfer.StringSelection
 import java.time.OffsetDateTime
 import javax.swing.Icon
 
 fun Row.date(label: String, dateTime: OffsetDateTime?) {
     label(formatTime(dateTime))
         .comment(label)
-}
-
-fun Row.copyLink(project: Project, label: String?, value: String, confirmationMessage: String = "Copied to clipboard") {
-    link(value) {
-        CopyPasteManager.getInstance().setContents(StringSelection(value))
-        Notifications.create(NotificationType.INFORMATION, confirmationMessage, "")
-            .hideAfter(10)
-            .notify(project)
-    }
-        .comment(label)
-        .applyToComponent {
-            HelpTooltip()
-                .setTitle("Click to copy to clipboard")
-                .installOn(this)
-        }
 }
 
 fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Created by") {

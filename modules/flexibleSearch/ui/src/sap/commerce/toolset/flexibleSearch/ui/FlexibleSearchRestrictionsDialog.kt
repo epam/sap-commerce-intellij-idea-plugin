@@ -27,6 +27,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.restrictions.FlexibleSearchRestriction
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.ui.copyLink
 import java.awt.Dimension
 import javax.swing.ScrollPaneConstants
 
@@ -66,8 +67,8 @@ class FlexibleSearchRestrictionsDialog(
             row {
                 icon(HybrisIcons.FlexibleSearch.RESTRICTIONS)
                     .gap(RightGap.SMALL)
-                label(restriction.code)
-                    .comment("Restriction")
+                copyLink(project, "Restriction", restriction.code)
+                    .bold()
                     .gap(RightGap.COLUMNS)
 
                 val typeIcon = (metaModelAccess.findMetaClassifierByName(restriction.typeCode)
@@ -76,9 +77,9 @@ class FlexibleSearchRestrictionsDialog(
 
                 icon(typeIcon)
                     .gap(RightGap.SMALL)
-                label(restriction.typeCode)
-                    .comment("Type")
+                copyLink(project, "Type", restriction.typeCode)
                     .gap(RightGap.COLUMNS)
+
             }.layout(RowLayout.PARENT_GRID)
 
             row {

@@ -38,9 +38,9 @@ import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.ui.copyLink
 import sap.commerce.toolset.ccv2.ui.date
 import sap.commerce.toolset.ccv2.ui.sUser
+import sap.commerce.toolset.ui.copyLink
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.GridBagLayout
 import java.io.Serial
