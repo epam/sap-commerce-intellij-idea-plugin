@@ -18,9 +18,14 @@
 
 package scripts
 
-
 import de.hybris.platform.core.Registry
+import de.hybris.platform.core.model.type.ComposedTypeModel
 import de.hybris.platform.jalo.security.Principal
+import de.hybris.platform.servicelayer.model.ModelService
+import de.hybris.platform.servicelayer.search.FlexibleSearchQuery
+import de.hybris.platform.servicelayer.search.FlexibleSearchService
+import de.hybris.platform.servicelayer.type.TypeService
+import de.hybris.platform.servicelayer.user.UserService
 
 /*
 ======= Version: 2025.2.4.5 =======
@@ -74,28 +79,67 @@ def types =  [
 def userUid = "placeholder_userUid"
 def types = placeholder_types
 
-def tenant = Registry.getCurrentTenantNoFallback()
 
-def jaloSession = tenant.activeSession
+
+def tenant = Registry.getCurrentTenantNoFallback()
+def us = userService as UserService
+def ms = modelService as ModelService
+def fss = flexibleSearchService as FlexibleSearchService
+def ts = typeService as TypeService
+
 def jaloConnection = tenant.jaloConnection
-def typeManager = jaloSession.typeManager
 def flexibleSearch = jaloConnection.getFlexibleSearch()
 
-def user = modelService.getSource(userService.getUserForUID(userUid)) as Principal
+def user = us.getUserForUID(userUid)
 
-def result = types
+def query = """
+SELECT {sr.code}, {ct.code}, {p.uid}, {sr.query}
+FROM {
+           SearchRestriction* as sr
+      JOIN ComposedType       as ct on {ct.pk} = {sr.restrictedType}
+      JOIN Principal          as p  on {p.pk} = {sr.principal}
+     }
+WHERE
+    {p.uid} in (?principalUids)
+    AND {ct.code} in (?restrictedTypeCodes)
+    AND {sr.active} = ?active
+"""
+
+def principalUids = flexibleSearch.getPrincipalsForSearchRestrictions(ms.getSource(user) as Principal, true)
+        .collect { it.uid }
+
+def restrictedTypeCodes = types
         .collect { key, value ->
-            def composedType = typeManager.getComposedType(key)
-            flexibleSearch.getQueryFilters(user, composedType, true, true, value)
+            // key   -> ComposedType code
+            // value -> include / exclude sub types
+            def combinedTypes = new HashSet<ComposedTypeModel>()
+            def type = ts.getComposedTypeForCode(key)
+
+            combinedTypes.add(type)
+            combinedTypes.addAll(type.getAllSuperTypes())
+            if (value) combinedTypes.addAll(type.getAllSubTypes())
+
+            return combinedTypes
         }
         .flatten()
-        .unique { [it.code, it.restrictionType.code] }
+        .<ComposedTypeModel> toSet()
+        .collect { it.code }
+
+def fxsQuery = new FlexibleSearchQuery(query, [
+        "principalUids": principalUids,
+        "restrictedTypeCodes": restrictedTypeCodes,
+        "active": true,
+])
+fxsQuery.setResultClassList([String.class, String.class, String.class, String.class])
+
+def result = fss.<List<List<String>>>search(fxsQuery).result
         .collect {
             """
                 {
-                    "code": "${it.code}",
-                    "typeCode": "${it.restrictionType.code}",
-                    "query": "${it.query}"
+                    "code": "${it[0]}",
+                    "typeCode": "${it[1]}",
+                    "principal": "${it[2]}",
+                    "query": "${it[3]}"
                 }"""
         }
         .join(",")

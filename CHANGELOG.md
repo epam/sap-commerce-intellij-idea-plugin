@@ -1,7 +1,7 @@
 ## [2025.2.4.5]
 
 <cite>Release contributors</cite>
-- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
+- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
@@ -18,6 +18,7 @@
 - Fetch and show user-specific search restrictions per query within `.fxs` file [#1630](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1630)
 - Use syntax highlighting for search restrictions [#1631](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1631)
 - Copy identified search restrictions to ImpEx [#1632](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1632)
+- Retrieve and display `principal` of the search restriction and include in the generated ImpEx file [#1633](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1633)
 - Display each value on a new line in the multiline editor for virtual parameters [#1628](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1628)
 - Escape `\n` in the search results to ensure correct row representation [#1629](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1629)
 
