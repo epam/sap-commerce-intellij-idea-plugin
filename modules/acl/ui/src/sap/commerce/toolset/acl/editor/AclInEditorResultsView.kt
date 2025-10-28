@@ -35,8 +35,8 @@ import sap.commerce.toolset.ui.editor.InEditorResultsView
 @Service(Service.Level.PROJECT)
 class AclInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<AclSplitEditor, DefaultExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: AclSplitEditor, results: Collection<DefaultExecResult>): DialogPanel = results.firstOrNull()
-        .takeIf { results.size == 1 }
+    override suspend fun render(fileEditor: AclSplitEditor, execResults: Collection<DefaultExecResult>): DialogPanel = execResults.firstOrNull()
+        .takeIf { execResults.size == 1 }
         ?.let { result ->
             panelView {
                 when {

@@ -63,8 +63,8 @@ class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 
-            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-                fileEditor.renderExecutionResult(result)
+            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
+                fileEditor.renderExecutionResult(execResult)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
                 coroutineScope.launch {

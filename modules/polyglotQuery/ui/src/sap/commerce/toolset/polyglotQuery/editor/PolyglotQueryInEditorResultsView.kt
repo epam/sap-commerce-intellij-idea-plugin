@@ -43,11 +43,11 @@ class PolyglotQueryInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<PolyglotQuerySplitEditor, FlexibleSearchExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, results: Collection<FlexibleSearchExecResult>): JComponent {
+    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, execResults: Collection<FlexibleSearchExecResult>): JComponent {
         fileEditor.csvResultsDisposable?.dispose()
 
-        return results.firstOrNull()
-            .takeIf { results.size == 1 }
+        return execResults.firstOrNull()
+            .takeIf { execResults.size == 1 }
             ?.let { result ->
                 when {
                     result.hasError -> panelView {

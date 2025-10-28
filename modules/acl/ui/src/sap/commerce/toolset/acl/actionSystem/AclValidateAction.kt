@@ -60,8 +60,8 @@ class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 
-            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-                fileEditor.renderExecutionResult(result)
+            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
+                fileEditor.renderExecutionResult(execResult)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
                 coroutineScope.launch {
@@ -71,8 +71,8 @@ class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>
         } else {
             val console = openConsole(project, content) ?: return
 
-            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, result ->
-                console.print(result)
+            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
+                console.print(execResult)
             }
         }
     }

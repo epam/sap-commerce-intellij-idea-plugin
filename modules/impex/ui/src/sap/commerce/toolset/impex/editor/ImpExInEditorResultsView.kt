@@ -35,8 +35,8 @@ import javax.swing.JComponent
 @Service(Service.Level.PROJECT)
 class ImpExInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<ImpExSplitEditor, DefaultExecResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: ImpExSplitEditor, results: Collection<DefaultExecResult>): JComponent = results.firstOrNull()
-        .takeIf { results.size == 1 }
+    override suspend fun render(fileEditor: ImpExSplitEditor, execResults: Collection<DefaultExecResult>): JComponent = execResults.firstOrNull()
+        .takeIf { execResults.size == 1 }
         ?.let { result ->
             panelView {
                 when {
