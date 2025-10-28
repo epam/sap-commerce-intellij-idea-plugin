@@ -24,5 +24,6 @@ import kotlinx.serialization.Serializable
 data class FlexibleSearchRestriction(
     val code: String,
     val typeCode: String,
+    val principal: String,
     val query: String
 )

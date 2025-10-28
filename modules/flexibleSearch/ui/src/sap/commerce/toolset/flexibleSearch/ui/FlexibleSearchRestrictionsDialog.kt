@@ -22,6 +22,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.LanguageTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
@@ -49,10 +50,14 @@ class FlexibleSearchRestrictionsDialog(
 
         override fun doAction(e: ActionEvent) {
             val impexFile = buildString {
+                appendLine("#")
+                appendLine("# Update FlexibleSearch restrictions applicable for user: $userUid")
+                appendLine("#")
+                appendLine()
                 appendLine("UPDATE SearchRestriction; code[unique=true];restrictedType(code)[unique=true];principal(uid)[unique=true];query")
 
                 restrictions.forEach {
-                    appendLine("; ${it.code} ; ${it.typeCode} ; \"$userUid\" ; \"${it.query}\"")
+                    appendLine("; ${it.code} ; ${it.typeCode} ; \"${it.principal}\" ; \"${it.query}\"")
                 }
             }
 
@@ -94,7 +99,7 @@ class FlexibleSearchRestrictionsDialog(
             row {
                 icon(HybrisIcons.FlexibleSearch.RESTRICTIONS)
                     .gap(RightGap.SMALL)
-                copyLink(project, "Restriction", restriction.code)
+                copyLink(project, "Restriction", StringUtil.first(restriction.code, 45, true))
                     .bold()
                     .gap(RightGap.COLUMNS)
 
@@ -104,9 +109,12 @@ class FlexibleSearchRestrictionsDialog(
 
                 icon(typeIcon)
                     .gap(RightGap.SMALL)
-                copyLink(project, "Type", restriction.typeCode)
+                copyLink(project, "Type", StringUtil.first(restriction.typeCode, 30, true))
                     .gap(RightGap.COLUMNS)
 
+                icon(HybrisIcons.FlexibleSearch.PRINCIPAL)
+                    .gap(RightGap.SMALL)
+                copyLink(project, "Principal", StringUtil.first(restriction.principal, 40, true))
             }.layout(RowLayout.PARENT_GRID)
 
             row {
