@@ -110,7 +110,7 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
 
                 withContext(Dispatchers.EDT) {
                     if (restrictions.isEmpty()) {
-                        HintManager.getInstance().showSuccessHint(editor, "This user has no FlexibleSearch restrictions that apply to the current query.")
+                        HintManager.getInstance().showSuccessHint(editor, "No search restrictions apply to user <strong>$userUid</strong> for the provided FlexibleSearch query.")
                     } else {
                         FlexibleSearchRestrictionsDialog(project, userUid, restrictions.toList()).show()
                     }
