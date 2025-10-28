@@ -20,11 +20,16 @@ package sap.commerce.toolset.flexibleSearch.ui
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.LanguageTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.restrictions.FlexibleSearchRestriction
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.ui.copyLink
+import java.awt.Dimension
+import javax.swing.ScrollPaneConstants
 
 class FlexibleSearchRestrictionsDialog(
     private val project: Project,
@@ -62,8 +67,8 @@ class FlexibleSearchRestrictionsDialog(
             row {
                 icon(HybrisIcons.FlexibleSearch.RESTRICTIONS)
                     .gap(RightGap.SMALL)
-                label(restriction.code)
-                    .comment("Restriction")
+                copyLink(project, "Restriction", restriction.code)
+                    .bold()
                     .gap(RightGap.COLUMNS)
 
                 val typeIcon = (metaModelAccess.findMetaClassifierByName(restriction.typeCode)
@@ -72,17 +77,27 @@ class FlexibleSearchRestrictionsDialog(
 
                 icon(typeIcon)
                     .gap(RightGap.SMALL)
-                label(restriction.typeCode)
-                    .comment("Type")
+                copyLink(project, "Type", restriction.typeCode)
                     .gap(RightGap.COLUMNS)
+
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                textArea()
-                    .rows(3)
-                    .text(restriction.query)
+                cell(LanguageTextField(FlexibleSearchLanguage, project, restriction.query, false))
                     .align(Align.FILL)
-            }.layout(RowLayout.PARENT_GRID)
+                    .applyToComponent {
+                        preferredSize = Dimension(preferredSize.width, JBUI.scale(60))
+                        isViewer = true
+
+                        setDisposedWith(disposable)
+                        val editorEx = getEditor(true)
+
+                        editorEx?.settings?.isUseSoftWraps = true
+                        editorEx?.scrollPane?.verticalScrollBarPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED
+                    }
+            }
+                .layout(RowLayout.PARENT_GRID)
+                .bottomGap(BottomGap.MEDIUM)
         }
     }
 }
