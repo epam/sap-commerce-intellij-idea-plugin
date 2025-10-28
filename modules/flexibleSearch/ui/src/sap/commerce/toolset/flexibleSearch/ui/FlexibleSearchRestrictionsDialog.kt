@@ -54,7 +54,6 @@ class FlexibleSearchRestrictionsDialog(
                 restrictions.forEach {
                     appendLine("; ${it.code} ; ${it.typeCode} ; \"$userUid\" ; \"${it.query}\"")
                 }
-                appendLine()
             }
 
             CopyPasteManager.getInstance().setContents(StringSelection(impexFile))
