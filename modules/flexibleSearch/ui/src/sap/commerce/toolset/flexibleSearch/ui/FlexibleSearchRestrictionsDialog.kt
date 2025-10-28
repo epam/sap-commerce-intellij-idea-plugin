@@ -18,23 +18,17 @@
 
 package sap.commerce.toolset.flexibleSearch.ui
 
-import com.intellij.notification.NotificationType
-import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.LanguageTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.restrictions.FlexibleSearchRestriction
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.ui.copyLink
 import java.awt.Dimension
-import java.awt.datatransfer.StringSelection
-import java.awt.event.ActionEvent
-import java.io.Serial
 import javax.swing.ScrollPaneConstants
 
 class FlexibleSearchRestrictionsDialog(
@@ -43,33 +37,12 @@ class FlexibleSearchRestrictionsDialog(
     private val restrictions: Collection<FlexibleSearchRestriction>,
 ) : DialogWrapper(project, null, false, IdeModalityType.IDE) {
 
-    private val copyToImpExButton = object : DialogWrapperAction("Copy as ImpEx") {
-        @Serial
-        private val serialVersionUID: Long = -6131274562037160651L
-
-        override fun doAction(e: ActionEvent) {
-            val impexFile = buildString {
-                appendLine("UPDATE SearchRestriction; code[unique=true];restrictedType(code)[unique=true];principal(uid)[unique=true];query")
-
-                restrictions.forEach {
-                    appendLine("; ${it.code} ; ${it.typeCode} ; \"$userUid\" ; \"${it.query}\"")
-                }
-            }
-
-            CopyPasteManager.getInstance().setContents(StringSelection(impexFile))
-            Notifications.create(NotificationType.INFORMATION, "Copied All Restrictions to Clipboard", "")
-                .hideAfter(10)
-                .notify(project)
-        }
-    }
-
     init {
         title = "FlexibleSearch Restrictions"
         super.init()
     }
 
     override fun getInitialSize() = JBUI.DialogSizes.large()
-    override fun createLeftSideActions() = arrayOf(copyToImpExButton)
 
     override fun createCenterPanel() = panel {
         row {
