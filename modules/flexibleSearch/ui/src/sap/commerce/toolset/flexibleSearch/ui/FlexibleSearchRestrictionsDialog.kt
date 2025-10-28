@@ -43,7 +43,7 @@ class FlexibleSearchRestrictionsDialog(
     private val restrictions: Collection<FlexibleSearchRestriction>,
 ) : DialogWrapper(project, null, false, IdeModalityType.IDE) {
 
-    private val copyAllAButton = object : DialogWrapperAction("Copy as ImpEx") {
+    private val copyToImpExButton = object : DialogWrapperAction("Copy as ImpEx") {
         @Serial
         private val serialVersionUID: Long = -6131274562037160651L
 
@@ -69,7 +69,7 @@ class FlexibleSearchRestrictionsDialog(
     }
 
     override fun getInitialSize() = JBUI.DialogSizes.large()
-    override fun createLeftSideActions() = arrayOf(copyAllAButton)
+    override fun createLeftSideActions() = arrayOf(copyToImpExButton)
 
     override fun createCenterPanel() = panel {
         row {
