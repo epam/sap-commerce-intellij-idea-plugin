@@ -29,10 +29,13 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchColumnName extends FlexibleSearchPsiNamedElement {
 
-  @Nullable String getName();
+  @Nullable
+  String getName();
 
-  @NotNull PsiElement setName(@NotNull String newName);
+  @NotNull
+  PsiElement setName(@NotNull String newName);
 
-  @NotNull PsiElement getNameIdentifier();
+  @NotNull
+  PsiElement getNameIdentifier();
 
 }

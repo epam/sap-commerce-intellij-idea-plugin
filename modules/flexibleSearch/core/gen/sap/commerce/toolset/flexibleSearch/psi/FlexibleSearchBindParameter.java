@@ -35,10 +35,13 @@ public interface FlexibleSearchBindParameter extends PsiElement {
   @Nullable
   PsiElement getNamedParameter();
 
-  @Nullable FlexibleSearchExpression getExpression();
+  @Nullable
+  FlexibleSearchExpression getExpression();
 
-  @Nullable String getItemType();
+  @Nullable
+  String getItemType();
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
 }

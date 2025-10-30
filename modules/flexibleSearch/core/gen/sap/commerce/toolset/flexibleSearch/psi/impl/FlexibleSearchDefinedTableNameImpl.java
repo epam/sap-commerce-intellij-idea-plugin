@@ -49,12 +49,14 @@ public class FlexibleSearchDefinedTableNameImpl extends FlexibleSearchTableNameM
   }
 
   @Override
-  public @NotNull String getTableName() {
+  @NotNull
+  public String getTableName() {
     return FlexibleSearchPsiUtil.getTableName(this);
   }
 
   @Override
-  public @Nullable FlexibleSearchTableAliasName getTableAlias() {
+  @Nullable
+  public FlexibleSearchTableAliasName getTableAlias() {
     return FlexibleSearchPsiUtil.getTableAlias(this);
   }
 

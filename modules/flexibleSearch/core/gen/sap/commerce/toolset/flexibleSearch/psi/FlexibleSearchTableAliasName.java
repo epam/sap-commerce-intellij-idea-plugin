@@ -29,12 +29,16 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchTableAliasName extends FlexibleSearchPsiNamedElement {
 
-  @Nullable String getName();
+  @Nullable
+  String getName();
 
-  @NotNull PsiElement setName(@NotNull String newName);
+  @NotNull
+  PsiElement setName(@NotNull String newName);
 
-  @NotNull PsiElement getNameIdentifier();
+  @NotNull
+  PsiElement getNameIdentifier();
 
-  @Nullable FlexibleSearchDefinedTableName getTable();
+  @Nullable
+  FlexibleSearchDefinedTableName getTable();
 
 }

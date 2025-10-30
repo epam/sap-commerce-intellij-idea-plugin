@@ -74,7 +74,8 @@ public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement impleme
   }
 
   @Override
-  public @Nullable String getPresentationText() {
+  @Nullable
+  public String getPresentationText() {
     return FlexibleSearchPsiUtil.getPresentationText(this);
   }
 
