@@ -107,6 +107,7 @@ LINE_COMMENT=--[^\r\n]*
   "%"                                { return MOD; }
   "!="                               { return NOT_EQ; }
   "+"                                { return PLUS; }
+  "^"                                { return DASH_MARK; }
   ";"                                { return SEMICOLON; }
   ":"                                { return COLON; }
   "<<"                               { return SHL; }

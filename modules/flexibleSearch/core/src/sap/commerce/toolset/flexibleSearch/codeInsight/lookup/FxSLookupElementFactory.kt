@@ -153,6 +153,11 @@ object FxSLookupElementFactory {
         .withTailText(" ${i18n("hybris.fxs.completion.table.name.postfix.star")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_SUFFIX)
 
+    fun buildTablePostfixDashMark(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_DASH_MARK}")
+        .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_DASH_MARK)
+        .withTailText(" ${i18n("hybris.fxs.completion.table.name.postfix.dashMark")}")
+        .withIcon(HybrisIcons.FlexibleSearch.TABLE_SUFFIX)
+
     fun buildSeparatorDot(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
         .withTailText(" ${i18n("hybris.fxs.completion.table.alias.separator.dot")}")

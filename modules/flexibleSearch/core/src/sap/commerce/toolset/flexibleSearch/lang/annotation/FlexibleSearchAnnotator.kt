@@ -117,7 +117,8 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
             }
 
             STAR,
-            EXCLAMATION_MARK -> when (element.parent.elementType) {
+            EXCLAMATION_MARK,
+            DASH_MARK -> when (element.parent.elementType) {
                 DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FXS_TABLE_TAIL, holder, element)
             }
 

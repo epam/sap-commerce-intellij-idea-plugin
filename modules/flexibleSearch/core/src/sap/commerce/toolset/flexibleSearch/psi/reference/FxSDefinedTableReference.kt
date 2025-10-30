@@ -57,7 +57,8 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : PsiRefer
             ?.let {
                 arrayOf(
                     FxSLookupElementFactory.buildTablePostfixExclamationMark(aliasText),
-                    FxSLookupElementFactory.buildTablePostfixStar(aliasText)
+                    FxSLookupElementFactory.buildTablePostfixStar(aliasText),
+                    FxSLookupElementFactory.buildTablePostfixDashMark(aliasText),
                 )
             }
             ?: emptyArray()
