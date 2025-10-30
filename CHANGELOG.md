@@ -15,6 +15,7 @@
 - Evaluate lazily environment scaling details & hide not available build actions [#1626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1626)
 
 ### `FlexibleSearch` enhancements
+- Added support of the `^` after Type declaration, see more [here](https://community.sap.com/t5/crm-and-cx-q-a/what-is-the-use-of-caret-symbol-at-end-of-the-type-name-in-a-flexible/qaa-p/12383472#M430317) [#1634](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1634)
 - Fetch and show user-specific search restrictions per query within `.fxs` file [#1630](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1630)
 - Use syntax highlighting for search restrictions [#1631](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1631)
 - Copy identified search restrictions to ImpEx [#1632](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1632)

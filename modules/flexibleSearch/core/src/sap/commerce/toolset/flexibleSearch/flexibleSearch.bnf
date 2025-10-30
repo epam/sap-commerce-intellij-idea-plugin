@@ -63,6 +63,7 @@
 
         QUESTION_MARK       = '?'
         EXCLAMATION_MARK    = '!'
+        DASH_MARK           = '^'
         LBRACKET            = '['
         RBRACKET            = ']'
         LBRACE              = '{'
@@ -317,7 +318,14 @@ selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL {
     implements="sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
     methods=[getName setName getNameIdentifier getTableAliases]
 }
-defined_table_name ::= (ORDER | IDENTIFIER) ('!' | '*')? {
+/*
+See: de.hybris.platform.persistence.flexiblesearch.ParsedType.splitTypeExpression(..)
+    User* - All Types, search restrictions disabled
+    User! - Exact Type
+    User^ - Deployment Types, see -> https://community.sap.com/t5/crm-and-cx-q-a/what-is-the-use-of-caret-symbol-at-end-of-the-type-name-in-a-flexible/qaq-p/12383471
+    User  - Sub Types
+ */
+defined_table_name ::= (ORDER | IDENTIFIER) ('!' | '*' | '^')? {
     pin=1
     mixin="sap.commerce.toolset.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
     methods=[getTableName getTableAlias]

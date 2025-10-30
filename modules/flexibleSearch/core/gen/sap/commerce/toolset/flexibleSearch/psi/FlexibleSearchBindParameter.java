@@ -24,25 +24,21 @@
 package sap.commerce.toolset.flexibleSearch.psi;
 
 import java.util.List;
-
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchBindParameter extends PsiElement {
 
-    @NotNull
-    List<FlexibleSearchExtParameterName> getExtParameterNameList();
+  @NotNull
+  List<FlexibleSearchExtParameterName> getExtParameterNameList();
 
-    @Nullable
-    PsiElement getNamedParameter();
+  @Nullable
+  PsiElement getNamedParameter();
 
-    @Nullable
-    FlexibleSearchExpression getExpression();
+  @Nullable FlexibleSearchExpression getExpression();
 
-    @Nullable
-    String getItemType();
+  @Nullable String getItemType();
 
-    @NotNull
-    String getValue();
+  @NotNull String getValue();
 
 }

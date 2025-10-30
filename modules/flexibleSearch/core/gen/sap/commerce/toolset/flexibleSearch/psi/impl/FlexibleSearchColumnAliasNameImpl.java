@@ -50,20 +50,17 @@ public class FlexibleSearchColumnAliasNameImpl extends ASTWrapperPsiElement impl
   }
 
   @Override
-  @Nullable
-  public String getName() {
+  public @Nullable String getName() {
     return FlexibleSearchPsiUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public PsiElement setName(@NotNull String newName) {
+  public @NotNull PsiElement setName(@NotNull String newName) {
     return FlexibleSearchPsiUtil.setName(this, newName);
   }
 
   @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
+  public @NotNull PsiElement getNameIdentifier() {
     return FlexibleSearchPsiUtil.getNameIdentifier(this);
   }
 

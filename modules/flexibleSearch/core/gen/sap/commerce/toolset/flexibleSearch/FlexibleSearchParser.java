@@ -267,7 +267,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (ORDER | IDENTIFIER) ('!' | '*')?
+  // (ORDER | IDENTIFIER) ('!' | '*' | '^')?
   public static boolean defined_table_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name")) return false;
     if (!nextTokenIs(b, "<defined table name>", IDENTIFIER, ORDER)) return false;
@@ -289,19 +289,20 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ('!' | '*')?
+  // ('!' | '*' | '^')?
   private static boolean defined_table_name_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name_1")) return false;
     defined_table_name_1_0(b, l + 1);
     return true;
   }
 
-  // '!' | '*'
+  // '!' | '*' | '^'
   private static boolean defined_table_name_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name_1_0")) return false;
     boolean r;
     r = consumeToken(b, EXCLAMATION_MARK);
     if (!r) r = consumeToken(b, STAR);
+    if (!r) r = consumeToken(b, DASH_MARK);
     return r;
   }
 

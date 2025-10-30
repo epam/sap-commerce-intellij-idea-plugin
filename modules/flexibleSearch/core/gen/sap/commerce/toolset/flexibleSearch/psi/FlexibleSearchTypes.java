@@ -111,6 +111,7 @@ public interface FlexibleSearchTypes {
   IElementType COMMA = new FlexibleSearchTokenType(",");
   IElementType COMMENT = new FlexibleSearchTokenType("COMMENT");
   IElementType CONCAT = new FlexibleSearchTokenType("||");
+  IElementType DASH_MARK = new FlexibleSearchTokenType("^");
   IElementType DESC = new FlexibleSearchTokenType("DESC");
   IElementType DISTINCT = new FlexibleSearchTokenType("DISTINCT");
   IElementType DIV = new FlexibleSearchTokenType("/");

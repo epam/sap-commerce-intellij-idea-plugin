@@ -51,14 +51,12 @@ public class FlexibleSearchYColumnNameImpl extends FlexibleSearchYColumnNameMixi
   }
 
   @Override
-  @Nullable
-  public Pair<FlexibleSearchDefinedTableName, FlexibleSearchTableAliasName> getTableToAlias() {
+  public @Nullable Pair<@NotNull FlexibleSearchDefinedTableName, @Nullable FlexibleSearchTableAliasName> getTableToAlias() {
     return FlexibleSearchPsiUtil.getTableToAlias(this);
   }
 
   @Override
-  @NotNull
-  public Collection<FlexibleSearchTableAliasName> getTableAliases() {
+  public @NotNull Collection<@NotNull FlexibleSearchTableAliasName> getTableAliases() {
     return FlexibleSearchPsiUtil.getTableAliases(this);
   }
 
