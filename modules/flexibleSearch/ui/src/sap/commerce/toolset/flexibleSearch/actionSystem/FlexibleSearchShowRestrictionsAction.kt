@@ -21,6 +21,7 @@ package sap.commerce.toolset.flexibleSearch.actionSystem
 import com.intellij.codeInsight.hint.HintManager
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.lastLeaf
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
@@ -103,8 +105,26 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
             timeout = server.timeout,
         )
 
-        GroovyExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
+        GroovyExecClient.getInstance(project).execute(
+            context = context,
+            onError = { _, e ->
+                thisLogger().warn("Unable to get search restrictions: ${e.message}", e)
+                Notifications.warning("Unable to get search restrictions", "Something went wrong: ${e.message}")
+                    .hideAfter(5)
+                    .notify(project)
+            }
+        ) { coroutineScope, execResult ->
             coroutineScope.launch {
+                if (execResult.hasError) {
+                    thisLogger().warn("Unable to get search restrictions: ${execResult.errorMessage}")
+
+                    Notifications.warning("Unable to get search restrictions", execResult.errorMessage ?: "Unknown error")
+                        .hideAfter(5)
+                        .notify(project)
+
+                    return@launch
+                }
+
                 val result = execResult.result ?: return@launch
                 val restrictions = Json.decodeFromString<Array<FlexibleSearchRestriction>>(result)
 

@@ -1,7 +1,7 @@
 ## [2025.2.4.5]
 
 <cite>Release contributors</cite>
-- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
+- 20 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.5+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Display available endpoints per environment [#1616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1616)
@@ -22,6 +22,7 @@
 - Retrieve and display `principal` of the search restriction and include in the generated ImpEx file [#1633](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1633)
 - Display each value on a new line in the multiline editor for virtual parameters [#1628](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1628)
 - Escape `\n` in the search results to ensure correct row representation [#1629](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1629)
+- Added error handling for retrieving the search restrictions [#1635](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1635)
 
 ### Other
 - Allow dynamic unload of the Plugin [#1623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1623)

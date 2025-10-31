@@ -20,6 +20,7 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
@@ -90,6 +91,8 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                     fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
                 },
                 onError = { _, e ->
+                    thisLogger().warn(e)
+
                     fileEditor.renderExecutionResults(listOf(
                         DefaultExecResult(
                             errorMessage = e.message,
