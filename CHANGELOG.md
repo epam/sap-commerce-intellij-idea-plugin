@@ -1,3 +1,11 @@
+## [2025.2.4.6]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+
+### `FlexibleSearch` enhancements
+- Removed `Ok` button from the Search Restrictions dialog[#1636](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1636)
+
 ## [2025.2.4.5]
 
 <cite>Release contributors</cite>
@@ -2332,8 +2340,8 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2023.1.0]
 
 <cite>Release contributors</cite>
-- 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.0+author%3Aabsinthminded+is%3Apr)
 - 23 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.0+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Andrei Lisetskii](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2023.1.0+author%3Aabsinthminded+is%3Apr)
 
 ### Features
 - Compatibility adjustments [#195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195)
@@ -2368,8 +2376,8 @@ Due severe API changes it is highly advised to backup the project and import it 
 ## [2022.3.1]
 
 <cite>Release contributors</cite>
-- 1 PR by [Pawel Boron](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.1+author%3ARemilo7+is%3Apr)
 - 99 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.1+author%3Amlytvyn+is%3Apr)
+- 1 PR by [Pawel Boron](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2022.3.1+author%3ARemilo7+is%3Apr)
 
 ### Features - IDEA Ultimate
 - Added navigation to TypeCode Interceptor declaration(s) [#188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/188)

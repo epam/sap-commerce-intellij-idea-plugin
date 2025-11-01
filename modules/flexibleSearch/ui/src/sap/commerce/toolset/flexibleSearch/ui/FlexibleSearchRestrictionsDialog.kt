@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.flexibleSearch.ui
 
+import com.intellij.CommonBundle
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
@@ -71,8 +72,10 @@ class FlexibleSearchRestrictionsDialog(
     init {
         title = "FlexibleSearch Restrictions"
         super.init()
+        setCancelButtonText(CommonBundle.getCloseButtonText())
     }
 
+    override fun createActions() = arrayOf(cancelAction)
     override fun getInitialSize() = JBUI.DialogSizes.large()
     override fun createLeftSideActions() = arrayOf(copyToImpExButton)
 
