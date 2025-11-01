@@ -1,10 +1,13 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+
+### `Project Import` enhancements
+- Register new `Test Classes` library for OOTB `testsrc` of the Web modules [#1637](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1637)
 
 ### `FlexibleSearch` enhancements
-- Removed `Ok` button from the Search Restrictions dialog[#1636](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1636)
+- Removed `Ok` button from the Search Restrictions dialog [#1636](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1636)
 
 ## [2025.2.4.5]
 

@@ -312,6 +312,10 @@ private fun getWebLibraryDescriptors(
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
         .toMutableList()
+    val testSourceFiles = HybrisConstants.TEST_SRC_DIR_NAMES
+        .map { File(descriptor.moduleRootDirectory, it) }
+        .filter { it.isDirectory }
+        .toMutableList()
 
     listOf(
         File(descriptor.moduleRootDirectory, HybrisConstants.ADDON_SRC_DIRECTORY),
@@ -334,6 +338,16 @@ private fun getWebLibraryDescriptors(
                     sourceFiles = sourceFiles,
                     exported = true,
                     directoryWithClasses = true
+                )
+            )
+            libs.add(
+                JavaLibraryDescriptor(
+                    name = "${descriptor.name} - Test Classes",
+                    libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.TEST_CLASSES_DIRECTORY),
+                    sourceFiles = testSourceFiles,
+                    exported = true,
+                    directoryWithClasses = true,
+                    scope = DependencyScope.TEST
                 )
             )
         }

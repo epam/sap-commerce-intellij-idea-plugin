@@ -64,6 +64,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     private val hideModuleLibraries = setOf(
         "- Backoffice Classes",
         "- Web Classes",
+        "- Test Classes",
         "- Common Web Classes",
         "- Addon's Target Classes",
         "- HAC Web Classes",
