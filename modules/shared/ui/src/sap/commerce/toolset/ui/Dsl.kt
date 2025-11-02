@@ -55,15 +55,16 @@ fun Row.copyLink(project: Project, label: String?, value: String, confirmationMe
         }
 }
 
-fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) = row {
-    inlineBanner(message, status)
+fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info, icon: Icon? = null) = row {
+    inlineBanner(message, status, icon)
 }
     .resizableRow()
     .topGap(TopGap.MEDIUM)
 
-fun Row.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) = cell(
+fun Row.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info, icon: Icon? = null) = cell(
     InlineBanner(message, status)
         .showCloseButton(false)
+        .setIcon(icon ?: status.icon)
 )
     .align(Align.CENTER)
     .resizableColumn()

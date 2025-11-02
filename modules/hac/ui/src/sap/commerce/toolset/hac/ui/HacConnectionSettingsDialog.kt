@@ -36,6 +36,7 @@ import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
@@ -238,9 +239,10 @@ class HacConnectionSettingsDialog(
 
         row {
             inlineBanner(
-                """
+                message = """
                 <p>Find out why using <a href="https://www.linkedin.com/pulse/high-performance-sap-commerce-development-windows-using-de-matola-gwgvf/">WSL</a> can boost the development process!</p>
-                """.trimIndent()
+                """.trimIndent(),
+                icon = HybrisIcons.Tools.WSL
             )
                 .align(AlignX.FILL)
                 .gap(RightGap.COLUMNS)
@@ -273,19 +275,16 @@ class HacConnectionSettingsDialog(
             wslDistributionComboBox = comboBox(
                 model = model,
                 renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    if (value != null) {
-                        label.text = value.msId
-                    } else {
-                        label.text = "-- all subscriptions --"
-                    }
+                    label.text = value?.msId
                 })
                 .label("WSL distribution:")
                 .visibleIf(mutable.wsl)
                 .enabledIf(wslDistributions.transform { it.isNotEmpty() })
-                .align(Align.FILL)
+                .align(AlignX.FILL)
                 .onChanged {
                     updateWslIp(wslDistributions.get())
                 }
+                .resizableColumn()
                 .gap(RightGap.SMALL)
                 .component
 
@@ -294,6 +293,10 @@ class HacConnectionSettingsDialog(
                 with(model) {
                     removeAllElements()
                     addAll(wslDistributions.get())
+                }
+
+                invokeLater {
+                    peer.window?.pack()
                 }
             }
                 .align(AlignX.RIGHT)

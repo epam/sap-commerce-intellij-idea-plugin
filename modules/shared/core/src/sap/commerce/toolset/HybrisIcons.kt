@@ -56,6 +56,7 @@ object HybrisIcons {
     object Tools {
         val SOLR = getIcon("/icons/console/solr.svg")
         val TOMCAT = AllIcons.RunConfigurations.Tomcat
+        val WSL = getIcon("/icons/wsl.svg")
     }
 
     object UnmanagedDependencies {
