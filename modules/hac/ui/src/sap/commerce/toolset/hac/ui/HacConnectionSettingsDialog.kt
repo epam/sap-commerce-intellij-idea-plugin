@@ -98,9 +98,11 @@ class HacConnectionSettingsDialog(
 
         row {
             timeoutIntSpinner = spinner(1000..Int.MAX_VALUE, 1000)
-                .label("Connection Timeout (ms):")
+                .label("Connection timeout:")
                 .bindIntValue(mutable::timeout)
+                .gap(RightGap.SMALL)
                 .component
+            label("(ms)")
         }.layout(RowLayout.PARENT_GRID)
 
         group("Full URL Preview", false) {

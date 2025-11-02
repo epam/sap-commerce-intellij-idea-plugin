@@ -19,8 +19,10 @@
 package sap.commerce.toolset.exec.ui
 
 import com.intellij.credentialStore.Credentials
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.asContextElement
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -28,6 +30,7 @@ import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
 import com.intellij.ui.JBIntSpinner
@@ -36,8 +39,11 @@ import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.text
-import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import java.awt.Component
 import java.awt.event.ActionEvent
@@ -67,30 +73,36 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
     protected lateinit var passwordTextField: JBPasswordField
     protected lateinit var testConnectionLabel: Cell<JLabel>
     protected lateinit var testConnectionComment: Cell<JEditorPane>
-    private var testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
+    private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
 
         @Serial
         private val serialVersionUID: Long = 7851071514284300449L
 
         override fun doAction(e: ActionEvent?) {
-            this.isEnabled = false
-            with(testConnectionLabel) {
-                visible(true)
+            val action = this
 
-                component.text = "Executing test connection to remote host..."
-                component.foreground = JBColor.LIGHT_GRAY
-            }
-            with(testConnectionComment) {
-                visible(false)
-            }
-
-            ReadAction
-                .nonBlocking<String?> {
-                    testConnection()
-                }
-                .finishOnUiThread(ModalityState.defaultModalityState()) {
+            CoroutineScope(ModalityState.defaultModalityState().asContextElement()).launch {
+                withContext(Dispatchers.EDT) {
+                    action.isEnabled = false
                     with(testConnectionLabel) {
-                        if (it.isNullOrBlank()) {
+                        visible(true)
+                        component.text = "Executing test connection to remote host..."
+                        component.foreground = JBColor.LIGHT_GRAY
+                    }
+                    testConnectionLabel.visible(true)
+                    testConnectionComment.visible(false)
+                }
+
+
+                val result = withContext(Dispatchers.IO) {
+                    withBackgroundProgress(project, "Verifying connection to remote server", true) {
+                        readAction { testConnection() }
+                    }
+                }
+
+                withContext(Dispatchers.EDT) {
+                    with(testConnectionLabel) {
+                        if (result.isNullOrBlank()) {
                             component.text = "Successfully connected to remote host with provided details."
                             component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
                         } else {
@@ -98,15 +110,15 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
                             component.foreground = ColorUtil.darker(JBColor.RED, 3)
 
                             with(testConnectionComment) {
-                                text(it)
+                                text(result)
                                 visible(true)
                             }
                         }
                     }
 
-                    this.isEnabled = true
+                    action.isEnabled = true
                 }
-                .submit(AppExecutorUtil.getAppExecutorService())
+            }
         }
     }
 

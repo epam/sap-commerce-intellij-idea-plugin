@@ -154,7 +154,7 @@ class HybrisSolrSearchConsole(
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,
-            i18n("hybris.notification.toolwindow.hac.test.connection.title"),
+            "Test Connection",
             i18n("hybris.notification.toolwindow.solr.test.connection.fail.content", e.localizedMessage)
         )
             .notify(project)
