@@ -43,6 +43,7 @@ data class HacConnectionSettingsState(
     @JvmField @OptionTag val wsl: Boolean = false,
     @JvmField @OptionTag val sslProtocol: String = "TLSv1.2",
     @JvmField @OptionTag val sessionCookieName: String = ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
+    @JvmField @OptionTag val authenticationMode: AuthenticationMode = AuthenticationMode.AUTOMATIC,
 ) : ExecConnectionSettingsState {
 
     override fun mutable() = Mutable(
@@ -56,7 +57,8 @@ data class HacConnectionSettingsState(
         timeout = timeout,
         wsl = AtomicBooleanProperty(wsl),
         sslProtocol = sslProtocol,
-        sessionCookieName = sessionCookieName
+        sessionCookieName = sessionCookieName,
+        authenticationMode = AtomicProperty(authenticationMode),
     )
 
     data class Mutable(
@@ -71,6 +73,7 @@ data class HacConnectionSettingsState(
         override var modified: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(""),
         override val password: ObservableMutableProperty<String> = AtomicProperty(""),
+        val authenticationMode: ObservableMutableProperty<AuthenticationMode>,
         val wsl: ObservableMutableProperty<Boolean>,
         var sslProtocol: String,
         var sessionCookieName: String,

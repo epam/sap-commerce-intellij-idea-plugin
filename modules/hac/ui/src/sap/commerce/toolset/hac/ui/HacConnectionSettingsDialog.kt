@@ -20,9 +20,9 @@ package sap.commerce.toolset.hac.ui
 
 import com.intellij.execution.wsl.WSLDistribution
 import com.intellij.execution.wsl.WslDistributionManager
-import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.and
+import com.intellij.openapi.observable.util.equalsTo
 import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -43,8 +43,10 @@ import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
+import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.ui.inlineBanner
+import sap.commerce.toolset.ui.repackDialog
 import java.awt.Component
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
@@ -201,23 +203,37 @@ class HacConnectionSettingsDialog(
             }
         }
 
-        group("Credentials") {
+        group("Authentication") {
             row {
-                label("Username:")
+                segmentedButton(AuthenticationMode.entries.toList()) {
+                    text = it.title
+                    toolTipText = it.description
+                }
+                    .align(AlignX.CENTER)
+                    .bind(mutable.authenticationMode)
+                    .whenItemSelected(disposable) {
+                        repackDialog()
+                    }
+            }
+
+            row {
                 usernameTextField = textField()
+                    .label("Username:")
                     .align(AlignX.FILL)
                     .bindText(mutable.username)
                     .enabledIf(editableCredentials)
+                    .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
                     .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                label("Password:")
                 passwordTextField = passwordField()
+                    .label("Password:")
                     .align(AlignX.FILL)
                     .bindText(mutable.password)
                     .enabledIf(editableCredentials)
+                    .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
                     .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -255,9 +271,7 @@ class HacConnectionSettingsDialog(
                 .bindSelected(mutable.wsl)
                 .onChanged {
                     urlPreviewLabel.text = generateUrl()
-                    invokeLater {
-                        peer.window?.pack()
-                    }
+                    repackDialog()
                 }
         }.layout(RowLayout.PARENT_GRID)
 
@@ -294,10 +308,7 @@ class HacConnectionSettingsDialog(
                     removeAllElements()
                     addAll(wslDistributions.get())
                 }
-
-                invokeLater {
-                    peer.window?.pack()
-                }
+                repackDialog()
             }
                 .align(AlignX.RIGHT)
                 .visibleIf(mutable.wsl)

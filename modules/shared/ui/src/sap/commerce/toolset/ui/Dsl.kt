@@ -22,9 +22,11 @@ import com.intellij.ide.HelpTooltip
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.ui.ContextHelpLabel
@@ -39,6 +41,12 @@ import java.awt.datatransfer.StringSelection
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JLabel
+
+fun DialogWrapper.repackDialog() {
+    invokeLater {
+        peer.window?.pack()
+    }
+}
 
 fun Row.copyLink(project: Project, label: String?, value: String, confirmationMessage: String = "Copied to clipboard"): Cell<ActionLink> {
     return link(value) {
