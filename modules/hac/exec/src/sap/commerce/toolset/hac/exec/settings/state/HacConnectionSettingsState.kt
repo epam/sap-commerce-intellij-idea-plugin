@@ -19,6 +19,7 @@
 package sap.commerce.toolset.hac.exec.settings.state
 
 import com.intellij.credentialStore.Credentials
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
@@ -53,7 +54,7 @@ data class HacConnectionSettingsState(
         webroot = webroot,
         ssl = ssl,
         timeout = timeout,
-        wsl = wsl,
+        wsl = AtomicBooleanProperty(wsl),
         sslProtocol = sslProtocol,
         sessionCookieName = sessionCookieName
     )
@@ -70,7 +71,7 @@ data class HacConnectionSettingsState(
         override var modified: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(""),
         override val password: ObservableMutableProperty<String> = AtomicProperty(""),
-        var wsl: Boolean,
+        val wsl: ObservableMutableProperty<Boolean>,
         var sslProtocol: String,
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
@@ -84,7 +85,7 @@ data class HacConnectionSettingsState(
             webroot = webroot,
             ssl = ssl,
             timeout = timeout,
-            wsl = wsl,
+            wsl = wsl.get(),
             sslProtocol = sslProtocol,
             sessionCookieName = sessionCookieName,
         ) to Credentials(username.get(), password.get())

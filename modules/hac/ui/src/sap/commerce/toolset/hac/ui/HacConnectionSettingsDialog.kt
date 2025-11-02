@@ -20,13 +20,17 @@ package sap.commerce.toolset.hac.ui
 
 import com.intellij.execution.wsl.WSLDistribution
 import com.intellij.execution.wsl.WslDistributionManager
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.util.and
+import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.registry.Registry
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -34,15 +38,15 @@ import com.intellij.ui.layout.selected
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
-import sap.commerce.toolset.exec.ui.WSL_PROXY_CONNECT_LOCALHOST
+import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.ui.inlineBanner
 import java.awt.Component
 import java.util.*
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
-import javax.swing.JEditorPane
 import javax.swing.JLabel
 
 class HacConnectionSettingsDialog(
@@ -58,11 +62,7 @@ class HacConnectionSettingsDialog(
     private lateinit var passwordTextField: JBPasswordField
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField
-    private lateinit var wslDistributionComboBox: JComboBox<String>
-    private lateinit var wslProxyCheckBox: JBCheckBox
-    private lateinit var wslProxyWarningComment: JEditorPane
-    private lateinit var wslDistributionText: Cell<JLabel>
-    private var isWslCheckBox: JBCheckBox? = null
+    private lateinit var wslDistributionComboBox: JComboBox<WSLDistribution>
 
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
@@ -72,7 +72,7 @@ class HacConnectionSettingsDialog(
             host = hostTextField.text,
             port = portTextField.text,
             ssl = sslProtocolCheckBox.isSelected,
-            wsl = isWslCheckBox?.isSelected ?: false,
+            wsl = mutable.wsl.get(),
             sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: "",
             webroot = webrootTextField.text,
             timeout = timeoutIntSpinner.number,
@@ -192,8 +192,10 @@ class HacConnectionSettingsDialog(
                     .apply { component.text = "" }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+        }
 
-            if (isWindows()) {
+        if (isWindows()) {
+            group("Windows Subsystem for Linux") {
                 wslHostConfiguration()
             }
         }
@@ -221,8 +223,9 @@ class HacConnectionSettingsDialog(
         }
     }
 
-    fun updateWslIp(distributions: List<WSLDistribution>) {
-        val wslIp = distributions.find { it.msId == wslDistributionComboBox.selectedItem as? String }
+    private fun updateWslIp(distributions: List<WSLDistribution>) {
+        val wslIp = distributions
+            .find { it == wslDistributionComboBox.selectedItem }
             ?.wslIpAddress
             ?.toString()
             ?.replace("/", "")
@@ -230,61 +233,93 @@ class HacConnectionSettingsDialog(
         hostTextField.text = wslIp
     }
 
-    fun isWindows() = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
+    private fun isWindows() = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
 
-    fun Panel.wslHostConfiguration() {
-        val distributions = WslDistributionManager.getInstance().installedDistributions
+    private fun Panel.wslHostConfiguration() {
+        val wslDistributions: AtomicProperty<List<WSLDistribution>> = AtomicProperty(WslDistributionManager.getInstance().installedDistributions)
+
         row {
-            isWslCheckBox = checkBox("WSL")
-                .bindSelected(mutable::wsl)
-                .selected(false)
-                .visible(distributions.isNotEmpty())
-                .onChanged {
-                    val selected = isWslCheckBox?.isSelected ?: false
-                    val multipleDistros = distributions.isNotEmpty()
-                    wslDistributionComboBox.isVisible = selected && multipleDistros
-                    wslDistributionText.visible(selected)
-                    wslProxyCheckBox.isVisible = selected
-                    wslProxyWarningComment.isVisible = selected
-                    urlPreviewLabel.text = generateUrl()
-                }
-                .component
-        }.layout(RowLayout.PARENT_GRID)
-        val installedDistros = distributions.map { it.msId }
-        if (installedDistros.isNotEmpty()) {
-            row {
-                wslDistributionText = label("WSL distribution:").visible(false)
-                wslDistributionComboBox = comboBox(DefaultComboBoxModel(installedDistros.toTypedArray()))
-                    .align(AlignX.FILL)
-                    .visible(false)
-                    .onChanged {
-                        updateWslIp(distributions)
-                    }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-        } else {
-            row {
-                comment("No WSL distributions are installed.")
-                    .visible(false)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
+            inlineBanner(
+                """
+                <p>Find out why using <a href="https://www.linkedin.com/pulse/high-performance-sap-commerce-development-windows-using-de-matola-gwgvf/">WSL</a> can boost the development process!</p>
+                """.trimIndent()
+            )
+                .align(AlignX.FILL)
+                .gap(RightGap.COLUMNS)
         }
+            .topGap(TopGap.MEDIUM)
+            .bottomGap(BottomGap.MEDIUM)
+
         row {
-            wslProxyCheckBox = checkBox("Enable wsl.proxy.connect.localhost")
-                .comment("This will use the wsl.proxy.connect.localhost registry setting if available.")
-                .visible(false)
-                .selected(Registry.`is`(WSL_PROXY_CONNECT_LOCALHOST))
+            checkBox("Connect to WSL")
+                .bindSelected(mutable.wsl)
                 .onChanged {
-                    Registry.run { get(WSL_PROXY_CONNECT_LOCALHOST).setValue(!`is`(WSL_PROXY_CONNECT_LOCALHOST)) }
-                    updateWslIp(distributions)
+                    urlPreviewLabel.text = generateUrl()
+                    invokeLater {
+                        peer.window?.pack()
+                    }
                 }
-                .component
         }.layout(RowLayout.PARENT_GRID)
+
         row {
-            wslProxyWarningComment =
-                comment("<strong>Warning:</strong> Connect to 127.0.0.1 on WSLProxy instead of public WSL IP which might be inaccessible due to routing issues.")
-                    .visible(false)
-                    .component
+            inlineBanner("No WSL distributions are installed.", EditorNotificationPanel.Status.Warning)
+                .visibleIf(mutable.wsl.and(wslDistributions.transform { it.isEmpty() }))
+                .align(AlignX.FILL)
+                .gap(RightGap.COLUMNS)
+        }
+            .topGap(TopGap.MEDIUM)
+            .bottomGap(BottomGap.MEDIUM)
+
+        row {
+            val model = DefaultComboBoxModel(wslDistributions.get().toTypedArray())
+            wslDistributionComboBox = comboBox(
+                model = model,
+                renderer = SimpleListCellRenderer.create { label, value, _ ->
+                    if (value != null) {
+                        label.text = value.msId
+                    } else {
+                        label.text = "-- all subscriptions --"
+                    }
+                })
+                .label("WSL distribution:")
+                .visibleIf(mutable.wsl)
+                .enabledIf(wslDistributions.transform { it.isNotEmpty() })
+                .align(Align.FILL)
+                .onChanged {
+                    updateWslIp(wslDistributions.get())
+                }
+                .gap(RightGap.SMALL)
+                .component
+
+            button("Refresh") {
+                wslDistributions.set(WslDistributionManager.getInstance().installedDistributions)
+                with(model) {
+                    removeAllElements()
+                    addAll(wslDistributions.get())
+                }
+            }
+                .align(AlignX.RIGHT)
+                .visibleIf(mutable.wsl)
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            checkBox("Enable wsl.proxy.connect.localhost")
+                .comment("This will use the wsl.proxy.connect.localhost registry setting if available.")
+                .visibleIf(mutable.wsl)
+                .enabledIf(wslDistributions.transform { it.isNotEmpty() })
+                .selected(Registry.`is`(HacExecConstants.WSL_PROXY_CONNECT_LOCALHOST, false))
+                .onChanged {
+                    Registry.run {
+                        val registryValue = get(HacExecConstants.WSL_PROXY_CONNECT_LOCALHOST)
+                        registryValue.setValue(!`is`(HacExecConstants.WSL_PROXY_CONNECT_LOCALHOST, false))
+                    }
+                    updateWslIp(wslDistributions.get())
+                }
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            comment("<strong>Warning:</strong> Connect to 127.0.0.1 on WSLProxy instead of public WSL IP which might be inaccessible due to routing issues.")
+                .visibleIf(mutable.wsl)
         }.layout(RowLayout.PARENT_GRID)
     }
 }

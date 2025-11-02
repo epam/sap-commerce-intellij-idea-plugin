@@ -21,4 +21,5 @@ package sap.commerce.toolset.hac
 object HacExecConstants {
 
     const val DEFAULT_TIMEOUT: Int = 6000
+    const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
 }

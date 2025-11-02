@@ -50,8 +50,6 @@ import javax.swing.Action
 import javax.swing.JEditorPane
 import javax.swing.JLabel
 
-const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
-
 abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>(
     protected val project: Project,
     parentComponent: Component,

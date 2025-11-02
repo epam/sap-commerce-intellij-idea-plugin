@@ -3,6 +3,7 @@
     * [Get project's base directory](#get-projects-base-directory)
     * [Invoke AnAction](#invoke-anaction)
     * [Refresh state of an AnAction in case of background thread](#refresh-state-of-an-anaction-in-case-of-background-thread)
+    * [Resize Kotlin Dsl Dialog on content change](#resize-kotlin-dsl-dialog-on-content-change)
 <!-- TOC -->
 
 ---
@@ -35,5 +36,13 @@ project.triggerAction("action_id") { customDataContext }
 ```kotlin
 coroutineScope.launch {
     readAction { ActivityTracker.getInstance().inc() }
+}
+```
+
+### Resize Kotlin Dsl Dialog on content change
+
+```kotlin
+invokeLater {
+    peer.window?.pack()
 }
 ```
