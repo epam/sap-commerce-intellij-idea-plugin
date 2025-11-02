@@ -26,6 +26,7 @@ import com.intellij.openapi.observable.util.and
 import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
@@ -44,7 +45,6 @@ import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.ui.inlineBanner
 import java.awt.Component
-import java.util.*
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
 import javax.swing.JLabel
@@ -194,7 +194,7 @@ class HacConnectionSettingsDialog(
             }.layout(RowLayout.PARENT_GRID)
         }
 
-        if (isWindows()) {
+        if (SystemInfo.isWindows) {
             group("Windows Subsystem for Linux") {
                 wslHostConfiguration()
             }
@@ -232,8 +232,6 @@ class HacConnectionSettingsDialog(
             ?: ""
         hostTextField.text = wslIp
     }
-
-    private fun isWindows() = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
 
     private fun Panel.wslHostConfiguration() {
         val wslDistributions: AtomicProperty<List<WSLDistribution>> = AtomicProperty(WslDistributionManager.getInstance().installedDistributions)
