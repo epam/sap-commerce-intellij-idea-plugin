@@ -33,9 +33,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
-import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.text
@@ -63,14 +61,10 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
 
     protected val editableCredentials = AtomicBooleanProperty(false)
     protected lateinit var connectionNameTextField: JBTextField
-    protected lateinit var urlPreviewLabel: JLabel
     protected lateinit var hostTextField: JBTextField
     protected lateinit var portTextField: JBTextField
     protected lateinit var sslProtocolCheckBox: JBCheckBox
-    protected lateinit var timeoutIntSpinner: JBIntSpinner
     protected lateinit var webrootTextField: JBTextField
-    protected lateinit var usernameTextField: JBTextField
-    protected lateinit var passwordTextField: JBPasswordField
     protected lateinit var testConnectionLabel: Cell<JLabel>
     protected lateinit var testConnectionComment: Cell<JEditorPane>
     private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {

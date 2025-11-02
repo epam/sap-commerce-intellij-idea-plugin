@@ -22,6 +22,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBPasswordField
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
@@ -29,6 +31,7 @@ import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import java.awt.Component
+import javax.swing.JLabel
 
 class SolrConnectionSettingsDialog(
     project: Project,
@@ -37,6 +40,10 @@ class SolrConnectionSettingsDialog(
     dialogTitle: String,
 ) : ConnectionSettingsDialog<SolrConnectionSettingsState.Mutable>(project, parentComponent, settings, dialogTitle) {
 
+    private lateinit var urlPreviewLabel: JLabel
+    private lateinit var timeoutIntSpinner: JBIntSpinner
+    private lateinit var usernameTextField: JBTextField
+    private lateinit var passwordTextField: JBPasswordField
     private lateinit var socketTimeoutIntSpinner: JBIntSpinner
 
     override fun retrieveCredentials(mutable: SolrConnectionSettingsState.Mutable) = SolrExecConnectionService.getInstance(project)

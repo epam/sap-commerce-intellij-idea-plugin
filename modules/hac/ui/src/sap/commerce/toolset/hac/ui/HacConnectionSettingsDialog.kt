@@ -24,8 +24,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
@@ -50,6 +52,10 @@ class HacConnectionSettingsDialog(
     dialogTitle: String,
 ) : ConnectionSettingsDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings, dialogTitle) {
 
+    private lateinit var urlPreviewLabel: JLabel
+    private lateinit var timeoutIntSpinner: JBIntSpinner
+    private lateinit var usernameTextField: JBTextField
+    private lateinit var passwordTextField: JBPasswordField
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField
     private lateinit var wslDistributionComboBox: JComboBox<String>
