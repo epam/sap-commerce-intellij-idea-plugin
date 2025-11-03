@@ -54,7 +54,6 @@ import java.nio.charset.StandardCharsets
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
-import java.security.cert.X509Certificate
 import java.util.concurrent.ConcurrentHashMap
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
@@ -209,7 +208,7 @@ class HacHttpClient(private val project: Project) {
     private fun createAllowAllClient(timeout: Int): CloseableHttpClient? {
         val sslContext: SSLContext
         try {
-            sslContext = SSLContexts.custom().loadTrustMaterial(null) { _: Array<X509Certificate>, _: String -> true }.build()
+            sslContext = SSLContexts.custom().loadTrustMaterial(null) { _ , _ -> true }.build()
         } catch (e: Exception) {
             thisLogger().warn(e.message, e)
             return null
