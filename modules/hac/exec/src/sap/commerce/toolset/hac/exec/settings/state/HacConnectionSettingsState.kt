@@ -91,6 +91,7 @@ data class HacConnectionSettingsState(
             wsl = wsl.get(),
             sslProtocol = sslProtocol,
             sessionCookieName = sessionCookieName,
+            authenticationMode = authenticationMode.get(),
         ) to Credentials(username.get(), password.get())
     }
 }

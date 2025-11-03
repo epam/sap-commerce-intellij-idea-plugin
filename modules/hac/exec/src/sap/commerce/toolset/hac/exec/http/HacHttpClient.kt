@@ -45,7 +45,9 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.hac.HacManualAuthenticator
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.io.IOException
 import java.net.ConnectException
@@ -63,7 +65,7 @@ class HacHttpClient(private val project: Project) {
 
     private val cookiesPerSettings = ConcurrentHashMap<String, MutableMap<String, String>>()
 
-    fun testConnection(
+    suspend fun testConnection(
         settings: HacConnectionSettingsState,
         username: String,
         password: String,
@@ -73,7 +75,7 @@ class HacHttpClient(private val project: Project) {
             .also { cookiesPerSettings.remove(cookiesKey) }
     }
 
-    fun post(
+    suspend fun post(
         actionUrl: String,
         params: Collection<BasicNameValuePair>,
         canReLoginIfNeeded: Boolean,
@@ -82,23 +84,35 @@ class HacHttpClient(private val project: Project) {
         replicaContext: ReplicaContext?
     ): HttpResponse {
         val cookiesKey = HttpCookiesCache.getInstance(project).getKey(settings, replicaContext)
-        val cookieName = getCookieName(settings)
+        val sessionCookieName = getSessionCookieName(settings)
         var cookies = cookiesPerSettings[cookiesKey]
 
-        if (cookies == null || !cookies.containsKey(cookieName)) {
-            val credentials = HacExecConnectionService.getInstance(project).getCredentials(settings)
-            val username = credentials.userName ?: ""
-            val password = credentials.getPasswordAsString() ?: ""
-            val errorMessage = authenticate(settings, cookiesKey, username, password, replicaContext)
-            if (errorMessage is HacHttpAuthenticationResult.Error) {
-                return createErrorResponse(errorMessage.message)
+        if (cookies == null || !cookies.containsKey(sessionCookieName)) {
+            if (settings.authenticationMode == AuthenticationMode.MANUAL) {
+                val manualAuthenticationCookies = HacManualAuthenticator.getService(project)
+                    .authenticate(settings)
+
+                if (!manualAuthenticationCookies.contains(sessionCookieName)) {
+                    return createErrorResponse("Unable to find cookie $sessionCookieName")
+                } else {
+                    cookiesPerSettings[cookiesKey] = manualAuthenticationCookies.toMutableMap()
+                }
+            } else {
+                val credentials = HacExecConnectionService.getInstance(project).getCredentials(settings)
+                val username = credentials.userName ?: ""
+                val password = credentials.getPasswordAsString() ?: ""
+                val authResult = authenticate(settings, cookiesKey, username, password, replicaContext)
+
+                if (authResult is HacHttpAuthenticationResult.Error) {
+                    return createErrorResponse(authResult.message)
+                }
             }
         }
 
         cookies = cookiesPerSettings[cookiesKey]
             ?: return createErrorResponse("Unable to authenticate request.")
 
-        val sessionId = cookies[cookieName]
+        val sessionId = cookies[sessionCookieName]
         val generatedURL = settings.generatedURL
         val csrfToken = getCsrfToken(generatedURL, settings, cookies)
 
@@ -139,7 +153,7 @@ class HacHttpClient(private val project: Project) {
             HttpStatus.SC_FORBIDDEN, HttpStatus.SC_METHOD_NOT_ALLOWED -> true
             HttpStatus.SC_MOVED_TEMPORARILY -> {
                 val location = response.getFirstHeader("Location")
-                location != null && location.getValue().contains("login")
+                location != null && location.value.contains("login")
             }
 
             else -> false
@@ -153,7 +167,7 @@ class HacHttpClient(private val project: Project) {
         return response
     }
 
-    private fun authenticate(
+    private suspend fun authenticate(
         settings: HacConnectionSettingsState,
         cookiesKey: String,
         username: String,
@@ -164,9 +178,9 @@ class HacHttpClient(private val project: Project) {
 
         retrieveCookies(hostHacURL, settings, replicaContext, cookiesKey)
 
-        val cookieName = getCookieName(settings)
+        val sessionCookieName = getSessionCookieName(settings)
         val cookies = cookiesPerSettings.get(cookiesKey)
-        cookies?.get(cookieName)
+        cookies?.get(sessionCookieName)
             ?: return HacHttpAuthenticationResult.Error(hostHacURL, "Unable to obtain sessionId for $hostHacURL")
 
         val csrfToken = getCsrfToken(hostHacURL, settings, cookies)
@@ -189,7 +203,7 @@ class HacHttpClient(private val project: Project) {
 
         return CookieParser.getInstance().getSpecialCookie(response.allHeaders)
             ?.let { newSessionId ->
-                cookiesPerSettings[cookiesKey]?.let { it[cookieName] = newSessionId }
+                cookiesPerSettings[cookiesKey]?.let { it[sessionCookieName] = newSessionId }
                 HacHttpAuthenticationResult.Success(hostHacURL)
             }
             ?: HacHttpAuthenticationResult.Error(hostHacURL, buildString {
@@ -209,7 +223,7 @@ class HacHttpClient(private val project: Project) {
         val sslContext: SSLContext
         try {
             sslContext = SSLContexts.custom()
-                .loadTrustMaterial(null) { _ , _ -> true }
+                .loadTrustMaterial(null) { _, _ -> true }
                 .build()
         } catch (e: Exception) {
             thisLogger().warn(e.message, e)
@@ -261,7 +275,7 @@ class HacHttpClient(private val project: Project) {
         }
     }
 
-    private fun getCookieName(settings: HacConnectionSettingsState) = settings.sessionCookieName
+    private fun getSessionCookieName(settings: HacConnectionSettingsState) = settings.sessionCookieName
         .takeIf { it.isNotBlank() }
         ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME
 

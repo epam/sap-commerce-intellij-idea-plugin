@@ -24,25 +24,28 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.util.ui.JBUI
-import java.awt.Component
+import kotlinx.coroutines.CompletableDeferred
+import java.util.concurrent.TimeUnit
 
+/*
+    It is mandatory to use MODELESS Modality type to ensure correct render of the Cef Browser
+ */
 class HacManualAuthenticationDialog(
     project: Project,
-    private val url: String,
-    private val parentComponent: Component? = null,
-    private val callback: () -> Unit
-) : DialogWrapper(project, parentComponent, false, IdeModalityType.MODELESS) {
+    url: String,
+    private val deferred: CompletableDeferred<Map<String, String>>,
+) : DialogWrapper(project, null, false, IdeModalityType.MODELESS) {
 
     private val jbCefBrowser = JBCefBrowser.createBuilder()
-            .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
-            .setUrl(url)
-            .setCreateImmediately(true)
-            .build()
-            .apply {
-                Disposer.register(disposable, this)
+        .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
+        .setUrl(url)
+        .setCreateImmediately(true)
+        .build()
+        .apply {
+            Disposer.register(disposable, this)
 
-                setProperty(JBCefBrowser.Properties.FOCUS_ON_SHOW, true)
-            }
+            setProperty(JBCefBrowser.Properties.FOCUS_ON_SHOW, true)
+        }
 
     init {
         title = "Authenticate via Browser"
@@ -55,6 +58,15 @@ class HacManualAuthenticationDialog(
     override fun getPreferredFocusedComponent() = jbCefBrowser.component
 
     override fun applyFields() {
-        jbCefBrowser.getJBCefCookieManager().getCookies(url, false)
+        super.applyFields()
+        val cookies = jbCefBrowser.getJBCefCookieManager().getCookies(null, false)
+            .get(5, TimeUnit.SECONDS)
+            .associate { it.name to it.value }
+        deferred.complete(cookies)
+    }
+
+    override fun doCancelAction() {
+        super.doCancelAction()
+        deferred.complete(emptyMap())
     }
 }

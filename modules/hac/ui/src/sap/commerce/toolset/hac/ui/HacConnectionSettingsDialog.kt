@@ -69,10 +69,15 @@ class HacConnectionSettingsDialog(
     private lateinit var sessionCookieNameTextField: JBTextField
     private lateinit var wslDistributionComboBox: JComboBox<WSLDistribution>
 
+    init {
+        super.init()
+        testConnectionButton.isEnabled = mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC
+    }
+
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
 
-    override fun testConnection(): String? = HacHttpClient.getInstance(project).testConnection(
+    override suspend fun testConnection(): String? = HacHttpClient.getInstance(project).testConnection(
         HacConnectionSettingsState(
             host = hostTextField.text,
             port = portTextField.text,
@@ -221,6 +226,7 @@ class HacConnectionSettingsDialog(
                     .align(AlignX.CENTER)
                     .bind(mutable.authenticationMode)
                     .whenItemSelected(disposable) {
+                        testConnectionButton.isEnabled = it == AuthenticationMode.AUTOMATIC
                         repackDialog()
                     }
             }
@@ -240,10 +246,8 @@ class HacConnectionSettingsDialog(
                 .bottomGap(BottomGap.MEDIUM)
         }
 
-
-
         row {
-            label("Authentication request via Browser will happen on Api request to hAC.")
+            label("Authentication via Browser will take place on Api request to hAC.")
                 .align(AlignX.CENTER)
                 .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
         }

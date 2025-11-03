@@ -22,7 +22,6 @@ import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.asContextElement
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -66,7 +65,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
     protected lateinit var testConnectionLabel: Cell<JLabel>
     protected lateinit var testConnectionComment: Cell<JEditorPane>
     protected val centerPanel by lazy { panel() }
-    private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
+    protected val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
 
         @Serial
         private val serialVersionUID: Long = 7851071514284300449L
@@ -89,7 +88,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
 
                 val result = withContext(Dispatchers.IO) {
                     withBackgroundProgress(project, "Verifying connection to remote server", true) {
-                        readAction { testConnection() }
+                        testConnection()
                     }
                 }
 
@@ -115,7 +114,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
         }
     }
 
-    protected abstract fun testConnection(): String?
+    protected abstract suspend fun testConnection(): String?
     protected abstract fun panel(): DialogPanel
     protected abstract fun retrieveCredentials(mutable: M): Credentials
 

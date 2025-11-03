@@ -49,7 +49,7 @@ class SolrConnectionSettingsDialog(
     override fun retrieveCredentials(mutable: SolrConnectionSettingsState.Mutable) = SolrExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
 
-    override fun testConnection(): String? = try {
+    override suspend fun testConnection(): String? = try {
         val testSettings = SolrConnectionSettingsState(
             host = hostTextField.text,
             port = portTextField.text,
