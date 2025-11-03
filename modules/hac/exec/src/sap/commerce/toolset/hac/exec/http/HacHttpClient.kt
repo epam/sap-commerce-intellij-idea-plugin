@@ -22,7 +22,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import io.ktor.http.*
 import org.apache.http.HttpHeaders
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
@@ -319,20 +318,4 @@ class HacHttpClient(private val project: Project) {
     companion object {
         fun getInstance(project: Project): HacHttpClient = project.service()
     }
-}
-
-sealed class HacHttpAuthenticationResult {
-    data class Success(val url: String) : HacHttpAuthenticationResult()
-    data class Error(val url: String, val message: String) : HacHttpAuthenticationResult()
-}
-
-sealed class HacHttpResult {
-    data class Success(val response: HttpResponse) : HacHttpResult()
-    data class Error(val message: String, val statusCode: Int = HttpStatusCode.ServiceUnavailable.value) : HacHttpResult()
-}
-
-private object TrustAllX509TrustManager : javax.net.ssl.X509TrustManager {
-    override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-    override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
-    override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
 }
