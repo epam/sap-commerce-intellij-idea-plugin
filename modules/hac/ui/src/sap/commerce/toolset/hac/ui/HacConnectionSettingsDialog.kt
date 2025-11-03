@@ -261,7 +261,9 @@ class HacConnectionSettingsDialog(
                 .bindText(mutable.username)
                 .enabledIf(editableCredentials)
                 .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
-                .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
+                .addValidationRule("Username cannot be blank.") {
+                    mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC && it.text.isNullOrBlank()
+                }
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
@@ -272,7 +274,9 @@ class HacConnectionSettingsDialog(
                 .bindText(mutable.password)
                 .enabledIf(editableCredentials)
                 .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
-                .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
+                .addValidationRule("Password cannot be blank.") {
+                    mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC && it.password.isEmpty()
+                }
                 .component
         }.layout(RowLayout.PARENT_GRID)
     }
