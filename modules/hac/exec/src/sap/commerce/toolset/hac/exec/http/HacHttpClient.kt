@@ -208,7 +208,9 @@ class HacHttpClient(private val project: Project) {
     private fun createAllowAllClient(timeout: Int): CloseableHttpClient? {
         val sslContext: SSLContext
         try {
-            sslContext = SSLContexts.custom().loadTrustMaterial(null) { _ , _ -> true }.build()
+            sslContext = SSLContexts.custom()
+                .loadTrustMaterial(null) { _ , _ -> true }
+                .build()
         } catch (e: Exception) {
             thisLogger().warn(e.message, e)
             return null
