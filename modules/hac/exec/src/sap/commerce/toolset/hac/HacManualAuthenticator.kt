@@ -18,8 +18,15 @@
 
 package sap.commerce.toolset.hac
 
-object HacExecConstants {
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
-    const val DEFAULT_TIMEOUT: Int = 6000
-    const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
+interface HacManualAuthenticator {
+
+    suspend fun authenticate(settings: HacConnectionSettingsState): Map<String, String>
+
+    companion object {
+        fun getService(project: Project): HacManualAuthenticator = project.service()
+    }
 }

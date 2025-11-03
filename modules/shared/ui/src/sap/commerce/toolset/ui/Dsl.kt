@@ -22,9 +22,11 @@ import com.intellij.ide.HelpTooltip
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.ui.ContextHelpLabel
@@ -39,6 +41,12 @@ import java.awt.datatransfer.StringSelection
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JLabel
+
+fun DialogWrapper.repackDialog() {
+    invokeLater {
+        peer.window?.pack()
+    }
+}
 
 fun Row.copyLink(project: Project, label: String?, value: String, confirmationMessage: String = "Copied to clipboard"): Cell<ActionLink> {
     return link(value) {
@@ -55,22 +63,19 @@ fun Row.copyLink(project: Project, label: String?, value: String, confirmationMe
         }
 }
 
-fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) {
-    row {
-        inlineBanner(message, status)
-    }
-        .resizableRow()
-        .topGap(TopGap.MEDIUM)
+fun Panel.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info, icon: Icon? = null) = row {
+    inlineBanner(message, status, icon)
 }
+    .resizableRow()
+    .topGap(TopGap.MEDIUM)
 
-fun Row.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) {
-    cell(
-        InlineBanner(message, status)
-            .showCloseButton(false)
-    )
-        .align(Align.CENTER)
-        .resizableColumn()
-}
+fun Row.inlineBanner(message: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info, icon: Icon? = null) = cell(
+    InlineBanner(message, status)
+        .showCloseButton(false)
+        .setIcon(icon ?: status.icon)
+)
+    .align(Align.CENTER)
+    .resizableColumn()
 
 fun Row.contextHelp(
     icon: Icon = AllIcons.General.ContextHelp,

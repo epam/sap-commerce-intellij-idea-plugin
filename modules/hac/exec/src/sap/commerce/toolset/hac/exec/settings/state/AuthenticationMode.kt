@@ -16,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac
+package sap.commerce.toolset.hac.exec.settings.state
 
-object HacExecConstants {
-
-    const val DEFAULT_TIMEOUT: Int = 6000
-    const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
+enum class AuthenticationMode(val title: String, val description: String) {
+    AUTOMATIC("Automatic by credentials", "Rely on persisted credentials and automated authentication through API."),
+    MANUAL("Manual via Browser", "Rely on manual browser authentication, re-authentication will be required on session timeout.")
 }

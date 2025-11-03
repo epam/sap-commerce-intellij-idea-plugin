@@ -22,6 +22,9 @@
                              nonDefaultProject="true" dynamic="true"
                              displayName="hAC"
                              provider="sap.commerce.toolset.hac.options.HacExecProjectSettingsConfigurableProvider"/>
+
+        <projectService serviceInterface="sap.commerce.toolset.hac.HacManualAuthenticator"
+                        serviceImplementation="sap.commerce.toolset.hac.HacManualAuthenticatorImpl"/>
     </extensions>
 
     <actions>

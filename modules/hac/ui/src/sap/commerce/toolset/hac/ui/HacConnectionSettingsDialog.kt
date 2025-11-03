@@ -20,27 +20,38 @@ package sap.commerce.toolset.hac.ui
 
 import com.intellij.execution.wsl.WSLDistribution
 import com.intellij.execution.wsl.WslDistributionManager
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.util.and
+import com.intellij.openapi.observable.util.equalsTo
+import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.registry.Registry
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.layout.selected
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
-import sap.commerce.toolset.exec.ui.WSL_PROXY_CONNECT_LOCALHOST
+import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.http.HacHttpAuthenticationResult
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
+import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.ui.inlineBanner
+import sap.commerce.toolset.ui.repackDialog
 import java.awt.Component
-import java.util.*
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
-import javax.swing.JEditorPane
 import javax.swing.JLabel
 
 class HacConnectionSettingsDialog(
@@ -50,23 +61,28 @@ class HacConnectionSettingsDialog(
     dialogTitle: String,
 ) : ConnectionSettingsDialog<HacConnectionSettingsState.Mutable>(project, parentComponent, settings, dialogTitle) {
 
+    private lateinit var urlPreviewLabel: JLabel
+    private lateinit var timeoutIntSpinner: JBIntSpinner
+    private lateinit var usernameTextField: JBTextField
+    private lateinit var passwordTextField: JBPasswordField
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField
-    private lateinit var wslDistributionComboBox: JComboBox<String>
-    private lateinit var wslProxyCheckBox: JBCheckBox
-    private lateinit var wslProxyWarningComment: JEditorPane
-    private lateinit var wslDistributionText: Cell<JLabel>
-    private var isWslCheckBox: JBCheckBox? = null
+    private lateinit var wslDistributionComboBox: JComboBox<WSLDistribution>
+
+    init {
+        super.init()
+        testConnectionButton.isEnabled = mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC
+    }
 
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
 
-    override fun testConnection(): String = HacHttpClient.getInstance(project).testConnection(
+    override suspend fun testConnection(): String? = HacHttpClient.getInstance(project).testConnection(
         HacConnectionSettingsState(
             host = hostTextField.text,
             port = portTextField.text,
             ssl = sslProtocolCheckBox.isSelected,
-            wsl = isWslCheckBox?.isSelected ?: false,
+            wsl = mutable.wsl.get(),
             sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: "",
             webroot = webrootTextField.text,
             timeout = timeoutIntSpinner.number,
@@ -75,6 +91,12 @@ class HacConnectionSettingsDialog(
         mutable.username.get(),
         mutable.password.get(),
     )
+        .let {
+            when {
+                it is HacHttpAuthenticationResult.Error -> it.message
+                else -> null
+            }
+        }
 
     override fun panel() = panel {
         row {
@@ -98,9 +120,11 @@ class HacConnectionSettingsDialog(
 
         row {
             timeoutIntSpinner = spinner(1000..Int.MAX_VALUE, 1000)
-                .label("Connection Timeout (ms):")
+                .label("Connection timeout:")
                 .bindIntValue(mutable::timeout)
+                .gap(RightGap.SMALL)
                 .component
+            label("(ms)")
         }.layout(RowLayout.PARENT_GRID)
 
         group("Full URL Preview", false) {
@@ -156,7 +180,8 @@ class HacConnectionSettingsDialog(
                     listOf(
                         "TLSv1",
                         "TLSv1.1",
-                        "TLSv1.2"
+                        "TLSv1.2",
+                        "TLSv1.3",
                     ),
                     renderer = SimpleListCellRenderer.create("?") { it }
                 )
@@ -184,37 +209,81 @@ class HacConnectionSettingsDialog(
                     .apply { component.text = "" }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+        }
 
-            if (isWindows()) {
+        if (SystemInfo.isWindows) {
+            group("Windows Subsystem for Linux") {
                 wslHostConfiguration()
             }
         }
 
-        group("Credentials") {
+        group("Authentication") {
             row {
-                label("Username:")
-                usernameTextField = textField()
-                    .align(AlignX.FILL)
-                    .bindText(mutable.username)
-                    .enabledIf(editableCredentials)
-                    .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
+                segmentedButton(AuthenticationMode.entries.toList()) {
+                    text = it.title
+                    toolTipText = it.description
+                }
+                    .align(AlignX.CENTER)
+                    .bind(mutable.authenticationMode)
+                    .whenItemSelected(disposable) {
+                        testConnectionButton.isEnabled = it == AuthenticationMode.AUTOMATIC
+                        repackDialog()
+                    }
+            }
 
-            row {
-                label("Password:")
-                passwordTextField = passwordField()
-                    .align(AlignX.FILL)
-                    .bindText(mutable.password)
-                    .enabledIf(editableCredentials)
-                    .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
+            authenticationAutomatic()
+            authenticationManual()
         }
     }
 
-    fun updateWslIp(distributions: List<WSLDistribution>) {
-        val wslIp = distributions.find { it.msId == wslDistributionComboBox.selectedItem as? String }
+    private fun Panel.authenticationManual() {
+        if (!JBCefApp.isSupported()) {
+            row {
+                inlineBanner("Set the reg key to enable JCEF:\n\"ide.browser.jcef.enabled=true\"", EditorNotificationPanel.Status.Warning)
+            }
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+                .topGap(TopGap.MEDIUM)
+                .bottomGap(BottomGap.MEDIUM)
+        }
+
+        row {
+            label("Authentication via Browser will take place on Api request to hAC.")
+                .align(AlignX.CENTER)
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+        }
+    }
+
+    private fun Panel.authenticationAutomatic() {
+        row {
+            usernameTextField = textField()
+                .label("Username:")
+                .align(AlignX.FILL)
+                .bindText(mutable.username)
+                .enabledIf(editableCredentials)
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
+                .addValidationRule("Username cannot be blank.") {
+                    mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC && it.text.isNullOrBlank()
+                }
+                .component
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            passwordTextField = passwordField()
+                .label("Password:")
+                .align(AlignX.FILL)
+                .bindText(mutable.password)
+                .enabledIf(editableCredentials)
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
+                .addValidationRule("Password cannot be blank.") {
+                    mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC && it.password.isEmpty()
+                }
+                .component
+        }.layout(RowLayout.PARENT_GRID)
+    }
+
+    private fun updateWslIp(distributions: List<WSLDistribution>) {
+        val wslIp = distributions
+            .find { it == wslDistributionComboBox.selectedItem }
             ?.wslIpAddress
             ?.toString()
             ?.replace("/", "")
@@ -222,61 +291,88 @@ class HacConnectionSettingsDialog(
         hostTextField.text = wslIp
     }
 
-    fun isWindows() = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
+    private fun Panel.wslHostConfiguration() {
+        val wslDistributions: AtomicProperty<List<WSLDistribution>> = AtomicProperty(WslDistributionManager.getInstance().installedDistributions)
 
-    fun Panel.wslHostConfiguration() {
-        val distributions = WslDistributionManager.getInstance().installedDistributions
         row {
-            isWslCheckBox = checkBox("WSL")
-                .bindSelected(mutable::wsl)
-                .selected(false)
-                .visible(distributions.isNotEmpty())
-                .onChanged {
-                    val selected = isWslCheckBox?.isSelected ?: false
-                    val multipleDistros = distributions.isNotEmpty()
-                    wslDistributionComboBox.isVisible = selected && multipleDistros
-                    wslDistributionText.visible(selected)
-                    wslProxyCheckBox.isVisible = selected
-                    wslProxyWarningComment.isVisible = selected
-                    urlPreviewLabel.text = generateUrl()
-                }
-                .component
-        }.layout(RowLayout.PARENT_GRID)
-        val installedDistros = distributions.map { it.msId }
-        if (installedDistros.isNotEmpty()) {
-            row {
-                wslDistributionText = label("WSL distribution:").visible(false)
-                wslDistributionComboBox = comboBox(DefaultComboBoxModel(installedDistros.toTypedArray()))
-                    .align(AlignX.FILL)
-                    .visible(false)
-                    .onChanged {
-                        updateWslIp(distributions)
-                    }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-        } else {
-            row {
-                comment("No WSL distributions are installed.")
-                    .visible(false)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
+            inlineBanner(
+                message = """
+                <p>Find out why using <a href="https://www.linkedin.com/pulse/high-performance-sap-commerce-development-windows-using-de-matola-gwgvf/">WSL</a> can boost the development process!</p>
+                """.trimIndent(),
+                icon = HybrisIcons.Tools.WSL
+            )
+                .align(AlignX.FILL)
+                .gap(RightGap.COLUMNS)
         }
+            .topGap(TopGap.MEDIUM)
+            .bottomGap(BottomGap.MEDIUM)
+
         row {
-            wslProxyCheckBox = checkBox("Enable wsl.proxy.connect.localhost")
-                .comment("This will use the wsl.proxy.connect.localhost registry setting if available.")
-                .visible(false)
-                .selected(Registry.`is`(WSL_PROXY_CONNECT_LOCALHOST))
+            checkBox("Connect to WSL")
+                .bindSelected(mutable.wsl)
                 .onChanged {
-                    Registry.run { get(WSL_PROXY_CONNECT_LOCALHOST).setValue(!`is`(WSL_PROXY_CONNECT_LOCALHOST)) }
-                    updateWslIp(distributions)
+                    urlPreviewLabel.text = generateUrl()
+                    repackDialog()
                 }
-                .component
         }.layout(RowLayout.PARENT_GRID)
+
         row {
-            wslProxyWarningComment =
-                comment("<strong>Warning:</strong> Connect to 127.0.0.1 on WSLProxy instead of public WSL IP which might be inaccessible due to routing issues.")
-                    .visible(false)
-                    .component
+            inlineBanner("No WSL distributions are installed.", EditorNotificationPanel.Status.Warning)
+                .visibleIf(mutable.wsl.and(wslDistributions.transform { it.isEmpty() }))
+                .align(AlignX.FILL)
+                .gap(RightGap.COLUMNS)
+        }
+            .topGap(TopGap.MEDIUM)
+            .bottomGap(BottomGap.MEDIUM)
+
+        row {
+            val model = DefaultComboBoxModel(wslDistributions.get().toTypedArray())
+            wslDistributionComboBox = comboBox(
+                model = model,
+                renderer = SimpleListCellRenderer.create { label, value, _ ->
+                    label.text = value?.msId
+                })
+                .label("WSL distribution:")
+                .visibleIf(mutable.wsl)
+                .enabledIf(wslDistributions.transform { it.isNotEmpty() })
+                .align(AlignX.FILL)
+                .onChanged {
+                    updateWslIp(wslDistributions.get())
+                }
+                .resizableColumn()
+                .gap(RightGap.SMALL)
+                .component
+
+            button("Refresh") {
+                wslDistributions.set(WslDistributionManager.getInstance().installedDistributions)
+                with(model) {
+                    removeAllElements()
+                    addAll(wslDistributions.get())
+                }
+                repackDialog()
+            }
+                .align(AlignX.RIGHT)
+                .visibleIf(mutable.wsl)
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            checkBox("Enable wsl.proxy.connect.localhost")
+                .comment("This will use the wsl.proxy.connect.localhost registry setting if available.")
+                .visibleIf(mutable.wsl)
+                .enabledIf(wslDistributions.transform { it.isNotEmpty() })
+                .selected(Registry.`is`(HacExecConstants.WSL_PROXY_CONNECT_LOCALHOST, false))
+                .onChanged {
+                    Registry.run {
+                        val registryValue = get(HacExecConstants.WSL_PROXY_CONNECT_LOCALHOST)
+                        registryValue.setValue(!`is`(HacExecConstants.WSL_PROXY_CONNECT_LOCALHOST, false))
+                    }
+                    updateWslIp(wslDistributions.get())
+                }
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            comment("<strong>Warning:</strong> Connect to 127.0.0.1 on WSLProxy instead of public WSL IP which might be inaccessible due to routing issues.")
+                .visibleIf(mutable.wsl)
         }.layout(RowLayout.PARENT_GRID)
     }
 }

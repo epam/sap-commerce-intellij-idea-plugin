@@ -16,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac
+package sap.commerce.toolset.hac.exec.http
 
-object HacExecConstants {
-
-    const val DEFAULT_TIMEOUT: Int = 6000
-    const val WSL_PROXY_CONNECT_LOCALHOST = "wsl.proxy.connect.localhost"
+sealed class HacHttpAuthenticationResult {
+    data class Success(val url: String) : HacHttpAuthenticationResult()
+    data class Error(val url: String, val message: String) : HacHttpAuthenticationResult()
 }
