@@ -1,0 +1,60 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.hac.ui
+
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.util.Disposer
+import com.intellij.ui.jcef.JBCefApp
+import com.intellij.ui.jcef.JBCefBrowser
+import com.intellij.util.ui.JBUI
+import java.awt.Component
+
+class HacManualAuthenticationDialog(
+    project: Project,
+    private val url: String,
+    private val parentComponent: Component? = null,
+    private val callback: () -> Unit
+) : DialogWrapper(project, parentComponent, false, IdeModalityType.MODELESS) {
+
+    private val jbCefBrowser = JBCefBrowser.createBuilder()
+            .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
+            .setUrl(url)
+            .setCreateImmediately(true)
+            .build()
+            .apply {
+                Disposer.register(disposable, this)
+
+                setProperty(JBCefBrowser.Properties.FOCUS_ON_SHOW, true)
+            }
+
+    init {
+        title = "Authenticate via Browser"
+        isResizable = false
+        super.init()
+    }
+
+    override fun getInitialSize() = JBUI.DialogSizes.extraLarge()
+    override fun createCenterPanel() = jbCefBrowser.component
+    override fun getPreferredFocusedComponent() = jbCefBrowser.component
+
+    override fun applyFields() {
+        jbCefBrowser.getJBCefCookieManager().getCookies(url, false)
+    }
+}

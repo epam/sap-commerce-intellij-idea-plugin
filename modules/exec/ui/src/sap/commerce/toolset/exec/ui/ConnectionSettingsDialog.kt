@@ -55,7 +55,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
     parentComponent: Component,
     protected val mutable: M,
     dialogTitle: String
-) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
+) : DialogWrapper(project, parentComponent, true, IdeModalityType.IDE) {
 
     protected val editableCredentials = AtomicBooleanProperty(false)
     protected lateinit var connectionNameTextField: JBTextField
@@ -65,6 +65,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
     protected lateinit var webrootTextField: JBTextField
     protected lateinit var testConnectionLabel: Cell<JLabel>
     protected lateinit var testConnectionComment: Cell<JEditorPane>
+    protected val centerPanel by lazy { panel() }
     private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
 
         @Serial
@@ -127,7 +128,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
     override fun getStyle() = DialogStyle.COMPACT
     override fun getPreferredFocusedComponent() = connectionNameTextField
 
-    override fun createCenterPanel() = with(panel()) {
+    override fun createCenterPanel() = with(centerPanel) {
         border = JBUI.Borders.empty(16)
         loadCredentials()
         this

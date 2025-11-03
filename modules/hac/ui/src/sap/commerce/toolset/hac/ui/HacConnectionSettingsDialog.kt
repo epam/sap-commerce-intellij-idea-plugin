@@ -35,6 +35,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.ExecConstants
@@ -216,28 +217,52 @@ class HacConnectionSettingsDialog(
                     }
             }
 
-            row {
-                usernameTextField = textField()
-                    .label("Username:")
-                    .align(AlignX.FILL)
-                    .bindText(mutable.username)
-                    .enabledIf(editableCredentials)
-                    .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
-                    .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                passwordTextField = passwordField()
-                    .label("Password:")
-                    .align(AlignX.FILL)
-                    .bindText(mutable.password)
-                    .enabledIf(editableCredentials)
-                    .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
-                    .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
+            authenticationAutomatic()
+            authenticationManual()
         }
+    }
+
+    private fun Panel.authenticationManual() {
+        if (!JBCefApp.isSupported()) {
+            row {
+                inlineBanner("Set the reg key to enable JCEF:\n\"ide.browser.jcef.enabled=true\"", EditorNotificationPanel.Status.Warning)
+            }
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+                .topGap(TopGap.MEDIUM)
+                .bottomGap(BottomGap.MEDIUM)
+        }
+
+
+
+        row {
+            label("Authentication request via Browser will happen on Api request to hAC.")
+                .align(AlignX.CENTER)
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+        }
+    }
+
+    private fun Panel.authenticationAutomatic() {
+        row {
+            usernameTextField = textField()
+                .label("Username:")
+                .align(AlignX.FILL)
+                .bindText(mutable.username)
+                .enabledIf(editableCredentials)
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
+                .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
+                .component
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            passwordTextField = passwordField()
+                .label("Password:")
+                .align(AlignX.FILL)
+                .bindText(mutable.password)
+                .enabledIf(editableCredentials)
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
+                .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
+                .component
+        }.layout(RowLayout.PARENT_GRID)
     }
 
     private fun updateWslIp(distributions: List<WSLDistribution>) {
