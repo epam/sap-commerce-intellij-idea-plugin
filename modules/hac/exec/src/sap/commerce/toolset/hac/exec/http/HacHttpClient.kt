@@ -101,7 +101,7 @@ class HacHttpClient(private val project: Project) {
 
         val sessionId = cookies[cookieName]
         val generatedURL = settings.generatedURL
-        val csrfToken = getCsrfToken(generatedURL, settings, cookiesKey)
+        val csrfToken = getCsrfToken(generatedURL, settings, cookies)
 
         if (csrfToken == null) {
             cookiesPerSettings.remove(cookiesKey)
@@ -166,11 +166,11 @@ class HacHttpClient(private val project: Project) {
         retrieveCookies(hostHacURL, settings, replicaContext, cookiesKey)
 
         val cookieName = getCookieName(settings)
-        cookiesPerSettings.get(cookiesKey)
-            ?.get(cookieName)
+        val cookies = cookiesPerSettings.get(cookiesKey)
+        cookies?.get(cookieName)
             ?: return HacHttpAuthenticationResult.Error(hostHacURL, "Unable to obtain sessionId for $hostHacURL")
 
-        val csrfToken = getCsrfToken(hostHacURL, settings, cookiesKey)
+        val csrfToken = getCsrfToken(hostHacURL, settings, cookies)
             ?: return HacHttpAuthenticationResult.Error(hostHacURL, "Unable to obtain csrfToken for $hostHacURL")
 
         val params = listOf(
@@ -290,18 +290,16 @@ class HacHttpClient(private val project: Project) {
     private fun getCsrfToken(
         hacURL: String,
         settings: HacConnectionSettingsState,
-        cookiesKey: String?
-    ): String? {
-        try {
-            val doc = connect(hacURL, settings.sslProtocol)
-                .cookies(cookiesPerSettings.get(cookiesKey)!!)
-                .get()
-            val csrfMetaElt = doc.select("meta[name=_csrf]")
-            return csrfMetaElt.attr("content")
-        } catch (e: Exception) {
-            thisLogger().warn(e.message, e)
-        }
-        return null
+        cookies: Map<String, String>
+    ): String? = try {
+        connect(hacURL, settings.sslProtocol)
+            .cookies(cookies)
+            .get()
+            .select("meta[name=_csrf]")
+            .attr("content")
+    } catch (e: Exception) {
+        thisLogger().warn(e.message, e)
+        null
     }
 
     @Throws(NoSuchAlgorithmException::class, KeyManagementException::class)
