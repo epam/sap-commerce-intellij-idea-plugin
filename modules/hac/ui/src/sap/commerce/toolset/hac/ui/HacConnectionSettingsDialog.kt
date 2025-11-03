@@ -43,6 +43,7 @@ import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.http.HacHttpAuthenticationResult
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -71,7 +72,7 @@ class HacConnectionSettingsDialog(
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
 
-    override fun testConnection(): String = HacHttpClient.getInstance(project).testConnection(
+    override fun testConnection(): String? = HacHttpClient.getInstance(project).testConnection(
         HacConnectionSettingsState(
             host = hostTextField.text,
             port = portTextField.text,
@@ -85,6 +86,12 @@ class HacConnectionSettingsDialog(
         mutable.username.get(),
         mutable.password.get(),
     )
+        .let {
+            when {
+                it is HacHttpAuthenticationResult.Error -> it.message
+                else -> null
+            }
+        }
 
     override fun panel() = panel {
         row {
@@ -168,7 +175,8 @@ class HacConnectionSettingsDialog(
                     listOf(
                         "TLSv1",
                         "TLSv1.1",
-                        "TLSv1.2"
+                        "TLSv1.2",
+                        "TLSv1.3",
                     ),
                     renderer = SimpleListCellRenderer.create("?") { it }
                 )

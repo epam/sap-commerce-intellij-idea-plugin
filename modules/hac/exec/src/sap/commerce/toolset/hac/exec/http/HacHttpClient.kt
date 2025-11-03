@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,354 +16,323 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.exec.http;
+package sap.commerce.toolset.hac.exec.http
 
-import com.intellij.openapi.components.Service;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.message.BasicStatusLine;
-import org.apache.http.ssl.SSLContexts;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.helper.ValidationException;
-import org.jsoup.select.Elements;
-import sap.commerce.toolset.exec.ExecConstants;
-import sap.commerce.toolset.exec.context.ReplicaContext;
-import sap.commerce.toolset.hac.exec.HacExecConnectionService;
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.io.IOException;
-import java.net.ConnectException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.apache.http.HttpVersion.HTTP_1_1;
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.project.Project
+import io.ktor.http.*
+import org.apache.http.HttpHeaders
+import org.apache.http.HttpResponse
+import org.apache.http.HttpStatus
+import org.apache.http.HttpVersion
+import org.apache.http.client.config.RequestConfig
+import org.apache.http.client.entity.UrlEncodedFormEntity
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.config.RegistryBuilder
+import org.apache.http.conn.socket.ConnectionSocketFactory
+import org.apache.http.conn.socket.PlainConnectionSocketFactory
+import org.apache.http.conn.ssl.NoopHostnameVerifier
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager
+import org.apache.http.message.BasicHttpResponse
+import org.apache.http.message.BasicNameValuePair
+import org.apache.http.message.BasicStatusLine
+import org.apache.http.ssl.SSLContexts
+import org.jsoup.Connection
+import org.jsoup.Jsoup
+import sap.commerce.toolset.exec.ExecConstants
+import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import java.io.IOException
+import java.net.ConnectException
+import java.net.HttpURLConnection
+import java.nio.charset.StandardCharsets
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import java.util.concurrent.ConcurrentHashMap
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
 
 @Service(Service.Level.PROJECT)
-public final class HacHttpClient {
+class HacHttpClient(private val project: Project) {
 
-    private static final Logger LOG = Logger.getInstance(HacHttpClient.class);
-    private final Project project;
+    private val cookiesPerSettings = ConcurrentHashMap<String, MutableMap<String, String>>()
 
-    private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
-
-        @Override
-        @Nullable
-        public X509Certificate[] getAcceptedIssuers() {
-            return null;
-        }
-
-        @Override
-        public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
-        }
-
-        @Override
-        public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
-        }
-    };
-
-    private final Map<String, Map<String, String>> cookiesPerSettings = new ConcurrentHashMap<>();
-
-    public HacHttpClient(final Project project) {
-        this.project = project;
+    fun testConnection(
+        settings: HacConnectionSettingsState,
+        username: String,
+        password: String,
+    ): HacHttpAuthenticationResult {
+        val cookiesKey = HttpCookiesCache.getInstance(project).getKey(settings)
+        return authenticate(settings, cookiesKey, username, password)
+            .also { cookiesPerSettings.remove(cookiesKey) }
     }
 
-    public static HacHttpClient getInstance(final Project project) {
-        return project.getService(HacHttpClient.class);
-    }
+    fun post(
+        actionUrl: String,
+        params: Collection<BasicNameValuePair>,
+        canReLoginIfNeeded: Boolean,
+        timeout: Int,
+        settings: HacConnectionSettingsState,
+        replicaContext: ReplicaContext?
+    ): HttpResponse {
+        val cookiesKey = HttpCookiesCache.getInstance(project).getKey(settings, replicaContext)
+        val cookieName = getCookieName(settings)
+        var cookies = cookiesPerSettings[cookiesKey]
 
-    @NotNull
-    public String testConnection(
-        final @NotNull HacConnectionSettingsState settings,
-        final @NotNull String username,
-        final @NotNull String password
-    ) {
-        final var cookiesKey = HttpCookiesCache.Companion.getInstance(project).getKey(settings, null);
-        final var result = login(settings, null, cookiesKey, username, password);
-        cookiesPerSettings.remove(cookiesKey);
-        return result;
-    }
-
-    @NotNull
-    public HttpResponse post(
-        @NotNull final String actionUrl,
-        @NotNull final List<BasicNameValuePair> params,
-        final boolean canReLoginIfNeeded,
-        final int timeout,
-        final HacConnectionSettingsState settings,
-        @Nullable final ReplicaContext replicaContext
-    ) {
-        final var cookiesKey = HttpCookiesCache.Companion.getInstance(project).getKey(settings, replicaContext);
-        final String cookieName = getCookieName(settings);
-        var cookies = cookiesPerSettings.get(cookiesKey);
         if (cookies == null || !cookies.containsKey(cookieName)) {
-            final var credentials = HacExecConnectionService.Companion.getInstance(project).getCredentials(settings);
-            final var username = credentials.getUserName() !=  null ? credentials.getUserName() : "";
-            final var password = credentials.getPasswordAsString() !=  null ? credentials.getPasswordAsString() : "";
-            final var errorMessage = login(settings, replicaContext, cookiesKey, username, password);
-            if (StringUtils.isNotBlank(errorMessage)) {
-                return createErrorResponse(errorMessage);
+            val credentials = HacExecConnectionService.getInstance(project).getCredentials(settings)
+            val username = credentials.userName ?: ""
+            val password = credentials.getPasswordAsString() ?: ""
+            val errorMessage = authenticate(settings, cookiesKey, username, password, replicaContext)
+            if (errorMessage is HacHttpAuthenticationResult.Error) {
+                return createErrorResponse(errorMessage.message)
             }
         }
-        cookies = cookiesPerSettings.get(cookiesKey);
-        if (cookies == null) return createErrorResponse("Unable to authenticate request.");
 
-        final var sessionId = cookies.get(cookieName);
-        final var generatedURL = settings.getGeneratedURL();
-        final var csrfToken = getCsrfToken(generatedURL, settings, cookiesKey);
+        cookies = cookiesPerSettings[cookiesKey]
+            ?: return createErrorResponse("Unable to authenticate request.")
+
+        val sessionId = cookies[cookieName]
+        val generatedURL = settings.generatedURL
+        val csrfToken = getCsrfToken(generatedURL, settings, cookiesKey)
+
         if (csrfToken == null) {
-            cookiesPerSettings.remove(cookiesKey);
+            cookiesPerSettings.remove(cookiesKey)
 
             if (canReLoginIfNeeded) {
-                return post(actionUrl, params, false, timeout, settings, replicaContext);
+                return post(actionUrl, params, false, timeout, settings, replicaContext)
             }
-            return createErrorResponse("Unable to obtain csrfToken for sessionId=" + sessionId);
+            return createErrorResponse("Unable to obtain csrfToken for sessionId=$sessionId")
         }
-        final var client = createAllowAllClient(timeout);
-        if (client == null) {
-            return createErrorResponse("Unable to create HttpClient");
-        }
-        final var post = new HttpPost(actionUrl);
-        final var cookie = cookies.entrySet().stream()
-            .map(it -> it.getKey() + '=' + it.getValue())
-            .collect(Collectors.joining("; "));
-        post.setHeader("User-Agent", HttpHeaders.USER_AGENT);
-        post.setHeader("X-CSRF-TOKEN", csrfToken);
-        post.setHeader("Cookie", cookie);
-        post.setHeader("Accept", "application/json");
-        post.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        post.setHeader("Sec-Fetch-Dest", "empty");
-        post.setHeader("Sec-Fetch-Mode", "cors");
-        post.setHeader("Sec-Fetch-Site", "same-origin");
 
-        final HttpResponse response;
+        val client = createAllowAllClient(timeout)
+            ?: return createErrorResponse("Unable to create HttpClient")
+
+        val post = HttpPost(actionUrl).apply {
+            setHeader("User-Agent", HttpHeaders.USER_AGENT)
+            setHeader("X-CSRF-TOKEN", csrfToken)
+            setHeader("Cookie", cookies.entries.joinToString("; ") { it.key + "=" + it.value })
+            setHeader("Accept", "application/json")
+            setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            setHeader("Sec-Fetch-Dest", "empty")
+            setHeader("Sec-Fetch-Mode", "cors")
+            setHeader("Sec-Fetch-Site", "same-origin")
+        }
+
+        val response: HttpResponse
         try {
-            post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
-            response = client.execute(post);
-        } catch (final IOException e) {
-            LOG.warn(e.getMessage(), e);
-            return createErrorResponse(e.getMessage());
+            post.entity = UrlEncodedFormEntity(params, StandardCharsets.UTF_8)
+            response = client.execute(post)
+        } catch (e: IOException) {
+            thisLogger().warn(e.message, e)
+            return createErrorResponse(e.message)
         }
 
-        final var statusCode = response.getStatusLine().getStatusCode();
-        final var needsLogin = switch (statusCode) {
-            case HttpStatus.SC_FORBIDDEN,
-                 HttpStatus.SC_METHOD_NOT_ALLOWED -> true;
-            case HttpStatus.SC_MOVED_TEMPORARILY -> {
-                final var location = response.getFirstHeader("Location");
-                yield location != null && location.getValue().contains("login");
+        val statusCode = response.getStatusLine().getStatusCode()
+        val needsLogin = when (statusCode) {
+            HttpStatus.SC_FORBIDDEN, HttpStatus.SC_METHOD_NOT_ALLOWED -> true
+            HttpStatus.SC_MOVED_TEMPORARILY -> {
+                val location = response.getFirstHeader("Location")
+                location != null && location.getValue().contains("login")
             }
-            default -> false;
-        };
 
+            else -> false
+        }
         if (needsLogin) {
-            cookiesPerSettings.remove(cookiesKey);
+            cookiesPerSettings.remove(cookiesKey)
             if (canReLoginIfNeeded) {
-                return post(actionUrl, params, false, timeout, settings, replicaContext);
+                return post(actionUrl, params, false, timeout, settings, replicaContext)
             }
         }
-        return response;
+        return response
     }
 
-    private String login(
-        @NotNull final HacConnectionSettingsState settings,
-        @Nullable final ReplicaContext replicaContext,
-        final String cookiesKey,
-        final @NotNull String username,
-        final @NotNull String password
-    ) {
-        final var hostHacURL = settings.getGeneratedURL();
+    private fun authenticate(
+        settings: HacConnectionSettingsState,
+        cookiesKey: String,
+        username: String,
+        password: String,
+        replicaContext: ReplicaContext? = null
+    ): HacHttpAuthenticationResult {
+        val hostHacURL = settings.generatedURL
 
-        retrieveCookies(hostHacURL, settings, replicaContext, cookiesKey);
+        retrieveCookies(hostHacURL, settings, replicaContext, cookiesKey)
 
-        final var cookieName = getCookieName(settings);
-        final var sessionId = Optional.ofNullable(cookiesPerSettings.get(cookiesKey))
-            .map(it -> it.get(cookieName))
-            .orElse(null);
-        if (sessionId == null) {
-            return "Unable to obtain sessionId for " + hostHacURL;
-        }
-        final var csrfToken = getCsrfToken(hostHacURL, settings, cookiesKey);
-        if (csrfToken == null) {
-            return "Unable to obtain csrfToken for " + hostHacURL;
-        }
-        final var params = List.of(
-            new BasicNameValuePair("j_username", username),
-            new BasicNameValuePair("j_password", password),
-            new BasicNameValuePair("_csrf", csrfToken)
-        );
-        final var loginURL = hostHacURL + "/j_spring_security_check";
-        final HttpResponse response = post(loginURL, params, false, settings.getTimeout(), settings, replicaContext);
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
-            final Header location = response.getFirstHeader("Location");
-            if (location != null && location.getValue().contains("login_error")) {
-                return "Wrong username/password. Set your credentials in [y] tool window.";
+        val cookieName = getCookieName(settings)
+        cookiesPerSettings.get(cookiesKey)
+            ?.get(cookieName)
+            ?: return HacHttpAuthenticationResult.Error(hostHacURL, "Unable to obtain sessionId for $hostHacURL")
+
+        val csrfToken = getCsrfToken(hostHacURL, settings, cookiesKey)
+            ?: return HacHttpAuthenticationResult.Error(hostHacURL, "Unable to obtain csrfToken for $hostHacURL")
+
+        val params = listOf(
+            BasicNameValuePair("j_username", username),
+            BasicNameValuePair("j_password", password),
+            BasicNameValuePair("_csrf", csrfToken),
+        )
+        val loginURL = "$hostHacURL/j_spring_security_check"
+        val response = post(loginURL, params, false, settings.timeout, settings, replicaContext)
+        val statusCode = response.statusLine.statusCode
+        if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+            val location = response.getFirstHeader("Location")
+            if (location != null && location.value.contains("login_error")) {
+                return HacHttpAuthenticationResult.Error(hostHacURL, "Wrong username/password. Set your credentials in [y] tool window.")
             }
         }
-        final var newSessionId = CookieParser.getInstance().getSpecialCookie(response.getAllHeaders());
-        if (newSessionId != null) {
-            Optional.ofNullable(cookiesPerSettings.get(cookiesKey))
-                .ifPresent(cookies -> cookies.put(cookieName, newSessionId));
-            return StringUtils.EMPTY;
-        }
-        final int statusCode = response.getStatusLine().getStatusCode();
-        final StringBuilder sb = new StringBuilder();
-        sb.append("HTTP ");
-        sb.append(statusCode);
-        sb.append(' ');
-        switch (statusCode) {
-            case HTTP_OK -> sb.append("Unable to obtain sessionId from response");
-            case HTTP_MOVED_TEMP -> sb.append(response.getFirstHeader("Location"));
-            default -> sb.append(response.getStatusLine().getReasonPhrase());
-        }
-        return sb.toString();
+
+        return CookieParser.getInstance().getSpecialCookie(response.allHeaders)
+            ?.let { newSessionId ->
+                cookiesPerSettings[cookiesKey]?.let { it[cookieName] = newSessionId }
+                HacHttpAuthenticationResult.Success(hostHacURL)
+            }
+            ?: HacHttpAuthenticationResult.Error(hostHacURL, buildString {
+                append("HTTP ")
+                append(statusCode)
+                append(" ")
+
+                when (statusCode) {
+                    HttpURLConnection.HTTP_OK -> append("Unable to obtain sessionId from response")
+                    HttpURLConnection.HTTP_MOVED_TEMP -> append(response.getFirstHeader("Location"))
+                    else -> append(response.statusLine.reasonPhrase)
+                }
+            })
     }
 
-    private HttpResponse createErrorResponse(final String reasonPhrase) {
-        return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, HttpStatus.SC_SERVICE_UNAVAILABLE, reasonPhrase));
-    }
-
-    private CloseableHttpClient createAllowAllClient(final int timeout) {
-        final SSLContext sslcontext;
+    private fun createAllowAllClient(timeout: Int): CloseableHttpClient? {
+        val sslContext: SSLContext
         try {
-            sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
-        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            LOG.warn(e.getMessage(), e);
-            return null;
+            sslContext = SSLContexts.custom().loadTrustMaterial(null) { _: Array<X509Certificate>, _: String -> true }.build()
+        } catch (e: Exception) {
+            thisLogger().warn(e.message, e)
+            return null
         }
-        final SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, NoopHostnameVerifier.INSTANCE);
 
-        final Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-            .register("http", PlainConnectionSocketFactory.getSocketFactory())
-            .register("https", sslConnectionFactory)
-            .build();
-
-        final HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
-        final RequestConfig config = RequestConfig.custom()
-            .setSocketTimeout(timeout)
-            .setConnectTimeout(timeout)
-            .build();
         return HttpClients.custom()
-            .setConnectionManager(ccm)
-            .setDefaultRequestConfig(config)
-            .build();
+            .setConnectionManager(
+                BasicHttpClientConnectionManager(
+                    RegistryBuilder.create<ConnectionSocketFactory>()
+                        .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                        .register("https", SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+                        .build()
+                )
+            )
+            .setDefaultRequestConfig(
+                RequestConfig.custom()
+                    .setSocketTimeout(timeout)
+                    .setConnectTimeout(timeout)
+                    .build()
+            )
+            .build()
     }
 
+    private fun createErrorResponse(reasonPhrase: String?) = BasicHttpResponse(
+        BasicStatusLine(
+            HttpVersion.HTTP_1_1,
+            HttpStatus.SC_SERVICE_UNAVAILABLE,
+            reasonPhrase
+        )
+    )
 
-    private void retrieveCookies(
-        final String hacURL,
-        final @NotNull HacConnectionSettingsState settings,
-        final @Nullable ReplicaContext replicaContext,
-        final String cookiesKey
+    private fun retrieveCookies(
+        hacURL: String,
+        settings: HacConnectionSettingsState,
+        replicaContext: ReplicaContext?,
+        cookiesKey: String
     ) {
-        final var cookies = cookiesPerSettings.computeIfAbsent(cookiesKey, _settings -> new HashMap<>());
-        cookies.clear();
+        val cookies = cookiesPerSettings.computeIfAbsent(cookiesKey) { mutableMapOf() }
+        cookies.clear()
 
-        final var res = getResponseForUrl(hacURL, settings, replicaContext);
+        val res = getResponseForUrl(hacURL, settings, replicaContext)
+            ?: return
 
-        if (res == null) return;
-
-        cookies.putAll(res.cookies());
+        cookies.putAll(res.cookies())
 
         if (replicaContext != null) {
-            cookies.put(replicaContext.getCookieName(), replicaContext.getReplicaCookie());
+            cookies[replicaContext.cookieName] = replicaContext.replicaCookie
         }
     }
 
-    private String getCookieName(@NotNull final HacConnectionSettingsState settings) {
-        final var sessionCookieName = settings.sessionCookieName;
-        return StringUtils.isNotBlank(sessionCookieName)
-            ? sessionCookieName
-            : ExecConstants.DEFAULT_SESSION_COOKIE_NAME;
-    }
+    private fun getCookieName(settings: HacConnectionSettingsState) = settings.sessionCookieName
+        .takeIf { it.isNotBlank() }
+        ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME
 
-    @Nullable
-    private Connection.Response getResponseForUrl(
-        final String hacURL,
-        final @NotNull HacConnectionSettingsState settings,
-        final @Nullable ReplicaContext replicaContext
-    ) {
+    private fun getResponseForUrl(
+        hacURL: String,
+        settings: HacConnectionSettingsState,
+        replicaContext: ReplicaContext?
+    ): Connection.Response? {
         try {
-            final var connection = connect(hacURL, settings.sslProtocol);
+            val connection = connect(hacURL, settings.sslProtocol)
 
             if (replicaContext != null) {
-                connection.cookie(replicaContext.getCookieName(), replicaContext.getReplicaCookie());
+                connection.cookie(replicaContext.cookieName, replicaContext.replicaCookie)
             }
 
             return connection
                 .method(Connection.Method.GET)
-                .execute();
-        } catch (final ConnectException ce) {
-            return null;
-        } catch (final NoSuchAlgorithmException | IOException | KeyManagementException | ValidationException e) {
-            LOG.warn(e.getMessage(), e);
-            return null;
+                .execute()
+        } catch (_: ConnectException) {
+            return null
+        } catch (e: Exception) {
+            thisLogger().warn(e.message, e)
+            return null
         }
     }
 
-    @Nullable
-    private String getCsrfToken(
-        final @NotNull String hacURL,
-        final @NotNull HacConnectionSettingsState settings,
-        final String cookiesKey
-    ) {
+    private fun getCsrfToken(
+        hacURL: String,
+        settings: HacConnectionSettingsState,
+        cookiesKey: String?
+    ): String? {
         try {
-            final var doc = connect(hacURL, settings.sslProtocol)
-                .cookies(cookiesPerSettings.get(cookiesKey))
-                .get();
-            final Elements csrfMetaElt = doc.select("meta[name=_csrf]");
-            return csrfMetaElt.attr("content");
-        } catch (final IOException | NoSuchAlgorithmException | KeyManagementException e) {
-            LOG.warn(e.getMessage(), e);
+            val doc = connect(hacURL, settings.sslProtocol)
+                .cookies(cookiesPerSettings.get(cookiesKey)!!)
+                .get()
+            val csrfMetaElt = doc.select("meta[name=_csrf]")
+            return csrfMetaElt.attr("content")
+        } catch (e: Exception) {
+            thisLogger().warn(e.message, e)
         }
-        return null;
+        return null
     }
 
-    private Connection connect(@NotNull final String url, final String sslProtocol) throws NoSuchAlgorithmException, KeyManagementException {
-        final TrustManager[] trustAllCerts = new TrustManager[]{X_509_TRUST_MANAGER};
+    @Throws(NoSuchAlgorithmException::class, KeyManagementException::class)
+    private fun connect(url: String, sslProtocol: String): Connection {
+        val trustAllCerts = arrayOf(TrustAllX509TrustManager)
 
-        final SSLContext sc = SSLContext.getInstance(sslProtocol);
-        sc.init(null, trustAllCerts, new SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());
-        return Jsoup.connect(url);
+        val sc = SSLContext.getInstance(sslProtocol)
+        sc.init(null, trustAllCerts, SecureRandom())
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
+        HttpsURLConnection.setDefaultHostnameVerifier(NoopHostnameVerifier())
+        return Jsoup.connect(url)
     }
+
+    companion object {
+        fun getInstance(project: Project): HacHttpClient = project.service()
+    }
+}
+
+sealed class HacHttpAuthenticationResult {
+    data class Success(val url: String) : HacHttpAuthenticationResult()
+    data class Error(val url: String, val message: String) : HacHttpAuthenticationResult()
+}
+
+sealed class HacHttpResult {
+    data class Success(val response: HttpResponse) : HacHttpResult()
+    data class Error(val message: String, val statusCode: Int = HttpStatusCode.ServiceUnavailable.value) : HacHttpResult()
+}
+
+private object TrustAllX509TrustManager : javax.net.ssl.X509TrustManager {
+    override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+    override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+    override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
 }
