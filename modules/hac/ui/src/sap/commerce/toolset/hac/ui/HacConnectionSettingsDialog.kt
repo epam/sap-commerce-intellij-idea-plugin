@@ -144,8 +144,7 @@ class HacConnectionSettingsDialog(
             }
         }
 
-        group("Host Settings") {
-
+        collapsibleGroup("Host Settings") {
             row {
                 hostTextField = textField()
                     .label("Address:")
@@ -196,15 +195,15 @@ class HacConnectionSettingsDialog(
                     .apply { component.text = "" }
                     .component
             }.layout(RowLayout.PARENT_GRID)
-        }
+        }.expanded = true
 
         if (SystemInfo.isWindows) {
-            group("Windows Subsystem for Linux") {
+            collapsibleGroup("Windows Subsystem for Linux") {
                 wslHostConfiguration()
-            }
+            }.expanded = true
         }
 
-        group("Authentication") {
+        collapsibleGroup("Authentication") {
             row {
                 segmentedButton(AuthenticationMode.entries.toList()) {
                     text = it.title
@@ -227,7 +226,7 @@ class HacConnectionSettingsDialog(
                 checkBox("Proxy authentication")
                     .bindSelected(mutable.proxyAuthentication)
             }
-        }
+        }.expanded = true
     }
 
     private fun Panel.authenticationManual() {
