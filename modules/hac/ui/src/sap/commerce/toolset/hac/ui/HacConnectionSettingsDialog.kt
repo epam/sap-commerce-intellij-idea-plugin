@@ -147,8 +147,7 @@ class HacConnectionSettingsDialog(
         collapsibleGroup("Host Settings") {
             row {
                 hostTextField = textField()
-                    .label("Address:")
-                    .comment("Host name or IP address")
+                    .label("Host / IP:")
                     .align(AlignX.FILL)
                     .bindText(mutable::host)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
