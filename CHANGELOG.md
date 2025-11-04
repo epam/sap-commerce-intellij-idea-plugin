@@ -1,7 +1,7 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Register new `Test Classes` library for OOTB `testsrc` of the Web modules [#1637](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1637)
