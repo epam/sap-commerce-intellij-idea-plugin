@@ -24,7 +24,7 @@
                              provider="sap.commerce.toolset.hac.options.HacExecProjectSettingsConfigurableProvider"/>
 
         <projectService serviceInterface="sap.commerce.toolset.hac.HacManualAuthenticator"
-                        serviceImplementation="sap.commerce.toolset.hac.HacManualAuthenticatorImpl"/>
+                        serviceImplementation="sap.commerce.toolset.hac.auth.HacManualAuthenticatorImpl"/>
     </extensions>
 
     <actions>

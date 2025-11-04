@@ -125,51 +125,38 @@ class SolrConnectionSettingsDialog(
             }
         }
 
-        group("Host Settings") {
+        collapsibleGroup("Host Settings") {
             row {
-                label("Address:")
                 hostTextField = textField()
-                    .comment("Host name or IP address")
+                    .label("Host / IP:")
                     .align(AlignX.FILL)
                     .bindText(mutable::host)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
-            }.layout(RowLayout.PARENT_GRID)
 
-            row {
-                label("Port:")
-                portTextField = textField()
-                    .align(AlignX.FILL)
+                portTextField = intTextField(1..65535)
+                    .label("Port:")
                     .bindText(mutable::port.toNonNullableProperty(""))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
-                    .addValidationRule("Port should be blank or in a range of 1..65535.") {
-                        if (it.text.isNullOrBlank()) return@addValidationRule false
-
-                        val intValue = it.text.toIntOrNull() ?: return@addValidationRule true
-                        return@addValidationRule intValue !in 1..65535
-                    }
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
+                webrootTextField = textField()
+                    .label("Webroot:")
+                    .bindText(mutable::webroot)
+                    .onChanged { urlPreviewLabel.text = generateUrl() }
+                    .component
+
                 sslProtocolCheckBox = checkBox("SSL")
                     .bindSelected(mutable::ssl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+        }.expanded = true
 
-            row {
-                label("Webroot:")
-                webrootTextField = textField()
-                    .align(AlignX.FILL)
-                    .bindText(mutable::webroot)
-                    .onChanged { urlPreviewLabel.text = generateUrl() }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-        }
-
-        group("Credentials") {
+        collapsibleGroup("Credentials") {
             row {
                 label("Username:")
                 usernameTextField = textField()
@@ -189,6 +176,6 @@ class SolrConnectionSettingsDialog(
                     .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
-        }
+        }.expanded = true
     }
 }

@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.hac.ui
 
+import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
@@ -25,26 +26,36 @@ import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CompletableDeferred
+import sap.commerce.toolset.hac.auth.ProxyAuthCefRequestHandlerAdapter
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.util.concurrent.TimeUnit
 
 /*
     It is mandatory to use MODELESS Modality type to ensure correct render of the Cef Browser
  */
 class HacManualAuthenticationDialog(
-    project: Project,
-    url: String,
-    private val deferred: CompletableDeferred<Map<String, String>>,
+    private val project: Project,
+    private val settings: HacConnectionSettingsState,
+    private val proxyCredentials: Credentials? = null,
+    private val deferredCookies: CompletableDeferred<Map<String, String>>,
 ) : DialogWrapper(project, null, false, IdeModalityType.MODELESS) {
 
     private val jbCefBrowser = JBCefBrowser.createBuilder()
         .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
-        .setUrl(url)
+        .setUrl(settings.generatedURL)
         .setCreateImmediately(true)
         .build()
         .apply {
             Disposer.register(disposable, this)
 
             setProperty(JBCefBrowser.Properties.FOCUS_ON_SHOW, true)
+
+            if (settings.proxyAuthentication) {
+                jbCefClient.addRequestHandler(
+                    ProxyAuthCefRequestHandlerAdapter(project, proxyCredentials),
+                    cefBrowser
+                )
+            }
         }
 
     init {
@@ -62,11 +73,11 @@ class HacManualAuthenticationDialog(
         val cookies = jbCefBrowser.getJBCefCookieManager().getCookies(null, false)
             .get(5, TimeUnit.SECONDS)
             .associate { it.name to it.value }
-        deferred.complete(cookies)
+        deferredCookies.complete(cookies)
     }
 
     override fun doCancelAction() {
         super.doCancelAction()
-        deferred.complete(emptyMap())
+        deferredCookies.complete(emptyMap())
     }
 }

@@ -16,23 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac
+package sap.commerce.toolset.hac.auth
 
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.hac.HacManualAuthenticator
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.ui.HacManualAuthenticationDialog
 
 class HacManualAuthenticatorImpl(private val project: Project) : HacManualAuthenticator {
 
     override suspend fun authenticate(settings: HacConnectionSettingsState): Map<String, String> {
-        val deferred = CompletableDeferred<Map<String, String>>()
-        withContext(Dispatchers.EDT) {
-            HacManualAuthenticationDialog(project, settings.generatedURL, deferred).show()
+        val deferredCookies = CompletableDeferred<Map<String, String>>()
+
+        val proxyCredentials = withContext(Dispatchers.IO) {
+            HacExecConnectionService.getInstance(project).getProxyCredentials(settings)
         }
-        return deferred.await()
+
+        withContext(Dispatchers.EDT) {
+            HacManualAuthenticationDialog(project, settings, proxyCredentials, deferredCookies).show()
+        }
+        return deferredCookies.await()
     }
 }
