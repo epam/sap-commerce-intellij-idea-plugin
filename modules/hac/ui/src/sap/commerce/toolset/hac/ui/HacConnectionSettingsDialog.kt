@@ -86,7 +86,7 @@ class HacConnectionSettingsDialog(
             sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: "",
             webroot = webrootTextField.text,
             timeout = timeoutIntSpinner.number,
-            sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
+            sessionCookieName = sessionCookieNameTextField.text.takeUnless { it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
         ),
         mutable.username.get(),
         mutable.password.get(),
@@ -145,29 +145,15 @@ class HacConnectionSettingsDialog(
         }
 
         group("Host Settings") {
+
             row {
-                label("Address:")
                 hostTextField = textField()
+                    .label("Address:")
                     .comment("Host name or IP address")
                     .align(AlignX.FILL)
                     .bindText(mutable::host)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                label("Port:")
-                portTextField = textField()
-                    .align(AlignX.FILL)
-                    .bindText(mutable::port.toNonNullableProperty(""))
-                    .onChanged { urlPreviewLabel.text = generateUrl() }
-                    .addValidationRule("Port should be blank or in a range of 1..65535.") {
-                        if (it.text.isNullOrBlank()) return@addValidationRule false
-
-                        val intValue = it.text.toIntOrNull() ?: return@addValidationRule true
-                        return@addValidationRule intValue !in 1..65535
-                    }
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -189,20 +175,31 @@ class HacConnectionSettingsDialog(
                     .bindItem(mutable::sslProtocol.toNullableProperty())
                     .align(AlignX.FILL)
                     .component
-            }.layout(RowLayout.PARENT_GRID)
 
-            row {
-                label("Webroot:")
+                portTextField = textField()
+                    .label("Port:")
+                    .align(AlignX.RIGHT)
+                    .bindText(mutable::port.toNonNullableProperty(""))
+                    .onChanged { urlPreviewLabel.text = generateUrl() }
+                    .addValidationRule("Port should be blank or in a range of 1..65535.") {
+                        if (it.text.isNullOrBlank()) return@addValidationRule false
+
+                        val intValue = it.text.toIntOrNull() ?: return@addValidationRule true
+                        return@addValidationRule intValue !in 1..65535
+                    }
+                    .component
+
                 webrootTextField = textField()
-                    .align(AlignX.FILL)
+                    .label("Webroot:")
+                    .align(AlignX.RIGHT)
                     .bindText(mutable::webroot)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                label("Session Cookie name:")
                 sessionCookieNameTextField = textField()
+                    .label("Session cookie:")
                     .comment("Optional: override the session cookie name. Default is JSESSIONID.")
                     .align(AlignX.FILL)
                     .bindText(mutable::sessionCookieName)
@@ -233,6 +230,13 @@ class HacConnectionSettingsDialog(
 
             authenticationAutomatic()
             authenticationManual()
+
+            separator()
+
+            row {
+                checkBox("Proxy authentication")
+                    .bindSelected(mutable.proxyAuthentication)
+            }
         }
     }
 

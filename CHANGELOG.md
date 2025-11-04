@@ -11,6 +11,7 @@
 
 ### `hAC` enhancements
 - Introduced possibility to authenticate user manually in hAC [#1638](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1638)
+- Added support of the _proxy_ authentication for `manual` authentication mode [#1639](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1639)
 
 ## [2025.2.4.5]
 

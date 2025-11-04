@@ -45,6 +45,8 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected 
     fun getCredentials(settings: T) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - ${settings.uuid}"))
         ?: defaultCredentials(settings)
 
+    fun getProxyCredentials(settings: T) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - proxy - ${settings.uuid}"))
+
     fun update(settings: Pair<T, Credentials>) = update(mapOf(settings))
 
     fun update(settings: Map<T, Credentials>) {
