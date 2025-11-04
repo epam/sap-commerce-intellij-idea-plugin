@@ -155,9 +155,21 @@ class HacConnectionSettingsDialog(
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
+
+                portTextField = intTextField(1..65535)
+                    .label("Port:")
+                    .bindText(mutable::port.toNonNullableProperty(""))
+                    .onChanged { urlPreviewLabel.text = generateUrl() }
+                    .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
+                webrootTextField = textField()
+                    .label("Webroot:")
+                    .bindText(mutable::webroot)
+                    .onChanged { urlPreviewLabel.text = generateUrl() }
+                    .component
+
                 sslProtocolCheckBox = checkBox("SSL:")
                     .bindSelected(mutable::ssl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
@@ -173,35 +185,13 @@ class HacConnectionSettingsDialog(
                 )
                     .enabledIf(sslProtocolCheckBox.selected)
                     .bindItem(mutable::sslProtocol.toNullableProperty())
-                    .align(AlignX.FILL)
-                    .component
-
-                portTextField = textField()
-                    .label("Port:")
-                    .align(AlignX.RIGHT)
-                    .bindText(mutable::port.toNonNullableProperty(""))
-                    .onChanged { urlPreviewLabel.text = generateUrl() }
-                    .addValidationRule("Port should be blank or in a range of 1..65535.") {
-                        if (it.text.isNullOrBlank()) return@addValidationRule false
-
-                        val intValue = it.text.toIntOrNull() ?: return@addValidationRule true
-                        return@addValidationRule intValue !in 1..65535
-                    }
-                    .component
-
-                webrootTextField = textField()
-                    .label("Webroot:")
-                    .align(AlignX.RIGHT)
-                    .bindText(mutable::webroot)
-                    .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                sessionCookieNameTextField = textField()
-                    .label("Session cookie:")
+                label("Session cookie:")
                     .comment("Optional: override the session cookie name. Default is JSESSIONID.")
-                    .align(AlignX.FILL)
+                sessionCookieNameTextField = textField()
                     .bindText(mutable::sessionCookieName)
                     .apply { component.text = "" }
                     .component
