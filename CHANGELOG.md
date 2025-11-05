@@ -1,7 +1,7 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Register new `Test Classes` library for OOTB `testsrc` of the Web modules [#1637](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1637)
@@ -13,6 +13,7 @@
 - Introduced possibility to authenticate user manually in hAC [#1638](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1638)
 - Added support of the _proxy_ authentication for `manual` authentication mode [#1639](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1639)
 - Respect basic authorization for proxy authentication of the `manual` authentication mode [#1640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1640)
+- Display website access errors in the Browser for `manual` authentication mode [#1641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1641)
 
 ## [2025.2.4.5]
 

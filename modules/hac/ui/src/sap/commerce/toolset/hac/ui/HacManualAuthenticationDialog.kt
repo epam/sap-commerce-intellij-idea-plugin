@@ -26,6 +26,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.ui.jcef.*
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
+import org.cef.handler.CefLoadHandler
 import sap.commerce.toolset.hac.auth.HacAuthenticationContext
 import sap.commerce.toolset.hac.auth.ProxyAuthCefRequestHandlerAdapter
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -55,6 +56,11 @@ class HacManualAuthenticationDialog(
 
             setProperty(JBCefBrowser.Properties.FOCUS_ON_SHOW, true)
             jbCefClient.setProperty(JBCefClient.Properties.JS_QUERY_POOL_SIZE, 20)
+
+            setErrorPage { errorCode, errorText, failedUrl ->
+                if (errorCode == CefLoadHandler.ErrorCode.ERR_ABORTED) null
+                else JBCefBrowserBase.ErrorPage.DEFAULT.create(errorCode, errorText, failedUrl)
+            }
 
             if (settings.proxyAuthentication) {
                 jbCefClient.addRequestHandler(
