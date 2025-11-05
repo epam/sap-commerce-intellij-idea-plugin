@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac
+package sap.commerce.toolset.hac.auth
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -24,7 +24,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 interface HacManualAuthenticator {
 
-    suspend fun authenticate(settings: HacConnectionSettingsState): Map<String, String>
+    suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthenticationContext?
 
     companion object {
         fun getService(project: Project): HacManualAuthenticator = project.service()

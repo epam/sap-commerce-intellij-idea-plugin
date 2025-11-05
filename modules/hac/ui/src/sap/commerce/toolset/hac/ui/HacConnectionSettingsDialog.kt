@@ -48,6 +48,7 @@ import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.ui.inlineBanner
+import sap.commerce.toolset.ui.nullableIntTextField
 import sap.commerce.toolset.ui.repackDialog
 import java.awt.Component
 import javax.swing.DefaultComboBoxModel
@@ -154,7 +155,7 @@ class HacConnectionSettingsDialog(
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
 
-                portTextField = intTextField(1..65535)
+                portTextField = nullableIntTextField(1..65535)
                     .label("Port:")
                     .bindText(mutable::port.toNonNullableProperty(""))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
@@ -220,10 +221,14 @@ class HacConnectionSettingsDialog(
             authenticationManual()
 
             separator()
+                // TODO; remove visibility flag once proxy authentication is implemented for Automatic mode
+                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
 
             row {
                 checkBox("Proxy authentication")
                     .bindSelected(mutable.proxyAuthentication)
+                    // TODO; remove visibility flag once proxy authentication is implemented for Automatic mode
+                    .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
             }
         }.expanded = true
     }

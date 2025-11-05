@@ -30,6 +30,7 @@ import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
+import sap.commerce.toolset.ui.nullableIntTextField
 import java.awt.Component
 import javax.swing.JLabel
 
@@ -135,7 +136,7 @@ class SolrConnectionSettingsDialog(
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
 
-                portTextField = intTextField(1..65535)
+                portTextField = nullableIntTextField(1..65535)
                     .label("Port:")
                     .bindText(mutable::port.toNonNullableProperty(""))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
