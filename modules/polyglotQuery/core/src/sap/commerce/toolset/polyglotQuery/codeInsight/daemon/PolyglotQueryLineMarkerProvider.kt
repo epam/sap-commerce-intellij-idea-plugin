@@ -35,8 +35,10 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryUtils
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotElementFactory
+import sap.commerce.toolset.scratch.createScratchFile
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
 import javax.swing.Icon
@@ -81,6 +83,7 @@ class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
 
         Notifications.create(NotificationType.INFORMATION, i18n("hybris.editor.gutter.pgq.notification.title"), formattedExpression)
             .hideAfter(10)
+            .addAction("Open as a Scratch File") { _, _ -> createScratchFile(project, formattedExpression, PolyglotQueryLanguage) }
             .notify(project)
     }
 
