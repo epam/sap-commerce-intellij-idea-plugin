@@ -23,23 +23,22 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.hac.HacManualAuthenticator
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.ui.HacManualAuthenticationDialog
 
 class HacManualAuthenticatorImpl(private val project: Project) : HacManualAuthenticator {
 
-    override suspend fun authenticate(settings: HacConnectionSettingsState): Map<String, String> {
-        val deferredCookies = CompletableDeferred<Map<String, String>>()
+    override suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthenticationContext? {
+        val deferredAuthenticationContext = CompletableDeferred<HacAuthenticationContext?>()
 
         val proxyCredentials = withContext(Dispatchers.IO) {
             HacExecConnectionService.getInstance(project).getProxyCredentials(settings)
         }
 
         withContext(Dispatchers.EDT) {
-            HacManualAuthenticationDialog(project, settings, proxyCredentials, deferredCookies).show()
+            HacManualAuthenticationDialog(project, settings, proxyCredentials, deferredAuthenticationContext).show()
         }
-        return deferredCookies.await()
+        return deferredAuthenticationContext.await()
     }
 }

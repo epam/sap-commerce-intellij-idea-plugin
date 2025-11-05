@@ -33,6 +33,7 @@ import java.awt.GraphicsEnvironment
 internal class ProxyAuthCefRequestHandlerAdapter(
     private val project: Project,
     private val proxyCredentials: Credentials?,
+    private val authorizationRef: Ref<Credentials?>,
 ) : CefRequestHandlerAdapter() {
 
     override fun getAuthCredentials(
@@ -65,6 +66,7 @@ internal class ProxyAuthCefRequestHandlerAdapter(
 
         return credentials.get()
             ?.let {
+                authorizationRef.set(Credentials(it.userName, it.password))
                 callback.Continue(it.userName, it.getPasswordAsString())
                 true
             }

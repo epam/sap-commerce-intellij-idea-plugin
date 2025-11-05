@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.hac.exec.http
 
+import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -45,7 +46,7 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.hac.HacManualAuthenticator
+import sap.commerce.toolset.hac.auth.HacManualAuthenticator
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -59,6 +60,7 @@ import java.security.SecureRandom
 import java.util.concurrent.ConcurrentHashMap
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
+import kotlin.io.encoding.Base64
 
 @Service(Service.Level.PROJECT)
 class HacHttpClient(private val project: Project) {
@@ -86,17 +88,21 @@ class HacHttpClient(private val project: Project) {
         val cookiesKey = HttpCookiesCache.getInstance(project).getKey(settings, replicaContext)
         val sessionCookieName = getSessionCookieName(settings)
         var cookies = cookiesPerSettings[cookiesKey]
+        var prefilledCsrfToken: String? = null
+        var authorization: Credentials? = if (!settings.proxyAuthentication || settings.authenticationMode == AuthenticationMode.MANUAL) null
+        // TODO : Use credentials from settings
+        else null
 
         if (cookies == null || !cookies.containsKey(sessionCookieName)) {
             if (settings.authenticationMode == AuthenticationMode.MANUAL) {
-                val manualAuthenticationCookies = HacManualAuthenticator.getService(project)
+                val authenticationContext = HacManualAuthenticator.getService(project)
                     .authenticate(settings)
+                    ?.takeIf { it.isValid(sessionCookieName) }
+                    ?: return createErrorResponse("Unable to find cookie $sessionCookieName")
 
-                if (!manualAuthenticationCookies.contains(sessionCookieName)) {
-                    return createErrorResponse("Unable to find cookie $sessionCookieName")
-                } else {
-                    cookiesPerSettings[cookiesKey] = manualAuthenticationCookies.toMutableMap()
-                }
+                cookiesPerSettings[cookiesKey] = authenticationContext.cookies.toMutableMap()
+                prefilledCsrfToken = authenticationContext.csrfToken
+                authorization = authenticationContext.authorization
             } else {
                 val credentials = HacExecConnectionService.getInstance(project).getCredentials(settings)
                 val username = credentials.userName ?: ""
@@ -114,7 +120,8 @@ class HacHttpClient(private val project: Project) {
 
         val sessionId = cookies[sessionCookieName]
         val generatedURL = settings.generatedURL
-        val csrfToken = getCsrfToken(generatedURL, settings, cookies)
+        val csrfToken = prefilledCsrfToken
+            ?: getCsrfToken(generatedURL, settings, cookies)
 
         if (csrfToken == null) {
             cookiesPerSettings.remove(cookiesKey)
@@ -129,6 +136,8 @@ class HacHttpClient(private val project: Project) {
             ?: return createErrorResponse("Unable to create HttpClient")
 
         val post = HttpPost(actionUrl).apply {
+            authorization?.let { setHeader("Authorization", it.basicAuth) }
+
             setHeader("User-Agent", HttpHeaders.USER_AGENT)
             setHeader("X-CSRF-TOKEN", csrfToken)
             setHeader("Cookie", cookies.entries.joinToString("; ") { it.key + "=" + it.value })
@@ -148,7 +157,7 @@ class HacHttpClient(private val project: Project) {
             return createErrorResponse(e.message)
         }
 
-        val statusCode = response.getStatusLine().getStatusCode()
+        val statusCode = response.statusLine.statusCode
         val needsLogin = when (statusCode) {
             HttpStatus.SC_FORBIDDEN, HttpStatus.SC_METHOD_NOT_ALLOWED -> true
             HttpStatus.SC_MOVED_TEMPORARILY -> {
@@ -327,6 +336,15 @@ class HacHttpClient(private val project: Project) {
         HttpsURLConnection.setDefaultHostnameVerifier(NoopHostnameVerifier())
         return Jsoup.connect(url)
     }
+
+    private val Credentials.basicAuth: String?
+        get() {
+            val u = this.userName ?: return null
+            val p = this.getPasswordAsString() ?: return null
+
+            val basic = Base64.encode("$u:$p".toByteArray())
+            return "Basic $basic"
+        }
 
     companion object {
         fun getInstance(project: Project): HacHttpClient = project.service()

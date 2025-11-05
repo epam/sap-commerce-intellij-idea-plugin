@@ -22,10 +22,11 @@ import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
-import com.intellij.ui.jcef.JBCefApp
-import com.intellij.ui.jcef.JBCefBrowser
+import com.intellij.openapi.util.Ref
+import com.intellij.ui.jcef.*
 import com.intellij.util.ui.JBUI
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.*
+import sap.commerce.toolset.hac.auth.HacAuthenticationContext
 import sap.commerce.toolset.hac.auth.ProxyAuthCefRequestHandlerAdapter
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.util.concurrent.TimeUnit
@@ -37,22 +38,27 @@ class HacManualAuthenticationDialog(
     private val project: Project,
     private val settings: HacConnectionSettingsState,
     private val proxyCredentials: Credentials? = null,
-    private val deferredCookies: CompletableDeferred<Map<String, String>>,
+    private val deferredAuthenticationContext: CompletableDeferred<HacAuthenticationContext?>,
 ) : DialogWrapper(project, null, false, IdeModalityType.MODELESS) {
+
+    private val authorizationRef = Ref<Credentials?>()
 
     private val jbCefBrowser = JBCefBrowser.createBuilder()
         .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
         .setUrl(settings.generatedURL)
         .setCreateImmediately(true)
+        .setEnableOpenDevToolsMenuItem(true)
         .build()
+        .let { it as JBCefBrowserBase }
         .apply {
             Disposer.register(disposable, this)
 
             setProperty(JBCefBrowser.Properties.FOCUS_ON_SHOW, true)
+            jbCefClient.setProperty(JBCefClient.Properties.JS_QUERY_POOL_SIZE, 20)
 
             if (settings.proxyAuthentication) {
                 jbCefClient.addRequestHandler(
-                    ProxyAuthCefRequestHandlerAdapter(project, proxyCredentials),
+                    ProxyAuthCefRequestHandlerAdapter(project, proxyCredentials, authorizationRef),
                     cefBrowser
                 )
             }
@@ -73,11 +79,43 @@ class HacManualAuthenticationDialog(
         val cookies = jbCefBrowser.getJBCefCookieManager().getCookies(null, false)
             .get(5, TimeUnit.SECONDS)
             .associate { it.name to it.value }
-        deferredCookies.complete(cookies)
+
+        val csrf = runBlocking { retrieveCsrfToken() }
+        val authorization = authorizationRef.get()
+        val context = HacAuthenticationContext(csrf, cookies, authorization)
+
+        deferredAuthenticationContext.complete(context)
     }
 
     override fun doCancelAction() {
         super.doCancelAction()
-        deferredCookies.complete(emptyMap())
+        deferredAuthenticationContext.complete(null)
+    }
+
+    // reference -> JcefComponentWrapper
+    suspend fun retrieveCsrfToken(executeTimeoutMs: Long = 3000): String = withTimeout(executeTimeoutMs) {
+        suspendCancellableCoroutine { continuation ->
+            val jsQuery = JBCefJSQuery.create(jbCefBrowser)
+            val script = """
+                (() => {
+                const v = document.querySelector('meta[name="_csrf"]')?.content ?? "";
+                ${jsQuery.inject("v")}
+            })();
+            """.trimIndent()
+
+            coroutineContext.job.invokeOnCompletion { Disposer.dispose(jsQuery) }
+
+            lateinit var handler: (String) -> JBCefJSQuery.Response?
+            handler = { csrfString ->
+                jsQuery.removeHandler(handler)
+                continuation.resumeWith(Result.success(csrfString))
+                JBCefJSQuery.Response(csrfString)
+            }
+            jsQuery.addHandler(handler)
+
+            continuation.invokeOnCancellation { jsQuery.removeHandler(handler) }
+
+            jbCefBrowser.cefBrowser.executeJavaScript(script, null, 0)
+        }
     }
 }
