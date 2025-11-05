@@ -11,7 +11,7 @@
 - Create a `Scratch` file from the copied FlexibleSearch query [#1642](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1642)
 
 ### `Polyglot Query` enhancements
-- Create a `Scratch` file from the copied FlexibleSearch query [#1643](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1643)
+- Create a `Scratch` file from the copied Polyglot query [#1643](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1643)
 
 ### `hAC` enhancements
 - Introduced possibility to authenticate user manually in hAC [#1638](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1638)
