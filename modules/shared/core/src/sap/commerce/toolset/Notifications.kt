@@ -28,7 +28,6 @@ import com.intellij.openapi.wm.WindowManager
 import com.intellij.ui.SystemNotifications
 import com.intellij.util.concurrency.AppExecutorUtil
 import java.util.concurrent.TimeUnit
-import java.util.function.BiConsumer
 
 class Notifications private constructor(type: NotificationType, title: String, content: String) {
 
@@ -64,13 +63,13 @@ class Notifications private constructor(type: NotificationType, title: String, c
         return this
     }
 
-    fun addAction(text: String, biConsumer: BiConsumer<AnActionEvent, Notification>): Notifications {
+    fun addAction(text: String, biConsumer: (AnActionEvent, Notification) -> Unit): Notifications {
         notification.addAction(object : NotificationAction(text) {
             override fun actionPerformed(
                 e: AnActionEvent,
                 notification: Notification
             ) {
-                biConsumer.accept(e, notification)
+                biConsumer(e, notification)
             }
         })
         return this

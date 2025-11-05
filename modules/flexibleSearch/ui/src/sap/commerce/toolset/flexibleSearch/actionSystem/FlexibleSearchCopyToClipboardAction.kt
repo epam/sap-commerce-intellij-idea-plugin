@@ -26,8 +26,10 @@ import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.scratch.createScratchFile
 import java.awt.datatransfer.StringSelection
 
 class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {
@@ -55,6 +57,7 @@ class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {
 
         Notifications.create(NotificationType.INFORMATION, i18n("hybris.editor.gutter.fsq.notification.title"), textToCopy)
             .hideAfter(10)
+            .addAction("Open as a Scratch File") { _, _ -> createScratchFile(project, textToCopy, FlexibleSearchLanguage) }
             .notify(project)
     }
 

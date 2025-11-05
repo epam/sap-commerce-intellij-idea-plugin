@@ -33,10 +33,12 @@ import com.intellij.psi.PsiVariable
 import com.intellij.psi.codeStyle.CodeStyleManager
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.scratch.createScratchFile
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
 import javax.swing.Icon
@@ -80,6 +82,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
 
         Notifications.create(NotificationType.INFORMATION, i18n("hybris.editor.gutter.fsq.notification.title"), formattedExpression)
             .hideAfter(10)
+            .addAction("Open as a Scratch File") { _, _ -> createScratchFile(project, formattedExpression, FlexibleSearchLanguage) }
             .notify(project)
     }
 
