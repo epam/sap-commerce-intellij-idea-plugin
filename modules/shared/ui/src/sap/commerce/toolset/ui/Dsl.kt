@@ -32,12 +32,18 @@ import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.ui.ContextHelpLabel
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
+import com.intellij.ui.UIBundle
 import com.intellij.ui.components.ActionLink
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.impl.DslComponentPropertyInternal
+import com.intellij.util.MathUtil
 import org.jetbrains.annotations.NonNls
 import sap.commerce.toolset.Notifications
 import java.awt.Dimension
 import java.awt.datatransfer.StringSelection
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JLabel
@@ -46,6 +52,43 @@ fun DialogWrapper.repackDialog() {
     invokeLater {
         peer.window?.pack()
     }
+}
+
+fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null): Cell<JBTextField> {
+    val result = cell(JBTextField())
+        .validationOnInput {
+            val value = it.text.toIntOrNull()
+            when {
+                value == null -> null
+                range != null && value !in range -> error(UIBundle.message("please.enter.a.number.from.0.to.1", range.first, range.last))
+                else -> null
+            }
+        }
+    result.columns(COLUMNS_TINY)
+    result.component.putClientProperty(DslComponentPropertyInternal.INT_TEXT_RANGE, range)
+
+    keyboardStep?.let {
+        result.component.addKeyListener(object : KeyAdapter() {
+            override fun keyPressed(e: KeyEvent?) {
+                val increment: Int = when (e?.keyCode) {
+                    KeyEvent.VK_UP -> keyboardStep
+                    KeyEvent.VK_DOWN -> -keyboardStep
+                    else -> return
+                }
+
+                var value = result.component.text.toIntOrNull()
+                if (value != null) {
+                    value += increment
+                    if (range != null) {
+                        value = MathUtil.clamp(value, range.first, range.last)
+                    }
+                    result.component.text = value.toString()
+                    e.consume()
+                }
+            }
+        })
+    }
+    return result
 }
 
 fun Row.copyLink(project: Project, label: String?, value: String, confirmationMessage: String = "Copied to clipboard"): Cell<ActionLink> {
