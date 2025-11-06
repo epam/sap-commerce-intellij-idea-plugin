@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":console-core"))
     implementation(project(":console-ui"))
     implementation(project(":groovy-exec"))
+    implementation(project(":groovy-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
