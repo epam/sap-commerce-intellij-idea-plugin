@@ -44,7 +44,7 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         processor.getHint(ElementClassHint.KEY)
             ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
             ?: return
-        val resolutionMode = place.containingFile.originalFile
+        val resolutionMode = place.containingFile.originalFile.virtualFile
             .getUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE)
             ?: SpringResolutionMode.DISABLED
 

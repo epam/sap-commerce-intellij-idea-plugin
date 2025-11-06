@@ -41,7 +41,7 @@ class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerPro
         && Plugin.SPRING.isActive()
 
     override fun getName() = i18n("hybris.editor.gutter.ts.items.item.attributeHandler.name")
-    override fun getIcon(): Icon = HybrisIcons.SPRING_BEAN
+    override fun getIcon(): Icon = HybrisIcons.Spring.BEAN
     override fun tryCast(psi: PsiElement) = (psi as? XmlTag)
         ?.takeIf { it.localName == Attribute.PERSISTENCE }
         ?.takeIf { it.getAttributeValue(Persistence.TYPE) == PersistenceType.DYNAMIC.value }

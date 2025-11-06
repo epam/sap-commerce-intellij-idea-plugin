@@ -38,12 +38,13 @@ class GroovySpringResolutionModeActionGroup : DefaultActionGroup() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val psiFile = e.getData(CommonDataKeys.PSI_FILE) ?: return
-        val currentResolutionMode = psiFile.getUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE)
+        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        val currentResolutionMode = vf.getUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE)
             ?: SpringResolutionMode.DISABLED
 
         val mode = i18n("hybris.groovy.actions.springResolution.${currentResolutionMode.name.lowercase()}")
 
+        e.presentation.icon = currentResolutionMode.icon
         e.presentation.text = i18n("hybris.groovy.actions.springResolution.mode", mode)
     }
 

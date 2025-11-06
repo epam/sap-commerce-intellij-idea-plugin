@@ -42,6 +42,13 @@ object HybrisIcons {
     val SPRING_BEAN = getIcon("icons/springBean.svg")
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
+    object Spring {
+        val BEAN = getIcon("icons/spring/springBean.svg")
+        val DISABLED = getIcon("icons/spring/springDisabled.svg")
+        val LOCAL = getIcon("icons/spring/springLocal.svg")
+        val REMOTE = getIcon("icons/spring/springRemote.svg")
+    }
+
     object Y {
         val LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
         val LOGO_BLUE = getIcon("/icons/hybrisIcon.svg")
@@ -319,7 +326,7 @@ object HybrisIcons {
             val SCRIPT = getIcon("/icons/businessProcess/diagram/script.svg")
             val PARAMETERS = AllIcons.Nodes.NewParameter
             val PROPERTY = BeanSystem.PROPERTY
-            val SPRING_BEAN = HybrisIcons.SPRING_BEAN
+            val SPRING_BEAN = HybrisIcons.Spring.BEAN
             val NODE = AllIcons.Nodes.FieldPK
             val FIELD = AllIcons.Nodes.Field
             val CLASS = AllIcons.Nodes.Class
