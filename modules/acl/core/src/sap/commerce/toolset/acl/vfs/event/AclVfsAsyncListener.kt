@@ -35,7 +35,7 @@ class AclVfsAsyncListener : AsyncFileListener {
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = events
             .mapNotNull { it.file }
-            .filter { it.extension == HybrisConstants.ACL_FILE_EXTENSION }
+            .filter { it.extension == HybrisConstants.Languages.Acl.EXTENSION }
             .distinct()
             .mapNotNull { vf -> allEditors.find { it.virtualFile == vf } }
             .mapNotNull { editor ->

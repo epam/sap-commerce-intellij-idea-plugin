@@ -48,7 +48,6 @@ class HacManualAuthenticationDialog(
         .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
         .setUrl(settings.generatedURL)
         .setCreateImmediately(true)
-        .setEnableOpenDevToolsMenuItem(true)
         .build()
         .let { it as JBCefBrowserBase }
         .apply {

@@ -26,9 +26,9 @@ import javax.swing.Icon
 
 object AclFileType : LanguageFileType(AclLanguage) {
 
-    override fun getName() = HybrisConstants.ACL
+    override fun getName() = HybrisConstants.Languages.Acl.NAME
     override fun getDescription() = "Access Control Lists language file"
-    override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
+    override fun getDefaultExtension() = HybrisConstants.Languages.Acl.EXTENSION
     override fun getIcon(): Icon = HybrisIcons.Acl.FILE
 
 }

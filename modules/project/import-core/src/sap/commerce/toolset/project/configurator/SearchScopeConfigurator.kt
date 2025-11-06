@@ -117,7 +117,7 @@ class SearchScopeConfigurator : ProjectPostImportConfigurator {
                 FilePatternPackageSet("$customGroupName*", "*//*${HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING}"),
                 FilePatternPackageSet("$customGroupName*", "*//*${HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING}")
             ),
-            FilePatternPackageSet("$customGroupName*", "*//*${HybrisConstants.HYBRIS_IMPEX_XML_FILE_ENDING}")
+            FilePatternPackageSet("$customGroupName*", "*//*.${HybrisConstants.Languages.ImpEx.EXTENSION}")
         )
     }
 

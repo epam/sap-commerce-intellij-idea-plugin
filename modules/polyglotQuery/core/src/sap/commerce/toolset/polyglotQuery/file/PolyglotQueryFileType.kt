@@ -19,6 +19,7 @@
 package sap.commerce.toolset.polyglotQuery.file
 
 import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import javax.swing.Icon
@@ -27,7 +28,7 @@ object PolyglotQueryFileType : LanguageFileType(PolyglotQueryLanguage) {
 
     override fun getName() = "Polyglot Query File"
     override fun getDescription() = "Polyglot Query language file"
-    override fun getDefaultExtension() = "pgq"
+    override fun getDefaultExtension() = HybrisConstants.Languages.PolyglotQuery.EXTENSION
     override fun getIcon(): Icon = HybrisIcons.PolyglotQuery.FILE
 
 }

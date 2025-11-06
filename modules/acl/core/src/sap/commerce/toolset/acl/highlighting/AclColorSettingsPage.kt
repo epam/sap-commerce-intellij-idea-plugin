@@ -34,7 +34,7 @@ class AclColorSettingsPage : ColorSettingsPage {
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = customTags
     override fun getAttributeDescriptors() = descriptors
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
-    override fun getDisplayName() = HybrisConstants.ACL
+    override fun getDisplayName() = HybrisConstants.Languages.Acl.NAME
 
     override fun getDemoText(): String {
         return """# Comment

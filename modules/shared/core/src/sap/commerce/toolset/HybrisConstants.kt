@@ -36,9 +36,6 @@ object HybrisConstants {
     const val IDEA_EDITION_ULTIMATE = "Ultimate Edition"
     const val UPDATE_TIMESTAMP_PROPERTY = "sap.commerce.update.timestamp"
 
-    const val ACL = "Access Control Lists"
-    const val ACL_FILE_EXTENSION = "acl"
-
     const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"
     const val ROOT_TAG_ITEMS_XML = "items"
     const val ROOT_TAG_DEPLOYMENT_MODEL_XML = "model"
@@ -185,14 +182,6 @@ object HybrisConstants {
     const val PROPERTY_ADMIN_INITIAL_PASSWORD = "initialpassword.admin"
     const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
 
-    @Deprecated("move to Solr module")
-    const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
-
-    @Deprecated("move to Solr module")
-    const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
-
-    @Deprecated("move to Solr module")
-    const val PROPERTY_SOLR_DEFAULT_PASSWORD = "solrserver.instances.default.password"
     const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
     const val PROPERTY_BUILD_COMPILER = "build.compiler"
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
@@ -662,6 +651,19 @@ object HybrisConstants {
         }
     }
 
-    const val IMPEX_FILE_EXTENSION = "impex"
-    const val HYBRIS_IMPEX_XML_FILE_ENDING = ".${IMPEX_FILE_EXTENSION}"
+    object Languages {
+        object ImpEx {
+            const val EXTENSION = "impex"
+        }
+        object FlexibleSearch {
+            const val EXTENSION = "fxs"
+        }
+        object PolyglotQuery {
+            const val EXTENSION = "pgq"
+        }
+        object Acl {
+            const val NAME = "Access Control Lists"
+            const val EXTENSION = "acl"
+        }
+    }
 }

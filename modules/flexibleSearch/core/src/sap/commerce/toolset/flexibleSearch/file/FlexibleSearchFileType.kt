@@ -19,6 +19,7 @@
 package sap.commerce.toolset.flexibleSearch.file
 
 import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import javax.swing.Icon
@@ -27,7 +28,7 @@ object FlexibleSearchFileType : LanguageFileType(FlexibleSearchLanguage) {
 
     override fun getName() = "Flexible Search"
     override fun getDescription() = "FlexibleSearch language file"
-    override fun getDefaultExtension() = "fxs"
+    override fun getDefaultExtension() = HybrisConstants.Languages.FlexibleSearch.EXTENSION
     override fun getIcon(): Icon = HybrisIcons.FlexibleSearch.FILE
 
 }

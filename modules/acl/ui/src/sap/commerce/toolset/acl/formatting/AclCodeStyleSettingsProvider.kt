@@ -28,12 +28,12 @@ class AclCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
 
     override fun getLanguage() = AclLanguage
     override fun createCustomSettings(settings: CodeStyleSettings) = AclCodeStyleSettings(settings)
-    override fun getConfigurableDisplayName() = HybrisConstants.ACL
+    override fun getConfigurableDisplayName() = HybrisConstants.Languages.Acl.NAME
 
     override fun createConfigurable(settings: CodeStyleSettings, originalSettings: CodeStyleSettings) = object : CodeStyleAbstractConfigurable(
         settings,
         originalSettings,
-        HybrisConstants.ACL
+        HybrisConstants.Languages.Acl.NAME
     ) {
         override fun createPanel(settings: CodeStyleSettings) = SimpleCodeStyleMainPanel(currentSettings, settings)
         override fun getHelpTopic() = null
