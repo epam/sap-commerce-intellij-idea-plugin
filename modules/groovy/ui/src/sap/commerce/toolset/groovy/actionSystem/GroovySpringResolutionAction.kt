@@ -37,11 +37,17 @@ abstract class GroovySpringResolutionAction(text: String, description: String, p
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        val project = e.project ?: return false
-        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
         val currentResolutionMode = e.getData(CommonDataKeys.PSI_FILE)
             ?.getUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE)
             ?: SpringResolutionMode.DISABLED
+
+        return currentResolutionMode == resolutionMode
+    }
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        val project = e.project ?: return
+        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        val psiFile = e.getData(CommonDataKeys.PSI_FILE) ?: return
 
         CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
@@ -50,12 +56,6 @@ abstract class GroovySpringResolutionAction(text: String, description: String, p
                 PsiDocumentManager.getInstance(project).reparseFiles(listOf(vf), false)
             }
         }
-
-        return currentResolutionMode == resolutionMode
-    }
-
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-        val psiFile = e.getData(CommonDataKeys.PSI_FILE) ?: return
 
         psiFile.putUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE, resolutionMode)
     }
