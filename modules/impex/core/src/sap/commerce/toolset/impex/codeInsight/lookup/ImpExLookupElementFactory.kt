@@ -47,7 +47,7 @@ object ImpExLookupElementFactory {
     fun buildInterceptor(bean: InterceptorProvider.Bean) = LookupElementBuilder.create(bean.name)
         .withIcon(HybrisIcons.TypeSystem.INTERCEPTOR)
         .withTypeIconRightAligned(true)
-        .withTypeText(bean.className, HybrisIcons.SPRING_BEAN, true)
+        .withTypeText(bean.className, HybrisIcons.Spring.BEAN, true)
 
     fun buildUserRights() = LookupElementBuilder.create(
         """

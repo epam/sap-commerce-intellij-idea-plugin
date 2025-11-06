@@ -17,7 +17,9 @@
   -->
 <idea-plugin>
 
-    <extensions defaultExtensionNs="com.intellij">
-    </extensions>
+    <depends>org.intellij.groovy</depends>
 
+    <extensions defaultExtensionNs="org.intellij.groovy">
+        <membersContributor implementation="sap.commerce.toolset.groovy.lang.resolve.GroovySpringBeanNonCodeMembersContributor" />
+    </extensions>
 </idea-plugin>

@@ -43,6 +43,7 @@
     <depends>com.intellij.modules.spellchecker</depends>
     <depends>com.intellij.java</depends>
     <depends>com.intellij.properties</depends>
+    <depends>org.intellij.groovy</depends>
 
     <xi:include href="/META-INF/sap.commerce.toolset-shared-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-shared-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>

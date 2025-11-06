@@ -40,6 +40,12 @@
             <action id="hybris.groovy.openSettings" class="sap.commerce.toolset.groovy.actionSystem.GroovyOpenSettingsAction"/>
             <separator/>
 
+            <group id="hybris.groovy.toolbar.springResolutionMode" popup="true"
+                   class="sap.commerce.toolset.groovy.actionSystem.GroovySpringContextModeActionGroup">
+                <separator key="hybris.groovy.actions.springContext.mode.separator"/>
+                <action id="hybris.groovy.springResolutionMode.disabled" class="sap.commerce.toolset.groovy.actionSystem.GroovyDisabledSpringContextAction"/>
+                <action id="hybris.groovy.springResolutionMode.local" class="sap.commerce.toolset.groovy.actionSystem.GroovyLocalSpringContextAction"/>
+            </group>
             <group id="hybris.groovy.toolbar.tx" popup="true"
                    class="sap.commerce.toolset.groovy.actionSystem.GroovyTransactionModeActionGroup">
                 <separator key="hybris.groovy.actions.transaction.mode.separator"/>

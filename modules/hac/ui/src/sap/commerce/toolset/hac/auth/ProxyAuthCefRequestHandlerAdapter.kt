@@ -26,7 +26,7 @@ import com.intellij.openapi.util.text.StringUtil
 import org.cef.browser.CefBrowser
 import org.cef.callback.CefAuthCallback
 import org.cef.handler.CefRequestHandlerAdapter
-import sap.commerce.toolset.hac.ui.HacProxyAuthenticatorDialog
+import sap.commerce.toolset.hac.ui.HacProxyAuthorizationDialog
 import java.awt.EventQueue
 import java.awt.GraphicsEnvironment
 
@@ -51,10 +51,10 @@ internal class ProxyAuthCefRequestHandlerAdapter(
 
         if (!GraphicsEnvironment.isHeadless()) {
             val runnable = Runnable {
-                val authenticatorDialog = HacProxyAuthenticatorDialog(project, proxyHost, proxyCredentials)
-                authenticatorDialog.show()
+                val authorization = HacProxyAuthorizationDialog(project, proxyHost, proxyCredentials)
+                authorization.show()
 
-                credentials.set(authenticatorDialog.credentials)
+                credentials.set(authorization.credentials)
             }
             if (EventQueue.isDispatchThread()) runnable.run()
             else try {
