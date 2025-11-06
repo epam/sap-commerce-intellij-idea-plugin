@@ -22,9 +22,9 @@ import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exec.ExecConnectionService
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
+import sap.commerce.toolset.solr.SolrConstants
 import sap.commerce.toolset.solr.exec.settings.SolrExecDeveloperSettings
 import sap.commerce.toolset.solr.exec.settings.SolrExecProjectSettings
 import sap.commerce.toolset.solr.exec.settings.event.SolrConnectionSettingsListener
@@ -84,7 +84,7 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
     }
 
     override fun default() = SolrConnectionSettingsState(
-        port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"),
+        port = getPropertyOrDefault(project, SolrConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"),
     )
 
     override fun save(settings: Map<SolrConnectionSettingsState, Credentials>) {
@@ -104,8 +104,8 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
     }
 
     override fun defaultCredentials(settings: SolrConnectionSettingsState) = Credentials(
-        getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"),
-        getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
+        getPropertyOrDefault(project, SolrConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"),
+        getPropertyOrDefault(project, SolrConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
     )
 
     private fun persistedConnections() = buildList {

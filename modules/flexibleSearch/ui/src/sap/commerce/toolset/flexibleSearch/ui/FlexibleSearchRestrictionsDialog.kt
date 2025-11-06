@@ -31,6 +31,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.restrictions.FlexibleSearchRestriction
+import sap.commerce.toolset.scratch.createScratchFile
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.ui.copyLink
 import java.awt.Dimension
@@ -45,7 +46,7 @@ class FlexibleSearchRestrictionsDialog(
     private val restrictions: Collection<FlexibleSearchRestriction>,
 ) : DialogWrapper(project, null, false, IdeModalityType.IDE) {
 
-    private val copyToImpExButton = object : DialogWrapperAction("Copy as ImpEx") {
+    private val copyToImpExButton = object : DialogWrapperAction("Copy as ImpEx and Close") {
         @Serial
         private val serialVersionUID: Long = -6131274562037160651L
 
@@ -63,7 +64,11 @@ class FlexibleSearchRestrictionsDialog(
             }
 
             CopyPasteManager.getInstance().setContents(StringSelection(impexFile))
+
+            close(CANCEL_EXIT_CODE)
+
             Notifications.create(NotificationType.INFORMATION, "Copied All Restrictions to Clipboard", "")
+                .addAction("Open as a Scratch File") { _, _ -> createScratchFile(project, impexFile, "impex") }
                 .hideAfter(10)
                 .notify(project)
         }

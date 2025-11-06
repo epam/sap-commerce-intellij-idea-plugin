@@ -29,7 +29,7 @@ object ImpExFileType : LanguageFileType(ImpExLanguage) {
 
     override fun getName() = ImpExConstants.IMPEX
     override fun getDescription() = "ImpEx language file"
-    override fun getDefaultExtension() = HybrisConstants.IMPEX_FILE_EXTENSION
+    override fun getDefaultExtension() = HybrisConstants.Languages.ImpEx.EXTENSION
 
     override fun getIcon(): Icon = HybrisIcons.ImpEx.FILE
 

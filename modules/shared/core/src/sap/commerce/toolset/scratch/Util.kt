@@ -24,7 +24,9 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileTypes.FileTypeRegistry
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
+import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,5 +49,37 @@ fun createScratchFile(
         withContext(Dispatchers.EDT) {
             FileEditorManager.getInstance(project).openFile(vf, true)
         }
+    }
+}
+
+fun createScratchFile(
+    project: Project,
+    text: String,
+    fileExtension: String
+) {
+    CoroutineScope(Dispatchers.Default).launch {
+        val scratchRoot = ScratchRootType.getInstance()
+        val fileType = FileTypeRegistry.getInstance().getFileTypeByExtension(fileExtension)
+            .asSafely<LanguageFileType>()
+            ?: return@launch
+        val fileName = "scratch.${fileType.defaultExtension}"
+        val language = fileType.language
+
+        createAndOpenScratchFile(scratchRoot, project, fileName, language, text)
+    }
+}
+
+private suspend fun createAndOpenScratchFile(
+    scratchRoot: ScratchRootType,
+    project: Project,
+    fileName: String,
+    language: Language,
+    text: String
+) {
+    val vf = edtWriteAction { scratchRoot.createScratchFile(project, fileName, language, text) }
+        ?: return
+
+    withContext(Dispatchers.EDT) {
+        FileEditorManager.getInstance(project).openFile(vf, true)
     }
 }

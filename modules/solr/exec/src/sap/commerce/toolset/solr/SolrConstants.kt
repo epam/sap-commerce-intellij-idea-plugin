@@ -18,7 +18,11 @@
 
 package sap.commerce.toolset.solr
 
-object SolrConstants {
-    internal const val CONNECTION_TIMEOUT_MILLIS: Int = 15000
-    internal const val SOCKET_TIMEOUT_MILLIS: Int = 120000
+internal object SolrConstants {
+    const val CONNECTION_TIMEOUT_MILLIS: Int = 15000
+    const val SOCKET_TIMEOUT_MILLIS: Int = 120000
+
+    const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
+    const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
+    const val PROPERTY_SOLR_DEFAULT_PASSWORD = "solrserver.instances.default.password"
 }
