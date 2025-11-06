@@ -24,11 +24,11 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.groovy.SpringResolutionMode
+import sap.commerce.toolset.groovy.SpringContextMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
-class GroovySpringResolutionModeActionGroup : DefaultActionGroup() {
+class GroovySpringContextModeActionGroup : DefaultActionGroup() {
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
@@ -39,13 +39,13 @@ class GroovySpringResolutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        val currentResolutionMode = vf.getUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE)
-            ?: SpringResolutionMode.DISABLED
+        val currentMode = vf.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
+            ?: SpringContextMode.DISABLED
 
-        val mode = i18n("hybris.groovy.actions.springResolution.${currentResolutionMode.name.lowercase()}")
+        val mode = i18n("hybris.groovy.actions.springContext.${currentMode.name.lowercase()}")
 
-        e.presentation.icon = currentResolutionMode.icon
-        e.presentation.text = i18n("hybris.groovy.actions.springResolution.mode", mode)
+        e.presentation.icon = currentMode.icon
+        e.presentation.text = i18n("hybris.groovy.actions.springContext.mode", mode)
     }
 
 }

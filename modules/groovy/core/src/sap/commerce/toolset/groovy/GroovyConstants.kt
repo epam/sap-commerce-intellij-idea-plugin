@@ -21,5 +21,5 @@ package sap.commerce.toolset.groovy
 import com.intellij.openapi.util.Key
 
 object GroovyConstants {
-    val KEY_SPRING_RESOLUTION_MODE = Key<SpringResolutionMode>("sap.cx.groovy.spring.resolution.mode")
+    val KEY_SPRING_CONTEXT_MODE = Key<SpringContextMode>("sap.cx.groovy.spring.context.mode")
 }

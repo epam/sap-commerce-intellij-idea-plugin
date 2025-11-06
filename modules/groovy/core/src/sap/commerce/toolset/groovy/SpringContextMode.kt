@@ -21,7 +21,7 @@ package sap.commerce.toolset.groovy
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-enum class SpringResolutionMode(val icon: Icon) {
+enum class SpringContextMode(val icon: Icon) {
     DISABLED(HybrisIcons.Spring.DISABLED),
     LOCAL(HybrisIcons.Spring.LOCAL),
     REMOTE(HybrisIcons.Spring.REMOTE),

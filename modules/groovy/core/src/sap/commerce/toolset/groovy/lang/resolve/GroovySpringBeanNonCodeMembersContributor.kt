@@ -25,7 +25,7 @@ import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrImplicitVariableImpl
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.groovy.SpringResolutionMode
+import sap.commerce.toolset.groovy.SpringContextMode
 import sap.commerce.toolset.spring.SpringHelper
 
 class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
@@ -44,11 +44,11 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         processor.getHint(ElementClassHint.KEY)
             ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
             ?: return
-        val resolutionMode = place.containingFile.originalFile.virtualFile
-            .getUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE)
-            ?: SpringResolutionMode.DISABLED
+        val contextMode = place.containingFile.originalFile.virtualFile
+            .getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
+            ?: SpringContextMode.DISABLED
 
-        if (resolutionMode == SpringResolutionMode.DISABLED) return
+        if (contextMode == SpringContextMode.DISABLED) return
 
         val resolveBeanClass = SpringHelper.resolveBeanClass(place, name) ?: return
         val fqn = resolveBeanClass.qualifiedName ?: return

@@ -27,21 +27,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.groovy.SpringResolutionMode
+import sap.commerce.toolset.groovy.SpringContextMode
 import sap.commerce.toolset.i18n
 
-abstract class GroovySpringResolutionAction(text: String, description: String, private val resolutionMode: SpringResolutionMode) : CheckboxAction(
+abstract class GroovySpringContextAction(text: String, description: String, private val contextMode: SpringContextMode) : CheckboxAction(
     text, description, null
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        val currentResolutionMode = e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?.getUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE)
-            ?: SpringResolutionMode.DISABLED
+        val currentMode = e.getData(CommonDataKeys.VIRTUAL_FILE)
+            ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
+            ?: SpringContextMode.DISABLED
 
-        return currentResolutionMode == resolutionMode
+        return currentMode == contextMode
     }
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
@@ -56,18 +56,18 @@ abstract class GroovySpringResolutionAction(text: String, description: String, p
             }
         }
 
-        vf.putUserData(GroovyConstants.KEY_SPRING_RESOLUTION_MODE, resolutionMode)
+        vf.putUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE, contextMode)
     }
 }
 
-class GroovyDisabledSpringResolutionAction : GroovySpringResolutionAction(
-    i18n("hybris.groovy.actions.springResolution.disabled"),
-    i18n("hybris.groovy.actions.springResolution.disabled.description"),
-    SpringResolutionMode.DISABLED
+class GroovyDisabledSpringContextAction : GroovySpringContextAction(
+    i18n("hybris.groovy.actions.springContext.disabled"),
+    i18n("hybris.groovy.actions.springContext.disabled.description"),
+    SpringContextMode.DISABLED
 )
 
-class GroovyLocalSpringResolutionAction : GroovySpringResolutionAction(
-    i18n("hybris.groovy.actions.springResolution.local"),
-    i18n("hybris.groovy.actions.springResolution.local.description"),
-    SpringResolutionMode.LOCAL
+class GroovyLocalSpringContextAction : GroovySpringContextAction(
+    i18n("hybris.groovy.actions.springContext.local"),
+    i18n("hybris.groovy.actions.springContext.local.description"),
+    SpringContextMode.LOCAL
 )
