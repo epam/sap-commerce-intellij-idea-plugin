@@ -27,7 +27,6 @@ object SpringHelper {
         .firstNotNullOfOrNull { it.resolveBeanDeclaration(element, beanId) }
         ?: SimpleSpringService.getService(element.project).resolveBeanDeclaration(element, beanId)
 
-
     fun resolveBeanClass(element: PsiElement, beanId: String): PsiClass? = SpringService.EP.extensionList
         .firstNotNullOfOrNull { it.resolveBeanClass(element, beanId) }
         ?: SimpleSpringService.getService(element.project).resolveBeanClass(element, beanId)

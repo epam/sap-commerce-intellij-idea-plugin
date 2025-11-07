@@ -38,14 +38,15 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         state: ResolveState
     ) {
         qualifierType.asSafely<PsiClassType>() ?: return
+        val containingFile = place.containingFile ?: return
         val name = processor.getHint(NameHint.KEY)
             ?.getName(state)
             ?: return
         processor.getHint(ElementClassHint.KEY)
             ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
             ?: return
-        val contextMode = place.containingFile.originalFile.virtualFile
-            .getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
+        val contextMode = containingFile.originalFile.virtualFile
+            ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
             ?: SpringContextMode.DISABLED
 
         if (contextMode == SpringContextMode.DISABLED) return

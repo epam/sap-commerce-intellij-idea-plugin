@@ -1,10 +1,13 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 10 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `Groovy` enhancements
 - Introduced `local` Spring context mode within groovy files (slow operation) [#1645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1645)
+
+### `Spring` enhancements
+- Improve Spring beans resolution in case of `module-less` files, like Scratch-files [#1646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1646)
 
 ### `Project Import` enhancements
 - Register new `Test Classes` library for OOTB `testsrc` of the Web modules [#1637](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1637)
