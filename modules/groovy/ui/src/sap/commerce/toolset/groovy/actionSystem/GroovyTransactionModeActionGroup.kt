@@ -43,9 +43,9 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup() {
             ?.transactionMode
             ?: TransactionMode.ROLLBACK
 
-        val mode = i18n("hybris.groovy.actions.transaction.${currentTransactionMode.name.lowercase()}")
-
-        e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", mode)
+        e.presentation.icon = currentTransactionMode.icon
+        e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", currentTransactionMode.presentationText)
+        e.presentation.description = "Transaction mode"
     }
 
 }

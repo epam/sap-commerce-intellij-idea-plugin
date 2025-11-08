@@ -42,13 +42,6 @@ object HybrisIcons {
     val SPRING_BEAN = getIcon("icons/springBean.svg")
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
-    object Spring {
-        val BEAN = getIcon("icons/spring/springBean.svg")
-        val DISABLED = getIcon("icons/spring/springDisabled.svg")
-        val LOCAL = getIcon("icons/spring/springLocal.svg")
-        val REMOTE = getIcon("icons/spring/springRemote.svg")
-    }
-
     object Y {
         val LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
         val LOGO_BLUE = getIcon("/icons/hybrisIcon.svg")
@@ -58,6 +51,18 @@ object HybrisIcons {
         val REMOTES = getIcon("/icons/remotes.svg")
         val REMOTE_GREEN = getIcon("/icons/hybrisRemoteGreen.svg")
         val FACET = LOGO_GREEN
+    }
+
+    object Spring {
+        val BEAN = getIcon("icons/spring/springBean.svg")
+        val DISABLED = getIcon("icons/spring/springDisabled.svg")
+        val LOCAL = getIcon("icons/spring/springLocal.svg")
+        val REMOTE = getIcon("icons/spring/springRemote.svg")
+    }
+
+    object Groovy {
+        val COMMIT = getIcon("icons/groovy/commit.svg")
+        val ROLLBACK = getIcon("icons/groovy/rollback.svg")
     }
 
     object Tools {

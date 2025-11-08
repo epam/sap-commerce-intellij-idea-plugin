@@ -30,8 +30,8 @@ import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.SpringContextMode
 import sap.commerce.toolset.i18n
 
-abstract class GroovySpringContextAction(text: String, description: String, private val contextMode: SpringContextMode) : CheckboxAction(
-    text, description, null
+abstract class GroovySpringContextAction(private val contextMode: SpringContextMode, description: String) : CheckboxAction(
+    contextMode.presentationText, description, null
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -47,6 +47,7 @@ abstract class GroovySpringContextAction(text: String, description: String, priv
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        vf.putUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE, contextMode)
 
         CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
@@ -55,19 +56,15 @@ abstract class GroovySpringContextAction(text: String, description: String, priv
                 PsiDocumentManager.getInstance(project).reparseFiles(listOf(vf), false)
             }
         }
-
-        vf.putUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE, contextMode)
     }
 }
 
 class GroovyDisabledSpringContextAction : GroovySpringContextAction(
-    i18n("hybris.groovy.actions.springContext.disabled"),
-    i18n("hybris.groovy.actions.springContext.disabled.description"),
-    SpringContextMode.DISABLED
+    SpringContextMode.DISABLED,
+    i18n("hybris.groovy.actions.springContext.disabled.description")
 )
 
 class GroovyLocalSpringContextAction : GroovySpringContextAction(
-    i18n("hybris.groovy.actions.springContext.local"),
-    i18n("hybris.groovy.actions.springContext.local.description"),
-    SpringContextMode.LOCAL
+    SpringContextMode.LOCAL,
+    i18n("hybris.groovy.actions.springContext.local.description")
 )

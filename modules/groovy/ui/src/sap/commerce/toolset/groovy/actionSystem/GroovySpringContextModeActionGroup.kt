@@ -42,10 +42,9 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup() {
         val currentMode = vf.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
             ?: SpringContextMode.DISABLED
 
-        val mode = i18n("hybris.groovy.actions.springContext.${currentMode.name.lowercase()}")
-
         e.presentation.icon = currentMode.icon
-        e.presentation.text = i18n("hybris.groovy.actions.springContext.mode", mode)
+        e.presentation.text = i18n("hybris.groovy.actions.springContext.mode", currentMode.presentationText)
+        e.presentation.description = "Spring context resolution mode"
     }
 
 }
