@@ -26,13 +26,13 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
 
 class GroovyTransactionModeActionGroup : DefaultActionGroup() {
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescription(this))
+        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this,))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

@@ -23,8 +23,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import com.intellij.openapi.actionSystem.impl.ActionButtonWithText
-import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.ui.GotItTooltip
 import com.intellij.ui.popup.PopupFactoryImpl
 import com.intellij.util.asSafely
 import java.awt.Dimension
@@ -34,15 +34,23 @@ import javax.swing.JList
 import javax.swing.SwingConstants
 import javax.swing.event.ListSelectionEvent
 
-class ActionButtonWithTextAndDescription(private val actionGroup: ActionGroup) : CustomComponentAction {
+class ActionButtonWithTextAndDescriptionComponentProvider(
+    private val actionGroup: ActionGroup,
+    private val gotItTooltipProvider: (JComponent) -> GotItTooltip? = { null }
+) : CustomComponentAction {
 
-    override fun createCustomComponent(presentation: Presentation, place: String): JComponent = object : ActionButtonWithText(
-        actionGroup, presentation, place, Dimension()
-    ) {
-        @Serial
-        private val serialVersionUID: Long = 5346829716506322630L
+    override fun createCustomComponent(presentation: Presentation, place: String) = CustomComponent(actionGroup, presentation, place).apply {
+        gotItTooltipProvider(this)
+            ?.show(this, GotItTooltip.BOTTOM_MIDDLE)
+    }
 
-        override fun createAndShowActionGroupPopup(actionGroup: ActionGroup, event: AnActionEvent): JBPopup = JBPopupFactory.getInstance()
+    class CustomComponent(
+        actionGroup: ActionGroup,
+        presentation: Presentation,
+        place: String,
+    ) : ActionButtonWithText(actionGroup, presentation, place, Dimension()) {
+
+        override fun createAndShowActionGroupPopup(actionGroup: ActionGroup, event: AnActionEvent) = JBPopupFactory.getInstance()
             .createActionGroupPopup(null, actionGroup, event.dataContext, null, true)
             .also { listPopup ->
                 listPopup.listStep.values.firstOrNull()
@@ -63,5 +71,10 @@ class ActionButtonWithTextAndDescription(private val actionGroup: ActionGroup) :
 
                 listPopup.showUnderneathOf(this)
             }
+
+        companion object {
+            @Serial
+            private val serialVersionUID: Long = 5346829716506322630L
+        }
     }
 }
