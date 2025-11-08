@@ -18,7 +18,10 @@
 
 package sap.commerce.toolset.settings.state
 
-enum class TransactionMode(val presentationText: String) {
-    COMMIT("Commit"),
-    ROLLBACK("Rollback")
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
+
+enum class TransactionMode(val icon: Icon, val presentationText: String) {
+    COMMIT(HybrisIcons.Groovy.COMMIT, "Commit"),
+    ROLLBACK(HybrisIcons.Groovy.ROLLBACK, "Rollback")
 }

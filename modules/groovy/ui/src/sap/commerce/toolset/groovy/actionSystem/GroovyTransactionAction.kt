@@ -27,8 +27,8 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
 
-abstract class GroovyTransactionAction(text: String, description: String, private val transactionMode: TransactionMode) : CheckboxAction(
-    text, description, null
+abstract class GroovyTransactionAction(private val transactionMode: TransactionMode, description: String) : CheckboxAction(
+    transactionMode.presentationText, description, null
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -53,13 +53,11 @@ abstract class GroovyTransactionAction(text: String, description: String, privat
 }
 
 class GroovyRollbackTransactionAction : GroovyTransactionAction(
-    i18n("hybris.groovy.actions.transaction.rollback"),
-    i18n("hybris.groovy.actions.transaction.rollback.description"),
-    TransactionMode.ROLLBACK
+    TransactionMode.ROLLBACK,
+    i18n("hybris.groovy.actions.transaction.rollback.description")
 )
 
 class GroovyCommitTransactionAction : GroovyTransactionAction(
-    i18n("hybris.groovy.actions.transaction.commit"),
-    i18n("hybris.groovy.actions.transaction.commit.description"),
-    TransactionMode.COMMIT
+    TransactionMode.COMMIT,
+    i18n("hybris.groovy.actions.transaction.commit.description")
 )
