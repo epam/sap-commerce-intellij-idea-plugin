@@ -27,10 +27,10 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.ui.GotItTooltip
 import com.intellij.ui.scale.JBUIScale
 import sap.commerce.toolset.GotItTooltips
-import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.triggerAction
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
 
@@ -54,8 +54,8 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup() {
                 id = GotItTooltips.SPRING_CONTEXT_MODE,
                 textSupplier = {
                     """
-                    You can enable Spring Context within your groovy scripts by switching to ${icon(HybrisIcons.Spring.LOCAL)} local resolution mode.
-                    <br>Resolution of the Spring Context is a heavy operation, that's why it is ${icon(HybrisIcons.Spring.DISABLED)} disabled by default for every new Editor, but it can be changed via ${
+                    You can enable Spring Context within your groovy scripts by switching to ${icon(SpringContextMode.LOCAL.icon)} ${code(SpringContextMode.LOCAL.presentationText)} resolution mode.
+                    <br>Resolution of the Spring Context is a heavy operation, that's why it is ${icon(SpringContextMode.DISABLED.icon)} ${code(SpringContextMode.DISABLED.presentationText)} by default for every new Editor, but it can be changed via ${
                         link("Groovy settings") {
                             DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
                                 ?.triggerAction("hybris.groovy.openSettings")
