@@ -33,13 +33,12 @@ import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.triggerAction
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
+import javax.swing.JComponent
 
 class GroovySpringContextModeActionGroup : DefaultActionGroup() {
 
-    private val componentProvider = ActionButtonWithTextAndDescriptionComponentProvider(
-        actionGroup = this,
-        gotItTooltipProvider = { component ->
-            val before = """<pre class="code">
+    private val gotItTooltipProvider: (JComponent) -> GotItTooltip? = { component ->
+        val before = """<pre class="code">
                 import de.hybris.platform.core.Registry
                 import de.hybris.platform.product.ProductService
 
@@ -48,36 +47,35 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup() {
 
                 productService.getProduct('test')</pre>
             """.trimIndent()
-            val after = "<pre class=\"code\">productService.getProduct('test')</pre>"
+        val after = "<pre class=\"code\">productService.getProduct('test')</pre>"
 
-            GotItTooltip(
-                id = GotItTooltips.SPRING_CONTEXT_MODE,
-                textSupplier = {
-                    """
+        GotItTooltip(
+            id = GotItTooltips.SPRING_CONTEXT_MODE,
+            textSupplier = {
+                """
                     You can enable Spring Context within your groovy scripts by switching to ${icon(SpringContextMode.LOCAL.icon)} ${code(SpringContextMode.LOCAL.presentationText)} resolution mode.
                     <br>Resolution of the Spring Context is a heavy operation, that's why it is ${icon(SpringContextMode.DISABLED.icon)} ${code(SpringContextMode.DISABLED.presentationText)} by default for every new Editor, but it can be changed via ${
-                        link("Groovy settings") {
-                            DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
-                                ?.triggerAction("hybris.groovy.openSettings")
-                        }
-                    }.
+                    link("Groovy settings") {
+                        DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
+                            ?.triggerAction("hybris.groovy.openSettings")
+                    }
+                }.
                     <br><br>Before:
                     <br>${before}
 
                     <br>After:
                     <br>${after}
                 """.trimIndent()
-                },
-                parentDisposable = null
-            )
-                .withMaxWidth(JBUIScale.scale(420))
-                .withHeader("Welcome Spring Context in Groovy!")
-        }
-    )
+            },
+            parentDisposable = null
+        )
+            .withMaxWidth(JBUIScale.scale(420))
+            .withHeader("Welcome Spring Context in Groovy!")
+    }
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, componentProvider)
+        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this, gotItTooltipProvider))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

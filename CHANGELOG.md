@@ -1,12 +1,13 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `Groovy` enhancements
 - Introduced `local` Spring context mode within groovy files (slow operation) [#1645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1645)
 - Added icons for transaction mode toggle [#1647](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1647)
-- Added informative `Got it Tooltip` for new Spring context mode and configurable default state of the respective flag [#1648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1648)
+- Added `Got it Tooltip` for new Spring context mode and configurable default state of the respective flag [#1648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1648)
+- Added `Got it Tooltip` for Transaction mode and configurable default state of the respective flag [#1649](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1649)
 
 ### `Spring` enhancements
 - Improve Spring beans resolution in case of `module-less` files, like Scratch-files [#1646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1646)
