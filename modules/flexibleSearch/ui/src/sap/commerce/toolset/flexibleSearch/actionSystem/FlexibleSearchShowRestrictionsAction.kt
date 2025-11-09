@@ -153,27 +153,26 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
         HintManager.getInstance().showSuccessHint(editor, "No search restrictions apply to user <strong>$userUid</strong> for the provided FlexibleSearch query.")
     }
 
-    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButton(
-        this, presentation, place, Dimension()
-    ).apply {
-        GotItTooltip(
-            id = GotItTooltips.FlexibleSearch.SEARCH_RESTRICTIONS,
-            textSupplier = {
-                """
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButton(this, presentation, place, Dimension())
+        .apply {
+            GotItTooltip(
+                id = GotItTooltips.FlexibleSearch.SEARCH_RESTRICTIONS,
+                textSupplier = {
+                    """
                     Retrieve all ${code("FlexibleSearch")} ${icon(HybrisIcons.FlexibleSearch.RESTRICTIONS)} restrictions applied to the query for the user specified in the execution context.
                     <br><br>You can copy the detected restrictions as an ${code("ImpEx")} file or open them directly in a new Scratch File.
                     <br><br>A running SAP Commerce server and valid ${
-                    link("connection configuration") {
-                        DataManager.getInstance().getDataContext(this@apply).getData(CommonDataKeys.PROJECT)
-                            ?.triggerAction("sap.commerce.toolset.hac.openSettings")
-                    }
-                } are required.
+                        link("connection configuration") {
+                            DataManager.getInstance().getDataContext(this@apply).getData(CommonDataKeys.PROJECT)
+                                ?.triggerAction("sap.commerce.toolset.hac.openSettings")
+                        }
+                    } are required.
                 """.trimIndent()
-            },
-            parentDisposable = null
-        )
-            .withHeader("Search restrictions for FlexibleSearch!")
-            .show(this, GotItTooltip.BOTTOM_MIDDLE)
-    }
+                },
+                parentDisposable = null
+            )
+                .withHeader("Search restrictions for FlexibleSearch!")
+                .show(this, GotItTooltip.BOTTOM_MIDDLE)
+        }
 
 }
