@@ -1,7 +1,7 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `Groovy` enhancements
 - Introduced `local` Spring context mode within groovy files (slow operation) [#1645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1645)
@@ -19,6 +19,7 @@
 - Removed `Ok` button from the Search Restrictions dialog [#1636](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1636)
 - Create a `Scratch` file from the copied FlexibleSearch query [#1642](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1642)
 - Create a `Scratch` file from the copied ImpEx representation of the search restrictions [#1644](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1644)
+- Added `Got it Tooltip` for Search Restrictions action [#1650](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1650)
 
 ### `Polyglot Query` enhancements
 - Create a `Scratch` file from the copied Polyglot query [#1643](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1643)

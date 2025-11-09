@@ -37,7 +37,7 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup() {
 
     private val gotItTooltipProvider: (JComponent) -> GotItTooltip? = { component ->
         GotItTooltip(
-            id = GotItTooltips.TRANSACTION_MODE,
+            id = GotItTooltips.Groovy.TRANSACTION_MODE,
             textSupplier = {
                 """
                     You can configure the transaction mode individually for each Groovy script.

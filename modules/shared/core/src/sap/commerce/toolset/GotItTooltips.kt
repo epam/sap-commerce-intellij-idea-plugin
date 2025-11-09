@@ -22,6 +22,15 @@ object GotItTooltips {
 
     private const val PREFIX = "sap.cx.gotIt."
 
-    const val SPRING_CONTEXT_MODE = PREFIX + "springContextMode"
-    const val TRANSACTION_MODE = PREFIX + "transactionMode"
+    object Groovy {
+        private const val OWN_PREFIX = PREFIX + "groovy."
+        const val SPRING_CONTEXT_MODE = OWN_PREFIX + "springContextMode"
+        const val TRANSACTION_MODE = OWN_PREFIX + "transactionMode"
+    }
+
+    object FlexibleSearch {
+        private const val OWN_PREFIX = PREFIX + "fxs."
+
+        const val SEARCH_RESTRICTIONS = OWN_PREFIX + "searchRestrictions"
+    }
 }
