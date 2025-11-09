@@ -23,10 +23,7 @@ import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.dsl.builder.bindItem
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.builder.toNullableProperty
+import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
@@ -64,6 +61,8 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                     """.trimIndent())
                     .bindItem(mutable::springContextMode.toNullableProperty(SpringContextMode.DISABLED))
             }
+                .layout(RowLayout.PARENT_GRID)
+
             row {
                 comboBox(
                     EnumComboBoxModel(TransactionMode::class.java),
@@ -75,6 +74,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                     """.trimIndent())
                     .bindItem(mutable::transactionMode.toNullableProperty(TransactionMode.ROLLBACK))
             }
+                .layout(RowLayout.PARENT_GRID)
 
             separator()
 

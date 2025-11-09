@@ -50,7 +50,7 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup() {
         val after = "<pre class=\"code\">productService.getProduct('test')</pre>"
 
         GotItTooltip(
-            id = GotItTooltips.SPRING_CONTEXT_MODE,
+            id = GotItTooltips.Groovy.SPRING_CONTEXT_MODE,
             textSupplier = {
                 """
                     You can enable Spring Context within your groovy scripts by switching to ${icon(SpringContextMode.LOCAL.icon)} ${code(SpringContextMode.LOCAL.presentationText)} resolution mode.

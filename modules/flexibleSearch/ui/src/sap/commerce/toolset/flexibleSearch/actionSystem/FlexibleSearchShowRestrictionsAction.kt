@@ -19,19 +19,23 @@
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
 import com.intellij.codeInsight.hint.HintManager
+import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.CustomComponentAction
+import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.editor.Editor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.lastLeaf
+import com.intellij.ui.GotItTooltip
 import com.intellij.util.asSafely
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.*
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
@@ -43,15 +47,15 @@ import sap.commerce.toolset.flexibleSearch.ui.FlexibleSearchRestrictionsDialog
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.readResource
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import java.awt.Dimension
 
 class FlexibleSearchShowRestrictionsAction : AnAction(
     "Show Search Restrictions",
     "Fetch and display user-specific search restrictions to be applied to a given FlexibleSearch query.",
     HybrisIcons.FlexibleSearch.RESTRICTIONS
-) {
+), CustomComponentAction {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -64,6 +68,7 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
     }
 
     override fun actionPerformed(e: AnActionEvent) {
+        val component = e.inputEvent?.component ?: return
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
         val psiFile = e.getData(CommonDataKeys.PSI_FILE)
@@ -92,6 +97,11 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
                 .forEach { add(FlexibleSearchCheckRestriction(it.first.tableName, true)) }
         }.joinToString(",", "[", "]") {
             "[\"${it.typeCode}\", ${it.excludeSubTypes}]"
+        }
+
+        if (type2scope == "[]") {
+            showNoRestrictions(editor, userUid)
+            return
         }
 
         val groovyScript = readResource("scripts/flexibleSearch-user-search-restrictions.groovy")
@@ -130,7 +140,7 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
 
                 withContext(Dispatchers.EDT) {
                     if (restrictions.isEmpty()) {
-                        HintManager.getInstance().showSuccessHint(editor, "No search restrictions apply to user <strong>$userUid</strong> for the provided FlexibleSearch query.")
+                        showNoRestrictions(editor, userUid)
                     } else {
                         FlexibleSearchRestrictionsDialog(project, userUid, restrictions.toList()).show()
                     }
@@ -138,5 +148,31 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
             }
         }
     }
+
+    private fun showNoRestrictions(editor: Editor, userUid: String) {
+        HintManager.getInstance().showSuccessHint(editor, "No search restrictions apply to user <strong>$userUid</strong> for the provided FlexibleSearch query.")
+    }
+
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButton(this, presentation, place, Dimension())
+        .apply {
+            GotItTooltip(
+                id = GotItTooltips.FlexibleSearch.SEARCH_RESTRICTIONS,
+                textSupplier = {
+                    """
+                    Retrieve all ${code("FlexibleSearch")} ${icon(HybrisIcons.FlexibleSearch.RESTRICTIONS)} restrictions applied to the query for the user specified in the execution context.
+                    <br><br>You can copy the detected restrictions as an ${code("ImpEx")} file or open them directly in a new Scratch File.
+                    <br><br>A running SAP Commerce server and valid ${
+                        link("connection configuration") {
+                            DataManager.getInstance().getDataContext(this@apply).getData(CommonDataKeys.PROJECT)
+                                ?.triggerAction("sap.commerce.toolset.hac.openSettings")
+                        }
+                    } are required.
+                """.trimIndent()
+                },
+                parentDisposable = null
+            )
+                .withHeader("Search restrictions for FlexibleSearch!")
+                .show(this, GotItTooltip.BOTTOM_MIDDLE)
+        }
 
 }

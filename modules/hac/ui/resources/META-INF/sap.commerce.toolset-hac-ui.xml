@@ -28,11 +28,13 @@
     </extensions>
 
     <actions>
+        <action id="sap.commerce.toolset.hac.openSettings" class="sap.commerce.toolset.hac.actionSystem.OpenHacSettingsAction"/>
+
         <group id="sap.commerce.toolset.hac.chooseConnection" popup="true" searchable="false"
                class="sap.commerce.toolset.hac.actionSystem.ChooseHacConnectionAction">
             <action class="sap.commerce.toolset.hac.actionSystem.AddHacConnectionAction"/>
             <action class="sap.commerce.toolset.hac.actionSystem.EditActiveHacConnectionAction"/>
-            <action class="sap.commerce.toolset.hac.actionSystem.OpenHacSettingsAction"/>
+            <reference ref="sap.commerce.toolset.hac.openSettings"/>
 
             <add-to-group anchor="first" group-id="hybris.console.actionGroup"/>
         </group>
