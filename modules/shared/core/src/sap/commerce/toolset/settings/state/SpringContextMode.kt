@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy
+package sap.commerce.toolset.settings.state
 
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
@@ -24,5 +24,5 @@ import javax.swing.Icon
 enum class SpringContextMode(val icon: Icon, val presentationText: String) {
     DISABLED(HybrisIcons.Spring.DISABLED, "Disabled"),
     LOCAL(HybrisIcons.Spring.LOCAL, "Local"),
-    REMOTE(HybrisIcons.Spring.REMOTE, "Remote"),
+//    REMOTE(HybrisIcons.Spring.REMOTE, "Remote"),
 }

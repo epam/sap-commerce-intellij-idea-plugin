@@ -27,14 +27,14 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
 
 class ChooseSolrConnectionAction : DefaultActionGroup() {
 
     init {
         templatePresentation.icon = HybrisIcons.Y.REMOTE
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescription(this))
+        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

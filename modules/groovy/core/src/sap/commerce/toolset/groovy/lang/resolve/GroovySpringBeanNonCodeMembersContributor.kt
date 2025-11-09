@@ -25,7 +25,8 @@ import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrImplicitVariableImpl
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.groovy.SpringContextMode
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.spring.SpringHelper
 
 class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
@@ -47,7 +48,7 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
             ?: return
         val contextMode = containingFile.originalFile.virtualFile
             ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
-            ?: SpringContextMode.DISABLED
+            ?: DeveloperSettings.getInstance(place.project).groovySettings.springContextMode
 
         if (contextMode == SpringContextMode.DISABLED) return
 

@@ -46,3 +46,7 @@ invokeLater {
     peer.window?.pack()
 }
 ```
+
+### Notifications
+
+* Use `Reset Got It Tooltips` internal action to simplify testing of the `GotItToolip` 

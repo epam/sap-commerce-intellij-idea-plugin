@@ -29,14 +29,14 @@ import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
 
 class ChooseHacConnectionAction : DefaultActionGroup() {
 
     init {
         templatePresentation.icon = HybrisIcons.Y.REMOTE
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescription(this))
+        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

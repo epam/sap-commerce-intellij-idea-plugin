@@ -39,7 +39,6 @@ object HybrisIcons {
     val MONITORING = getIcon("/icons/monitoring.svg")
 
     val CODE_NOT_GENERATED = AllIcons.General.ExclMark
-    val SPRING_BEAN = getIcon("icons/springBean.svg")
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
     object Y {

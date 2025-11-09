@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy
+package sap.commerce.toolset
 
-import com.intellij.openapi.util.Key
-import sap.commerce.toolset.settings.state.SpringContextMode
+object GotItTooltips {
 
-object GroovyConstants {
-    val KEY_SPRING_CONTEXT_MODE = Key<SpringContextMode>("sap.cx.groovy.spring.context.mode")
+    private const val PREFIX = "sap.cx.gotIt."
+
+    const val SPRING_CONTEXT_MODE = PREFIX + "springContextMode"
 }

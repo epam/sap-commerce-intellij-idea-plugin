@@ -27,8 +27,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.groovy.SpringContextMode
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.state.SpringContextMode
 
 abstract class GroovySpringContextAction(private val contextMode: SpringContextMode, description: String) : CheckboxAction(
     contextMode.presentationText, description, null
@@ -39,6 +40,7 @@ abstract class GroovySpringContextAction(private val contextMode: SpringContextM
     override fun isSelected(e: AnActionEvent): Boolean {
         val currentMode = e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
+            ?: e.project?.let { DeveloperSettings.getInstance(it).groovySettings.springContextMode }
             ?: SpringContextMode.DISABLED
 
         return currentMode == contextMode
