@@ -34,6 +34,7 @@ import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.state.SpringContextMode
+import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.settings.yDeveloperSettings
 import javax.swing.JCheckBox
 
@@ -59,9 +60,20 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                     .label("Spring context mode:")
                     .comment("""
                         Defines default mode for each new Editor.<br>
-                        <cod>Local</code> mode enables direct resolution of the Spring beans, so it will be possible to enable code completion for such statements <code>productService.getProduct(..)</code>. 
+                        <cod>${SpringContextMode.LOCAL.presentationText}</code> mode enables direct resolution of the Spring beans, so it will be possible to enable code completion for such statements <code>productService.getProduct(..)</code>. 
                     """.trimIndent())
                     .bindItem(mutable::springContextMode.toNullableProperty(SpringContextMode.DISABLED))
+            }
+            row {
+                comboBox(
+                    EnumComboBoxModel(TransactionMode::class.java),
+                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                )
+                    .label("Transaction mode:")
+                    .comment("""
+                        Defines default mode for each new Editor. 
+                    """.trimIndent())
+                    .bindItem(mutable::transactionMode.toNullableProperty(TransactionMode.ROLLBACK))
             }
 
             separator()

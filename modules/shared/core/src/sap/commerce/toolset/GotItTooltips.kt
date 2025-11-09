@@ -23,4 +23,5 @@ object GotItTooltips {
     private const val PREFIX = "sap.cx.gotIt."
 
     const val SPRING_CONTEXT_MODE = PREFIX + "springContextMode"
+    const val TRANSACTION_MODE = PREFIX + "transactionMode"
 }

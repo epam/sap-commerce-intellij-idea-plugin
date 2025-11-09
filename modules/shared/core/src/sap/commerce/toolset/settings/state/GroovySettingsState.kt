@@ -27,12 +27,14 @@ data class GroovySettingsState(
     @JvmField @OptionTag val enableActionsToolbarForGroovyTest: Boolean = false,
     @JvmField @OptionTag val enableActionsToolbarForGroovyIdeConsole: Boolean = false,
     @JvmField @OptionTag val springContextMode: SpringContextMode = SpringContextMode.DISABLED,
+    @JvmField @OptionTag val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
 ) {
     fun mutable() = Mutable(
         enableActionsToolbar = enableActionsToolbar,
         enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
         enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
         springContextMode = springContextMode,
+        transactionMode = transactionMode,
     )
 
     data class Mutable(
@@ -40,12 +42,14 @@ data class GroovySettingsState(
         var enableActionsToolbarForGroovyTest: Boolean,
         var enableActionsToolbarForGroovyIdeConsole: Boolean,
         var springContextMode: SpringContextMode,
+        var transactionMode: TransactionMode,
     ) {
         fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
             enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
             enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
             springContextMode = springContextMode,
+            transactionMode = transactionMode,
         )
     }
 }
