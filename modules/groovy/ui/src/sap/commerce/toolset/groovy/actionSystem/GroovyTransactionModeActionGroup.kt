@@ -19,46 +19,21 @@
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.ide.DataManager
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import com.intellij.ui.GotItTooltip
 import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.triggerAction
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
-import javax.swing.JComponent
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
-class GroovyTransactionModeActionGroup : DefaultActionGroup() {
-
-    private val gotItTooltipProvider: (JComponent) -> GotItTooltip? = { component ->
-        GotItTooltip(
-            id = GotItTooltips.Groovy.TRANSACTION_MODE,
-            textSupplier = {
-                """
-                    You can configure the transaction mode individually for each Groovy script.
-                    <br><br>When ${icon(TransactionMode.COMMIT.icon)} ${code(TransactionMode.COMMIT.presentationText)} mode is enabled, all changes made by the script will be permanently applied.
-                    <br>If you want to ensure that no modifications are persisted, switch the mode to ${icon(TransactionMode.ROLLBACK.icon)} ${code(TransactionMode.ROLLBACK.presentationText)}.
-                    <br><br>Rollback is the default for newly opened editors, but this behavior can be adjusted in the ${
-                    link("Groovy settings") {
-                        DataManager.getInstance().getDataContext(component).getData(CommonDataKeys.PROJECT)
-                            ?.triggerAction("hybris.groovy.openSettings")
-                    }
-                }.
-                """.trimIndent()
-            },
-            parentDisposable = null
-        )
-            .withHeader("Transaction modes for Groovy!")
-    }
+class GroovyTransactionModeActionGroup : DefaultActionGroup(), CustomComponentAction {
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this, gotItTooltipProvider))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -73,5 +48,28 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup() {
         e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", currentTransactionMode.presentationText)
         e.presentation.description = "Transaction mode"
     }
+
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(this, presentation, place)
+        .also {
+            GotItTooltip(
+                id = GotItTooltips.Groovy.TRANSACTION_MODE,
+                textSupplier = {
+                    """
+                    You can configure the transaction mode individually for each Groovy script.
+                    <br><br>When ${icon(TransactionMode.COMMIT.icon)} ${code(TransactionMode.COMMIT.presentationText)} mode is enabled, all changes made by the script will be permanently applied.
+                    <br>If you want to ensure that no modifications are persisted, switch the mode to ${icon(TransactionMode.ROLLBACK.icon)} ${code(TransactionMode.ROLLBACK.presentationText)}.
+                    <br><br>Rollback is the default for newly opened editors, but this behavior can be adjusted in the ${
+                        link("Groovy settings") {
+                            DataManager.getInstance().getDataContext(it).getData(CommonDataKeys.PROJECT)
+                                ?.triggerAction("hybris.groovy.openSettings")
+                        }
+                    }.
+                """.trimIndent()
+                },
+                parentDisposable = null
+            )
+                .withHeader("Transaction modes for Groovy!")
+                .show(it, GotItTooltip.BOTTOM_MIDDLE)
+        }
 
 }

@@ -28,15 +28,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.registry.Registry
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.JBIntSpinner
-import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.*
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.layout.selected
+import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
@@ -53,6 +51,7 @@ import sap.commerce.toolset.ui.repackDialog
 import java.awt.Component
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
+import javax.swing.JComponent
 import javax.swing.JLabel
 
 class HacConnectionSettingsDialog(
@@ -206,6 +205,7 @@ class HacConnectionSettingsDialog(
         collapsibleGroup("Authentication") {
             row {
                 segmentedButton(AuthenticationMode.entries.toList()) {
+                    icon = it.icon
                     text = it.title
                     toolTipText = it.description
                 }
@@ -215,6 +215,8 @@ class HacConnectionSettingsDialog(
                         testConnectionButton.isEnabled = it == AuthenticationMode.AUTOMATIC
                         repackDialog()
                     }
+                    .component
+                    ?.let { showGotItTooltip(it) }
             }
 
             authenticationAutomatic()
@@ -244,7 +246,7 @@ class HacConnectionSettingsDialog(
         }
 
         row {
-            label("Authentication via Browser will take place on Api request to hAC.")
+            label("Authentication via Browser will take place on API request to hAC.")
                 .align(AlignX.CENTER)
                 .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
         }
@@ -371,5 +373,22 @@ class HacConnectionSettingsDialog(
             comment("<strong>Warning:</strong> Connect to 127.0.0.1 on WSLProxy instead of public WSL IP which might be inaccessible due to routing issues.")
                 .visibleIf(mutable.wsl)
         }.layout(RowLayout.PARENT_GRID)
+    }
+
+    private fun showGotItTooltip(component: JComponent) {
+        GotItTooltip(
+            id = GotItTooltips.Hac.AUTHENTICATION_MODES,
+            textSupplier = {
+                """
+                    You can choose one of the authentication modes for integration with ${code("hAC")}.
+                    <br><br>With the ${icon(AuthenticationMode.AUTOMATIC.icon)} ${code(AuthenticationMode.AUTOMATIC.shortTitle)} the Plugin will rely on the specified persisted credentials to authenticate and renew connection to hAC.
+                    <br><br>Whereas with the ${icon(AuthenticationMode.MANUAL.icon)} ${code(AuthenticationMode.MANUAL.shortTitle)} credentials will not be persisted and you will be asked for authentication via Browser every time when it is required.
+                    This mode also supports http basic authorization of the connection (e.g. ${code("nginx")} reverse proxy). 
+                """.trimIndent()
+            },
+            parentDisposable = null
+        )
+            .withHeader("Authentication modes for hAC!")
+            .show(component, GotItTooltip.TOP_MIDDLE)
     }
 }

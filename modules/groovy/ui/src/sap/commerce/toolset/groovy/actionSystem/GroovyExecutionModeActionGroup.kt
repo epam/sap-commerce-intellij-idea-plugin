@@ -18,21 +18,18 @@
 
 package sap.commerce.toolset.groovy.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
-class GroovyExecutionModeActionGroup : DefaultActionGroup() {
+class GroovyExecutionModeActionGroup : DefaultActionGroup(), CustomComponentAction {
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -49,4 +46,7 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
         e.presentation.text = connectionContext.previewText
         e.presentation.description = connectionContext.description
     }
+
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(this, presentation, place)
+
 }

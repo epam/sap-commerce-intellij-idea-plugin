@@ -69,6 +69,8 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 > [!TIP]
 > 
 > Useful [Technical Notes](TECH_NOTES.md) for special cases.
+> 
+> Please, update the [Got it Tooltip](https://plugins.jetbrains.com/docs/intellij/got-it-tooltip.html) whenever you're changing related functionality. 
 
 * Fork and checkout most-active `main` branch the project
 * Refresh gradle dependencies

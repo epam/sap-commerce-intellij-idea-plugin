@@ -20,6 +20,7 @@ package sap.commerce.toolset.solr.actionSystem
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
@@ -27,14 +28,13 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
-class ChooseSolrConnectionAction : DefaultActionGroup() {
+class ChooseSolrConnectionAction : DefaultActionGroup(), CustomComponentAction {
 
     init {
         templatePresentation.icon = HybrisIcons.Y.REMOTE
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -80,4 +80,6 @@ class ChooseSolrConnectionAction : DefaultActionGroup() {
                 .let { p { +it } }
         }
     }
+
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(this, presentation, place)
 }

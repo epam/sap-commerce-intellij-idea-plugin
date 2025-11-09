@@ -18,7 +18,25 @@
 
 package sap.commerce.toolset.hac.exec.settings.state
 
-enum class AuthenticationMode(val title: String, val description: String) {
-    AUTOMATIC("Automatic by credentials", "Rely on persisted credentials and automated authentication through API."),
-    MANUAL("Manual via Browser", "Rely on manual browser authentication, re-authentication will be required on session timeout.")
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
+
+enum class AuthenticationMode(
+    val icon: Icon,
+    val title: String,
+    val shortTitle: String,
+    val description: String
+) {
+    AUTOMATIC(
+        HybrisIcons.HAC.AUTH_AUTOMATIC,
+        "Automatic by credentials",
+        "Automatic",
+        "Rely on persisted credentials and automated authentication through API."
+    ),
+    MANUAL(
+        HybrisIcons.HAC.AUTH_MANUAL,
+        "Manual via Browser",
+        "Manual",
+        "Rely on manual browser authentication, re-authentication will be required on session timeout."
+    )
 }
