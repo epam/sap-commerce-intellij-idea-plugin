@@ -29,7 +29,7 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 
-class HacProxyAuthorizationDialog(
+class HacProxyAuthDialog(
     project: Project,
     private val proxy: String,
     proxyCredentials: Credentials? = null

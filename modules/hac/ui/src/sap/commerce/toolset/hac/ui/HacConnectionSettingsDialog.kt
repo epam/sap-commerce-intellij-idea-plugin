@@ -41,18 +41,16 @@ import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.exec.http.HacHttpAuthenticationResult
+import sap.commerce.toolset.hac.exec.http.HacHttpAuthResult
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
-import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
+import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
 import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.nullableIntTextField
 import sap.commerce.toolset.ui.repackDialog
 import java.awt.Component
-import javax.swing.DefaultComboBoxModel
-import javax.swing.JComboBox
-import javax.swing.JComponent
-import javax.swing.JLabel
+import javax.swing.*
 
 class HacConnectionSettingsDialog(
     project: Project,
@@ -68,11 +66,16 @@ class HacConnectionSettingsDialog(
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField
     private lateinit var wslDistributionComboBox: JComboBox<WSLDistribution>
+    private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
+
+    }
 
     init {
         super.init()
-        testConnectionButton.isEnabled = mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC
+        testConnectionButton.isEnabled = mutable.authMode.get() == AuthMode.AUTOMATIC
     }
+
+    override fun createLeftSideActions() = arrayOf(testConnectionButton)
 
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
@@ -93,7 +96,7 @@ class HacConnectionSettingsDialog(
     )
         .let {
             when {
-                it is HacHttpAuthenticationResult.Error -> it.message
+                it is HacHttpAuthResult.Error -> it.message
                 else -> null
             }
         }
@@ -204,15 +207,15 @@ class HacConnectionSettingsDialog(
 
         collapsibleGroup("Authentication") {
             row {
-                segmentedButton(AuthenticationMode.entries.toList()) {
+                segmentedButton(AuthMode.entries.toList()) {
                     icon = it.icon
                     text = it.title
                     toolTipText = it.description
                 }
                     .align(AlignX.CENTER)
-                    .bind(mutable.authenticationMode)
+                    .bind(mutable.authMode)
                     .whenItemSelected(disposable) {
-                        testConnectionButton.isEnabled = it == AuthenticationMode.AUTOMATIC
+                        testConnectionButton.isEnabled = it == AuthMode.AUTOMATIC
                         repackDialog()
                     }
                     .component
@@ -224,13 +227,19 @@ class HacConnectionSettingsDialog(
 
             separator()
                 // TODO; remove visibility flag once proxy authentication is implemented for Automatic mode
-                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+                .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
 
             row {
-                checkBox("Proxy authentication")
-                    .bindSelected(mutable.proxyAuthentication)
+                checkBox("Reverse proxy basic authorization")
+                    .bindSelected(
+                        { mutable.proxyAuthMode.get() == ProxyAuthMode.BASIC },
+                        {
+                            if (it) mutable.proxyAuthMode.set(ProxyAuthMode.BASIC)
+                            else mutable.proxyAuthMode.set(ProxyAuthMode.NONE)
+                        }
+                    )
                     // TODO; remove visibility flag once proxy authentication is implemented for Automatic mode
-                    .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+                    .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
             }
         }.expanded = true
     }
@@ -240,7 +249,7 @@ class HacConnectionSettingsDialog(
             row {
                 inlineBanner("Set the reg key to enable JCEF:\n\"ide.browser.jcef.enabled=true\"", EditorNotificationPanel.Status.Warning)
             }
-                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+                .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
                 .topGap(TopGap.MEDIUM)
                 .bottomGap(BottomGap.MEDIUM)
         }
@@ -248,7 +257,7 @@ class HacConnectionSettingsDialog(
         row {
             label("Authentication via Browser will take place on API request to hAC.")
                 .align(AlignX.CENTER)
-                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.MANUAL))
+                .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
         }
     }
 
@@ -259,9 +268,9 @@ class HacConnectionSettingsDialog(
                 .align(AlignX.FILL)
                 .bindText(mutable.username)
                 .enabledIf(editableCredentials)
-                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
+                .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
                 .addValidationRule("Username cannot be blank.") {
-                    mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC && it.text.isNullOrBlank()
+                    mutable.authMode.get() == AuthMode.AUTOMATIC && it.text.isNullOrBlank()
                 }
                 .component
         }.layout(RowLayout.PARENT_GRID)
@@ -272,9 +281,9 @@ class HacConnectionSettingsDialog(
                 .align(AlignX.FILL)
                 .bindText(mutable.password)
                 .enabledIf(editableCredentials)
-                .visibleIf(mutable.authenticationMode.equalsTo(AuthenticationMode.AUTOMATIC))
+                .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
                 .addValidationRule("Password cannot be blank.") {
-                    mutable.authenticationMode.get() == AuthenticationMode.AUTOMATIC && it.password.isEmpty()
+                    mutable.authMode.get() == AuthMode.AUTOMATIC && it.password.isEmpty()
                 }
                 .component
         }.layout(RowLayout.PARENT_GRID)
@@ -377,12 +386,12 @@ class HacConnectionSettingsDialog(
 
     private fun showGotItTooltip(component: JComponent) {
         GotItTooltip(
-            id = GotItTooltips.Hac.AUTHENTICATION_MODES,
+            id = GotItTooltips.Hac.AUTH_MODES,
             textSupplier = {
                 """
                     You can choose one of the authentication modes for integration with ${code("hAC")}.
-                    <br><br>With the ${icon(AuthenticationMode.AUTOMATIC.icon)} ${code(AuthenticationMode.AUTOMATIC.shortTitle)} the Plugin will rely on the specified persisted credentials to authenticate and renew connection to hAC.
-                    <br><br>Whereas with the ${icon(AuthenticationMode.MANUAL.icon)} ${code(AuthenticationMode.MANUAL.shortTitle)} credentials will not be persisted and you will be asked for authentication via Browser every time when it is required.
+                    <br><br>With the ${icon(AuthMode.AUTOMATIC.icon)} ${code(AuthMode.AUTOMATIC.shortTitle)} the Plugin will rely on the specified persisted credentials to authenticate and renew connection to hAC.
+                    <br><br>Whereas with the ${icon(AuthMode.MANUAL.icon)} ${code(AuthMode.MANUAL.shortTitle)} credentials will not be persisted and you will be asked for authentication via Browser every time when it is required.
                     This mode also supports http basic authorization of the connection (e.g. ${code("nginx")} reverse proxy). 
                 """.trimIndent()
             },

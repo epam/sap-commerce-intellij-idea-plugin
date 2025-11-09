@@ -41,10 +41,10 @@ data class HacConnectionSettingsState(
     @OptionTag override val timeout: Int = HacExecConstants.DEFAULT_TIMEOUT,
 
     @JvmField @OptionTag val wsl: Boolean = false,
-    @JvmField @OptionTag val proxyAuthentication: Boolean = false,
     @JvmField @OptionTag val sslProtocol: String = "TLSv1.2",
     @JvmField @OptionTag val sessionCookieName: String = ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
-    @JvmField @OptionTag val authenticationMode: AuthenticationMode = AuthenticationMode.AUTOMATIC,
+    @JvmField @OptionTag val authMode: AuthMode = AuthMode.AUTOMATIC,
+    @JvmField @OptionTag val proxyAuthMode: ProxyAuthMode = ProxyAuthMode.NONE,
 ) : ExecConnectionSettingsState {
 
     override fun mutable() = Mutable(
@@ -57,10 +57,10 @@ data class HacConnectionSettingsState(
         ssl = ssl,
         timeout = timeout,
         wsl = AtomicBooleanProperty(wsl),
-        proxyAuthentication = AtomicBooleanProperty(proxyAuthentication),
         sslProtocol = sslProtocol,
         sessionCookieName = sessionCookieName,
-        authenticationMode = AtomicProperty(authenticationMode),
+        proxyAuthMode = AtomicProperty(proxyAuthMode),
+        authMode = AtomicProperty(authMode),
     )
 
     data class Mutable(
@@ -77,9 +77,9 @@ data class HacConnectionSettingsState(
         override val password: ObservableMutableProperty<String> = AtomicProperty(""),
         val proxyUsername: ObservableMutableProperty<String> = AtomicProperty(""),
         val proxyPassword: ObservableMutableProperty<String> = AtomicProperty(""),
-        val authenticationMode: ObservableMutableProperty<AuthenticationMode>,
+        val authMode: ObservableMutableProperty<AuthMode>,
         val wsl: ObservableMutableProperty<Boolean>,
-        val proxyAuthentication: ObservableMutableProperty<Boolean>,
+        val proxyAuthMode: ObservableMutableProperty<ProxyAuthMode>,
         var sslProtocol: String,
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
@@ -94,10 +94,10 @@ data class HacConnectionSettingsState(
             ssl = ssl,
             timeout = timeout,
             wsl = wsl.get(),
-            proxyAuthentication = proxyAuthentication.get(),
             sslProtocol = sslProtocol,
             sessionCookieName = sessionCookieName,
-            authenticationMode = authenticationMode.get(),
+            proxyAuthMode = proxyAuthMode.get(),
+            authMode = authMode.get(),
         ) to Credentials(username.get(), password.get())
     }
 }

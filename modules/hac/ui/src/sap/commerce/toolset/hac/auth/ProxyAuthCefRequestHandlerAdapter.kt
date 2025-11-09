@@ -26,14 +26,14 @@ import com.intellij.openapi.util.text.StringUtil
 import org.cef.browser.CefBrowser
 import org.cef.callback.CefAuthCallback
 import org.cef.handler.CefRequestHandlerAdapter
-import sap.commerce.toolset.hac.ui.HacProxyAuthorizationDialog
+import sap.commerce.toolset.hac.ui.HacProxyAuthDialog
 import java.awt.EventQueue
 import java.awt.GraphicsEnvironment
 
 internal class ProxyAuthCefRequestHandlerAdapter(
     private val project: Project,
     private val proxyCredentials: Credentials?,
-    private val authorizationRef: Ref<Credentials?>,
+    private val proxyAuthRef: Ref<Credentials?>,
 ) : CefRequestHandlerAdapter() {
 
     override fun getAuthCredentials(
@@ -51,10 +51,10 @@ internal class ProxyAuthCefRequestHandlerAdapter(
 
         if (!GraphicsEnvironment.isHeadless()) {
             val runnable = Runnable {
-                val authorization = HacProxyAuthorizationDialog(project, proxyHost, proxyCredentials)
-                authorization.show()
+                val dialog = HacProxyAuthDialog(project, proxyHost, proxyCredentials)
+                dialog.show()
 
-                credentials.set(authorization.credentials)
+                credentials.set(dialog.credentials)
             }
             if (EventQueue.isDispatchThread()) runnable.run()
             else try {
@@ -66,7 +66,7 @@ internal class ProxyAuthCefRequestHandlerAdapter(
 
         return credentials.get()
             ?.let {
-                authorizationRef.set(Credentials(it.userName, it.password))
+                proxyAuthRef.set(Credentials(it.userName, it.password))
                 callback.Continue(it.userName, it.getPasswordAsString())
                 true
             }

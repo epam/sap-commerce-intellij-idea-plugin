@@ -16,9 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.exec.http
+package sap.commerce.toolset.hac.exec.settings.state
 
-sealed class HacHttpAuthenticationResult {
-    data class Success(val url: String) : HacHttpAuthenticationResult()
-    data class Error(val url: String, val message: String) : HacHttpAuthenticationResult()
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
+
+enum class AuthMode(
+    val icon: Icon,
+    val title: String,
+    val shortTitle: String,
+    val description: String
+) {
+    AUTOMATIC(
+        HybrisIcons.HAC.AUTH_AUTOMATIC,
+        "Automatic by credentials",
+        "Automatic",
+        "Rely on persisted credentials and automated authentication through API."
+    ),
+    MANUAL(
+        HybrisIcons.HAC.AUTH_MANUAL,
+        "Manual via Browser",
+        "Manual",
+        "Rely on manual browser authentication, re-authentication will be required on session timeout."
+    )
 }

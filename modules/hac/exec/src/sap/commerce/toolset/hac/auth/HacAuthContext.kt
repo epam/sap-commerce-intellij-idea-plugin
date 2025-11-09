@@ -16,27 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.exec.settings.state
+package sap.commerce.toolset.hac.auth
 
-import sap.commerce.toolset.HybrisIcons
-import javax.swing.Icon
+import com.intellij.credentialStore.Credentials
 
-enum class AuthenticationMode(
-    val icon: Icon,
-    val title: String,
-    val shortTitle: String,
-    val description: String
+data class HacAuthContext(
+    val csrfToken: String,
+    val cookies: Map<String, String>,
+    val authorization: Credentials?,
 ) {
-    AUTOMATIC(
-        HybrisIcons.HAC.AUTH_AUTOMATIC,
-        "Automatic by credentials",
-        "Automatic",
-        "Rely on persisted credentials and automated authentication through API."
-    ),
-    MANUAL(
-        HybrisIcons.HAC.AUTH_MANUAL,
-        "Manual via Browser",
-        "Manual",
-        "Rely on manual browser authentication, re-authentication will be required on session timeout."
-    )
+    fun isValid(sessionCookieName: String) = cookies.containsKey(sessionCookieName)
 }

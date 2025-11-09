@@ -37,6 +37,6 @@ object GotItTooltips {
     object Hac {
         private const val OWN_PREFIX = PREFIX + "hac."
 
-        const val AUTHENTICATION_MODES = OWN_PREFIX + "authenticationModes"
+        const val AUTH_MODES = OWN_PREFIX + "authModes"
     }
 }

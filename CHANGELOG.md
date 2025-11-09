@@ -3,6 +3,9 @@
 <cite>Release contributors</cite>
 - 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
+### `CCv2` enhancements
+- Select & configure `hAC` connection from the CCv2 endpoint [#1652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1652)
+
 ### `Groovy` enhancements
 - Introduced `local` Spring context mode within groovy files (slow operation) [#1645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1645)
 - Added icons for transaction mode toggle [#1647](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1647)
