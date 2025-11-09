@@ -20,6 +20,7 @@ package sap.commerce.toolset.hac.actionSystem
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
@@ -29,14 +30,13 @@ import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponentProvider
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
-class ChooseHacConnectionAction : DefaultActionGroup() {
+class ChooseHacConnectionAction : DefaultActionGroup(), CustomComponentAction {
 
     init {
         templatePresentation.icon = HybrisIcons.Y.REMOTE
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
-        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescriptionComponentProvider(this))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -95,4 +95,6 @@ class ChooseHacConnectionAction : DefaultActionGroup() {
                 .let { p { +it } }
         }
     }
+
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(this, presentation, place)
 }

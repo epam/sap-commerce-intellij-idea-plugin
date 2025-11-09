@@ -33,4 +33,10 @@ object GotItTooltips {
 
         const val SEARCH_RESTRICTIONS = OWN_PREFIX + "searchRestrictions"
     }
+
+    object Hac {
+        private const val OWN_PREFIX = PREFIX + "hac."
+
+        const val AUTHENTICATION_MODES = OWN_PREFIX + "authenticationModes"
+    }
 }

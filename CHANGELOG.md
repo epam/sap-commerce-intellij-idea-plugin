@@ -1,7 +1,7 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `Groovy` enhancements
 - Introduced `local` Spring context mode within groovy files (slow operation) [#1645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1645)
@@ -29,6 +29,7 @@
 - Added support of the _proxy_ authentication for `manual` authentication mode [#1639](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1639)
 - Respect basic authorization for proxy authentication of the `manual` authentication mode [#1640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1640)
 - Display website access errors in the Browser for `manual` authentication mode [#1641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1641)
+- Added `Got it Tooltip` describing new authentication modes [#1651](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1651)
 
 ## [2025.2.4.5]
 

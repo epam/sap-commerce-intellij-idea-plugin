@@ -52,6 +52,11 @@ object HybrisIcons {
         val FACET = LOGO_GREEN
     }
 
+    object HAC {
+        val AUTH_AUTOMATIC = AllIcons.Actions.SynchronizeScrolling
+        val AUTH_MANUAL = AllIcons.Actions.ToggleVisibility
+    }
+
     object Spring {
         val BEAN = getIcon("icons/spring/springBean.svg")
         val DISABLED = getIcon("icons/spring/springDisabled.svg")

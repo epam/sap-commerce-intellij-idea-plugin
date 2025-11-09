@@ -149,21 +149,17 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
         }
     }
 
-    private fun showNoRestrictions(editor: Editor, userUid: String) {
-        HintManager.getInstance().showSuccessHint(editor, "No search restrictions apply to user <strong>$userUid</strong> for the provided FlexibleSearch query.")
-    }
-
     override fun createCustomComponent(presentation: Presentation, place: String) = ActionButton(this, presentation, place, Dimension())
-        .apply {
+        .also {
             GotItTooltip(
                 id = GotItTooltips.FlexibleSearch.SEARCH_RESTRICTIONS,
                 textSupplier = {
                     """
-                    Retrieve all ${code("FlexibleSearch")} ${icon(HybrisIcons.FlexibleSearch.RESTRICTIONS)} restrictions applied to the query for the user specified in the execution context.
+                    Retrieve all ${icon(HybrisIcons.FlexibleSearch.RESTRICTIONS)} ${code("search restrictions")} applied to the query for the user specified in the execution context.
                     <br><br>You can copy the detected restrictions as an ${code("ImpEx")} file or open them directly in a new Scratch File.
                     <br><br>A running SAP Commerce server and valid ${
                         link("connection configuration") {
-                            DataManager.getInstance().getDataContext(this@apply).getData(CommonDataKeys.PROJECT)
+                            DataManager.getInstance().getDataContext(it).getData(CommonDataKeys.PROJECT)
                                 ?.triggerAction("sap.commerce.toolset.hac.openSettings")
                         }
                     } are required.
@@ -172,7 +168,11 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
                 parentDisposable = null
             )
                 .withHeader("Search restrictions for FlexibleSearch!")
-                .show(this, GotItTooltip.BOTTOM_MIDDLE)
+                .show(it, GotItTooltip.BOTTOM_MIDDLE)
         }
+
+    private fun showNoRestrictions(editor: Editor, userUid: String) {
+        HintManager.getInstance().showSuccessHint(editor, "No search restrictions apply to user <strong>$userUid</strong> for the provided FlexibleSearch query.")
+    }
 
 }
