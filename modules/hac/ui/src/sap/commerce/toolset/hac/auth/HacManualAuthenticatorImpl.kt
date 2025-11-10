@@ -29,8 +29,8 @@ import sap.commerce.toolset.hac.ui.HacManualAuthenticationDialog
 
 class HacManualAuthenticatorImpl(private val project: Project) : HacManualAuthenticator {
 
-    override suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthenticationContext? {
-        val deferredAuthenticationContext = CompletableDeferred<HacAuthenticationContext?>()
+    override suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthContext? {
+        val deferredAuthenticationContext = CompletableDeferred<HacAuthContext?>()
 
         val proxyCredentials = withContext(Dispatchers.IO) {
             HacExecConnectionService.getInstance(project).getProxyCredentials(settings)

@@ -16,14 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.auth
+package sap.commerce.toolset.hac.exec.settings.state
 
-import com.intellij.credentialStore.Credentials
-
-data class HacAuthenticationContext(
-    val csrfToken: String,
-    val cookies: Map<String, String>,
-    val authorization: Credentials?,
-) {
-    fun isValid(sessionCookieName: String) = cookies.containsKey(sessionCookieName)
+enum class ProxyAuthMode {
+    NONE,
+    BASIC;
 }

@@ -17,4 +17,10 @@
   -->
 <idea-plugin>
 
+    <extensionPoints>
+        <extensionPoint qualifiedName="sap.commerce.toolset.hac.connectionSettingsProvider"
+                        interface="sap.commerce.toolset.hac.exec.HacConnectionSettingsProvider"
+                        dynamic="true"/>
+    </extensionPoints>
+
 </idea-plugin>

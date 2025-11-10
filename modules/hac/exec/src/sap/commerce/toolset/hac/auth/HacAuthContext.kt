@@ -18,15 +18,12 @@
 
 package sap.commerce.toolset.hac.auth
 
-import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import com.intellij.credentialStore.Credentials
 
-interface HacManualAuthenticator {
-
-    suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthContext?
-
-    companion object {
-        fun getService(project: Project): HacManualAuthenticator = project.service()
-    }
+data class HacAuthContext(
+    val csrfToken: String,
+    val cookies: Map<String, String>,
+    val authorization: Credentials?,
+) {
+    fun isValid(sessionCookieName: String) = cookies.containsKey(sessionCookieName)
 }

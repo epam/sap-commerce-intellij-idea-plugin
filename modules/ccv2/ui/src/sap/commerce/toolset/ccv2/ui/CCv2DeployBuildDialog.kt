@@ -30,6 +30,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
@@ -126,7 +127,7 @@ class CCv2DeployBuildDialog(
                     .addValidationRule("Please select a subscription for a build.") { it.selectedItem == null }
                     .onChanged {
                         it.selectedItem
-                            ?.let { item -> item as? CCv2Subscription }
+                            ?.asSafely<CCv2Subscription>()
                             ?.let { subscription -> updateEnvironments(subscription) }
                     }
                     .component
@@ -137,8 +138,8 @@ class CCv2DeployBuildDialog(
                     environmentModel,
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                         if (value != null) {
-                            label.text = value.name
                             label.icon = value.type.icon
+                            label.text = value.name
                         }
                     }
                 )

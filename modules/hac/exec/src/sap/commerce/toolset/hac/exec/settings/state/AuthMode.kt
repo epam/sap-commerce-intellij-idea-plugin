@@ -16,17 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.auth
+package sap.commerce.toolset.hac.exec.settings.state
 
-import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
 
-interface HacManualAuthenticator {
-
-    suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthContext?
-
-    companion object {
-        fun getService(project: Project): HacManualAuthenticator = project.service()
-    }
+enum class AuthMode(
+    val icon: Icon,
+    val title: String,
+    val shortTitle: String,
+    val description: String
+) {
+    AUTOMATIC(
+        HybrisIcons.HAC.AUTH_AUTOMATIC,
+        "Automatic by credentials",
+        "Automatic",
+        "Rely on persisted credentials and automated authentication through API."
+    ),
+    MANUAL(
+        HybrisIcons.HAC.AUTH_MANUAL,
+        "Manual via Browser",
+        "Manual",
+        "Rely on manual browser authentication, re-authentication will be required on session timeout."
+    )
 }

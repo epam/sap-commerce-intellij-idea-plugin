@@ -16,9 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.exec.http
+package sap.commerce.toolset.exec.settings.state
 
-sealed class HacHttpAuthenticationResult {
-    data class Success(val url: String) : HacHttpAuthenticationResult()
-    data class Error(val url: String, val message: String) : HacHttpAuthenticationResult()
-}
+import com.intellij.openapi.util.text.StringUtil
+
+fun connectionPresentationName(scope: ExecConnectionScope, string: String?, fallback: () -> String): String = (string
+    ?.takeIf { it.isNotBlank() }
+    ?: fallback()
+        .replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS)
+        .takeIf { it.isNotBlank() }
+    )
+    .let { scope.shortTitle + " : " + it }

@@ -77,7 +77,7 @@ class SolrConnectionSettingsDialog(
                 .bold()
             connectionNameTextField = textField()
                 .align(AlignX.FILL)
-                .bindText(mutable::name.toNonNullableProperty(""))
+                .bindText(mutable.name)
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
@@ -131,14 +131,14 @@ class SolrConnectionSettingsDialog(
                 hostTextField = textField()
                     .label("Host / IP:")
                     .align(AlignX.FILL)
-                    .bindText(mutable::host)
+                    .bindText(mutable.host)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
 
                 portTextField = nullableIntTextField(1..65535)
                     .label("Port:")
-                    .bindText(mutable::port.toNonNullableProperty(""))
+                    .bindText(mutable.port)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -146,12 +146,12 @@ class SolrConnectionSettingsDialog(
             row {
                 webrootTextField = textField()
                     .label("Webroot:")
-                    .bindText(mutable::webroot)
+                    .bindText(mutable.webroot)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
 
                 sslProtocolCheckBox = checkBox("SSL")
-                    .bindSelected(mutable::ssl)
+                    .bindSelected(mutable.ssl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)

@@ -16,17 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.auth
+package sap.commerce.toolset.hac.exec.http
 
-import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-
-interface HacManualAuthenticator {
-
-    suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthContext?
-
-    companion object {
-        fun getService(project: Project): HacManualAuthenticator = project.service()
-    }
+sealed class HacHttpAuthResult {
+    data class Success(val url: String) : HacHttpAuthResult()
+    data class Error(val url: String, val message: String) : HacHttpAuthResult()
 }

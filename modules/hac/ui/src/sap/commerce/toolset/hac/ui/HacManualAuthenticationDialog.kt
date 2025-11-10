@@ -27,9 +27,10 @@ import com.intellij.ui.jcef.*
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
 import org.cef.handler.CefLoadHandler
-import sap.commerce.toolset.hac.auth.HacAuthenticationContext
+import sap.commerce.toolset.hac.auth.HacAuthContext
 import sap.commerce.toolset.hac.auth.ProxyAuthCefRequestHandlerAdapter
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
 import java.util.concurrent.TimeUnit
 
 /*
@@ -39,7 +40,7 @@ class HacManualAuthenticationDialog(
     private val project: Project,
     private val settings: HacConnectionSettingsState,
     private val proxyCredentials: Credentials? = null,
-    private val deferredAuthenticationContext: CompletableDeferred<HacAuthenticationContext?>,
+    private val deferredAuthenticationContext: CompletableDeferred<HacAuthContext?>,
 ) : DialogWrapper(project, null, false, IdeModalityType.MODELESS) {
 
     private val authorizationRef = Ref<Credentials?>()
@@ -61,7 +62,7 @@ class HacManualAuthenticationDialog(
                 else JBCefBrowserBase.ErrorPage.DEFAULT.create(errorCode, errorText, failedUrl)
             }
 
-            if (settings.proxyAuthentication) {
+            if (settings.proxyAuthMode == ProxyAuthMode.BASIC) {
                 jbCefClient.addRequestHandler(
                     ProxyAuthCefRequestHandlerAdapter(project, proxyCredentials, authorizationRef),
                     cefBrowser
@@ -87,7 +88,7 @@ class HacManualAuthenticationDialog(
 
         val csrf = runBlocking { retrieveCsrfToken() }
         val authorization = authorizationRef.get()
-        val context = HacAuthenticationContext(csrf, cookies, authorization)
+        val context = HacAuthContext(csrf, cookies, authorization)
 
         deferredAuthenticationContext.complete(context)
     }

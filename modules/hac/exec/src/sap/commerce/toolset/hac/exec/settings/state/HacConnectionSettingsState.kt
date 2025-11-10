@@ -21,6 +21,7 @@ package sap.commerce.toolset.hac.exec.settings.state
 import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.exec.ExecConstants
@@ -41,63 +42,63 @@ data class HacConnectionSettingsState(
     @OptionTag override val timeout: Int = HacExecConstants.DEFAULT_TIMEOUT,
 
     @JvmField @OptionTag val wsl: Boolean = false,
-    @JvmField @OptionTag val proxyAuthentication: Boolean = false,
     @JvmField @OptionTag val sslProtocol: String = "TLSv1.2",
     @JvmField @OptionTag val sessionCookieName: String = ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
-    @JvmField @OptionTag val authenticationMode: AuthenticationMode = AuthenticationMode.AUTOMATIC,
+    @JvmField @OptionTag val authMode: AuthMode = AuthMode.AUTOMATIC,
+    @JvmField @OptionTag val proxyAuthMode: ProxyAuthMode = ProxyAuthMode.NONE,
 ) : ExecConnectionSettingsState {
 
     override fun mutable() = Mutable(
         uuid = uuid,
         scope = scope,
-        name = name,
-        host = host,
-        port = port,
-        webroot = webroot,
-        ssl = ssl,
+        name = AtomicProperty(name ?: ""),
+        host = AtomicProperty(host),
+        port = AtomicProperty(port ?: ""),
+        webroot = AtomicProperty(webroot),
+        ssl = AtomicBooleanProperty(ssl),
         timeout = timeout,
         wsl = AtomicBooleanProperty(wsl),
-        proxyAuthentication = AtomicBooleanProperty(proxyAuthentication),
-        sslProtocol = sslProtocol,
+        sslProtocol = AtomicProperty(sslProtocol),
         sessionCookieName = sessionCookieName,
-        authenticationMode = AtomicProperty(authenticationMode),
+        proxyAuthMode = AtomicProperty(proxyAuthMode),
+        authMode = AtomicProperty(authMode),
     )
 
     data class Mutable(
         override var uuid: String = UUID.randomUUID().toString(),
         override var scope: ExecConnectionScope,
-        override var name: String?,
-        override var host: String,
-        override var port: String?,
-        override var webroot: String,
-        override var ssl: Boolean,
+        override var name: ObservableMutableProperty<String>,
+        override var host: ObservableMutableProperty<String>,
+        override var port: ObservableMutableProperty<String>,
+        override var webroot: ObservableMutableProperty<String>,
+        override var ssl: MutableBooleanProperty,
         override var timeout: Int,
         override var modified: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(""),
         override val password: ObservableMutableProperty<String> = AtomicProperty(""),
         val proxyUsername: ObservableMutableProperty<String> = AtomicProperty(""),
         val proxyPassword: ObservableMutableProperty<String> = AtomicProperty(""),
-        val authenticationMode: ObservableMutableProperty<AuthenticationMode>,
+        val authMode: ObservableMutableProperty<AuthMode>,
         val wsl: ObservableMutableProperty<Boolean>,
-        val proxyAuthentication: ObservableMutableProperty<Boolean>,
-        var sslProtocol: String,
+        val proxyAuthMode: ObservableMutableProperty<ProxyAuthMode>,
+        var sslProtocol: ObservableMutableProperty<String>,
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
 
         override fun immutable() = HacConnectionSettingsState(
             uuid = uuid,
             scope = scope,
-            name = name,
-            host = host,
-            port = port,
-            webroot = webroot,
-            ssl = ssl,
+            name = name.get(),
+            host = host.get(),
+            port = port.get(),
+            webroot = webroot.get(),
+            ssl = ssl.get(),
             timeout = timeout,
             wsl = wsl.get(),
-            proxyAuthentication = proxyAuthentication.get(),
-            sslProtocol = sslProtocol,
+            sslProtocol = sslProtocol.get(),
             sessionCookieName = sessionCookieName,
-            authenticationMode = authenticationMode.get(),
+            proxyAuthMode = proxyAuthMode.get(),
+            authMode = authMode.get(),
         ) to Credentials(username.get(), password.get())
     }
 }

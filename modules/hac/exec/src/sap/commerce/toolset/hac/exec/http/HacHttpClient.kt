@@ -48,8 +48,9 @@ import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.hac.auth.HacManualAuthenticator
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.exec.settings.state.AuthenticationMode
+import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
 import java.io.IOException
 import java.net.ConnectException
 import java.net.HttpURLConnection
@@ -71,7 +72,7 @@ class HacHttpClient(private val project: Project) {
         settings: HacConnectionSettingsState,
         username: String,
         password: String,
-    ): HacHttpAuthenticationResult {
+    ): HacHttpAuthResult {
         val cookiesKey = HttpCookiesCache.getInstance(project).getKey(settings)
         return authenticate(settings, cookiesKey, username, password)
             .also { cookiesPerSettings.remove(cookiesKey) }
@@ -89,12 +90,12 @@ class HacHttpClient(private val project: Project) {
         val sessionCookieName = getSessionCookieName(settings)
         var cookies = cookiesPerSettings[cookiesKey]
         var prefilledCsrfToken: String? = null
-        var authorization: Credentials? = if (!settings.proxyAuthentication || settings.authenticationMode == AuthenticationMode.MANUAL) null
+        var authorization: Credentials? = if (settings.proxyAuthMode == ProxyAuthMode.NONE || settings.authMode == AuthMode.MANUAL) null
         // TODO : Use credentials from settings
         else null
 
         if (cookies == null || !cookies.containsKey(sessionCookieName)) {
-            if (settings.authenticationMode == AuthenticationMode.MANUAL) {
+            if (settings.authMode == AuthMode.MANUAL) {
                 val authenticationContext = HacManualAuthenticator.getService(project)
                     .authenticate(settings)
                     ?.takeIf { it.isValid(sessionCookieName) }
@@ -109,7 +110,7 @@ class HacHttpClient(private val project: Project) {
                 val password = credentials.getPasswordAsString() ?: ""
                 val authResult = authenticate(settings, cookiesKey, username, password, replicaContext)
 
-                if (authResult is HacHttpAuthenticationResult.Error) {
+                if (authResult is HacHttpAuthResult.Error) {
                     return createErrorResponse(authResult.message)
                 }
             }
@@ -182,7 +183,7 @@ class HacHttpClient(private val project: Project) {
         username: String,
         password: String,
         replicaContext: ReplicaContext? = null
-    ): HacHttpAuthenticationResult {
+    ): HacHttpAuthResult {
         val hostHacURL = settings.generatedURL
 
         retrieveCookies(hostHacURL, settings, replicaContext, cookiesKey)
@@ -190,10 +191,10 @@ class HacHttpClient(private val project: Project) {
         val sessionCookieName = getSessionCookieName(settings)
         val cookies = cookiesPerSettings.get(cookiesKey)
         cookies?.get(sessionCookieName)
-            ?: return HacHttpAuthenticationResult.Error(hostHacURL, "Unable to obtain sessionId for $hostHacURL")
+            ?: return HacHttpAuthResult.Error(hostHacURL, "Unable to obtain sessionId for $hostHacURL")
 
         val csrfToken = getCsrfToken(hostHacURL, settings, cookies)
-            ?: return HacHttpAuthenticationResult.Error(hostHacURL, "Unable to obtain csrfToken for $hostHacURL")
+            ?: return HacHttpAuthResult.Error(hostHacURL, "Unable to obtain csrfToken for $hostHacURL")
 
         val params = listOf(
             BasicNameValuePair("j_username", username),
@@ -206,16 +207,16 @@ class HacHttpClient(private val project: Project) {
         if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
             val location = response.getFirstHeader("Location")
             if (location != null && location.value.contains("login_error")) {
-                return HacHttpAuthenticationResult.Error(hostHacURL, "Wrong username/password. Set your credentials in [y] tool window.")
+                return HacHttpAuthResult.Error(hostHacURL, "Wrong username/password. Set your credentials in [y] tool window.")
             }
         }
 
         return CookieParser.getInstance().getSpecialCookie(response.allHeaders)
             ?.let { newSessionId ->
                 cookiesPerSettings[cookiesKey]?.let { it[sessionCookieName] = newSessionId }
-                HacHttpAuthenticationResult.Success(hostHacURL)
+                HacHttpAuthResult.Success(hostHacURL)
             }
-            ?: HacHttpAuthenticationResult.Error(hostHacURL, buildString {
+            ?: HacHttpAuthResult.Error(hostHacURL, buildString {
                 append("HTTP ")
                 append(statusCode)
                 append(" ")

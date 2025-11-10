@@ -40,7 +40,7 @@ abstract class ConnectionsListPanel<M: ExecConnectionSettingsState.Mutable>(
     private var myListCellRenderer: ListCellRenderer<*>? = null
 
     init {
-        ListSpeedSearch.installOn(myList) { it.name }
+        ListSpeedSearch.installOn(myList) { it.name.get() }
 
         myListModel.whenListChanged(disposable) {
             listener(it)

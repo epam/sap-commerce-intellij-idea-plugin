@@ -135,6 +135,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         requestV1Details: Boolean = true,
         requestV1Health: Boolean = true,
         requestServices: Boolean = false,
+        requestEndpoints: Boolean = false,
     ) {
         if (sendEvents) project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onFetchingStarted(subscriptions)
 
@@ -156,17 +157,28 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                         val cachedEnvironments =
                                             fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
 
-                                        if (requestServices) {
-                                            cachedEnvironments
-                                                .filter { it.accessible }
-                                                .map { environment ->
-                                                    async {
-                                                        checkCanceled()
-                                                        environment.services = fetchCacheableEnvironmentServices(ccv2Token, subscription, environment)
-                                                    }
-                                                }
-                                                .awaitAll()
-                                        }
+                                        cachedEnvironments
+                                            .filter { it.accessible }
+                                            .map { environment ->
+
+                                                listOfNotNull(
+                                                    if (requestServices) {
+                                                        async {
+                                                            checkCanceled()
+                                                            environment.services = fetchCacheableEnvironmentServices(ccv2Token, subscription, environment)
+                                                        }
+                                                    } else null,
+
+                                                    if (requestEndpoints) {
+                                                        async {
+                                                            checkCanceled()
+                                                            environment.endpoints = fetchCacheableEnvironmentEndpoints(ccv2Token, subscription, environment)
+                                                        }
+                                                    } else null,
+                                                )
+                                            }
+                                            .flatten()
+                                            .awaitAll()
 
                                         return@async subscription to cachedEnvironments
                                     } catch (e: SocketTimeoutException) {

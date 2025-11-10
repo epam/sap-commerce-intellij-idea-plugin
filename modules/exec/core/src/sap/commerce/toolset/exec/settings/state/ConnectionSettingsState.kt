@@ -35,13 +35,7 @@ interface ConnectionSettingsState {
         get() = generateUrl(ssl, host, port, webroot)
 
     val presentationName: String
-        get() = (name
-            ?.takeIf { it.isNotBlank() }
-            ?: generatedURL
-                .replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS)
-                .takeIf { it.isNotBlank() }
-            )
-            .let { scope.shortTitle + " : " + it }
+        get() = connectionPresentationName(scope, name) { generatedURL }
 
     val connectionName: String
         get() = name ?: generatedURL

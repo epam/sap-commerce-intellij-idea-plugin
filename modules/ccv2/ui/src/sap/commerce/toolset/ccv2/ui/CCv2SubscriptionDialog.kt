@@ -99,23 +99,23 @@ internal class CCv2SubscriptionDialog(
     }
 
     override fun createLeftSideActions() = arrayOf(fetchSubscriptionsButton)
-    override fun getPreferredFocusedComponent() = idTextField
+    override fun getPreferredFocusedComponent() = nameTextField
 
     override fun createCenterPanel() = panel {
+        row {
+            nameTextField = textField()
+                .label("Name:")
+                .align(AlignX.FILL)
+                .bindText(subscription::name.toNonNullableProperty(""))
+                .component
+        }.layout(RowLayout.PARENT_GRID)
+
         row {
             idTextField = textField()
                 .label("Subscription code:")
                 .align(AlignX.FILL)
                 .addValidationRule("ID cannot be blank.") { it.text.isBlank() }
                 .bindText(subscription::id.toNonNullableProperty(""))
-                .component
-        }.layout(RowLayout.PARENT_GRID)
-
-        row {
-            nameTextField = textField()
-                .label("Name:")
-                .align(AlignX.FILL)
-                .bindText(subscription::name.toNonNullableProperty(""))
                 .component
         }.layout(RowLayout.PARENT_GRID)
 

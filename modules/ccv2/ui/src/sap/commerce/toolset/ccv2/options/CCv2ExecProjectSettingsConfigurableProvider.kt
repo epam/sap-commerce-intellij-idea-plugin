@@ -27,10 +27,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.bindIntText
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
@@ -123,9 +120,10 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                         )
                         .bindIntText(mutable::readTimeout)
                         .enabledIf(editable)
+                        .gap(RightGap.SMALL)
                         .onIsModified { originalTimeout != mutable.readTimeout }
                         .component
-                }
+                }.layout(RowLayout.PARENT_GRID)
 
                 group("Subscriptions", false) {
                     row {

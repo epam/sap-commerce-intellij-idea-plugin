@@ -16,27 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.exec.settings.state
+package sap.commerce.toolset.hac.exec
 
-import sap.commerce.toolset.HybrisIcons
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import javax.swing.Icon
 
-enum class AuthenticationMode(
-    val icon: Icon,
-    val title: String,
-    val shortTitle: String,
-    val description: String
-) {
-    AUTOMATIC(
-        HybrisIcons.HAC.AUTH_AUTOMATIC,
-        "Automatic by credentials",
-        "Automatic",
-        "Rely on persisted credentials and automated authentication through API."
-    ),
-    MANUAL(
-        HybrisIcons.HAC.AUTH_MANUAL,
-        "Manual via Browser",
-        "Manual",
-        "Rely on manual browser authentication, re-authentication will be required on session timeout."
-    )
+interface HacConnectionSettingsProvider {
+
+    val presentationText: String
+    val presentationDescription: String?
+        get() = null
+    val icon: Icon?
+        get() = null
+
+    fun configure(project: Project, mutable: HacConnectionSettingsState.Mutable)
+
+    companion object {
+        val EP = ExtensionPointName.create<HacConnectionSettingsProvider>("sap.commerce.toolset.hac.connectionSettingsProvider")
+    }
 }
