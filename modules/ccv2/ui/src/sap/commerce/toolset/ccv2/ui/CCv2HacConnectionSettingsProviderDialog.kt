@@ -28,10 +28,12 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.CollectionComboBoxModel
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
+import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2EndpointDto
@@ -63,6 +65,8 @@ class CCv2HacConnectionSettingsProviderDialog(
     private val host = AtomicProperty("")
 
     private val editable = AtomicBooleanProperty(true)
+    private val refreshable = AtomicBooleanProperty(true)
+    private val noSubscriptions = AtomicBooleanProperty(false)
     private val subscriptionsComboBoxModel = CCv2SubscriptionsComboBoxModelFactory.create(project, null)
     private val endpointModel by lazy { CollectionComboBoxModel<CCv2EndpointDto>() }
     private val environmentModel by lazy { CollectionComboBoxModel<CCv2EnvironmentDto>() }
@@ -76,10 +80,31 @@ class CCv2HacConnectionSettingsProviderDialog(
 
         super.init()
 
-        fetchEndpoints()
+        fetchEnvironments()
     }
 
+    override fun getInitialSize() = JBUI.DialogSizes.medium()
+
     override fun createCenterPanel() = panel {
+        row {
+            text("""
+                Select subscription, environment and endpoint to prepopulate <code>hAC</code> connection settings.
+            """.trimIndent())
+        }
+
+        row {
+            icon(EditorNotificationPanel.Status.Info.icon)
+                .visibleIf(noSubscriptions)
+                .gap(RightGap.SMALL)
+            text("""
+                No subscriptions are currently configured.
+                <br>Open the CCv2 settings to add and manage subscriptions.
+            """.trimIndent())
+                .visibleIf(noSubscriptions)
+        }
+
+        separator()
+
         row {
             subscriptionComboBox = comboBox(
                 subscriptionsComboBoxModel,
@@ -92,6 +117,7 @@ class CCv2HacConnectionSettingsProviderDialog(
             )
                 .label("Subscription:")
                 .enabledIf(editable)
+                .resizableColumn()
                 .align(AlignX.FILL)
                 .gap(RightGap.SMALL)
                 .addValidationRule("Please select the subscription.") { it.selectedItem == null }
@@ -105,10 +131,11 @@ class CCv2HacConnectionSettingsProviderDialog(
             actionButton(object : AnAction("Refresh", "", HybrisIcons.Actions.REFRESH) {
                 override fun getActionUpdateThread() = ActionUpdateThread.BGT
                 override fun actionPerformed(e: AnActionEvent) {
-                    fetchEndpoints(true)
+                    fetchEnvironments(true)
                 }
             })
-                .enabledIf(editable)
+                .align(AlignX.RIGHT)
+                .enabledIf(refreshable)
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -148,7 +175,9 @@ class CCv2HacConnectionSettingsProviderDialog(
                 .align(AlignX.FILL)
                 .addValidationRule("Please select the endpoint.") { it.selectedItem == null }
                 .onChanged {
-                    val environment = endpointComboBox.selectedItem.asSafely<CCv2EnvironmentDto>()
+                    val subscription = subscriptionComboBox.selectedItem.asSafely<CCv2Subscription>()
+                        ?: return@onChanged
+                    val environment = environmentComboBox.selectedItem.asSafely<CCv2EnvironmentDto>()
                         ?: return@onChanged
                     it.selectedItem
                         ?.asSafely<CCv2EndpointDto>()
@@ -169,14 +198,12 @@ class CCv2HacConnectionSettingsProviderDialog(
                 text("")
                     .label("Name:")
                     .bindText(name)
-                    .enabled(false)
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 text("")
                     .label("Host:")
                     .bindText(host)
-                    .enabled(false)
             }.layout(RowLayout.PARENT_GRID)
         }
     }
@@ -187,30 +214,38 @@ class CCv2HacConnectionSettingsProviderDialog(
             return@let jbLoadingPanel
         }
 
-    private fun updateEnvironments(subscription: CCv2Subscription) {
+    private fun updateEnvironments(subscription: CCv2Subscription?) {
         environmentModel.removeAll()
-        environments[subscription]
-            ?.toList()
-            ?.let { environmentModel.addAll(0, it) }
+        if (subscription != null) {
+            environments[subscription]
+                ?.toList()
+                ?.let { environmentModel.addAll(0, it) }
+        }
         environmentModel.selectedItem = null
     }
 
-    private fun updateEndpoints(environment: CCv2EnvironmentDto) {
+    private fun updateEndpoints(environment: CCv2EnvironmentDto? = null) {
         endpointModel.removeAll()
-        environment.endpoints
+        environment
+            ?.endpoints
             ?.toList()
             ?.let { endpointModel.addAll(0, it) }
         endpointModel.selectedItem = null
     }
 
-    private fun fetchEndpoints(resetCache: Boolean = false) {
+    private fun fetchEnvironments(refresh: Boolean = false) {
         isOKActionEnabled = false
 
-        startLoading("Loading endpoints, please wait...")
+        startLoading("Loading environments & endpoints, please wait...")
 
         val ccv2Service = CCv2Service.getInstance(project)
 
-        if (resetCache) ccv2Service.resetCache()
+        if (refresh) {
+            subscriptionsComboBoxModel.refresh()
+            ccv2Service.resetCache()
+        }
+
+        noSubscriptions.set(subscriptionsComboBoxModel.size == 0)
 
         ccv2Service.fetchEnvironments(
             subscriptions = CCv2ProjectSettings.getInstance().subscriptions,
@@ -218,12 +253,12 @@ class CCv2HacConnectionSettingsProviderDialog(
             requestEndpoints = true,
             onCompleteCallback = {
                 environments = it
-                updateEnvironments(subscriptionComboBox.selectedItem as CCv2Subscription)
-                endpointModel.removeAll()
+                updateEnvironments(subscriptionComboBox.selectedItem as? CCv2Subscription)
+                updateEndpoints()
 
                 isOKActionEnabled = true
 
-                stopLoading()
+                stopLoading(it.isNotEmpty())
             },
             sendEvents = false
         )
@@ -231,12 +266,15 @@ class CCv2HacConnectionSettingsProviderDialog(
 
     private fun startLoading(text: String = "Loading...") {
         editable.set(false)
+        refreshable.set(false)
+        refreshable.set(false)
         jbLoadingPanel.setLoadingText(text)
         jbLoadingPanel.startLoading()
     }
 
-    private fun stopLoading() {
-        editable.set(true)
+    private fun stopLoading(canEdit: Boolean) {
+        editable.set(canEdit)
+        refreshable.set(true)
         jbLoadingPanel.stopLoading()
     }
 }

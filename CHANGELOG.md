@@ -1,7 +1,7 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Select & configure `hAC` connection from the CCv2 endpoint [#1652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1652)
