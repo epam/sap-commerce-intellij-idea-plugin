@@ -89,6 +89,7 @@ class CCv2HacConnectionSettingsProviderDialog(
         row {
             text("""
                 Select subscription, environment and endpoint to prepopulate <code>hAC</code> connection settings.
+                <br>
             """.trimIndent())
         }
 
@@ -175,8 +176,6 @@ class CCv2HacConnectionSettingsProviderDialog(
                 .align(AlignX.FILL)
                 .addValidationRule("Please select the endpoint.") { it.selectedItem == null }
                 .onChanged {
-                    val subscription = subscriptionComboBox.selectedItem.asSafely<CCv2Subscription>()
-                        ?: return@onChanged
                     val environment = environmentComboBox.selectedItem.asSafely<CCv2EnvironmentDto>()
                         ?: return@onChanged
                     it.selectedItem
