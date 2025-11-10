@@ -123,8 +123,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                         .gap(RightGap.SMALL)
                         .onIsModified { originalTimeout != mutable.readTimeout }
                         .component
-                    label("(s)")
-                }
+                }.layout(RowLayout.PARENT_GRID)
 
                 group("Subscriptions", false) {
                     row {
