@@ -40,6 +40,7 @@ import sap.commerce.toolset.exec.ExecConstants
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.ui.ConnectionSettingsDialog
 import sap.commerce.toolset.hac.HacExecConstants
+import sap.commerce.toolset.hac.exec.HacConnectionSettingsProvider
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpAuthResult
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
@@ -50,7 +51,10 @@ import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.nullableIntTextField
 import sap.commerce.toolset.ui.repackDialog
 import java.awt.Component
-import javax.swing.*
+import javax.swing.DefaultComboBoxModel
+import javax.swing.JComboBox
+import javax.swing.JComponent
+import javax.swing.JLabel
 
 class HacConnectionSettingsDialog(
     project: Project,
@@ -66,16 +70,11 @@ class HacConnectionSettingsDialog(
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField
     private lateinit var wslDistributionComboBox: JComboBox<WSLDistribution>
-    private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
-
-    }
 
     init {
         super.init()
         testConnectionButton.isEnabled = mutable.authMode.get() == AuthMode.AUTOMATIC
     }
-
-    override fun createLeftSideActions() = arrayOf(testConnectionButton)
 
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
@@ -102,12 +101,33 @@ class HacConnectionSettingsDialog(
         }
 
     override fun panel() = panel {
+        val configurationProviders = HacConnectionSettingsProvider.EP.extensionList
+        if (configurationProviders.isNotEmpty()) {
+            buttonsGroup {
+                row {
+                    configurationProviders.forEach { provider ->
+                        link(provider.presentationText) {
+                            provider.configure(project, mutable)
+                        }
+                            .align(AlignX.CENTER)
+                            .gap(RightGap.SMALL)
+                    }
+                }
+            }
+            row {
+                comment("Apply settings via configuration provider")
+                    .align(AlignX.CENTER)
+            }
+
+            separator()
+        }
+
         row {
             label("Connection name:")
                 .bold()
             connectionNameTextField = textField()
                 .align(AlignX.FILL)
-                .bindText(mutable::name.toNonNullableProperty(""))
+                .bindText(mutable.name)
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
@@ -152,14 +172,14 @@ class HacConnectionSettingsDialog(
                 hostTextField = textField()
                     .label("Host / IP:")
                     .align(AlignX.FILL)
-                    .bindText(mutable::host)
+                    .bindText(mutable.host)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
 
                 portTextField = nullableIntTextField(1..65535)
                     .label("Port:")
-                    .bindText(mutable::port.toNonNullableProperty(""))
+                    .bindText(mutable.port)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -167,15 +187,16 @@ class HacConnectionSettingsDialog(
             row {
                 webrootTextField = textField()
                     .label("Webroot:")
-                    .bindText(mutable::webroot)
+                    .bindText(mutable.webroot)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
 
                 sslProtocolCheckBox = checkBox("SSL:")
-                    .bindSelected(mutable::ssl)
+                    .bindSelected(mutable.ssl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
                 sslProtocolComboBox = comboBox(
+                    // TODO: change to enum...
                     listOf(
                         "TLSv1",
                         "TLSv1.1",
@@ -185,7 +206,7 @@ class HacConnectionSettingsDialog(
                     renderer = SimpleListCellRenderer.create("?") { it }
                 )
                     .enabledIf(sslProtocolCheckBox.selected)
-                    .bindItem(mutable::sslProtocol.toNullableProperty())
+                    .bindItem(mutable.sslProtocol)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -230,7 +251,7 @@ class HacConnectionSettingsDialog(
                 .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
 
             row {
-                checkBox("Reverse proxy basic authorization")
+                checkBox("Reverse proxy basic authentication")
                     .bindSelected(
                         { mutable.proxyAuthMode.get() == ProxyAuthMode.BASIC },
                         {

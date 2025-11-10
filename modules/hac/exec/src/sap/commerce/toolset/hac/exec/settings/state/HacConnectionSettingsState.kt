@@ -21,6 +21,7 @@ package sap.commerce.toolset.hac.exec.settings.state
 import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.exec.ExecConstants
@@ -50,14 +51,14 @@ data class HacConnectionSettingsState(
     override fun mutable() = Mutable(
         uuid = uuid,
         scope = scope,
-        name = name,
-        host = host,
-        port = port,
-        webroot = webroot,
-        ssl = ssl,
+        name = AtomicProperty(name ?: ""),
+        host = AtomicProperty(host),
+        port = AtomicProperty(port ?: ""),
+        webroot = AtomicProperty(webroot),
+        ssl = AtomicBooleanProperty(ssl),
         timeout = timeout,
         wsl = AtomicBooleanProperty(wsl),
-        sslProtocol = sslProtocol,
+        sslProtocol = AtomicProperty(sslProtocol),
         sessionCookieName = sessionCookieName,
         proxyAuthMode = AtomicProperty(proxyAuthMode),
         authMode = AtomicProperty(authMode),
@@ -66,11 +67,11 @@ data class HacConnectionSettingsState(
     data class Mutable(
         override var uuid: String = UUID.randomUUID().toString(),
         override var scope: ExecConnectionScope,
-        override var name: String?,
-        override var host: String,
-        override var port: String?,
-        override var webroot: String,
-        override var ssl: Boolean,
+        override var name: ObservableMutableProperty<String>,
+        override var host: ObservableMutableProperty<String>,
+        override var port: ObservableMutableProperty<String>,
+        override var webroot: ObservableMutableProperty<String>,
+        override var ssl: MutableBooleanProperty,
         override var timeout: Int,
         override var modified: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(""),
@@ -80,21 +81,21 @@ data class HacConnectionSettingsState(
         val authMode: ObservableMutableProperty<AuthMode>,
         val wsl: ObservableMutableProperty<Boolean>,
         val proxyAuthMode: ObservableMutableProperty<ProxyAuthMode>,
-        var sslProtocol: String,
+        var sslProtocol: ObservableMutableProperty<String>,
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
 
         override fun immutable() = HacConnectionSettingsState(
             uuid = uuid,
             scope = scope,
-            name = name,
-            host = host,
-            port = port,
-            webroot = webroot,
-            ssl = ssl,
+            name = name.get(),
+            host = host.get(),
+            port = port.get(),
+            webroot = webroot.get(),
+            ssl = ssl.get(),
             timeout = timeout,
             wsl = wsl.get(),
-            sslProtocol = sslProtocol,
+            sslProtocol = sslProtocol.get(),
             sessionCookieName = sessionCookieName,
             proxyAuthMode = proxyAuthMode.get(),
             authMode = authMode.get(),

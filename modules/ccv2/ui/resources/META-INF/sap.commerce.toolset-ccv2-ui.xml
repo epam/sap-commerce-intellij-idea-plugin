@@ -17,6 +17,10 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <hac.connectionSettingsProvider implementation="sap.commerce.toolset.ccv2.hac.CCv2HacConnectionSettingsProvider"/>
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <webHelpProvider implementation="sap.commerce.toolset.ccv2.help.CCv2WebHelpProvider"/>
 
@@ -26,7 +30,6 @@
                              provider="sap.commerce.toolset.ccv2.options.CCv2ExecProjectSettingsConfigurableProvider"/>
 
         <unscrambleSupport implementation="sap.commerce.toolset.ccv2.unscramble.CCv2StackTraceUnscrambler"/>
-
     </extensions>
 
     <actions>

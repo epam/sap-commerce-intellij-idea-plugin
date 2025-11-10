@@ -19,28 +19,11 @@
 package sap.commerce.toolset.exec.settings.state
 
 import com.intellij.openapi.util.text.StringUtil
-import sap.commerce.toolset.exec.generateUrl
 
-interface ConnectionSettingsState {
-    val uuid: String
-    val scope: ExecConnectionScope
-    val name: String?
-    val ssl: Boolean
-    val timeout: Int
-    val host: String
-    val port: String?
-    val webroot: String
-
-    val generatedURL: String
-        get() = generateUrl(ssl, host, port, webroot)
-
-    val presentationName: String
-        get() = connectionPresentationName(scope, name) { generatedURL }
-
-    val connectionName: String
-        get() = name ?: generatedURL
-
-    val shortenConnectionName: String
-        get() = connectionName
-            .let { StringUtil.shortenPathWithEllipsis(it, 20) }
-}
+fun connectionPresentationName(scope: ExecConnectionScope, string: String?, fallback: () -> String): String = (string
+    ?.takeIf { it.isNotBlank() }
+    ?: fallback()
+        .replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS)
+        .takeIf { it.isNotBlank() }
+    )
+    .let { scope.shortTitle + " : " + it }

@@ -16,31 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.exec.settings.state
+package sap.commerce.toolset.hac.exec
 
-import com.intellij.openapi.util.text.StringUtil
-import sap.commerce.toolset.exec.generateUrl
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import javax.swing.Icon
 
-interface ConnectionSettingsState {
-    val uuid: String
-    val scope: ExecConnectionScope
-    val name: String?
-    val ssl: Boolean
-    val timeout: Int
-    val host: String
-    val port: String?
-    val webroot: String
+interface HacConnectionSettingsProvider {
 
-    val generatedURL: String
-        get() = generateUrl(ssl, host, port, webroot)
+    val presentationText: String
+    val presentationDescription: String?
+        get() = null
+    val icon: Icon?
+        get() = null
 
-    val presentationName: String
-        get() = connectionPresentationName(scope, name) { generatedURL }
+    fun configure(project: Project, mutable: HacConnectionSettingsState.Mutable)
 
-    val connectionName: String
-        get() = name ?: generatedURL
-
-    val shortenConnectionName: String
-        get() = connectionName
-            .let { StringUtil.shortenPathWithEllipsis(it, 20) }
+    companion object {
+        val EP = ExtensionPointName.create<HacConnectionSettingsProvider>("sap.commerce.toolset.hac.connectionSettingsProvider")
+    }
 }

@@ -19,7 +19,9 @@
 package sap.commerce.toolset.exec.settings.state
 
 import com.intellij.credentialStore.Credentials
+import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
+import sap.commerce.toolset.exec.generateUrl
 
 interface ExecConnectionSettingsState : ConnectionSettingsState {
     override val scope: ExecConnectionScope
@@ -33,19 +35,25 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
 
     fun mutable(): Mutable
 
-    interface Mutable : ConnectionSettingsState {
-        override var scope: ExecConnectionScope
-        override var uuid: String
-        override var name: String?
-        override var ssl: Boolean
-        override var timeout: Int
-        override var host: String
-        override var port: String?
-        override var webroot: String
+    interface Mutable {
+        var scope: ExecConnectionScope
+        var uuid: String
+        var name: ObservableMutableProperty<String>
+        var host: ObservableMutableProperty<String>
+        var ssl: MutableBooleanProperty
+        var timeout: Int
+        var port: ObservableMutableProperty<String>
+        var webroot: ObservableMutableProperty<String>
         var modified: Boolean
         val username: ObservableMutableProperty<String>
         val password: ObservableMutableProperty<String>
 
         fun immutable(): Pair<ExecConnectionSettingsState, Credentials>
+
+        val generatedURL: String
+            get() = generateUrl(ssl.get(), host.get(), port.get(), webroot.get())
+
+        val presentationName: String
+            get() = connectionPresentationName(scope, name.get()) { generatedURL }
     }
 }
