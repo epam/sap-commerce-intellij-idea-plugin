@@ -99,7 +99,7 @@ internal class CCv2SubscriptionDialog(
     }
 
     override fun createLeftSideActions() = arrayOf(fetchSubscriptionsButton)
-    override fun getPreferredFocusedComponent() = idTextField
+    override fun getPreferredFocusedComponent() = nameTextField
 
     override fun createCenterPanel() = panel {
         row {

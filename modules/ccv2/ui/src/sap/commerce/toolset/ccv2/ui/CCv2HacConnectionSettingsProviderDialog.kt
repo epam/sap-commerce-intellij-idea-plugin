@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
@@ -33,7 +34,6 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
-import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2EndpointDto
@@ -76,31 +76,33 @@ class CCv2HacConnectionSettingsProviderDialog(
 
     init {
         title = "CCv2 Endpoint Selection"
-        isResizable = false
 
         super.init()
 
         fetchEnvironments()
     }
 
-    override fun getInitialSize() = JBUI.DialogSizes.medium()
-
     override fun createCenterPanel() = panel {
         row {
-            text("""
+            text(
+                """
                 Select subscription, environment and endpoint to prepopulate <code>hAC</code> connection settings.
                 <br>
-            """.trimIndent())
+            """.trimIndent()
+            )
+                .visibleIf(noSubscriptions.not())
         }
 
         row {
             icon(EditorNotificationPanel.Status.Info.icon)
                 .visibleIf(noSubscriptions)
                 .gap(RightGap.SMALL)
-            text("""
+            text(
+                """
                 No subscriptions are currently configured.
                 <br>Open the CCv2 settings to add and manage subscriptions.
-            """.trimIndent())
+            """.trimIndent()
+            )
                 .visibleIf(noSubscriptions)
         }
 
