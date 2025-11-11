@@ -16,23 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.actionSystem
+package sap.commerce.toolset;
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.openapi.util.IconLoader;
 
-@Service
-class FlexibleSearchFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.fxs.console",
-    "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType
-) {
+import javax.swing.*;
 
-    companion object {
-        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.service()
+public class HI {
+
+    private static Icon load(String path) {
+        return IconLoader.getIcon(path, HybrisIcons.class.getClassLoader());
     }
+
+    public static final Icon X = load("/icons/pluginSettings.svg");
 }

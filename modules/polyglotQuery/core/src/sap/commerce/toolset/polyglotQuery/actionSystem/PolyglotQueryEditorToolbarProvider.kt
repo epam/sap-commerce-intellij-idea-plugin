@@ -18,22 +18,13 @@
 
 package sap.commerce.toolset.polyglotQuery.actionSystem
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
+import com.intellij.openapi.fileTypes.FileType
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
-@Service
-class PolyglotQueryFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.pgq.console",
-    "hybris.pgq.toolbar.left",
-    "hybris.pgq.toolbar.right",
-    PolyglotQueryFileType
-) {
-
-    companion object {
-        fun getInstance(): PolyglotQueryFileToolbarInstaller = application.service()
-    }
-
-}
+class PolyglotQueryEditorToolbarProvider(
+    override val toolbarId: String = "hybris.pgq.console",
+    override val leftGroupId: String = "hybris.pgq.toolbar.left",
+    override val rightGroupId: String = "hybris.pgq.toolbar.right",
+    override val fileType: FileType = PolyglotQueryFileType
+) : HybrisEditorToolbarProvider

@@ -23,40 +23,23 @@ import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.psi.SingleRootFileViewProvider
 import com.intellij.util.asSafely
-import org.jetbrains.plugins.groovy.GroovyFileType
-import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.acl.actionSystem.AclFileToolbarInstaller
-import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchFileToolbarInstaller
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
-import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
-import sap.commerce.toolset.impex.actionSystem.ImpExFileToolbarInstaller
-import sap.commerce.toolset.impex.file.ImpExFileType
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryFileToolbarInstaller
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 class HybrisEditorFactoryListener : EditorFactoryListener {
 
     override fun editorCreated(event: EditorFactoryEvent) {
-        val project = event.editor.project ?: return
-        val file = event.editor.virtualFile ?: return
+        val editor = event.editor
+            .asSafely<EditorEx>()
+            ?.takeIf { it.permanentHeaderComponent == null } ?: return
+        val project = editor.project
+            ?.takeIf { it.isHybrisProject } ?: return
+        val file = editor.virtualFile ?: return
 
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
-        if (!project.isHybrisProject) return
 
-        val toolbarInstaller = when {
-            file.fileType is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()
-            file.fileType is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.getInstance()
-            file.fileType is ImpExFileType -> ImpExFileToolbarInstaller.getInstance()
-            file.fileType is AclFileType -> AclFileToolbarInstaller.getInstance()
-            Plugin.GROOVY.isActive() && file.fileType is GroovyFileType -> GroovyFileToolbarInstaller.getInstance()
-            else -> null
-        } ?: return
-
-        event.editor
-            .asSafely<EditorEx>()
-            ?.takeIf { it.permanentHeaderComponent == null }
-            ?.let { toolbarInstaller.toggleToolbar(project, it) }
+        HybrisEditorToolbarProvider.EP.extensionList
+            .firstOrNull { it.isApplicable(project, file) }
+            ?.toggle(project, editor)
     }
 }

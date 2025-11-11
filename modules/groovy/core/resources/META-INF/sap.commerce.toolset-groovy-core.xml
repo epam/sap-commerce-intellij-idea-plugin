@@ -19,6 +19,10 @@
 
     <depends>org.intellij.groovy</depends>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <editor.toolbarProvider implementation="sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider"/>
+    </extensions>
+
     <extensions defaultExtensionNs="org.intellij.groovy">
         <membersContributor implementation="sap.commerce.toolset.groovy.lang.resolve.GroovySpringBeanNonCodeMembersContributor" />
     </extensions>

@@ -21,6 +21,9 @@
         <extensionPoint qualifiedName="sap.commerce.toolset.shared.springService"
                         interface="sap.commerce.toolset.spring.SpringService"
                         dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.editor.toolbarProvider"
+                        interface="sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider"
+                        dynamic="true"/>
     </extensionPoints>
 
 </idea-plugin>

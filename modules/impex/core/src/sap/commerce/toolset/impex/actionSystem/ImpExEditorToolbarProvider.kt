@@ -18,22 +18,13 @@
 
 package sap.commerce.toolset.impex.actionSystem
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
+import com.intellij.openapi.fileTypes.FileType
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.impex.file.ImpExFileType
 
-@Service
-class ImpExFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.impex.console",
-    "hybris.impex.toolbar.left",
-    "hybris.impex.toolbar.right",
-    ImpExFileType
-) {
-
-    companion object {
-        fun getInstance(): ImpExFileToolbarInstaller = application.service()
-    }
-
-}
+class ImpExEditorToolbarProvider(
+    override val toolbarId: String = "hybris.impex.console",
+    override val leftGroupId: String = "hybris.impex.toolbar.left",
+    override val rightGroupId: String = "hybris.impex.toolbar.right",
+    override val fileType: FileType = ImpExFileType
+) : HybrisEditorToolbarProvider

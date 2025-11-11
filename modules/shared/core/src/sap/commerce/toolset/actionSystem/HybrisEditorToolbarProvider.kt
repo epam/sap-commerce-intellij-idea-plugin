@@ -26,19 +26,32 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.editor.impl.EditorHeaderComponent
+import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.containers.JBIterable
 
-abstract class HybrisFileToolbarInstaller(
-    private val toolbarId: String,
-    private val leftGroupId: String,
-    private val rightGroupId: String,
-    val fileType: FileType
-) {
+interface HybrisEditorToolbarProvider {
 
-    protected open fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean = true
+    val toolbarId: String
+    val leftGroupId: String
+    val rightGroupId: String
+    val fileType: FileType
+
+    fun isApplicable(project: Project, vf: VirtualFile): Boolean = vf.fileType == fileType
+    fun isEnabled(project: Project, vf: VirtualFile): Boolean = true
+
+    fun toggle(project: Project) = FileEditorManager.getInstance(project).allEditors
+        .filter { fileType == it.file.fileType }
+        .mapNotNull { EditorUtil.getEditorEx(it) }
+        .forEach { toggle(project, it) }
+
+    fun toggle(project: Project, editor: EditorEx) {
+        if (isEnabled(project, editor.virtualFile)) enableToolbar(project, editor)
+        else toggle(editor, false)
+    }
 
     private fun install(project: Project, editor: EditorEx) {
         val actionManager = ActionManager.getInstance()
@@ -69,20 +82,6 @@ abstract class HybrisFileToolbarInstaller(
         )
     }
 
-    fun toggleToolbarForAllEditors(project: Project) {
-        FileEditorManager.getInstance(project).allEditors
-            .filter { fileType == it.file.fileType }
-            .mapNotNull { EditorUtil.getEditorEx(it) }
-            .forEach {
-                toggleToolbar(project, it)
-            }
-    }
-
-    fun toggleToolbar(project: Project, editor: EditorEx) {
-        if (isToolbarEnabled(project, editor)) enableToolbar(project, editor)
-        else toggle(editor, false)
-    }
-
     private fun enableToolbar(project: Project, editor: EditorEx) {
         if (editor.permanentHeaderComponent == null) install(project, editor)
         else toggle(editor, true)
@@ -92,4 +91,9 @@ abstract class HybrisFileToolbarInstaller(
         permanentHeaderComponent?.isVisible = visible
         headerComponent?.isVisible = visible
     }
+
+    companion object {
+        val EP = ExtensionPointName.Companion.create<HybrisEditorToolbarProvider>("sap.commerce.toolset.editor.toolbarProvider")
+    }
+
 }

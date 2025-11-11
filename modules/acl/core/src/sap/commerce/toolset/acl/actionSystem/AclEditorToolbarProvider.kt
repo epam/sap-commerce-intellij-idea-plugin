@@ -18,22 +18,13 @@
 
 package sap.commerce.toolset.acl.actionSystem
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
+import com.intellij.openapi.fileTypes.FileType
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 
-@Service
-class AclFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.acl.console",
-    "hybris.acl.toolbar.left",
-    "hybris.acl.toolbar.right",
-    AclFileType
-) {
-
-    companion object {
-        fun getInstance(): AclFileToolbarInstaller = application.service()
-    }
-
-}
+class AclEditorToolbarProvider(
+    override val toolbarId: String = "hybris.acl.console",
+    override val leftGroupId: String = "hybris.acl.toolbar.left",
+    override val rightGroupId: String = "hybris.acl.toolbar.right",
+    override val fileType: FileType = AclFileType
+) : HybrisEditorToolbarProvider
