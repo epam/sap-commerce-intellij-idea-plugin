@@ -39,7 +39,7 @@ class HybrisEditorFactoryListener : EditorFactoryListener {
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
 
         HybrisEditorToolbarProvider.EP.extensionList
-            .firstOrNull { it.isApplicable(project, file) }
+            .firstOrNull { it.isEnabled(project, file) }
             ?.toggle(project, editor)
     }
 }

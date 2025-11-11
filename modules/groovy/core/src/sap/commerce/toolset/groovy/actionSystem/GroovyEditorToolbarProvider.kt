@@ -35,10 +35,10 @@ class GroovyEditorToolbarProvider(
     override val fileType: FileType = GroovyFileType.GROOVY_FILE_TYPE
 ) : HybrisEditorToolbarProvider {
 
-    override fun isApplicable(project: Project, vf: VirtualFile) = Plugin.GROOVY.isActive()
-        && super.isApplicable(project, vf)
-
     override fun isEnabled(project: Project, vf: VirtualFile): Boolean {
+        if (Plugin.GROOVY.isDisabled()) return false
+        if (fileType != vf.fileType) return false
+
         val groovySettings = project.yDeveloperSettings.groovySettings
 
         // Checking special cases where toolbar might not be desired
@@ -50,9 +50,7 @@ class GroovyEditorToolbarProvider(
         val testFileCheckPassed = groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
         val ideConsoleCheckPassed = groovySettings.enableActionsToolbarForGroovyIdeConsole && isIdeConsole || !isIdeConsole
 
-        return Plugin.GROOVY.isActive()
-            && fileType == vf.fileType
-            && groovySettings.enableActionsToolbar
+        return groovySettings.enableActionsToolbar
             && testFileCheckPassed
             && ideConsoleCheckPassed
     }

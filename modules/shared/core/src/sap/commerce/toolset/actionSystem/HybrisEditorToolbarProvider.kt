@@ -40,8 +40,7 @@ interface HybrisEditorToolbarProvider {
     val rightGroupId: String
     val fileType: FileType
 
-    fun isApplicable(project: Project, vf: VirtualFile): Boolean = vf.fileType == fileType
-    fun isEnabled(project: Project, vf: VirtualFile): Boolean = true
+    fun isEnabled(project: Project, vf: VirtualFile): Boolean = vf.fileType == fileType
 
     fun toggle(project: Project) = FileEditorManager.getInstance(project).allEditors
         .filter { fileType == it.file.fileType }
@@ -93,7 +92,7 @@ interface HybrisEditorToolbarProvider {
     }
 
     companion object {
-        val EP = ExtensionPointName.Companion.create<HybrisEditorToolbarProvider>("sap.commerce.toolset.editor.toolbarProvider")
+        val EP = ExtensionPointName.create<HybrisEditorToolbarProvider>("sap.commerce.toolset.editor.toolbarProvider")
     }
 
 }
