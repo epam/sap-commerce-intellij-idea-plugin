@@ -28,6 +28,7 @@ import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
+import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
@@ -59,10 +60,12 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                     renderer = SimpleListCellRenderer.create("?") { it.presentationText }
                 )
                     .label("Spring context mode:")
-                    .comment("""
+                    .comment(
+                        """
                         Defines default mode for each new Editor.<br>
                         <cod>${SpringContextMode.LOCAL.presentationText}</code> mode enables direct resolution of the Spring beans, so it will be possible to enable code completion for such statements <code>productService.getProduct(..)</code>. 
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     .bindItem(mutable::springContextMode.toNullableProperty(SpringContextMode.DISABLED))
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -73,9 +76,11 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                     renderer = SimpleListCellRenderer.create("?") { it.presentationText }
                 )
                     .label("Transaction mode:")
-                    .comment("""
+                    .comment(
+                        """
                         Defines default mode for each new Editor. 
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     .bindItem(mutable::transactionMode.toNullableProperty(TransactionMode.ROLLBACK))
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -91,13 +96,13 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 checkBox("Enable actions toolbar for a Test Groovy file")
                     .bindSelected(mutable::enableActionsToolbarForGroovyTest)
-                    .comment("Enables Actions toolbar for the groovy files located in the <strong>${HybrisConstants.TEST_SRC_DIRECTORY}</strong> or <strong>${HybrisConstants.GROOVY_TEST_SRC_DIRECTORY}</strong> directory.")
+                    .comment("Enables Actions toolbar for the groovy files located in the <code>${HybrisConstants.TEST_SRC_DIRECTORY}</code> or <code>${HybrisConstants.GROOVY_TEST_SRC_DIRECTORY}</code> directory.")
                     .enabledIf(enableActionToolbar.selected)
             }
             row {
                 checkBox("Enable actions toolbar for a IDE Groovy scripts")
                     .bindSelected(mutable::enableActionsToolbarForGroovyIdeConsole)
-                    .comment("Enables Actions toolbar for the groovy files located in the <strong>${HybrisConstants.IDE_CONSOLES_PATH}</strong> (In Project View, Scratches and Consoles -> IDE Consoles).")
+                    .comment("Enables Actions toolbar for the groovy files located in the <code>${HybrisConstants.IDE_CONSOLES_PATH}</code> or <code>${GroovyConstants.PATH_CONSOLES_GROOVY}</code> (Scratches and Consoles -> IDE Consoles)")
                     .enabledIf(enableActionToolbar.selected)
             }
         }

@@ -23,4 +23,6 @@ import sap.commerce.toolset.settings.state.SpringContextMode
 
 object GroovyConstants {
     val KEY_SPRING_CONTEXT_MODE = Key<SpringContextMode>("sap.cx.groovy.spring.context.mode")
+
+    const val PATH_CONSOLES_GROOVY = "consoles/groovy/"
 }

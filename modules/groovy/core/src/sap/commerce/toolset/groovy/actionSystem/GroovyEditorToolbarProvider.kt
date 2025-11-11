@@ -25,6 +25,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
+import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.settings.yDeveloperSettings
 
 class GroovyEditorToolbarProvider(
@@ -45,6 +46,7 @@ class GroovyEditorToolbarProvider(
         val isTestFile = path.contains(HybrisConstants.TEST_SRC_DIRECTORY, true)
             || path.contains(HybrisConstants.GROOVY_TEST_SRC_DIRECTORY, true)
         val isIdeConsole = path.contains(HybrisConstants.IDE_CONSOLES_PATH)
+            || path.contains(GroovyConstants.PATH_CONSOLES_GROOVY)
         val testFileCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
         val ideConsoleCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyIdeConsole && isIdeConsole || !isIdeConsole
 
