@@ -41,7 +41,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <vfs.asyncListener implementation="sap.commerce.toolset.meta.event.MetaSystemFileListener"/>
         <psi.treeChangeListener implementation="sap.commerce.toolset.meta.event.MetaSystemPsiTreeChangeListener"/>
-        <editorFactoryListener implementation="sap.commerce.toolset.editor.event.HybrisEditorFactoryListener"/>
         <fileEditorProvider implementation="sap.commerce.toolset.editor.HybrisSplitFileEditorProvider"/>
     </extensions>
 
