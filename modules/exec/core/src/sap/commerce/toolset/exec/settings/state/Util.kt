@@ -20,7 +20,7 @@ package sap.commerce.toolset.exec.settings.state
 
 import com.intellij.openapi.util.text.StringUtil
 
-fun connectionPresentationName(scope: ExecConnectionScope, string: String?, fallback: () -> String): String = (string
+fun connectionPresentationName(scope: ExecConnectionScope, name: String?, fallback: () -> String): String = (name
     ?.takeIf { it.isNotBlank() }
     ?: fallback()
         .replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS)
