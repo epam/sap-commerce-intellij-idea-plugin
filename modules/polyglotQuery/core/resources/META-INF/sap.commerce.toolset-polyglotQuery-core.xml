@@ -17,6 +17,10 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <editor.toolbarProvider implementation="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryEditorToolbarProvider"/>
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <internalFileTemplate name="Polyglot Query File"/>
 

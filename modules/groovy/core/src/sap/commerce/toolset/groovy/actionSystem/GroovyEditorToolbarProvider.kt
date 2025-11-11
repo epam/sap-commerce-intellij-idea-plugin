@@ -18,44 +18,39 @@
 
 package sap.commerce.toolset.groovy.actionSystem
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
-import com.intellij.util.application
+import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
+import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.settings.yDeveloperSettings
 
-@Service
-class GroovyFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.groovy.console",
-    "hybris.groovy.toolbar.left",
-    "hybris.groovy.toolbar.right",
-    GroovyFileType.GROOVY_FILE_TYPE
-) {
+class GroovyEditorToolbarProvider(
+    override val toolbarId: String = "hybris.groovy.console",
+    override val leftGroupId: String = "hybris.groovy.toolbar.left",
+    override val rightGroupId: String = "hybris.groovy.toolbar.right",
+    override val fileType: FileType = GroovyFileType.GROOVY_FILE_TYPE
+) : HybrisEditorToolbarProvider {
 
-    companion object {
-        fun getInstance(): GroovyFileToolbarInstaller = application.service()
-    }
+    override fun isEnabled(project: Project, vf: VirtualFile): Boolean {
+        if (Plugin.GROOVY.isDisabled()) return false
+        if (fileType != vf.fileType) return false
 
-    override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {
-        val settings = project.yDeveloperSettings
-        val file = editor.virtualFile
+        val groovySettings = project.yDeveloperSettings.groovySettings
 
         // Checking special cases where toolbar might not be desired
-        val path = file.path
+        val path = vf.path
         val isTestFile = path.contains(HybrisConstants.TEST_SRC_DIRECTORY, true)
             || path.contains(HybrisConstants.GROOVY_TEST_SRC_DIRECTORY, true)
         val isIdeConsole = path.contains(HybrisConstants.IDE_CONSOLES_PATH)
-        val testFileCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
-        val ideConsoleCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyIdeConsole && isIdeConsole || !isIdeConsole
+            || path.contains(GroovyConstants.PATH_CONSOLES_GROOVY)
+        val testFileCheckPassed = groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
+        val ideConsoleCheckPassed = groovySettings.enableActionsToolbarForGroovyIdeConsole && isIdeConsole || !isIdeConsole
 
-        return Plugin.GROOVY.isActive()
-            && fileType == file.fileType
-            && settings.groovySettings.enableActionsToolbar
+        return groovySettings.enableActionsToolbar
             && testFileCheckPassed
             && ideConsoleCheckPassed
     }

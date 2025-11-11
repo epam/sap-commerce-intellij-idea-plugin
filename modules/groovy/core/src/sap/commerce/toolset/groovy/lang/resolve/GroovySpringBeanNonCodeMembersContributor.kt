@@ -24,7 +24,10 @@ import com.intellij.psi.scope.PsiScopeProcessor
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrImplicitVariableImpl
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.groovy.GroovyConstants
+import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.spring.SpringHelper
@@ -39,18 +42,26 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         state: ResolveState
     ) {
         qualifierType.asSafely<PsiClassType>() ?: return
-        val containingFile = place.containingFile ?: return
+        val project = place.project
+            .takeIf { it.isHybrisProject }
+            ?: return
+        val psiFile = place.containingFile ?: return
+        val vf = psiFile.virtualFile ?: return
         val name = processor.getHint(NameHint.KEY)
             ?.getName(state)
             ?: return
         processor.getHint(ElementClassHint.KEY)
             ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
             ?: return
-        val contextMode = containingFile.originalFile.virtualFile
+        val contextMode = psiFile.originalFile.virtualFile
             ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
             ?: DeveloperSettings.getInstance(place.project).groovySettings.springContextMode
 
         if (contextMode == SpringContextMode.DISABLED) return
+
+        HybrisEditorToolbarProvider.EP.findExtension(GroovyEditorToolbarProvider::class.java)
+            ?.takeIf { it.isEnabled(project, vf) }
+            ?: return
 
         val resolveBeanClass = SpringHelper.resolveBeanClass(place, name) ?: return
         val fqn = resolveBeanClass.qualifiedName ?: return

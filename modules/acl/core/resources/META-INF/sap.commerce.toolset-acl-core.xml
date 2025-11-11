@@ -17,6 +17,10 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <editor.toolbarProvider implementation="sap.commerce.toolset.acl.actionSystem.AclEditorToolbarProvider"/>
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <internalFileTemplate name="Acl File"/>
 

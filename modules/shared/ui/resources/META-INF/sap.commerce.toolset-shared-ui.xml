@@ -18,6 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <editorFactoryListener implementation="sap.commerce.toolset.ui.editor.event.HybrisEditorFactoryListener"/>
+
         <applicationConfigurable id="hybris.settings" parentId="root" displayName="[y] SAP CX"
                                  provider="sap.commerce.toolset.options.ApplicationSettingsConfigurableProvider"/>
 

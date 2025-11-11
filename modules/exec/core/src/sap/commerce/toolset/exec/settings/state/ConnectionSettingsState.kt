@@ -38,7 +38,9 @@ interface ConnectionSettingsState {
         get() = connectionPresentationName(scope, name) { generatedURL }
 
     val connectionName: String
-        get() = name ?: generatedURL
+        get() = name
+            ?.takeIf { it.isNotBlank() }
+            ?: generatedURL
 
     val shortenConnectionName: String
         get() = connectionName

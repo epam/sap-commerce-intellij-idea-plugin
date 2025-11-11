@@ -16,24 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.actionSystem
+package sap.commerce.toolset.flexibleSearch.actionSystem
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
-import sap.commerce.toolset.impex.file.ImpExFileType
+import com.intellij.openapi.fileTypes.FileType
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 
-@Service
-class ImpExFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.impex.console",
-    "hybris.impex.toolbar.left",
-    "hybris.impex.toolbar.right",
-    ImpExFileType
-) {
-
-    companion object {
-        fun getInstance(): ImpExFileToolbarInstaller = application.service()
-    }
-
-}
+class FlexibleSearchEditorToolbarProvider(
+    override val toolbarId: String = "hybris.fxs.console",
+    override val leftGroupId: String = "hybris.fxs.toolbar.left",
+    override val rightGroupId: String = "hybris.fxs.toolbar.right",
+    override val fileType: FileType = FlexibleSearchFileType
+) : HybrisEditorToolbarProvider

@@ -16,23 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.actionSystem
+package sap.commerce.toolset.polyglotQuery.actionSystem
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.openapi.fileTypes.FileType
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
-@Service
-class FlexibleSearchFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.fxs.console",
-    "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType
-) {
-
-    companion object {
-        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.service()
-    }
-}
+class PolyglotQueryEditorToolbarProvider(
+    override val toolbarId: String = "hybris.pgq.console",
+    override val leftGroupId: String = "hybris.pgq.toolbar.left",
+    override val rightGroupId: String = "hybris.pgq.toolbar.right",
+    override val fileType: FileType = PolyglotQueryFileType
+) : HybrisEditorToolbarProvider

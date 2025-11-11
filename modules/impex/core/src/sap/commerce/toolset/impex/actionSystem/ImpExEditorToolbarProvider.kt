@@ -16,24 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.acl.actionSystem
+package sap.commerce.toolset.impex.actionSystem
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
+import com.intellij.openapi.fileTypes.FileType
+import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
+import sap.commerce.toolset.impex.file.ImpExFileType
 
-@Service
-class AclFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.acl.console",
-    "hybris.acl.toolbar.left",
-    "hybris.acl.toolbar.right",
-    AclFileType
-) {
-
-    companion object {
-        fun getInstance(): AclFileToolbarInstaller = application.service()
-    }
-
-}
+class ImpExEditorToolbarProvider(
+    override val toolbarId: String = "hybris.impex.console",
+    override val leftGroupId: String = "hybris.impex.toolbar.left",
+    override val rightGroupId: String = "hybris.impex.toolbar.right",
+    override val fileType: FileType = ImpExFileType
+) : HybrisEditorToolbarProvider
