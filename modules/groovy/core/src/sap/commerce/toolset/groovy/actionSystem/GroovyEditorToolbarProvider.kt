@@ -39,7 +39,7 @@ class GroovyEditorToolbarProvider(
         && super.isApplicable(project, vf)
 
     override fun isEnabled(project: Project, vf: VirtualFile): Boolean {
-        val settings = project.yDeveloperSettings
+        val groovySettings = project.yDeveloperSettings.groovySettings
 
         // Checking special cases where toolbar might not be desired
         val path = vf.path
@@ -47,12 +47,12 @@ class GroovyEditorToolbarProvider(
             || path.contains(HybrisConstants.GROOVY_TEST_SRC_DIRECTORY, true)
         val isIdeConsole = path.contains(HybrisConstants.IDE_CONSOLES_PATH)
             || path.contains(GroovyConstants.PATH_CONSOLES_GROOVY)
-        val testFileCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
-        val ideConsoleCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyIdeConsole && isIdeConsole || !isIdeConsole
+        val testFileCheckPassed = groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
+        val ideConsoleCheckPassed = groovySettings.enableActionsToolbarForGroovyIdeConsole && isIdeConsole || !isIdeConsole
 
         return Plugin.GROOVY.isActive()
             && fileType == vf.fileType
-            && settings.groovySettings.enableActionsToolbar
+            && groovySettings.enableActionsToolbar
             && testFileCheckPassed
             && ideConsoleCheckPassed
     }
