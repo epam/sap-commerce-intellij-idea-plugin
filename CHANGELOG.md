@@ -1,7 +1,7 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Select & configure `hAC` connection from the CCv2 endpoint [#1652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1652)
@@ -11,6 +11,7 @@
 - Added icons for transaction mode toggle [#1647](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1647)
 - Added `Got it Tooltip` for new Spring context mode and configurable default state of the respective flag [#1648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1648)
 - Added `Got it Tooltip` for Transaction mode and configurable default state of the respective flag [#1649](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1649)
+- Resolve Spring context only when action bar is installed [#1653](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1653)
 
 ### `Spring` enhancements
 - Improve Spring beans resolution in case of `module-less` files, like Scratch-files [#1646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1646)
