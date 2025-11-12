@@ -1,10 +1,11 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Select & configure `hAC` connection from the CCv2 endpoint [#1652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1652)
+- Show in-IDE CCv2 capabilities informational banner within commerce `manifest.json` [#1654](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1654)
 
 ### `Groovy` enhancements
 - Introduced `local` Spring context mode within groovy files (slow operation) [#1645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1645)

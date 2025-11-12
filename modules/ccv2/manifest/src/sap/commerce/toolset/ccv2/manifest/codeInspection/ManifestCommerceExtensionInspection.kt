@@ -34,7 +34,7 @@ class ManifestCommerceExtensionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val file = holder.file
 
-        if (!ManifestCommerceJsonSchemaFileProvider.instance(file.project).isAvailable(file.viewProvider.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+        if (!ManifestCommerceJsonSchemaFileProvider.getInstance(file.project).isAvailable(file.viewProvider.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
 
         return ManifestCommerceVisitor(holder)
     }
