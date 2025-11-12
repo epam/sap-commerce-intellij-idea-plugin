@@ -24,6 +24,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
                                 implementationClass="sap.commerce.toolset.ccv2.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
+        <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="sap.commerce.toolset.ccv2.manifest.ui.ManifestCommerceEditorNotificationProvider"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

@@ -4,6 +4,7 @@
     * [Invoke AnAction](#invoke-anaction)
     * [Refresh state of an AnAction in case of background thread](#refresh-state-of-an-anaction-in-case-of-background-thread)
     * [Resize Kotlin Dsl Dialog on content change](#resize-kotlin-dsl-dialog-on-content-change)
+    * [Notifications](#notifications)
 <!-- TOC -->
 
 ---
@@ -49,4 +50,5 @@ invokeLater {
 
 ### Notifications
 
-* Use `Reset Got It Tooltips` internal action to simplify testing of the `GotItToolip` 
+* Register id for each `Got It Tooltip` in the [GotItTooltips](modules/shared/core/src/sap/commerce/toolset/GotItTooltips.kt).
+* Use `Reset Got It Tooltips` internal action to simplify testing of the `GotItToolip`.

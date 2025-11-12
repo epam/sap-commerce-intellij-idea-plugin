@@ -39,6 +39,6 @@ class ManifestDataHubJsonSchemaFileProvider(val project: Project) : JsonSchemaFi
     override fun getSchemaType() = SchemaType.embeddedSchema
 
     companion object {
-        fun instance(project: Project): ManifestDataHubJsonSchemaFileProvider = project.service()
+        fun getInstance(project: Project): ManifestDataHubJsonSchemaFileProvider = project.service()
     }
 }

@@ -27,9 +27,9 @@ import sap.commerce.toolset.ccv2.manifest.jsonSchema.providers.ManifestJavascrip
 class ManifestJsonSchemaProviderFactory : JsonSchemaProviderFactory {
 
     override fun getProviders(project: Project) = listOf(
-        ManifestCommerceJsonSchemaFileProvider.instance(project),
-        ManifestDataHubJsonSchemaFileProvider.instance(project),
-        ManifestJavascriptStorefrontJsonSchemaFileProvider.instance(project)
+        ManifestCommerceJsonSchemaFileProvider.getInstance(project),
+        ManifestDataHubJsonSchemaFileProvider.getInstance(project),
+        ManifestJavascriptStorefrontJsonSchemaFileProvider.getInstance(project)
     )
 
 }

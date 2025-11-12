@@ -39,6 +39,6 @@ class ManifestJavascriptStorefrontJsonSchemaFileProvider(val project: Project) :
     override fun getSchemaType() = SchemaType.embeddedSchema
 
     companion object {
-        fun instance(project: Project): ManifestJavascriptStorefrontJsonSchemaFileProvider = project.service()
+        fun getInstance(project: Project): ManifestJavascriptStorefrontJsonSchemaFileProvider = project.service()
     }
 }
