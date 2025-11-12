@@ -40,8 +40,8 @@ class ManifestCommerceEditorNotificationProvider : EditorNotificationProvider, D
         if (subscriptions.isNotEmpty()) return null
 
         return Function { fileEditor ->
-            val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Success)
-            panel.icon(HybrisIcons.Y.LOGO_GREEN)
+            val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
+            panel.icon(HybrisIcons.Y.LOGO_BLUE)
             panel.text = "Unleash the power of CI/CD with rich, built-in, and fully manageable CCv2 capabilities in your IDE."
             panel.createActionLabel("CCv2 settings", "ccv2.open.settings.action")
             panel
