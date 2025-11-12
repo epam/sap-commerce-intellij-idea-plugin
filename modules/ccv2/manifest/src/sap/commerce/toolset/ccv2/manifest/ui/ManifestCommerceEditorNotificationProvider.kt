@@ -43,7 +43,7 @@ class ManifestCommerceEditorNotificationProvider : EditorNotificationProvider, D
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
             panel.icon(HybrisIcons.Y.LOGO_BLUE)
             panel.text = "Unleash the power of CI/CD with rich, built-in, and fully manageable CCv2 capabilities in your IDE."
-            panel.createActionLabel("CCv2 settings", "ccv2.open.settings.action")
+            panel.createActionLabel("Settings", "ccv2.open.settings.action")
             panel
         }
     }
