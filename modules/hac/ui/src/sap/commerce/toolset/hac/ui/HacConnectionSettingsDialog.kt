@@ -273,13 +273,13 @@ class HacConnectionSettingsDialog(
                     .label("Username:")
                     .visibleIf(
                         mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC)
-                            .and(mutable.authMode.equalsTo(AuthMode.MANUAL))
+                            .and(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
                     )
                 textField()
                     .label("Password:")
                     .visibleIf(
                         mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC)
-                            .and(mutable.authMode.equalsTo(AuthMode.MANUAL))
+                            .and(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
                     )
             }
         }
