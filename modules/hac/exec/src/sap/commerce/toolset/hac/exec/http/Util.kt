@@ -16,22 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.auth
+package sap.commerce.toolset.hac.exec.http
 
 import com.intellij.credentialStore.Credentials
-import sap.commerce.toolset.hac.exec.http.AuthContext
-import sap.commerce.toolset.hac.exec.http.asHeaders
+import kotlin.io.encoding.Base64
 
-data class HacAuthContext(
-    val csrfToken: String,
-    val cookies: Map<String, String>,
-    val proxyCredentials: Credentials?,
-) {
-    fun isValid(sessionCookieName: String) = cookies.containsKey(sessionCookieName)
+fun Credentials?.asHeaders(): MutableMap<String, String> {
+    val u = this?.userName ?: return mutableMapOf()
+    val p = this.getPasswordAsString() ?: return mutableMapOf()
+    val basic = Base64.encode("$u:$p".toByteArray())
 
-    fun toAuthContext(): AuthContext = AuthContext(
-        cookies.toMutableMap(),
-        proxyCredentials.asHeaders()
-    )
-
+    return mutableMapOf("Authorization" to "Basic $basic")
 }

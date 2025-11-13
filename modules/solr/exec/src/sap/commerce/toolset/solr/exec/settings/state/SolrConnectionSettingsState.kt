@@ -25,6 +25,7 @@ import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.exec.ExecConstants
+import sap.commerce.toolset.exec.settings.state.ExecConnectionCredentials
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.solr.SolrConstants
@@ -66,6 +67,8 @@ data class SolrConnectionSettingsState(
         override var modified: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(""),
         override val password: ObservableMutableProperty<String> = AtomicProperty(""),
+        override val proxyUsername: ObservableMutableProperty<String> = AtomicProperty(""),
+        override val proxyPassword: ObservableMutableProperty<String> = AtomicProperty(""),
         var socketTimeout: Int,
     ) : ExecConnectionSettingsState.Mutable {
 
@@ -79,6 +82,6 @@ data class SolrConnectionSettingsState(
             ssl = ssl.get(),
             timeout = timeout,
             socketTimeout = socketTimeout,
-        ) to Credentials(username.get(), password.get())
+        ) to ExecConnectionCredentials(Credentials(username.get(), password.get()))
     }
 }

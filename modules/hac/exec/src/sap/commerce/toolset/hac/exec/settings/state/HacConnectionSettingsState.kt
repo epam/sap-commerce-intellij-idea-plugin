@@ -25,6 +25,7 @@ import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.exec.ExecConstants
+import sap.commerce.toolset.exec.settings.state.ExecConnectionCredentials
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.hac.HacExecConstants
@@ -76,8 +77,8 @@ data class HacConnectionSettingsState(
         override var modified: Boolean = false,
         override val username: ObservableMutableProperty<String> = AtomicProperty(""),
         override val password: ObservableMutableProperty<String> = AtomicProperty(""),
-        val proxyUsername: ObservableMutableProperty<String> = AtomicProperty(""),
-        val proxyPassword: ObservableMutableProperty<String> = AtomicProperty(""),
+        override val proxyUsername: ObservableMutableProperty<String> = AtomicProperty(""),
+        override val proxyPassword: ObservableMutableProperty<String> = AtomicProperty(""),
         val authMode: ObservableMutableProperty<AuthMode>,
         val wsl: ObservableMutableProperty<Boolean>,
         val proxyAuthMode: ObservableMutableProperty<ProxyAuthMode>,
@@ -85,20 +86,26 @@ data class HacConnectionSettingsState(
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
 
-        override fun immutable() = HacConnectionSettingsState(
-            uuid = uuid,
-            scope = scope,
-            name = name.get(),
-            host = host.get(),
-            port = port.get(),
-            webroot = webroot.get(),
-            ssl = ssl.get(),
-            timeout = timeout,
-            wsl = wsl.get(),
-            sslProtocol = sslProtocol.get(),
-            sessionCookieName = sessionCookieName,
-            proxyAuthMode = proxyAuthMode.get(),
-            authMode = authMode.get(),
-        ) to Credentials(username.get(), password.get())
+        override fun immutable(): Pair<HacConnectionSettingsState, ExecConnectionCredentials> {
+            val proxyCredentials = if (proxyUsername.get().isNotEmpty() && proxyPassword.get().isNotEmpty())
+                Credentials(proxyUsername.get(), proxyPassword.get())
+            else
+                null
+            return HacConnectionSettingsState(
+                uuid = uuid,
+                scope = scope,
+                name = name.get(),
+                host = host.get(),
+                port = port.get(),
+                webroot = webroot.get(),
+                ssl = ssl.get(),
+                timeout = timeout,
+                wsl = wsl.get(),
+                sslProtocol = sslProtocol.get(),
+                sessionCookieName = sessionCookieName,
+                proxyAuthMode = proxyAuthMode.get(),
+                authMode = authMode.get(),
+            ) to ExecConnectionCredentials(Credentials(username.get(), password.get()), proxyCredentials)
+        }
     }
 }

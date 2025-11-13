@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.exec.settings.state
 
-import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.observable.properties.MutableBooleanProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import sap.commerce.toolset.exec.generateUrl
@@ -47,8 +46,10 @@ interface ExecConnectionSettingsState : ConnectionSettingsState {
         var modified: Boolean
         val username: ObservableMutableProperty<String>
         val password: ObservableMutableProperty<String>
+        val proxyUsername: ObservableMutableProperty<String>
+        val proxyPassword: ObservableMutableProperty<String>
 
-        fun immutable(): Pair<ExecConnectionSettingsState, Credentials>
+        fun immutable(): Pair<ExecConnectionSettingsState, ExecConnectionCredentials>
 
         val generatedURL: String
             get() = generateUrl(ssl.get(), host.get(), port.get(), webroot.get())
