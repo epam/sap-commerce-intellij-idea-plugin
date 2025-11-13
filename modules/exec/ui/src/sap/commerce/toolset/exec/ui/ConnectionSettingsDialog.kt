@@ -42,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
+import sap.commerce.toolset.ui.repackDialog
 import java.awt.Component
 import java.awt.event.ActionEvent
 import java.io.Serial
@@ -106,6 +107,8 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
                                 visible(true)
                             }
                         }
+
+                        repackDialog()
                     }
 
                     action.isEnabled = true

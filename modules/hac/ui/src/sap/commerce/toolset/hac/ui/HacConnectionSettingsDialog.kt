@@ -105,18 +105,16 @@ class HacConnectionSettingsDialog(
         if (configurationProviders.isNotEmpty()) {
             buttonsGroup {
                 row {
+                    label("Configure via:")
+                        .comment("Apply settings via dedicated configuration provider.")
+
                     configurationProviders.forEach { provider ->
                         link(provider.presentationText) {
                             provider.configure(project, mutable)
                         }
-                            .align(AlignX.CENTER)
                             .gap(RightGap.SMALL)
                     }
                 }
-            }
-            row {
-                comment("Apply settings via configuration provider")
-                    .align(AlignX.CENTER)
             }
 
             separator()
@@ -154,9 +152,11 @@ class HacConnectionSettingsDialog(
             row {
                 urlPreviewLabel = label(mutable.generatedURL)
                     .bold()
-                    .align(AlignX.FILL)
+                    .align(Align.FILL)
+                    .resizableColumn()
                     .component
-            }
+            }.resizableRow()
+
             row {
                 testConnectionLabel = label("")
                     .visible(false)
@@ -167,7 +167,7 @@ class HacConnectionSettingsDialog(
             }
         }
 
-        collapsibleGroup("Host Settings") {
+        group("Host Settings") {
             row {
                 hostTextField = textField()
                     .label("Host / IP:")
@@ -218,7 +218,7 @@ class HacConnectionSettingsDialog(
                     .apply { component.text = "" }
                     .component
             }.layout(RowLayout.PARENT_GRID)
-        }.expanded = true
+        }
 
         if (SystemInfo.isWindows) {
             collapsibleGroup("Windows Subsystem for Linux") {
@@ -226,46 +226,66 @@ class HacConnectionSettingsDialog(
             }.expanded = true
         }
 
-        collapsibleGroup("Authentication") {
-            row {
-                segmentedButton(AuthMode.entries.toList()) {
-                    icon = it.icon
-                    text = it.title
-                    toolTipText = it.description
+        separator()
+
+        row {
+            label("Auth mode:")
+                .bold()
+            segmentedButton(AuthMode.entries.toList()) {
+                icon = it.icon
+                text = it.title
+                toolTipText = it.description
+            }
+                .bind(mutable.authMode)
+                .whenItemSelected(disposable) {
+                    testConnectionButton.isEnabled = it == AuthMode.AUTOMATIC
+                    repackDialog()
                 }
-                    .align(AlignX.CENTER)
-                    .bind(mutable.authMode)
-                    .whenItemSelected(disposable) {
-                        testConnectionButton.isEnabled = it == AuthMode.AUTOMATIC
-                        repackDialog()
-                    }
-                    .component
-                    ?.let { showGotItTooltip(it) }
+                .component
+                ?.let { showGotItTooltip(it) }
+        }
+
+        authAutomatic()
+        authManual()
+
+        separator()
+
+        row {
+            label("Proxy auth mode:")
+            segmentedButton(ProxyAuthMode.entries.toList()) {
+                icon = it.icon
+                text = it.title
+                toolTipText = it.description
             }
+                .bind(mutable.proxyAuthMode)
+                .whenItemSelected(disposable) {
+                    repackDialog()
+                }
+        }
 
-            authenticationAutomatic()
-            authenticationManual()
-
-            separator()
-                // TODO; remove visibility flag once proxy authentication is implemented for Automatic mode
-                .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
-
-            row {
-                checkBox("Reverse proxy basic authentication")
-                    .bindSelected(
-                        { mutable.proxyAuthMode.get() == ProxyAuthMode.BASIC },
-                        {
-                            if (it) mutable.proxyAuthMode.set(ProxyAuthMode.BASIC)
-                            else mutable.proxyAuthMode.set(ProxyAuthMode.NONE)
-                        }
-                    )
-                    // TODO; remove visibility flag once proxy authentication is implemented for Automatic mode
-                    .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
-            }
-        }.expanded = true
+        proxyAuthBasic()
     }
 
-    private fun Panel.authenticationManual() {
+    private fun Panel.proxyAuthBasic() {
+        indent {
+            row {
+                textField()
+                    .label("Username:")
+                    .visibleIf(
+                        mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC)
+                            .and(mutable.authMode.equalsTo(AuthMode.MANUAL))
+                    )
+                textField()
+                    .label("Password:")
+                    .visibleIf(
+                        mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC)
+                            .and(mutable.authMode.equalsTo(AuthMode.MANUAL))
+                    )
+            }
+        }
+    }
+
+    private fun Panel.authManual() {
         if (!JBCefApp.isSupported()) {
             row {
                 inlineBanner("Set the reg key to enable JCEF:\n\"ide.browser.jcef.enabled=true\"", EditorNotificationPanel.Status.Warning)
@@ -282,32 +302,30 @@ class HacConnectionSettingsDialog(
         }
     }
 
-    private fun Panel.authenticationAutomatic() {
-        row {
-            usernameTextField = textField()
-                .label("Username:")
-                .align(AlignX.FILL)
-                .bindText(mutable.username)
-                .enabledIf(editableCredentials)
-                .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
-                .addValidationRule("Username cannot be blank.") {
-                    mutable.authMode.get() == AuthMode.AUTOMATIC && it.text.isNullOrBlank()
-                }
-                .component
-        }.layout(RowLayout.PARENT_GRID)
+    private fun Panel.authAutomatic() {
+        indent {
+            row {
+                usernameTextField = textField()
+                    .label("Username:")
+                    .bindText(mutable.username)
+                    .enabledIf(editableCredentials)
+                    .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
+                    .addValidationRule("Username cannot be blank.") {
+                        mutable.authMode.get() == AuthMode.AUTOMATIC && it.text.isNullOrBlank()
+                    }
+                    .component
 
-        row {
-            passwordTextField = passwordField()
-                .label("Password:")
-                .align(AlignX.FILL)
-                .bindText(mutable.password)
-                .enabledIf(editableCredentials)
-                .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
-                .addValidationRule("Password cannot be blank.") {
-                    mutable.authMode.get() == AuthMode.AUTOMATIC && it.password.isEmpty()
-                }
-                .component
-        }.layout(RowLayout.PARENT_GRID)
+                passwordTextField = passwordField()
+                    .label("Password:")
+                    .bindText(mutable.password)
+                    .enabledIf(editableCredentials)
+                    .visibleIf(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
+                    .addValidationRule("Password cannot be blank.") {
+                        mutable.authMode.get() == AuthMode.AUTOMATIC && it.password.isEmpty()
+                    }
+                    .component
+            }
+        }
     }
 
     private fun updateWslIp(distributions: List<WSLDistribution>) {
