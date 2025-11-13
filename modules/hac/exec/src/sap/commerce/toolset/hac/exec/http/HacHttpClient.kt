@@ -58,15 +58,12 @@ import java.nio.charset.StandardCharsets
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
-import java.util.concurrent.ConcurrentHashMap
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import kotlin.io.encoding.Base64
 
 @Service(Service.Level.PROJECT)
 class HacHttpClient(private val project: Project) {
-
-    private val authContexts = ConcurrentHashMap<String, AuthContext>()
 
     suspend fun testConnection(
         settings: HacConnectionSettingsState,
@@ -75,15 +72,15 @@ class HacHttpClient(private val project: Project) {
         proxyUsername: String? = null,
         proxyPassword: String? = null
     ): HacHttpAuthResult {
-        //todo: move key to another class
-        val authContextKey = HttpCookiesCache.getInstance(project).getKey(settings)
+        val authContextCache = AuthContextCache.getInstance(project)
+        val authContextKey = authContextCache.getKey(settings)
 
         val proxyCredentials: Credentials? = if (proxyUsername?.isNotBlank() ?: false && proxyPassword?.isNotBlank() ?: false)
             Credentials(proxyUsername, proxyPassword)
         else null
 
         return authenticate(settings, authContextKey, username, password, proxyCredentials)
-            .also { authContexts.remove(authContextKey) }
+            .also { authContextCache.authContexts.remove(authContextKey) }
     }
 
     suspend fun post(
@@ -94,8 +91,9 @@ class HacHttpClient(private val project: Project) {
         settings: HacConnectionSettingsState,
         replicaContext: ReplicaContext?,
     ): HttpResponse {
-        val authContextKey = HttpCookiesCache.getInstance(project).getKey(settings, replicaContext)
-        var authContext = authContexts[authContextKey]
+        val authContextCache = AuthContextCache.getInstance(project)
+        val authContextKey = authContextCache.getKey(settings, replicaContext)
+        var authContext = authContextCache.authContexts[authContextKey]
         val sessionCookieName = getSessionCookieName(settings)
         var prefilledCsrfToken: String? = null
         val execConnectionService = HacExecConnectionService.getInstance(project)
@@ -107,7 +105,7 @@ class HacHttpClient(private val project: Project) {
                     ?.takeIf { it.isValid(sessionCookieName) }
                     ?: return createErrorResponse("Unable to find cookie $sessionCookieName")
 
-                authContexts[authContextKey] = authenticationContext.toAuthContext()
+                authContextCache.authContexts[authContextKey] = authenticationContext.toAuthContext()
                 prefilledCsrfToken = authenticationContext.csrfToken
             } else {
                 val credentials = execConnectionService.getCredentials(settings)
@@ -123,7 +121,7 @@ class HacHttpClient(private val project: Project) {
             }
         }
 
-        authContext = authContexts[authContextKey]
+        authContext = authContextCache.authContexts[authContextKey]
             ?: return createErrorResponse("Unable to authenticate request.")
 
         val sessionId = authContext.cookies[sessionCookieName]
@@ -132,7 +130,7 @@ class HacHttpClient(private val project: Project) {
             ?: getCsrfToken(generatedURL, settings, authContext)
 
         if (csrfToken == null) {
-            authContexts.remove(authContextKey)
+            authContextCache.authContexts.remove(authContextKey)
 
             if (canReLoginIfNeeded) {
                 return post(actionUrl, params, false, timeout, settings, replicaContext)
@@ -177,7 +175,7 @@ class HacHttpClient(private val project: Project) {
             else -> false
         }
         if (needsLogin) {
-            authContexts.remove(authContextKey)
+            authContextCache.authContexts.remove(authContextKey)
             if (canReLoginIfNeeded) {
                 return post(actionUrl, params, false, timeout, settings, replicaContext)
             }
@@ -194,8 +192,8 @@ class HacHttpClient(private val project: Project) {
         replicaContext: ReplicaContext? = null
     ): HacHttpAuthResult {
         val hostHacURL = settings.generatedURL
-
-        val authContext = authContexts.computeIfAbsent(authContextKey) { AuthContext(
+        val authContextCache = AuthContextCache.getInstance(project)
+        val authContext = authContextCache.authContexts.computeIfAbsent(authContextKey) { AuthContext(
             headers = proxyCredentials.asHeaders()
         ) }
         retrieveCookies(hostHacURL, settings, replicaContext, authContext)
@@ -225,7 +223,7 @@ class HacHttpClient(private val project: Project) {
 
         return CookieParser.getInstance().getSpecialCookie(response.allHeaders)
             ?.let { newSessionId ->
-                authContexts[authContextKey]?.cookies?.let { it[sessionCookieName] = newSessionId }
+                authContextCache.authContexts[authContextKey]?.cookies?.let { it[sessionCookieName] = newSessionId }
                 HacHttpAuthResult.Success(hostHacURL)
             }
             ?: HacHttpAuthResult.Error(hostHacURL, buildString {

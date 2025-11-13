@@ -86,26 +86,23 @@ data class HacConnectionSettingsState(
         var sessionCookieName: String,
     ) : ExecConnectionSettingsState.Mutable {
 
-        override fun immutable(): Pair<HacConnectionSettingsState, ExecConnectionCredentials> {
-            val proxyCredentials = if (proxyUsername.get().isNotEmpty() && proxyPassword.get().isNotEmpty())
-                Credentials(proxyUsername.get(), proxyPassword.get())
-            else
-                null
-            return HacConnectionSettingsState(
-                uuid = uuid,
-                scope = scope,
-                name = name.get(),
-                host = host.get(),
-                port = port.get(),
-                webroot = webroot.get(),
-                ssl = ssl.get(),
-                timeout = timeout,
-                wsl = wsl.get(),
-                sslProtocol = sslProtocol.get(),
-                sessionCookieName = sessionCookieName,
-                proxyAuthMode = proxyAuthMode.get(),
-                authMode = authMode.get(),
-            ) to ExecConnectionCredentials(Credentials(username.get(), password.get()), proxyCredentials)
-        }
+        override fun immutable(): Pair<HacConnectionSettingsState, ExecConnectionCredentials> = HacConnectionSettingsState(
+            uuid = uuid,
+            scope = scope,
+            name = name.get(),
+            host = host.get(),
+            port = port.get(),
+            webroot = webroot.get(),
+            ssl = ssl.get(),
+            timeout = timeout,
+            wsl = wsl.get(),
+            sslProtocol = sslProtocol.get(),
+            sessionCookieName = sessionCookieName,
+            proxyAuthMode = proxyAuthMode.get(),
+            authMode = authMode.get(),
+        ) to ExecConnectionCredentials(
+            Credentials(username.get(), password.get()),
+            Credentials(proxyUsername.get(), proxyPassword.get())
+        )
     }
 }

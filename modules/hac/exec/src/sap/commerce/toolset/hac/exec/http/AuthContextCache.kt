@@ -27,12 +27,11 @@ import sap.commerce.toolset.exec.settings.state.ConnectionSettingsState
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.Consumer
 
 @Service(Service.Level.PROJECT)
-class HttpCookiesCache(private val project: Project) : Disposable {
+class AuthContextCache(private val project: Project) : Disposable {
 
-    private val cookiesPerSettings = ConcurrentHashMap<String, MutableMap<String, String>>()
+    val authContexts = ConcurrentHashMap<String, AuthContext>()
 
     init {
         project.messageBus.connect().subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
@@ -42,20 +41,18 @@ class HttpCookiesCache(private val project: Project) : Disposable {
         })
     }
 
-    override fun dispose() = cookiesPerSettings.clear()
+    override fun dispose() = authContexts.clear()
 
     fun getKey(settings: ConnectionSettingsState, context: ReplicaContext? = null) = "${settings.uuid}_${context?.replicaId ?: "auto"}"
 
     private fun invalidateCookies(settings: ConnectionSettingsState) {
-        val suitableCacheKeys = cookiesPerSettings.keys
+        authContexts.keys
             .filter { it.startsWith(settings.uuid) }
-            .toList()
-
-        suitableCacheKeys.forEach(Consumer { key: String? -> cookiesPerSettings.remove(key) })
+            .forEach { authContexts.remove(it) }
     }
 
     companion object {
-        fun getInstance(project: Project): HttpCookiesCache = project.service()
+        fun getInstance(project: Project): AuthContextCache = project.service()
     }
 
 }
