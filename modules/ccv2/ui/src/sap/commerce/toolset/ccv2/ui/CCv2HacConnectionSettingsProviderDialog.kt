@@ -82,6 +82,8 @@ class CCv2HacConnectionSettingsProviderDialog(
         fetchEnvironments()
     }
 
+    override fun getPreferredFocusedComponent() = subscriptionComboBox
+
     override fun createCenterPanel() = panel {
         row {
             text(

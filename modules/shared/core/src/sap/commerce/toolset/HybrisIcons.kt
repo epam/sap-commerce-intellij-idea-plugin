@@ -55,6 +55,7 @@ object HybrisIcons {
     object HAC {
         val AUTH_AUTOMATIC = AllIcons.Actions.SynchronizeScrolling
         val AUTH_MANUAL = AllIcons.Actions.ToggleVisibility
+        val PROXY_AUTH_BASIC = AllIcons.Actions.InlaySecuredShield
     }
 
     object Spring {

@@ -18,7 +18,14 @@
 
 package sap.commerce.toolset.hac.exec.settings.state
 
-enum class ProxyAuthMode {
-    NONE,
-    BASIC;
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
+
+enum class ProxyAuthMode(val title: String, val icon: Icon? = null, val description: String? = null) {
+    NONE("None"),
+    BASIC(
+        "Basic",
+        HybrisIcons.HAC.PROXY_AUTH_BASIC,
+        "Applicable to connections that require additional authentication, e.g., when using an <code>nginx</code> reverse proxy."
+    );
 }
