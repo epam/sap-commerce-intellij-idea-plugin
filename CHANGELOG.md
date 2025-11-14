@@ -2,6 +2,7 @@
 
 <cite>Release contributors</cite>
 - 20 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 1 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Aekalenchuk+is%3Apr)
 
 ### `CCv2` enhancements
 - Select & configure `hAC` connection from the CCv2 endpoint [#1652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1652)
@@ -36,6 +37,7 @@
 - Display website access errors in the Browser for `manual` authentication mode [#1641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1641)
 - Added `Got it Tooltip` describing new authentication modes [#1651](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1651)
 - Adjusted UI of the dialog to fit the content better [#1655](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1655)
+- Added proxy authorization for hAC [#1656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1656)
 
 ## [2025.2.4.5]
 
