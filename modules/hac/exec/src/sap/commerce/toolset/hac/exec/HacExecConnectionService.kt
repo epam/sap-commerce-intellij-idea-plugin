@@ -24,6 +24,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exec.ExecConnectionService
+import sap.commerce.toolset.exec.settings.state.ExecConnectionCredentials
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.hac.exec.settings.HacExecDeveloperSettings
 import sap.commerce.toolset.hac.exec.settings.HacExecProjectSettings
@@ -58,7 +59,7 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
     override val listener: HacConnectionSettingsListener
         get() = project.messageBus.syncPublisher(HacConnectionSettingsListener.TOPIC)
 
-    override fun create(settings: Pair<HacConnectionSettingsState, Credentials>, notify: Boolean) = when (settings.first.scope) {
+    override fun create(settings: Pair<HacConnectionSettingsState, ExecConnectionCredentials>, notify: Boolean) = when (settings.first.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(HacExecDeveloperSettings.getInstance(project)) {
             connections = connections + settings.first
 
@@ -83,7 +84,7 @@ class HacExecConnectionService(project: Project) : ExecConnectionService<HacConn
         onDelete(settings, notify)
     }
 
-    override fun save(settings: Map<HacConnectionSettingsState, Credentials>) {
+    override fun save(settings: Map<HacConnectionSettingsState, ExecConnectionCredentials>) {
         val groupedSettings = settings.keys.groupBy { it.scope }
         val projectSettings = HacExecProjectSettings.getInstance(project)
         val developerSettings = HacExecDeveloperSettings.getInstance(project)

@@ -26,6 +26,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.exec.settings.event.ExecConnectionListener
+import sap.commerce.toolset.exec.settings.state.ExecConnectionCredentials
 import sap.commerce.toolset.exec.settings.state.ExecConnectionSettingsState
 import sap.commerce.toolset.project.PropertyService
 
@@ -39,17 +40,17 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected 
     abstract fun defaultCredentials(settings: T): Credentials
     abstract fun default(): T
     abstract fun delete(settings: T, notify: Boolean = true)
-    abstract fun create(settings: Pair<T, Credentials>, notify: Boolean = true)
-    abstract fun save(settings: Map<T, Credentials>)
+    abstract fun create(settings: Pair<T, ExecConnectionCredentials>, notify: Boolean = true)
+    abstract fun save(settings: Map<T, ExecConnectionCredentials>)
 
     fun getCredentials(settings: T) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - ${settings.uuid}"))
         ?: defaultCredentials(settings)
 
     fun getProxyCredentials(settings: T) = PasswordSafe.instance.get(CredentialAttributes("SAP CX - proxy - ${settings.uuid}"))
 
-    fun update(settings: Pair<T, Credentials>) = update(mapOf(settings))
+    fun update(settings: Pair<T, ExecConnectionCredentials>) = update(mapOf(settings))
 
-    fun update(settings: Map<T, Credentials>) {
+    fun update(settings: Map<T, ExecConnectionCredentials>) {
         settings.keys.forEach { delete(it, notify = false) }
         settings.forEach { create(it.key to it.value, notify = false) }
 
@@ -64,26 +65,29 @@ abstract class ExecConnectionService<T : ExecConnectionSettingsState>(protected 
         if (notify) listener.onDelete(settings) else Unit
     }
 
-    protected fun onCreate(settings: Pair<T, Credentials>, notify: Boolean = true) = if (notify) {
+    protected fun onCreate(settings: Pair<T, ExecConnectionCredentials>, notify: Boolean = true) = if (notify) {
         saveCredentials(settings)
         listener.onCreate(settings.first)
     } else Unit
 
-    protected fun onUpdate(settings: Map<T, Credentials>, notify: Boolean = true) {
+    protected fun onUpdate(settings: Map<T, ExecConnectionCredentials>, notify: Boolean = true) {
         settings.forEach { saveCredentials(it.key to it.value) }
         if (notify) listener.onUpdate(settings.keys)
     }
 
-    protected fun onSave(settings: Map<T, Credentials>) {
+    protected fun onSave(settings: Map<T, ExecConnectionCredentials>) {
         settings.forEach { saveCredentials(it.key to it.value) }
         listener.onSave(settings.keys)
     }
 
-    private fun saveCredentials(settings: Pair<T, Credentials?>) {
+    private fun saveCredentials(settings: Pair<T, ExecConnectionCredentials?>) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
             override fun run(indicator: ProgressIndicator) {
                 val credentialAttributes = CredentialAttributes("SAP CX - ${settings.first.uuid}")
-                PasswordSafe.instance.set(credentialAttributes, settings.second)
+                PasswordSafe.instance.set(credentialAttributes, settings.second?.credentials)
+
+                val proxyCredentialAttributes = CredentialAttributes("SAP CX - proxy - ${settings.first.uuid}")
+                PasswordSafe.instance.set(proxyCredentialAttributes, settings.second?.proxyCredentials)
             }
         })
     }

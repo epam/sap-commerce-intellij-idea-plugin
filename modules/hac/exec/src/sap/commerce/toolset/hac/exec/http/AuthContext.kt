@@ -16,22 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.hac.auth
+package sap.commerce.toolset.hac.exec.http
 
-import com.intellij.credentialStore.Credentials
-import sap.commerce.toolset.hac.exec.http.AuthContext
-import sap.commerce.toolset.hac.exec.http.asHeaders
-
-data class HacAuthContext(
-    val csrfToken: String,
-    val cookies: Map<String, String>,
-    val proxyCredentials: Credentials?,
-) {
-    fun isValid(sessionCookieName: String) = cookies.containsKey(sessionCookieName)
-
-    fun toAuthContext(): AuthContext = AuthContext(
-        cookies.toMutableMap(),
-        proxyCredentials.asHeaders()
-    )
-
-}
+data class AuthContext(
+    val cookies: MutableMap<String, String> = mutableMapOf(),
+    val headers: MutableMap<String, String> = mutableMapOf()
+)

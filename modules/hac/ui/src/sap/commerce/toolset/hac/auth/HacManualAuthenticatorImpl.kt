@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
 import sap.commerce.toolset.hac.ui.HacManualAuthenticationDialog
 
 class HacManualAuthenticatorImpl(private val project: Project) : HacManualAuthenticator {
@@ -32,8 +33,10 @@ class HacManualAuthenticatorImpl(private val project: Project) : HacManualAuthen
     override suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthContext? {
         val deferredAuthenticationContext = CompletableDeferred<HacAuthContext?>()
 
-        val proxyCredentials = withContext(Dispatchers.IO) {
+        val proxyCredentials = if (settings.proxyAuthMode == ProxyAuthMode.BASIC) withContext(Dispatchers.IO) {
             HacExecConnectionService.getInstance(project).getProxyCredentials(settings)
+        } else {
+            null
         }
 
         withContext(Dispatchers.EDT) {

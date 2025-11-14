@@ -120,6 +120,7 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
     protected abstract suspend fun testConnection(): String?
     protected abstract fun panel(): DialogPanel
     protected abstract fun retrieveCredentials(mutable: M): Credentials
+    protected open fun retrieveProxyCredentials(mutable: M): Credentials? = null
 
     init {
         title = dialogTitle
@@ -150,10 +151,15 @@ abstract class ConnectionSettingsDialog<M : ExecConnectionSettingsState.Mutable>
 
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
             override fun run(indicator: ProgressIndicator) {
-                val credentials = retrieveCredentials(mutable)
 
-                mutable.username.set(credentials.userName ?: "")
-                mutable.password.set(credentials.getPasswordAsString() ?: "")
+                with(retrieveCredentials(mutable)) {
+                    mutable.username.set(userName ?: "")
+                    mutable.password.set(getPasswordAsString() ?: "")
+                }
+                with(retrieveProxyCredentials(mutable)) {
+                    mutable.proxyUsername.set(this?.userName ?: "")
+                    mutable.proxyPassword.set(this?.getPasswordAsString() ?: "")
+                }
 
                 editableCredentials.set(true)
             }

@@ -67,6 +67,8 @@ class HacConnectionSettingsDialog(
     private lateinit var timeoutIntSpinner: JBIntSpinner
     private lateinit var usernameTextField: JBTextField
     private lateinit var passwordTextField: JBPasswordField
+    private lateinit var proxyUsernameTextField: JBTextField
+    private lateinit var proxyPasswordTextField: JBPasswordField
     private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var sessionCookieNameTextField: JBTextField
     private lateinit var wslDistributionComboBox: JComboBox<WSLDistribution>
@@ -79,6 +81,9 @@ class HacConnectionSettingsDialog(
     override fun retrieveCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
         .getCredentials(mutable.immutable().first)
 
+    override fun retrieveProxyCredentials(mutable: HacConnectionSettingsState.Mutable) = HacExecConnectionService.getInstance(project)
+        .getProxyCredentials(mutable.immutable().first)
+
     override suspend fun testConnection(): String? = HacHttpClient.getInstance(project).testConnection(
         HacConnectionSettingsState(
             host = hostTextField.text,
@@ -89,9 +94,12 @@ class HacConnectionSettingsDialog(
             webroot = webrootTextField.text,
             timeout = timeoutIntSpinner.number,
             sessionCookieName = sessionCookieNameTextField.text.takeUnless { it.isNullOrBlank() } ?: ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
+            proxyAuthMode = mutable.proxyAuthMode.get()
         ),
         mutable.username.get(),
         mutable.password.get(),
+        mutable.proxyUsername.get(),
+        mutable.proxyPassword.get()
     )
         .let {
             when {
@@ -269,18 +277,19 @@ class HacConnectionSettingsDialog(
     private fun Panel.proxyAuthBasic() {
         indent {
             row {
-                textField()
+                proxyUsernameTextField = textField()
                     .label("Username:")
-                    .visibleIf(
-                        mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC)
-                            .and(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
-                    )
-                textField()
+                    .bindText(mutable.proxyUsername)
+                    .enabledIf(editableCredentials)
+                    .visibleIf(mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC))
+                    .component
+
+                proxyPasswordTextField = passwordField()
                     .label("Password:")
-                    .visibleIf(
-                        mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC)
-                            .and(mutable.authMode.equalsTo(AuthMode.AUTOMATIC))
-                    )
+                    .bindText(mutable.proxyPassword)
+                    .enabledIf(editableCredentials)
+                    .visibleIf(mutable.proxyAuthMode.equalsTo(ProxyAuthMode.BASIC))
+                    .component
             }
         }
     }

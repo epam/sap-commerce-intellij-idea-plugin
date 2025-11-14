@@ -23,6 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.exec.ExecConnectionService
+import sap.commerce.toolset.exec.settings.state.ExecConnectionCredentials
 import sap.commerce.toolset.exec.settings.state.ExecConnectionScope
 import sap.commerce.toolset.solr.SolrConstants
 import sap.commerce.toolset.solr.exec.settings.SolrExecDeveloperSettings
@@ -58,7 +59,7 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
     override val listener: SolrConnectionSettingsListener
         get() = project.messageBus.syncPublisher(SolrConnectionSettingsListener.TOPIC)
 
-    override fun create(settings: Pair<SolrConnectionSettingsState, Credentials>, notify: Boolean) = when (settings.first.scope) {
+    override fun create(settings: Pair<SolrConnectionSettingsState, ExecConnectionCredentials>, notify: Boolean) = when (settings.first.scope) {
         ExecConnectionScope.PROJECT_PERSONAL -> with(SolrExecDeveloperSettings.getInstance(project)) {
             connections = connections + settings.first
 
@@ -87,7 +88,7 @@ class SolrExecConnectionService(project: Project) : ExecConnectionService<SolrCo
         port = getPropertyOrDefault(project, SolrConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"),
     )
 
-    override fun save(settings: Map<SolrConnectionSettingsState, Credentials>) {
+    override fun save(settings: Map<SolrConnectionSettingsState, ExecConnectionCredentials>) {
         val groupedSettings = settings.keys.groupBy { it.scope }
             .mapValues { (_, v) -> v.toList() }
         val projectSettings = SolrExecProjectSettings.getInstance(project)
