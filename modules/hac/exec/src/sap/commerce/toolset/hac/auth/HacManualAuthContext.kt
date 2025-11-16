@@ -22,7 +22,7 @@ import com.intellij.credentialStore.Credentials
 import sap.commerce.toolset.hac.exec.http.AuthContext
 import sap.commerce.toolset.hac.exec.http.asHeaders
 
-data class HacAuthContext(
+data class HacManualAuthContext(
     val csrfToken: String,
     val cookies: Map<String, String>,
     val proxyCredentials: Credentials?,

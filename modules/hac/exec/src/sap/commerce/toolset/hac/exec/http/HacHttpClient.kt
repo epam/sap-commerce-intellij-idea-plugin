@@ -100,13 +100,13 @@ class HacHttpClient(private val project: Project) {
 
         if (authContext == null || !authContext.cookies.containsKey(sessionCookieName)) {
             if (settings.authMode == AuthMode.MANUAL) {
-                val authenticationContext = HacManualAuthenticator.getService(project)
+                val authContext = HacManualAuthenticator.getService(project)
                     .authenticate(settings)
                     ?.takeIf { it.isValid(sessionCookieName) }
                     ?: return createErrorResponse("Unable to find cookie $sessionCookieName")
 
-                authContextCache.authContexts[authContextKey] = authenticationContext.toAuthContext()
-                prefilledCsrfToken = authenticationContext.csrfToken
+                authContextCache.authContexts[authContextKey] = authContext.toAuthContext()
+                prefilledCsrfToken = authContext.csrfToken
             } else {
                 val credentials = execConnectionService.getCredentials(settings)
                 val proxyCredentials = if (settings.proxyAuthMode == ProxyAuthMode.BASIC) execConnectionService.getProxyCredentials(settings)

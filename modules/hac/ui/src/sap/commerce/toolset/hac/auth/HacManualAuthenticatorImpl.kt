@@ -30,8 +30,8 @@ import sap.commerce.toolset.hac.ui.HacManualAuthenticationDialog
 
 class HacManualAuthenticatorImpl(private val project: Project) : HacManualAuthenticator {
 
-    override suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthContext? {
-        val deferredAuthenticationContext = CompletableDeferred<HacAuthContext?>()
+    override suspend fun authenticate(settings: HacConnectionSettingsState): HacManualAuthContext? {
+        val deferredContext = CompletableDeferred<HacManualAuthContext?>()
 
         val proxyCredentials = if (settings.proxyAuthMode == ProxyAuthMode.BASIC) withContext(Dispatchers.IO) {
             HacExecConnectionService.getInstance(project).getProxyCredentials(settings)
@@ -40,8 +40,8 @@ class HacManualAuthenticatorImpl(private val project: Project) : HacManualAuthen
         }
 
         withContext(Dispatchers.EDT) {
-            HacManualAuthenticationDialog(project, settings, proxyCredentials, deferredAuthenticationContext).show()
+            HacManualAuthenticationDialog(project, settings, proxyCredentials, deferredContext).show()
         }
-        return deferredAuthenticationContext.await()
+        return deferredContext.await()
     }
 }
