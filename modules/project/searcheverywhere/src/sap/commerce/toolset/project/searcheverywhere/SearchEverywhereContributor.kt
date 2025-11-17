@@ -80,7 +80,7 @@ class SearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSEContribu
     }
 
     companion object {
-        fun createSystemFilter(project: Project) = _root_ide_package_.com.intellij.ide.actions.searcheverywhere.PersistentSearchEverywhereContributorFilter(
+        fun createSystemFilter(project: Project) = PersistentSearchEverywhereContributorFilter(
             SystemRef.forAllSystems(),
             GotoTypeConfiguration.getInstance(project),
             SystemRef::displayName,

@@ -19,6 +19,8 @@ package sap.commerce.toolset.beanSystem.meta
 
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.beanSystem.meta.model.*
+import sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaBeanImpl
+import sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaEnumImpl
 
 object BSMetaModelMerger {
 
@@ -55,12 +57,8 @@ object BSMetaModelMerger {
                     localMetaClassifiers.forEach { localMetaClassifier ->
                         val globalMetaClassifier = globalCache.computeIfAbsent(key) {
                             when (localMetaClassifier) {
-                                is BSMetaEnum -> _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaEnumImpl(
-                                    localMetaClassifier
-                                )
-                                is BSMetaBean -> _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaBeanImpl(
-                                    localMetaClassifier
-                                )
+                                is BSMetaEnum -> BSGlobalMetaEnumImpl(localMetaClassifier)
+                                is BSMetaBean -> BSGlobalMetaBeanImpl(localMetaClassifier)
                                 else -> null
                             }
                         }

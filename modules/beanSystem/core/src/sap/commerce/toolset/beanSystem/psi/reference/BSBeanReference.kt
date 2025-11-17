@@ -27,7 +27,10 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionService
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
+import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
+import sap.commerce.toolset.beanSystem.psi.reference.result.BeanResolveResult
 import sap.commerce.toolset.psi.getValidResults
 
 class BSBeanReference(
@@ -48,16 +51,16 @@ class BSBeanReference(
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, BSBeanReference> { ref ->
             val project = ref.element.project
-            val metaModelAccess = sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.getInstance(project)
+            val metaModelAccess = BSMetaModelAccess.getInstance(project)
             val classFQN = ref.value
             val result: Array<ResolveResult> = metaModelAccess.findMetaBeanByName(classFQN)
-                ?.let { _root_ide_package_.sap.commerce.toolset.beanSystem.psi.reference.result.BeanResolveResult(it) }
+                ?.let { BeanResolveResult(it) }
                 ?.let { arrayOf(it) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(
                 result,
-                sap.commerce.toolset.beanSystem.meta.BSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+                BSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

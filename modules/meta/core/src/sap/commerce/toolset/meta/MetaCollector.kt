@@ -46,7 +46,7 @@ abstract class MetaCollector<T : DomElement>(
 ) {
 
     open suspend fun collectDependencies(): Set<Meta<T>> {
-        val myDomManager: DomManager = DomManager.getDomManager(project)
+        val myDomManager = DomManager.getDomManager(project)
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
         val files = HashSet<Meta<T>>()
