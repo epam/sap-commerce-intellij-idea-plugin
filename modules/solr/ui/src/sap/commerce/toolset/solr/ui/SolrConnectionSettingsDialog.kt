@@ -113,9 +113,10 @@ class SolrConnectionSettingsDialog(
             row {
                 urlPreviewLabel = label(mutable.generatedURL)
                     .bold()
-                    .align(AlignX.FILL)
+                    .align(Align.FILL)
+                    .resizableColumn()
                     .component
-            }
+            }.resizableRow()
             row {
                 testConnectionLabel = label("")
                     .visible(false)
@@ -126,7 +127,7 @@ class SolrConnectionSettingsDialog(
             }
         }
 
-        collapsibleGroup("Host Settings") {
+        group("Host Settings") {
             row {
                 hostTextField = textField()
                     .label("Host / IP:")
@@ -155,28 +156,24 @@ class SolrConnectionSettingsDialog(
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
-        }.expanded = true
+        }
 
-        collapsibleGroup("Credentials") {
+        group("Authentication") {
             row {
-                label("Username:")
                 usernameTextField = textField()
-                    .align(AlignX.FILL)
+                    .label("Username:")
                     .bindText(mutable.username)
                     .enabledIf(editableCredentials)
                     .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
                     .component
-            }.layout(RowLayout.PARENT_GRID)
 
-            row {
-                label("Password:")
                 passwordTextField = passwordField()
-                    .align(AlignX.FILL)
+                    .label("Password:")
                     .bindText(mutable.password)
                     .enabledIf(editableCredentials)
                     .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
                     .component
-            }.layout(RowLayout.PARENT_GRID)
-        }.expanded = true
+            }
+        }
     }
 }

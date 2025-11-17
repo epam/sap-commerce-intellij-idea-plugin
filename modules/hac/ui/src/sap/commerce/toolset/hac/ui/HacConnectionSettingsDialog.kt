@@ -223,7 +223,6 @@ class HacConnectionSettingsDialog(
                     .comment("Optional: override the session cookie name. Default is JSESSIONID.")
                 sessionCookieNameTextField = textField()
                     .bindText(mutable::sessionCookieName)
-                    .apply { component.text = "" }
                     .component
             }.layout(RowLayout.PARENT_GRID)
         }
@@ -305,7 +304,13 @@ class HacConnectionSettingsDialog(
         }
 
         row {
-            label("Authentication via Browser will take place on API request to hAC.")
+            text(
+                """
+                Authentication via Browser will take place on API request to hAC.
+                <br>Single browser instance, as a result authentication is shared within the domain.
+                <br>IDE restart may be required to renew authentication in some circumstances.
+                """.trimIndent()
+            )
                 .align(AlignX.CENTER)
                 .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
         }

@@ -19,19 +19,24 @@
 package sap.commerce.toolset.hac.ui
 
 import com.intellij.credentialStore.Credentials
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.ExitActionType
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Ref
 import com.intellij.ui.jcef.*
+import com.intellij.util.io.await
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
 import org.cef.handler.CefLoadHandler
-import sap.commerce.toolset.hac.auth.HacAuthContext
+import sap.commerce.toolset.hac.auth.HacManualAuthContext
 import sap.commerce.toolset.hac.auth.ProxyAuthCefRequestHandlerAdapter
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /*
     It is mandatory to use MODELESS Modality type to ensure correct render of the Cef Browser
@@ -40,10 +45,10 @@ class HacManualAuthenticationDialog(
     private val project: Project,
     private val settings: HacConnectionSettingsState,
     private val proxyCredentials: Credentials? = null,
-    private val deferredAuthenticationContext: CompletableDeferred<HacAuthContext?>,
+    private val deferredContext: CompletableDeferred<HacManualAuthContext?>,
 ) : DialogWrapper(project, null, false, IdeModalityType.MODELESS) {
 
-    private val authorizationRef = Ref<Credentials?>()
+    private val proxyAuthRef = Ref<Credentials?>()
 
     private val jbCefBrowser = JBCefBrowser.createBuilder()
         .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
@@ -64,10 +69,11 @@ class HacManualAuthenticationDialog(
 
             if (settings.proxyAuthMode == ProxyAuthMode.BASIC) {
                 jbCefClient.addRequestHandler(
-                    ProxyAuthCefRequestHandlerAdapter(project, proxyCredentials, authorizationRef),
+                    ProxyAuthCefRequestHandlerAdapter(project, proxyCredentials, proxyAuthRef),
                     cefBrowser
                 )
             }
+
         }
 
     init {
@@ -80,26 +86,41 @@ class HacManualAuthenticationDialog(
     override fun createCenterPanel() = jbCefBrowser.component
     override fun getPreferredFocusedComponent() = jbCefBrowser.component
 
-    override fun applyFields() {
-        super.applyFields()
-        val cookies = jbCefBrowser.getJBCefCookieManager().getCookies(null, false)
-            .get(5, TimeUnit.SECONDS)
-            .associate { it.name to it.value }
+    override fun doOKAction() {
+        CoroutineScope(Dispatchers.EDT).launch {
+            okAction.isEnabled = false
 
-        val csrf = runBlocking { retrieveCsrfToken() }
-        val authorization = authorizationRef.get()
-        val context = HacAuthContext(csrf, cookies, authorization)
+            val cookiesFuture = jbCefBrowser.getJBCefCookieManager()
+                .getCookies(null, false)
 
-        deferredAuthenticationContext.complete(context)
+            val cookies =
+                try {
+                    withTimeout(3.seconds) {
+                        cookiesFuture
+                            .await()
+                            .associate { it.name to it.value }
+                    }
+                } catch (e: Exception) {
+                    thisLogger().debug(e)
+                    emptyMap()
+                }
+
+            val csrfToken = retrieveCsrfToken()
+            val proxyCredentials = proxyAuthRef.get()
+            val context = HacManualAuthContext(csrfToken, cookies, proxyCredentials)
+
+            deferredContext.complete(context)
+            close(OK_EXIT_CODE, ExitActionType.OK)
+        }
     }
 
     override fun doCancelAction() {
         super.doCancelAction()
-        deferredAuthenticationContext.complete(null)
+        deferredContext.complete(null)
     }
 
     // reference -> JcefComponentWrapper
-    suspend fun retrieveCsrfToken(executeTimeoutMs: Long = 3000): String = withTimeout(executeTimeoutMs) {
+    suspend fun retrieveCsrfToken(timeout: Duration = 3.seconds): String = withTimeout(timeout) {
         suspendCancellableCoroutine { continuation ->
             val jsQuery = JBCefJSQuery.create(jbCefBrowser)
             val script = """

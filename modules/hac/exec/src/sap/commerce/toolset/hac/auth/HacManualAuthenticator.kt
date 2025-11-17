@@ -24,7 +24,7 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 interface HacManualAuthenticator {
 
-    suspend fun authenticate(settings: HacConnectionSettingsState): HacAuthContext?
+    suspend fun authenticate(settings: HacConnectionSettingsState): HacManualAuthContext?
 
     companion object {
         fun getService(project: Project): HacManualAuthenticator = project.service()
