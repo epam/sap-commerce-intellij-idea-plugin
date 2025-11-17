@@ -1,8 +1,11 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 21 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 22 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Aekalenchuk+is%3Apr)
+
+### `JPS - Build` enhancement
+- Removed dependency on `Fleet` API which caused build issues for JVM 11 [#1658](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1658)
 
 ### `CCv2` enhancements
 - Select & configure `hAC` connection from the CCv2 endpoint [#1652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1652)

@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.jps.model.serialization
 
-import fleet.util.associateNotNull
 import org.jdom.Element
 import org.jetbrains.jps.model.JpsElement
 import org.jetbrains.jps.model.module.JpsModule
@@ -47,13 +46,14 @@ class JpsHybrisFacetConfigurationSerializer : JpsFacetConfigurationSerializer<Jp
 
     private val Element.settings
         get() = getChildren("option")
-            .associateNotNull {
+            .mapNotNull {
                 val name = it.getAttribute("name")
                     ?.value
-                    ?: return@associateNotNull null
+                    ?: return@mapNotNull null
                 val value = it.getAttribute("value")
                     ?.value
-                    ?: return@associateNotNull null
+                    ?: return@mapNotNull null
                 name to value
             }
+            .toMap()
 }
