@@ -305,7 +305,12 @@ class HacConnectionSettingsDialog(
         }
 
         row {
-            label("Authentication via Browser will take place on API request to hAC.")
+            text(
+                """
+                Authentication via Browser will take place on API request to hAC.
+                <br>IDE restart may be required to renew authentication in some circumstances.
+                """.trimIndent()
+            )
                 .align(AlignX.CENTER)
                 .visibleIf(mutable.authMode.equalsTo(AuthMode.MANUAL))
         }

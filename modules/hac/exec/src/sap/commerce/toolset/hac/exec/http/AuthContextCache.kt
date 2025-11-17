@@ -36,7 +36,10 @@ class AuthContextCache(private val project: Project) : Disposable {
     init {
         project.messageBus.connect().subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
             override fun onDelete(connection: HacConnectionSettingsState) = invalidateCookies(connection)
-            override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { invalidateCookies(it) }
+            override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings
+                .filterNot { it.authMode == AuthMode.MANUAL }
+                .forEach { invalidateCookies(it) }
+
             override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { invalidateCookies(it) }
         })
     }
@@ -45,13 +48,9 @@ class AuthContextCache(private val project: Project) : Disposable {
 
     fun getKey(settings: HacConnectionSettingsState, context: ReplicaContext? = null) = "${settings.uuid}_${context?.replicaId ?: "auto"}"
 
-    private fun invalidateCookies(settings: HacConnectionSettingsState) {
-        if (settings.authMode == AuthMode.MANUAL) return
-
-        authContexts.keys
-            .filter { it.startsWith(settings.uuid) }
-            .forEach { authContexts.remove(it) }
-    }
+    private fun invalidateCookies(settings: HacConnectionSettingsState) = authContexts.keys
+        .filter { it.startsWith(settings.uuid) }
+        .forEach { authContexts.remove(it) }
 
     companion object {
         fun getInstance(project: Project): AuthContextCache = project.service()
