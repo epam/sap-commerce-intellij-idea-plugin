@@ -19,20 +19,21 @@
 package sap.commerce.toolset.hac.ui
 
 import com.intellij.credentialStore.Credentials
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.ExitActionType
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Ref
-import com.intellij.ui.jcef.*
+import com.intellij.ui.jcef.JBCefApp
+import com.intellij.ui.jcef.JBCefBrowser
+import com.intellij.ui.jcef.JBCefBrowserBase
+import com.intellij.ui.jcef.JBCefJSQuery
 import com.intellij.util.io.await
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
-import org.cef.CefBrowserSettings
-import org.cef.browser.CefRendering
-import org.cef.browser.CefRequestContext
 import org.cef.handler.CefLoadHandler
-import org.cef.handler.CefRequestContextHandlerAdapter
 import sap.commerce.toolset.hac.auth.HacManualAuthContext
 import sap.commerce.toolset.hac.auth.ProxyAuthCefRequestHandlerAdapter
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -51,30 +52,11 @@ class HacManualAuthenticationDialog(
 ) : DialogWrapper(project, null, false, IdeModalityType.MODELESS) {
 
     private val proxyAuthRef = Ref<Credentials?>()
-    private val context = CefRequestContext.createContext(object : CefRequestContextHandlerAdapter() {})
-    private val client = JBCefApp.getInstance().createClient()
-        .apply {
-            setProperty(JBCefClient.Properties.JS_QUERY_POOL_SIZE, 20)
-        }
-    private val renderer = with(JBCefOSRHandlerFactory.getInstance()) {
-        val component = createComponent(true)
-        val handler = createCefRenderHandler(component)
-        CefRendering.CefRenderingWithHandler(handler, component)
-    }
-
-    private val cefBrowser = client.cefClient.createBrowser(
-        settings.generatedURL,
-        renderer,
-        true,
-        context,
-        CefBrowserSettings()
-    )
 
     private val jbCefBrowser = JBCefBrowser.createBuilder()
         .setOffScreenRendering(JBCefApp.isOffScreenRenderingModeEnabled())
         .setUrl(settings.generatedURL)
-        .setClient(client)
-        .setCefBrowser(cefBrowser)
+        .setCreateImmediately(true)
         .build()
         .let { it as JBCefBrowserBase }
         .apply {
@@ -88,7 +70,7 @@ class HacManualAuthenticationDialog(
             }
 
             if (settings.proxyAuthMode == ProxyAuthMode.BASIC) {
-                client.addRequestHandler(
+                jbCefClient.addRequestHandler(
                     ProxyAuthCefRequestHandlerAdapter(project, proxyCredentials, proxyAuthRef),
                     cefBrowser
                 )
@@ -105,15 +87,16 @@ class HacManualAuthenticationDialog(
     override fun createCenterPanel() = jbCefBrowser.component
     override fun getPreferredFocusedComponent() = jbCefBrowser.component
 
-    override fun applyFields() {
-        super.applyFields()
-        CoroutineScope(Dispatchers.Default).launch {
-            val cookiesFuture = jbCefBrowser.getJBCefCookieManager().getCookies(null, false)
+    override fun doOKAction() {
+        CoroutineScope(Dispatchers.EDT).launch {
+            okAction.isEnabled = false
 
-            val cookies = withContext(Dispatchers.IO) {
+            val cookiesFuture = jbCefBrowser.getJBCefCookieManager()
+                .getCookies(null, false)
+
+            val cookies =
                 try {
                     withTimeout(3.seconds) {
-                        // The .await() here handles the underlying Future completion
                         cookiesFuture
                             .await()
                             .associate { it.name to it.value }
@@ -122,15 +105,13 @@ class HacManualAuthenticationDialog(
                     thisLogger().debug(e)
                     emptyMap()
                 }
-            }
 
-            val csrfToken = withContext(Dispatchers.IO) {
-                retrieveCsrfToken()
-            }
+            val csrfToken = retrieveCsrfToken()
             val proxyCredentials = proxyAuthRef.get()
             val context = HacManualAuthContext(csrfToken, cookies, proxyCredentials)
 
             deferredContext.complete(context)
+            close(OK_EXIT_CODE, ExitActionType.OK)
         }
     }
 

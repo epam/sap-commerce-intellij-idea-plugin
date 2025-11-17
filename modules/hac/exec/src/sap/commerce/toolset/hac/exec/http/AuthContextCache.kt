@@ -23,8 +23,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.exec.settings.state.ConnectionSettingsState
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
+import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import java.util.concurrent.ConcurrentHashMap
 
@@ -43,9 +43,11 @@ class AuthContextCache(private val project: Project) : Disposable {
 
     override fun dispose() = authContexts.clear()
 
-    fun getKey(settings: ConnectionSettingsState, context: ReplicaContext? = null) = "${settings.uuid}_${context?.replicaId ?: "auto"}"
+    fun getKey(settings: HacConnectionSettingsState, context: ReplicaContext? = null) = "${settings.uuid}_${context?.replicaId ?: "auto"}"
 
-    private fun invalidateCookies(settings: ConnectionSettingsState) {
+    private fun invalidateCookies(settings: HacConnectionSettingsState) {
+        if (settings.authMode == AuthMode.MANUAL) return
+
         authContexts.keys
             .filter { it.startsWith(settings.uuid) }
             .forEach { authContexts.remove(it) }
