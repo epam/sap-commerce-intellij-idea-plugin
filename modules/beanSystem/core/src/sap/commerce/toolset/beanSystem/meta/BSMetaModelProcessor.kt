@@ -20,6 +20,7 @@ package sap.commerce.toolset.beanSystem.meta
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.beanSystem.meta.impl.BSMetaModelBuilder
 import sap.commerce.toolset.beanSystem.model.Beans
 import sap.commerce.toolset.meta.MetaModelProcessor
 
@@ -27,7 +28,7 @@ import sap.commerce.toolset.meta.MetaModelProcessor
 class BSMetaModelProcessor(project: Project) : MetaModelProcessor<Beans, BSMetaModel>(project) {
 
     override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: Beans): BSMetaModel =
-        with(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.impl.BSMetaModelBuilder(container, yContainer, fileName, custom)) {
+        with(BSMetaModelBuilder(container, yContainer, fileName, custom)) {
             withEnumTypes(dom.enums)
             withBeanTypes(dom.beans)
             withEventTypes(dom.beans)

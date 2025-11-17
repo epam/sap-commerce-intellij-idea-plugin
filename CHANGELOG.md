@@ -1,7 +1,7 @@
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
-- 22 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
+- 23 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Aekalenchuk+is%3Apr)
 
 ### `JPS - Build` enhancement
@@ -42,6 +42,9 @@
 - Adjusted UI of the dialog to fit the content better [#1655](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1655)
 - Added proxy authorization for `automatic` authentication mode [#1656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1656)
 - Improved manual authentication mode [#1657](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1657)
+
+### `Bean System` enhancements
+- Inject `Java` language into `annotations` tag and respect defined imports [#1659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1659)
 
 ## [2025.2.4.5]
 

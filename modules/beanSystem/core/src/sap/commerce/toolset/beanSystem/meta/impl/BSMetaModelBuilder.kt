@@ -18,18 +18,11 @@
 package sap.commerce.toolset.beanSystem.meta.impl
 
 import sap.commerce.toolset.CaseInsensitiveMap
+import sap.commerce.toolset.beanSystem.meta.BSMetaModel
 import sap.commerce.toolset.beanSystem.meta.model.*
 import sap.commerce.toolset.beanSystem.meta.model.impl.*
 import sap.commerce.toolset.beanSystem.model.*
 import sap.commerce.toolset.beanSystem.model.Enum
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.associateByTo
-import kotlin.collections.filter
-import kotlin.collections.forEach
-import kotlin.collections.map
-import kotlin.collections.mapNotNull
-import kotlin.text.trim
 
 class BSMetaModelBuilder(
     private val moduleName: String,
@@ -38,7 +31,7 @@ class BSMetaModelBuilder(
     private val custom: Boolean,
 ) {
 
-    private val myMetaModel = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaModel(extensionName, fileName, custom)
+    private val myMetaModel = BSMetaModel(extensionName, fileName, custom)
 
     fun build() = myMetaModel
 

@@ -36,9 +36,8 @@ class XmlToImpExLanguageInjector : LanguageInjector {
 
         val hostString = StringUtil.unquoteString(host.text).lowercase()
         if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
-            val language = XMLLanguage.INSTANCE
             injectionPlacesRegistrar.addPlace(
-                language,
+                XMLLanguage.INSTANCE,
                 TextRange.from(QUOTE_SYMBOL_LENGTH, host.textLength - 2), null, null
             )
         }
