@@ -37,8 +37,8 @@
 - Display website access errors in the Browser for `manual` authentication mode [#1641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1641)
 - Added `Got it Tooltip` describing new authentication modes [#1651](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1651)
 - Adjusted UI of the dialog to fit the content better [#1655](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1655)
-- Added proxy authorization for hAC [#1656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1656)
-- Added proxy authorization for hAC [#1656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1656)
+- Added proxy authorization for `automatic` authentication mode [#1656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1656)
+- Improved manual authentication mode [#1657](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1657)
 
 ## [2025.2.4.5]
 
