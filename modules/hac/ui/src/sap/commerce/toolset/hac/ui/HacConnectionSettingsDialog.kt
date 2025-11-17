@@ -307,6 +307,7 @@ class HacConnectionSettingsDialog(
             text(
                 """
                 Authentication via Browser will take place on API request to hAC.
+                <br>Single browser instance, as a result authentication is shared within the domain.
                 <br>IDE restart may be required to renew authentication in some circumstances.
                 """.trimIndent()
             )

@@ -26,10 +26,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ExitActionType
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Ref
-import com.intellij.ui.jcef.JBCefApp
-import com.intellij.ui.jcef.JBCefBrowser
-import com.intellij.ui.jcef.JBCefBrowserBase
-import com.intellij.ui.jcef.JBCefJSQuery
+import com.intellij.ui.jcef.*
 import com.intellij.util.io.await
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
@@ -63,6 +60,7 @@ class HacManualAuthenticationDialog(
             Disposer.register(disposable, this)
 
             setProperty(JBCefBrowser.Properties.FOCUS_ON_SHOW, true)
+            jbCefClient.setProperty(JBCefClient.Properties.JS_QUERY_POOL_SIZE, 20)
 
             setErrorPage { errorCode, errorText, failedUrl ->
                 if (errorCode == CefLoadHandler.ErrorCode.ERR_ABORTED) null
@@ -75,6 +73,7 @@ class HacManualAuthenticationDialog(
                     cefBrowser
                 )
             }
+
         }
 
     init {
