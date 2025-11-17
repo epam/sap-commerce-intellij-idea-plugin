@@ -44,7 +44,7 @@ data class HacConnectionSettingsState(
 
     @JvmField @OptionTag val wsl: Boolean = false,
     @JvmField @OptionTag val sslProtocol: String = "TLSv1.2",
-    @JvmField @OptionTag val sessionCookieName: String = ExecConstants.DEFAULT_SESSION_COOKIE_NAME,
+    @JvmField @OptionTag val sessionCookieName: String = "",
     @JvmField @OptionTag val authMode: AuthMode = AuthMode.AUTOMATIC,
     @JvmField @OptionTag val proxyAuthMode: ProxyAuthMode = ProxyAuthMode.NONE,
 ) : ExecConnectionSettingsState {

@@ -223,7 +223,6 @@ class HacConnectionSettingsDialog(
                     .comment("Optional: override the session cookie name. Default is JSESSIONID.")
                 sessionCookieNameTextField = textField()
                     .bindText(mutable::sessionCookieName)
-                    .apply { component.text = "" }
                     .component
             }.layout(RowLayout.PARENT_GRID)
         }
