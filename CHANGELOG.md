@@ -1,8 +1,16 @@
+## [2025.2.4.7]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.7+author%3Amlytvyn+is%3Apr)
+
+### Fixes
+- Fixed build of the Plugin on Windows [#1660](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1660)
+
 ## [2025.2.4.6]
 
 <cite>Release contributors</cite>
 - 23 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Amlytvyn+is%3Apr)
-- 1 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Aekalenchuk+is%3Apr)
+- 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.6+author%3Aekalenchuk+is%3Apr)
 
 ### `JPS - Build` enhancement
 - Removed dependency on `Fleet` API which caused build issues for JVM 11 [#1658](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1658)
