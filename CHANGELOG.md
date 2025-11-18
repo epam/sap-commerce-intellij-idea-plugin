@@ -4,7 +4,7 @@
 - 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.7+author%3Amlytvyn+is%3Apr)
 
 ### `Bean System` enhancements
-- Adjust language injection for `class` & `field` [#1659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1659)
+- Adjust language injection for `class` & `field` [#1661](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1661)
 
 ### Fixes
 - Fixed build of the Plugin on Windows [#1660](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1660)
