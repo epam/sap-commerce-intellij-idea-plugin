@@ -47,6 +47,6 @@ File(rootDir, "modules").walk()
     .forEach { modulePath ->
         include(modulePath)
         project(":$modulePath").name = modulePath
-            .replaceFirst("modules/", "")
+            .replaceFirst("modules${File.separatorChar}", "")
             .replace(File.separatorChar, '-')
     }
