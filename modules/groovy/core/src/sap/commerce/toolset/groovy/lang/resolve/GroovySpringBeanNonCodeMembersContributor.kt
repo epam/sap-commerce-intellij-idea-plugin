@@ -22,7 +22,7 @@ import com.intellij.psi.scope.ElementClassHint
 import com.intellij.psi.scope.NameHint
 import com.intellij.psi.scope.PsiScopeProcessor
 import com.intellij.util.asSafely
-import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrImplicitVariableImpl
+import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightField
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.groovy.GroovyConstants
@@ -66,8 +66,9 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         val resolveBeanClass = SpringHelper.resolveBeanClass(place, name) ?: return
         val fqn = resolveBeanClass.qualifiedName ?: return
 
-        val declaration = GrImplicitVariableImpl(resolveBeanClass.manager, name, fqn, null)
-
+        val declaration = GrLightField(resolveBeanClass, name, fqn)
+//        val declaration = GrImplicitVariableImpl(resolveBeanClass.manager, name, fqn, resolveBeanClass)
+//        state.put(ClassHint.RESOLVE_CONTEXT, resolveBeanClass)
         if (!processor.execute(declaration, state)) return
     }
 }

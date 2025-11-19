@@ -21,7 +21,6 @@ package sap.commerce.toolset.project
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
@@ -38,7 +37,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import com.intellij.util.concurrency.AppExecutorUtil
+import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import java.io.File
 import java.util.*
@@ -51,7 +50,7 @@ import java.util.regex.Pattern
  * @see <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/d090fb3dd48a418d967a1dfdca9fcac6.html?locale=en-US">SAP Commerce Cloud Properties</a> to support CCv2 properties.
  */
 @Service(Service.Level.PROJECT)
-class PropertyService(private val project: Project) {
+class PropertyService(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     private val nestedPropertyPrefix = "\${"
     private val nestedPropertySuffix = "}"
@@ -101,6 +100,12 @@ class PropertyService(private val project: Project) {
         }, false
     )
 
+//    fun initCache() = coroutineScope.launch {
+//        withBackgroundProgress(project, "Init properties cache", true) {
+//            smartReadAction(project) { findAllIProperties() }
+//        }
+//    }
+
     fun getLanguages(): Set<String> {
         val languages = findProperty(HybrisConstants.PROPERTY_LANG_PACKS)
             ?.split(",")
@@ -145,13 +150,6 @@ class PropertyService(private val project: Project) {
                 return@let properties
             }
     }
-
-    fun initCache() = ReadAction
-        .nonBlocking<Collection<IProperty>> {
-            findAllIProperties()
-        }
-        .inSmartMode(project)
-        .submit(AppExecutorUtil.getAppExecutorService())
 
     fun getPlatformHome(): String? = findPlatformRootDirectory(project)
         ?.path
@@ -254,7 +252,7 @@ class PropertyService(private val project: Project) {
 
     private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
-            .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE || it.name == HybrisConstants.PLATFORMHOME_PROPERTIES_FILE}
+            .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE || it.name == HybrisConstants.PLATFORMHOME_PROPERTIES_FILE }
         val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ENV_PROPERTIES_FILE }
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ADVANCED_PROPERTIES_FILE }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == HybrisConstants.LOCAL_PROPERTIES_FILE }

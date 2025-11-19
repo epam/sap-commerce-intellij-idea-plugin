@@ -19,8 +19,8 @@
 package sap.commerce.toolset.spring
 
 import com.intellij.ide.highlighter.XmlFileType
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.JavaPsiFacade
@@ -33,8 +33,10 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.concurrency.AppExecutorUtil
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
+import java.io.Serial
 
 /**
  * Incredibly simple handling of the Spring beans.
@@ -43,19 +45,41 @@ import sap.commerce.toolset.HybrisConstants
  * May produce incorrect results.
  */
 @Service(Service.Level.PROJECT)
-class SimpleSpringService(private val project: Project) : SpringService {
+class SimpleSpringService(private val project: Project, private val coroutineScope: CoroutineScope) : SpringService {
+
+    private val computing = AtomicBooleanProperty(false)
 
     private val cache = CachedValuesManager.getManager(project).createCachedValue(
         {
             val springFiles = collectFiles()
+            // id -> bean
             val beans = processBeans(springFiles)
+            // alias -> name
+            val aliases = processAliases(springFiles)
+
+            val mutableBeans = beans.toMutableMap()
+            aliases.forEach { (alias, name) ->
+                val bean = mutableBeans[name] ?: return@forEach
+                mutableBeans[alias] = bean
+            }
 
             val dependencies = springFiles
+                .mapNotNull { it.virtualFile }
                 .toTypedArray()
 
-            CachedValueProvider.Result.create(beans, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
+            CachedValueProvider.Result.create(mutableBeans.toImmutableMap(), dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
     )
+
+//    fun initCache() = coroutineScope.launch {
+//        computing.set(true)
+//
+//        withBackgroundProgress(project, "Init simple Spring context", true) {
+//            smartReadAction(project) { cache.value }
+//        }
+//
+//        computing.set(false)
+//    }
 
     override fun resolveBeanDeclaration(element: PsiElement, beanId: String) = findBean(beanId)
 
@@ -65,16 +89,7 @@ class SimpleSpringService(private val project: Project) : SpringService {
             JavaPsiFacade.getInstance(element.project).findClass(it, GlobalSearchScope.allScope(element.project))
         }
 
-    private fun findBean(id: String) = if (cache.hasUpToDateValue()) cache.value[id]
-    else null
-
-    fun initCache() {
-        ReadAction
-            .nonBlocking<Map<String, XmlTag>> {
-                cache.value
-            }
-            .submit(AppExecutorUtil.getAppExecutorService())
-    }
+    private fun findBean(id: String) = cache.value[id]
 
     private fun processBeans(xmlFiles: List<XmlFile>) = xmlFiles
         .mapNotNull { it.rootTag }
@@ -86,6 +101,20 @@ class SimpleSpringService(private val project: Project) : SpringService {
                     tag.getAttributeValue("class") ?: return@mapNotNull null
 
                     id to tag
+                }
+        }
+        .associate { it.first to it.second }
+
+    private fun processAliases(xmlFiles: List<XmlFile>) = xmlFiles
+        .mapNotNull { it.rootTag }
+        .flatMap {
+            it.childrenOfType<XmlTag>()
+                .filter { tag -> tag.localName == "alias" }
+                .mapNotNull { tag ->
+                    val alias = tag.getAttributeValue("alias") ?: return@mapNotNull null
+                    val name = tag.getAttributeValue("name") ?: return@mapNotNull null
+
+                    alias to name
                 }
         }
         .associate { it.first to it.second }
@@ -103,6 +132,9 @@ class SimpleSpringService(private val project: Project) : SpringService {
     }
 
     companion object {
+        @Serial
+        private const val serialVersionUID: Long = -8015348108936115374L
+
         fun getService(project: Project): SimpleSpringService = project.getService(SimpleSpringService::class.java)
     }
 }
