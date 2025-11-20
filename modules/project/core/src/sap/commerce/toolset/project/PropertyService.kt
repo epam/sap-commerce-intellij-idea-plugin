@@ -21,6 +21,7 @@ package sap.commerce.toolset.project
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
@@ -29,6 +30,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
@@ -38,6 +40,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
 import java.io.File
 import java.util.*
@@ -100,11 +103,11 @@ class PropertyService(private val project: Project, private val coroutineScope: 
         }, false
     )
 
-//    fun initCache() = coroutineScope.launch {
-//        withBackgroundProgress(project, "Init properties cache", true) {
-//            smartReadAction(project) { findAllIProperties() }
-//        }
-//    }
+    fun initCache() = coroutineScope.launch {
+        withBackgroundProgress(project, "Init properties cache", true) {
+            smartReadAction(project) { findAllIProperties() }
+        }
+    }
 
     fun getLanguages(): Set<String> {
         val languages = findProperty(HybrisConstants.PROPERTY_LANG_PACKS)
