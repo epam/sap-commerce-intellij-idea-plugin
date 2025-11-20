@@ -1,7 +1,10 @@
 ## [2025.2.5.0]
 
 <cite>Release contributors</cite>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.7+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.7+author%3Amlytvyn+is%3Apr)
+
+### `Groovy` enhancements
+- Improved `local` Spring context resolution [#1662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1662)
 
 ### `Bean System` enhancements
 - Adjust language injection for `class` & `field` [#1661](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1661)
