@@ -18,12 +18,13 @@
 package sap.commerce.toolset.groovy.lang.resolve
 
 import com.intellij.psi.*
-import com.intellij.psi.scope.ElementClassHint
-import com.intellij.psi.scope.NameHint
 import com.intellij.psi.scope.PsiScopeProcessor
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightField
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
+import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil
+import org.jetbrains.plugins.groovy.lang.resolve.shouldProcessFields
+import org.jetbrains.plugins.groovy.lang.resolve.shouldProcessMethods
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
@@ -47,12 +48,15 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
             ?: return
         val psiFile = place.containingFile ?: return
         val vf = psiFile.virtualFile ?: return
-        val name = processor.getHint(NameHint.KEY)
-            ?.getName(state)
-            ?: return
-        processor.getHint(ElementClassHint.KEY)
-            ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
-            ?: return
+        val name = ResolveUtil.getNameHint(processor) ?: return
+//        processor.getHint(ElementClassHint.KEY)
+//            ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
+//            ?: return
+
+        val shouldProcessMethods = processor.shouldProcessMethods()
+        val shouldProcessProperties = processor.shouldProcessFields()
+//        val shouldProcessProperties = processor.shouldProcessProperties()
+        if (!shouldProcessMethods && !shouldProcessProperties) return
         val contextMode = psiFile.originalFile.virtualFile
             ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
             ?: DeveloperSettings.getInstance(place.project).groovySettings.springContextMode
@@ -66,9 +70,19 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         val resolveBeanClass = SpringHelper.resolveBeanClass(place, name) ?: return
         val fqn = resolveBeanClass.qualifiedName ?: return
 
+        val psiType = JavaPsiFacade.getElementFactory(project).createTypeFromText(fqn, place)
+//        val declaration = SimpleGroovyProperty(name, psiType, resolveBeanClass)
+//        val declaration = SimpleGroovyProperty(name, psiType, resolveBeanClass)
         val declaration = GrLightField(resolveBeanClass, name, fqn)
+//        val declaration = GrLightVariable(place.manager, name, fqn, emptyList(), resolveBeanClass.containingFile)
 //        val declaration = GrImplicitVariableImpl(resolveBeanClass.manager, name, fqn, resolveBeanClass)
-//        state.put(ClassHint.RESOLVE_CONTEXT, resolveBeanClass)
+
+//        val declaration = GrLightMethodBuilder(place.manager, name)
+//            .addModifier(PsiModifier.PUBLIC)
+//            .apply {
+//                returnType = JavaPsiFacade.getElementFactory(project).createTypeFromText(fqn, place)
+//            }
+
         if (!processor.execute(declaration, state)) return
     }
 }

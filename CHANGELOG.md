@@ -1,4 +1,4 @@
-## [2025.2.4.7]
+## [2025.2.5.0]
 
 <cite>Release contributors</cite>
 - 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.4.7+author%3Amlytvyn+is%3Apr)
