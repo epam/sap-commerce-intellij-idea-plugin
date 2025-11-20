@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.startup
 
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
@@ -36,19 +35,7 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
         BSMetaModelStateService.getInstance(project).init()
         CngMetaModelStateService.getInstance(project).init()
 
-        SimpleSpringService.getService(project)
-            ?.let { service -> refreshSystem(project) { service.initCache() } }
-        PropertyService.getInstance(project)
-            .let { service -> refreshSystem(project) { service.initCache() } }
-    }
-
-    private fun refreshSystem(project: Project, refresher: (Project) -> Unit) {
-        DumbService.getInstance(project).runWhenSmart {
-            try {
-                refresher.invoke(project)
-            } catch (_: Throwable) {
-                // ignore
-            }
-        }
+        SimpleSpringService.getService(project).initCache()
+        PropertyService.getInstance(project).initCache()
     }
 }
