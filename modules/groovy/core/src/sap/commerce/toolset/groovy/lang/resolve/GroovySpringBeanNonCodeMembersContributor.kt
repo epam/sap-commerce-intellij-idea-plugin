@@ -22,7 +22,7 @@ import com.intellij.psi.scope.ElementClassHint
 import com.intellij.psi.scope.NameHint
 import com.intellij.psi.scope.PsiScopeProcessor
 import com.intellij.util.asSafely
-import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrImplicitVariableImpl
+import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightField
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.groovy.GroovyConstants
@@ -46,15 +46,14 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
             .takeIf { it.isHybrisProject }
             ?: return
         val psiFile = place.containingFile ?: return
-        val vf = psiFile.virtualFile ?: return
+        val vf = psiFile.originalFile.virtualFile ?: return
         val name = processor.getHint(NameHint.KEY)
             ?.getName(state)
             ?: return
         processor.getHint(ElementClassHint.KEY)
             ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
             ?: return
-        val contextMode = psiFile.originalFile.virtualFile
-            ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
+        val contextMode = vf.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
             ?: DeveloperSettings.getInstance(place.project).groovySettings.springContextMode
 
         if (contextMode == SpringContextMode.DISABLED) return
@@ -66,7 +65,7 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         val resolveBeanClass = SpringHelper.resolveBeanClass(place, name) ?: return
         val fqn = resolveBeanClass.qualifiedName ?: return
 
-        val declaration = GrImplicitVariableImpl(resolveBeanClass.manager, name, fqn, null)
+        val declaration = GrLightField(resolveBeanClass, name, fqn)
 
         if (!processor.execute(declaration, state)) return
     }

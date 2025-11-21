@@ -60,12 +60,16 @@ class JavaToBeansXmlLanguageInjector : LanguageInjector {
             .mapNotNull { it.type }
             .joinToString("\n") { "import $it;" }
 
-        val prefix = """
+        val classLevelAnnotations = xmlText.parentOfType<XmlTag>()?.parentOfType<XmlTag>()?.localName == Beans.BEAN
+
+        val prefix = if (classLevelAnnotations) imports
+        else """
             $imports
             public class EvaluateContext {
         """.trimIndent()
 
-        val suffix = """
+        val suffix = if (classLevelAnnotations) "public class EvaluateContext {}"
+        else """
             public void evaluateMethod() {}
             }
         """.trimIndent()
