@@ -1,3 +1,11 @@
+## [2025.2.5.1]
+
+<cite>Release contributors</cite>
+- 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3ASomewhereInBetween+is%3Apr)
+
+### `WSL` enhancements
+- Ensure correctness of classpath during build execution [#1663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1663)
+
 ## [2025.2.5.0]
 
 <cite>Release contributors</cite>
