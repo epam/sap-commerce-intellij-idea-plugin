@@ -22,6 +22,7 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.JavaCommandLineStateUtil
 import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
+import com.intellij.execution.wsl.WSLUtil
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -29,6 +30,7 @@ import com.intellij.openapi.projectRoots.JavaSdkType
 import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.application
@@ -116,22 +118,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         val pathToBeDeleted = bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC)
         cleanDirectory(context, pathToBeDeleted)
 
-        val classpath = setOf(
-            coreModuleRoot.resolve("lib").toString() + "/*",
-            bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
-        )
-        val gcl = GeneralCommandLine()
-            .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkDirectory(platformModuleRoot.toFile())
-            .withExePath(vmExecutablePath)
-            .withCharset(StandardCharsets.UTF_8)
-            .withParameters(
-                "-Dfile.encoding=UTF-8",
-                "-cp",
-                classpath.joinToString(File.pathSeparator),
-                HybrisConstants.CLASS_FQN_CODE_GENERATOR,
-                platformModuleRoot.toString()
-            )
+        val gcl = getCodeGenerationCommandLine(coreModuleRoot, bootstrapDirectory, platformModuleRoot, vmExecutablePath)
 
         var result = false
         val handler = JavaCommandLineStateUtil.startProcess(gcl, true)
@@ -162,6 +149,54 @@ class ProjectBeforeCompilerTask : CompileTask {
             handler.destroyProcess()
         }
         return result
+    }
+
+    private fun getCodeGenerationCommandLine(
+        coreModuleRoot: Path,
+        bootstrapDirectory: Path,
+        platformModuleRoot: Path,
+        vmExecutablePath: String
+    ): GeneralCommandLine {
+
+        var internalCoreModuleRoot = coreModuleRoot.resolve("lib").toString() + "/*"
+        var internalBootstrapDirectory = bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
+        var internalVmExecutablePath = vmExecutablePath
+        var internalPlatformModuleRootPath = platformModuleRoot
+
+        val isRunFromWsl = internalCoreModuleRoot.contains(WSLUtil.getUncPrefix())
+        if (isRunFromWsl) {
+            internalCoreModuleRoot = convertWindowsPath(internalCoreModuleRoot)
+            internalBootstrapDirectory = convertWindowsPath(internalBootstrapDirectory)
+            internalVmExecutablePath = convertWindowsPath(internalVmExecutablePath)
+            internalPlatformModuleRootPath = Paths.get(convertWindowsPath(internalPlatformModuleRootPath.toString()))
+        }
+
+        val classpath = setOf(
+            internalCoreModuleRoot,
+            internalBootstrapDirectory
+        )
+        val fileSeparator = if (isRunFromWsl) ":" else File.pathSeparator
+        val gcl = GeneralCommandLine()
+            .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+            .withWorkDirectory(internalPlatformModuleRootPath.toFile())
+            .withExePath(internalVmExecutablePath)
+            .withCharset(StandardCharsets.UTF_8)
+            .withParameters(
+                "-Dfile.encoding=UTF-8",
+                "-cp",
+                classpath.joinToString(fileSeparator),
+                HybrisConstants.CLASS_FQN_CODE_GENERATOR,
+                internalPlatformModuleRootPath.toString()
+            )
+        return gcl
+    }
+
+    private fun convertWindowsPath(windowsAbsolutePath: String): @NlsSafe String {
+        require(windowsAbsolutePath.length >= 3) {
+            "Invalid Windows path: $windowsAbsolutePath"
+        }
+        return windowsAbsolutePath[0].lowercaseChar().toString() +
+            FileUtil.toSystemIndependentName(windowsAbsolutePath.substring(2))
     }
 
     private fun invokeCodeCompilation(
