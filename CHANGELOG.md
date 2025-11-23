@@ -9,6 +9,9 @@
 ### `Bean System` enhancements
 - Improved folding for elements without required values [#1665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1665)
 
+### `Type System` enhancements
+- Improved folding for elements without required values [#1666](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1666)
+
 ## [2025.2.5.0]
 
 <cite>Release contributors</cite>
