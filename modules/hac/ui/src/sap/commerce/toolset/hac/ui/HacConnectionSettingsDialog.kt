@@ -19,6 +19,7 @@
 package sap.commerce.toolset.hac.ui
 
 import com.intellij.execution.wsl.WSLDistribution
+import com.intellij.execution.wsl.WSLUtil
 import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.and
@@ -26,7 +27,6 @@ import com.intellij.openapi.observable.util.equalsTo
 import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.ui.*
 import com.intellij.ui.components.JBPasswordField
@@ -156,7 +156,7 @@ class HacConnectionSettingsDialog(
             label("(ms)")
         }.layout(RowLayout.PARENT_GRID)
 
-        group("Full URL Preview", false) {
+        collapsibleGroup("Full URL Preview", false) {
             row {
                 urlPreviewLabel = label(mutable.generatedURL)
                     .bold()
@@ -173,9 +173,12 @@ class HacConnectionSettingsDialog(
                 testConnectionComment = comment("")
                     .visible(false)
             }
+        }.apply {
+            expanded = true
+            packWindowHeight = true
         }
 
-        group("Host Settings") {
+        collapsibleGroup("Host Settings") {
             row {
                 hostTextField = textField()
                     .label("Host / IP:")
@@ -225,12 +228,18 @@ class HacConnectionSettingsDialog(
                     .bindText(mutable::sessionCookieName)
                     .component
             }.layout(RowLayout.PARENT_GRID)
+        }.apply {
+            expanded = true
+            packWindowHeight = true
         }
 
-        if (SystemInfo.isWindows) {
+        if (WSLUtil.isSystemCompatible()) {
             collapsibleGroup("Windows Subsystem for Linux") {
                 wslHostConfiguration()
-            }.expanded = true
+            }.apply {
+                expanded = true
+                packWindowHeight = true
+            }
         }
 
         separator()
@@ -254,8 +263,6 @@ class HacConnectionSettingsDialog(
 
         authAutomatic()
         authManual()
-
-        separator()
 
         row {
             label("Proxy auth mode:")
