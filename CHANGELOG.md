@@ -1,10 +1,13 @@
 ## [2025.2.5.1]
 
 <cite>Release contributors</cite>
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)
+
+### `Bean System` enhancements
+- Improved folding for elements without required values [#1665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1665)
 
 ## [2025.2.5.0]
 

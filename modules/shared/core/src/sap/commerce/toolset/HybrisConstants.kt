@@ -666,4 +666,9 @@ object HybrisConstants {
             const val EXTENSION = "acl"
         }
     }
+
+    object Folding {
+        const val NO_VALUE = "🚫" // ? or 🚫 ∅
+        const val DESCRIPTION_PREFIX = "ⓘ"
+    }
 }
