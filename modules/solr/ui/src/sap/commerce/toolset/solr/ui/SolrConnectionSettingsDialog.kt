@@ -127,7 +127,7 @@ class SolrConnectionSettingsDialog(
             }
         }
 
-        group("Host Settings") {
+        collapsibleGroup("Host Settings") {
             row {
                 hostTextField = textField()
                     .label("Host / IP:")
@@ -156,6 +156,9 @@ class SolrConnectionSettingsDialog(
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+        }.apply {
+            expanded = true
+            packWindowHeight = true
         }
 
         group("Authentication") {
