@@ -7,9 +7,9 @@
         <path d="m12 2h3v1h-3z"/>
         <path d="m12 13h2v1h-2z"/>
     </g>
-    <path d="m4.236 10.514-.007-5.761" stroke="#05aa7f" stroke-linecap="round" transform="scale(-1)"/>
-    <path d="m6.602 10.532h2.754" stroke="#05aa7f" stroke-linecap="round"/>
-    <path d="m6.602 8.621h3.774" stroke="#05aa7f" stroke-linecap="round"/>
-    <path d="m6.602 6.71h4.59" stroke="#05aa7f" stroke-linecap="round"/>
-    <path d="m6.602 4.799h5.406" stroke="#05aa7f" stroke-linecap="round"/>
+    <path d="m4.236 10.514-.007-5.761" stroke="#0066cc" stroke-linecap="round" transform="scale(-1)"/>
+    <path d="m6.602 10.532h2.754" stroke="#0066cc" stroke-linecap="round"/>
+    <path d="m6.602 8.621h3.774" stroke="#0066cc" stroke-linecap="round"/>
+    <path d="m6.602 6.71h4.59" stroke="#0066cc" stroke-linecap="round"/>
+    <path d="m6.602 4.799h5.406" stroke="#0066cc" stroke-linecap="round"/>
 </svg>

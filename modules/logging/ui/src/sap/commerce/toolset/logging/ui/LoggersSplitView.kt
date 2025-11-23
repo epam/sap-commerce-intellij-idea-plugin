@@ -53,6 +53,7 @@ class LoggersSplitView(
     private val tree = LoggersOptionsTree(project).apply { registerListeners(this) }
     private val loggersStateView = LoggersStateView(project, coroutineScope)
     private val loggersTemplatesStateView = LoggersTemplatesStateView(project, coroutineScope)
+    private val customLoggersTemplatesStateView = CustomLoggersTemplatesStateView(project, coroutineScope)
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -62,6 +63,7 @@ class LoggersSplitView(
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
         Disposer.register(this, loggersTemplatesStateView)
+        Disposer.register(this, customLoggersTemplatesStateView)
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
@@ -137,10 +139,10 @@ class LoggersSplitView(
                     loggersTemplatesStateView.renderNothingSelected()
                 }
 
-                is CustomLoggersTemplateLoggersOptionsNode -> {
-                    secondComponent = loggersTemplatesStateView.view
+                is CustomLoggersTemplateGroupNode -> {
+                    secondComponent = customLoggersTemplatesStateView.view
 
-                    loggersTemplatesStateView.renderNoLoggerTemplates()
+                    customLoggersTemplatesStateView.renderNothingSelected()
                 }
 
                 is BundledLoggersTemplateItemNode -> {
@@ -148,6 +150,14 @@ class LoggersSplitView(
 
                     node.loggers.associateBy { it.name }.let {
                         loggersTemplatesStateView.renderLoggersTemplate(it)
+                    }
+                }
+
+                is CustomLoggersTemplateItemNode -> {
+                    secondComponent = customLoggersTemplatesStateView.view
+
+                    node.loggers.associateBy { it.name }.let {
+                        customLoggersTemplatesStateView.renderLoggersTemplate(it)
                     }
                 }
 

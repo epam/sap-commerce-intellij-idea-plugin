@@ -71,6 +71,33 @@ class CxLoggersTemplatesService(private val project: Project) {
         }
         ?: emptyList()
 
+    fun customLoggerTemplates(): List<CxLoggersTemplateModel> {
+        CxLoggerModel.of("com.test.a", "DEBUG")
+        CxLoggerModel.of("com.test.b", "DEBUG")
+        CxLoggerModel.of("com.test.c", "DEBUG")
+        return listOf(
+            CxLoggersTemplateModel(
+                "Debug | Project 1", listOf(
+                    CxLoggerModel.of("com.test.project1.a", "DEBUG"),
+                    CxLoggerModel.of("com.test.project1.b", "DEBUG"),
+                    CxLoggerModel.of("com.test.project1.c", "DEBUG")
+                ), HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+            ),
+            CxLoggersTemplateModel(
+                "Info | Project 2", listOf(
+                    CxLoggerModel.of("com.test.project2.a", "INFO"),
+                    CxLoggerModel.of("com.test.project2.b", "INFO"),
+                    CxLoggerModel.of("com.test.project2.c", "INFO")
+                ), HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+            ),
+            CxLoggersTemplateModel(
+                "Troubleshooting | Project 3", listOf(
+                    CxLoggerModel.of("com.test.project3", "TRACE"),
+                ), HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+            )
+        )
+    }
+
     companion object {
         fun getInstance(project: Project): CxLoggersTemplatesService = project.getService(CxLoggersTemplatesService::class.java)
     }

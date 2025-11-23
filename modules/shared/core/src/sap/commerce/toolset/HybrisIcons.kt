@@ -539,6 +539,9 @@ object HybrisIcons {
             val CUSTOM = getIcon("/icons/logging/template/customLogTemplate.svg")
             val EXECUTE = AllIcons.Actions.Execute
             val ENABLE = getIcon("/icons/logging/template/enableLoggersTemplate.svg")
+            val CUSTOM_TEMPLATE = getIcon("/icons/logging/template/customLoggersTemplate.svg")
+            val ADD_CUSTOM_TEMPLATE = getIcon("/icons/logging/template/addCustomLoggersTemplate.svg")
+            val DELETE_CUSTOM_TEMPLATE = getIcon("/icons/logging/template/deleteCustomLoggersTemplate.svg")
             val DISABLE = AllIcons.Nodes.Template
             val DEFAULT = AllIcons.Nodes.Template
         }
