@@ -64,32 +64,59 @@ class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BSFoldingSettingsState, Beans
 
     override fun getPlaceholderText(node: ASTNode): String = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
-            Bean.PROPERTY -> psi.getAttributeValue(Property.NAME)
-                ?.let { tablify(psi, it, getCachedFoldingSettings(psi)?.tablifyProperties, Bean.PROPERTY, Property.NAME) } +
-                TYPE_SEPARATOR +
-                (BSMetaHelper.flattenType(psi.getAttributeValue(Property.TYPE)) ?: "?")
+            Bean.PROPERTY -> buildString {
+                val name = psi.getAttributeValue(Property.NAME)
+                    ?.let { tablify(psi, it, getCachedFoldingSettings(psi)?.tablifyProperties, Bean.PROPERTY, Property.NAME) }
+                    ?.takeIf { it.isNotBlank() }
+                    ?: HybrisConstants.Folding.NO_VALUE
+                val flattenType = BSMetaHelper.flattenType(psi.getAttributeValue(Property.TYPE))
+                    ?.takeIf { it.isNotBlank() }
+                    ?: HybrisConstants.Folding.NO_VALUE
+
+                append(name)
+                append(TYPE_SEPARATOR)
+                append((flattenType))
+            }
 
             Enum.VALUE -> psi.value.trimmedText
-            AbstractPojo.DESCRIPTION -> "-- ${psi.value.trimmedText} --"
 
-            Beans.BEAN -> (psi.getAttributeValue(Bean.ABSTRACT)
-                ?.takeIf { "true".equals(it, true) }
-                ?.let { "[abstract] " }
-                ?: "") +
-                BSMetaHelper.flattenType(psi.getAttributeValue(AbstractPojo.CLASS)) +
-                (BSMetaHelper.flattenType(psi.getAttributeValue(Bean.EXTENDS))
+            AbstractPojo.DESCRIPTION -> buildString {
+                append(HybrisConstants.Folding.DESCRIPTION_PREFIX)
+                append(' ')
+                append(psi.value.trimmedText)
+            }
+
+            Beans.BEAN -> buildString {
+                psi.getAttributeValue(Bean.ABSTRACT)
+                    ?.takeIf { "true".equals(it, true) }
+                    ?.let { append("[abstract] ") }
+
+                append(BSMetaHelper.flattenType(psi.getAttributeValue(AbstractPojo.CLASS)))
+
+                BSMetaHelper.flattenType(psi.getAttributeValue(Bean.EXTENDS))
                     ?.let { TYPE_SEPARATOR + it }
-                    ?: "")
+                    ?.let { append(it) }
+            }
 
-            Beans.ENUM -> "[enum] " + BSMetaHelper.flattenType(psi.getAttributeValue(AbstractPojo.CLASS))
+            Beans.ENUM -> buildString {
+                append("[enum] ")
+                append(BSMetaHelper.flattenType(psi.getAttributeValue(AbstractPojo.CLASS)))
+            }
 
-            Hints.HINT -> psi.getAttributeValue(Hint.NAME) +
-                (psi.value.trimmedText
+            Hints.HINT -> buildString {
+                val name = psi.getAttributeValue(Hint.NAME)
+                    ?.takeIf { it.isNotBlank() }
+                    ?: HybrisConstants.Folding.NO_VALUE
+                append(name)
+
+                psi.value.trimmedText
                     .takeIf { it.isNotBlank() }
-                    ?.let { TYPE_SEPARATOR + it } ?: "")
+                    ?.let { TYPE_SEPARATOR + it }
+                    ?.let { append(it) }
+            }
 
             Bean.HINTS -> psi.subTags
-                .map { it.getAttributeValue(Hint.NAME) }
+                .mapNotNull { it.getAttributeValue(Hint.NAME) }
                 .joinToString()
                 .takeIf { it.isNotBlank() }
                 ?.let { "$foldHints : $it" }
