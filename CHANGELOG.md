@@ -12,6 +12,9 @@
 ### `Type System` enhancements
 - Improved folding for elements without required values [#1666](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1666)
 
+### Other
+- Updated Plugin icon [#1667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1667)
+
 ## [2025.2.5.0]
 
 <cite>Release contributors</cite>
