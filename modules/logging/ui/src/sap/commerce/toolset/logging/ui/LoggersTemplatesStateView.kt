@@ -23,6 +23,7 @@ import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
@@ -174,9 +175,11 @@ class LoggersTemplatesStateView(
                                     }
                                 }
 
-                                is PsiClass -> PsiNavigationSupport.getInstance()
-                                    .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
-                                    .navigate(true)
+                                is PsiClass -> invokeLater {
+                                    PsiNavigationSupport.getInstance()
+                                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
+                                        .navigate(true)
+                                }
                             }
                         }
                     }.resizableColumn()

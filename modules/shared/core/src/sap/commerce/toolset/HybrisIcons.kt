@@ -34,7 +34,7 @@ import javax.swing.Icon
 object HybrisIcons {
 
     val PLUGIN_SETTINGS = getIcon("/icons/pluginSettings.svg")
-    val SETTINGS = getIcon("/icons/settings.svg")
+    val SETTINGS = AllIcons.General.Settings
 
     val MONITORING = getIcon("/icons/monitoring.svg")
 

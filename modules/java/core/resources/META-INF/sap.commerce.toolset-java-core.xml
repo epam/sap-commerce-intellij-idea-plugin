@@ -20,6 +20,7 @@
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
 
         <project.module.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaModuleImportConfigurator"/>
     </extensions>
