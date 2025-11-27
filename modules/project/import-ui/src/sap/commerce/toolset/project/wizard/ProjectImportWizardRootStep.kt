@@ -246,11 +246,20 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withExternalLibrarySources = checkBox("Download & attach library sources").component
+                withExternalLibrarySources = checkBox("Download & attach library sources")
+                    .comment("""
+                        Enable possibility to download & attach sources for jar files within '/lib' directories registered as Libraries.
+                        By default, all source files will be downloaded to directory set via system key 'idea.library.source.dir', usually '.ideaLibSources' under user home.
+                    """.trimIndent())
+                    .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withExternalLibraryJavadocs = checkBox("Download & attach library javadocs").component
+                withExternalLibraryJavadocs = checkBox("Download & attach library javadocs")
+                    .comment("""
+                        Similarly to sources, it is also possible to download & attach javadocs for jar files within '/lib' directories registered as Libraries.
+                    """.trimIndent())
+                    .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
@@ -343,6 +352,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
             this.isIgnoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.isSelected
             this.isWithStandardProvidedSources = withStandardProvidedSources.isSelected
+            this.isWithExternalLibrarySources = withExternalLibrarySources.isSelected
+            this.isWithExternalLibraryJavadocs = withExternalLibraryJavadocs.isSelected
             this.isImportOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected
             this.isFollowSymlink = followSymlinkCheckbox.isSelected
             this.isExcludeTestSources = excludeTestSourcesCheckBox.isSelected
@@ -400,6 +411,10 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isWithExternalLibrarySources = appSettings.withExternalLibrarySources
             this.isWithExternalLibraryJavadocs = appSettings.withExternalLibraryJavadocs
 
+            ignoreNonExistingSourceDirectories.isSelected = this.isIgnoreNonExistingSourceDirectories
+            withStandardProvidedSources.isSelected = this.isWithStandardProvidedSources
+            withExternalLibrarySources.isSelected = this.isWithExternalLibrarySources
+            withExternalLibraryJavadocs.isSelected = this.isWithExternalLibraryJavadocs
             importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
             scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
             followSymlinkCheckbox.setSelected(this.isFollowSymlink)

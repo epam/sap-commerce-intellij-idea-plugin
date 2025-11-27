@@ -63,10 +63,15 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
             }
             row {
                 checkBox("Download & attach library sources")
+                    .comment("""
+                        You can enable possibility to download & attach sources for jar files within '/lib' directories registered as Libraries.
+                        By default, all source files will be downloaded to directory set via system key 'idea.library.source.dir', usually '.ideaLibSources' under user home.
+                    """.trimIndent())
                     .bindSelected(applicationSettings::withExternalLibrarySources)
             }
             row {
                 checkBox("Download & attach library javadocs")
+                    .comment("Similarly to sources, it is also possible to download & attach javadocs for jar files within '/lib' directories registered as Libraries.")
                     .bindSelected(applicationSettings::withExternalLibraryJavadocs)
             }
             row {
