@@ -25,6 +25,7 @@ import com.intellij.util.ResourceUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.resolveIconBlocking
+import sap.commerce.toolset.logging.resolvePsiElementPointerBlocking
 import java.io.InputStreamReader
 
 @Service(Service.Level.PROJECT)
@@ -52,10 +53,14 @@ class CxLoggersTemplatesService(private val project: Project) {
                 name = item.name,
                 loggers = item.loggers
                     .map { logConfig ->
+                        val icon = logConfig.resolveIconBlocking(project)
+                        val pointer = logConfig.resolvePsiElementPointerBlocking(project)
+
                         CxLoggerModel.of(
                             name = logConfig.identifier,
                             effectiveLevel = logConfig.effectiveLevel,
-                            icon = resolveIconBlocking(project, logConfig.identifier)
+                            icon = icon,
+                            psiElementPointer = pointer
                         )
                     },
                 icon = item.iconName

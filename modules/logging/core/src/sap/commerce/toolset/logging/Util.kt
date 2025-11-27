@@ -27,6 +27,7 @@ import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.application
+import sap.commerce.toolset.logging.template.CxLoggerDto
 import javax.swing.Icon
 
 fun findPsiElement(project: Project, loggerIdentifier: String): PsiElement? = with(JavaPsiFacade.getInstance(project)) {
@@ -38,12 +39,17 @@ suspend fun resolveIcon(project: Project, loggerIdentifier: String): Icon? = rea
     computeIcon(project, loggerIdentifier)
 }
 
-fun resolveIconBlocking(project: Project, loggerIdentifier: String): Icon? = application.runReadAction<Icon?> {
-    computeIcon(project, loggerIdentifier)
+fun CxLoggerDto.resolveIconBlocking(project: Project): Icon? = application.runReadAction<Icon?> {
+    computeIcon(project, this.identifier)
 }
 
-private fun computeIcon(project: Project, loggerIdentifier: String): Icon? =
-    findPsiElement(project, loggerIdentifier)?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
+fun CxLoggerDto.resolvePsiElementPointerBlocking(project: Project): SmartPsiElementPointer<PsiElement>? = application.runReadAction<SmartPsiElementPointer<PsiElement>?> {
+    findPsiElement(project, this.identifier)
+        ?.let { SmartPointerManager.getInstance(it.project).createSmartPsiElementPointer(it) }
+}
+
+private fun computeIcon(project: Project, loggerIdentifier: String): Icon? = findPsiElement(project, loggerIdentifier)
+    ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
 
 suspend fun getPsiElementPointer(project: Project, loggerIdentifier: String): SmartPsiElementPointer<PsiElement>? = readAction {
     findPsiElement(project, loggerIdentifier)

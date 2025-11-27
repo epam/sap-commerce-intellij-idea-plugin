@@ -21,6 +21,7 @@ package sap.commerce.toolset.logging
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -114,41 +115,45 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun fetch(server: HacConnectionSettingsState) {
         fetching = true
 
-        val context = GroovyExecContext(
-            connection = server,
-            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
-            content = ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT),
-            transactionMode = TransactionMode.ROLLBACK,
-            timeout = server.timeout,
-        )
+        coroutineScope.launch {
+            val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLoggersConstants.EXTENSION_STATE_SCRIPT) }
 
-        executeLoggersGroovyScript(context, server) { _, groovyScriptResult ->
-            val result = groovyScriptResult.result
-            val loggers = groovyScriptResult.loggers
+            val context = GroovyExecContext(
+                connection = server,
+                executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName}]...",
+                content = scriptContent,
+                transactionMode = TransactionMode.ROLLBACK,
+                timeout = server.timeout,
+            )
 
-            when {
-                result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
-                    """
+            executeLoggersGroovyScript(context, server) { _, groovyScriptResult ->
+                val result = groovyScriptResult.result
+                val loggers = groovyScriptResult.loggers
+
+                when {
+                    result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
+                        """
                                 <p>${result.errorMessage}</p>
                                 <p>Server: ${server.shortenConnectionName}</p>
                             """.trimIndent()
-                }
+                    }
 
-                loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
-                    """
+                    loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
+                        """
                                 <p>No Loggers information returned from the remote server or is in the incorrect format.</p>
                                 <p>Server: ${server.shortenConnectionName}</p>
                             """.trimIndent()
-                }
+                    }
 
-                else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
-                    """
+                    else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
+                        """
                                 <p>Declared loggers: ${loggers.size}</p>
                                 <p>Server: ${server.shortenConnectionName}</p>
                             """.trimIndent()
+                    }
                 }
-            }
 
+            }
         }
     }
 
