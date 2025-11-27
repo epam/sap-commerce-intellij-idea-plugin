@@ -22,6 +22,7 @@ import com.intellij.ide.highlighter.ArchiveFileType
 import com.intellij.jarFinder.SonatypeSourceSearcher
 import com.intellij.jarFinder.SourceSearcher
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -33,7 +34,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
@@ -53,7 +53,8 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
     private val artifactIdentifier = "[A-Za-z0-9.\\-_]+".toRegex()
 
-    override val name = "Libraries sources configurator"
+    override val name
+        get() = "Libraries Sources"
 
     override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
@@ -63,7 +64,11 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         val workspaceModel = WorkspaceModel.getInstance(project)
         val storage = workspaceModel.currentSnapshot
         val libraries = storage.entities(LibraryEntity::class.java).toList()
-        val sourceSearchers = arrayOf(SonatypeCentralSourceSearcher(), SonatypeSourceSearcher())
+        val sourceSearchers = arrayOf(
+            SonatypeCentralSourceSearcher(),
+            SonatypeCentralSourceSearcher("javadoc"),
+            SonatypeSourceSearcher()
+        )
 
         val task = object : Task.Backgroundable(project, "Downloading workspace library sources", true) {
             override fun run(indicator: ProgressIndicator) {
@@ -132,10 +137,12 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
             ?: return emptyList()
 
         return reportProgressScope(libraryJars.size) { reporter ->
-            libraryJars.map { libraryJar ->
-                async(Dispatchers.IO) {
-                    reporter.itemStep("Fetching sources for '${libraryJar.nameWithoutExtension}'...") {
-                        processLibraryJar(project, libSourceDir, indicator, reporter, libraryJar, sourceSearchers)
+            supervisorScope {
+                libraryJars.map { libraryJar ->
+                    async(Dispatchers.IO) {
+                        reporter.itemStep("Fetching sources for '${libraryJar.nameWithoutExtension}'...") {
+                            processLibraryJar(project, libSourceDir, indicator, libraryJar, sourceSearchers)
+                        }
                     }
                 }
             }
@@ -148,7 +155,6 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         project: Project,
         libSourceDir: File,
         indicator: ProgressIndicator,
-        reporter: ProgressReporter,
         libraryJar: VirtualFile,
         sourceSearchers: Array<SourceSearcher>
     ): LibraryRoot? {
@@ -168,9 +174,12 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         // if already downloaded, attach immediately
         if (existingLibraryRoot != null) return existingLibraryRoot
 
-        val artifactUrl = sourceSearchers.firstNotNullOfOrNull {
+        val artifactUrl = sourceSearchers.firstNotNullOfOrNull { sourceSearcher ->
             try {
-                it.findSourceJar(indicator, coords.artifactId, coords.version, libraryJar)
+                sourceSearcher.findSourceJar(indicator, coords.artifactId, coords.version, libraryJar)
+                    ?.also { jar ->
+                        thisLogger().info("Found: $jar")
+                    }
             } catch (_: Exception) {
                 null
             }
