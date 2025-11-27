@@ -223,7 +223,8 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         else libSourceDir
     }
 
-    private fun parse(jar: VirtualFile): MavenCoords? = parsePath(jar) ?: parseName(jar)
+    private fun parse(jar: VirtualFile): MavenCoords? = parsePath(jar)
+        ?: parseName(jar)
 
     private fun parsePath(jar: VirtualFile): MavenCoords? {
         val jarName = jar.nameWithoutExtension
