@@ -18,8 +18,12 @@
 
 package sap.commerce.toolset.java.configurator
 
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+
 class JavaLibrarySourcesConfigurator : JavaLibraryArtifactsConfigurator(ArtifactType.SOURCES) {
 
     override val name
         get() = "Libraries Sources"
+
+    override fun shouldProcess(hybrisProjectDescriptor: HybrisProjectDescriptor) = hybrisProjectDescriptor.isWithExternalLibrarySources
 }

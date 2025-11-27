@@ -18,8 +18,12 @@
 
 package sap.commerce.toolset.java.configurator
 
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+
 class JavaLibraryJavadocsConfigurator : JavaLibraryArtifactsConfigurator(ArtifactType.JAVADOC) {
 
     override val name
         get() = "Libraries Javadocs"
+
+    override fun shouldProcess(hybrisProjectDescriptor: HybrisProjectDescriptor) = hybrisProjectDescriptor.isWithExternalLibraryJavadocs
 }

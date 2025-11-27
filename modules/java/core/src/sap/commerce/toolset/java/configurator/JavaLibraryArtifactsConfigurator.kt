@@ -51,7 +51,10 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
     private val artifactIdentifier = "[A-Za-z0-9.\\-_]+".toRegex()
     private val sourceSearcher = SonatypeCentralSourceSearcher(artifactType)
 
+    protected abstract fun shouldProcess(hybrisProjectDescriptor: HybrisProjectDescriptor): Boolean
+
     override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        if (!shouldProcess(hybrisProjectDescriptor)) return
         val project = hybrisProjectDescriptor.project ?: return
 
         val libSourceDir = getLibrarySourceDir() ?: return
