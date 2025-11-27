@@ -174,12 +174,24 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
             } catch (_: Exception) {
                 null
             }
-        }
-            ?: return null
+        } ?: return null
 
+        return downloadDependency(targetFileName, libSourceDir, artifactUrl, indicator, targetFile, vfUrlManager)
+    }
+
+    private fun downloadDependency(
+        targetFileName: String,
+        libSourceDir: File,
+        artifactUrl: String,
+        indicator: ProgressIndicator,
+        targetFile: File,
+        vfUrlManager: VirtualFileUrlManager
+    ): LibraryRoot? {
         try {
             val tmp = File.createTempFile("download_$targetFileName", ".tmp", libSourceDir)
+
             HttpRequests.request(artifactUrl).saveToFile(tmp, indicator)
+
             if (!targetFile.exists()) {
                 if (!tmp.renameTo(targetFile)) {
                     tmp.delete()
@@ -216,9 +228,6 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         else libSourceDir
     }
 
-
-    private data class MavenCoords(val artifactId: String, val version: String)
-
     private fun parse(jar: VirtualFile): MavenCoords? = parsePath(jar) ?: parseName(jar)
 
     private fun parsePath(jar: VirtualFile): MavenCoords? {
@@ -228,7 +237,9 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         val artifactId = parent2.name
         val version = parent1.name
         val jarPathName = "$artifactId-$version"
-        return if (jarPathName != jarName) null else MavenCoords(artifactId, version)
+
+        return if (jarPathName != jarName) null
+        else MavenCoords(artifactId, version)
     }
 
     private fun parseName(jar: VirtualFile): MavenCoords? {
@@ -236,8 +247,10 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         val idx = jarName.lastIndexOf('-')
         if (idx == -1) return null
         val version = jarName.substring(idx + 1)
-        val artifactId = jarName.substring(0, idx)
+        val artifactId = jarName.take(idx)
         return MavenCoords(artifactId, version)
     }
+
+    private data class MavenCoords(val artifactId: String, val version: String)
 
 }
