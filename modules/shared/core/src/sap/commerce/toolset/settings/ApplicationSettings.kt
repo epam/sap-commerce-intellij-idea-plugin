@@ -78,6 +78,16 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(withStandardProvidedSources = value) }
         }
+    var withExternalLibrarySources: Boolean
+        get() = state.withExternalLibrarySources
+        set(value) {
+            updateState { it.copy(withExternalLibrarySources = value) }
+        }
+    var withExternalLibraryJavadocs: Boolean
+        get() = state.withExternalLibraryJavadocs
+        set(value) {
+            updateState { it.copy(withExternalLibraryJavadocs = value) }
+        }
     var scanThroughExternalModule: Boolean
         get() = state.scanThroughExternalModule
         set(value) {

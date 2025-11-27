@@ -62,6 +62,14 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                     .bindSelected(applicationSettings::withStandardProvidedSources)
             }
             row {
+                checkBox("Download & attach library sources")
+                    .bindSelected(applicationSettings::withExternalLibrarySources)
+            }
+            row {
+                checkBox("Download & attach library javadocs")
+                    .bindSelected(applicationSettings::withExternalLibraryJavadocs)
+            }
+            row {
                 checkBox(i18n("hybris.project.import.excludeTestSources"))
                     .bindSelected(applicationSettings::excludeTestSources)
             }

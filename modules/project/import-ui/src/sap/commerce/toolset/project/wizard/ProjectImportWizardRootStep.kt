@@ -71,6 +71,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private lateinit var overrideDBDriverDirChooser: TextFieldWithBrowseButton
     private lateinit var ignoreNonExistingSourceDirectories: JBCheckBox
     private lateinit var withStandardProvidedSources: JBCheckBox
+    private lateinit var withExternalLibrarySources: JBCheckBox
+    private lateinit var withExternalLibraryJavadocs: JBCheckBox
     private lateinit var importCustomAntBuildFilesCheckBox: JBCheckBox
     private lateinit var importOotbModulesInReadOnlyModeCheckBox: JBCheckBox
     private lateinit var excludeTestSourcesCheckBox: JBCheckBox
@@ -244,6 +246,14 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }.layout(RowLayout.PARENT_GRID)
 
             row {
+                withExternalLibrarySources = checkBox("Download & attach library sources").component
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                withExternalLibraryJavadocs = checkBox("Download & attach library javadocs").component
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
                 importCustomAntBuildFilesCheckBox = checkBox("Import Ant build files for custom modules")
                     .comment("Due nature of the Ant plugin may negatively affect project import/refresh performance.")
                     .component
@@ -387,6 +397,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isImportCustomAntBuildFiles = appSettings.importCustomAntBuildFiles
             this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
             this.isWithStandardProvidedSources = appSettings.withStandardProvidedSources
+            this.isWithExternalLibrarySources = appSettings.withExternalLibrarySources
+            this.isWithExternalLibraryJavadocs = appSettings.withExternalLibraryJavadocs
 
             importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
             scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
@@ -502,6 +514,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             val ccv2ProjectSettings = CCv2ProjectSettings.getInstance()
             this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
             this.isWithStandardProvidedSources = appSettings.withStandardProvidedSources
+            this.isWithExternalLibrarySources = appSettings.withExternalLibrarySources
+            this.isWithExternalLibraryJavadocs = appSettings.withExternalLibraryJavadocs
 
             this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory
                 ?.let { File(it) }

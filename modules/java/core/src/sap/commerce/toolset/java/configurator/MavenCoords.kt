@@ -18,8 +18,4 @@
 
 package sap.commerce.toolset.java.configurator
 
-class JavaLibrarySourcesConfigurator : JavaLibraryArtifactsConfigurator(ArtifactType.SOURCES) {
-
-    override val name
-        get() = "Libraries Sources"
-}
+data class MavenCoords(val artifactId: String, val version: String)

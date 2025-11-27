@@ -18,8 +18,8 @@
 
 package sap.commerce.toolset.java.configurator
 
-class JavaLibrarySourcesConfigurator : JavaLibraryArtifactsConfigurator(ArtifactType.SOURCES) {
+class JavaLibraryJavadocsConfigurator : JavaLibraryArtifactsConfigurator(ArtifactType.JAVADOC) {
 
     override val name
-        get() = "Libraries Sources"
+        get() = "Libraries Javadocs"
 }
