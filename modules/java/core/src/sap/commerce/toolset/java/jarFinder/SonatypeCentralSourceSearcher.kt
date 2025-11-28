@@ -67,7 +67,7 @@ class SonatypeCentralSourceSearcher(private val artifactType: ArtifactType) : So
         findMavenGroupId(classesJar, artifactId)
             ?.let { groupId -> append("g:$groupId%20AND%20") }
 
-        append("a:$artifactId%20AND%20v:$version%20AND%20l:sources")
+        append("a:$artifactId%20AND%20v:$version%20AND%20l:${artifactType.mavenPostfix}")
     }
 
     companion object {
