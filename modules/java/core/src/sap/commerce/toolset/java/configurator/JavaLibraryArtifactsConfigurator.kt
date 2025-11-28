@@ -19,6 +19,7 @@
 package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.JarFileSystem
@@ -50,82 +51,71 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
     override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         if (!shouldProcess(hybrisProjectDescriptor)) return
         val project = hybrisProjectDescriptor.project ?: return
-
         val libSourceDir = getLibrarySourceDir() ?: return
 
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
             withBackgroundProgress(project, "Fetching libraries ${artifactType.presentationName}...", true) {
-                fetch(project, libSourceDir)
-            }
-        }
-    }
-
-    private suspend fun fetch(project: Project, libSourceDir: File) {
-        val workspaceModel = WorkspaceModel.getInstance(project)
-        val storage = workspaceModel.currentSnapshot
-        val libraries = storage.entities(LibraryEntity::class.java).toList()
-        val sourceSearcher = SonatypeCentralSourceSearcher.getService()
-
-        supervisorScope {
-            reportProgressScope(libraries.size) { reporter ->
-                libraries.map { library ->
-                    async(Dispatchers.IO) {
-                        fetchLibrary(reporter, library, project, libSourceDir, sourceSearcher, workspaceModel)
-                    }
-                }.awaitAll()
-            }
-        }
-    }
-
-    private suspend fun fetchLibrary(
-        reporter: ProgressReporter,
-        library: LibraryEntity,
-        project: Project,
-        libSourceDir: File,
-        sourceSearcher: SonatypeCentralSourceSearcher,
-        workspaceModel: WorkspaceModel
-    ) {
-        checkCanceled()
-
-        reporter.itemStep("Fetching ${artifactType.presentationName} for library '${library.name}'...") {
-            val sourceRoots = processLibrary(project, libSourceDir, library, sourceSearcher)
-
-            if (sourceRoots.isNotEmpty()) {
-                checkCanceled()
-
-                edtWriteAction {
-                    workspaceModel.updateProjectModel("Updating Library ${library.name} ${artifactType.presentationName}") { builder ->
-                        builder.modifyLibraryEntity(library) {
-                            this.roots.addAll(sourceRoots)
-                        }
-                    }
+                supervisorScope {
+                    processLibraries(project, libSourceDir)
                 }
             }
         }
     }
 
-    private suspend fun processLibrary(
-        project: Project,
-        libSourceDir: File,
-        library: LibraryEntity,
-        sourceSearcher: SonatypeCentralSourceSearcher
-    ): List<LibraryRoot> = library.roots
-        .map { root -> processRoot(project, libSourceDir, root, sourceSearcher) }
-        .flatten()
+    private suspend fun processLibraries(project: Project, libSourceDir: File) {
+        val workspaceModel = WorkspaceModel.getInstance(project)
+        val libraryEntities = smartReadAction(project) {
+            workspaceModel.currentSnapshot
+                .entities(LibraryEntity::class.java)
+                .toList()
+        }
 
-    private suspend fun processRoot(
-        project: Project,
-        libSourceDir: File,
-        root: LibraryRoot,
-        sourceSearcher: SonatypeCentralSourceSearcher
-    ): Collection<LibraryRoot> {
-        val libraryJars = root
+        reportProgressScope(libraryEntities.size) { reporter ->
+            libraryEntities.map { library ->
+                async {
+                    fetchSources(project, libSourceDir, library, reporter)
+                        ?.let { updateLibrary(workspaceModel, library, it) }
+                }
+            }.awaitAll()
+        }
+    }
+
+    private suspend fun updateLibrary(
+        workspaceModel: WorkspaceModel,
+        libraryEntity: LibraryEntity,
+        sourceRoots: Collection<LibraryRoot>
+    ) {
+        checkCanceled()
+
+        edtWriteAction {
+            workspaceModel.updateProjectModel("Updating Library ${libraryEntity.name} ${artifactType.presentationName}") { builder ->
+                builder.modifyLibraryEntity(libraryEntity) {
+                    this.roots.addAll(sourceRoots)
+                }
+            }
+        }
+    }
+
+    private suspend fun fetchSources(project: Project, libSourceDir: File, library: LibraryEntity, reporter: ProgressReporter): List<LibraryRoot>? {
+        checkCanceled()
+
+        return reporter.itemStep("Fetching ${artifactType.presentationName} for library '${library.name}'...") {
+            library.roots
+                .map { libraryRoot -> processRoot(project, libSourceDir, libraryRoot) }
+                .flatten()
+                .takeIf { it.isNotEmpty() }
+        }
+    }
+
+    private suspend fun processRoot(project: Project, libSourceDir: File, libraryRoot: LibraryRoot): Collection<LibraryRoot> {
+        checkCanceled()
+
+        val libraryJars = libraryRoot
             .takeIf { it.inclusionOptions == LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY }
             ?.url?.url
             ?.takeIf { it.endsWith("/lib") }
             ?.let { VirtualFileManager.getInstance().findFileByUrl(it) }
             ?.children
-//            ?.filter { it.fileType == ArchiveFileType.INSTANCE } -> this is very slow
             ?.filter { it.extension == "jar" }
             ?.takeIf { it.isNotEmpty() }
             ?: return emptyList()
@@ -133,9 +123,11 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         return supervisorScope {
             reportProgressScope(libraryJars.size) { reporter ->
                 libraryJars.map { libraryJar ->
-                    async(Dispatchers.IO) {
+                    async {
+                        checkCanceled()
+
                         reporter.itemStep("Fetching ${artifactType.presentationName} for '${libraryJar.nameWithoutExtension}'...") {
-                            processLibraryJar(project, libSourceDir, libraryJar, sourceSearcher, reporter)
+                            fetchLibrarySourcesJar(project, libSourceDir, libraryJar, reporter)
                         }
                     }
                 }
@@ -145,14 +137,12 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         }
     }
 
-    private suspend fun processLibraryJar(
+    private suspend fun fetchLibrarySourcesJar(
         project: Project,
         libSourceDir: File,
         libraryJar: VirtualFile,
-        sourceSearcher: SonatypeCentralSourceSearcher,
         reporter: ProgressReporter
     ): LibraryRoot? {
-        checkCanceled()
         val vfUrlManager = WorkspaceModel.getInstance(project).getVirtualFileUrlManager()
         val jarName = libraryJar.nameWithoutExtension
         val fileName = "$jarName-${artifactType.mavenPostfix}.jar"
@@ -160,7 +150,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
 
         // if already downloaded, attach immediately
         return toLibraryRoot(resourceFile, vfUrlManager)
-            ?: sourceSearcher.findSourceJar(libraryJar, artifactType)
+            ?: SonatypeCentralSourceSearcher.getService().findSourceJar(libraryJar, artifactType)
                 ?.let { downloadDependency(fileName, libSourceDir, it, resourceFile, vfUrlManager, reporter) }
     }
 
@@ -172,7 +162,6 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         vfUrlManager: VirtualFileUrlManager,
         reporter: ProgressReporter
     ): LibraryRoot? {
-
         val tmp = File.createTempFile("download_$fileName", ".tmp", libSourceDir)
         try {
             checkCanceled()
@@ -180,8 +169,6 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
 //            reporter.itemStep("Downloading $artifactSourceUrl...") {
             HttpRequests
                 .request(artifactSourceUrl)
-                .readTimeout(5000)
-                .connectTimeout(10000)
                 .saveToFile(tmp, null)
 //            }
 
@@ -194,8 +181,6 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
                 val libraryRoot = toLibraryRoot(targetFile, vfUrlManager)
 
                 if (libraryRoot != null) return libraryRoot
-            } else {
-                println("WHYYYYY? -> $targetFile")
             }
         } catch (e: Exception) {
             if (tmp.exists()) tmp.delete()
