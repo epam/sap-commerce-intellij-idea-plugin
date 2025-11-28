@@ -67,7 +67,7 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         }
     }
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         if (!hybrisProjectDescriptor.refresh) return
         val project = hybrisProjectDescriptor.project ?: return
 

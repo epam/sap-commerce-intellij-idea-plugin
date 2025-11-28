@@ -33,7 +33,7 @@ class MavenConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Maven"
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val mavenModules = hybrisProjectDescriptor.chosenModuleDescriptors
             .filterIsInstance<MavenModuleDescriptor>()

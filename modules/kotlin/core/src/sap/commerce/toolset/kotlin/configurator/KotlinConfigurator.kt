@@ -63,7 +63,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         hybrisProjectDescriptor.chosenModuleDescriptors
             .find { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }

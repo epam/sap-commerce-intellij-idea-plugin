@@ -32,7 +32,7 @@ class AngularConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Angular"
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project
             ?.takeUnless { it.isDisposed }
             ?: return

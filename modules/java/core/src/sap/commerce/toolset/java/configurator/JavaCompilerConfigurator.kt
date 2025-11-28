@@ -34,7 +34,7 @@ class JavaCompilerConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Java Compiler"
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val compilerConfiguration = CompilerConfiguration.getInstance(project)
             .asSafely<CompilerConfigurationImpl>() ?: return

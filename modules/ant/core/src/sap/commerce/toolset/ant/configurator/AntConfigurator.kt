@@ -65,7 +65,7 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
         }
     }
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val platformDescriptor = hybrisProjectDescriptor.platformHybrisModuleDescriptor
         val extHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()

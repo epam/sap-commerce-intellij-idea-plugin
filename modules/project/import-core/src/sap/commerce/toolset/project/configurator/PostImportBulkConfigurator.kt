@@ -23,10 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.platform.util.progress.reportProgressScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -39,19 +36,26 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
             if (project.isDisposed) return@launch
 
             val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
-            reportProgressScope(postImportConfigurators.size) { progressReporter ->
-                postImportConfigurators.map {
-                    async {
-                        progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
-                            try {
-                                it.postImport(hybrisProjectDescriptor)
-                            } catch (_: Exception) {
-                                // ignore
+
+            // background operations
+            postImportConfigurators.forEach { it.postImport(hybrisProjectDescriptor) }
+
+            // async operations
+            supervisorScope {
+                reportProgressScope(postImportConfigurators.size) { progressReporter ->
+                    postImportConfigurators.map {
+                        async {
+                            progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
+                                try {
+                                    it.asyncPostImport(hybrisProjectDescriptor)
+                                } catch (_: Exception) {
+                                    // ignore
+                                }
                             }
                         }
                     }
+                        .awaitAll()
                 }
-                    .awaitAll()
             }
 
             notifyImportFinished(project, hybrisProjectDescriptor.refresh)

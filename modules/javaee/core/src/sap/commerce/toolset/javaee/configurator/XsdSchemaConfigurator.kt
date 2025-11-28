@@ -32,7 +32,7 @@ class XsdSchemaConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "XSD Schema"
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val cockpitJarToFile = readAction {
             hybrisProjectDescriptor.chosenModuleDescriptors

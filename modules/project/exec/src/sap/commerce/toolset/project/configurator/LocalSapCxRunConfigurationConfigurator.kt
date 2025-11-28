@@ -29,7 +29,7 @@ class LocalSapCxRunConfigurationConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Run Configurations - Local SAP CX"
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val runManager = RunManager.getInstance(project)
 
