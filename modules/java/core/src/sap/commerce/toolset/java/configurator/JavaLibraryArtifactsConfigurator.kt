@@ -20,6 +20,7 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.JarFileSystem
@@ -181,7 +182,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         } catch (e: Exception) {
             if (tmp.exists()) tmp.delete()
 
-            println("download error: $artifactSourceUrl, ${e.stackTraceToString()}")
+            thisLogger().debug("Failed to download ${targetFile.nameWithoutExtension}", e)
         }
 
         return null
@@ -200,10 +201,8 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
             try {
                 return block()
             } catch (e: IOException) {
-                println("interrupted -> ${e.message}")
                 // retry
             } catch (e: Exception) {
-                println("exception -> ${e.message}")
                 throw e
             }
 
@@ -211,7 +210,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
             currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelayMs)
         }
 
-        return block() // final attempt
+        return block()
     }
 
     private fun toLibraryRoot(
