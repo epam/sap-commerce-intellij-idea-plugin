@@ -40,14 +40,17 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
 
             val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
             reportProgressScope(postImportConfigurators.size) { progressReporter ->
-                postImportConfigurators
-                    .map {
-                        async {
-                            progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
+                postImportConfigurators.map {
+                    async {
+                        progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
+                            try {
                                 it.postImport(hybrisProjectDescriptor)
+                            } catch (_: Exception) {
+                                // ignore
                             }
                         }
                     }
+                }
                     .awaitAll()
             }
 
