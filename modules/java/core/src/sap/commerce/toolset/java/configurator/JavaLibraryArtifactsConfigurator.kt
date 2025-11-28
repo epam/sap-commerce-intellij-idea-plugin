@@ -32,7 +32,6 @@ import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.SystemProperties
@@ -124,10 +123,8 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
             reportProgressScope(libraryJars.size) { reporter ->
                 libraryJars.map { libraryJar ->
                     async {
-                        checkCanceled()
-
                         reporter.itemStep("Fetching ${artifactType.presentationName} for '${libraryJar.nameWithoutExtension}'...") {
-                            fetchLibrarySourcesJar(project, libSourceDir, libraryJar, reporter)
+                            fetchLibrarySourcesJar(project, libSourceDir, libraryJar)
                         }
                     }
                 }
@@ -137,40 +134,37 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         }
     }
 
-    private suspend fun fetchLibrarySourcesJar(
-        project: Project,
-        libSourceDir: File,
-        libraryJar: VirtualFile,
-        reporter: ProgressReporter
-    ): LibraryRoot? {
+    private suspend fun fetchLibrarySourcesJar(project: Project, libSourceDir: File, libraryJar: VirtualFile): LibraryRoot? {
+        checkCanceled()
+
         val vfUrlManager = WorkspaceModel.getInstance(project).getVirtualFileUrlManager()
-        val jarName = libraryJar.nameWithoutExtension
-        val fileName = "$jarName-${artifactType.mavenPostfix}.jar"
-        val resourceFile = libSourceDir.toPath().resolve(fileName).toFile()
+        val resourceFile = libSourceDir.toPath()
+            .resolve("${libraryJar.nameWithoutExtension}-${artifactType.mavenPostfix}.jar")
+            .toFile()
 
         // if already downloaded, attach immediately
         return toLibraryRoot(resourceFile, vfUrlManager)
             ?: SonatypeCentralSourceSearcher.getService().findSourceJar(libraryJar, artifactType)
-                ?.let { downloadDependency(fileName, libSourceDir, it, resourceFile, vfUrlManager, reporter) }
+                ?.let { downloadDependency(libSourceDir, resourceFile, it, vfUrlManager) }
     }
 
     private suspend fun downloadDependency(
-        fileName: String,
         libSourceDir: File,
-        artifactSourceUrl: String,
         targetFile: File,
-        vfUrlManager: VirtualFileUrlManager,
-        reporter: ProgressReporter
+        artifactSourceUrl: String,
+        vfUrlManager: VirtualFileUrlManager
     ): LibraryRoot? {
-        val tmp = File.createTempFile("download_$fileName", ".tmp", libSourceDir)
+        val tmp = File.createTempFile("download_${targetFile.nameWithoutExtension}", ".tmp", libSourceDir)
         try {
             checkCanceled()
 
-//            reporter.itemStep("Downloading $artifactSourceUrl...") {
-            HttpRequests
-                .request(artifactSourceUrl)
-                .saveToFile(tmp, null)
-//            }
+            reportProgressScope(1) {
+                it.itemStep("Downloading ${targetFile.name}") {
+                    HttpRequests
+                        .request(artifactSourceUrl)
+                        .saveToFile(tmp, null)
+                }
+            }
 
             if (!targetFile.exists()) {
                 if (!tmp.renameTo(targetFile)) {
@@ -225,7 +219,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         ?.let { LocalFileSystem.getInstance().refreshAndFindFileByIoFile(it) }
         ?.let { JarFileSystem.getInstance().getJarRootForLocalFile(it) }
         ?.let { vfUrlManager.getOrCreateFromUrl(it.url) }
-        ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
+        ?.let { LibraryRoot(it, artifactType.libraryTypeId) }
 
     private fun getLibrarySourceDir(): File? {
         val path = System.getProperty("idea.library.source.dir")

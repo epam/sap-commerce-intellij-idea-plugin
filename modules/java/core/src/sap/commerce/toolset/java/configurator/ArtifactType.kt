@@ -19,8 +19,24 @@
 package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.util.Key
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 
-enum class ArtifactType(val presentationName: String, val mavenPostfix: String, val key: Key<String?>) {
-    SOURCES("Sources", "sources", Key.create("sap.commerce.toolset.java.jarArtifactUrl.sources")),
-    JAVADOC("Javadocs", "javadoc", Key.create("sap.commerce.toolset.java.jarArtifactUrl.javadoc"))
+enum class ArtifactType(
+    val libraryTypeId: LibraryRootTypeId,
+    val presentationName: String,
+    val mavenPostfix: String,
+    val key: Key<String?>
+) {
+    SOURCES(
+        LibraryRootTypeId.SOURCES,
+        "Sources",
+        "sources",
+        Key.create("sap.commerce.toolset.java.jarArtifactUrl.sources"),
+    ),
+    JAVADOC(
+        LibraryRootTypeId("JAVADOC"),
+        "Javadocs",
+        "javadoc",
+        Key.create("sap.commerce.toolset.java.jarArtifactUrl.javadoc"),
+    )
 }
