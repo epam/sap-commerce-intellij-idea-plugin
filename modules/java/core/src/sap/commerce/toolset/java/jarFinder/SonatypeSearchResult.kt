@@ -16,37 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.java.jarFinder
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.serialization) // Kotlin support
-}
+import kotlinx.serialization.Serializable
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+@Serializable
+data class SolrResponse(
+    val response: SolrInner
+)
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":project-core"))
-    implementation(project(":project-import-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(libs.kotlinxJson)
+@Serializable
+data class SolrInner(
+    val docs: List<SolrMavenCoords>
+)
 
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
-}
+@Serializable
+data class SolrMavenCoords(
+    val g: String,
+    val a: String,
+    val v: String
+)

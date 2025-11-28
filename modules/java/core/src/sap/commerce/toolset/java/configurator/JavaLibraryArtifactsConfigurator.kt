@@ -48,9 +48,6 @@ import java.io.IOException
 
 abstract class JavaLibraryArtifactsConfigurator(private val artifactType: ArtifactType) : ProjectPostImportConfigurator {
 
-    private val artifactIdentifier = "[A-Za-z0-9.\\-_]+".toRegex()
-    private val sourceSearcher = SonatypeCentralSourceSearcher(artifactType)
-
     protected abstract fun shouldProcess(hybrisProjectDescriptor: HybrisProjectDescriptor): Boolean
 
     override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
@@ -81,6 +78,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         val workspaceModel = WorkspaceModel.getInstance(project)
         val storage = workspaceModel.currentSnapshot
         val libraries = storage.entities(LibraryEntity::class.java).toList()
+        val sourceSearcher = SonatypeCentralSourceSearcher.getService()
 
         reportProgressScope(libraries.size) { reporter ->
             supervisorScope {
@@ -157,10 +155,6 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
     ): LibraryRoot? {
         checkCanceled()
         val vfUrlManager = WorkspaceModel.getInstance(project).getVirtualFileUrlManager()
-
-        val coords = parse(libraryJar)
-            ?.takeIf { artifactIdentifier.matches(it.artifactId) && artifactIdentifier.matches(it.version) }
-            ?: return null
         val jarName = libraryJar.nameWithoutExtension
         val fileName = "$jarName-${artifactType.mavenPostfix}.jar"
         val resourceFile = libSourceDir.toPath().resolve(fileName).toFile()
@@ -170,7 +164,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         // if already downloaded, attach immediately
         if (existingLibraryRoot != null) return existingLibraryRoot
 
-        return sourceSearcher.findSourceJar(indicator, coords.artifactId, coords.version, libraryJar)
+        return sourceSearcher.findSourceJar(indicator, libraryJar, artifactType)
             ?.let { downloadDependency(fileName, libSourceDir, it, indicator, resourceFile, vfUrlManager) }
     }
 
@@ -198,7 +192,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
                 if (libraryRoot != null) return libraryRoot
             }
         } catch (_: IOException) {
-            //
+            // NOOP
         }
 
         return null
@@ -221,29 +215,5 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
 
         return if (!libSourceDir.exists() && !libSourceDir.mkdirs()) null
         else libSourceDir
-    }
-
-    private fun parse(jar: VirtualFile): MavenCoords? = parsePath(jar)
-        ?: parseName(jar)
-
-    private fun parsePath(jar: VirtualFile): MavenCoords? {
-        val jarName = jar.nameWithoutExtension
-        val parent1 = jar.parent ?: return null
-        val parent2 = parent1.parent ?: return null
-        val artifactId = parent2.name
-        val version = parent1.name
-        val jarPathName = "$artifactId-$version"
-
-        return if (jarPathName != jarName) null
-        else MavenCoords(artifactId, version)
-    }
-
-    private fun parseName(jar: VirtualFile): MavenCoords? {
-        val jarName = jar.nameWithoutExtension
-        val idx = jarName.lastIndexOf('-')
-        if (idx == -1) return null
-        val version = jarName.substring(idx + 1)
-        val artifactId = jarName.take(idx)
-        return MavenCoords(artifactId, version)
     }
 }

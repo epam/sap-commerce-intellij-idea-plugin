@@ -18,4 +18,33 @@
 
 package sap.commerce.toolset.java.configurator
 
-data class MavenCoords(val artifactId: String, val version: String)
+import sap.commerce.toolset.java.jarFinder.SolrMavenCoords
+
+data class MavenCoords(
+    val groupId: String,
+    val artifactId: String,
+    val version: String,
+    val source: String,
+) {
+
+    fun toUrl(baseUrl: String, artifactType: ArtifactType) = groupId
+        .let {
+            val groupIdPath = groupId.replace('.', '/')
+            "$baseUrl/$groupIdPath/$artifactId/$version/$artifactId-$version-${artifactType.mavenPostfix}.jar"
+        }
+
+    fun toUrl(baseUrl: String) = groupId
+        .let {
+            val groupIdPath = groupId.replace('.', '/')
+            "$baseUrl/$groupIdPath/$artifactId/$version/$artifactId-$version.jar"
+        }
+
+    companion object {
+        fun from(solrMavenCoords: SolrMavenCoords) = MavenCoords(
+            solrMavenCoords.g,
+            solrMavenCoords.a,
+            solrMavenCoords.v,
+            "solr"
+        )
+    }
+}
