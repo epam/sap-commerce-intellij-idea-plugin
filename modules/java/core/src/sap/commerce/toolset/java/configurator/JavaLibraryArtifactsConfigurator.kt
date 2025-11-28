@@ -158,11 +158,13 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         try {
             checkCanceled()
 
-            reportProgressScope(1) {
+            reportProgressScope() {
                 it.itemStep("Downloading ${targetFile.name}") {
-                    HttpRequests
-                        .request(artifactSourceUrl)
-                        .saveToFile(tmp, null)
+                    retryHttp {
+                        HttpRequests
+                            .request(artifactSourceUrl)
+                            .saveToFile(tmp, null)
+                    }
                 }
             }
 
@@ -187,7 +189,7 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
 
     suspend fun <T> retryHttp(
         times: Int = 3,
-        initialDelayMs: Long = 200,
+        initialDelayMs: Long = 250,
         maxDelayMs: Long = 2000,
         factor: Double = 2.0,
         block: suspend () -> T
@@ -197,10 +199,11 @@ abstract class JavaLibraryArtifactsConfigurator(private val artifactType: Artifa
         repeat(times - 1) {
             try {
                 return block()
-            } catch (_: IOException) {
-                println("interrupted")
+            } catch (e: IOException) {
+                println("interrupted -> ${e.message}")
                 // retry
             } catch (e: Exception) {
+                println("exception -> ${e.message}")
                 throw e
             }
 
