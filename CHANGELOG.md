@@ -5,6 +5,7 @@
 
 ### `Project Import` enhancements
 - Automatically download  3rd-party library dependencies [#1669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1669)
+- Fixed the issue with module auto-selection during project import with missing the local.properties file [#1671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1671)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)

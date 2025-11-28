@@ -33,8 +33,7 @@ import java.io.File;
 public final class HybrisProjectService {
 
     public boolean isConfigModule(@NotNull final File file) {
-        return new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
-            && new File(file, HybrisConstants.LOCAL_PROPERTIES_FILE).isFile();
+        return new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile();
     }
 
     public boolean isCCv2Module(@NotNull final File file) {
