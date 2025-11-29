@@ -147,8 +147,8 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 "Libraries sources successfully updated",
                 """
                     Updated $updatedLibraries libraries with:<br>
-                    - $updatedSourcesLibraryRoots sources jars;<br>
-                    - $updatedJavadocsLibraryRoots javadocs jars.<br>
+                    - $updatedSourcesLibraryRoots sources jars<br>
+                    - $updatedJavadocsLibraryRoots javadocs jars<br>
                 """.trimIndent()
             )
                 .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
