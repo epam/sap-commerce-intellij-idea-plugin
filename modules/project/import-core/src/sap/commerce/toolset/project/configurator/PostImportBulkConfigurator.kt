@@ -32,13 +32,13 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
+
+        // mostly background operations
+        postImportConfigurators.forEach { it.postImport(hybrisProjectDescriptor) }
+
         coroutineScope.launch {
             if (project.isDisposed) return@launch
-
-            val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
-
-            // background operations
-            postImportConfigurators.forEach { it.postImport(hybrisProjectDescriptor) }
 
             // async operations
             supervisorScope {
