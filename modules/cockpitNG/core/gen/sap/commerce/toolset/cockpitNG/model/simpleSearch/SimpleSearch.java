@@ -32,6 +32,7 @@ import sap.commerce.toolset.HybrisConstants;
 public interface SimpleSearch extends DomElement {
 
 	String FIELD = "field";
+	String SORT_FIELD = "sort-field";
 
 	/**
 	 * Returns the value of the includeSubtypes child.
@@ -62,7 +63,7 @@ public interface SimpleSearch extends DomElement {
 	 * @return the value of the sort-field child.
 	 */
 	@NotNull
-	@SubTag ("sort-field")
+	@SubTag (SORT_FIELD)
 	SortField getSortField();
 
 
