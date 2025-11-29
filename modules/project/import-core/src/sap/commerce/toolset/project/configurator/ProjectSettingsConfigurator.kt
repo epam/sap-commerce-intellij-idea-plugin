@@ -91,6 +91,8 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         applicationSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
         applicationSettings.ignoreNonExistingSourceDirectories = hybrisProjectDescriptor.isIgnoreNonExistingSourceDirectories
         applicationSettings.withStandardProvidedSources = hybrisProjectDescriptor.isWithStandardProvidedSources
+        applicationSettings.withExternalLibrarySources = hybrisProjectDescriptor.isWithExternalLibrarySources
+        applicationSettings.withExternalLibraryJavadocs = hybrisProjectDescriptor.isWithExternalLibraryJavadocs
 
         projectSettings.importOotbModulesInReadOnlyMode = hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode
         projectSettings.externalExtensionsDirectory = hybrisProjectDescriptor.externalExtensionsDirectory?.directorySystemIndependentName

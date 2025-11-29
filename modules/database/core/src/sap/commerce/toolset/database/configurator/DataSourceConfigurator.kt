@@ -47,7 +47,7 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Database - Data Sources"
 
-    override suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()

@@ -61,6 +61,8 @@ interface HybrisProjectDescriptor {
     var hybrisVersion: String?
     val detectedVcs: MutableSet<File>
     var isWithStandardProvidedSources: Boolean
+    var isWithExternalLibrarySources: Boolean
+    var isWithExternalLibraryJavadocs: Boolean
     var excludedFromScanning: MutableSet<String>
     val excludedFromScanningDirectories: MutableSet<File>?
 

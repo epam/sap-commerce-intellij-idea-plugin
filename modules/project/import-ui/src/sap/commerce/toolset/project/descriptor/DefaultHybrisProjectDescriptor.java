@@ -122,6 +122,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected boolean importCustomAntBuildFiles;
     protected boolean scanThroughExternalModule;
     private boolean withStandardProvidedSources;
+    private boolean withExternalLibrarySources;
+    private boolean withExternalLibraryJavadocs;
     private boolean ignoreNonExistingSourceDirectories;
     private boolean useFakeOutputPathForCustomExtensions;
 
@@ -1143,6 +1145,26 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setWithStandardProvidedSources(final boolean withStandardProvidedSources) {
         this.withStandardProvidedSources = withStandardProvidedSources;
+    }
+
+    @Override
+    public boolean isWithExternalLibrarySources() {
+        return withExternalLibrarySources;
+    }
+
+    @Override
+    public void setWithExternalLibrarySources(final boolean withExternalLibrarySources) {
+        this.withExternalLibrarySources = withExternalLibrarySources;
+    }
+
+    @Override
+    public boolean isWithExternalLibraryJavadocs() {
+        return withExternalLibraryJavadocs;
+    }
+
+    @Override
+    public void setWithExternalLibraryJavadocs(final boolean withExternalLibraryJavadocs) {
+        this.withExternalLibraryJavadocs = withExternalLibraryJavadocs;
     }
 
     @Override

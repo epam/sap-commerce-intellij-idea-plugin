@@ -16,37 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.java.jarFinder
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.serialization) // Kotlin support
-}
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
+import java.io.File
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":project-core"))
-    implementation(project(":project-import-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(libs.kotlinxJson)
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
-}
+data class LibraryRootLookup(
+    val type: LibraryRootType,
+    val targetFile: File,
+    var libraryRoot: LibraryRoot? = null,
+    var url: String? = null
+)

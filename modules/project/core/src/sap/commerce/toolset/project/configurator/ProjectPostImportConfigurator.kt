@@ -23,7 +23,8 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 
 interface ProjectPostImportConfigurator : Configurator {
 
-    suspend fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor)
+    fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) = Unit
+    suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) = Unit
 
     companion object {
         val EP = ExtensionPointName.create<ProjectPostImportConfigurator>("sap.commerce.toolset.project.postImportConfigurator")

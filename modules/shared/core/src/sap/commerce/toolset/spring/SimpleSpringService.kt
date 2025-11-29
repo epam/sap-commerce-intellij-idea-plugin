@@ -21,7 +21,6 @@ package sap.commerce.toolset.spring
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.platform.ide.progress.withBackgroundProgress
@@ -39,6 +38,7 @@ import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import java.io.Serial
 
 /**
@@ -49,8 +49,6 @@ import java.io.Serial
  */
 @Service(Service.Level.PROJECT)
 class SimpleSpringService(private val project: Project, private val coroutineScope: CoroutineScope) : SpringService {
-
-    private val computing = AtomicBooleanProperty(false)
 
     private val cache = CachedValuesManager.getManager(project).createCachedValue(
         {
@@ -74,14 +72,12 @@ class SimpleSpringService(private val project: Project, private val coroutineSco
         }, false
     )
 
-    fun initCache() = coroutineScope.launch {
-        computing.set(true)
-
-        withBackgroundProgress(project, "Init simple Spring context", true) {
-            smartReadAction(project) { cache.value }
+    fun initCache() = Plugin.SPRING.ifDisabled {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Init simple Spring context", true) {
+                smartReadAction(project) { cache.value }
+            }
         }
-
-        computing.set(false)
     }
 
     override fun resolveBeanDeclaration(element: PsiElement, beanId: String) = findBean(beanId)

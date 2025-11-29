@@ -16,37 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.java.jarFinder
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.serialization) // Kotlin support
-}
+import com.intellij.openapi.util.Key
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":project-core"))
-    implementation(project(":project-import-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(libs.kotlinxJson)
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+enum class LibraryRootType(
+    val id: LibraryRootTypeId,
+    val mavenPostfix: String,
+    val key: Key<String?>
+) {
+    SOURCES(
+        LibraryRootTypeId.SOURCES,
+        "sources",
+        Key.create("sap.commerce.toolset.java.jarArtifactUrl.sources"),
+    ),
+    JAVADOC(
+        LibraryRootTypeId("JAVADOC"),
+        "javadoc",
+        Key.create("sap.commerce.toolset.java.jarArtifactUrl.javadoc"),
+    )
 }

@@ -39,4 +39,11 @@ object GotItTooltips {
 
         const val AUTH_MODES = OWN_PREFIX + "authModes"
     }
+
+    object ProjectImport {
+        private const val OWN_PREFIX = PREFIX + "projectImport."
+
+        const val LIBRARY_SOURCES = OWN_PREFIX + "library.attachSources"
+        const val LIBRARY_JAVADOCS = OWN_PREFIX + "library.attachJavadocs"
+    }
 }
