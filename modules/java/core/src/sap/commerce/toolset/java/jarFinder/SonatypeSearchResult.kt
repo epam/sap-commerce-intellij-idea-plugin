@@ -27,11 +27,11 @@ data class SolrResponse(
 
 @Serializable
 data class SolrInner(
-    val docs: List<SolrMavenCoords>
+    val docs: List<SolrMavenArtifactCoords>
 )
 
 @Serializable
-data class SolrMavenCoords(
+data class SolrMavenArtifactCoords(
     val g: String,
     val a: String,
     val v: String

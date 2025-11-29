@@ -38,10 +38,10 @@ data class MavenArtifactCoords(
         }
 
     companion object {
-        fun from(solrMavenCoords: SolrMavenCoords) = MavenArtifactCoords(
-            solrMavenCoords.g,
-            solrMavenCoords.a,
-            solrMavenCoords.v,
+        fun from(solrMavenArtifactCoords: SolrMavenArtifactCoords) = MavenArtifactCoords(
+            solrMavenArtifactCoords.g,
+            solrMavenArtifactCoords.a,
+            solrMavenArtifactCoords.v,
             "solr"
         )
     }

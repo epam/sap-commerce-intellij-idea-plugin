@@ -80,7 +80,7 @@ class SonatypeCentralSourceSearcher {
         }
     }
 
-    private suspend fun getExternalMavenCoords(libraryJar: VirtualFile): SolrMavenCoords? {
+    private suspend fun getExternalMavenCoords(libraryJar: VirtualFile): SolrMavenArtifactCoords? {
         checkCanceled()
 
         val sha1 = libraryJar.toNioPath().toFile().sha1()
