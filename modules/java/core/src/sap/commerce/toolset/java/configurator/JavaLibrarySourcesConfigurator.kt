@@ -65,37 +65,48 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
             withBackgroundProgress(project, "Fetching libraries sources...", true) {
                 supervisorScope {
-                    processLibraries(project, libSourceDir, sourceTypes)
+                    val workspaceModel = WorkspaceModel.getInstance(project)
+                    val libraries = processLibraries(project, workspaceModel, libSourceDir, sourceTypes)
+
+                    updateLibraries(workspaceModel, libraries)
                 }
             }
         }
     }
 
-    private suspend fun processLibraries(project: Project, libSourceDir: File, sourceTypes: Set<ArtifactSourceType>) {
-        val workspaceModel = WorkspaceModel.getInstance(project)
+    private suspend fun processLibraries(
+        project: Project,
+        workspaceModel: WorkspaceModel,
+        libSourceDir: File,
+        sourceTypes: Set<ArtifactSourceType>
+    ): Map<LibraryEntity, Collection<LibraryRoot>> {
         val libraryEntities = smartReadAction(project) {
             workspaceModel.currentSnapshot
                 .entities(LibraryEntity::class.java)
                 .toList()
         }
 
-        reportProgressScope(libraryEntities.size) { reporter ->
-            libraryEntities.map { libraryEntity ->
-                async {
-                    fetchSources(project, libSourceDir, sourceTypes, libraryEntity, reporter)
-                        ?.let { updateLibrary(workspaceModel, libraryEntity, it) }
+        return reportProgressScope(libraryEntities.size) { reporter ->
+            libraryEntities
+                .map { libraryEntity ->
+                    async {
+                        libraryEntity to fetchSources(project, libSourceDir, sourceTypes, libraryEntity, reporter)
+                    }
                 }
-            }.awaitAll()
+                .awaitAll()
+                .associate { it.first to it.second }
         }
     }
 
-    private suspend fun updateLibrary(workspaceModel: WorkspaceModel, libraryEntity: LibraryEntity, sourceRoots: Collection<LibraryRoot>) {
+    private suspend fun updateLibraries(workspaceModel: WorkspaceModel, libraries: Map<LibraryEntity, Collection<LibraryRoot>>) {
         checkCanceled()
 
         edtWriteAction {
-            workspaceModel.updateProjectModel("Updating Library ${libraryEntity.name}") { builder ->
-                builder.modifyLibraryEntity(libraryEntity) {
-                    this.roots.addAll(sourceRoots)
+            workspaceModel.updateProjectModel("Updating libraries sources") { builder ->
+                libraries.forEach { (libraryEntity, sourceRoots) ->
+                    builder.modifyLibraryEntity(libraryEntity) {
+                        this.roots.addAll(sourceRoots)
+                    }
                 }
             }
         }
@@ -107,18 +118,22 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         sourceTypes: Set<ArtifactSourceType>,
         library: LibraryEntity,
         reporter: ProgressReporter
-    ): List<LibraryRoot>? {
+    ): Collection<LibraryRoot> {
         checkCanceled()
 
         return reporter.itemStep("Fetching sources for library '${library.name}'...") {
             library.roots
                 .map { libraryRoot -> processLibraryRoot(project, libSourceDir, sourceTypes, libraryRoot) }
                 .flatten()
-                .takeIf { it.isNotEmpty() }
         }
     }
 
-    private suspend fun processLibraryRoot(project: Project, libSourceDir: File, sourceTypes: Set<ArtifactSourceType>, libraryRoot: LibraryRoot): Collection<LibraryRoot> {
+    private suspend fun processLibraryRoot(
+        project: Project,
+        libSourceDir: File,
+        sourceTypes: Set<ArtifactSourceType>,
+        libraryRoot: LibraryRoot
+    ): Collection<LibraryRoot> {
         checkCanceled()
 
         val libraryJars = libraryRoot
@@ -136,7 +151,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 libraryJars.map { libraryJar ->
                     async {
                         reporter.itemStep("Fetching sources for '${libraryJar.nameWithoutExtension}'...") {
-                            fetchLibrarySourcesJar(project, libSourceDir, sourceTypes, libraryJar)
+                            fetchLibrarySourcesJars(project, libSourceDir, sourceTypes, libraryJar)
                         }
                     }
                 }
@@ -146,7 +161,12 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         }
     }
 
-    private suspend fun fetchLibrarySourcesJar(project: Project, libSourceDir: File, sourceTypes: Set<ArtifactSourceType>, libraryJar: VirtualFile): Collection<LibraryRoot> {
+    private suspend fun fetchLibrarySourcesJars(
+        project: Project,
+        libSourceDir: File,
+        sourceTypes: Set<ArtifactSourceType>,
+        libraryJar: VirtualFile
+    ): Collection<LibraryRoot> {
         checkCanceled()
 
         val vfUrlManager = WorkspaceModel.getInstance(project).getVirtualFileUrlManager()
