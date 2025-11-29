@@ -1,7 +1,7 @@
 ## [2025.2.5.1]
 
 <cite>Release contributors</cite>
-- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
+- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Automatically download 3rd-party library sources [#1669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1669)
@@ -17,6 +17,9 @@
 
 ### `Type System` enhancements
 - Improved folding for elements without required values [#1666](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1666)
+
+### `Cockpit NG` enhancements
+- Added folding for `simple-search:sort-field` [#1674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1674)
 
 ### Other
 - Updated Plugin icon [#1667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1667)

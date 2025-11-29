@@ -34,12 +34,14 @@ import sap.commerce.toolset.HybrisConstants;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface SortField extends DomElement, Field {
 
+	String ASC = "asc";
+
 	/**
 	 * Returns the value of the asc child.
 	 * @return the value of the asc child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("asc")
+	@com.intellij.util.xml.Attribute (ASC)
 	@Required
 	GenericAttributeValue<Boolean> getAsc();
 

@@ -32,6 +32,8 @@ import sap.commerce.toolset.cockpitNG.model.itemEditor.Attribute
 import sap.commerce.toolset.cockpitNG.model.itemEditor.Section
 import sap.commerce.toolset.cockpitNG.model.listView.ListColumn
 import sap.commerce.toolset.cockpitNG.model.listView.ListView
+import sap.commerce.toolset.cockpitNG.model.simpleSearch.SimpleSearch
+import sap.commerce.toolset.cockpitNG.model.simpleSearch.SortField
 import sap.commerce.toolset.cockpitNG.model.widgets.*
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.AdditionalParam
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.ComposedHandler
@@ -48,6 +50,7 @@ class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Con
         when (it) {
             is XmlTag -> when (it.localName) {
                 FieldList.FIELD,
+                SimpleSearch.SORT_FIELD,
                 MoldList.MOLD,
                 Section.ATTRIBUTE,
                 ExplorerTree.TYPE_NODE,
@@ -129,6 +132,20 @@ class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Con
                     psi.getAttributeValue(Field.SELECTED)
                         ?.takeIf { it == "true" }
                         ?.let { "pre-selected" }
+                ))
+
+            SimpleSearch.SORT_FIELD -> "sort by: " + fold(psi, SimpleSearch.SORT_FIELD, SortField.NAME,
+                getCachedFoldingSettings(psi)?.tablifySearchFields,
+                computeExtraAttributes(
+                    psi.getAttributeValue(SortField.ASC)
+                        ?.let {
+                            when (it.lowercase()) {
+                                "true" -> "asc"
+                                "false" -> "desc"
+                                else -> it
+                            }
+                        }
+                        ?: "?",
                 ))
 
             ListView.COLUMN -> fold(psi, ListView.COLUMN, ListColumn.QUALIFIER,
@@ -221,6 +238,7 @@ class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Con
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
             FieldList.FIELD,
+            SimpleSearch.SORT_FIELD,
             MoldList.MOLD,
             Section.ATTRIBUTE,
             ExplorerTree.TYPE_NODE,

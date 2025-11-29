@@ -35,12 +35,14 @@ import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Field extends DomElement, Mergeable {
 
+	String NAME = "name";
+
 	/**
 	 * Returns the value of the name child.
 	 * @return the value of the name child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("name")
+	@com.intellij.util.xml.Attribute (NAME)
 	@Required
 	GenericAttributeValue<String> getName();
 
