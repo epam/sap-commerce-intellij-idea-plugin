@@ -17,10 +17,12 @@
  */
 package sap.commerce.toolset.java.jarFinder
 
+import com.intellij.jarRepository.RemoteRepositoriesConfiguration
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -41,13 +43,16 @@ import java.util.jar.JarFile
  * Custom implementation of the maven artifact searcher required to support caching and advanced groupId identification and better artifact search by hash.
  */
 @Service
-class SonatypeCentralSourceSearcher {
+class LibraryRootLookupService {
 
-    // TODO: support "Remote Jar Repositories", instead of hardcoding `repo1.maven.org`
-    private val baseUrl = "https://repo1.maven.org/maven2"
+    fun getLookupRepositories(project: Project): List<String>? = RemoteRepositoriesConfiguration.getInstance(project).repositories
+        .map { it.url }
+        .takeIf { it.isNotEmpty() }
 
-    suspend fun findSourceJarUrls(libraryJar: VirtualFile, libraryRootLookups: Collection<LibraryRootLookup>) {
+    suspend fun findJarUrls(project: Project, libraryJar: VirtualFile, libraryRootLookups: Collection<LibraryRootLookup>) {
         if (libraryRootLookups.isEmpty()) return
+        val baseUrls = getLookupRepositories(project)
+            ?: return
 
         checkCanceled()
 
@@ -61,11 +66,11 @@ class SonatypeCentralSourceSearcher {
 
             // cache it only if artifact exists in remote
             localMavenCoords
-                ?.takeIf { remoteExists(localMavenCoords.toUrl(baseUrl)) }
+                ?.takeIf { remoteExists(baseUrls) { baseUrl -> localMavenCoords.toUrl(baseUrl) } != null }
             // if nothing helps -> fallback to search by SHA1 of the respective jar file
                 ?: getExternalMavenCoords(libraryJar)
                     ?.let { MavenArtifactCoords.from(it) }
-                    ?.takeIf { remoteExists(it.toUrl(baseUrl)) }
+                    ?.takeIf { remoteExists(baseUrls) { baseUrl -> it.toUrl(baseUrl) } != null }
         } ?: return
 
         libraryRootLookups.forEach {
@@ -74,8 +79,7 @@ class SonatypeCentralSourceSearcher {
             val artifactSourceType = it.type
 
             it.url = libraryJar.getOrCreateUserDataUnsafe(artifactSourceType.key) {
-                mavenArtifactCoords.toUrl(baseUrl, artifactSourceType)
-                    .takeIf { artifactUrl -> remoteExists(artifactUrl) }
+                remoteExists(baseUrls) { baseUrl -> mavenArtifactCoords.toUrl(baseUrl, artifactSourceType) }
             }
         }
     }
@@ -101,6 +105,9 @@ class SonatypeCentralSourceSearcher {
         }
         return null
     }
+
+    private suspend fun remoteExists(baseUrls: Collection<String>, urlProvider: (String) -> String): String? = baseUrls
+        .firstOrNull { baseUrl -> remoteExists(urlProvider(baseUrl)) }
 
     private suspend fun remoteExists(url: String): Boolean {
         checkCanceled()
@@ -212,6 +219,6 @@ class SonatypeCentralSourceSearcher {
         private val KEY_MAVEN_COORDS: Key<MavenArtifactCoords?> = Key.create<MavenArtifactCoords?>("sap.commerce.toolset.java.jarArtifactUrl")
         private val JSON = Json { ignoreUnknownKeys = true }
 
-        fun getService(): SonatypeCentralSourceSearcher = application.service()
+        fun getService(): LibraryRootLookupService = application.service()
     }
 }
