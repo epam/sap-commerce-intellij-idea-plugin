@@ -68,7 +68,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         val lookupService = LibraryRootLookupService.getService()
         val lookupRepositories = lookupService.getLookupRepositories(project)
 
-        if (lookupRepositories != null) {
+        if (lookupRepositories == null) {
             Notifications.warning(
                 "Libraries sources cannot be downloaded",
                 "Maven repositories are not configured, please specify them via 'Remote Jar Repositories' project settings and try again."
