@@ -38,8 +38,8 @@ import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.SystemProperties
 import com.intellij.util.io.HttpRequests
 import kotlinx.coroutines.*
-import sap.commerce.toolset.java.jarFinder.ArtifactSourceType
-import sap.commerce.toolset.java.jarFinder.LookupArtifactSourceType
+import sap.commerce.toolset.java.jarFinder.LibraryRootLookup
+import sap.commerce.toolset.java.jarFinder.LibraryRootType
 import sap.commerce.toolset.java.jarFinder.SonatypeCentralSourceSearcher
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
@@ -52,9 +52,9 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         get() = "Libraries Sources"
 
     override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val sourceTypes = buildSet {
-            if (hybrisProjectDescriptor.isWithExternalLibrarySources) add(ArtifactSourceType.SOURCES)
-            if (hybrisProjectDescriptor.isWithExternalLibraryJavadocs) add(ArtifactSourceType.JAVADOC)
+        val libraryRootTypes = buildSet {
+            if (hybrisProjectDescriptor.isWithExternalLibrarySources) add(LibraryRootType.SOURCES)
+            if (hybrisProjectDescriptor.isWithExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
         }
             .takeIf { it.isNotEmpty() }
             ?: return
@@ -66,7 +66,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
             withBackgroundProgress(project, "Fetching libraries sources...", true) {
                 supervisorScope {
                     val workspaceModel = WorkspaceModel.getInstance(project)
-                    val libraries = processLibraries(project, workspaceModel, libSourceDir, sourceTypes)
+                    val libraries = processLibraries(project, workspaceModel, libSourceDir, libraryRootTypes)
 
                     updateLibraries(workspaceModel, libraries)
                 }
@@ -78,7 +78,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         project: Project,
         workspaceModel: WorkspaceModel,
         libSourceDir: File,
-        sourceTypes: Set<ArtifactSourceType>
+        libraryRootTypes: Set<LibraryRootType>
     ): Map<LibraryEntity, Collection<LibraryRoot>> {
         val libraryEntities = smartReadAction(project) {
             workspaceModel.currentSnapshot
@@ -90,7 +90,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
             libraryEntities
                 .map { libraryEntity ->
                     async {
-                        libraryEntity to fetchSources(project, libSourceDir, sourceTypes, libraryEntity, reporter)
+                        libraryEntity to fetchSources(project, libSourceDir, libraryRootTypes, libraryEntity, reporter)
                     }
                 }
                 .awaitAll()
@@ -115,7 +115,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     private suspend fun fetchSources(
         project: Project,
         libSourceDir: File,
-        sourceTypes: Set<ArtifactSourceType>,
+        libraryRootTypes: Set<LibraryRootType>,
         library: LibraryEntity,
         reporter: ProgressReporter
     ): Collection<LibraryRoot> {
@@ -123,7 +123,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
         return reporter.itemStep("Fetching sources for library '${library.name}'...") {
             library.roots
-                .map { libraryRoot -> processLibraryRoot(project, libSourceDir, sourceTypes, libraryRoot) }
+                .map { libraryRoot -> processLibraryRoot(project, libSourceDir, libraryRootTypes, libraryRoot) }
                 .flatten()
         }
     }
@@ -131,7 +131,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     private suspend fun processLibraryRoot(
         project: Project,
         libSourceDir: File,
-        sourceTypes: Set<ArtifactSourceType>,
+        libraryRootTypes: Set<LibraryRootType>,
         libraryRoot: LibraryRoot
     ): Collection<LibraryRoot> {
         checkCanceled()
@@ -151,7 +151,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 libraryJars.map { libraryJar ->
                     async {
                         reporter.itemStep("Fetching sources for '${libraryJar.nameWithoutExtension}'...") {
-                            fetchLibrarySourcesJars(project, libSourceDir, sourceTypes, libraryJar)
+                            fetchLibrarySourcesJars(project, libSourceDir, libraryRootTypes, libraryJar)
                         }
                     }
                 }
@@ -164,23 +164,23 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     private suspend fun fetchLibrarySourcesJars(
         project: Project,
         libSourceDir: File,
-        sourceTypes: Set<ArtifactSourceType>,
+        libraryRootTypes: Set<LibraryRootType>,
         libraryJar: VirtualFile
     ): Collection<LibraryRoot> {
         checkCanceled()
 
         val vfUrlManager = WorkspaceModel.getInstance(project).getVirtualFileUrlManager()
-        val lookupArtifactSourceTypes = sourceTypes
+        val libraryRootLookups = libraryRootTypes
             .map { sourceType ->
                 val targetFile = libSourceDir.toPath()
                     .resolve("${libraryJar.nameWithoutExtension}-${sourceType.mavenPostfix}.jar")
                     .toFile()
                 val sourceLibraryRoot = toLibraryRoot(targetFile, vfUrlManager, sourceType)
 
-                LookupArtifactSourceType(sourceType, targetFile, sourceLibraryRoot)
+                LibraryRootLookup(sourceType, targetFile, sourceLibraryRoot)
             }
         // identify not yet downloaded sources
-        val missingLookupArtifactSourceTypes = lookupArtifactSourceTypes.filter { it.sourceLibraryRoot == null }
+        val missingLookupArtifactSourceTypes = libraryRootLookups.filter { it.libraryRoot == null }
 
         // find and set urls for each not yet downloaded source jar
         SonatypeCentralSourceSearcher.getService().findSourceJarUrls(libraryJar, missingLookupArtifactSourceTypes)
@@ -191,16 +191,16 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         }
 
         // we're operating on the same objects, so it should be safe to return local
-        return lookupArtifactSourceTypes.mapNotNull { it.sourceLibraryRoot }
+        return libraryRootLookups.mapNotNull { it.libraryRoot }
     }
 
     private suspend fun downloadSourceJar(
         libSourceDir: File,
         vfUrlManager: VirtualFileUrlManager,
-        lookupArtifactSourceType: LookupArtifactSourceType
+        libraryRootLookup: LibraryRootLookup
     ): LibraryRoot? {
-        val artifactSourceUrl = lookupArtifactSourceType.url ?: return null
-        val targetFile = lookupArtifactSourceType.targetFile
+        val artifactSourceUrl = libraryRootLookup.url ?: return null
+        val targetFile = libraryRootLookup.targetFile
         val tmp = File.createTempFile("download_${targetFile.nameWithoutExtension}", ".tmp", libSourceDir)
 
         try {
@@ -222,7 +222,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 }
             }
             if (targetFile.exists()) {
-                val libraryRoot = toLibraryRoot(targetFile, vfUrlManager, lookupArtifactSourceType.type)
+                val libraryRoot = toLibraryRoot(targetFile, vfUrlManager, libraryRootLookup.type)
 
                 if (libraryRoot != null) return libraryRoot
             }
@@ -263,13 +263,13 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     private fun toLibraryRoot(
         targetFile: File,
         vfUrlManager: VirtualFileUrlManager,
-        sourceType: ArtifactSourceType,
+        type: LibraryRootType,
     ): LibraryRoot? = targetFile
         .takeIf { it.exists() }
         ?.let { LocalFileSystem.getInstance().refreshAndFindFileByIoFile(it) }
         ?.let { JarFileSystem.getInstance().getJarRootForLocalFile(it) }
         ?.let { vfUrlManager.getOrCreateFromUrl(it.url) }
-        ?.let { LibraryRoot(it, sourceType.libraryTypeId) }
+        ?.let { LibraryRoot(it, type.id) }
 
     private fun getLibrarySourceDir(): File? {
         val path = System.getProperty("idea.library.source.dir")

@@ -46,8 +46,8 @@ class SonatypeCentralSourceSearcher {
     // TODO: support "Remote Jar Repositories", instead of hardcoding `repo1.maven.org`
     private val baseUrl = "https://repo1.maven.org/maven2"
 
-    suspend fun findSourceJarUrls(libraryJar: VirtualFile, lookupArtifactSourceTypes: Collection<LookupArtifactSourceType>) {
-        if (lookupArtifactSourceTypes.isEmpty()) return
+    suspend fun findSourceJarUrls(libraryJar: VirtualFile, libraryRootLookups: Collection<LibraryRootLookup>) {
+        if (libraryRootLookups.isEmpty()) return
 
         checkCanceled()
 
@@ -68,7 +68,7 @@ class SonatypeCentralSourceSearcher {
                     ?.takeIf { remoteExists(it.toUrl(baseUrl)) }
         } ?: return
 
-        lookupArtifactSourceTypes.forEach {
+        libraryRootLookups.forEach {
             checkCanceled()
 
             val artifactSourceType = it.type

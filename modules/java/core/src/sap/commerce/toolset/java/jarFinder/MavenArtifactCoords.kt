@@ -25,10 +25,10 @@ data class MavenArtifactCoords(
     val source: String,
 ) {
 
-    fun toUrl(baseUrl: String, artifactSourceType: ArtifactSourceType) = groupId
+    fun toUrl(baseUrl: String, libraryRootType: LibraryRootType) = groupId
         .let {
             val groupIdPath = groupId.replace('.', '/')
-            "$baseUrl/$groupIdPath/$artifactId/$version/$artifactId-$version-${artifactSourceType.mavenPostfix}.jar"
+            "$baseUrl/$groupIdPath/$artifactId/$version/$artifactId-$version-${libraryRootType.mavenPostfix}.jar"
         }
 
     fun toUrl(baseUrl: String) = groupId

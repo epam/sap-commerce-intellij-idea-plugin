@@ -18,25 +18,12 @@
 
 package sap.commerce.toolset.java.jarFinder
 
-import com.intellij.openapi.util.Key
-import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
+import java.io.File
 
-enum class ArtifactSourceType(
-    val libraryTypeId: LibraryRootTypeId,
-    val presentationName: String,
-    val mavenPostfix: String,
-    val key: Key<String?>
-) {
-    SOURCES(
-        LibraryRootTypeId.SOURCES,
-        "Sources",
-        "sources",
-        Key.create("sap.commerce.toolset.java.jarArtifactUrl.sources"),
-    ),
-    JAVADOC(
-        LibraryRootTypeId("JAVADOC"),
-        "Javadocs",
-        "javadoc",
-        Key.create("sap.commerce.toolset.java.jarArtifactUrl.javadoc"),
-    )
-}
+data class LibraryRootLookup(
+    val type: LibraryRootType,
+    val targetFile: File,
+    var libraryRoot: LibraryRoot? = null,
+    var url: String? = null
+)
