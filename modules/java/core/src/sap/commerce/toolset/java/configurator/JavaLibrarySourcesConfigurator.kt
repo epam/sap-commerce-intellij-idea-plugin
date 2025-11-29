@@ -103,9 +103,9 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
         edtWriteAction {
             workspaceModel.updateProjectModel("Updating libraries sources") { builder ->
-                libraries.forEach { (libraryEntity, sourceRoots) ->
+                libraries.forEach { (libraryEntity, libraryRoots) ->
                     builder.modifyLibraryEntity(libraryEntity) {
-                        this.roots.addAll(sourceRoots)
+                        this.roots.addAll(libraryRoots)
                     }
                 }
             }
@@ -175,18 +175,18 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 val targetFile = libSourceDir.toPath()
                     .resolve("${libraryJar.nameWithoutExtension}-${sourceType.mavenPostfix}.jar")
                     .toFile()
-                val sourceLibraryRoot = toLibraryRoot(targetFile, vfUrlManager, sourceType)
+                val libraryRoot = toLibraryRoot(targetFile, vfUrlManager, sourceType)
 
-                LibraryRootLookup(sourceType, targetFile, sourceLibraryRoot)
+                LibraryRootLookup(sourceType, targetFile, libraryRoot)
             }
         // identify not yet downloaded sources
-        val missingLookupArtifactSourceTypes = libraryRootLookups.filter { it.libraryRoot == null }
+        val missingLibraryRootLookups = libraryRootLookups.filter { it.libraryRoot == null }
 
         // find and set urls for each not yet downloaded source jar
-        SonatypeCentralSourceSearcher.getService().findSourceJarUrls(libraryJar, missingLookupArtifactSourceTypes)
+        SonatypeCentralSourceSearcher.getService().findSourceJarUrls(libraryJar, missingLibraryRootLookups)
 
         // download not yet downloaded source jars
-        missingLookupArtifactSourceTypes.forEach {
+        missingLibraryRootLookups.forEach {
             downloadSourceJar(libSourceDir, vfUrlManager, it)
         }
 
