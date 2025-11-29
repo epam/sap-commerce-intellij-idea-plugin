@@ -247,7 +247,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         repeat(times - 1) {
             try {
                 return block()
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 // retry
             } catch (e: Exception) {
                 throw e
