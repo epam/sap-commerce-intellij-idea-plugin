@@ -1,12 +1,13 @@
 ## [2025.2.5.1]
 
 <cite>Release contributors</cite>
-- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
+- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Automatically download 3rd-party library sources [#1669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1669)
 - Automatically download 3rd-party library javadocs [#1670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1670)
-- Rely on Maven repositories configured via `Remote Jar Repositories` to download library sources [#1671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1671)
+- Rely on Maven repositories configured via `Remote Jar Repositories` to download library sources [#1672](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1672)
+- Notify on completion of the libraries sources download [#1673](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1673)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)

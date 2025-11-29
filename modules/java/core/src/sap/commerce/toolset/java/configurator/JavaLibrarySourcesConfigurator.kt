@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.java.configurator
 
+import com.intellij.ide.BrowserUtil
 import com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.invokeLater
@@ -55,7 +56,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     override val name
         get() = "Libraries Sources"
 
-    override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor ) {
+    override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val libraryRootTypes = buildSet {
             if (hybrisProjectDescriptor.isWithExternalLibrarySources) add(LibraryRootType.SOURCES)
             if (hybrisProjectDescriptor.isWithExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
@@ -89,7 +90,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     val workspaceModel = WorkspaceModel.getInstance(project)
                     val libraries = processLibraries(project, workspaceModel, lookupService, librarySourceDir, libraryRootTypes)
 
-                    updateLibraries(workspaceModel, libraries)
+                    updateLibraries(project, workspaceModel, libraries, librarySourceDir)
                 }
             }
         }
@@ -120,7 +121,12 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         }
     }
 
-    private suspend fun updateLibraries(workspaceModel: WorkspaceModel, libraries: Map<LibraryEntity, Collection<LibraryRoot>>) {
+    private suspend fun updateLibraries(
+        project: Project,
+        workspaceModel: WorkspaceModel,
+        libraries: Map<LibraryEntity, Collection<LibraryRoot>>,
+        librarySourceDir: File
+    ) {
         checkCanceled()
 
         edtWriteAction {
@@ -131,6 +137,24 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     }
                 }
             }
+
+            val librarySourceDirVf = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(librarySourceDir) ?: return@edtWriteAction
+            val updatedLibraries = libraries.size
+            val updatedSourcesLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.SOURCES.id }
+            val updatedJavadocsLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.JAVADOC.id }
+
+            Notifications.info(
+                "Libraries sources successfully updated",
+                """
+                    Updated $updatedLibraries libraries with:<br>
+                    - $updatedSourcesLibraryRoots sources jars<br>
+                    - $updatedJavadocsLibraryRoots javadocs jars<br>
+                """.trimIndent()
+            )
+                .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
+                .system(true)
+                .hideAfter(10)
+                .notify(project)
         }
     }
 
