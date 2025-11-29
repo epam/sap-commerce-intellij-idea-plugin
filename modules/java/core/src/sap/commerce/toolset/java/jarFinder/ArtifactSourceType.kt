@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator
+package sap.commerce.toolset.java.jarFinder
 
 import com.intellij.openapi.util.Key
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 
-enum class ArtifactType(
+enum class ArtifactSourceType(
     val libraryTypeId: LibraryRootTypeId,
     val presentationName: String,
     val mavenPostfix: String,

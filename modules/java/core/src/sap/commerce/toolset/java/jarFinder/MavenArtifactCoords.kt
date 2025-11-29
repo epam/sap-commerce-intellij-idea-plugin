@@ -16,21 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator
+package sap.commerce.toolset.java.jarFinder
 
-import sap.commerce.toolset.java.jarFinder.SolrMavenCoords
-
-data class MavenCoords(
+data class MavenArtifactCoords(
     val groupId: String,
     val artifactId: String,
     val version: String,
     val source: String,
 ) {
 
-    fun toUrl(baseUrl: String, artifactType: ArtifactType) = groupId
+    fun toUrl(baseUrl: String, artifactSourceType: ArtifactSourceType) = groupId
         .let {
             val groupIdPath = groupId.replace('.', '/')
-            "$baseUrl/$groupIdPath/$artifactId/$version/$artifactId-$version-${artifactType.mavenPostfix}.jar"
+            "$baseUrl/$groupIdPath/$artifactId/$version/$artifactId-$version-${artifactSourceType.mavenPostfix}.jar"
         }
 
     fun toUrl(baseUrl: String) = groupId
@@ -40,7 +38,7 @@ data class MavenCoords(
         }
 
     companion object {
-        fun from(solrMavenCoords: SolrMavenCoords) = MavenCoords(
+        fun from(solrMavenCoords: SolrMavenCoords) = MavenArtifactCoords(
             solrMavenCoords.g,
             solrMavenCoords.a,
             solrMavenCoords.v,

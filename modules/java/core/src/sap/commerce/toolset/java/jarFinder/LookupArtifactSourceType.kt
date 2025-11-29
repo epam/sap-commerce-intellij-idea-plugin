@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator
+package sap.commerce.toolset.java.jarFinder
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
+import java.io.File
 
-class JavaLibraryJavadocsConfigurator : JavaLibraryArtifactsConfigurator(ArtifactType.JAVADOC) {
-
-    override val name
-        get() = "Libraries Javadocs"
-
-    override fun shouldProcess(hybrisProjectDescriptor: HybrisProjectDescriptor) = hybrisProjectDescriptor.isWithExternalLibraryJavadocs
-}
+data class LookupArtifactSourceType(
+    val type: ArtifactSourceType,
+    val targetFile: File,
+    var sourceLibraryRoot: LibraryRoot? = null,
+    var url: String? = null
+)

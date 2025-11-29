@@ -21,7 +21,6 @@
         <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
-        <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibraryJavadocsConfigurator"/>
 
         <project.module.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaModuleImportConfigurator"/>
     </extensions>
