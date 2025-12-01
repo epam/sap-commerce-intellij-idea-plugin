@@ -156,6 +156,7 @@ object HybrisConstants {
     const val STORAGE_HYBRIS_INTEGRATION_SETTINGS = "hybrisIntegrationSettings.xml"
     const val STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS = "hybrisDeveloperSpecificProjectSettings.xml"
     const val STORAGE_HYBRIS_TS_VIEW = "hybrisTypeSystemViewSettings.xml"
+    const val STORAGE_HYBRIS_CUSTOM_LOGGERS_TEMPLATES = "hybrisCustomLoggersTemplatesSettings.xml"
     const val STORAGE_HYBRIS_BS_VIEW = "hybrisBeanSystemViewSettings.xml"
     const val PLUGIN_ID = "com.intellij.idea.plugin.sap.commerce"
 
