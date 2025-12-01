@@ -28,12 +28,14 @@ import sap.commerce.toolset.project.ProjectUtil.isHybrisModuleRoot
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
 import java.io.File
+import kotlin.io.path.exists
 
 @Service
 class HybrisProjectService {
 
-    fun isConfigModule(file: File) = File(file, "/licence/").isDirectory
-        && File(file, "/tomcat/tomcat_context.tpl").isFile
+    fun isConfigModule(file: File) = with(file.toPath()) {
+        resolve("licence").exists() && resolve("tomcat").resolve("tomcat_context.tpl").exists()
+    }
 
     fun isCCv2Module(file: File): Boolean {
         return (file.absolutePath.contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
