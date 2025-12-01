@@ -8,7 +8,7 @@
 - Automatically download 3rd-party library javadocs [#1670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1670)
 - Rely on Maven repositories configured via `Remote Jar Repositories` to download library sources [#1672](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1672)
 - Notify on completion of the libraries sources download [#1673](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1673)
-- Fixed the issue with module auto-selection during project import with missing the local.properties file [#1671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1671)
+- Adjusted the approach to identify a config module [#1671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1671)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)
