@@ -198,8 +198,8 @@ class CustomLoggersTemplatesStateView(
         row {
             cell(
                 InlineBanner(
-                    "Unable to get list of loggers for the connection.",
-                    EditorNotificationPanel.Status.Warning
+                    "Add a First Logger.",
+                    EditorNotificationPanel.Status.Info
                 )
                     .showCloseButton(false)
             )
