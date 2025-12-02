@@ -50,8 +50,15 @@ class HybrisProjectImportService {
         ProjectConstants.Directory.TMP,
         ProjectConstants.Directory.ANT,
         ProjectConstants.Directory.CLASSES,
+        ProjectConstants.Directory.TEST_CLASSES,
         ProjectConstants.Directory.SRC,
+        ProjectConstants.Directory.GROOVY_SRC,
+        ProjectConstants.Directory.KOTLIN_SRC,
+        ProjectConstants.Directory.SCALA_SRC,
         ProjectConstants.Directory.TEST_SRC,
+        ProjectConstants.Directory.GROOVY_TEST_SRC,
+        ProjectConstants.Directory.KOTLIN_TEST_SRC,
+        ProjectConstants.Directory.SCALA_TEST_SRC,
         ProjectConstants.Directory.NODE_MODULES,
     )
 
