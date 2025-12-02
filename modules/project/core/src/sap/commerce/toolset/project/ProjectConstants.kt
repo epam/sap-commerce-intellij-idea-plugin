@@ -124,6 +124,14 @@ object ProjectConstants {
         const val WORKFLOW = "workflow"
     }
 
+    object File {
+        const val LOCAL_PROPERTIES = "local.properties"
+        const val PROJECT_PROPERTIES = "project.properties"
+        const val PLATFORM_HOME_PROPERTIES = "platformhome.properties"
+        const val ENV_PROPERTIES = "env.properties"
+        const val ADVANCED_PROPERTIES = "advanced.properties"
+    }
+
     val PLATFORM_EXTENSION_NAMES = setOf(
         Extension.ADVANCED_SAVED_QUERY,
         Extension.CATALOG,

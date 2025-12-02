@@ -289,7 +289,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (!expectedConfigDir.isDirectory()) {
             return null;
         }
-        final File propertiesFile = new File(expectedConfigDir, HybrisConstants.LOCAL_PROPERTIES_FILE);
+        final File propertiesFile = new File(expectedConfigDir, ProjectConstants.File.LOCAL_PROPERTIES);
         if (!propertiesFile.exists()) {
             return expectedConfigDir;
         }

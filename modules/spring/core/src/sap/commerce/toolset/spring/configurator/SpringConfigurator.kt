@@ -78,7 +78,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
                 moduleDescriptor.addSpringFile(advancedProperties.absolutePath)
 
                 hybrisProjectDescriptor.configHybrisModuleDescriptor
-                    ?.let { File(it.moduleRootDirectory, HybrisConstants.LOCAL_PROPERTIES_FILE) }
+                    ?.let { File(it.moduleRootDirectory, ProjectConstants.File.LOCAL_PROPERTIES) }
                     ?.let { moduleDescriptor.addSpringFile(it.absolutePath) }
             }
     }
@@ -135,7 +135,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptor: YRegularModuleDescriptor
     ) {
         val projectProperties = Properties()
-        val propFile = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.PROJECT_PROPERTIES_FILE)
+        val propFile = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.File.PROJECT_PROPERTIES)
         moduleDescriptor.addSpringFile(propFile.absolutePath)
         try {
             projectProperties.load(propFile.inputStream())

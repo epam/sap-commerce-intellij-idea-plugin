@@ -257,11 +257,6 @@ object HybrisConstants {
     const val FXS_TABLE_POSTFIX_DASH_MARK = "^"
     const val FXS_TABLE_RESULT_SEPARATOR = "|"
 
-    const val LOCAL_PROPERTIES_FILE = "local.properties"
-    const val PROJECT_PROPERTIES_FILE = "project.properties"
-    const val PLATFORMHOME_PROPERTIES_FILE = "platformhome.properties"
-    const val ENV_PROPERTIES_FILE = "env.properties"
-    const val ADVANCED_PROPERTIES_FILE = "advanced.properties"
     const val SPRING_WEB_FILE_SET_NAME = "web application context"
     const val APPLICATION_CONTEXT_SPRING_FILES = "application-context"
     const val ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs"
