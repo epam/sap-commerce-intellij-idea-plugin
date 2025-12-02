@@ -404,9 +404,6 @@ object HybrisConstants {
     val PL_TOMCAT_6_BIN_PATH = FileUtilRt.toSystemDependentName("tomcat-6/bin")
 
     @JvmField
-    val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
-
-    @JvmField
     val HAC_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes")
 
     @JvmField

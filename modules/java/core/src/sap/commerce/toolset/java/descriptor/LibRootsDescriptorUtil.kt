@@ -87,7 +87,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
                 libs.add(
                     JavaLibraryDescriptor(
                         name = "${descriptor.name} - Backoffice Classes",
-                        libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                        libraryFile = File(yModule.moduleRootDirectory, ProjectConstants.Directory.CLASSES),
                         sourceFiles = if (attachSources) sourceFiles
                         else emptyList(),
                         directoryWithClasses = true,
@@ -168,7 +168,7 @@ private fun addLibrariesToNonCustomModule(
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - compiler output",
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.CLASSES),
                 sourceFiles = sourceFiles,
                 exported = true,
                 directoryWithClasses = true
@@ -281,7 +281,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${yModule.name} - Addon's Target Classes",
-                    libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                    libraryFile = File(yModule.moduleRootDirectory, ProjectConstants.Directory.CLASSES),
                     sourceFiles = if (attachSources) addonSourceFiles
                     else emptyList(),
                     directoryWithClasses = true

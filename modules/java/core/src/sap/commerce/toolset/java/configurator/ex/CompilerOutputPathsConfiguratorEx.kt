@@ -20,7 +20,6 @@ package sap.commerce.toolset.java.configurator.ex
 import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtilCore
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -38,10 +37,10 @@ internal object CompilerOutputPathsConfiguratorEx {
 
         val output = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) {
             if (fakeOutputPath) ProjectConstants.Directory.ECLIPSE_BIN
-            else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
+            else ProjectConstants.Directory.CLASSES
         } else {
             if (ootbReadonlyMode || fakeOutputPath) ProjectConstants.Directory.ECLIPSE_BIN
-            else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
+            else ProjectConstants.Directory.CLASSES
         }
 
         val outputDirectory = File(moduleDescriptor.moduleRootDirectory, output)

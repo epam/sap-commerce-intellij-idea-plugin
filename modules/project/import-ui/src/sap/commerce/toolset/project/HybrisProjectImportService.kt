@@ -22,35 +22,41 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
 import java.nio.file.Path
+import kotlin.io.path.name
 
 @Service
 class HybrisProjectImportService {
 
-    fun isDirectoryExcluded(path: Path): Boolean = path.endsWith(ProjectConstants.Directory.PATH_BOOTSTRAP)
-        || path.endsWith(ProjectConstants.Directory.DATA)
-        || path.endsWith(ProjectConstants.Directory.GRADLE)
-        || path.endsWith(ProjectConstants.Directory.ECLIPSE_BIN)
-        || path.endsWith(ProjectConstants.Directory.GIT)
-        || path.endsWith(ProjectConstants.Directory.HG)
-        || path.endsWith(ProjectConstants.Directory.SVN)
-        || path.endsWith(ProjectConstants.Directory.GITHUB)
-        || path.endsWith(ProjectConstants.Directory.IDEA)
-        || path.endsWith(ProjectConstants.Directory.IDEA_MODULE_FILES)
-        || path.endsWith(ProjectConstants.Directory.MACO_SX)
-        || path.endsWith(ProjectConstants.Directory.LIB)
-        || path.endsWith(ProjectConstants.Directory.LOG)
-        || path.endsWith(ProjectConstants.Directory.RESOURCES)
-        || path.endsWith(ProjectConstants.Directory.TEMP)
-        || path.endsWith(ProjectConstants.Directory.TOMCAT)
-        || path.endsWith(ProjectConstants.Directory.TOMCAT_6)
-        || path.endsWith(ProjectConstants.Directory.TC_SERVER)
-        || path.endsWith(ProjectConstants.Directory.TMP)
-        || path.endsWith(ProjectConstants.Directory.ANT)
-        || path.endsWith(ProjectConstants.Directory.CLASSES)
-        || path.endsWith(ProjectConstants.Directory.SRC)
-        || path.endsWith(ProjectConstants.Directory.TEST_SRC)
-        || path.endsWith(ProjectConstants.Directory.JS_STOREFRONT)
-        || path.endsWith(ProjectConstants.Directory.NODE_MODULES)
+    private val excludedDirectories = setOf(
+        ProjectConstants.Directory.DATA,
+        ProjectConstants.Directory.GRADLE,
+        ProjectConstants.Directory.ECLIPSE_BIN,
+        ProjectConstants.Directory.GIT,
+        ProjectConstants.Directory.HG,
+        ProjectConstants.Directory.SVN,
+        ProjectConstants.Directory.GITHUB,
+        ProjectConstants.Directory.IDEA,
+        ProjectConstants.Directory.IDEA_MODULE_FILES,
+        ProjectConstants.Directory.MACO_SX,
+        ProjectConstants.Directory.LIB,
+        ProjectConstants.Directory.LOG,
+        ProjectConstants.Directory.RESOURCES,
+        ProjectConstants.Directory.TEMP,
+        ProjectConstants.Directory.TOMCAT,
+        ProjectConstants.Directory.TOMCAT_6,
+        ProjectConstants.Directory.TC_SERVER,
+        ProjectConstants.Directory.TMP,
+        ProjectConstants.Directory.ANT,
+        ProjectConstants.Directory.CLASSES,
+        ProjectConstants.Directory.SRC,
+        ProjectConstants.Directory.TEST_SRC,
+        ProjectConstants.Directory.JS_STOREFRONT,
+        ProjectConstants.Directory.NODE_MODULES,
+    )
+
+
+    fun isDirectoryExcluded(path: Path): Boolean = excludedDirectories.contains(path.name)
+        || path.endsWith(ProjectConstants.Directory.PATH_BOOTSTRAP)
 
     companion object {
         @JvmStatic

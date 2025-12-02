@@ -105,7 +105,6 @@ object ProjectConstants {
         const val KOTLIN_NATURE = "kotlinnature"
         const val COMMON_WEB = "commonweb"
         const val WEB = "web"
-
         const val ADVANCED_SAVED_QUERY = "advancedsavedquery"
         const val CATALOG = "catalog"
         const val COMMENTS = "comments"
