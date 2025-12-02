@@ -26,6 +26,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.io.filefilter.DirectoryFileFilter
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -36,7 +37,7 @@ import java.io.FileFilter
 class PlatformModuleDescriptorImpl(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String = HybrisConstants.EXTENSION_NAME_PLATFORM,
+    name: String = ProjectConstants.ExtensionNames.PLATFORM,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), PlatformModuleDescriptor {
 
@@ -85,13 +86,13 @@ class PlatformModuleDescriptorImpl(
 
     private fun getLibraryDirectories(): Collection<File> {
         val libraryDirectories = mutableListOf<File>()
-        File(moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY)
+        File(moduleRootDirectory, ProjectConstants.Directories.RESOURCES)
             .takeIf { it.exists() }
             ?.listFiles(DirectoryFileFilter.DIRECTORY as FileFilter)
             ?.let { resourcesInnerDirectories ->
                 for (resourcesInnerDirectory in resourcesInnerDirectories) {
-                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY))
-                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY))
+                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directories.LIB))
+                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directories.BIN))
                 }
             }
         addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_LIB_PATH))

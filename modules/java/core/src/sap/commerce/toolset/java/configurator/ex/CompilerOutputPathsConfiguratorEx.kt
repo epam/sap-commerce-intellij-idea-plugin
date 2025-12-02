@@ -21,6 +21,7 @@ import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
@@ -36,10 +37,10 @@ internal object CompilerOutputPathsConfiguratorEx {
         val ootbReadonlyMode = rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
 
         val output = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) {
-            if (fakeOutputPath) HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH
+            if (fakeOutputPath) ProjectConstants.Directories.ECLIPSE_BIN
             else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
         } else {
-            if (ootbReadonlyMode || fakeOutputPath) HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH
+            if (ootbReadonlyMode || fakeOutputPath) ProjectConstants.Directories.ECLIPSE_BIN
             else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
         }
 

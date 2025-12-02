@@ -45,7 +45,7 @@ import java.io.FileFilter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static sap.commerce.toolset.HybrisConstants.*;
+import static sap.commerce.toolset.HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH;
 
 public final class ContentRootConfiguratorEx {
 
@@ -99,17 +99,17 @@ public final class ContentRootConfiguratorEx {
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
         if (customModuleDescriptor
             || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()
-            || HybrisConstants.EXTENSION_NAME_PLATFORM_SERVICES.equals(moduleDescriptor.getName())
+            || ProjectConstants.ExtensionNames.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
         ) {
-            addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
+            addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directories.SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
 
             if (customModuleDescriptor || !rootProjectDescriptor.isExcludeTestSources()) {
-                addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
+                addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directories.TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
             }
 
             addSourceFolderIfNotIgnored(
                 contentEntry,
-                new File(moduleDescriptor.getModuleRootDirectory(), GEN_SRC_DIRECTORY),
+                new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directories.GEN_SRC),
                 JavaSourceRootType.SOURCE,
                 JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
                 dirsToIgnore, appSettings
@@ -127,7 +127,7 @@ public final class ContentRootConfiguratorEx {
         @NotNull final List<File> dirsToIgnore,
         @NotNull final ApplicationSettings appSettings
     ) {
-        final var resourcesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), RESOURCES_DIRECTORY);
+        final var resourcesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directories.RESOURCES);
 
         final var rootType = JavaResourceRootType.RESOURCE;
         final var properties = moduleDescriptor instanceof YBackofficeSubModuleDescriptor
@@ -150,19 +150,19 @@ public final class ContentRootConfiguratorEx {
         final ModuleDescriptor moduleDescriptor
     ) {
         excludeSubDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), List.of(
-            ProjectConstants.ExcludeDirectories.NODE_MODULES,
+            ProjectConstants.Directories.NODE_MODULES,
             HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY,
             HybrisConstants.SETTINGS_DIRECTORY,
-            HybrisConstants.TEST_CLASSES_DIRECTORY,
-            HybrisConstants.ECLIPSE_BIN_DIRECTORY,
-            HybrisConstants.BOWER_COMPONENTS_DIRECTORY,
-            HybrisConstants.JS_TARGET_DIRECTORY,
+            ProjectConstants.Directories.TEST_CLASSES,
+            ProjectConstants.Directories.ECLIPSE_BIN,
+            ProjectConstants.Directories.BOWER_COMPONENTS,
+            ProjectConstants.Directories.JS_TARGET,
             HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY
         ));
 
         if (isCustomModuleDescriptor(moduleDescriptor)
             || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
-            excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), CLASSES_DIRECTORY));
+            excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directories.CLASSES));
         }
     }
 
@@ -190,8 +190,8 @@ public final class ContentRootConfiguratorEx {
         final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
 
         if (isCustomModuleDescriptor(moduleDescriptor) || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()) {
-            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, COMMON_WEB_SRC_DIRECTORY, JavaSourceRootType.SOURCE);
-            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ADDON_SRC_DIRECTORY, JavaSourceRootType.SOURCE);
+            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directories.COMMON_WEB_SRC, JavaSourceRootType.SOURCE);
+            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directories.ADDON_SRC, JavaSourceRootType.SOURCE);
         }
     }
 
@@ -234,11 +234,11 @@ public final class ContentRootConfiguratorEx {
         final ApplicationSettings appSettings
     ) {
         final var rootDirectory = moduleDescriptor.getModuleRootDirectory();
-        final var platformBootstrapDirectory = new File(rootDirectory, PLATFORM_BOOTSTRAP_DIRECTORY);
+        final var platformBootstrapDirectory = new File(rootDirectory, ProjectConstants.Directories.BOOTSTRAP);
 
         addResourcesDirectory(contentEntry, platformBootstrapDirectory);
         // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
-        final var gensrcDirectory = new File(platformBootstrapDirectory, GEN_SRC_DIRECTORY);
+        final var gensrcDirectory = new File(platformBootstrapDirectory, ProjectConstants.Directories.GEN_SRC);
         addSourceFolderIfNotIgnored(
             contentEntry,
             gensrcDirectory,
@@ -248,13 +248,13 @@ public final class ContentRootConfiguratorEx {
         );
 
         excludeDirectory(contentEntry, gensrcDirectory);
-        excludeDirectory(contentEntry, new File(platformBootstrapDirectory, PLATFORM_MODEL_CLASSES_DIRECTORY));
+        excludeDirectory(contentEntry, new File(platformBootstrapDirectory, ProjectConstants.Directories.MODEL_CLASSES));
 
-        final var tomcat6 = new File(rootDirectory, PLATFORM_TOMCAT_6_DIRECTORY);
+        final var tomcat6 = new File(rootDirectory, ProjectConstants.Directories.TOMCAT_6);
         if (tomcat6.exists()) {
             excludeDirectory(contentEntry, tomcat6);
         } else {
-            excludeDirectory(contentEntry, new File(rootDirectory, PLATFORM_TOMCAT_DIRECTORY));
+            excludeDirectory(contentEntry, new File(rootDirectory, ProjectConstants.Directories.TOMCAT));
         }
         contentEntry.addExcludePattern("apache-ant-*");
     }
@@ -266,7 +266,7 @@ public final class ContentRootConfiguratorEx {
         excludeSubDirectories(
             contentEntry,
             moduleDescriptor.getModuleRootDirectory(),
-            List.of(TEST_CLASSES_DIRECTORY)
+            List.of(ProjectConstants.Directories.TEST_CLASSES)
         );
         configureWebInf(contentEntry, moduleDescriptor);
     }
@@ -348,7 +348,7 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void addResourcesDirectory(final @NotNull ContentEntry contentEntry, final File platformBootstrapDirectory) {
-        final var platformBootstrapResourcesDirectory = new File(platformBootstrapDirectory, RESOURCES_DIRECTORY);
+        final var platformBootstrapResourcesDirectory = new File(platformBootstrapDirectory, ProjectConstants.Directories.RESOURCES);
         contentEntry.addSourceFolder(
             VfsUtil.pathToUrl(platformBootstrapResourcesDirectory.getAbsolutePath()),
             JavaResourceRootType.RESOURCE
@@ -356,6 +356,7 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static boolean testSrcDirectoriesExists(final File webModuleDirectory) {
-        return TEST_SRC_DIR_NAMES.stream().anyMatch(s -> new File(webModuleDirectory, s).exists());
+        return ProjectConstants.Directories.TEST_SRC_DIR_NAMES.stream()
+            .anyMatch(s -> new File(webModuleDirectory, s).exists());
     }
 }

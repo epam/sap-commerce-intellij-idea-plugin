@@ -50,6 +50,7 @@ import sap.commerce.toolset.localextensions.jaxb.ObjectFactory;
 import sap.commerce.toolset.localextensions.jaxb.ScanType;
 import sap.commerce.toolset.project.HybrisProjectImportService;
 import sap.commerce.toolset.project.HybrisProjectService;
+import sap.commerce.toolset.project.ProjectConstants;
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor;
@@ -547,7 +548,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         ModuleDescriptor hmcModule = null;
 
         for (final var module : moduleDescriptors) {
-            if (HybrisConstants.EXTENSION_NAME_HMC.equals(module.getName())) {
+            if (ProjectConstants.ExtensionNames.HMC.equals(module.getName())) {
                 hmcModule = module;
             }
             if (module instanceof final YModuleDescriptor yModule) {

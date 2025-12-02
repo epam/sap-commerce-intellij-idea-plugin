@@ -32,6 +32,7 @@ import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
@@ -193,7 +194,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
             }
 
         if (moduleDescriptor.hasBackofficeModule) {
-            File(moduleDescriptor.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY)
+            File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directories.RESOURCES)
                 .listFiles { _, name: String -> name.endsWith("-backoffice-spring.xml") }
                 ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
         }
@@ -350,7 +351,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
 
     private fun getResourceDir(moduleToSearch: ModuleDescriptor) = File(
         moduleToSearch.moduleRootDirectory,
-        HybrisConstants.RESOURCES_DIRECTORY
+        ProjectConstants.Directories.RESOURCES
     )
 
     private fun addSpringExternalXmlFile(

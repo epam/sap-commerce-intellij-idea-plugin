@@ -38,6 +38,7 @@ import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfiguration
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
@@ -66,7 +67,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         hybrisProjectDescriptor.chosenModuleDescriptors
-            .find { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
+            .find { ProjectConstants.ExtensionNames.KOTLIN_NATURE == it.name }
             ?: return
 
         smartReadAction(project) {

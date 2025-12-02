@@ -33,6 +33,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
@@ -180,7 +181,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?: return true
 
         // hide `core-customize/hybris` node
-        if (HybrisConstants.HYBRIS_DIRECTORY == vf.name
+        if (ProjectConstants.Directories.HYBRIS == vf.name
             && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name
         ) return false
 
@@ -188,8 +189,8 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?: return true
 
         // hide `platform/ext` node
-        if (HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME == vf.name
-            && HybrisConstants.EXTENSION_NAME_PLATFORM == module.yExtensionName()
+        if (ProjectConstants.Directories.EXT == vf.name
+            && ProjectConstants.ExtensionNames.PLATFORM == module.yExtensionName()
         ) return false
 
         return YFacet.getState(module)
@@ -214,8 +215,8 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             when (child) {
                 is PsiDirectoryNode -> {
                     val virtualFile = child.virtualFile ?: continue
-                    if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true) &&
-                        !HybrisConstants.RESOURCES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)
+                    if (!ProjectConstants.Directories.CLASSES.equals(virtualFile.name, ignoreCase = true) &&
+                        !ProjectConstants.Directories.RESOURCES.equals(virtualFile.name, ignoreCase = true)
                     ) {
                         treeNodes.add(child)
                     }
@@ -333,9 +334,9 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         return index.isInSource(file) || index.isInLibraryClasses(file)
     }
 
-    private fun isSrcOrClassesDirectory(file: VirtualFile) = HybrisConstants.ADDON_SRC_DIRECTORY == file.name
-        || HybrisConstants.CLASSES_DIRECTORY == file.name
-        || HybrisConstants.TEST_CLASSES_DIRECTORY == file.name
+    private fun isSrcOrClassesDirectory(file: VirtualFile) = ProjectConstants.Directories.ADDON_SRC == file.name
+        || ProjectConstants.Directories.CLASSES == file.name
+        || ProjectConstants.Directories.TEST_CLASSES == file.name
 
     private fun isJunk(virtualFile: VirtualFile, junkFileNames: List<String>) = junkFileNames.contains(virtualFile.name)
         || isIdeaModuleFile(virtualFile)

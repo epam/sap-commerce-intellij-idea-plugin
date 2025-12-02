@@ -24,6 +24,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.beanSystem.model.Beans
+import sap.commerce.toolset.project.ProjectConstants
 
 fun isGeneratedFile(psiClass: PsiClass): Boolean {
     val virtualFile = psiClass.containingFile.virtualFile
@@ -31,7 +32,7 @@ fun isGeneratedFile(psiClass: PsiClass): Boolean {
     if (virtualFile?.extension == null) return false
 
     return (virtualFile.extension == "class" && virtualFile.path.contains(HybrisConstants.JAR_MODELS))
-        || (virtualFile.extension == "java" && virtualFile.path.contains("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.GEN_SRC_DIRECTORY}"))
+        || (virtualFile.extension == "java" && virtualFile.path.contains("${ProjectConstants.Directories.BOOTSTRAP}/${ProjectConstants.Directories.GEN_SRC}"))
 }
 
 fun isBeanFile(psiClass: PsiClass): Boolean {

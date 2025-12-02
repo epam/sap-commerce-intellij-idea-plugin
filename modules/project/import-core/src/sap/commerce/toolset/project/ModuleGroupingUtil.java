@@ -171,7 +171,7 @@ public final class ModuleGroupingUtil {
         if (requiredYModuleDescriptorList.contains(moduleDescriptor)) {
             final File hybrisBinDirectory = new File(
                 moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                HybrisConstants.BIN_DIRECTORY
+                ProjectConstants.Directories.BIN
             );
 
             final List<String> path;

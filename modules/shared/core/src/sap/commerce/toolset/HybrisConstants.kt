@@ -57,19 +57,7 @@ object HybrisConstants {
     const val HYBRIS_LICENCE_JAR = "hybrislicence.jar"
     const val SAP_LICENCES = "installedSaplicenses.properties"
 
-    const val HYBRIS_DIRECTORY = "hybris"
-    const val HYBRIS_DATA_DIRECTORY = "data"
     const val HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar"
-
-    const val EXTENSION_NAME_BACK_OFFICE = "backoffice"
-    const val EXTENSION_NAME_CORE = "core"
-    const val EXTENSION_NAME_CONFIG = "config"
-    const val EXTENSION_NAME_HMC = "hmc"
-    const val EXTENSION_NAME_HAC = "hac"
-    const val EXTENSION_NAME_PLATFORM = "platform"
-    const val EXTENSION_NAME_PLATFORM_SERVICES = "platformservices"
-    const val EXTENSION_NAME_ADDONSUPPORT = "addonsupport"
-    const val EXTENSION_NAME_KOTLIN_NATURE = "kotlinnature"
 
     const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
     const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
@@ -77,28 +65,6 @@ object HybrisConstants {
     const val EXTENSION_META_KEY_DEPRECATED = "deprecated"
     const val EXTENSION_META_KEY_EXT_GEN = "extgen-template-extension"
     const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
-
-    val PLATFORM_EXTENSION_NAMES = setOf(
-        "advancedsavedquery",
-        "catalog",
-        "comments",
-        "commons",
-        "core",
-        "deliveryzone",
-        "europe1",
-        "hac",
-        "impex",
-        "maintenanceweb",
-        "mediaweb",
-        "oauth2",
-        "paymentstandard",
-        "platformservices",
-        "processing",
-        "scripting",
-        "testweb",
-        "validation",
-        "workflow",
-    )
 
     val EXTENSION_INFO_META_KEYS = listOf(
         EXTENSION_META_KEY_BACKOFFICE_MODULE,
@@ -117,17 +83,12 @@ object HybrisConstants {
     const val IDE_CONSOLES_PATH = "consoles/ide/"
     const val GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc"
     const val KOTLIN_TEST_SRC_DIRECTORY = "kotlintestsrc"
-    const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
     const val BOOTSTRAP_GEN_SRC_PATH = "bootstrap/gensrc"
 
     const val HMC_MODULE_DIRECTORY = "hmc"
     const val HAC_MODULE_DIRECTORY = "hac"
     const val WEB_MODULE_DIRECTORY = "web"
-    const val COMMON_WEB_MODULE_DIRECTORY = "commonweb"
 
-    const val ADDON_SRC_DIRECTORY = "addonsrc"
-    const val TEST_CLASSES_DIRECTORY = "testclasses"
-    const val CLASSES_DIRECTORY = "classes"
     const val JAR_MODELS = "models.jar"
     const val SETTINGS_DIRECTORY = ".settings"
     const val EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders"
@@ -135,22 +96,10 @@ object HybrisConstants {
     const val WEB_ROOT_DIRECTORY = "webroot"
     const val ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon"
 
-    const val COMMON_WEB_SRC_DIRECTORY = "commonwebsrc"
-
     const val PLATFORM_HOME_PLACEHOLDER = "\${platformhome}"
-    const val PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext"
-    const val PLATFORM_BOOTSTRAP_DIRECTORY = "bootstrap"
-    const val PLATFORM_MODEL_CLASSES_DIRECTORY = "modelclasses"
-    const val PLATFORM_TOMCAT_6_DIRECTORY = "tomcat-6"
-    const val PLATFORM_TOMCAT_DIRECTORY = "tomcat"
     const val PLATFORM_LIBRARY_GROUP = "Platform Bootstrap"
     const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
-    const val JS_TARGET_DIRECTORY = "jsTarget"
-    const val BOWER_COMPONENTS_DIRECTORY = "bower_components"
-    const val CONFIG_LICENCE_DIRECTORY = "licence"
-    const val ECLIPSE_BIN_DIRECTORY = "eclipsebin"
-    const val JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY
     const val STORAGE_HYBRIS_PROJECT_SETTINGS = "hybrisProjectSettings.xml"
     const val STORAGE_HYBRIS_INTEGRATION_SETTINGS = "hybrisIntegrationSettings.xml"
     const val STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS = "hybrisDeveloperSpecificProjectSettings.xml"
@@ -322,9 +271,6 @@ object HybrisConstants {
     const val FXS_TABLE_POSTFIX_DASH_MARK = "^"
     const val FXS_TABLE_RESULT_SEPARATOR = "|"
 
-    const val LIB_DIRECTORY = "lib"
-    const val BIN_DIRECTORY = "bin"
-    const val RESOURCES_DIRECTORY = "resources"
     const val LOCAL_PROPERTIES_FILE = "local.properties"
     const val PROJECT_PROPERTIES_FILE = "project.properties"
     const val PLATFORMHOME_PROPERTIES_FILE = "platformhome.properties"
@@ -505,15 +451,6 @@ object HybrisConstants {
 
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
-
-    @JvmField
-    val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
-
-    @JvmField
-    val ALL_SRC_DIR_NAMES = listOf(GEN_SRC_DIRECTORY, SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
-
-    @JvmField
-    val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, KOTLIN_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
 
     @JvmField
     val LOCAL_GROUP_OVERRIDE_COMMENTS = """

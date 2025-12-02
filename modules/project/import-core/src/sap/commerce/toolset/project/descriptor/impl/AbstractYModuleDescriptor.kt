@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.descriptor.impl
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
@@ -57,7 +58,7 @@ abstract class AbstractYModuleDescriptor(
             webRoot = extensionInfo.extension.webmodule?.webroot,
             version = extensionInfo.extension.version,
             requiredByAll = extensionInfo.extension.isRequiredbyall,
-            addon = getRequiredExtensionNames().contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT)
+            addon = getRequiredExtensionNames().contains(ProjectConstants.ExtensionNames.ADDON_SUPPORT)
         )
     }
     private var ySubModules = mutableSetOf<YSubModuleDescriptor>()

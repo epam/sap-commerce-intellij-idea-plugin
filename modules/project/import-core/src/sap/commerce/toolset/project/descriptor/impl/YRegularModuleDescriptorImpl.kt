@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.descriptor.impl
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -66,19 +67,19 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
 
         if (hasWebModule) {
             requiredExtensionNames
-                .map { "$it." + HybrisConstants.COMMON_WEB_MODULE_DIRECTORY }
+                .map { "$it." + ProjectConstants.ExtensionNames.COMMON_WEB }
                 .filter { moduleDescriptors.contains(it) }
                 .let { requiredExtensionNames.addAll(it) }
         }
         if (hasHmcModule) {
-            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC)
+            requiredExtensionNames.add(ProjectConstants.ExtensionNames.HMC)
         }
         if (hasBackofficeModule) {
-            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE + "." + HybrisConstants.WEB_MODULE_DIRECTORY)
+            requiredExtensionNames.add(ProjectConstants.ExtensionNames.BACK_OFFICE + "." + HybrisConstants.WEB_MODULE_DIRECTORY)
         }
         return requiredExtensionNames.toImmutableSet()
     }
 
-    override fun getDefaultRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
-    override fun getAdditionalRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
+    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.ExtensionNames.PLATFORM)
+    override fun getAdditionalRequiredExtensionNames() = setOf(ProjectConstants.ExtensionNames.PLATFORM)
 }

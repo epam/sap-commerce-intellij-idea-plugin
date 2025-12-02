@@ -24,6 +24,7 @@ import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -79,7 +80,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
                 val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
-                val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
+                val sourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }
                     .filter { it.isDirectory }
 
@@ -106,7 +107,7 @@ private fun addRootLib(
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - lib",
-            libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.LIB_DIRECTORY),
+            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.LIB),
             exported = true,
             descriptorType = LibraryDescriptorType.LIB
         )
@@ -133,13 +134,13 @@ private fun addHmcLibs(
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - HMC Bin",
-            libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BIN_DIRECTORY),
+            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.BIN),
             exported = true
         )
     )
 
     descriptor.rootProjectDescriptor.chosenModuleDescriptors
-        .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_HMC }
+        .firstOrNull { it.name == ProjectConstants.ExtensionNames.HMC }
         ?.let {
             libs.add(
                 JavaLibraryDescriptor(
@@ -159,11 +160,11 @@ private fun addLibrariesToNonCustomModule(
     if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
     if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
-    val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
+    val sourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
 
-    if (HybrisConstants.EXTENSION_NAME_PLATFORM_SERVICES != descriptor.name) {
+    if (ProjectConstants.ExtensionNames.PLATFORM_SERVICES != descriptor.name) {
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - compiler output",
@@ -177,7 +178,7 @@ private fun addLibrariesToNonCustomModule(
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - resources",
-            libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
+            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.RESOURCES),
             exported = true,
             directoryWithClasses = true
         )
@@ -185,7 +186,7 @@ private fun addLibrariesToNonCustomModule(
 }
 
 private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
-    val binDir = File(descriptor.moduleRootDirectory, HybrisConstants.BIN_DIRECTORY)
+    val binDir = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.BIN)
         .takeIf { it.isDirectory }
         ?: return
     val serverJars = binDir
@@ -193,7 +194,7 @@ private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaL
         ?.takeIf { it.isNotEmpty() }
         ?: return
 
-    val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
+    val sourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
 
@@ -273,7 +274,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
         .filter { it != descriptor }
         .map { yModule ->
             // process owner extension dependencies
-            val addonSourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
+            val addonSourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
                 .map { File(yModule.moduleRootDirectory, it) }
                 .filter { it.isDirectory }
 
@@ -289,7 +290,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${yModule.name} - Addon's Target Resources",
-                    libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
+                    libraryFile = File(yModule.moduleRootDirectory, ProjectConstants.Directories.RESOURCES),
                     directoryWithClasses = true
                 )
             )
@@ -308,18 +309,18 @@ private fun getWebLibraryDescriptors(
     addRootLib(descriptor, libs)
 
     val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
-    val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
+    val sourceFiles = ProjectConstants.Directories.ALL_SRC_DIR_NAMES
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
         .toMutableList()
-    val testSourceFiles = HybrisConstants.TEST_SRC_DIR_NAMES
+    val testSourceFiles = ProjectConstants.Directories.TEST_SRC_DIR_NAMES
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
         .toMutableList()
 
     listOf(
-        File(descriptor.moduleRootDirectory, HybrisConstants.ADDON_SRC_DIRECTORY),
-        File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY),
+        File(descriptor.moduleRootDirectory, ProjectConstants.Directories.ADDON_SRC),
+        File(descriptor.moduleRootDirectory, ProjectConstants.Directories.COMMON_WEB_SRC),
     )
         .filter { it.isDirectory }
         .mapNotNull { srcDir ->
@@ -329,7 +330,7 @@ private fun getWebLibraryDescriptors(
         .flatten()
         .forEach { sourceFiles.add(it) }
 
-    if (descriptor.owner.name != HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
+    if (descriptor.owner.name != ProjectConstants.ExtensionNames.BACK_OFFICE) {
         if (descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor is YWebSubModuleDescriptor) {
             libs.add(
                 JavaLibraryDescriptor(
@@ -343,7 +344,7 @@ private fun getWebLibraryDescriptors(
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${descriptor.name} - Test Classes",
-                    libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.TEST_CLASSES_DIRECTORY),
+                    libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.TEST_CLASSES),
                     sourceFiles = testSourceFiles,
                     exported = true,
                     directoryWithClasses = true,
@@ -378,7 +379,7 @@ private fun getCommonWebSubModuleDescriptor(
     descriptor
         .dependantWebExtensions
         .forEach {
-            val webSourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
+            val webSourceFiles = ProjectConstants.Directories.ALL_SRC_DIR_NAMES
                 .map { dir -> File(descriptor.moduleRootDirectory, dir) }
                 .filter { dir -> dir.isDirectory }
             libs.add(
@@ -397,7 +398,7 @@ private fun getCommonWebSubModuleDescriptor(
 private fun getLibraryDescriptors(descriptor: ConfigModuleDescriptor) = listOf(
     JavaLibraryDescriptor(
         name = "Config License",
-        libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.CONFIG_LICENCE_DIRECTORY),
+        libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.LICENCE),
         exported = true
     )
 )

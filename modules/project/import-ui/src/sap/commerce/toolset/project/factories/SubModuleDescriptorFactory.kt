@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.factories
 
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
@@ -48,7 +49,7 @@ object SubModuleDescriptorFactory {
             }
         }
 
-        build(owner, HybrisConstants.COMMON_WEB_MODULE_DIRECTORY, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
+        build(owner, ProjectConstants.ExtensionNames.COMMON_WEB, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
         build(owner, HybrisConstants.ACCELERATOR_ADDON_WEB_PATH, subModules) { YAcceleratorAddonSubModuleDescriptor(owner, it) }
 
         return subModules.toImmutableSet()

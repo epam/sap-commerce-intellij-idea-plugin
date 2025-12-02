@@ -268,11 +268,11 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CONFIG }
+        .firstOrNull { it.yExtensionName() == ProjectConstants.ExtensionNames.CONFIG }
 
     private fun obtainPlatformModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+        .firstOrNull { it.yExtensionName() == ProjectConstants.ExtensionNames.PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {
