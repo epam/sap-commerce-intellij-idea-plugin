@@ -43,16 +43,15 @@ class HybrisProjectImportService {
         ProjectConstants.Directory.LIB,
         ProjectConstants.Directory.LOG,
         ProjectConstants.Directory.RESOURCES,
-        ProjectConstants.Directory.TEMP,
         ProjectConstants.Directory.TOMCAT,
         ProjectConstants.Directory.TOMCAT_6,
         ProjectConstants.Directory.TC_SERVER,
+        ProjectConstants.Directory.TEMP,
         ProjectConstants.Directory.TMP,
         ProjectConstants.Directory.ANT,
         ProjectConstants.Directory.CLASSES,
         ProjectConstants.Directory.SRC,
         ProjectConstants.Directory.TEST_SRC,
-        ProjectConstants.Directory.JS_STOREFRONT,
         ProjectConstants.Directory.NODE_MODULES,
     )
 
