@@ -37,13 +37,12 @@ class HybrisProjectService {
         resolve("licence").exists() && resolve("tomcat").resolve("tomcat_context.tpl").exists()
     }
 
-    fun isCCv2Module(file: File): Boolean {
-        return (file.absolutePath.contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
+    fun isCCv2Module(file: File) =
+        (file.absolutePath.contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
             || file.absolutePath.contains(CCv2Constants.DATAHUB_NAME)
             || file.absolutePath.contains(CCv2Constants.JS_STOREFRONT_NAME)
             )
             && File(file, CCv2Constants.MANIFEST_NAME).isFile()
-    }
 
     fun isAngularModule(file: File) = File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile()
 
