@@ -16,22 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree.nodes
+package sap.commerce.toolset.logging.state
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.xmlb.annotations.OptionTag
 
-class LoggersRootNode(project: Project) : LoggersNode(project) {
-
-    override fun getName() = "root"
-    override fun update(presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-    }
-
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
-        RemoteHacInstancesLoggersOptionsNode(project),
-        BundledLoggersTemplateGroupNode(project),
-        CustomLoggersTemplateGroupNode(project)
-    ).associateBy { it.name }
-}
+data class CxCustomLoggerTemplateState(
+    @OptionTag val name: String = "",
+    @OptionTag val loggers: List<CxCustomLoggerConfig> = emptyList()
+)

@@ -16,9 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree.nodes
+package sap.commerce.toolset.logging.event
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisIcons
+import com.intellij.util.messages.Topic
 
-class CustomLoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Custom", HybrisIcons.Log.Template.CUSTOM, project)
+interface CxLoggerTemplatesStateListener {
+
+    fun onLoggersTemplatesStateChanged() = Unit
+
+    companion object {
+        val TOPIC = Topic(CxLoggerTemplatesStateListener::class.java)
+    }
+}

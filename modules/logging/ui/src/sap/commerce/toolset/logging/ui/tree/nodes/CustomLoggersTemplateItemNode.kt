@@ -21,17 +21,21 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import sap.commerce.toolset.logging.CxLoggerModel
+import javax.swing.Icon
 
-class LoggersRootNode(project: Project) : LoggersNode(project) {
+class CustomLoggersTemplateItemNode(
+    val loggers: List<CxLoggerModel>,
+    text: String,
+    icon: Icon?,
+    project: Project
+) : LoggersOptionsNode(text, icon, project) {
 
-    override fun getName() = "root"
     override fun update(presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-    }
+        super.update(presentation)
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
-        RemoteHacInstancesLoggersOptionsNode(project),
-        BundledLoggersTemplateGroupNode(project),
-        CustomLoggersTemplateGroupNode(project)
-    ).associateBy { it.name }
+        val tip = " ${loggers.size} logger(s)"
+
+        presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
+    }
 }

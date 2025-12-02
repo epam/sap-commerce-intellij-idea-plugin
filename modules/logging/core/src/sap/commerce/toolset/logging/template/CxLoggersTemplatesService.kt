@@ -24,8 +24,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.ResourceUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
 import sap.commerce.toolset.logging.resolveIconBlocking
 import sap.commerce.toolset.logging.resolvePsiElementPointerBlocking
+import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
+import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
 import java.io.InputStreamReader
 
 @Service(Service.Level.PROJECT)
@@ -70,6 +73,26 @@ class CxLoggersTemplatesService(private val project: Project) {
             )
         }
         ?: emptyList()
+
+    fun customLoggerTemplates() = CxLoggerTemplatesSettings.getInstance(project)
+        .customLoggerTemplates
+        .map { templateState ->
+            CxLoggersTemplateModel(
+                templateState.name,
+                templateState.loggers
+                    .map { loggerState -> CxLoggerModel.of(loggerState.name, loggerState.effectiveLevel) }
+                    .toList(),
+                HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+            )
+        }
+
+    fun addCustomLoggerTemplate(templateName: String) {
+        with(CxLoggerTemplatesSettings.getInstance(project)) {
+            customLoggerTemplates = customLoggerTemplates + CxCustomLoggerTemplateState(templateName)
+        }
+
+        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
+    }
 
     companion object {
         fun getInstance(project: Project): CxLoggersTemplatesService = project.getService(CxLoggersTemplatesService::class.java)

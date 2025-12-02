@@ -26,6 +26,8 @@
         <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.FetchLoggersStateAction"/>
 
         <action id="sap.cx.loggers.apply.bundle.template" class="sap.commerce.toolset.logging.actionSystem.ApplyBundledTemplateAction"/>
+        <action id="sap.cx.loggers.add.custom.template" class="sap.commerce.toolset.logging.actionSystem.AddCustomTemplateAction"/>
+        <action id="sap.cx.loggers.delete.custom.template" class="sap.commerce.toolset.logging.actionSystem.DeleteCustomTemplateAction"/>
 
         <group id="sap.cx.loggers.toolbar.actions" searchable="false">
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>

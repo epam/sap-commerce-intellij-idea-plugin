@@ -31,6 +31,7 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLoggerAccess
+import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
@@ -53,6 +54,7 @@ class LoggersSplitView(
     private val tree = LoggersOptionsTree(project).apply { registerListeners(this) }
     private val loggersStateView = LoggersStateView(project, coroutineScope)
     private val loggersTemplatesStateView = LoggersTemplatesStateView(project, coroutineScope)
+    private val customLoggersTemplatesStateView = CustomLoggersTemplatesStateView(project, coroutineScope)
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -62,6 +64,7 @@ class LoggersSplitView(
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
         Disposer.register(this, loggersTemplatesStateView)
+        Disposer.register(this, customLoggersTemplatesStateView)
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
@@ -81,6 +84,10 @@ class LoggersSplitView(
                         ?.takeIf { it.connectionUUID == remoteConnection.uuid }
                         ?.let { updateSecondComponent(it) }
                 }
+            })
+
+            subscribe(CxLoggerTemplatesStateListener.TOPIC, object : CxLoggerTemplatesStateListener {
+                override fun onLoggersTemplatesStateChanged() = updateTree()
             })
         }
     }
@@ -137,10 +144,10 @@ class LoggersSplitView(
                     loggersTemplatesStateView.renderNothingSelected()
                 }
 
-                is CustomLoggersTemplateLoggersOptionsNode -> {
-                    secondComponent = loggersTemplatesStateView.view
+                is CustomLoggersTemplateGroupNode -> {
+                    secondComponent = customLoggersTemplatesStateView.view
 
-                    loggersTemplatesStateView.renderNoLoggerTemplates()
+                    customLoggersTemplatesStateView.renderNothingSelected()
                 }
 
                 is BundledLoggersTemplateItemNode -> {
@@ -148,6 +155,14 @@ class LoggersSplitView(
 
                     node.loggers.associateBy { it.name }.let {
                         loggersTemplatesStateView.renderLoggersTemplate(it)
+                    }
+                }
+
+                is CustomLoggersTemplateItemNode -> {
+                    secondComponent = customLoggersTemplatesStateView.view
+
+                    node.loggers.associateBy { it.name }.let {
+                        customLoggersTemplatesStateView.renderLoggersTemplate(it)
                     }
                 }
 
