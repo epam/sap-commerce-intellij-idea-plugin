@@ -52,8 +52,8 @@ class HybrisProjectIconProvider : IconProvider() {
     private fun getIcon(directory: PsiDirectory): Icon? {
         val parentName = directory.parentDirectory?.name
         return when (directory.name) {
-            "tomcat" if (parentName == ProjectConstants.ExtensionNames.CONFIG || parentName == ProjectConstants.ExtensionNames.PLATFORM) -> HybrisIcons.Tools.TOMCAT
-            "solr" if parentName == ProjectConstants.ExtensionNames.CONFIG -> HybrisIcons.Tools.SOLR
+            "tomcat" if (parentName == ProjectConstants.Extension.CONFIG || parentName == ProjectConstants.Extension.PLATFORM) -> HybrisIcons.Tools.TOMCAT
+            "solr" if parentName == ProjectConstants.Extension.CONFIG -> HybrisIcons.Tools.SOLR
             "lib" if (directory.parentDirectory?.childrenOfType<XmlFile>()?.any { it.name == HybrisConstants.EXTENSION_INFO_XML } ?: false) -> HybrisIcons.Module.LIB
             else -> null
         }

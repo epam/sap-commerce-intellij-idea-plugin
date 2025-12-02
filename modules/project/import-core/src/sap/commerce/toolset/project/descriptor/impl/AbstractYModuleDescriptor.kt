@@ -58,7 +58,7 @@ abstract class AbstractYModuleDescriptor(
             webRoot = extensionInfo.extension.webmodule?.webroot,
             version = extensionInfo.extension.version,
             requiredByAll = extensionInfo.extension.isRequiredbyall,
-            addon = getRequiredExtensionNames().contains(ProjectConstants.ExtensionNames.ADDON_SUPPORT)
+            addon = getRequiredExtensionNames().contains(ProjectConstants.Extension.ADDON_SUPPORT)
         )
     }
     private var ySubModules = mutableSetOf<YSubModuleDescriptor>()

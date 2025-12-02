@@ -208,7 +208,6 @@ object HybrisConstants {
     val BP_NAVIGABLE_ELEMENTS = setOf("action", "end", "wait", "join", "notify", "split", "scriptAction", "choice")
 
     const val HYBRIS = "[y]"
-    const val DEBUG_MODEL_RENDERER_PREFIX = HYBRIS
     const val SEARCH_SCOPE_Y_PREFIX = HYBRIS
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
@@ -330,15 +329,6 @@ object HybrisConstants {
         "apps/**/node_modules",
         "common/temp/node_modules"
     )
-
-    const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
-    private const val SRC_DIRECTORY = "src"
-    private const val GROOVY_SRC_DIRECTORY = "groovysrc"
-    private const val SCALA_SRC_DIRECTORY = "scalasrc"
-
-    // kotlinnature extension integration
-    const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
-    const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
 

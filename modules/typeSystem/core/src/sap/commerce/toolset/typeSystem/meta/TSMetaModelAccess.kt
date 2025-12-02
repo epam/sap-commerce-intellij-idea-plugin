@@ -53,7 +53,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
     private val myReservedTypeCodes by lazy {
         ModuleManager.getInstance(project)
             .modules
-            .firstOrNull { it.yExtensionName() == ProjectConstants.ExtensionNames.CORE }
+            .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CORE }
             ?.root()
             ?.resolve(HybrisConstants.RESERVED_TYPE_CODES_FILE)
             ?.takeIf { it.exists() }

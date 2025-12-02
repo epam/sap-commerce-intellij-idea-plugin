@@ -29,7 +29,7 @@ class YWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
     name: String = owner.name + "." + moduleRootDirectory.name,
-    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directories.WEB_ROOT),
+    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.WEB
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory, name) {
 

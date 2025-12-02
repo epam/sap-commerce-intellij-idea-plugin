@@ -37,10 +37,10 @@ internal object CompilerOutputPathsConfiguratorEx {
         val ootbReadonlyMode = rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
 
         val output = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) {
-            if (fakeOutputPath) ProjectConstants.Directories.ECLIPSE_BIN
+            if (fakeOutputPath) ProjectConstants.Directory.ECLIPSE_BIN
             else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
         } else {
-            if (ootbReadonlyMode || fakeOutputPath) ProjectConstants.Directories.ECLIPSE_BIN
+            if (ootbReadonlyMode || fakeOutputPath) ProjectConstants.Directory.ECLIPSE_BIN
             else HybrisConstants.JAVA_COMPILER_OUTPUT_PATH
         }
 

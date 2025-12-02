@@ -44,8 +44,8 @@ class GroovyEditorToolbarProvider(
 
         // Checking special cases where toolbar might not be desired
         val path = vf.path
-        val isTestFile = path.contains(ProjectConstants.Directories.TEST_SRC, true)
-            || path.contains(ProjectConstants.Directories.GROOVY_TEST_SRC, true)
+        val isTestFile = path.contains(ProjectConstants.Directory.TEST_SRC, true)
+            || path.contains(ProjectConstants.Directory.GROOVY_TEST_SRC, true)
         val isIdeConsole = path.contains(HybrisConstants.IDE_CONSOLES_PATH)
             || path.contains(GroovyConstants.PATH_CONSOLES_GROOVY)
         val testFileCheckPassed = groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile

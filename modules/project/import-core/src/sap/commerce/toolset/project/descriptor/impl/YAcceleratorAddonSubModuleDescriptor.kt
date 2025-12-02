@@ -29,8 +29,8 @@ import java.io.File
 class YAcceleratorAddonSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
-    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directories.WEB_ROOT),
-    override val name: String = owner.name + "." + ProjectConstants.Directories.ACCELERATOR_ADDON + "." + ProjectConstants.ExtensionNames.WEB,
+    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
+    override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 
@@ -46,10 +46,10 @@ class YAcceleratorAddonSubModuleDescriptor(
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.ExtensionNames.WEB }
+            .map { it + "." + ProjectConstants.Extension.WEB }
         // Strange, but acceleratoraddon may rely on another acceleratoraddon
         val acceleratorWebNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.Directories.ACCELERATOR_ADDON + "." + ProjectConstants.ExtensionNames.WEB }
+            .map { it + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB }
         return setOf(owner.name) + webNames + acceleratorWebNames
     }
 

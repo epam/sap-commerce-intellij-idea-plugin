@@ -41,12 +41,12 @@ class ProjectAfterCompilerTask : CompileTask {
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
 
         val modules = context.compileScope.affectedModules
-        val platformModule = modules.firstOrNull { it.yExtensionName() == ProjectConstants.ExtensionNames.PLATFORM }
+        val platformModule = modules.firstOrNull { it.yExtensionName() == ProjectConstants.Extension.PLATFORM }
             ?: return@runReadAction true
 
         val bootstrapDirectory = platformModule
             .root()
-            ?.resolve(ProjectConstants.Directories.BOOTSTRAP)
+            ?.resolve(ProjectConstants.Directory.BOOTSTRAP)
             ?: return@runReadAction true
 
         ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)

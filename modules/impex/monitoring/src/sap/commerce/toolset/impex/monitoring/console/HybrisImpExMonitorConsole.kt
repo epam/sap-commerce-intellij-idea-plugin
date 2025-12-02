@@ -80,7 +80,7 @@ class HybrisImpExMonitorConsole(
     private fun obtainDataFolder(project: Project): String {
         val settings = ProjectSettings.getInstance(project)
         // TODO
-        return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${ProjectConstants.Directories.DATA}")
+        return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${ProjectConstants.Directory.DATA}")
     }
 
     override fun printResult(result: ConsoleAwareExecResult) {

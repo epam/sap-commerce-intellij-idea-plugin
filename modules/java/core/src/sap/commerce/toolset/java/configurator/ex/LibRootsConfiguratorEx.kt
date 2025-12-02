@@ -69,13 +69,13 @@ internal object LibRootsConfiguratorEx {
                         addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
                     }
                 }
-                if (moduleDescriptor.name == ProjectConstants.ExtensionNames.BACK_OFFICE) {
+                if (moduleDescriptor.name == ProjectConstants.Extension.BACK_OFFICE) {
                     addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true)
                 }
             }
 
             is YWebSubModuleDescriptor -> {
-                if (moduleDescriptor.owner.name == ProjectConstants.ExtensionNames.BACK_OFFICE) {
+                if (moduleDescriptor.owner.name == ProjectConstants.Extension.BACK_OFFICE) {
                     val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
                     val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
                     val sources = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_PARENT_JAR_PATH)

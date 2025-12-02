@@ -16,23 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.descriptor.impl
+package sap.commerce.toolset.kotlin
 
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
-import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+object KotlinConstants {
 
-class YHacSubModuleDescriptor(
-    owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
-    override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HAC,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
-
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
-        owner.name,
-        ProjectConstants.Extension.HAC + "." + ProjectConstants.Extension.WEB
-    )
-
+    const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
+    const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 }

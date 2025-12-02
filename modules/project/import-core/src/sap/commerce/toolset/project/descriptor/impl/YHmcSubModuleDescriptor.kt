@@ -32,6 +32,6 @@ class YHmcSubModuleDescriptor(
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
         owner.name,
-        ProjectConstants.ExtensionNames.HMC + "." + ProjectConstants.ExtensionNames.WEB
+        ProjectConstants.Extension.HMC + "." + ProjectConstants.Extension.WEB
     )
 }

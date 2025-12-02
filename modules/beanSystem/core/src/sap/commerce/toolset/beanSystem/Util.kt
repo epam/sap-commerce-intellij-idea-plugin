@@ -32,7 +32,7 @@ fun isGeneratedFile(psiClass: PsiClass): Boolean {
     if (virtualFile?.extension == null) return false
 
     return (virtualFile.extension == "class" && virtualFile.path.contains(HybrisConstants.JAR_MODELS))
-        || (virtualFile.extension == "java" && virtualFile.path.contains("${ProjectConstants.Directories.BOOTSTRAP}/${ProjectConstants.Directories.GEN_SRC}"))
+        || (virtualFile.extension == "java" && virtualFile.path.contains("${ProjectConstants.Directory.BOOTSTRAP}/${ProjectConstants.Directory.GEN_SRC}"))
 }
 
 fun isBeanFile(psiClass: PsiClass): Boolean {

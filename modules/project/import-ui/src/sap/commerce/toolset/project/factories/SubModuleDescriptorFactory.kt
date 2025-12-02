@@ -32,16 +32,16 @@ object SubModuleDescriptorFactory {
     fun buildAll(owner: YRegularModuleDescriptor): Set<YSubModuleDescriptor> {
         val subModules = mutableSetOf<YSubModuleDescriptor>()
 
-        if (owner.hasWebModule) build(owner, ProjectConstants.ExtensionNames.WEB, subModules) { YWebSubModuleDescriptor(owner, it) }
-        if (owner.hasHmcModule) build(owner, ProjectConstants.ExtensionNames.HMC, subModules) { YHmcSubModuleDescriptor(owner, it) }
-        if (owner.isHacAddon) build(owner, ProjectConstants.ExtensionNames.HAC, subModules) { YHacSubModuleDescriptor(owner, it) }
+        if (owner.hasWebModule) build(owner, ProjectConstants.Extension.WEB, subModules) { YWebSubModuleDescriptor(owner, it) }
+        if (owner.hasHmcModule) build(owner, ProjectConstants.Extension.HMC, subModules) { YHmcSubModuleDescriptor(owner, it) }
+        if (owner.isHacAddon) build(owner, ProjectConstants.Extension.HAC, subModules) { YHacSubModuleDescriptor(owner, it) }
 
         if (owner.hasBackofficeModule) {
-            build(owner, ProjectConstants.ExtensionNames.BACK_OFFICE, subModules) { backoffice ->
+            build(owner, ProjectConstants.Extension.BACK_OFFICE, subModules) { backoffice ->
                 val subModule = YBackofficeSubModuleDescriptor(owner, backoffice)
 
                 if (subModule.hasWebModule) {
-                    build(subModule, ProjectConstants.ExtensionNames.WEB, subModules) { web ->
+                    build(subModule, ProjectConstants.Extension.WEB, subModules) { web ->
                         YWebSubModuleDescriptor(owner, web, subModule.name + "." + web.name)
                     }
                 }
@@ -49,7 +49,7 @@ object SubModuleDescriptorFactory {
             }
         }
 
-        build(owner, ProjectConstants.ExtensionNames.COMMON_WEB, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
+        build(owner, ProjectConstants.Extension.COMMON_WEB, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
         build(owner, HybrisConstants.ACCELERATOR_ADDON_WEB_PATH, subModules) { YAcceleratorAddonSubModuleDescriptor(owner, it) }
 
         return subModules.toImmutableSet()

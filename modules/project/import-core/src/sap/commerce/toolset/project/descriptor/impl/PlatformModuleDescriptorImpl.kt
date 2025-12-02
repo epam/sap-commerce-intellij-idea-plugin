@@ -37,7 +37,7 @@ import java.io.FileFilter
 class PlatformModuleDescriptorImpl(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String = ProjectConstants.ExtensionNames.PLATFORM,
+    name: String = ProjectConstants.Extension.PLATFORM,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), PlatformModuleDescriptor {
 
@@ -86,13 +86,13 @@ class PlatformModuleDescriptorImpl(
 
     private fun getLibraryDirectories(): Collection<File> {
         val libraryDirectories = mutableListOf<File>()
-        File(moduleRootDirectory, ProjectConstants.Directories.RESOURCES)
+        File(moduleRootDirectory, ProjectConstants.Directory.RESOURCES)
             .takeIf { it.exists() }
             ?.listFiles(DirectoryFileFilter.DIRECTORY as FileFilter)
             ?.let { resourcesInnerDirectories ->
                 for (resourcesInnerDirectory in resourcesInnerDirectories) {
-                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directories.LIB))
-                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directories.BIN))
+                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directory.LIB))
+                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directory.BIN))
                 }
             }
         addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_LIB_PATH))

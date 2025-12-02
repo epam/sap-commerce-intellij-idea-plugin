@@ -33,7 +33,7 @@ import java.io.File
 class YCommonWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
-    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directories.WEB_ROOT),
+    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.COMMON_WEB,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 

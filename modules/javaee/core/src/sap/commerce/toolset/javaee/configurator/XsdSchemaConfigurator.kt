@@ -36,7 +36,7 @@ class XsdSchemaConfigurator : ProjectPostImportConfigurator {
         val project = hybrisProjectDescriptor.project ?: return
         val cockpitJarToFile = readAction {
             hybrisProjectDescriptor.chosenModuleDescriptors
-                .firstOrNull { it.name == ProjectConstants.ExtensionNames.BACK_OFFICE }
+                .firstOrNull { it.name == ProjectConstants.Extension.BACK_OFFICE }
                 ?.moduleRootDirectory
                 ?.toPath()
                 ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))

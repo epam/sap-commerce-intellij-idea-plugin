@@ -46,7 +46,7 @@ class HybrisProjectService {
 
     fun isAngularModule(file: File) = File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile()
 
-    fun isPlatformModule(file: File) = file.getName() == ProjectConstants.ExtensionNames.PLATFORM
+    fun isPlatformModule(file: File) = file.getName() == ProjectConstants.Extension.PLATFORM
         && File(file, HybrisConstants.EXTENSIONS_XML).isFile()
 
     fun isPlatformExtModule(file: File) = file.absolutePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
@@ -54,7 +54,7 @@ class HybrisProjectService {
         && !isCoreExtModule(file)
 
     fun isCoreExtModule(file: File) = file.absolutePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
-        && file.getName() == ProjectConstants.ExtensionNames.CORE
+        && file.getName() == ProjectConstants.Extension.CORE
         && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
 
     fun isHybrisModule(file: File): Boolean = isHybrisModuleRoot(file)

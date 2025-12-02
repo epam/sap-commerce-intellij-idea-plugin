@@ -548,7 +548,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         ModuleDescriptor hmcModule = null;
 
         for (final var module : moduleDescriptors) {
-            if (ProjectConstants.ExtensionNames.HMC.equals(module.getName())) {
+            if (ProjectConstants.Extension.HMC.equals(module.getName())) {
                 hmcModule = module;
             }
             if (module instanceof final YModuleDescriptor yModule) {
@@ -940,7 +940,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (module instanceof PlatformModuleDescriptor) {
                 platformHybrisModuleDescriptor = (PlatformModuleDescriptor) module;
             }
-            if (ProjectConstants.ExtensionNames.KOTLIN_NATURE.equals(module.getName())) {
+            if (ProjectConstants.Extension.KOTLIN_NATURE.equals(module.getName())) {
                 kotlinNatureModuleDescriptor = module;
             }
         });

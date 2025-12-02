@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.util.Key
-import sap.commerce.toolset.HybrisConstants.KOTLIN_SRC_DIRECTORY
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -29,7 +28,7 @@ object ProjectConstants {
     @JvmStatic
     val KEY_FINALIZE_PROJECT_IMPORT: Key<HybrisProjectDescriptor> = Key.create("hybrisProjectImportFinalize")
 
-    object Directories {
+    object Directory {
         const val BOOTSTRAP = "bootstrap"
 
         const val TMP = "tmp"
@@ -88,13 +87,13 @@ object ProjectConstants {
         val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
         @JvmField
-        val ALL_SRC_DIR_NAMES = listOf(TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC_DIRECTORY, SCALA_SRC)
+        val ALL_SRC_DIR_NAMES = listOf(TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
         @JvmField
         val TEST_SRC_DIR_NAMES = listOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
     }
 
-    object ExtensionNames {
+    object Extension {
         const val BACK_OFFICE = "backoffice"
         const val CORE = "core"
         const val CONFIG = "config"
@@ -127,25 +126,25 @@ object ProjectConstants {
     }
 
     val PLATFORM_EXTENSION_NAMES = setOf(
-        ExtensionNames.ADVANCED_SAVED_QUERY,
-        ExtensionNames.CATALOG,
-        ExtensionNames.COMMENTS,
-        ExtensionNames.COMMONS,
-        ExtensionNames.CORE,
-        ExtensionNames.DELIVERY_ZONE,
-        ExtensionNames.EUROPE1,
-        ExtensionNames.HAC,
-        ExtensionNames.IMPEX,
-        ExtensionNames.MAINTENANCE_WEB,
-        ExtensionNames.MEDIA_WEB,
-        ExtensionNames.OAUTH2,
-        ExtensionNames.PAYMENT_STANDARD,
-        ExtensionNames.PLATFORMSERVICES,
-        ExtensionNames.PROCESSING,
-        ExtensionNames.SCRIPTING,
-        ExtensionNames.TESTWEB,
-        ExtensionNames.VALIDATION,
-        ExtensionNames.WORKFLOW,
+        Extension.ADVANCED_SAVED_QUERY,
+        Extension.CATALOG,
+        Extension.COMMENTS,
+        Extension.COMMONS,
+        Extension.CORE,
+        Extension.DELIVERY_ZONE,
+        Extension.EUROPE1,
+        Extension.HAC,
+        Extension.IMPEX,
+        Extension.MAINTENANCE_WEB,
+        Extension.MEDIA_WEB,
+        Extension.OAUTH2,
+        Extension.PAYMENT_STANDARD,
+        Extension.PLATFORMSERVICES,
+        Extension.PROCESSING,
+        Extension.SCRIPTING,
+        Extension.TESTWEB,
+        Extension.VALIDATION,
+        Extension.WORKFLOW,
     )
 
 }

@@ -47,7 +47,7 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
         )
         modifiableModelsProvider.getModifiableRootModel(javaModule)
             .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath))
-            .addExcludePattern(ProjectConstants.Directories.HYBRIS)
+            .addExcludePattern(ProjectConstants.Directory.HYBRIS)
 
         return javaModule
     }

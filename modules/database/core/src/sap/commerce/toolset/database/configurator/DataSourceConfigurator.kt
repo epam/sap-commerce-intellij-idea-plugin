@@ -98,7 +98,7 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
 
         // let's try to pick up a suitable driver located in the Database Drivers library
         ModuleManager.getInstance(project).modules
-            .firstOrNull { it.name.endsWith(ProjectConstants.ExtensionNames.PLATFORM) }
+            .firstOrNull { it.name.endsWith(ProjectConstants.Extension.PLATFORM) }
             ?.let { LibraryUtil.findLibrary(it, HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY) }
             ?.let { library ->
                 library.rootProvider.getFiles(OrderRootType.CLASSES)

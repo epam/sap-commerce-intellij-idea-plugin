@@ -41,7 +41,7 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
         }
         if (virtualFile == null) return false
 
-        if (virtualFile.name == ProjectConstants.Directories.CLASSES) {
+        if (virtualFile.name == ProjectConstants.Directory.CLASSES) {
             return virtualFile.parent
                 ?.let { ProjectUtil.isHybrisModuleRoot(virtualFile) }
                 ?: false
@@ -50,13 +50,13 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
         return JarFileSystem.getInstance().getVirtualFileForJar(file)
             ?.parent
             ?.path
-            ?.endsWith(ProjectConstants.Directories.BOOTSTRAP + '/' + ProjectConstants.Directories.BIN)
+            ?.endsWith(ProjectConstants.Directory.BOOTSTRAP + '/' + ProjectConstants.Directory.BIN)
             ?: false
     }
 
     private fun isNotClassesOrDirectories(f: VirtualFile?) = f != null
         && !(f.isDirectory && (isClassesOrModels(f)))
 
-    private fun isClassesOrModels(f: VirtualFile) = f.name == ProjectConstants.Directories.CLASSES
+    private fun isClassesOrModels(f: VirtualFile) = f.name == ProjectConstants.Directory.CLASSES
         || f.name == HybrisConstants.JAR_MODELS
 }

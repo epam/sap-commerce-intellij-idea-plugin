@@ -30,11 +30,11 @@ class YBackofficeSubModuleDescriptor(
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.BACKOFFICE,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 
-    val hasWebModule = File(moduleRootDirectory, ProjectConstants.ExtensionNames.WEB).isDirectory
+    val hasWebModule = File(moduleRootDirectory, ProjectConstants.Extension.WEB).isDirectory
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.ExtensionNames.BACK_OFFICE }
+            .map { it + "." + ProjectConstants.Extension.BACK_OFFICE }
         return setOf(owner.name) + webNames
     }
 }

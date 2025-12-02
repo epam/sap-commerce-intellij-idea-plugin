@@ -194,7 +194,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
             }
 
         if (moduleDescriptor.hasBackofficeModule) {
-            File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directories.RESOURCES)
+            File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.RESOURCES)
                 .listFiles { _, name: String -> name.endsWith("-backoffice-spring.xml") }
                 ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
         }
@@ -233,7 +233,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptor: YWebSubModuleDescriptor,
         contextConfigLocation: String
     ) {
-        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directories.WEB_ROOT)
+        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT)
 
         SPLIT_PATTERN.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }
@@ -351,7 +351,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
 
     private fun getResourceDir(moduleToSearch: ModuleDescriptor) = File(
         moduleToSearch.moduleRootDirectory,
-        ProjectConstants.Directories.RESOURCES
+        ProjectConstants.Directory.RESOURCES
     )
 
     private fun addSpringExternalXmlFile(

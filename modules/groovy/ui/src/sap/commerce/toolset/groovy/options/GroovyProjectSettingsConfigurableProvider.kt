@@ -97,7 +97,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 checkBox("Enable actions toolbar for a Test Groovy file")
                     .bindSelected(mutable::enableActionsToolbarForGroovyTest)
-                    .comment("Enables Actions toolbar for the groovy files located in the <code>${ProjectConstants.Directories.TEST_SRC}</code> or <code>${ProjectConstants.Directories.GROOVY_TEST_SRC}</code> directory.")
+                    .comment("Enables Actions toolbar for the groovy files located in the <code>${ProjectConstants.Directory.TEST_SRC}</code> or <code>${ProjectConstants.Directory.GROOVY_TEST_SRC}</code> directory.")
                     .enabledIf(enableActionToolbar.selected)
             }
             row {

@@ -34,7 +34,7 @@ open class YPlatformExtModuleDescriptor(
 ) : YRegularModuleDescriptorImpl(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
 
     override fun isPreselected() = true
-    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.ExtensionNames.CORE)
+    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.CORE)
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
     override fun groupName() = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
 }

@@ -43,10 +43,10 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
     override val isHacAddon = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
 
     override val hasBackofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-        && File(moduleRootDirectory, ProjectConstants.ExtensionNames.BACK_OFFICE).isDirectory
+        && File(moduleRootDirectory, ProjectConstants.Extension.BACK_OFFICE).isDirectory
 
     override val hasWebModule = extensionInfo.extension.webmodule != null
-        && File(moduleRootDirectory, ProjectConstants.ExtensionNames.WEB).isDirectory
+        && File(moduleRootDirectory, ProjectConstants.Extension.WEB).isDirectory
 
     override fun isPreselected() = isInLocalExtensions || isNeededDependency
 
@@ -67,19 +67,19 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
 
         if (hasWebModule) {
             requiredExtensionNames
-                .map { "$it." + ProjectConstants.ExtensionNames.COMMON_WEB }
+                .map { "$it." + ProjectConstants.Extension.COMMON_WEB }
                 .filter { moduleDescriptors.contains(it) }
                 .let { requiredExtensionNames.addAll(it) }
         }
         if (hasHmcModule) {
-            requiredExtensionNames.add(ProjectConstants.ExtensionNames.HMC)
+            requiredExtensionNames.add(ProjectConstants.Extension.HMC)
         }
         if (hasBackofficeModule) {
-            requiredExtensionNames.add(ProjectConstants.ExtensionNames.BACK_OFFICE + "." + ProjectConstants.ExtensionNames.WEB)
+            requiredExtensionNames.add(ProjectConstants.Extension.BACK_OFFICE + "." + ProjectConstants.Extension.WEB)
         }
         return requiredExtensionNames.toImmutableSet()
     }
 
-    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.ExtensionNames.PLATFORM)
-    override fun getAdditionalRequiredExtensionNames() = setOf(ProjectConstants.ExtensionNames.PLATFORM)
+    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.PLATFORM)
+    override fun getAdditionalRequiredExtensionNames() = setOf(ProjectConstants.Extension.PLATFORM)
 }

@@ -36,9 +36,9 @@ internal class ProjectCompileService(private val project: Project, private val c
     fun triggerRefreshGeneratedFiles(bootstrapDirectory: Path) {
         coroutineScope.launch(Dispatchers.IO) {
             val paths = listOf(
-                bootstrapDirectory.resolve(ProjectConstants.Directories.GEN_SRC),
-                bootstrapDirectory.resolve(ProjectConstants.Directories.MODEL_CLASSES),
-                bootstrapDirectory.resolve(ProjectConstants.Directories.BIN).resolve(HybrisConstants.JAR_MODELS),
+                bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC),
+                bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES),
+                bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS),
             )
 
             withBackgroundProgress(project, "Refreshing generated files") {

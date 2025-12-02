@@ -445,7 +445,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             if (StringUtils.isBlank(overrideConfigDirChooser.getText())) {
                 overrideConfigDirChooser.text = File(
                     hybrisDistributionDirectoryFilesInChooser.text,
-                    ProjectConstants.ExtensionNames.CONFIG
+                    ProjectConstants.Extension.CONFIG
                 ).absolutePath
             }
 

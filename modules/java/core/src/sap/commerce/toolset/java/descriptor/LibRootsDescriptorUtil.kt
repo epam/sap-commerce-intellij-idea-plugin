@@ -80,7 +80,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
                 val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
-                val sourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
+                val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }
                     .filter { it.isDirectory }
 
@@ -107,7 +107,7 @@ private fun addRootLib(
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - lib",
-            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.LIB),
+            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.LIB),
             exported = true,
             descriptorType = LibraryDescriptorType.LIB
         )
@@ -134,13 +134,13 @@ private fun addHmcLibs(
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - HMC Bin",
-            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.BIN),
+            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.BIN),
             exported = true
         )
     )
 
     descriptor.rootProjectDescriptor.chosenModuleDescriptors
-        .firstOrNull { it.name == ProjectConstants.ExtensionNames.HMC }
+        .firstOrNull { it.name == ProjectConstants.Extension.HMC }
         ?.let {
             libs.add(
                 JavaLibraryDescriptor(
@@ -160,11 +160,11 @@ private fun addLibrariesToNonCustomModule(
     if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
     if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
-    val sourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
+    val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
 
-    if (ProjectConstants.ExtensionNames.PLATFORM_SERVICES != descriptor.name) {
+    if (ProjectConstants.Extension.PLATFORM_SERVICES != descriptor.name) {
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - compiler output",
@@ -178,7 +178,7 @@ private fun addLibrariesToNonCustomModule(
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - resources",
-            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.RESOURCES),
+            libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.RESOURCES),
             exported = true,
             directoryWithClasses = true
         )
@@ -186,7 +186,7 @@ private fun addLibrariesToNonCustomModule(
 }
 
 private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
-    val binDir = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.BIN)
+    val binDir = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.BIN)
         .takeIf { it.isDirectory }
         ?: return
     val serverJars = binDir
@@ -194,7 +194,7 @@ private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaL
         ?.takeIf { it.isNotEmpty() }
         ?: return
 
-    val sourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
+    val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
 
@@ -274,7 +274,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
         .filter { it != descriptor }
         .map { yModule ->
             // process owner extension dependencies
-            val addonSourceFiles = (ProjectConstants.Directories.ALL_SRC_DIR_NAMES + ProjectConstants.Directories.TEST_SRC_DIR_NAMES)
+            val addonSourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                 .map { File(yModule.moduleRootDirectory, it) }
                 .filter { it.isDirectory }
 
@@ -290,7 +290,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${yModule.name} - Addon's Target Resources",
-                    libraryFile = File(yModule.moduleRootDirectory, ProjectConstants.Directories.RESOURCES),
+                    libraryFile = File(yModule.moduleRootDirectory, ProjectConstants.Directory.RESOURCES),
                     directoryWithClasses = true
                 )
             )
@@ -309,18 +309,18 @@ private fun getWebLibraryDescriptors(
     addRootLib(descriptor, libs)
 
     val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
-    val sourceFiles = ProjectConstants.Directories.ALL_SRC_DIR_NAMES
+    val sourceFiles = ProjectConstants.Directory.ALL_SRC_DIR_NAMES
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
         .toMutableList()
-    val testSourceFiles = ProjectConstants.Directories.TEST_SRC_DIR_NAMES
+    val testSourceFiles = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
         .toMutableList()
 
     listOf(
-        File(descriptor.moduleRootDirectory, ProjectConstants.Directories.ADDON_SRC),
-        File(descriptor.moduleRootDirectory, ProjectConstants.Directories.COMMON_WEB_SRC),
+        File(descriptor.moduleRootDirectory, ProjectConstants.Directory.ADDON_SRC),
+        File(descriptor.moduleRootDirectory, ProjectConstants.Directory.COMMON_WEB_SRC),
     )
         .filter { it.isDirectory }
         .mapNotNull { srcDir ->
@@ -330,7 +330,7 @@ private fun getWebLibraryDescriptors(
         .flatten()
         .forEach { sourceFiles.add(it) }
 
-    if (descriptor.owner.name != ProjectConstants.ExtensionNames.BACK_OFFICE) {
+    if (descriptor.owner.name != ProjectConstants.Extension.BACK_OFFICE) {
         if (descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor is YWebSubModuleDescriptor) {
             libs.add(
                 JavaLibraryDescriptor(
@@ -344,7 +344,7 @@ private fun getWebLibraryDescriptors(
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${descriptor.name} - Test Classes",
-                    libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.TEST_CLASSES),
+                    libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.TEST_CLASSES),
                     sourceFiles = testSourceFiles,
                     exported = true,
                     directoryWithClasses = true,
@@ -379,7 +379,7 @@ private fun getCommonWebSubModuleDescriptor(
     descriptor
         .dependantWebExtensions
         .forEach {
-            val webSourceFiles = ProjectConstants.Directories.ALL_SRC_DIR_NAMES
+            val webSourceFiles = ProjectConstants.Directory.ALL_SRC_DIR_NAMES
                 .map { dir -> File(descriptor.moduleRootDirectory, dir) }
                 .filter { dir -> dir.isDirectory }
             libs.add(
@@ -398,7 +398,7 @@ private fun getCommonWebSubModuleDescriptor(
 private fun getLibraryDescriptors(descriptor: ConfigModuleDescriptor) = listOf(
     JavaLibraryDescriptor(
         name = "Config License",
-        libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directories.LICENCE),
+        libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.LICENCE),
         exported = true
     )
 )
