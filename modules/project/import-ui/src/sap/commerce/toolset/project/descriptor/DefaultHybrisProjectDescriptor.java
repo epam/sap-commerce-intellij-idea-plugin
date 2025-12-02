@@ -171,9 +171,19 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
     }
 
-    private void processLocalExtensions() {
+    private void processLocalExtensions() throws InterruptedException {
         final ConfigModuleDescriptor configHybrisModuleDescriptor = findConfigDir();
         if (configHybrisModuleDescriptor == null) {
+            ApplicationManager.getApplication().invokeLater(() -> Messages.showErrorDialog(
+                """
+                    The ‘config’ module hasn’t been detected, which will affect the following functionality:
+                    
+                     · module auto-selection
+                     · building modules in IDE
+                     · resolving properties
+                    """,
+                "Project Configuration Incomplete"
+            ));
             return;
         }
         final var explicitlyDefinedModules = processHybrisConfig(configHybrisModuleDescriptor);
