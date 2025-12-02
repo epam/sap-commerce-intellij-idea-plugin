@@ -47,6 +47,8 @@ object ProjectConstants {
         const val HG = ".hg"
         const val GITHUB = ".github"
         const val IDEA = ".idea"
+        const val ANGULAR = ".angular"
+        const val SETTINGS = ".settings"
         const val MACO_SX = "__MACOSX"
         const val IDEA_MODULE_FILES = "idea-module-files"
 

@@ -35,10 +35,13 @@ class HybrisProjectImportService {
         ProjectConstants.Directory.HG,
         ProjectConstants.Directory.SVN,
         ProjectConstants.Directory.GITHUB,
+        ProjectConstants.Directory.ANGULAR,
+        ProjectConstants.Directory.SETTINGS,
         ProjectConstants.Directory.IDEA,
         ProjectConstants.Directory.IDEA_MODULE_FILES,
         ProjectConstants.Directory.MACO_SX,
         ProjectConstants.Directory.LIB,
+        ProjectConstants.Directory.BIN,
         ProjectConstants.Directory.LOG,
         ProjectConstants.Directory.RESOURCES,
         ProjectConstants.Directory.TEMP,
@@ -53,7 +56,6 @@ class HybrisProjectImportService {
         ProjectConstants.Directory.JS_STOREFRONT,
         ProjectConstants.Directory.NODE_MODULES,
     )
-
 
     fun isDirectoryExcluded(path: Path): Boolean = excludedDirectories.contains(path.name)
         || path.endsWith(ProjectConstants.Directory.PATH_BOOTSTRAP)
