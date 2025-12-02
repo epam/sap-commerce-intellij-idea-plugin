@@ -198,7 +198,7 @@ class CustomLoggersTemplatesStateView(
         row {
             cell(
                 InlineBanner(
-                    "Add a First Logger.",
+                    "Please, use the panel above to add a logger.",
                     EditorNotificationPanel.Status.Info
                 )
                     .showCloseButton(false)
