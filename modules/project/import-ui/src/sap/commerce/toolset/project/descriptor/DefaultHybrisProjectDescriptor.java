@@ -940,7 +940,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (module instanceof PlatformModuleDescriptor) {
                 platformHybrisModuleDescriptor = (PlatformModuleDescriptor) module;
             }
-            if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE.equals(module.getName())) {
+            if (ProjectConstants.ExtensionNames.KOTLIN_NATURE.equals(module.getName())) {
                 kotlinNatureModuleDescriptor = module;
             }
         });

@@ -86,9 +86,9 @@ class CxLoggersTemplatesService(private val project: Project) {
             )
         }
 
-    fun addCustomLoggerTemplate(templateName: String) {
+    fun addCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
         with(CxLoggerTemplatesSettings.getInstance(project)) {
-            customLoggerTemplates = customLoggerTemplates + CxCustomLoggerTemplateState(templateName)
+            customLoggerTemplates = customLoggerTemplates + template
         }
 
         project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
