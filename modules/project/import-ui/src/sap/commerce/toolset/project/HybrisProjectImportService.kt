@@ -27,40 +27,35 @@ import kotlin.io.path.name
 @Service
 class HybrisProjectImportService {
 
-    private val excludedDirectories = setOf(
-        ProjectConstants.Directory.DATA,
-        ProjectConstants.Directory.GRADLE,
-        ProjectConstants.Directory.ECLIPSE_BIN,
-        ProjectConstants.Directory.GIT,
-        ProjectConstants.Directory.HG,
-        ProjectConstants.Directory.SVN,
-        ProjectConstants.Directory.GITHUB,
-        ProjectConstants.Directory.ANGULAR,
-        ProjectConstants.Directory.SETTINGS,
-        ProjectConstants.Directory.IDEA,
-        ProjectConstants.Directory.IDEA_MODULE_FILES,
-        ProjectConstants.Directory.MACO_SX,
-        ProjectConstants.Directory.LIB,
-        ProjectConstants.Directory.LOG,
-        ProjectConstants.Directory.RESOURCES,
-        ProjectConstants.Directory.TOMCAT,
-        ProjectConstants.Directory.TOMCAT_6,
-        ProjectConstants.Directory.TC_SERVER,
-        ProjectConstants.Directory.TEMP,
-        ProjectConstants.Directory.TMP,
-        ProjectConstants.Directory.ANT,
-        ProjectConstants.Directory.CLASSES,
-        ProjectConstants.Directory.TEST_CLASSES,
-        ProjectConstants.Directory.SRC,
-        ProjectConstants.Directory.GROOVY_SRC,
-        ProjectConstants.Directory.KOTLIN_SRC,
-        ProjectConstants.Directory.SCALA_SRC,
-        ProjectConstants.Directory.TEST_SRC,
-        ProjectConstants.Directory.GROOVY_TEST_SRC,
-        ProjectConstants.Directory.KOTLIN_TEST_SRC,
-        ProjectConstants.Directory.SCALA_TEST_SRC,
-        ProjectConstants.Directory.NODE_MODULES,
-    )
+    private val excludedDirectories = buildSet {
+        add(ProjectConstants.Directory.DATA)
+        add(ProjectConstants.Directory.GRADLE)
+        add(ProjectConstants.Directory.ECLIPSE_BIN)
+        add(ProjectConstants.Directory.GIT)
+        add(ProjectConstants.Directory.HG)
+        add(ProjectConstants.Directory.SVN)
+        add(ProjectConstants.Directory.GITHUB)
+        add(ProjectConstants.Directory.ANGULAR)
+        add(ProjectConstants.Directory.SETTINGS)
+        add(ProjectConstants.Directory.IDEA)
+        add(ProjectConstants.Directory.IDEA_MODULE_FILES)
+        add(ProjectConstants.Directory.MACO_SX)
+        add(ProjectConstants.Directory.LIB)
+        add(ProjectConstants.Directory.LOG)
+        add(ProjectConstants.Directory.RESOURCES)
+        add(ProjectConstants.Directory.TOMCAT)
+        add(ProjectConstants.Directory.TOMCAT_6)
+        add(ProjectConstants.Directory.TC_SERVER)
+        add(ProjectConstants.Directory.TEMP)
+        add(ProjectConstants.Directory.TMP)
+        add(ProjectConstants.Directory.ANT)
+        add(ProjectConstants.Directory.CLASSES)
+        add(ProjectConstants.Directory.TEST_CLASSES)
+        add(ProjectConstants.Directory.NODE_MODULES)
+
+        addAll(ProjectConstants.Directory.SRC_DIR_NAMES)
+        addAll(ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
+    }
 
     fun isDirectoryExcluded(path: Path): Boolean = excludedDirectories.contains(path.name)
         || path.endsWith(ProjectConstants.Directory.PATH_BOOTSTRAP)
