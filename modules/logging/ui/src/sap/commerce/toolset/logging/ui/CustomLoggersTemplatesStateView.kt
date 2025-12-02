@@ -255,14 +255,6 @@ class CustomLoggersTemplatesStateView(
 
         if (!canApply.get()) return
 
-//        editable.set(false)
-//
-//        CxLoggerAccess.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
-//            coroutineScope.launch {
-//                withContext(Dispatchers.EDT) {
-//                    editable.set(true)
-//                }
-//            }
-//        }
+
     }
 }
