@@ -39,7 +39,7 @@ object ProjectConstants {
         const val DATA = "data"
         const val LOG = "log"
         const val LIB = "lib"
-        const val BIN = "lib"
+        const val BIN = "bin"
         const val TEMP = "temp"
         const val GRADLE = ".gradle"
         const val SVN = ".svn"
