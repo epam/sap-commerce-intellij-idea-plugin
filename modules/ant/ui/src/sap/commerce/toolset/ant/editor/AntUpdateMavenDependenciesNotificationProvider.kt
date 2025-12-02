@@ -60,7 +60,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
                     .firstOrNull { it.virtualFile?.path?.endsWith("hybris/bin/platform/build.xml") ?: false }
                     ?.asSafely<AntBuildFileBase>()
                     ?.let { buildFile ->
-                        val targets = listOf(AntConstants.ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES)
+                        val targets = listOf(AntConstants.Target.UPDATE_MAVEN_DEPENDENCIES)
                         ExecutionHandler.runBuild(buildFile, targets, null, DataContext.EMPTY_CONTEXT, emptyList())
                         { _, _ ->
                             EditorNotifications.getInstance(project).removeNotificationsForProvider(this)
