@@ -24,12 +24,13 @@ package sap.commerce.toolset.cockpitNG.model.wizardConfig;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
 
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:PropertyType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Property extends DomElement, Mergeable {
 
 	String QUALIFIER = "qualifier";

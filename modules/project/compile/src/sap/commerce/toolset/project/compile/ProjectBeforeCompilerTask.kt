@@ -37,6 +37,7 @@ import com.intellij.util.lang.JavaVersion
 import org.jetbrains.jps.model.java.compiler.AnnotationProcessingConfiguration
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.root
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
@@ -69,13 +70,13 @@ class ProjectBeforeCompilerTask : CompileTask {
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
 
         val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
-        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+        val platformModule = modules.firstOrNull { it.yExtensionName() == ProjectConstants.Extension.PLATFORM }
             ?: return true
 
         val platformModuleRoot = platformModule.root()
             ?: return true
         val coreModuleRoot = modules
-            .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CORE }
+            .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CORE }
             ?.root()
             ?: return true
 
@@ -87,7 +88,7 @@ class ProjectBeforeCompilerTask : CompileTask {
             ?.getVMExecutablePath(sdk)
             ?: return true
 
-        val bootstrapDirectory = platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
+        val bootstrapDirectory = platformModuleRoot.resolve(ProjectConstants.Directory.BOOTSTRAP)
         if (!invokeCodeGeneration(context, platformModuleRoot, bootstrapDirectory, coreModuleRoot, vmExecutablePath, settings)) {
             ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
             return false
@@ -112,12 +113,12 @@ class ProjectBeforeCompilerTask : CompileTask {
         vmExecutablePath: String,
         settings: ProjectSettings,
     ): Boolean {
-        val pathToBeDeleted = bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY)
+        val pathToBeDeleted = bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC)
         cleanDirectory(context, pathToBeDeleted)
 
         val classpath = setOf(
             coreModuleRoot.resolve("lib").toString() + "/*",
-            bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY).resolve("ybootstrap.jar").toString()
+            bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
         )
         val gcl = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
@@ -169,14 +170,14 @@ class ProjectBeforeCompilerTask : CompileTask {
         bootstrapDirectory: Path,
         sdkVersion: JavaSdkVersion
     ): Boolean {
-        val pathToBeDeleted = bootstrapDirectory.resolve(HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY)
+        val pathToBeDeleted = bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES)
         cleanDirectory(context, pathToBeDeleted)
 
         try {
             context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started compilation of the generated code...", null, -1, -1)
             val sourceFiles = mutableSetOf<File>()
             Files.walkFileTree(
-                bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY),
+                bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC),
                 object : SimpleFileVisitor<Path>() {
                     override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
                         if (file.extension == "java" && file.name != "package-info.java") sourceFiles.add(file.toFile())
@@ -208,9 +209,9 @@ class ProjectBeforeCompilerTask : CompileTask {
                 classpath,
                 emptyList(),
                 emptyList(),
-                listOf(bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY).toFile()),
+                listOf(bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC).toFile()),
                 sourceFiles,
-                bootstrapDirectory.resolve(HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY).toFile()
+                bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES).toFile()
             )
             context.addMessage(CompilerMessageCategory.STATISTICS, "[y] Compiled ${classes.size} generated classes.", null, -1, -1)
             val flushedClasses = classes
@@ -237,7 +238,7 @@ class ProjectBeforeCompilerTask : CompileTask {
 
         val bootstrapDir = System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
             ?.let { Paths.get(it) }
-            ?: bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY)
+            ?: bootstrapDirectory.resolve(ProjectConstants.Directory.BIN)
 
         val modelsFile = bootstrapDir.resolve(HybrisConstants.JAR_MODELS).toFile()
         if (modelsFile.exists()) modelsFile.delete()
@@ -248,7 +249,7 @@ class ProjectBeforeCompilerTask : CompileTask {
                 ZipUtil.addFileOrDirRecursively(
                     jos,
                     null,
-                    bootstrapDirectory.resolve(HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY).toFile(),
+                    bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES).toFile(),
                     "",
                     null,
                     null

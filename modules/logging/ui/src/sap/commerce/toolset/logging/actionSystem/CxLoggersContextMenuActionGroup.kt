@@ -26,22 +26,26 @@ import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateGroupNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
 
 class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
+
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
         val selectedNode = e?.selectedNode() ?: return emptyArray()
+        val actionManager = ActionManager.getInstance()
+
         return when (selectedNode) {
-            is BundledLoggersTemplateItemNode -> arrayOf(ActionManager.getInstance().getAction("sap.cx.loggers.apply.bundle.template"))
-            is CustomLoggersTemplateItemNode -> arrayOf(ActionManager.getInstance().getAction("sap.cx.loggers.delete.custom.template"))
-            is CustomLoggersTemplateGroupNode -> arrayOf(ActionManager.getInstance().getAction("sap.cx.loggers.add.custom.template"))
+            is BundledLoggersTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.apply.bundle.template"))
+            is CustomLoggersTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.delete.custom.template"))
+            is CustomLoggersTemplateGroupNode -> arrayOf(actionManager.getAction("sap.cx.loggers.add.custom.template"))
             else -> emptyArray()
         }
     }
 
     override fun update(e: AnActionEvent) {
         val selectedNode = e.selectedNode()
-        e.presentation.isEnabledAndVisible = selectedNode is BundledLoggersTemplateItemNode ||
-            selectedNode is CustomLoggersTemplateGroupNode ||
-            selectedNode is CustomLoggersTemplateItemNode
+
+        e.presentation.isEnabledAndVisible = selectedNode is BundledLoggersTemplateItemNode
+            || selectedNode is CustomLoggersTemplateGroupNode
+            || selectedNode is CustomLoggersTemplateItemNode
     }
 }

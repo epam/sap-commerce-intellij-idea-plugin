@@ -18,9 +18,26 @@
 
 package sap.commerce.toolset.logging.state
 
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 
 data class CxCustomLoggerConfig(
     @OptionTag val effectiveLevel: String,
     @OptionTag val name: String,
-)
+) {
+    fun mutable() = Mutable(
+        effectiveLevel = AtomicProperty(effectiveLevel),
+        name = AtomicProperty(name),
+    )
+
+    data class Mutable(
+        val effectiveLevel: ObservableMutableProperty<String>,
+        val name: ObservableMutableProperty<String>,
+    ) {
+        fun immutable() = CxCustomLoggerConfig(
+            effectiveLevel = effectiveLevel.get(),
+            name = name.get(),
+        )
+    }
+}

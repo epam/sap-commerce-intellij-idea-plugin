@@ -24,10 +24,10 @@ import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -59,7 +59,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
         val extensionDescriptor = YFacetConstants.getModuleSettings(module)
 
-        if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
+        if (ProjectConstants.Extension.KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
             data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)
             return
         }

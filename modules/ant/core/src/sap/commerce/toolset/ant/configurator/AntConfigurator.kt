@@ -36,6 +36,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ant.AntConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
@@ -223,10 +224,10 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
         val directory = platformDescriptor.moduleRootDirectory
         val classPaths = ArrayList<AntClasspathEntry>()
         val libDir = File(directory, HybrisConstants.ANT_LIB_DIR)
-        val platformLibDir = File(directory, HybrisConstants.LIB_DIRECTORY)
+        val platformLibDir = File(directory, ProjectConstants.Directory.LIB)
         val entries = extHybrisModuleDescriptors
             .map { it.moduleRootDirectory }
-            .map { File(it, HybrisConstants.LIB_DIRECTORY) }
+            .map { File(it, ProjectConstants.Directory.LIB) }
             .map { AllJarsUnderDirEntry(it) }
 
         classPaths.add(AllJarsUnderDirEntry(platformLibDir))

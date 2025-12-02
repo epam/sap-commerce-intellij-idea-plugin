@@ -21,7 +21,6 @@ package sap.commerce.toolset.cockpitNG
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.cockpitNG.model.config.Config
 import sap.commerce.toolset.cockpitNG.psi.CngPatterns
@@ -39,45 +38,45 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes
         ?.mapNotNull { it.value }
-        ?.any { it == CockpitNGConstants.Namespace.CONFIG }
+        ?.any { it == CngConstants.Namespace.CONFIG }
         ?: false
 
     override fun initializeFileDescription() {
         super.initializeFileDescription()
         registerNamespacePolicy(
-            HybrisConstants.COCKPIT_NG_NAMESPACE_KEY,
-            CockpitNGConstants.Namespace.CONFIG,
-            CockpitNGConstants.Namespace.CONFIG_HYBRIS,
-            CockpitNGConstants.Namespace.COMPONENT_EDITOR_AREA,
-            CockpitNGConstants.Namespace.COMPONENT_DYNAMIC_FORMS,
-            CockpitNGConstants.Namespace.COMPONENT_SUMMARY_VIEW,
-            CockpitNGConstants.Namespace.COMPONENT_LIST_VIEW,
-            CockpitNGConstants.Namespace.COMPONENT_GRID_VIEW,
-            CockpitNGConstants.Namespace.COMPONENT_COMPARE_VIEW,
-            CockpitNGConstants.Namespace.COMPONENT_VALUE_CHOOSER,
-            CockpitNGConstants.Namespace.COMPONENT_QUICK_LIST,
-            CockpitNGConstants.Namespace.COMPONENT_TREE_COLLECTION,
-            CockpitNGConstants.Namespace.CONFIG_ADVANCED_SEARCH,
-            CockpitNGConstants.Namespace.CONFIG_SIMPLE_SEARCH,
-            CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG,
-            CockpitNGConstants.Namespace.CONFIG_PERSPECTIVE_CHOOSER,
-            CockpitNGConstants.Namespace.CONFIG_REFINE_BY,
-            CockpitNGConstants.Namespace.CONFIG_AVAILABLE_LOCALES,
-            CockpitNGConstants.Namespace.CONFIG_DASHBOARD,
-            CockpitNGConstants.Namespace.CONFIG_SIMPLE_LIST,
-            CockpitNGConstants.Namespace.CONFIG_FULLTEXT_SEARCH,
-            CockpitNGConstants.Namespace.CONFIG_GRID_VIEW,
-            CockpitNGConstants.Namespace.CONFIG_COMMON,
-            CockpitNGConstants.Namespace.CONFIG_NOTIFICATIONS,
-            CockpitNGConstants.Namespace.CONFIG_DRAG_AND_DROP,
-            CockpitNGConstants.Namespace.CONFIG_EXPLORER_TREE,
-            CockpitNGConstants.Namespace.CONFIG_EXTENDED_SPLIT_LAYOUT,
-            CockpitNGConstants.Namespace.CONFIG_COLLECTION_BROWSER,
-            CockpitNGConstants.Namespace.CONFIG_DEEP_LINK,
-            CockpitNGConstants.Namespace.CONFIG_VIEW_SWITCHER,
-            CockpitNGConstants.Namespace.CONFIG_LINKS,
-            CockpitNGConstants.Namespace.SPRING,
-            CockpitNGConstants.Namespace.TEST,
+            CngConstants.COCKPIT_NG_NAMESPACE_KEY,
+            CngConstants.Namespace.CONFIG,
+            CngConstants.Namespace.CONFIG_HYBRIS,
+            CngConstants.Namespace.COMPONENT_EDITOR_AREA,
+            CngConstants.Namespace.COMPONENT_DYNAMIC_FORMS,
+            CngConstants.Namespace.COMPONENT_SUMMARY_VIEW,
+            CngConstants.Namespace.COMPONENT_LIST_VIEW,
+            CngConstants.Namespace.COMPONENT_GRID_VIEW,
+            CngConstants.Namespace.COMPONENT_COMPARE_VIEW,
+            CngConstants.Namespace.COMPONENT_VALUE_CHOOSER,
+            CngConstants.Namespace.COMPONENT_QUICK_LIST,
+            CngConstants.Namespace.COMPONENT_TREE_COLLECTION,
+            CngConstants.Namespace.CONFIG_ADVANCED_SEARCH,
+            CngConstants.Namespace.CONFIG_SIMPLE_SEARCH,
+            CngConstants.Namespace.CONFIG_WIZARD_CONFIG,
+            CngConstants.Namespace.CONFIG_PERSPECTIVE_CHOOSER,
+            CngConstants.Namespace.CONFIG_REFINE_BY,
+            CngConstants.Namespace.CONFIG_AVAILABLE_LOCALES,
+            CngConstants.Namespace.CONFIG_DASHBOARD,
+            CngConstants.Namespace.CONFIG_SIMPLE_LIST,
+            CngConstants.Namespace.CONFIG_FULLTEXT_SEARCH,
+            CngConstants.Namespace.CONFIG_GRID_VIEW,
+            CngConstants.Namespace.CONFIG_COMMON,
+            CngConstants.Namespace.CONFIG_NOTIFICATIONS,
+            CngConstants.Namespace.CONFIG_DRAG_AND_DROP,
+            CngConstants.Namespace.CONFIG_EXPLORER_TREE,
+            CngConstants.Namespace.CONFIG_EXTENDED_SPLIT_LAYOUT,
+            CngConstants.Namespace.CONFIG_COLLECTION_BROWSER,
+            CngConstants.Namespace.CONFIG_DEEP_LINK,
+            CngConstants.Namespace.CONFIG_VIEW_SWITCHER,
+            CngConstants.Namespace.CONFIG_LINKS,
+            CngConstants.Namespace.SPRING,
+            CngConstants.Namespace.TEST,
         )
     }
 }

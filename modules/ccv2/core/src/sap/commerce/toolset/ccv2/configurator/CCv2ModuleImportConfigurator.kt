@@ -22,8 +22,8 @@ import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.workspace.jps.entities.ModuleTypeId
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -47,7 +47,7 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
         )
         modifiableModelsProvider.getModifiableRootModel(javaModule)
             .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath))
-            .addExcludePattern(HybrisConstants.HYBRIS_DIRECTORY)
+            .addExcludePattern(ProjectConstants.Directory.HYBRIS)
 
         return javaModule
     }

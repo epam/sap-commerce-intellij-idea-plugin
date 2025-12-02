@@ -23,10 +23,11 @@ package sap.commerce.toolset.cockpitNG.model.wizardConfig;
 
 import com.intellij.util.xml.Namespace;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:parameter interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Parameter extends sap.commerce.toolset.cockpitNG.model.core.Parameter {
 }

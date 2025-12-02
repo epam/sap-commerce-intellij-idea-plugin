@@ -25,6 +25,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
+import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 import sap.commerce.toolset.logging.ui.CreateLoggerTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateGroupNode
 
@@ -37,13 +39,15 @@ class AddCustomTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-
         e.selectedNode()
             ?.asSafely<CustomLoggersTemplateGroupNode>()
-            ?.let {
-                CreateLoggerTemplateDialog(project).showAndGet()
-            }
+            ?: return
 
+        val mutable = CxCustomLoggerTemplateState().mutable()
+
+        if (CreateLoggerTemplateDialog(project, mutable).showAndGet()) {
+            CxLoggersTemplatesService.getInstance(project).addCustomLoggerTemplate(mutable.immutable())
+        }
     }
 
     override fun update(e: AnActionEvent) {

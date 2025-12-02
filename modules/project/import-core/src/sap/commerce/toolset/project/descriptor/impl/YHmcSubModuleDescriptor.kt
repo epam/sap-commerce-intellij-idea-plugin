@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -32,6 +32,6 @@ class YHmcSubModuleDescriptor(
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
         owner.name,
-        HybrisConstants.EXTENSION_NAME_HMC + "." + HybrisConstants.WEB_MODULE_DIRECTORY
+        ProjectConstants.Extension.HMC + "." + ProjectConstants.Extension.WEB
     )
 }

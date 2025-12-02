@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import java.io.File
@@ -33,7 +33,7 @@ import java.io.File
 class YCommonWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
-    val webRoot: File = File(moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY),
+    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.COMMON_WEB,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 

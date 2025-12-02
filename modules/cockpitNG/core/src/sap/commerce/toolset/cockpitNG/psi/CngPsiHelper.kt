@@ -23,7 +23,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 
 object CngPsiHelper {
 
@@ -57,7 +57,7 @@ object CngPsiHelper {
         val newItemType = initializeProperty?.getAttributeValue("type")
             ?: return newItemName to resolveContextType(element)
 
-        return if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(newItemType, true)) newItemName to resolveContextType(element)
+        return if (CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(newItemType, true)) newItemName to resolveContextType(element)
         else newItemName to newItemType
     }
 

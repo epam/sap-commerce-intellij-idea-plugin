@@ -77,11 +77,11 @@ class PropertyService(private val project: Project, private val coroutineScope: 
                 .mapNotNull { it as? PropertiesFile }
                 .forEach { file ->
                     when (file.name) {
-                        HybrisConstants.ENV_PROPERTIES_FILE -> envPropsFile = file
-                        HybrisConstants.ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
-                        HybrisConstants.LOCAL_PROPERTIES_FILE -> localPropsFile = file
-                        HybrisConstants.PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
-                        HybrisConstants.PLATFORMHOME_PROPERTIES_FILE -> propertiesFiles.add(file)
+                        ProjectConstants.File.ENV_PROPERTIES -> envPropsFile = file
+                        ProjectConstants.File.ADVANCED_PROPERTIES -> advancedPropsFile = file
+                        ProjectConstants.File.LOCAL_PROPERTIES -> localPropsFile = file
+                        ProjectConstants.File.PROJECT_PROPERTIES -> propertiesFiles.add(file)
+                        ProjectConstants.File.PLATFORM_HOME_PROPERTIES -> propertiesFiles.add(file)
                     }
                 }
 
@@ -255,10 +255,10 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
-            .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE || it.name == HybrisConstants.PLATFORMHOME_PROPERTIES_FILE }
-        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ENV_PROPERTIES_FILE }
-        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ADVANCED_PROPERTIES_FILE }
-        val localPropertiesScope = configModule.moduleContentScope.filter { it.name == HybrisConstants.LOCAL_PROPERTIES_FILE }
+            .filter { it.name == ProjectConstants.File.PROJECT_PROPERTIES || it.name == ProjectConstants.File.PLATFORM_HOME_PROPERTIES }
+        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == ProjectConstants.File.ENV_PROPERTIES }
+        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == ProjectConstants.File.ADVANCED_PROPERTIES }
+        val localPropertiesScope = configModule.moduleContentScope.filter { it.name == ProjectConstants.File.LOCAL_PROPERTIES }
 
         return envPropertiesScope
             .or(advancedPropertiesScope)
@@ -268,11 +268,11 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CONFIG }
+        .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CONFIG }
 
     private fun obtainPlatformModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+        .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {

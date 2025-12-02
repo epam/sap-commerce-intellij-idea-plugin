@@ -40,6 +40,7 @@ import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.directory
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import sap.commerce.toolset.project.utils.FileUtils
@@ -444,7 +445,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             if (StringUtils.isBlank(overrideConfigDirChooser.getText())) {
                 overrideConfigDirChooser.text = File(
                     hybrisDistributionDirectoryFilesInChooser.text,
-                    HybrisConstants.EXTENSION_NAME_CONFIG
+                    ProjectConstants.Extension.CONFIG
                 ).absolutePath
             }
 

@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset
 
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
 import java.util.*
 import java.util.regex.Pattern
@@ -57,19 +56,7 @@ object HybrisConstants {
     const val HYBRIS_LICENCE_JAR = "hybrislicence.jar"
     const val SAP_LICENCES = "installedSaplicenses.properties"
 
-    const val HYBRIS_DIRECTORY = "hybris"
-    const val HYBRIS_DATA_DIRECTORY = "data"
     const val HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar"
-
-    const val EXTENSION_NAME_BACK_OFFICE = "backoffice"
-    const val EXTENSION_NAME_CORE = "core"
-    const val EXTENSION_NAME_CONFIG = "config"
-    const val EXTENSION_NAME_HMC = "hmc"
-    const val EXTENSION_NAME_HAC = "hac"
-    const val EXTENSION_NAME_PLATFORM = "platform"
-    const val EXTENSION_NAME_PLATFORM_SERVICES = "platformservices"
-    const val EXTENSION_NAME_ADDONSUPPORT = "addonsupport"
-    const val EXTENSION_NAME_KOTLIN_NATURE = "kotlinnature"
 
     const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
     const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
@@ -77,28 +64,6 @@ object HybrisConstants {
     const val EXTENSION_META_KEY_DEPRECATED = "deprecated"
     const val EXTENSION_META_KEY_EXT_GEN = "extgen-template-extension"
     const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
-
-    val PLATFORM_EXTENSION_NAMES = setOf(
-        "advancedsavedquery",
-        "catalog",
-        "comments",
-        "commons",
-        "core",
-        "deliveryzone",
-        "europe1",
-        "hac",
-        "impex",
-        "maintenanceweb",
-        "mediaweb",
-        "oauth2",
-        "paymentstandard",
-        "platformservices",
-        "processing",
-        "scripting",
-        "testweb",
-        "validation",
-        "workflow",
-    )
 
     val EXTENSION_INFO_META_KEYS = listOf(
         EXTENSION_META_KEY_BACKOFFICE_MODULE,
@@ -109,54 +74,24 @@ object HybrisConstants {
         EXTENSION_META_KEY_MODULE_GEN
     )
 
-    const val BACKOFFICE_MODULE_DIRECTORY = "backoffice"
     const val BACKOFFICE_LIBRARY_GROUP = "Backoffice Library"
 
-    const val GEN_SRC_DIRECTORY = "gensrc"
-    const val TEST_SRC_DIRECTORY = "testsrc"
     const val IDE_CONSOLES_PATH = "consoles/ide/"
-    const val GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc"
-    const val KOTLIN_TEST_SRC_DIRECTORY = "kotlintestsrc"
-    const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
     const val BOOTSTRAP_GEN_SRC_PATH = "bootstrap/gensrc"
 
-    const val HMC_MODULE_DIRECTORY = "hmc"
-    const val HAC_MODULE_DIRECTORY = "hac"
-    const val WEB_MODULE_DIRECTORY = "web"
-    const val COMMON_WEB_MODULE_DIRECTORY = "commonweb"
-
-    const val ADDON_SRC_DIRECTORY = "addonsrc"
-    const val TEST_CLASSES_DIRECTORY = "testclasses"
-    const val CLASSES_DIRECTORY = "classes"
     const val JAR_MODELS = "models.jar"
     const val SETTINGS_DIRECTORY = ".settings"
     const val EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders"
     const val SPOCK_META_INF_SERVICES_DIRECTORY = "resources/META-INF/services"
-    const val WEB_ROOT_DIRECTORY = "webroot"
-    const val ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon"
-
-    const val COMMON_WEB_SRC_DIRECTORY = "commonwebsrc"
 
     const val PLATFORM_HOME_PLACEHOLDER = "\${platformhome}"
-    const val PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext"
-    const val PLATFORM_BOOTSTRAP_DIRECTORY = "bootstrap"
-    const val PLATFORM_MODEL_CLASSES_DIRECTORY = "modelclasses"
-    const val PLATFORM_TOMCAT_6_DIRECTORY = "tomcat-6"
-    const val PLATFORM_TOMCAT_DIRECTORY = "tomcat"
     const val PLATFORM_LIBRARY_GROUP = "Platform Bootstrap"
     const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
-    const val NODE_MODULES_DIRECTORY = "node_modules"
-    const val JS_TARGET_DIRECTORY = "jsTarget"
-    const val BOWER_COMPONENTS_DIRECTORY = "bower_components"
-    const val CONFIG_LICENCE_DIRECTORY = "licence"
-    const val ECLIPSE_BIN_DIRECTORY = "eclipsebin"
-    const val JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY
     const val STORAGE_HYBRIS_PROJECT_SETTINGS = "hybrisProjectSettings.xml"
     const val STORAGE_HYBRIS_INTEGRATION_SETTINGS = "hybrisIntegrationSettings.xml"
     const val STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS = "hybrisDeveloperSpecificProjectSettings.xml"
     const val STORAGE_HYBRIS_TS_VIEW = "hybrisTypeSystemViewSettings.xml"
-    const val STORAGE_HYBRIS_CUSTOM_LOGGERS_TEMPLATES = "hybrisCustomLoggersTemplatesSettings.xml"
     const val STORAGE_HYBRIS_BS_VIEW = "hybrisBeanSystemViewSettings.xml"
     const val PLUGIN_ID = "com.intellij.idea.plugin.sap.commerce"
 
@@ -272,7 +207,6 @@ object HybrisConstants {
     val BP_NAVIGABLE_ELEMENTS = setOf("action", "end", "wait", "join", "notify", "split", "scriptAction", "choice")
 
     const val HYBRIS = "[y]"
-    const val DEBUG_MODEL_RENDERER_PREFIX = HYBRIS
     const val SEARCH_SCOPE_Y_PREFIX = HYBRIS
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
@@ -323,14 +257,6 @@ object HybrisConstants {
     const val FXS_TABLE_POSTFIX_DASH_MARK = "^"
     const val FXS_TABLE_RESULT_SEPARATOR = "|"
 
-    const val LIB_DIRECTORY = "lib"
-    const val BIN_DIRECTORY = "bin"
-    const val RESOURCES_DIRECTORY = "resources"
-    const val LOCAL_PROPERTIES_FILE = "local.properties"
-    const val PROJECT_PROPERTIES_FILE = "project.properties"
-    const val PLATFORMHOME_PROPERTIES_FILE = "platformhome.properties"
-    const val ENV_PROPERTIES_FILE = "env.properties"
-    const val ADVANCED_PROPERTIES_FILE = "advanced.properties"
     const val SPRING_WEB_FILE_SET_NAME = "web application context"
     const val APPLICATION_CONTEXT_SPRING_FILES = "application-context"
     const val ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs"
@@ -354,16 +280,7 @@ object HybrisConstants {
     // see: de.hybris.bootstrap.config.PlatformConfig -> readMaxDepthAttribute(..)
     const val DEFAULT_EXTENSIONS_PATH_DEPTH = 10
 
-    const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
-    const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
-    const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
-    const val COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX = "SPRING_BEAN_"
-
-    const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
-
     const val SCHEMA_BUSINESS_PROCESS = "http://www.hybris.de/xsd/processdefinition"
-
-    const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
@@ -397,15 +314,6 @@ object HybrisConstants {
         "apps/**/node_modules",
         "common/temp/node_modules"
     )
-
-    const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
-    private const val SRC_DIRECTORY = "src"
-    private const val GROOVY_SRC_DIRECTORY = "groovysrc"
-    private const val SCALA_SRC_DIRECTORY = "scalasrc"
-
-    // kotlinnature extension integration
-    const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
-    const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
 
@@ -446,63 +354,6 @@ object HybrisConstants {
 
     @JvmField
     val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/bin/modules/")
-
-    @JvmField
-    val EXCLUDE_TMP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tmp")
-
-    @JvmField
-    val EXCLUDE_TCSERVER_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tcServer")
-
-    @JvmField
-    val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat")
-
-    @JvmField
-    val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat-6")
-
-    @JvmField
-    val EXCLUDE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/lib")
-
-    @JvmField
-    val EXCLUDE_RESOURCES_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/resources")
-
-    @JvmField
-    val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/eclipsebin")
-
-    @JvmField
-    val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/bootstrap")
-
-    @JvmField
-    val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
-
-    @JvmField
-    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
-
-    @JvmField
-    val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
-
-    @JvmField
-    val EXCLUDE_DATA_DIRECTORY = FileUtilRt.toSystemDependentName("/data")
-
-    @JvmField
-    val EXCLUDE_SVN_DIRECTORY = FileUtilRt.toSystemDependentName("/.svn")
-
-    @JvmField
-    val EXCLUDE_GIT_DIRECTORY = FileUtilRt.toSystemDependentName("/.git")
-
-    @JvmField
-    val EXCLUDE_GITHUB_DIRECTORY = FileUtilRt.toSystemDependentName("/.github")
-
-    @JvmField
-    val EXCLUDE_GRADLE_DIRECTORY = FileUtilRt.toSystemDependentName("/.gradle")
-
-    @JvmField
-    val EXCLUDE_TEMP_DIRECTORY = FileUtilRt.toSystemDependentName("/temp")
-
-    @JvmField
-    val EXCLUDE_IDEA_DIRECTORY = FileUtilRt.toSystemDependentName("/.idea")
-
-    @JvmField
-    val EXCLUDE_MACOSX_DIRECTORY = FileUtilRt.toSystemDependentName("/__MACOSX")
 
     @JvmField
     val CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("bin/custom")
@@ -553,9 +404,6 @@ object HybrisConstants {
     val PL_TOMCAT_6_BIN_PATH = FileUtilRt.toSystemDependentName("tomcat-6/bin")
 
     @JvmField
-    val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
-
-    @JvmField
     val HAC_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes")
 
     @JvmField
@@ -563,15 +411,6 @@ object HybrisConstants {
 
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
-
-    @JvmField
-    val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
-
-    @JvmField
-    val ALL_SRC_DIR_NAMES = listOf(GEN_SRC_DIRECTORY, SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
-
-    @JvmField
-    val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, KOTLIN_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
 
     @JvmField
     val LOCAL_GROUP_OVERRIDE_COMMENTS = """
@@ -626,8 +465,6 @@ object HybrisConstants {
         "Auto-Indent Lines"
     )
 
-    val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
-
     val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
     val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()
 
@@ -656,12 +493,15 @@ object HybrisConstants {
         object ImpEx {
             const val EXTENSION = "impex"
         }
+
         object FlexibleSearch {
             const val EXTENSION = "fxs"
         }
+
         object PolyglotQuery {
             const val EXTENSION = "pgq"
         }
+
         object Acl {
             const val NAME = "Access Control Lists"
             const val EXTENSION = "acl"

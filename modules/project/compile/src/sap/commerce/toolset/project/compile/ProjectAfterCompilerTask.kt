@@ -21,8 +21,8 @@ import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.compiler.CompilerManager
 import com.intellij.util.application
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.root
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
@@ -41,12 +41,12 @@ class ProjectAfterCompilerTask : CompileTask {
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
 
         val modules = context.compileScope.affectedModules
-        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+        val platformModule = modules.firstOrNull { it.yExtensionName() == ProjectConstants.Extension.PLATFORM }
             ?: return@runReadAction true
 
         val bootstrapDirectory = platformModule
             .root()
-            ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
+            ?.resolve(ProjectConstants.Directory.BOOTSTRAP)
             ?: return@runReadAction true
 
         ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)

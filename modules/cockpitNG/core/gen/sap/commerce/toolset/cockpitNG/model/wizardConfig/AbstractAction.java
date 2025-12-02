@@ -24,11 +24,12 @@ package sap.commerce.toolset.cockpitNG.model.wizardConfig;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:AbstractActionType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface AbstractAction extends DomElement {
 
 	String VISIBLE = "visible";

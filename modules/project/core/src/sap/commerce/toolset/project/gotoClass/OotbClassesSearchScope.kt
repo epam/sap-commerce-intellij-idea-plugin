@@ -24,6 +24,7 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectUtil
 
 class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
@@ -40,7 +41,7 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
         }
         if (virtualFile == null) return false
 
-        if (virtualFile.name == HybrisConstants.CLASSES_DIRECTORY) {
+        if (virtualFile.name == ProjectConstants.Directory.CLASSES) {
             return virtualFile.parent
                 ?.let { ProjectUtil.isHybrisModuleRoot(virtualFile) }
                 ?: false
@@ -49,13 +50,13 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
         return JarFileSystem.getInstance().getVirtualFileForJar(file)
             ?.parent
             ?.path
-            ?.endsWith(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY + '/' + HybrisConstants.BIN_DIRECTORY)
+            ?.endsWith(ProjectConstants.Directory.BOOTSTRAP + '/' + ProjectConstants.Directory.BIN)
             ?: false
     }
 
     private fun isNotClassesOrDirectories(f: VirtualFile?) = f != null
         && !(f.isDirectory && (isClassesOrModels(f)))
 
-    private fun isClassesOrModels(f: VirtualFile) = f.name == HybrisConstants.CLASSES_DIRECTORY
+    private fun isClassesOrModels(f: VirtualFile) = f.name == ProjectConstants.Directory.CLASSES
         || f.name == HybrisConstants.JAR_MODELS
 }

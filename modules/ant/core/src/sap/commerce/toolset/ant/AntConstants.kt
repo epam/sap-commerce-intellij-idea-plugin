@@ -103,4 +103,8 @@ object AntConstants {
         listOf("clean", "customize", "all", "initialize"),
         listOf("clean", "customize", "all", "production")
     )
+
+    object Target {
+        const val UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
+    }
 }

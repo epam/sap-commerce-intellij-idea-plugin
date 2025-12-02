@@ -37,7 +37,8 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.kotlin.KotlinConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
@@ -54,11 +55,11 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     ) {
         val project = hybrisProjectDescriptor.project ?: return
         val hasKotlinnatureExtension = hybrisProjectDescriptor.chosenModuleDescriptors.stream()
-            .anyMatch { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
+            .anyMatch { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
         application.runReadAction {
-            setKotlinCompilerVersion(project, HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
+            setKotlinCompilerVersion(project, KotlinConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
         }
         setKotlinJvmTarget(project)
     }
@@ -66,13 +67,13 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
         hybrisProjectDescriptor.chosenModuleDescriptors
-            .find { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
+            .find { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
         smartReadAction(project) {
             val compilerVersion = PropertyService.getInstance(project)
-                .findProperty(HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
-                ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
+                .findProperty(KotlinConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
+                ?: KotlinConstants.KOTLIN_COMPILER_FALLBACK_VERSION
 
             setKotlinCompilerVersion(project, compilerVersion)
         }

@@ -22,9 +22,10 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.template.CxLoggersTemplateModel
 import javax.swing.Icon
 
-class CustomLoggersTemplateItemNode(
+class CustomLoggersTemplateItemNode private constructor(
     val loggers: List<CxLoggerModel>,
     text: String,
     icon: Icon?,
@@ -37,5 +38,14 @@ class CustomLoggersTemplateItemNode(
         val tip = " ${loggers.size} logger(s)"
 
         presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
+    }
+
+    companion object {
+        fun of(project: Project, template: CxLoggersTemplateModel) = CustomLoggersTemplateItemNode(
+            loggers = template.loggers,
+            text = template.name,
+            icon = template.icon,
+            project = project,
+        )
     }
 }

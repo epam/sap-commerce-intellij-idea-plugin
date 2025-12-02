@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":shared-ui"))
     implementation(project(":meta-core"))
     implementation(project(":typeSystem-core"))
+    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

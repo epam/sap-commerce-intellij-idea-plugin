@@ -16,34 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.kotlin
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+object KotlinConstants {
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":ant-core"))
-    implementation(project(":externalDependencies-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        compatiblePlugins(
-            "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
-        )
-    }
+    const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
+    const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 }

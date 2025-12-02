@@ -24,12 +24,13 @@ package sap.commerce.toolset.cockpitNG.model.itemEditor;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
 
 /**
  * http://www.hybris.com/cockpitng/component/editorArea:customSection interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface CustomSection extends DomElement, Section {
 
 	/**

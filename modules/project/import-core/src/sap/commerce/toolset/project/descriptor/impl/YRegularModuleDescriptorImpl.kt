@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.descriptor.impl
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -42,10 +43,10 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
     override val isHacAddon = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
 
     override val hasBackofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-        && File(moduleRootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY).isDirectory
+        && File(moduleRootDirectory, ProjectConstants.Extension.BACK_OFFICE).isDirectory
 
     override val hasWebModule = extensionInfo.extension.webmodule != null
-        && File(moduleRootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
+        && File(moduleRootDirectory, ProjectConstants.Extension.WEB).isDirectory
 
     override fun isPreselected() = isInLocalExtensions || isNeededDependency
 
@@ -66,19 +67,19 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
 
         if (hasWebModule) {
             requiredExtensionNames
-                .map { "$it." + HybrisConstants.COMMON_WEB_MODULE_DIRECTORY }
+                .map { "$it." + ProjectConstants.Extension.COMMON_WEB }
                 .filter { moduleDescriptors.contains(it) }
                 .let { requiredExtensionNames.addAll(it) }
         }
         if (hasHmcModule) {
-            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC)
+            requiredExtensionNames.add(ProjectConstants.Extension.HMC)
         }
         if (hasBackofficeModule) {
-            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE + "." + HybrisConstants.WEB_MODULE_DIRECTORY)
+            requiredExtensionNames.add(ProjectConstants.Extension.BACK_OFFICE + "." + ProjectConstants.Extension.WEB)
         }
         return requiredExtensionNames.toImmutableSet()
     }
 
-    override fun getDefaultRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
-    override fun getAdditionalRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
+    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.PLATFORM)
+    override fun getAdditionalRequiredExtensionNames() = setOf(ProjectConstants.Extension.PLATFORM)
 }

@@ -26,12 +26,13 @@ import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.ImagePreview;
 
 /**
  * http://www.hybris.com/cockpitng/component/quick-list:quick-listElemType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface QuickList extends DomElement, ImagePreview {
 
 

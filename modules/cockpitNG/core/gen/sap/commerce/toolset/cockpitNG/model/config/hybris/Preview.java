@@ -26,11 +26,12 @@ import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Namespace;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 
 /**
  * http://www.hybris.com/cockpit/config/hybris:preview interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Preview extends DomElement {
 
     String URL_QUALIFIER = "urlQualifier";

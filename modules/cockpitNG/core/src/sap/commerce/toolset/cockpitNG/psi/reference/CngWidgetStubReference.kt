@@ -27,6 +27,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
 import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.cockpitNG.psi.reference.result.ActionDefinitionResolveResult
@@ -42,7 +43,7 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
         .let { getValidResults(it) }
 
     companion object {
-        private const val STUB_LENGTH = HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB.length
+        private const val STUB_LENGTH = CngConstants.COCKPIT_NG_WIDGET_ID_STUB.length
 
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngWidgetStubReference>>("HYBRIS_CNGWIDGETSTUBREFERENCE")
 

@@ -25,7 +25,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
 import sap.commerce.toolset.cockpitNG.psi.JavaPsiHelper
 import sap.commerce.toolset.typeSystem.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
@@ -39,7 +39,7 @@ class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarat
         val type = resolveType(parameters.position) ?: return
 
         if (type.contains(".")
-            && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
+            && type != CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
         ) addJavaPojoCompletions(project, type, result)
         else super.addCompletions(parameters, context, result)
     }

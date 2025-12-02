@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import kotlinx.collections.immutable.toImmutableSet
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -29,8 +29,8 @@ import java.io.File
 class YAcceleratorAddonSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
-    val webRoot: File = File(moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY),
-    override val name: String = owner.name + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY + "." + HybrisConstants.WEB_MODULE_DIRECTORY,
+    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
+    override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 
@@ -46,10 +46,10 @@ class YAcceleratorAddonSubModuleDescriptor(
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
-            .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
+            .map { it + "." + ProjectConstants.Extension.WEB }
         // Strange, but acceleratoraddon may rely on another acceleratoraddon
         val acceleratorWebNames = owner.getRequiredExtensionNames()
-            .map { it + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
+            .map { it + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB }
         return setOf(owner.name) + webNames + acceleratorWebNames
     }
 

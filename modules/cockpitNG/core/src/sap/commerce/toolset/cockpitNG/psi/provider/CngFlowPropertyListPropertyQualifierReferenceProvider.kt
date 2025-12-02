@@ -24,7 +24,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
 import sap.commerce.toolset.cockpitNG.psi.reference.CngFlowTSItemAttributeReference
 import sap.commerce.toolset.cockpitNG.psi.reference.CngJavaClassReference
@@ -39,10 +39,10 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
             ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 
         val reference = when {
-            type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
-                CngSpringBeanJavaClassReference(element, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+            type.startsWith(CngConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                CngSpringBeanJavaClassReference(element, type.replace(CngConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
 
-            type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+            type.contains(".") && type != CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
                 CngJavaClassReference(element, type)
 
             else -> CngFlowTSItemAttributeReference(element)

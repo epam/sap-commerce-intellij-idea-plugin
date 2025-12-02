@@ -20,7 +20,7 @@ package sap.commerce.toolset.cockpitNG
 import com.intellij.util.xml.XmlName
 import com.intellij.util.xml.reflect.DomExtender
 import com.intellij.util.xml.reflect.DomExtensionsRegistrar
-import sap.commerce.toolset.HybrisConstants.COCKPIT_NG_NAMESPACE_KEY
+import sap.commerce.toolset.cockpitNG.CngConstants.COCKPIT_NG_NAMESPACE_KEY
 import sap.commerce.toolset.cockpitNG.model.advancedSearch.AdvancedSearch
 import sap.commerce.toolset.cockpitNG.model.collectionBrowser.CollectionBrowser
 import sap.commerce.toolset.cockpitNG.model.config.Context

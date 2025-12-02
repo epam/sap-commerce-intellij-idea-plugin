@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import java.nio.file.Path
 
 @Service(Service.Level.PROJECT)
@@ -35,9 +36,9 @@ internal class ProjectCompileService(private val project: Project, private val c
     fun triggerRefreshGeneratedFiles(bootstrapDirectory: Path) {
         coroutineScope.launch(Dispatchers.IO) {
             val paths = listOf(
-                bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY),
-                bootstrapDirectory.resolve(HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY),
-                bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY).resolve(HybrisConstants.JAR_MODELS),
+                bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC),
+                bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES),
+                bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS),
             )
 
             withBackgroundProgress(project, "Refreshing generated files") {

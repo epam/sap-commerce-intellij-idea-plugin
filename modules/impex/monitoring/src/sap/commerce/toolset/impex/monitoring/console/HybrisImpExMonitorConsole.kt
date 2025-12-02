@@ -26,7 +26,6 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
@@ -36,6 +35,7 @@ import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecClient
 import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecContext
 import sap.commerce.toolset.impex.monitoring.exec.context.TimeOption
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.awt.BorderLayout
 import java.io.File
@@ -80,7 +80,7 @@ class HybrisImpExMonitorConsole(
     private fun obtainDataFolder(project: Project): String {
         val settings = ProjectSettings.getInstance(project)
         // TODO
-        return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
+        return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${ProjectConstants.Directory.DATA}")
     }
 
     override fun printResult(result: ConsoleAwareExecResult) {

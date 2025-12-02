@@ -33,6 +33,8 @@ import com.intellij.ui.EditorNotifications
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ant.AntConstants
+import sap.commerce.toolset.externalDependencies.EdConstants
 import sap.commerce.toolset.isHybrisProject
 import java.util.function.Function
 import javax.swing.JComponent
@@ -44,7 +46,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
         if (file.name != HybrisConstants.EXTERNAL_DEPENDENCIES_XML) return null
 
         val showPanel = file
-            .getUserData(HybrisConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)
+            .getUserData(EdConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)
             ?: false
 
         if (!showPanel) return null
@@ -58,11 +60,11 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
                     .firstOrNull { it.virtualFile?.path?.endsWith("hybris/bin/platform/build.xml") ?: false }
                     ?.asSafely<AntBuildFileBase>()
                     ?.let { buildFile ->
-                        val targets = listOf(HybrisConstants.ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES)
+                        val targets = listOf(AntConstants.Target.UPDATE_MAVEN_DEPENDENCIES)
                         ExecutionHandler.runBuild(buildFile, targets, null, DataContext.EMPTY_CONTEXT, emptyList())
                         { _, _ ->
                             EditorNotifications.getInstance(project).removeNotificationsForProvider(this)
-                            file.removeUserData(HybrisConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)
+                            file.removeUserData(EdConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)
                         }
                         ToolWindowManager.getInstance(project).activateEditorComponent()
                     }

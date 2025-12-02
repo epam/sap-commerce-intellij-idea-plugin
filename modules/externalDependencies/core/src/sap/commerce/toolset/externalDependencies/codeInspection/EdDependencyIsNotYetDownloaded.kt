@@ -24,7 +24,7 @@ import com.intellij.ui.EditorNotifications
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.externalDependencies.EdConstants
 import sap.commerce.toolset.i18n
 
 class EdDependencyIsNotYetDownloaded : EdInspection() {
@@ -62,7 +62,7 @@ class EdDependencyIsNotYetDownloaded : EdInspection() {
             }
 
         holder.fileElement.file.virtualFile
-            .putUserData(HybrisConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES, unresolvedDependenciesFound)
+            .putUserData(EdConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES, unresolvedDependenciesFound)
 
         EditorNotifications.getInstance(project).updateNotifications(holder.fileElement.file.virtualFile)
 

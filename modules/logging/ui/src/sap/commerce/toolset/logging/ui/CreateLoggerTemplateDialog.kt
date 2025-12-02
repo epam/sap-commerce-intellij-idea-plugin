@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.openapi.observable.properties.AtomicProperty
-import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextField
@@ -28,16 +26,15 @@ import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.columns
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
-import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
+import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
 import javax.swing.JComponent
 
 class CreateLoggerTemplateDialog(
     private val project: Project,
+    private val mutable: CxCustomLoggerTemplateState.Mutable,
 ) : DialogWrapper(project) {
 
     private lateinit var nameTextField: JBTextField
-
-    private var templateName: ObservableMutableProperty<String> = AtomicProperty("")
 
     init {
         title = "Create a Logger Template"
@@ -45,32 +42,23 @@ class CreateLoggerTemplateDialog(
         init()
     }
 
-    override fun createCenterPanel(): JComponent {
-        return panel {
-            row("Template Name:") {
-                nameTextField = textField()
-                    .columns(30)
-                    .resizableColumn()
-                    .bindText(templateName)
-                    .addValidationRule("Template Name cannot be blank") { it.text.isNullOrBlank() }
-                    .addValidationRule("Template Name cannot exceed 255 characters") { it.text.length > 255 }
-                    .addValidationRule("Template name is already in use") { textField ->
-                        val customLoggerTemplates = CxLoggerTemplatesSettings.getInstance(project).customLoggerTemplates
-                        textField.text.isNotBlank() && customLoggerTemplates.any { it.name == textField.text }
-                    }
-                    .focused()
-                    .component
+    override fun createCenterPanel(): JComponent = panel {
+        row("Template Name:") {
+            nameTextField = textField()
+                .columns(30)
+                .resizableColumn()
+                .bindText(mutable.name)
+                .addValidationRule("Template Name cannot be blank") { it.text.isNullOrBlank() }
+                .addValidationRule("Template Name cannot exceed 255 characters") { it.text.length > 255 }
+                .addValidationRule("Template name is already in use") { textField ->
+                    val customLoggerTemplates = CxLoggerTemplatesSettings.getInstance(project).customLoggerTemplates
+                    textField.text.isNotBlank() && customLoggerTemplates.any { it.name == textField.text }
+                }
+                .focused()
+                .component
 
-            }.layout(RowLayout.PARENT_GRID)
-        }
+        }.layout(RowLayout.PARENT_GRID)
     }
 
     override fun getPreferredFocusedComponent(): JComponent = nameTextField
-
-    override fun doOKAction() {
-        if (okAction.isEnabled) {
-            CxLoggersTemplatesService.getInstance(project).addCustomLoggerTemplate(templateName.get())
-        }
-        super.doOKAction()
-    }
 }

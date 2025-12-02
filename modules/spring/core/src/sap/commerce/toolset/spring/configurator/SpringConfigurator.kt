@@ -32,6 +32,7 @@ import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
@@ -77,7 +78,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
                 moduleDescriptor.addSpringFile(advancedProperties.absolutePath)
 
                 hybrisProjectDescriptor.configHybrisModuleDescriptor
-                    ?.let { File(it.moduleRootDirectory, HybrisConstants.LOCAL_PROPERTIES_FILE) }
+                    ?.let { File(it.moduleRootDirectory, ProjectConstants.File.LOCAL_PROPERTIES) }
                     ?.let { moduleDescriptor.addSpringFile(it.absolutePath) }
             }
     }
@@ -134,7 +135,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptor: YRegularModuleDescriptor
     ) {
         val projectProperties = Properties()
-        val propFile = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.PROJECT_PROPERTIES_FILE)
+        val propFile = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.File.PROJECT_PROPERTIES)
         moduleDescriptor.addSpringFile(propFile.absolutePath)
         try {
             projectProperties.load(propFile.inputStream())
@@ -193,7 +194,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
             }
 
         if (moduleDescriptor.hasBackofficeModule) {
-            File(moduleDescriptor.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY)
+            File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.RESOURCES)
                 .listFiles { _, name: String -> name.endsWith("-backoffice-spring.xml") }
                 ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
         }
@@ -232,7 +233,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptor: YWebSubModuleDescriptor,
         contextConfigLocation: String
     ) {
-        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY)
+        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT)
 
         SPLIT_PATTERN.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }
@@ -350,7 +351,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
 
     private fun getResourceDir(moduleToSearch: ModuleDescriptor) = File(
         moduleToSearch.moduleRootDirectory,
-        HybrisConstants.RESOURCES_DIRECTORY
+        ProjectConstants.Directory.RESOURCES
     )
 
     private fun addSpringExternalXmlFile(

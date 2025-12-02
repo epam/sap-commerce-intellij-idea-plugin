@@ -32,6 +32,7 @@ import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.settings.yDeveloperSettings
@@ -96,7 +97,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 checkBox("Enable actions toolbar for a Test Groovy file")
                     .bindSelected(mutable::enableActionsToolbarForGroovyTest)
-                    .comment("Enables Actions toolbar for the groovy files located in the <code>${HybrisConstants.TEST_SRC_DIRECTORY}</code> or <code>${HybrisConstants.GROOVY_TEST_SRC_DIRECTORY}</code> directory.")
+                    .comment("Enables Actions toolbar for the groovy files located in the <code>${ProjectConstants.Directory.TEST_SRC}</code> or <code>${ProjectConstants.Directory.GROOVY_TEST_SRC}</code> directory.")
                     .enabledIf(enableActionToolbar.selected)
             }
             row {

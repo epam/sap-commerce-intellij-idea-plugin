@@ -29,6 +29,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
 import sap.commerce.toolset.java.descriptor.getLibraryDescriptors
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
@@ -68,13 +69,13 @@ internal object LibRootsConfiguratorEx {
                         addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
                     }
                 }
-                if (moduleDescriptor.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
+                if (moduleDescriptor.name == ProjectConstants.Extension.BACK_OFFICE) {
                     addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true)
                 }
             }
 
             is YWebSubModuleDescriptor -> {
-                if (moduleDescriptor.owner.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
+                if (moduleDescriptor.owner.name == ProjectConstants.Extension.BACK_OFFICE) {
                     val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
                     val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
                     val sources = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_PARENT_JAR_PATH)

@@ -36,10 +36,9 @@ class DeleteCustomTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-
         e.selectedNode()
             ?.asSafely<CustomLoggersTemplateItemNode>()
-            
+            ?: return
     }
 
     override fun update(e: AnActionEvent) {

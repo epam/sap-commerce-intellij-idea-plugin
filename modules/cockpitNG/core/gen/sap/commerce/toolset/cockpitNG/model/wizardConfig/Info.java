@@ -27,12 +27,13 @@ import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
 
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:InfoType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Info extends DomElement, Mergeable {
 
 	/**

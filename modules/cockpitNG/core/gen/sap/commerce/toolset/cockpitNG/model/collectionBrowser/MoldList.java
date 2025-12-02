@@ -24,12 +24,13 @@ package sap.commerce.toolset.cockpitNG.model.collectionBrowser;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.util.xml.CngMoldConverter;
 
 /**
  * http://www.hybris.com/cockpitng/config/collectionbrowser:mold-list interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface MoldList extends DomElement {
 
     String MOLD = "mold";
