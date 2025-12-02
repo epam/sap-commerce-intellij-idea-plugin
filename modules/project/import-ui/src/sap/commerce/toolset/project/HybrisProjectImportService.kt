@@ -41,7 +41,6 @@ class HybrisProjectImportService {
         ProjectConstants.Directory.IDEA_MODULE_FILES,
         ProjectConstants.Directory.MACO_SX,
         ProjectConstants.Directory.LIB,
-        ProjectConstants.Directory.BIN,
         ProjectConstants.Directory.LOG,
         ProjectConstants.Directory.RESOURCES,
         ProjectConstants.Directory.TEMP,
