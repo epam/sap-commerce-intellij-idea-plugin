@@ -22,7 +22,7 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 
-class CustomLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Custom Loggers Templates", HybrisIcons.Log.Template.CUSTOM, project) {
+class CustomLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Custom Templates", HybrisIcons.Log.Template.CUSTOM, project) {
     override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLoggersTemplatesService.getInstance(project).customLoggerTemplates()
         .associate { item ->
             item.name to CustomLoggersTemplateItemNode(item.loggers, item.name, item.icon, project)

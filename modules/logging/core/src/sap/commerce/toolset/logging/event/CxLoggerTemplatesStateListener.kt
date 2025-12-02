@@ -16,11 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.state
+package sap.commerce.toolset.logging.event
 
-import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.messages.Topic
 
-data class CxCustomLoggerTemplateState(
-    @OptionTag val name: String = "",
-    @OptionTag val loggers: List<CxCustomLoggerConfig> = emptyList()
-)
+interface CxLoggerTemplatesStateListener {
+
+    fun onLoggersTemplatesStateChanged() = Unit
+
+    companion object {
+        val TOPIC = Topic(CxLoggerTemplatesStateListener::class.java)
+    }
+}

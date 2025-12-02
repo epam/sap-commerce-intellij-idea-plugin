@@ -31,6 +31,7 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLoggerAccess
+import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
@@ -83,6 +84,10 @@ class LoggersSplitView(
                         ?.takeIf { it.connectionUUID == remoteConnection.uuid }
                         ?.let { updateSecondComponent(it) }
                 }
+            })
+
+            subscribe(CxLoggerTemplatesStateListener.TOPIC, object : CxLoggerTemplatesStateListener {
+                override fun onLoggersTemplatesStateChanged() = updateTree()
             })
         }
     }

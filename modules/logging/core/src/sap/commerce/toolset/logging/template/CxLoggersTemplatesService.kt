@@ -24,8 +24,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.ResourceUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
 import sap.commerce.toolset.logging.resolveIconBlocking
 import sap.commerce.toolset.logging.resolvePsiElementPointerBlocking
+import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
+import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
 import java.io.InputStreamReader
 
 @Service(Service.Level.PROJECT)
@@ -71,31 +74,24 @@ class CxLoggersTemplatesService(private val project: Project) {
         }
         ?: emptyList()
 
-    fun customLoggerTemplates(): List<CxLoggersTemplateModel> {
-        CxLoggerModel.of("com.test.a", "DEBUG")
-        CxLoggerModel.of("com.test.b", "DEBUG")
-        CxLoggerModel.of("com.test.c", "DEBUG")
-        return listOf(
+    fun customLoggerTemplates() = CxLoggerTemplatesSettings.getInstance(project)
+        .customLoggerTemplates
+        .map { templateState ->
             CxLoggersTemplateModel(
-                "Debug | Project 1", listOf(
-                    CxLoggerModel.of("com.test.project1.a", "DEBUG"),
-                    CxLoggerModel.of("com.test.project1.b", "DEBUG"),
-                    CxLoggerModel.of("com.test.project1.c", "DEBUG")
-                ), HybrisIcons.Log.Template.CUSTOM_TEMPLATE
-            ),
-            CxLoggersTemplateModel(
-                "Info | Project 2", listOf(
-                    CxLoggerModel.of("com.test.project2.a", "INFO"),
-                    CxLoggerModel.of("com.test.project2.b", "INFO"),
-                    CxLoggerModel.of("com.test.project2.c", "INFO")
-                ), HybrisIcons.Log.Template.CUSTOM_TEMPLATE
-            ),
-            CxLoggersTemplateModel(
-                "Troubleshooting | Project 3", listOf(
-                    CxLoggerModel.of("com.test.project3", "TRACE"),
-                ), HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+                templateState.name,
+                templateState.loggers
+                    .map { loggerState -> CxLoggerModel.of(loggerState.name, loggerState.effectiveLevel) }
+                    .toList(),
+                HybrisIcons.Log.Template.CUSTOM_TEMPLATE
             )
-        )
+        }
+
+    fun addCustomLoggerTemplate(templateName: String) {
+        with(CxLoggerTemplatesSettings.getInstance(project)) {
+            customLoggerTemplates = customLoggerTemplates + CxCustomLoggerTemplateState(templateName)
+        }
+
+        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
     }
 
     companion object {

@@ -27,7 +27,7 @@ import sap.commerce.toolset.logging.state.CxCustomLoggerTemplates
 
 @State(
     name = "[y] Custom Loggers Templates",
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_CUSTOM_LOGGERS_TEMPLATES, roamingType = RoamingType.LOCAL)]
+    storages = [Storage(HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
 class CxLoggerTemplatesSettings : SerializablePersistentStateComponent<CxCustomLoggerTemplates>(CxCustomLoggerTemplates()), ModificationTracker {

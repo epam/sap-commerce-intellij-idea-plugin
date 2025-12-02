@@ -25,6 +25,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.ui.CreateLoggerTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateGroupNode
 
 class AddCustomTemplateAction : AnAction() {
@@ -39,6 +40,9 @@ class AddCustomTemplateAction : AnAction() {
 
         e.selectedNode()
             ?.asSafely<CustomLoggersTemplateGroupNode>()
+            ?.let {
+                CreateLoggerTemplateDialog(project).showAndGet()
+            }
 
     }
 
