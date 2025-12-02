@@ -75,26 +75,15 @@ object HybrisConstants {
         EXTENSION_META_KEY_MODULE_GEN
     )
 
-    const val BACKOFFICE_MODULE_DIRECTORY = "backoffice"
     const val BACKOFFICE_LIBRARY_GROUP = "Backoffice Library"
 
-    const val GEN_SRC_DIRECTORY = "gensrc"
-    const val TEST_SRC_DIRECTORY = "testsrc"
     const val IDE_CONSOLES_PATH = "consoles/ide/"
-    const val GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc"
-    const val KOTLIN_TEST_SRC_DIRECTORY = "kotlintestsrc"
     const val BOOTSTRAP_GEN_SRC_PATH = "bootstrap/gensrc"
-
-    const val HMC_MODULE_DIRECTORY = "hmc"
-    const val HAC_MODULE_DIRECTORY = "hac"
-    const val WEB_MODULE_DIRECTORY = "web"
 
     const val JAR_MODELS = "models.jar"
     const val SETTINGS_DIRECTORY = ".settings"
     const val EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders"
     const val SPOCK_META_INF_SERVICES_DIRECTORY = "resources/META-INF/services"
-    const val WEB_ROOT_DIRECTORY = "webroot"
-    const val ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon"
 
     const val PLATFORM_HOME_PLACEHOLDER = "\${platformhome}"
     const val PLATFORM_LIBRARY_GROUP = "Platform Bootstrap"

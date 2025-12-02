@@ -233,7 +233,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptor: YWebSubModuleDescriptor,
         contextConfigLocation: String
     ) {
-        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY)
+        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directories.WEB_ROOT)
 
         SPLIT_PATTERN.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }

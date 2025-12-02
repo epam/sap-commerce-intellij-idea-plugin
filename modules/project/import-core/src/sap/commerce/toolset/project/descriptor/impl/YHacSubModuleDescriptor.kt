@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
@@ -33,7 +32,7 @@ class YHacSubModuleDescriptor(
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
         owner.name,
-        ProjectConstants.ExtensionNames.HAC + "." + HybrisConstants.WEB_MODULE_DIRECTORY
+        ProjectConstants.ExtensionNames.HAC + "." + ProjectConstants.ExtensionNames.WEB
     )
 
 }

@@ -32,16 +32,16 @@ object SubModuleDescriptorFactory {
     fun buildAll(owner: YRegularModuleDescriptor): Set<YSubModuleDescriptor> {
         val subModules = mutableSetOf<YSubModuleDescriptor>()
 
-        if (owner.hasWebModule) build(owner, HybrisConstants.WEB_MODULE_DIRECTORY, subModules) { YWebSubModuleDescriptor(owner, it) }
-        if (owner.hasHmcModule) build(owner, HybrisConstants.HMC_MODULE_DIRECTORY, subModules) { YHmcSubModuleDescriptor(owner, it) }
-        if (owner.isHacAddon) build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHacSubModuleDescriptor(owner, it) }
+        if (owner.hasWebModule) build(owner, ProjectConstants.ExtensionNames.WEB, subModules) { YWebSubModuleDescriptor(owner, it) }
+        if (owner.hasHmcModule) build(owner, ProjectConstants.ExtensionNames.HMC, subModules) { YHmcSubModuleDescriptor(owner, it) }
+        if (owner.isHacAddon) build(owner, ProjectConstants.ExtensionNames.HAC, subModules) { YHacSubModuleDescriptor(owner, it) }
 
         if (owner.hasBackofficeModule) {
-            build(owner, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY, subModules) { backoffice ->
+            build(owner, ProjectConstants.ExtensionNames.BACK_OFFICE, subModules) { backoffice ->
                 val subModule = YBackofficeSubModuleDescriptor(owner, backoffice)
 
                 if (subModule.hasWebModule) {
-                    build(subModule, HybrisConstants.WEB_MODULE_DIRECTORY, subModules) { web ->
+                    build(subModule, ProjectConstants.ExtensionNames.WEB, subModules) { web ->
                         YWebSubModuleDescriptor(owner, web, subModule.name + "." + web.name)
                     }
                 }

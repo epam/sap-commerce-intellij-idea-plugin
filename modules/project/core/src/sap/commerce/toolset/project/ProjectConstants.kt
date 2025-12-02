@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.util.Key
-import sap.commerce.toolset.HybrisConstants.GEN_SRC_DIRECTORY
 import sap.commerce.toolset.HybrisConstants.KOTLIN_SRC_DIRECTORY
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import java.nio.file.Path
@@ -80,6 +79,8 @@ object ProjectConstants {
 
         const val EXT = "ext"
         const val HYBRIS = "hybris"
+        const val ACCELERATOR_ADDON = "acceleratoraddon"
+        const val WEB_ROOT = "webroot"
 
         val PATH_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
 
@@ -87,7 +88,7 @@ object ProjectConstants {
         val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
         @JvmField
-        val ALL_SRC_DIR_NAMES = listOf(GEN_SRC_DIRECTORY, SRC, GROOVY_SRC, KOTLIN_SRC_DIRECTORY, SCALA_SRC)
+        val ALL_SRC_DIR_NAMES = listOf(TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC_DIRECTORY, SCALA_SRC)
 
         @JvmField
         val TEST_SRC_DIR_NAMES = listOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
@@ -104,7 +105,7 @@ object ProjectConstants {
         const val ADDON_SUPPORT = "addonsupport"
         const val KOTLIN_NATURE = "kotlinnature"
         const val COMMON_WEB = "commonweb"
-
+        const val WEB = "web"
 
         const val ADVANCED_SAVED_QUERY = "advancedsavedquery"
         const val CATALOG = "catalog"

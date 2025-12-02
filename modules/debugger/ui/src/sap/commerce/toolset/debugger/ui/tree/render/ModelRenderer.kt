@@ -35,9 +35,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.debugger.toTypeCode
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class ModelRenderer : CompoundRendererProvider() {
@@ -53,7 +53,7 @@ class ModelRenderer : CompoundRendererProvider() {
 
         return@ValueIconRenderer when {
             meta.isCustom -> HybrisIcons.Y.LOGO_BLUE
-            HybrisConstants.PLATFORM_EXTENSION_NAMES.contains(meta.extensionName) -> HybrisIcons.Y.LOGO_ORANGE
+            ProjectConstants.PLATFORM_EXTENSION_NAMES.contains(meta.extensionName) -> HybrisIcons.Y.LOGO_ORANGE
             else -> HybrisIcons.Y.LOGO_GREEN
         }
     }

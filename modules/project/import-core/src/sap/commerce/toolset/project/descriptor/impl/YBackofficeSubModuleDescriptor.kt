@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -30,11 +30,11 @@ class YBackofficeSubModuleDescriptor(
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.BACKOFFICE,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 
-    val hasWebModule = File(moduleRootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
+    val hasWebModule = File(moduleRootDirectory, ProjectConstants.ExtensionNames.WEB).isDirectory
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
-            .map { it + "." + HybrisConstants.BACKOFFICE_MODULE_DIRECTORY }
+            .map { it + "." + ProjectConstants.ExtensionNames.BACK_OFFICE }
         return setOf(owner.name) + webNames
     }
 }

@@ -43,10 +43,10 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
     override val isHacAddon = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
 
     override val hasBackofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-        && File(moduleRootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY).isDirectory
+        && File(moduleRootDirectory, ProjectConstants.ExtensionNames.BACK_OFFICE).isDirectory
 
     override val hasWebModule = extensionInfo.extension.webmodule != null
-        && File(moduleRootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
+        && File(moduleRootDirectory, ProjectConstants.ExtensionNames.WEB).isDirectory
 
     override fun isPreselected() = isInLocalExtensions || isNeededDependency
 
@@ -75,7 +75,7 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
             requiredExtensionNames.add(ProjectConstants.ExtensionNames.HMC)
         }
         if (hasBackofficeModule) {
-            requiredExtensionNames.add(ProjectConstants.ExtensionNames.BACK_OFFICE + "." + HybrisConstants.WEB_MODULE_DIRECTORY)
+            requiredExtensionNames.add(ProjectConstants.ExtensionNames.BACK_OFFICE + "." + ProjectConstants.ExtensionNames.WEB)
         }
         return requiredExtensionNames.toImmutableSet()
     }
