@@ -117,10 +117,9 @@ object ProjectConstants {
         const val MEDIA_WEB = "mediaweb"
         const val OAUTH2 = "oauth2"
         const val PAYMENT_STANDARD = "paymentstandard"
-        const val PLATFORMSERVICES = "platformservices"
         const val PROCESSING = "processing"
         const val SCRIPTING = "scripting"
-        const val TESTWEB = "testweb"
+        const val TEST_WEB = "testweb"
         const val VALIDATION = "validation"
         const val WORKFLOW = "workflow"
     }
@@ -139,10 +138,10 @@ object ProjectConstants {
         Extension.MEDIA_WEB,
         Extension.OAUTH2,
         Extension.PAYMENT_STANDARD,
-        Extension.PLATFORMSERVICES,
+        Extension.PLATFORM_SERVICES,
         Extension.PROCESSING,
         Extension.SCRIPTING,
-        Extension.TESTWEB,
+        Extension.TEST_WEB,
         Extension.VALIDATION,
         Extension.WORKFLOW,
     )

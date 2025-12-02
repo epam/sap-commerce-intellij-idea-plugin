@@ -29,6 +29,7 @@ import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.io.File
+import java.nio.file.Path
 
 internal fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> = when (descriptor) {
     is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
@@ -46,8 +47,8 @@ internal fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Ma
 
 internal fun addBackofficeRootProjectLibrary(
     modifiableModelsProvider: IdeModifiableModelsProvider,
-    libraryDirRoot: File,
-    sourcesDirRoot: File? = null,
+    libraryDirRoot: Path,
+    sourcesDirRoot: Path? = null,
     addJarDirectory: Boolean = true
 ) {
     val libraryName = HybrisConstants.BACKOFFICE_LIBRARY_GROUP
