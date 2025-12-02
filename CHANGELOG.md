@@ -1,7 +1,7 @@
 ## [2025.2.5.1]
 
 <cite>Release contributors</cite>
-- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
+- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
 - 3 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `Project Import` enhancements
@@ -11,6 +11,7 @@
 - Notify on completion of the libraries sources download [#1673](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1673)
 - Adjusted the approach to identify a config module [#1671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1671)
 - Inform a developer about a missing `config` module [#1675](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1675)
+- Adjusted directories excluded from the modules scan [#1676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1676)
 
 ### `SAP CX Logging` enhancements
 - Added support for Custom Loggers Template - add a template [#1677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1677)

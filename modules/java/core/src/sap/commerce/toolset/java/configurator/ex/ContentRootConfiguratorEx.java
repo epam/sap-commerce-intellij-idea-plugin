@@ -33,6 +33,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.project.ProjectConstants;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
@@ -149,14 +150,14 @@ public final class ContentRootConfiguratorEx {
         final ModuleDescriptor moduleDescriptor
     ) {
         excludeSubDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), List.of(
-            EXTERNAL_TOOL_BUILDERS_DIRECTORY,
-            SETTINGS_DIRECTORY,
-            TEST_CLASSES_DIRECTORY,
-            ECLIPSE_BIN_DIRECTORY,
-            NODE_MODULES_DIRECTORY,
-            BOWER_COMPONENTS_DIRECTORY,
-            JS_TARGET_DIRECTORY,
-            SPOCK_META_INF_SERVICES_DIRECTORY
+            ProjectConstants.ExcludeDirectories.NODE_MODULES,
+            HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY,
+            HybrisConstants.SETTINGS_DIRECTORY,
+            HybrisConstants.TEST_CLASSES_DIRECTORY,
+            HybrisConstants.ECLIPSE_BIN_DIRECTORY,
+            HybrisConstants.BOWER_COMPONENTS_DIRECTORY,
+            HybrisConstants.JS_TARGET_DIRECTORY,
+            HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY
         ));
 
         if (isCustomModuleDescriptor(moduleDescriptor)

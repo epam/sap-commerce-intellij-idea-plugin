@@ -146,7 +146,6 @@ object HybrisConstants {
     const val PLATFORM_LIBRARY_GROUP = "Platform Bootstrap"
     const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
-    const val NODE_MODULES_DIRECTORY = "node_modules"
     const val JS_TARGET_DIRECTORY = "jsTarget"
     const val BOWER_COMPONENTS_DIRECTORY = "bower_components"
     const val CONFIG_LICENCE_DIRECTORY = "licence"
@@ -446,63 +445,6 @@ object HybrisConstants {
 
     @JvmField
     val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/bin/modules/")
-
-    @JvmField
-    val EXCLUDE_TMP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tmp")
-
-    @JvmField
-    val EXCLUDE_TCSERVER_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tcServer")
-
-    @JvmField
-    val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat")
-
-    @JvmField
-    val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat-6")
-
-    @JvmField
-    val EXCLUDE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/lib")
-
-    @JvmField
-    val EXCLUDE_RESOURCES_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/resources")
-
-    @JvmField
-    val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/eclipsebin")
-
-    @JvmField
-    val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/bootstrap")
-
-    @JvmField
-    val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
-
-    @JvmField
-    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
-
-    @JvmField
-    val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
-
-    @JvmField
-    val EXCLUDE_DATA_DIRECTORY = FileUtilRt.toSystemDependentName("/data")
-
-    @JvmField
-    val EXCLUDE_SVN_DIRECTORY = FileUtilRt.toSystemDependentName("/.svn")
-
-    @JvmField
-    val EXCLUDE_GIT_DIRECTORY = FileUtilRt.toSystemDependentName("/.git")
-
-    @JvmField
-    val EXCLUDE_GITHUB_DIRECTORY = FileUtilRt.toSystemDependentName("/.github")
-
-    @JvmField
-    val EXCLUDE_GRADLE_DIRECTORY = FileUtilRt.toSystemDependentName("/.gradle")
-
-    @JvmField
-    val EXCLUDE_TEMP_DIRECTORY = FileUtilRt.toSystemDependentName("/temp")
-
-    @JvmField
-    val EXCLUDE_IDEA_DIRECTORY = FileUtilRt.toSystemDependentName("/.idea")
-
-    @JvmField
-    val EXCLUDE_MACOSX_DIRECTORY = FileUtilRt.toSystemDependentName("/__MACOSX")
 
     @JvmField
     val CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("bin/custom")
