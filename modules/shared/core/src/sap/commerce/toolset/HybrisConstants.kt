@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset
 
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
 import java.util.*
 import java.util.regex.Pattern
@@ -286,16 +285,7 @@ object HybrisConstants {
     // see: de.hybris.bootstrap.config.PlatformConfig -> readMaxDepthAttribute(..)
     const val DEFAULT_EXTENSIONS_PATH_DEPTH = 10
 
-    const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
-    const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
-    const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
-    const val COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX = "SPRING_BEAN_"
-
-    const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
-
     const val SCHEMA_BUSINESS_PROCESS = "http://www.hybris.de/xsd/processdefinition"
-
-    const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
@@ -483,8 +473,6 @@ object HybrisConstants {
         "Auto-Indent Lines"
     )
 
-    val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
-
     val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
     val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()
 
@@ -513,12 +501,15 @@ object HybrisConstants {
         object ImpEx {
             const val EXTENSION = "impex"
         }
+
         object FlexibleSearch {
             const val EXTENSION = "fxs"
         }
+
         object PolyglotQuery {
             const val EXTENSION = "pgq"
         }
+
         object Acl {
             const val NAME = "Access Control Lists"
             const val EXTENSION = "acl"

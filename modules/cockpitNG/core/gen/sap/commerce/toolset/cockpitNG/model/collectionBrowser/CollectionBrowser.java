@@ -24,11 +24,12 @@ package sap.commerce.toolset.cockpitNG.model.collectionBrowser;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 
 /**
  * http://www.hybris.com/cockpitng/config/collectionbrowser:collection-browserElemType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface CollectionBrowser extends DomElement {
 
     String AVAILABLE_MOLDS = "available-molds";

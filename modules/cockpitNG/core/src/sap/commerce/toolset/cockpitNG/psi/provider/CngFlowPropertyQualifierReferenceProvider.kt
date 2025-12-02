@@ -26,7 +26,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
 import sap.commerce.toolset.cockpitNG.psi.reference.CngFlowTSItemAttributeReference
 import sap.commerce.toolset.cockpitNG.psi.reference.CngInitializePropertyReference
@@ -50,10 +50,10 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
                         val textRange = TextRange.from(initializeProperty.length + 2, qualifier.length)
 
                         when {
-                            type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
-                                CngSpringBeanJavaClassReference(element, textRange, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+                            type.startsWith(CngConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                                CngSpringBeanJavaClassReference(element, textRange, type.replace(CngConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
 
-                            type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+                            type.contains(".") && type != CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
                                 CngJavaClassReference(element, textRange, type)
 
                             else -> CngFlowTSItemAttributeReference(element, textRange)

@@ -35,7 +35,7 @@ import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.contextProviders.SpringElContextsExtension
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.cockpitNG.CockpitNGConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Labels
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Preview
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.AbstractAction
@@ -55,15 +55,15 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
         return when {
             context is XmlText
                 && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION || tag.localName == Labels.SHORT_LABEL)
-                && tag.namespace == CockpitNGConstants.Namespace.CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
+                && tag.namespace == CngConstants.Namespace.CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
 
             context is XmlAttributeValue
                 && context.parentOfType<XmlAttribute>()?.localName == Preview.URL_QUALIFIER
-                && tag.namespace == CockpitNGConstants.Namespace.CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
+                && tag.namespace == CngConstants.Namespace.CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
 
             context is XmlAttributeValue
                 && context.parentOfType<XmlAttribute>()?.localName == AbstractAction.VISIBLE
-                && tag.namespace == CockpitNGConstants.Namespace.CONFIG_WIZARD_CONFIG -> process(context, project)
+                && tag.namespace == CngConstants.Namespace.CONFIG_WIZARD_CONFIG -> process(context, project)
 
             else -> mutableListOf()
         }
@@ -82,10 +82,10 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
             val type = it.second ?: return@let null
 
             val psiClass = when {
-                type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
-                    SpringHelper.resolveBeanClass(context, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+                type.startsWith(CngConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                    SpringHelper.resolveBeanClass(context, type.replace(CngConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
 
-                type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+                type.contains(".") && type != CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
                     findClassByFQN(project, type)
 
                 else -> findClassByHybrisTypeName(project, type)

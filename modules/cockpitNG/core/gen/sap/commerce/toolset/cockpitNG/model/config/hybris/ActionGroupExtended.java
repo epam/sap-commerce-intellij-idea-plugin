@@ -25,11 +25,12 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.SubTag;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 
 /**
  * http://www.hybris.com/cockpit/config/hybris:action-group-extended interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface ActionGroupExtended extends DomElement, ActionGroup {
 
     /**

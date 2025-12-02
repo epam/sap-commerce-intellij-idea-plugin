@@ -24,12 +24,13 @@ package sap.commerce.toolset.cockpitNG.model.widgets;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
 
 /**
  * http://www.hybris.com/cockpitng/config/explorertree:dynamic-node interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface DynamicNode extends DomElement, ExplorerNode {
 
     /**

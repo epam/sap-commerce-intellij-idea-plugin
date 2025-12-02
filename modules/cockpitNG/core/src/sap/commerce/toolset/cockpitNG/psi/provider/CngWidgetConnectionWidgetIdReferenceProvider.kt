@@ -25,7 +25,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.psi.reference.CngWidgetReference
 import sap.commerce.toolset.cockpitNG.psi.reference.CngWidgetStubReference
 
@@ -35,7 +35,7 @@ class CngWidgetConnectionWidgetIdReferenceProvider : PsiReferenceProvider() {
         element: PsiElement, context: ProcessingContext
     ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         val references = if (element is XmlAttributeValue)
-            if (element.value.startsWith(HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB, true)) arrayOf(CngWidgetStubReference(element))
+            if (element.value.startsWith(CngConstants.COCKPIT_NG_WIDGET_ID_STUB, true)) arrayOf(CngWidgetStubReference(element))
             else arrayOf(CngWidgetReference(element))
         else emptyArray()
 

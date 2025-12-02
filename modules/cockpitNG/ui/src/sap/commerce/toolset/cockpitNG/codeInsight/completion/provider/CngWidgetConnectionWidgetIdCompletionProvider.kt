@@ -21,7 +21,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.codeInsight.lookup.CngLookupElementFactory
 import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
 
@@ -44,12 +44,12 @@ class CngWidgetConnectionWidgetIdCompletionProvider : CompletionProvider<Complet
 
             editorDefinitions
                 .values
-                .map { CngLookupElementFactory.build(it, HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id) }
+                .map { CngLookupElementFactory.build(it, CngConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id) }
                 .forEach { resultCaseInsensitive.addElement(it) }
 
             widgetDefinitions
                 .values
-                .map { CngLookupElementFactory.build(it, HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id) }
+                .map { CngLookupElementFactory.build(it, CngConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id) }
                 .forEach { resultCaseInsensitive.addElement(it) }
         }
     }

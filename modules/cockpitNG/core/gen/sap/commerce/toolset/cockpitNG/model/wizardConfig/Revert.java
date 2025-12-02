@@ -27,11 +27,12 @@ import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:RevertType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Revert extends DomElement {
 
 	/**

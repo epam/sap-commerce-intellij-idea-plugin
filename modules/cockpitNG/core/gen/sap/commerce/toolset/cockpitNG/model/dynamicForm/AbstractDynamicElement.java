@@ -24,13 +24,14 @@ package sap.commerce.toolset.cockpitNG.model.dynamicForm;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Positioned;
 
 /**
  * http://www.hybris.com/cockpitng/component/dynamicForms:abstractDynamicElement interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface AbstractDynamicElement extends DomElement, Positioned, Mergeable {
 
 	/**

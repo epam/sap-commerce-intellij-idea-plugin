@@ -24,11 +24,12 @@ package sap.commerce.toolset.cockpitNG.model.itemEditor;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.Namespace;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 
 /**
  * http://www.hybris.com/cockpitng/component/editorArea:essentialSection interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface EssentialSection extends DomElement, Section {
 
 }

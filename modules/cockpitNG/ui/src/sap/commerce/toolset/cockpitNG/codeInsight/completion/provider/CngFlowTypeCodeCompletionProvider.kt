@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.typeSystem.codeInsight.completion.ItemTypeCodeCompletionProvider
 
 class CngFlowTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
@@ -30,7 +30,7 @@ class CngFlowTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         result.addElement(
             PrioritizedLookupElement.withPriority(
-                LookupElementBuilder.create(HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE),
+                LookupElementBuilder.create(CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE),
                 1.0
             )
         )

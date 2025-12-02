@@ -21,7 +21,6 @@ package sap.commerce.toolset.cockpitNG
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.cockpitNG.model.core.Widgets
 import sap.commerce.toolset.cockpitNG.psi.CngPatterns
@@ -39,7 +38,7 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes
         ?.mapNotNull { it.value }
-        ?.any { it == HybrisConstants.SCHEMA_COCKPIT_NG_WIDGETS }
+        ?.any { it == CngConstants.SCHEMA_COCKPIT_NG_WIDGETS }
         ?: false
 
 }

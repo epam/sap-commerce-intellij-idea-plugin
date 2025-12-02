@@ -24,6 +24,7 @@ package sap.commerce.toolset.cockpitNG.model.gridView;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Positioned;
 import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
@@ -31,7 +32,7 @@ import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
 /**
  * http://www.hybris.com/cockpitng/component/gridView:renderer interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Renderer extends DomElement, Positioned, Mergeable {
 
 	/**

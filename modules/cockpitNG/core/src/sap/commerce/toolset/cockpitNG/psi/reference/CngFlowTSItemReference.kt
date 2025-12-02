@@ -23,7 +23,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
 import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -31,7 +31,7 @@ import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 class CngFlowTSItemReference(element: PsiElement) : CngTSItemReference(element) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> =
-        if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(value, true)) CachedValuesManager.getManager(element.project)
+        if (CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(value, true)) CachedValuesManager.getManager(element.project)
             .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
             .let { getValidResults(it) }
         else super.multiResolve(incompleteCode)

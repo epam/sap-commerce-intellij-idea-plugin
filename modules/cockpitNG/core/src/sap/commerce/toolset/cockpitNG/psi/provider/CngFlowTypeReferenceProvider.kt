@@ -24,7 +24,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.psi.reference.CngFlowTSItemReference
 
 class CngFlowTypeReferenceProvider : PsiReferenceProvider() {
@@ -34,7 +34,7 @@ class CngFlowTypeReferenceProvider : PsiReferenceProvider() {
     ): Array<CngFlowTSItemReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         val references = (element as? XmlAttributeValue)
             // type may point to Java class
-            ?.takeUnless { it.value.contains(".") && it.value != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE }
+            ?.takeUnless { it.value.contains(".") && it.value != CngConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE }
             ?.let { arrayOf(CngFlowTSItemReference(element)) }
             ?: emptyArray()
 

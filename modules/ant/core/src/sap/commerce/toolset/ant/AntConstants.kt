@@ -24,6 +24,8 @@ object AntConstants {
 
     val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
 
+    const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
+
     val DESIRABLE_PLATFORM_TARGETS = listOf(
         "clean",
         "build",

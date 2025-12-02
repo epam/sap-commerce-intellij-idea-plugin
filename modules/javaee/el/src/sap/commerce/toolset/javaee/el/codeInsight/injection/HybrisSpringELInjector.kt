@@ -28,7 +28,7 @@ import com.intellij.psi.xml.XmlTagChild
 import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.SpringELLanguage
 import com.intellij.spring.model.utils.SpringCommonUtils
-import sap.commerce.toolset.cockpitNG.CockpitNGConstants
+import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Labels
 
 class HybrisSpringELInjector : MultiHostInjector {
@@ -46,7 +46,7 @@ class HybrisSpringELInjector : MultiHostInjector {
         when {
             context is XmlText
                 && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION || tag.localName == Labels.SHORT_LABEL)
-                && tag.namespace == CockpitNGConstants.Namespace.CONFIG_HYBRIS -> doInject(registrar, context)
+                && tag.namespace == CngConstants.Namespace.CONFIG_HYBRIS -> doInject(registrar, context)
         }
     }
 

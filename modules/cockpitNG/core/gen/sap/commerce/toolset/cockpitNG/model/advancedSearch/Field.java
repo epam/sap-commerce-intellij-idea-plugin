@@ -24,6 +24,7 @@ package sap.commerce.toolset.cockpitNG.model.advancedSearch;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Positioned;
 import sap.commerce.toolset.cockpitNG.util.xml.CngOperatorConverter;
@@ -31,7 +32,7 @@ import sap.commerce.toolset.cockpitNG.util.xml.CngOperatorConverter;
 /**
  * http://www.hybris.com/cockpitng/config/advancedsearch:FieldType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
+@Namespace(CngConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Field extends DomElement, Positioned, Mergeable {
 
 	String NAME = "name";
