@@ -193,9 +193,11 @@ class HacHttpClient(private val project: Project) {
     ): HacHttpAuthResult {
         val hostHacURL = settings.generatedURL
         val authContextCache = AuthContextCache.getInstance(project)
-        val authContext = authContextCache.authContexts.computeIfAbsent(authContextKey) { AuthContext(
-            headers = proxyCredentials.asHeaders()
-        ) }
+        val authContext = authContextCache.authContexts.computeIfAbsent(authContextKey) {
+            AuthContext(
+                headers = proxyCredentials.asHeaders()
+            )
+        }
         retrieveCookies(hostHacURL, settings, replicaContext, authContext)
 
         val sessionCookieName = getSessionCookieName(settings)
@@ -217,7 +219,10 @@ class HacHttpClient(private val project: Project) {
         if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
             val location = response.getFirstHeader("Location")
             if (location != null && location.value.contains("login_error")) {
-                return HacHttpAuthResult.Error(hostHacURL, "Wrong username/password. Set your credentials in [y] tool window.")
+                return HacHttpAuthResult.Error(
+                    hostHacURL,
+                    "Wrong username/password. Set your credentials for active hAC connection via Settings -> [y] SAP CX -> Project Settings -> hAC or related connection menu."
+                )
             }
         }
 
@@ -307,7 +312,7 @@ class HacHttpClient(private val project: Project) {
         try {
             val connection = connect(hacURL, settings.sslProtocol)
                 .headers(authContext.headers)
-                //.cookies(authContext.cookies)
+            //.cookies(authContext.cookies)
 
             if (replicaContext != null) {
                 connection.cookie(replicaContext.cookieName, replicaContext.replicaCookie)

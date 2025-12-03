@@ -28,6 +28,9 @@
 ### `Cockpit NG` enhancements
 - Added folding for `simple-search:sort-field` [#1674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1674)
 
+### `hAC` enhancements
+- Improved warning message in case of credentials issue [#1678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1678)
+
 ### Other
 - Updated Plugin icon [#1667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1667)
 
