@@ -22,7 +22,6 @@ import com.google.gson.Gson
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.ResourceUtil
-import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
@@ -98,12 +97,11 @@ class CxLoggersTemplatesService(private val project: Project) {
 
     fun updateCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
         with(CxLoggerTemplatesSettings.getInstance(project)) {
-            val position = customLoggerTemplates.indexOfFirst {it.uuid == template.uuid}
-            val mutableList = customLoggerTemplates.toMutableList()
-            mutableList.removeIf { it.uuid == template.uuid }
-            mutableList.add(position, template)
-
-            customLoggerTemplates = mutableList.toImmutableList()
+            customLoggerTemplates = customLoggerTemplates.toMutableList().apply {
+                val position = indexOfFirst { it.uuid == template.uuid }
+                removeIf { it.uuid == template.uuid }
+                add(position, template)
+            }
         }
 
         project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()

@@ -27,7 +27,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
 import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
-import sap.commerce.toolset.logging.ui.LoggerTemplateEditorDialog
+import sap.commerce.toolset.logging.ui.CxCustomLoggerTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateGroupNode
 
 class AddCustomTemplateAction : AnAction() {
@@ -45,7 +45,7 @@ class AddCustomTemplateAction : AnAction() {
 
         val mutable = CxCustomLoggerTemplateState().mutable()
 
-        if (LoggerTemplateEditorDialog(project, mutable).showAndGet()) {
+        if (CxCustomLoggerTemplateDialog(project, mutable, "Create a Logger Template").showAndGet()) {
             CxLoggersTemplatesService.getInstance(project).addCustomLoggerTemplate(mutable.immutable())
         }
     }

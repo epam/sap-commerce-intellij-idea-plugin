@@ -28,16 +28,16 @@ import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
 import javax.swing.JComponent
 
-class LoggerTemplateEditorDialog(
+class CxCustomLoggerTemplateDialog(
     project: Project,
     private val mutable: CxCustomLoggerTemplateState.Mutable,
-    private val editMode: Boolean = false
+    private val title: String
 ) : DialogWrapper(project) {
 
     private lateinit var nameTextField: JBTextField
 
     init {
-        title = if (editMode) "Update a Logger Template" else "Create a Logger Template"
+        super.title = title
         isResizable = false
         init()
     }

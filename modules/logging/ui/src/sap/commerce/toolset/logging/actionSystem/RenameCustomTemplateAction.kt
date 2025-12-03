@@ -27,7 +27,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
 import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
-import sap.commerce.toolset.logging.ui.LoggerTemplateEditorDialog
+import sap.commerce.toolset.logging.ui.CxCustomLoggerTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
 
 class RenameCustomTemplateAction : AnAction() {
@@ -50,7 +50,7 @@ class RenameCustomTemplateAction : AnAction() {
             ?.mutable()
             ?: return
 
-        if (LoggerTemplateEditorDialog(project, mutable, editMode = true).showAndGet()) {
+        if (CxCustomLoggerTemplateDialog(project, mutable, "Update a Logger Template").showAndGet()) {
             CxLoggersTemplatesService.getInstance(project).updateCustomLoggerTemplate(mutable.immutable())
         }
     }
