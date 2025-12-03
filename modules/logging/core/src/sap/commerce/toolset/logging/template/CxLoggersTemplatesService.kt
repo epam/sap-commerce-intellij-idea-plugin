@@ -24,10 +24,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.ResourceUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
+import sap.commerce.toolset.logging.event.CxCustomLoggerTemplateStateListener
 import sap.commerce.toolset.logging.resolveIconBlocking
 import sap.commerce.toolset.logging.resolvePsiElementPointerBlocking
 import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
+import sap.commerce.toolset.logging.state.CxCustomLoggerConfig
 import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
 import java.io.InputStreamReader
 
@@ -77,14 +78,7 @@ class CxLoggersTemplatesService(private val project: Project) {
     fun customLoggerTemplates() = CxLoggerTemplatesSettings.getInstance(project)
         .customLoggerTemplates
         .map { templateState ->
-            CxLoggersTemplateModel(
-                uuid = templateState.uuid,
-                name = templateState.name,
-                loggers = templateState.loggers
-                    .map { loggerState -> CxLoggerModel.of(loggerState.name, loggerState.effectiveLevel) }
-                    .toList(),
-                icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE
-            )
+            createLoggerTemplateModel(templateState)
         }
 
     fun addCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
@@ -92,10 +86,17 @@ class CxLoggersTemplatesService(private val project: Project) {
             customLoggerTemplates = customLoggerTemplates + template
         }
 
-        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
+        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated()
     }
 
     fun updateCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
+
+        updateCustomLoggerTemplateInternal(template)
+
+        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated()
+    }
+
+    private fun updateCustomLoggerTemplateInternal(template: CxCustomLoggerTemplateState) {
         with(CxLoggerTemplatesSettings.getInstance(project)) {
             customLoggerTemplates = customLoggerTemplates.toMutableList().apply {
                 val position = indexOfFirst { it.uuid == template.uuid }
@@ -103,16 +104,46 @@ class CxLoggersTemplatesService(private val project: Project) {
                 add(position, template)
             }
         }
-
-        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
     }
+
+    fun addLogger(templateUUID: String, logger: String, effectiveLevel: String) {
+        with(CxLoggerTemplatesSettings.getInstance(project)) {
+            val loggerTemplate = customLoggerTemplates
+                .find { it.uuid == templateUUID }
+                ?.mutable()
+                ?.apply {
+                    val newItem = CxCustomLoggerConfig(effectiveLevel, logger).mutable()
+                    val newLoggerConfigs = loggers.get().toMutableList()
+                        .apply { add(newItem) }
+
+                    loggers.set(newLoggerConfigs)
+                }
+                ?.immutable()
+                ?: return@with
+
+            updateCustomLoggerTemplateInternal(loggerTemplate)
+
+            val modifiedLoggerTemplate = createLoggerTemplateModel(loggerTemplate)
+
+            project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplateUpdated(modifiedLoggerTemplate)
+        }
+    }
+
+    private fun createLoggerTemplateModel(loggerTemplate: CxCustomLoggerTemplateState): CxLoggersTemplateModel = CxLoggersTemplateModel(
+        uuid = loggerTemplate.uuid,
+        name = loggerTemplate.name,
+        loggers = loggerTemplate.loggers
+            .map { loggerState -> CxLoggerModel.of(loggerState.name, loggerState.effectiveLevel) }
+            .toList(),
+        icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+    )
 
     fun deleteCustomTemplate(templateId: String) {
         with(CxLoggerTemplatesSettings.getInstance(project)) {
             customLoggerTemplates = customLoggerTemplates.filter { it.uuid != templateId }
         }
 
-        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
+        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated()
     }
 
     companion object {

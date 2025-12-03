@@ -19,12 +19,14 @@
 package sap.commerce.toolset.logging.event
 
 import com.intellij.util.messages.Topic
+import sap.commerce.toolset.logging.template.CxLoggersTemplateModel
 
-interface CxLoggerTemplatesStateListener {
+interface CxCustomLoggerTemplateStateListener {
 
-    fun onLoggersTemplatesStateChanged() = Unit
+    fun onLoggerTemplatesUpdated() = Unit
+    fun onLoggerTemplateUpdated(modifiedTemplate: CxLoggersTemplateModel) = Unit
 
     companion object {
-        val TOPIC = Topic(CxLoggerTemplatesStateListener::class.java)
+        val TOPIC = Topic(CxCustomLoggerTemplateStateListener::class.java)
     }
 }
