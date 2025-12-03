@@ -46,7 +46,7 @@ class CustomLoggersTemplateItemNode private constructor(
         text = template.name
         icon = template.icon
 
-        update(presentation)
+        this.update(presentation)
     }
 
     fun update(source: LoggersNode) {
