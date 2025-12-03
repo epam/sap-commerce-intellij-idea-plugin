@@ -22,9 +22,11 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.ui.Messages
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
 
 class DeleteCustomTemplateAction : AnAction() {
@@ -36,9 +38,20 @@ class DeleteCustomTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        e.selectedNode()
+
+        val templateNode = e.selectedNode()
             ?.asSafely<CustomLoggersTemplateItemNode>()
             ?: return
+
+        if (Messages.showYesNoDialog(
+                project,
+                "Delete template $ { templateNode.name }?",
+                "Delete Custom Template",
+                HybrisIcons.Log.Action.DELETE
+            ) != Messages.YES
+        ) return
+
+        CxLoggersTemplatesService.getInstance(project).deleteCustomTemplate(templateNode.uuid)
     }
 
     override fun update(e: AnActionEvent) {

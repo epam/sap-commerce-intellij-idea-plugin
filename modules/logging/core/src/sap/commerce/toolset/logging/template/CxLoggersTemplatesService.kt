@@ -78,17 +78,38 @@ class CxLoggersTemplatesService(private val project: Project) {
         .customLoggerTemplates
         .map { templateState ->
             CxLoggersTemplateModel(
-                templateState.name,
-                templateState.loggers
+                uuid = templateState.uuid,
+                name = templateState.name,
+                loggers = templateState.loggers
                     .map { loggerState -> CxLoggerModel.of(loggerState.name, loggerState.effectiveLevel) }
                     .toList(),
-                HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+                icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE
             )
         }
 
     fun addCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
         with(CxLoggerTemplatesSettings.getInstance(project)) {
             customLoggerTemplates = customLoggerTemplates + template
+        }
+
+        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
+    }
+
+    fun updateCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
+        with(CxLoggerTemplatesSettings.getInstance(project)) {
+            customLoggerTemplates = customLoggerTemplates.toMutableList().apply {
+                val position = indexOfFirst { it.uuid == template.uuid }
+                removeIf { it.uuid == template.uuid }
+                add(position, template)
+            }
+        }
+
+        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
+    }
+
+    fun deleteCustomTemplate(templateId: String) {
+        with(CxLoggerTemplatesSettings.getInstance(project)) {
+            customLoggerTemplates = customLoggerTemplates.filter { it.uuid != templateId }
         }
 
         project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()

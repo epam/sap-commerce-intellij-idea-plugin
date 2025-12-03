@@ -25,12 +25,12 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
+import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
 import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 import sap.commerce.toolset.logging.ui.CxCustomLoggerTemplateDialog
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateGroupNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
 
-class AddCustomTemplateAction : AnAction() {
+class RenameCustomTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -39,19 +39,24 @@ class AddCustomTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        e.selectedNode()
-            ?.asSafely<CustomLoggersTemplateGroupNode>()
+
+        val templateNode = e.selectedNode()
+            ?.asSafely<CustomLoggersTemplateItemNode>()
             ?: return
 
-        val mutable = CxCustomLoggerTemplateState().mutable()
+        val mutable = CxLoggerTemplatesSettings.getInstance(project)
+            .customLoggerTemplates
+            .find { it.uuid == templateNode.uuid }
+            ?.mutable()
+            ?: return
 
-        if (CxCustomLoggerTemplateDialog(project, mutable, "Create a Logger Template").showAndGet()) {
-            CxLoggersTemplatesService.getInstance(project).addCustomLoggerTemplate(mutable.immutable())
+        if (CxCustomLoggerTemplateDialog(project, mutable, "Update a Logger Template").showAndGet()) {
+            CxLoggersTemplatesService.getInstance(project).updateCustomLoggerTemplate(mutable.immutable())
         }
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "New Template"
-        e.presentation.icon = HybrisIcons.Log.Template.ADD_CUSTOM_TEMPLATE
+        e.presentation.text = "Rename Template"
+        e.presentation.icon = HybrisIcons.Log.Template.EDIT_CUSTOM_TEMPLATE
     }
 }

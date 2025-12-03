@@ -24,7 +24,7 @@ import com.intellij.ui.SimpleTextAttributes
 import javax.swing.Icon
 
 abstract class LoggersOptionsNode(
-    private val text: String,
+    open val text: String,
     private val icon: Icon?,
     project: Project
 ) : LoggersNode(project) {
@@ -32,6 +32,8 @@ abstract class LoggersOptionsNode(
     override fun getName() = text
 
     override fun update(presentation: PresentationData) {
+        presentation.clearText()
+
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(icon)
     }

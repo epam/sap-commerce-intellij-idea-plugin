@@ -2,7 +2,7 @@
 
 <cite>Release contributors</cite>
 - 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
-- 3 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
+- 4 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `Project Import` enhancements
 - Automatically download 3rd-party library sources [#1669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1669)
@@ -15,6 +15,7 @@
 
 ### `SAP CX Logging` enhancements
 - Added support for Custom Loggers Template - add a template [#1677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1677)
+- Added support for Custom Loggers Template - actions: delete, rename template [#1679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1679)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)

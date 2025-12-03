@@ -21,44 +21,40 @@ package sap.commerce.toolset.logging.ui
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextField
+import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.columns
 import com.intellij.ui.dsl.builder.panel
-import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
 import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
 import javax.swing.JComponent
 
-class CreateLoggerTemplateDialog(
-    private val project: Project,
+class CxCustomLoggerTemplateDialog(
+    project: Project,
     private val mutable: CxCustomLoggerTemplateState.Mutable,
+    private val title: String
 ) : DialogWrapper(project) {
 
     private lateinit var nameTextField: JBTextField
 
     init {
-        title = "Create a Logger Template"
-        isResizable = true
+        super.title = title
+        isResizable = false
         init()
     }
 
     override fun createCenterPanel(): JComponent = panel {
-        row("Template Name:") {
+        row {
             nameTextField = textField()
-                .columns(30)
-                .resizableColumn()
+                .label("Name:")
                 .bindText(mutable.name)
+                .align(AlignX.FILL)
                 .addValidationRule("Template Name cannot be blank") { it.text.isNullOrBlank() }
                 .addValidationRule("Template Name cannot exceed 255 characters") { it.text.length > 255 }
-                .addValidationRule("Template name is already in use") { textField ->
-                    val customLoggerTemplates = CxLoggerTemplatesSettings.getInstance(project).customLoggerTemplates
-                    textField.text.isNotBlank() && customLoggerTemplates.any { it.name == textField.text }
-                }
-                .focused()
                 .component
 
         }.layout(RowLayout.PARENT_GRID)
     }
 
     override fun getPreferredFocusedComponent(): JComponent = nameTextField
+
 }
