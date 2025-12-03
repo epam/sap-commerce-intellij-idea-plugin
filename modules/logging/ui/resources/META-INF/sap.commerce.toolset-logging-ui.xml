@@ -28,6 +28,12 @@
         <action id="sap.cx.loggers.apply.bundle.template" class="sap.commerce.toolset.logging.actionSystem.ApplyBundledTemplateAction"/>
         <action id="sap.cx.loggers.add.custom.template" class="sap.commerce.toolset.logging.actionSystem.AddCustomTemplateAction"/>
         <action id="sap.cx.loggers.delete.custom.template" class="sap.commerce.toolset.logging.actionSystem.DeleteCustomTemplateAction"/>
+        <action id="sap.cx.loggers.rename.custom.template" class="sap.commerce.toolset.logging.actionSystem.RenameCustomTemplateAction"/>
+
+        <group id="sap.cx.loggers.template.item.actions" searchable="false">
+            <reference ref="sap.cx.loggers.rename.custom.template"/>
+            <reference ref="sap.cx.loggers.delete.custom.template"/>
+        </group>
 
         <group id="sap.cx.loggers.toolbar.actions" searchable="false">
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>

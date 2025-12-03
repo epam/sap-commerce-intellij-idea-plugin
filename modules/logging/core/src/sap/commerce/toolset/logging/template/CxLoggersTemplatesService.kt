@@ -22,6 +22,7 @@ import com.google.gson.Gson
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.ResourceUtil
+import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
@@ -78,17 +79,39 @@ class CxLoggersTemplatesService(private val project: Project) {
         .customLoggerTemplates
         .map { templateState ->
             CxLoggersTemplateModel(
-                templateState.name,
-                templateState.loggers
+                uuid = templateState.uuid,
+                name = templateState.name,
+                loggers = templateState.loggers
                     .map { loggerState -> CxLoggerModel.of(loggerState.name, loggerState.effectiveLevel) }
                     .toList(),
-                HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+                icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE
             )
         }
 
     fun addCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
         with(CxLoggerTemplatesSettings.getInstance(project)) {
             customLoggerTemplates = customLoggerTemplates + template
+        }
+
+        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
+    }
+
+    fun updateCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
+        with(CxLoggerTemplatesSettings.getInstance(project)) {
+            val position = customLoggerTemplates.indexOfFirst {it.uuid == template.uuid}
+            val mutableList = customLoggerTemplates.toMutableList()
+            mutableList.removeIf { it.uuid == template.uuid }
+            mutableList.add(position, template)
+
+            customLoggerTemplates = mutableList.toImmutableList()
+        }
+
+        project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()
+    }
+
+    fun deleteCustomTemplate(templateId: String) {
+        with(CxLoggerTemplatesSettings.getInstance(project)) {
+            customLoggerTemplates = customLoggerTemplates.filter { it.uuid != templateId }
         }
 
         project.messageBus.syncPublisher(CxLoggerTemplatesStateListener.TOPIC).onLoggersTemplatesStateChanged()

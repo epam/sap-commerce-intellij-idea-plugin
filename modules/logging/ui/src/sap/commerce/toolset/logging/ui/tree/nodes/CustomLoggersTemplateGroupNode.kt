@@ -26,6 +26,12 @@ class CustomLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Cus
 
     override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLoggersTemplatesService.getInstance(project).customLoggerTemplates()
         .associate { template ->
-            template.name to CustomLoggersTemplateItemNode.of(project, template)
+            template.uuid to CustomLoggersTemplateItemNode.of(project, template)
         }
+
+    override fun update(existingNode: LoggersNode, newNode: LoggersNode) {
+        if (existingNode is CustomLoggersTemplateItemNode && newNode is CustomLoggersTemplateItemNode) {
+            existingNode.update(newNode)
+        }
+    }
 }

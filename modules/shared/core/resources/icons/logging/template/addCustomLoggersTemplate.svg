@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
-    <g stroke="#0066cc" stroke-linecap="round">
-        <path d="m3.5 13.5h9"/>
-        <path d="m14 11.5h-12c-.27614 0-.5-.2239-.5-.5v-1c0-.27614.22386-.5.5-.5h5l-1.45369-5.08792c-.27378-.95822.44572-1.91208 1.44229-1.91208h2.0228c.9966 0 1.7161.95386 1.4423 1.91208l-1.4537 5.08792h5c.2761 0 .5.22386.5.5v1c0 .2761-.2239.5-.5.5z" stroke-linejoin="round"/>
-        <circle cx="12" cy="4" r="3" fill="#fff" stroke="#0066cc" stroke-width="1"/>
-        <path d="m12 2v4" stroke-width="1.5"/>
-        <path d="m10 4h4" stroke-width="1.5"/>
-    </g>
+    <path d="M3.5 13.5h9" stroke="#0066cc" stroke-linecap="round"/>
+    <path
+            d="M14 11.5H2c-.27614 0-.5-.2239-.5-.5v-1c0-.27614.22386-.5.5-.5h5L5.54631 4.41208C5.27253 3.45386 5.99203 2.5 6.9886 2.5h2.0228c.9966 0 1.7161.95386 1.4423 1.91208L9 9.5h5c.2761 0 .5.22386.5.5v1c0 .2761-.2239.5-.5.5Z"
+            stroke="#0066cc"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+    />
+
+    <circle cx="12" cy="4" r="3" fill="#E6F9ED" stroke="#16A34A" stroke-width="1"/>
+    <path d="M12 2.1v3.8" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M10.1 4h3.8" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round"/>
 </svg>

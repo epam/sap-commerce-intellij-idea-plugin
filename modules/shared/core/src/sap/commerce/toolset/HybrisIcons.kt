@@ -531,6 +531,7 @@ object HybrisIcons {
         object Action {
             val FETCH = AllIcons.Vcs.Fetch
             val REFRESH = Actions.REFRESH
+            val DELETE = AllIcons.General.Delete
         }
 
         object Template {
@@ -542,6 +543,7 @@ object HybrisIcons {
             val CUSTOM_TEMPLATE = getIcon("/icons/logging/template/customLoggersTemplate.svg")
             val ADD_CUSTOM_TEMPLATE = getIcon("/icons/logging/template/addCustomLoggersTemplate.svg")
             val DELETE_CUSTOM_TEMPLATE = getIcon("/icons/logging/template/deleteCustomLoggersTemplate.svg")
+            val EDIT_CUSTOM_TEMPLATE = getIcon("/icons/logging/template/editCustomLoggersTemplate.svg")
             val DISABLE = AllIcons.Nodes.Template
             val DEFAULT = AllIcons.Nodes.Template
         }

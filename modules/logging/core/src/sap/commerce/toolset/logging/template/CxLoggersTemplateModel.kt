@@ -19,9 +19,11 @@
 package sap.commerce.toolset.logging.template
 
 import sap.commerce.toolset.logging.CxLoggerModel
+import java.util.*
 import javax.swing.Icon
 
 data class CxLoggersTemplateModel(
+    val uuid: String = UUID.randomUUID().toString(),
     val name: String,
     var loggers: List<CxLoggerModel>,
     var icon: Icon

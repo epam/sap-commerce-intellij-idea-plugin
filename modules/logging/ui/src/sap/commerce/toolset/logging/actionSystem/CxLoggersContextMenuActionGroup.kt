@@ -35,7 +35,7 @@ class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
 
         return when (selectedNode) {
             is BundledLoggersTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.apply.bundle.template"))
-            is CustomLoggersTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.delete.custom.template"))
+            is CustomLoggersTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.template.item.actions"))
             is CustomLoggersTemplateGroupNode -> arrayOf(actionManager.getAction("sap.cx.loggers.add.custom.template"))
             else -> emptyArray()
         }
