@@ -1,7 +1,7 @@
 ## [2025.2.5.1]
 
 <cite>Release contributors</cite>
-- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
+- 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
 - 3 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `Project Import` enhancements
@@ -27,6 +27,9 @@
 
 ### `Cockpit NG` enhancements
 - Added folding for `simple-search:sort-field` [#1674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1674)
+
+### `hAC` enhancements
+- Improved warning message in case of credentials issue [#1678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1678)
 
 ### Other
 - Updated Plugin icon [#1667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1667)
