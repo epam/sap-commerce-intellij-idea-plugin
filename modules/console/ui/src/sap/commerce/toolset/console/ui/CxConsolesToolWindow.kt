@@ -47,7 +47,9 @@ class CxConsolesToolWindow(private val project: Project, parentDisposable: Dispo
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
 
     // TODO: refresh on plugin reloads, f.e. Groovy
-    private lateinit var consoles: List<HybrisConsole<out ExecContext>>
+    private val consoles: List<HybrisConsole<out ExecContext>> by lazy {
+        HybrisConsoleProvider.EP.extensionList.mapNotNull { it.console(project) }
+    }
 
     init {
         // TODO: this looks wrong
@@ -63,8 +65,6 @@ class CxConsolesToolWindow(private val project: Project, parentDisposable: Dispo
         if (!initialized) {
             initialized = true
 
-            consoles = HybrisConsoleProvider.EP.extensionList
-                .mapNotNull { it.console(project) }
             val actionManager = ActionManager.getInstance()
             val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
             val actionToolbar = actionManager.createActionToolbar(ConsoleUiConstants.PLACE_TOOLBAR, toolbarActions, false)
@@ -101,11 +101,8 @@ class CxConsolesToolWindow(private val project: Project, parentDisposable: Dispo
         }
         get() = consoles[tabsPanel.selectedIndex]
 
-    fun <C : HybrisConsole<out ExecContext>> findConsole(consoleClass: KClass<C>): C? {
-        init()
-
-        return consoles.firstNotNullOfOrNull { consoleClass.safeCast(it) }
-    }
+    fun <C : HybrisConsole<out ExecContext>> findConsole(consoleClass: KClass<C>): C? = consoles
+        .firstNotNullOfOrNull { consoleClass.safeCast(it) }
 
     companion object {
         @Serial
