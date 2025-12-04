@@ -26,11 +26,12 @@ import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersRootNode
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowActivationAware
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
-class CxLoggersTree(project: Project) : Tree(), Disposable {
+class CxLoggersTree(project: Project) : Tree(), CxToolWindowActivationAware, Disposable {
 
     private val rootNode = CxLoggersTreeNode(CxLoggersRootNode(project))
     private val myTreeModel = CxLoggersTreeModel(rootNode)
@@ -47,6 +48,8 @@ class CxLoggersTree(project: Project) : Tree(), Disposable {
     }
 
     override fun dispose() = Unit
+
+    override fun onActivated() = update()
 
     fun update() {
         if (model !is AsyncTreeModel) {

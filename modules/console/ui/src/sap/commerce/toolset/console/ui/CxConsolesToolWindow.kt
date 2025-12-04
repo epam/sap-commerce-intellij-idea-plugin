@@ -21,7 +21,6 @@ package sap.commerce.toolset.console.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.JBTabsPaneImpl
@@ -41,11 +40,9 @@ import kotlin.reflect.safeCast
 
 class CxConsolesToolWindow(project: Project, parentDisposable: Disposable) : CxToolWindow(true) {
 
-    override fun dispose() {
-        //NOP
-    }
+    override fun dispose() = Unit
 
-    private val actionToolbar: ActionToolbar
+    private var initialized = false
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
 
     // TODO: refresh on plugin reloads, f.e. Groovy
@@ -58,34 +55,40 @@ class CxConsolesToolWindow(project: Project, parentDisposable: Disposable) : CxT
         Disposer.register(parentDisposable, this)
 
         layout = BorderLayout()
+    }
 
-        val actionManager = ActionManager.getInstance()
-        val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
-        actionToolbar = actionManager.createActionToolbar(ConsoleUiConstants.PLACE_TOOLBAR, toolbarActions, false)
+    override fun onActivated() {
+        if (!initialized) {
+            initialized = true
 
-        val rootPanel = JPanel(BorderLayout())
+            val actionManager = ActionManager.getInstance()
+            val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
+            val actionToolbar = actionManager.createActionToolbar(ConsoleUiConstants.PLACE_TOOLBAR, toolbarActions, false)
 
-        consoles.forEachIndexed { index, console ->
-            Disposer.register(this, console)
-            tabsPanel.insertTab(console.title(), console.icon(), console.component, console.tip(), index)
+            val rootPanel = JPanel(BorderLayout())
+
+            consoles.forEachIndexed { index, console ->
+                Disposer.register(this, console)
+                tabsPanel.insertTab(console.title(), console.icon(), console.component, console.tip(), index)
+            }
+
+            tabsPanel.addChangeListener { event ->
+                val console = event.source.asSafely<JBEditorTabs>()
+                    ?.selectedInfo
+                    ?.component
+                    ?.asSafely<HybrisConsole<in ExecContext>>()
+                    ?: return@addChangeListener
+
+                console.onSelection()
+            }
+
+            actionToolbar.targetComponent = tabsPanel.component
+
+            rootPanel.add(tabsPanel.component, BorderLayout.CENTER)
+            rootPanel.add(actionToolbar.component, BorderLayout.WEST)
+
+            add(rootPanel)
         }
-
-        tabsPanel.addChangeListener { event ->
-            val console = event.source.asSafely<JBEditorTabs>()
-                ?.selectedInfo
-                ?.component
-                ?.asSafely<HybrisConsole<in ExecContext>>()
-                ?: return@addChangeListener
-
-            console.onSelection()
-        }
-
-        actionToolbar.targetComponent = tabsPanel.component
-
-        rootPanel.add(tabsPanel.component, BorderLayout.CENTER)
-        rootPanel.add(actionToolbar.component, BorderLayout.WEST)
-
-        add(rootPanel)
     }
 
     var activeConsole: HybrisConsole<out ExecContext>

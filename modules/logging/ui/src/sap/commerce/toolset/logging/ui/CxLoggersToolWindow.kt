@@ -29,30 +29,21 @@ import java.io.Serial
 
 class CxLoggersToolWindow(val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
-    var activated = false;
-    val treePane: CxLoggersSplitView
+    private val splitView: CxLoggersSplitView
 
     override fun dispose() = Unit
 
     init {
         installToolbar()
-        treePane = CxLoggersSplitView(project)
-        setContent(treePane)
+        splitView = CxLoggersSplitView(project)
+        setContent(splitView)
         //todo add a listener for project import completion event
 
         Disposer.register(parentDisposable, this)
-        Disposer.register(this, treePane)
+        Disposer.register(this, splitView)
     }
 
-    override fun onActivated() {
-        activated = true
-        //todo refresh tree only if project import has been completed
-        treePane.updateTree()
-    }
-
-    override fun onDeactivated() {
-        activated = false
-    }
+    override fun onActivated() = splitView.onActivated()
 
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {

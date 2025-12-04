@@ -37,26 +37,28 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     override fun createToolWindowContent(
         project: Project, toolWindow: ToolWindow
     ) {
+        toolWindow.contentManager.addContentManagerListener(object : ContentManagerListener {
+            override fun selectionChanged(event: ContentManagerEvent) {
+                if (event.isConsumed) return
+
+                when (event.operation) {
+                    ContentManagerEvent.ContentOperation.add -> event.content.component.asSafely<CxToolWindowActivationAware>()
+                        ?.onActivated()
+
+                    ContentManagerEvent.ContentOperation.remove -> event.content.component.asSafely<CxToolWindowActivationAware>()
+                        ?.onDeactivated()
+
+                    else -> Unit
+                }
+            }
+        })
+
         coroutineScope.launch(Dispatchers.IO) {
             edtWriteAction {
                 ToolWindowContentProvider.EP.extensionList
                     .sortedBy { it.order }
                     .map { it.create(project, toolWindow) }
                     .forEach { toolWindow.contentManager.addContent(it) }
-
-                toolWindow.contentManager.addContentManagerListener(object : ContentManagerListener {
-                    override fun selectionChanged(event: ContentManagerEvent) {
-                        event.content.component
-                            .asSafely<CxToolWindowActivationAware>()
-                            ?.onActivated()
-
-                        toolWindow.contentManager.contents
-                            .filter { it.displayName != event.content.displayName }
-                            .map { it.component }
-                            .filterIsInstance<CxToolWindowActivationAware>()
-                            .forEach { it.onDeactivated() }
-                    }
-                })
             }
         }
     }

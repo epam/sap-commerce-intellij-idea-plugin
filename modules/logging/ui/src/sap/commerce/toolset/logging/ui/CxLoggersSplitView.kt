@@ -44,11 +44,12 @@ import sap.commerce.toolset.ui.addTreeSelectionListener
 import sap.commerce.toolset.ui.event.MouseListener
 import sap.commerce.toolset.ui.event.TreeModelListener
 import sap.commerce.toolset.ui.pathData
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowActivationAware
 import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
 
-class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), Disposable {
+class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), CxToolWindowActivationAware, Disposable {
 
     private val tree = CxLoggersTree(project).apply { registerListeners(this) }
     private val remoteLogStateView = CxRemoteLogStateView(project)
@@ -90,7 +91,6 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
 
             subscribe(CxCustomLogTemplateStateListener.TOPIC, object : CxCustomLogTemplateStateListener {
                 override fun onTemplateUpdated(templateUUID: String) = updateTree()
-
                 override fun onTemplateDeleted() = updateTree()
 
                 override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
@@ -108,9 +108,8 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
         }
     }
 
-    fun updateTree() {
-        tree.update()
-    }
+    override fun onActivated() = updateTree()
+    private fun updateTree() = tree.onActivated()
 
     private fun registerListeners(tree: CxLoggersTree) = tree
         .addTreeSelectionListener(tree) {

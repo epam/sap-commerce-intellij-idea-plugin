@@ -45,6 +45,7 @@ import java.io.Serial
 
 class TSToolWindow(private val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
+    private var initialized = false
     private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
     private val mySettings = TSViewSettings.getInstance(project)
     private val myTreePane = TSTreePanel(project)
@@ -54,22 +55,27 @@ class TSToolWindow(private val project: Project, parentDisposable: Disposable) :
     }
 
     init {
-        installToolbar()
-
-        when {
-            DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-                add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
-                setContent(this)
-            }
-
-            !TSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
-
-            else -> refreshContent(ChangeType.FULL)
-        }
-
         Disposer.register(parentDisposable, this)
         Disposer.register(this, myTreePane)
+
+        installToolbar()
         installSettingsListener()
+    }
+
+    override fun onActivated() {
+        if (!initialized) {
+            initialized = true
+            when {
+                DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+                    add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                    setContent(this)
+                }
+
+                !TSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
+
+                else -> refreshContent(ChangeType.FULL)
+            }
+        }
     }
 
     private fun installToolbar() {
