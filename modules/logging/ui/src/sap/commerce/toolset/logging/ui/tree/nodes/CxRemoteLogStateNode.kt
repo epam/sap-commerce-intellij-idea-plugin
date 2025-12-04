@@ -44,7 +44,8 @@ class CxRemoteLogStateNode(
         if (active) {
             val tip = CxRemoteLogAccess.getInstance(project).state(connection.uuid)
                 .get()
-                ?.size
+                ?.values
+                ?.count { !it.inherited }
                 ?.let { size -> " active | $size logger(s)" }
                 ?: " (active)"
             presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
