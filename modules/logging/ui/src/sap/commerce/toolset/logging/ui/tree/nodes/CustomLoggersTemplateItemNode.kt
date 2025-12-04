@@ -28,13 +28,26 @@ import javax.swing.Icon
 
 class CustomLoggersTemplateItemNode private constructor(
     val uuid: String = UUID.randomUUID().toString(),
-    val loggers: List<CxLoggerModel>,
+    loggers: List<CxLoggerModel>,
     override var text: String = "",
     icon: Icon?,
     project: Project
 ) : LoggersOptionsNode(text, icon, project) {
 
+    var loggers = loggers
+        private set
+
     override fun getName() = text
+
+    fun update(template: CxLoggersTemplateModel) {
+        if (uuid != template.uuid) return
+
+        loggers = template.loggers
+        text = template.name
+        icon = template.icon
+
+        this.update(presentation)
+    }
 
     fun update(source: LoggersNode) {
         text = source.name

@@ -31,8 +31,9 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLoggerAccess
-import sap.commerce.toolset.logging.event.CxLoggerTemplatesStateListener
+import sap.commerce.toolset.logging.event.CxCustomLoggerTemplateStateListener
 import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
+import sap.commerce.toolset.logging.template.CxLoggersTemplateModel
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
 import sap.commerce.toolset.logging.ui.tree.nodes.*
@@ -86,8 +87,21 @@ class LoggersSplitView(
                 }
             })
 
-            subscribe(CxLoggerTemplatesStateListener.TOPIC, object : CxLoggerTemplatesStateListener {
-                override fun onLoggersTemplatesStateChanged() = updateTree()
+            subscribe(CxCustomLoggerTemplateStateListener.TOPIC, object : CxCustomLoggerTemplateStateListener {
+                override fun onLoggerTemplatesUpdated(templateUUID: String) = updateTree()
+
+                override fun onLoggerTemplatesDeleted() = updateTree()
+
+                override fun onLoggerTemplateUpdated(modifiedTemplate: CxLoggersTemplateModel) {
+                    val nodeForUpdate = tree.lastSelectedPathComponent
+                        ?.asSafely<LoggersOptionsTreeNode>()
+                        ?.userObject
+                        ?.asSafely<CustomLoggersTemplateItemNode>()
+                        ?.takeIf { it.uuid == modifiedTemplate.uuid }
+                        ?: return
+                    nodeForUpdate.update(modifiedTemplate)
+                    updateSecondComponent(nodeForUpdate)
+                }
             })
         }
     }
@@ -162,7 +176,7 @@ class LoggersSplitView(
                     secondComponent = customLoggersTemplatesStateView.view
 
                     node.loggers.associateBy { it.name }.let {
-                        customLoggersTemplatesStateView.renderLoggersTemplate(it)
+                        customLoggersTemplatesStateView.renderLoggersTemplate(node.uuid, it)
                     }
                 }
 

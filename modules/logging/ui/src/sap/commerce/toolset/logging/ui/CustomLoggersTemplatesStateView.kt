@@ -46,6 +46,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.LogLevel
+import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 import sap.commerce.toolset.ui.addKeyListener
 import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.Dimension
@@ -56,6 +57,8 @@ class CustomLoggersTemplatesStateView(
     private val project: Project,
     private val coroutineScope: CoroutineScope
 ) : Disposable {
+
+    private var templateUUID: String = ""
 
     private val showNothingSelected = AtomicBooleanProperty(true)
     private val showNoLoggerTemplates = AtomicBooleanProperty(false)
@@ -87,10 +90,6 @@ class CustomLoggersTemplatesStateView(
                     loggerNameField = textField()
                         .resizableColumn()
                         .align(AlignX.FILL)
-                        .validationOnInput {
-                            if (it.text.isBlank()) error("Please enter a logger name")
-                            else null
-                        }
                         .validationOnApply {
                             if (it.text.isBlank()) error("Please enter a logger name")
                             else null
@@ -99,6 +98,8 @@ class CustomLoggersTemplatesStateView(
                             override fun keyReleased(e: KeyEvent) {
                                 if (e.keyCode == KeyEvent.VK_ENTER) {
                                     applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
+
+                                    resetInputs()
                                 }
                             }
                         })
@@ -106,6 +107,8 @@ class CustomLoggersTemplatesStateView(
 
                     button("Apply Logger") {
                         applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
+
+                        resetInputs()
                     }
                 }
                     .visibleIf(showDataPanel)
@@ -155,6 +158,11 @@ class CustomLoggersTemplatesStateView(
                 .apply {
                     editable.set(true)
                 }
+
+            private fun resetInputs() {
+                loggerNameField.text = ""
+                loggerLevelField.selectedItem = LogLevel.ALL
+            }
         }
     }
 
@@ -162,10 +170,11 @@ class CustomLoggersTemplatesStateView(
         get() = panel.value
 
     fun renderNothingSelected() = toggleView(showNothingSelected)
-    fun renderNoLoggerTemplates() = toggleView(showNoLoggerTemplates)
 
-    fun renderLoggersTemplate(loggers: Map<String, CxLoggerModel>) {
+    fun renderLoggersTemplate(templateUUID: String, loggers: Map<String, CxLoggerModel>) {
         initialized.set(false)
+
+        this.templateUUID = templateUUID
 
         renderLoggersInternal(loggers)
     }
@@ -250,10 +259,12 @@ class CustomLoggersTemplatesStateView(
 
     override fun dispose() = panel.drop()
 
-    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, level: LogLevel) {
+    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: LogLevel) {
         canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
 
         if (!canApply.get()) return
+
+        CxLoggersTemplatesService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel.name)
 
 
     }
