@@ -107,7 +107,7 @@ class CxLoggersSplitView(
     }
 
     fun updateTree() {
-        tree.update(HacExecConnectionService.getInstance(project).connections)
+        tree.update()
     }
 
     private fun registerListeners(tree: CxLoggersTree) = tree

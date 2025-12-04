@@ -24,7 +24,6 @@ import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersRootNode
 import java.io.Serial
@@ -52,7 +51,6 @@ class CxLoggersTree(myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update(connections: List<HacConnectionSettingsState>) = myTreeModel.reload(connections)
     fun update() = myTreeModel.reload()
 
     companion object {

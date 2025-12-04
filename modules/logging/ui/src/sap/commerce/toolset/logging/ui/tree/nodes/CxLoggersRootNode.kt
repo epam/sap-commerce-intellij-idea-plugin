@@ -28,7 +28,7 @@ class CxLoggersRootNode(project: Project) : CxLoggersNode(project, "root") {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getNewChildren(nodeParameters: CxLoggersNodeParameters) = listOf(
+    override fun getNewChildren() = listOf(
         CxRemoteHacInstancesNode(project),
         CxBundledLogTemplateGroupNode(project),
         CxCustomLogTemplateGroupNode(project)

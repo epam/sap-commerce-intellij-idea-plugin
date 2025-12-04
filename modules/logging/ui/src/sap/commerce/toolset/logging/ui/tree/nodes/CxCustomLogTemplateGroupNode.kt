@@ -28,7 +28,7 @@ class CxCustomLogTemplateGroupNode(project: Project) : CxLoggersNode(
     icon = HybrisIcons.Log.Template.CUSTOM,
 ) {
 
-    override fun getNewChildren(nodeParameters: CxLoggersNodeParameters): Map<String, CxLoggersNode> = CxLogService.getInstance(project).customTemplates()
+    override fun getNewChildren(): Map<String, CxLoggersNode> = CxLogService.getInstance(project).customTemplates()
         .associate { template ->
             template.uuid to CxCustomLogTemplateItemNode.of(project, template)
         }

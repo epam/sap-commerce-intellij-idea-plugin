@@ -33,15 +33,14 @@ abstract class CxLoggersNode(
 ) : PresentableNodeDescriptor<CxLoggersNode>(project, null), LeafState.Supplier, Disposable {
 
     internal val myChildren = mutableMapOf<String, CxLoggersNode>()
-    internal var parameters: CxLoggersNodeParameters? = null
 
     override fun getElement() = this
     override fun getLeafState() = LeafState.ASYNC
     override fun dispose() = myChildren.clear()
     override fun getName(): String = presentationName
 
-    fun getChildren(parameters: CxLoggersNodeParameters): Collection<CxLoggersNode> {
-        val newChildren = getNewChildren(parameters)
+    fun getChildren(): Collection<CxLoggersNode> {
+        val newChildren = getNewChildren()
 
         myChildren.keys
             .filterNot { newChildren.containsKey(it) }
@@ -59,10 +58,9 @@ abstract class CxLoggersNode(
         }
 
         return myChildren.values
-            .onEach { it.parameters = parameters }
     }
 
-    open fun getNewChildren(nodeParameters: CxLoggersNodeParameters): Map<String, CxLoggersNode> = emptyMap()
+    open fun getNewChildren(): Map<String, CxLoggersNode> = emptyMap()
     open fun update(existingNode: CxLoggersNode, newNode: CxLoggersNode) = Unit
 
     override fun update(presentation: PresentationData) {

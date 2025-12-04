@@ -23,17 +23,13 @@ import com.intellij.ui.tree.BaseTreeModel
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNodeParameters
 import javax.swing.tree.TreePath
 
 class CxLoggersTreeModel(
     private val rootTreeNode: CxLoggersTreeNode
 ) : BaseTreeModel<CxLoggersTreeNode>(), Disposable, InvokerSupplier {
 
-    //map of connections to their active state
-    private var connections: List<HacConnectionSettingsState>? = null
     private val nodes = mutableMapOf<CxLoggersNode, CxLoggersTreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)
 
@@ -43,19 +39,13 @@ class CxLoggersTreeModel(
         .asSafely<CxLoggersTreeNode>()
         ?.userObject
         ?.asSafely<CxLoggersNode>()
-        ?.getChildren(CxLoggersNodeParameters(connections ?: emptyList()))
+        ?.getChildren()
         ?.onEach { it.update() }
         ?.map {
             nodes.computeIfAbsent(it) { _ -> CxLoggersTreeNode(it) }
         }
 
     override fun getInvoker() = myInvoker
-
-    fun reload(connections: List<HacConnectionSettingsState>) {
-        this.connections = connections
-
-        treeStructureChanged(TreePath(root), null, null)
-    }
 
     fun reload() = treeStructureChanged(TreePath(root), null, null)
 

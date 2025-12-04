@@ -28,9 +28,8 @@ class CxRemoteHacInstancesNode(project: Project) : CxLoggersNode(
     icon = HybrisIcons.Y.REMOTES,
 ) {
 
-    override fun getNewChildren(nodeParameters: CxLoggersNodeParameters): Map<String, CxRemoteLogStateNode> {
-        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
-        return nodeParameters.connections
+    override fun getNewChildren(): Map<String, CxRemoteLogStateNode> = with(HacExecConnectionService.getInstance(project)) {
+        connections
             .filter { it == activeConnection } // only active connections
             .map { CxRemoteLogStateNode(it.uuid, project) }
             .associateBy { it.connectionUUID }
