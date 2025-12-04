@@ -23,8 +23,8 @@ import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
 
 data class CxCustomLoggerConfig(
-    @OptionTag val effectiveLevel: String,
-    @OptionTag val name: String,
+    @OptionTag val effectiveLevel: String = "ALL",
+    @OptionTag val name: String = "",
 ) {
     fun mutable() = Mutable(
         effectiveLevel = AtomicProperty(effectiveLevel),

@@ -23,7 +23,10 @@ import sap.commerce.toolset.logging.template.CxLoggersTemplateModel
 
 interface CxCustomLoggerTemplateStateListener {
 
-    fun onLoggerTemplatesUpdated() = Unit
+    fun onLoggerTemplatesUpdated(templateUUID: String) = Unit
+
+    fun onLoggerTemplatesDeleted() = Unit
+
     fun onLoggerTemplateUpdated(modifiedTemplate: CxLoggersTemplateModel) = Unit
 
     companion object {

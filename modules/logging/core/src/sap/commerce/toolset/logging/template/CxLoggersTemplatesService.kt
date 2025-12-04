@@ -86,14 +86,14 @@ class CxLoggersTemplatesService(private val project: Project) {
             customLoggerTemplates = customLoggerTemplates + template
         }
 
-        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated()
+        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated(template.uuid)
     }
 
     fun updateCustomLoggerTemplate(template: CxCustomLoggerTemplateState) {
 
         updateCustomLoggerTemplateInternal(template)
 
-        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated()
+        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated(template.uuid)
     }
 
     private fun updateCustomLoggerTemplateInternal(template: CxCustomLoggerTemplateState) {
@@ -143,7 +143,7 @@ class CxLoggersTemplatesService(private val project: Project) {
             customLoggerTemplates = customLoggerTemplates.filter { it.uuid != templateId }
         }
 
-        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesUpdated()
+        project.messageBus.syncPublisher(CxCustomLoggerTemplateStateListener.TOPIC).onLoggerTemplatesDeleted()
     }
 
     companion object {

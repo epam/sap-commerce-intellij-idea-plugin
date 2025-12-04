@@ -45,7 +45,7 @@ class DeleteCustomTemplateAction : AnAction() {
 
         if (Messages.showYesNoDialog(
                 project,
-                "Delete template $ { templateNode.name }?",
+                "Delete template ${templateNode.name}?",
                 "Delete Custom Template",
                 HybrisIcons.Log.Action.DELETE
             ) != Messages.YES

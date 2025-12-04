@@ -31,7 +31,6 @@
         <action id="sap.cx.loggers.rename.custom.template" class="sap.commerce.toolset.logging.actionSystem.RenameCustomTemplateAction"/>
 
         <group id="sap.cx.loggers.template.item.actions" searchable="false">
-            <reference ref="sap.cx.loggers.apply.bundle.template"/>
             <reference ref="sap.cx.loggers.rename.custom.template"/>
             <reference ref="sap.cx.loggers.delete.custom.template"/>
         </group>

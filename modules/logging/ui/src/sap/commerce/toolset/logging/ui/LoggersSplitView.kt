@@ -88,7 +88,10 @@ class LoggersSplitView(
             })
 
             subscribe(CxCustomLoggerTemplateStateListener.TOPIC, object : CxCustomLoggerTemplateStateListener {
-                override fun onLoggerTemplatesUpdated() = updateTree()
+                override fun onLoggerTemplatesUpdated(templateUUID: String) = updateTree()
+
+                override fun onLoggerTemplatesDeleted() = updateTree()
+
                 override fun onLoggerTemplateUpdated(modifiedTemplate: CxLoggersTemplateModel) {
                     val nodeForUpdate = tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
