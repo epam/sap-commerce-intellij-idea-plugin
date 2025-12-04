@@ -57,7 +57,9 @@ class CxConsolesToolWindow(private val project: Project, parentDisposable: Dispo
         layout = BorderLayout()
     }
 
-    override fun onActivated() {
+    override fun onActivated() = init()
+
+    private fun init() {
         if (!initialized) {
             initialized = true
 
@@ -99,8 +101,11 @@ class CxConsolesToolWindow(private val project: Project, parentDisposable: Dispo
         }
         get() = consoles[tabsPanel.selectedIndex]
 
-    fun <C : HybrisConsole<out ExecContext>> findConsole(consoleClass: KClass<C>): C? = consoles
-        .firstNotNullOfOrNull { consoleClass.safeCast(it) }
+    fun <C : HybrisConsole<out ExecContext>> findConsole(consoleClass: KClass<C>): C? {
+        init()
+
+        return consoles.firstNotNullOfOrNull { consoleClass.safeCast(it) }
+    }
 
     companion object {
         @Serial

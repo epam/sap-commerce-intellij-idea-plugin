@@ -32,33 +32,35 @@ import kotlin.reflect.KClass
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun <C : HybrisConsole<out ExecContext>> openConsole(consoleClass: KClass<C>): C? {
-        val view = findConsolesView() ?: return null
-        val console = view.findConsole(consoleClass) ?: return null
-        activateToolWindow()
-        activateToolWindowTab()
+    fun <C : HybrisConsole<out ExecContext>> openConsole(consoleClass: KClass<C>, onActivation: (C) -> Unit) {
+        activateToolWindow() {
+            val view = findConsolesView() ?: return@activateToolWindow
+            activateToolWindowTab()
+            val console = view.findConsole(consoleClass) ?: return@activateToolWindow
 
-        view.activeConsole = console
+            view.activeConsole = console
 
-        return console
+            onActivation(console)
+        }
     }
 
     fun getActiveConsole() = findConsolesView()
         ?.activeConsole
 
-    fun activateToolWindow() = hybrisToolWindow()
+    fun activateToolWindow(onActivation: () -> Unit = {}) = hybrisToolWindow()
         ?.let {
             invokeLater {
                 it.isAvailable = true
-                it.activate(null, true)
+                it.activate(onActivation, true)
             }
         }
 
-    fun openInConsole(consoleClass: KClass<out HybrisConsole<out ExecContext>>, content: String) = openConsole(consoleClass)
-        ?.apply {
-            clear()
-            setInputText(content)
+    fun openInConsole(consoleClass: KClass<out HybrisConsole<out ExecContext>>, content: String) {
+        openConsole(consoleClass) {
+            it.clear()
+            it.setInputText(content)
         }
+    }
 
     private fun activateToolWindowTab() = hybrisToolWindow()
         ?.contentManager

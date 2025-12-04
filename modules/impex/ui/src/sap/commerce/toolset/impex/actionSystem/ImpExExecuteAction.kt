@@ -72,10 +72,10 @@ class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor
                 }
             }
         } else {
-            val console = openConsole(project, content) ?: return
-
-            ImpExExecClient.getInstance(project).execute(context) { _, result ->
-                console.print(result)
+            openConsole(project, content) { console ->
+                ImpExExecClient.getInstance(project).execute(context) { _, result ->
+                    console.print(result)
+                }
             }
         }
     }
