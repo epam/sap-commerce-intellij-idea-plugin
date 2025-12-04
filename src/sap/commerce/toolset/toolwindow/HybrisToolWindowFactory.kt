@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.ui.toolwindow.CxToolWindow
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowActivationAware
 import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
 
 class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
@@ -46,12 +46,14 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
 
                 toolWindow.contentManager.addContentManagerListener(object : ContentManagerListener {
                     override fun selectionChanged(event: ContentManagerEvent) {
-                        event.content.component.asSafely<CxToolWindow>()?.onActivated()
+                        event.content.component
+                            .asSafely<CxToolWindowActivationAware>()
+                            ?.onActivated()
 
                         toolWindow.contentManager.contents
                             .filter { it.displayName != event.content.displayName }
                             .map { it.component }
-                            .filterIsInstance<CxToolWindow>()
+                            .filterIsInstance<CxToolWindowActivationAware>()
                             .forEach { it.onDeactivated() }
                     }
                 })

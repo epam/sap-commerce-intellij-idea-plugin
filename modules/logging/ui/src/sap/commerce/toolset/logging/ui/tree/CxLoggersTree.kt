@@ -30,9 +30,6 @@ import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
-private const val SHOW_LOADING_NODE = true
-private const val SEARCH_CAN_EXPAND = true
-
 class CxLoggersTree(project: Project) : Tree(), Disposable {
 
     private val rootNode = CxLoggersTreeNode(CxLoggersRootNode(project))
@@ -40,7 +37,6 @@ class CxLoggersTree(project: Project) : Tree(), Disposable {
 
     init {
         isRootVisible = false
-        model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
 
         TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
@@ -52,11 +48,20 @@ class CxLoggersTree(project: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update() = update(TreePath(rootNode))
+    fun update() {
+        if (model !is AsyncTreeModel) {
+            model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
+        }
+
+        update(TreePath(rootNode))
+    }
+
     fun update(path: TreePath) = myTreeModel.reload(path)
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -8893365004297012022L
+        private const val SHOW_LOADING_NODE = true
+        private const val SEARCH_CAN_EXPAND = true
     }
 }

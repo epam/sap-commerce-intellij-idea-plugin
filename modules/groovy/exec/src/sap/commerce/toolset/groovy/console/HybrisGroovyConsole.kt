@@ -21,7 +21,6 @@ package sap.commerce.toolset.groovy.console
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.panel
-import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
@@ -31,10 +30,7 @@ import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
 
-class HybrisGroovyConsole(
-    project: Project,
-    coroutineScope: CoroutineScope
-) : HybrisConsole<GroovyExecContext>(project, "[y] Groovy Console", GroovyLanguage, coroutineScope) {
+class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecContext>(project, "[y] Groovy Console", GroovyLanguage) {
 
     private lateinit var commitCheckbox: JBCheckBox
 

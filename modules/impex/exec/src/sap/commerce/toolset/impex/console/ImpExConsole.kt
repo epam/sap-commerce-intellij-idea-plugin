@@ -26,7 +26,6 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.impex.ImpExConstants
@@ -38,11 +37,10 @@ import sap.commerce.toolset.impex.exec.context.ImpExValidationMode
 import java.awt.BorderLayout
 import java.io.Serial
 
-class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecContext>(
+class ImpExConsole(project: Project) : HybrisConsole<ImpExExecContext>(
     project,
     "[y] ImpEx Console",
-    ImpExLanguage,
-    coroutineScope
+    ImpExLanguage
 ) {
 
     private lateinit var legacyModeCheckbox: JBCheckBox

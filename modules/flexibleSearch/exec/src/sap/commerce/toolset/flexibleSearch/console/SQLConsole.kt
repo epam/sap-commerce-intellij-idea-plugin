@@ -24,7 +24,6 @@ import com.intellij.sql.psi.SqlLanguage
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.panel
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.console.HybrisConsole
@@ -37,11 +36,10 @@ import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
 
-class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecContext>(
+class SQLConsole(project: Project) : HybrisConsole<FlexibleSearchExecContext>(
     project,
     "[y] SQL Console",
-    if (Plugin.DATABASE.isActive()) SqlLanguage.INSTANCE else PlainTextLanguage.INSTANCE,
-    coroutineScope
+    if (Plugin.DATABASE.isActive()) SqlLanguage.INSTANCE else PlainTextLanguage.INSTANCE
 ) {
 
     private lateinit var commitCheckbox: JBCheckBox

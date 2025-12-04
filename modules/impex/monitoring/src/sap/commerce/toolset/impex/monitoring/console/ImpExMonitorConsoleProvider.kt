@@ -22,5 +22,5 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class ImpExMonitorConsoleProvider : HybrisConsoleProvider<HybrisImpExMonitorConsole> {
-    override fun console(project: Project) = HybrisImpExMonitorConsole(project, coroutineScope)
+    override fun console(project: Project) = HybrisImpExMonitorConsole(project)
 }

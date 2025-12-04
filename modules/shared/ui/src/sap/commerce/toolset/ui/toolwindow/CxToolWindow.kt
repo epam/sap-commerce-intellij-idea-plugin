@@ -22,9 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import java.io.Serial
 
-abstract class CxToolWindow(vertical: Boolean = false) : SimpleToolWindowPanel(vertical), Disposable {
-    open fun onActivated() = Unit
-    open fun onDeactivated() = Unit
+abstract class CxToolWindow(vertical: Boolean = false) : SimpleToolWindowPanel(vertical), CxToolWindowActivationAware, Disposable {
 
     companion object {
         @Serial

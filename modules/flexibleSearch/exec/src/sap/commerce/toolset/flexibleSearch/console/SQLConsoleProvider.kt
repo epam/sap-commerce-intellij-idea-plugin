@@ -22,5 +22,5 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class SQLConsoleProvider : HybrisConsoleProvider<SQLConsole> {
-    override fun console(project: Project) = SQLConsole(project, coroutineScope)
+    override fun console(project: Project) = SQLConsole(project)
 }

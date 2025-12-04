@@ -22,5 +22,5 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class PolyglotQueryConsoleProvider : HybrisConsoleProvider<HybrisPolyglotQueryConsole> {
-    override fun console(project: Project) = HybrisPolyglotQueryConsole(project, coroutineScope)
+    override fun console(project: Project) = HybrisPolyglotQueryConsole(project)
 }

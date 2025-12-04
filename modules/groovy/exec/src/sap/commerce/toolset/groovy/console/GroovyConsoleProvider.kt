@@ -24,5 +24,5 @@ import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class GroovyConsoleProvider : HybrisConsoleProvider<HybrisGroovyConsole> {
     override fun console(project: Project) = Plugin.GROOVY
-        .ifActive { HybrisGroovyConsole(project, coroutineScope) }
+        .ifActive { HybrisGroovyConsole(project) }
 }

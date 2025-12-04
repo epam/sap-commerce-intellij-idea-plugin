@@ -22,5 +22,5 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class FlexibleSearchConsoleProvider : HybrisConsoleProvider<FlexibleSearchConsole> {
-    override fun console(project: Project) = FlexibleSearchConsole(project, coroutineScope)
+    override fun console(project: Project) = FlexibleSearchConsole(project)
 }
