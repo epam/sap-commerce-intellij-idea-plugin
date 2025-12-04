@@ -16,27 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.template
+package sap.commerce.toolset.logging.bundled
 
 import com.google.gson.annotations.SerializedName
 
-data class CxLoggersTemplatesDto(
+data class CxBundledLogTemplates(
     @SerializedName("templates")
-    var templates: List<CxLoggersDto>
-)
-
-data class CxLoggersDto(
-    @SerializedName("name")
-    val name: String,
-    @SerializedName("loggers")
-    var loggers: List<CxLoggerDto>,
-    @SerializedName("icon")
-    var iconName: String? = null
-)
-
-data class CxLoggerDto(
-    @SerializedName("identifier")
-    var identifier: String,
-    @SerializedName("effectiveLevel")
-    var effectiveLevel: String
+    var templates: List<CxBundledLogTemplate>
 )

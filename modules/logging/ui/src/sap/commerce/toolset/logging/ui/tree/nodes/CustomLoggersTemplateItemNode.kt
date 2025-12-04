@@ -21,14 +21,14 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.template.CxLoggersTemplateModel
+import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.util.*
 import javax.swing.Icon
 
 class CustomLoggersTemplateItemNode private constructor(
     val uuid: String = UUID.randomUUID().toString(),
-    loggers: List<CxLoggerModel>,
+    loggers: List<CxLoggerPresentation>,
     override var text: String = "",
     icon: Icon?,
     project: Project
@@ -39,7 +39,7 @@ class CustomLoggersTemplateItemNode private constructor(
 
     override fun getName() = text
 
-    fun update(template: CxLoggersTemplateModel) {
+    fun update(template: CxLogTemplatePresentation) {
         if (uuid != template.uuid) return
 
         loggers = template.loggers
@@ -63,7 +63,7 @@ class CustomLoggersTemplateItemNode private constructor(
     }
 
     companion object {
-        fun of(project: Project, template: CxLoggersTemplateModel) = CustomLoggersTemplateItemNode(
+        fun of(project: Project, template: CxLogTemplatePresentation) = CustomLoggersTemplateItemNode(
             uuid = template.uuid,
             loggers = template.loggers,
             text = template.name,

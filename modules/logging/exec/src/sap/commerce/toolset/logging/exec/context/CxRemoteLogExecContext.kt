@@ -16,14 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging
+package sap.commerce.toolset.logging.exec.context
 
-import com.intellij.openapi.actionSystem.DataKey
+import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.logging.CxLogLevel
 
-object CxLoggersConstants {
-
-    const val ROOT_LOGGER_NAME = "root"
-    const val EXTENSION_STATE_SCRIPT = "cx-loggers-state.groovy"
-    const val UPDATE_CX_LOGGERS_STATE = "update-cx-loggers-state.groovy"
-    val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
+data class CxRemoteLogExecContext(
+    val connection: HacConnectionSettingsState,
+    override val executionTitle: String,
+    private val loggerName: String,
+    private val logLevel: CxLogLevel,
+    val timeout: Int,
+) : ExecContext {
+    fun params(): Map<String, String> = buildMap {
+        put("loggerName", loggerName)
+        put("levelName", logLevel.name)
+    }
 }

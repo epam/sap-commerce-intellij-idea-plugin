@@ -16,16 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.exec.event
+package sap.commerce.toolset.logging.bundled
 
-import com.intellij.util.messages.Topic
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import com.google.gson.annotations.SerializedName
 
-interface CxLoggersStateListener {
-
-    fun onLoggersStateChanged(remoteConnection: HacConnectionSettingsState) = Unit
-
-    companion object {
-        val TOPIC = Topic(CxLoggersStateListener::class.java)
-    }
-}
+data class CxBundledLogger(
+    @SerializedName("identifier")
+    var identifier: String,
+    @SerializedName("effectiveLevel")
+    var effectiveLevel: String
+)

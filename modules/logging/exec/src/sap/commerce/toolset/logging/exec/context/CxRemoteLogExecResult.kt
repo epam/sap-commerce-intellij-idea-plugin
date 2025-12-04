@@ -16,12 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.state
+package sap.commerce.toolset.logging.exec.context
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import org.apache.http.HttpStatus
+import sap.commerce.toolset.exec.context.ExecResult
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 
-@Tag("HybrisCustomLoggerTemplates")
-data class CxCustomLoggerTemplates(
-    @OptionTag var customLoggerTemplates: List<CxCustomLoggerTemplateState> = emptyList()
-)
+data class CxRemoteLogExecResult(
+    val statusCode: Int = HttpStatus.SC_OK,
+    override val errorMessage: String? = null,
+    override val errorDetailMessage: String? = null,
+    private val result: List<CxLoggerPresentation>? = null,
+) : ExecResult {
+
+    val loggers
+        get() = result
+            ?.distinctBy { it.name }
+            ?.associateBy { it.name }
+
+    val hasError
+        get() = errorMessage != null
+}

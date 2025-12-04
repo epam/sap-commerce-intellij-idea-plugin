@@ -16,25 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging
+package sap.commerce.toolset.logging.custom.settings.state
 
-import sap.commerce.toolset.HybrisIcons
-import javax.swing.Icon
+import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
-enum class LogLevel(val icon: Icon) {
-    ALL(HybrisIcons.Log.Level.ALL),
-    OFF(HybrisIcons.Log.Level.OFF),
-    TRACE(HybrisIcons.Log.Level.TRACE),
-    DEBUG(HybrisIcons.Log.Level.DEBUG),
-    INFO(HybrisIcons.Log.Level.INFO),
-    WARN(HybrisIcons.Log.Level.WARN),
-    ERROR(HybrisIcons.Log.Level.ERROR),
-    FATAL(HybrisIcons.Log.Level.FATAL);
-
-    companion object {
-        private val cache by lazy { entries.associateBy { it.name } }
-
-        fun of(effectiveLevel: String) = cache.getOrElse(effectiveLevel.uppercase()) { INFO }
-    }
-
-}
+@Tag("HybrisCustomLoggerTemplates")
+data class CxCustomLogTemplatesState(
+    @OptionTag var templates: List<CxCustomLogTemplateState> = emptyList()
+)

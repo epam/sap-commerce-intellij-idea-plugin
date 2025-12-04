@@ -16,27 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging
+package sap.commerce.toolset.logging.exec
 
-class CxLoggersState {
+import sap.commerce.toolset.logging.CxLogConstants
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 
-    private val _loggers: MutableMap<String, CxLoggerModel>
+class CxRemoteLogState {
+
+    private val _loggers: MutableMap<String, CxLoggerPresentation>
     private var _initialized: Boolean = false
 
     val initialized: Boolean
         get() = _initialized
 
-    constructor(loggers: Map<String, CxLoggerModel>) {
+    constructor(loggers: Map<String, CxLoggerPresentation>) {
         this._loggers = loggers.toMutableMap()
         _initialized = !loggers.isEmpty()
     }
 
     constructor() : this(mapOf())
 
-    fun get(loggerIdentifier: String): CxLoggerModel = _loggers[loggerIdentifier]
+    fun get(loggerIdentifier: String): CxLoggerPresentation = _loggers[loggerIdentifier]
         ?: createLoggerModel(loggerIdentifier)
 
-    fun update(loggers: Map<String, CxLoggerModel>) {
+    fun update(loggers: Map<String, CxLoggerPresentation>) {
         synchronized(loggers) {
             this._loggers.clear()
             this._loggers.putAll(loggers)
@@ -44,7 +47,7 @@ class CxLoggersState {
         }
     }
 
-    fun get() : Map<String, CxLoggerModel>? = if (_initialized) _loggers else null
+    fun get() : Map<String, CxLoggerPresentation>? = if (_initialized) _loggers else null
 
     fun clear() {
         synchronized(_loggers) {
@@ -53,15 +56,15 @@ class CxLoggersState {
         }
     }
 
-    private fun createLoggerModel(loggerIdentifier: String): CxLoggerModel {
+    private fun createLoggerModel(loggerIdentifier: String): CxLoggerPresentation {
         val parentLogger = loggerIdentifier.substringBeforeLast('.', "")
             .takeIf { it.isNotBlank() }
             ?.let { get(it) }
-            ?: _loggers[CxLoggersConstants.ROOT_LOGGER_NAME]
-            ?: CxLoggerModel.rootFallback()
+            ?: _loggers[CxLogConstants.ROOT_LOGGER_NAME]
+            ?: CxLoggerPresentation.rootFallback()
 
         return _loggers.getOrPut(loggerIdentifier) {
-            CxLoggerModel.inherited(loggerIdentifier, parentLogger)
+            CxLoggerPresentation.inherited(loggerIdentifier, parentLogger)
         }
     }
 }

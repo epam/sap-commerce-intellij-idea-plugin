@@ -41,8 +41,8 @@ import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.awt.RelativePoint
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isNotHybrisProject
-import sap.commerce.toolset.logging.CxLoggerAccess
-import sap.commerce.toolset.logging.CxLoggersConstants
+import sap.commerce.toolset.logging.CxLogConstants
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 import java.awt.event.MouseEvent
 
 class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
@@ -71,7 +71,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             }
             .map { (psiElement, loggerIdentifier) ->
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(psiElement)
-                val logger = CxLoggerAccess.getInstance(project).logger(loggerIdentifier)
+                val logger = CxRemoteLogAccess.getInstance(project).logger(loggerIdentifier)
                 val text = if (logger == null) RichText("[y] log level")
                 else {
                     val style = if (logger.inherited) SimpleTextAttributes(
@@ -117,7 +117,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         val dataContext = SimpleDataContext.builder()
             .add(CommonDataKeys.PROJECT, project)
             .add(CommonDataKeys.EDITOR, editor)
-            .add(CxLoggersConstants.DATA_KEY_LOGGER_IDENTIFIER, loggerIdentifier)
+            .add(CxLogConstants.DATA_KEY_LOGGER_IDENTIFIER, loggerIdentifier)
             .build()
 
         val popup = JBPopupFactory.getInstance()

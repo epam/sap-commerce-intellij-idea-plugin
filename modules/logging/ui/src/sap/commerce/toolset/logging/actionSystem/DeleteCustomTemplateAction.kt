@@ -25,8 +25,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.logging.CxLogService
 import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
 
 class DeleteCustomTemplateAction : AnAction() {
@@ -51,7 +51,7 @@ class DeleteCustomTemplateAction : AnAction() {
             ) != Messages.YES
         ) return
 
-        CxLoggersTemplatesService.getInstance(project).deleteCustomTemplate(templateNode.uuid)
+        CxLogService.getInstance(project).deleteTemplate(templateNode.uuid)
     }
 
     override fun update(e: AnActionEvent) {

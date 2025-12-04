@@ -16,20 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.event
+package sap.commerce.toolset.logging.custom.settings.event
 
 import com.intellij.util.messages.Topic
-import sap.commerce.toolset.logging.template.CxLoggersTemplateModel
+import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
 
-interface CxCustomLoggerTemplateStateListener {
+interface CxCustomLogTemplateStateListener {
 
-    fun onLoggerTemplatesUpdated(templateUUID: String) = Unit
+    fun onTemplateUpdated(templateUUID: String) = Unit
+    fun onTemplateDeleted() = Unit
 
-    fun onLoggerTemplatesDeleted() = Unit
-
-    fun onLoggerTemplateUpdated(modifiedTemplate: CxLoggersTemplateModel) = Unit
+    fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) = Unit
 
     companion object {
-        val TOPIC = Topic(CxCustomLoggerTemplateStateListener::class.java)
+        val TOPIC = Topic(CxCustomLogTemplateStateListener::class.java)
     }
 }

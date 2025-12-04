@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLoggerAccess
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateItemNode
 
@@ -42,7 +42,7 @@ class ApplyBundledTemplateAction : AnAction() {
             ?.asSafely<BundledLoggersTemplateItemNode>()
             ?.loggers
             ?.let {
-                CxLoggerAccess.getInstance(project).setLoggers(it)
+                CxRemoteLogAccess.getInstance(project).setLoggers(it)
             }
     }
 

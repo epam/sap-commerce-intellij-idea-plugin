@@ -16,21 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.exec.context
+package sap.commerce.toolset.logging.exec.event
 
-import sap.commerce.toolset.exec.context.ExecContext
+import com.intellij.util.messages.Topic
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.logging.LogLevel
 
-data class LoggingExecContext(
-    val connection: HacConnectionSettingsState,
-    override val executionTitle: String,
-    private val loggerName: String,
-    private val logLevel: LogLevel,
-    val timeout: Int,
-) : ExecContext {
-    fun params(): Map<String, String> = buildMap {
-        put("loggerName", loggerName)
-        put("levelName", logLevel.name)
+interface CxRemoteLogStateListener {
+
+    fun onLoggersStateChanged(remoteConnection: HacConnectionSettingsState) = Unit
+
+    companion object {
+        val TOPIC = Topic(CxRemoteLogStateListener::class.java)
     }
 }

@@ -16,22 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree.nodes
+package sap.commerce.toolset.logging
 
-import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
+import javax.swing.Icon
 
-class CustomLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Custom Templates", HybrisIcons.Log.Template.CUSTOM, project) {
+enum class CxLogLevel(val icon: Icon) {
+    ALL(HybrisIcons.Log.Level.ALL),
+    OFF(HybrisIcons.Log.Level.OFF),
+    TRACE(HybrisIcons.Log.Level.TRACE),
+    DEBUG(HybrisIcons.Log.Level.DEBUG),
+    INFO(HybrisIcons.Log.Level.INFO),
+    WARN(HybrisIcons.Log.Level.WARN),
+    ERROR(HybrisIcons.Log.Level.ERROR),
+    FATAL(HybrisIcons.Log.Level.FATAL);
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLogService.getInstance(project).customTemplates()
-        .associate { template ->
-            template.uuid to CustomLoggersTemplateItemNode.of(project, template)
-        }
+    companion object {
+        private val cache by lazy { entries.associateBy { it.name } }
 
-    override fun update(existingNode: LoggersNode, newNode: LoggersNode) {
-        if (existingNode is CustomLoggersTemplateItemNode && newNode is CustomLoggersTemplateItemNode) {
-            existingNode.update(newNode)
-        }
+        fun of(effectiveLevel: String) = cache.getOrElse(effectiveLevel.uppercase()) { INFO }
     }
+
 }

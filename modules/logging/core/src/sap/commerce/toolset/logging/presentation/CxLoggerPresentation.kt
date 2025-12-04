@@ -16,22 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging
+package sap.commerce.toolset.logging.presentation
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.DeferredIcon
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.logging.CxLogConstants
+import sap.commerce.toolset.logging.CxLogLevel
 import javax.swing.Icon
 
-data class CxLoggerModel(
+data class CxLoggerPresentation(
     private val effectiveLevel: String,
     val name: String,
     val parentName: String?,
     val inherited: Boolean,
     val icon: Icon,
-    val level: LogLevel = LogLevel.of(effectiveLevel),
+    val level: CxLogLevel = CxLogLevel.of(effectiveLevel),
     val psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
 ) {
     val resolved: Boolean
@@ -46,22 +48,22 @@ data class CxLoggerModel(
             inherited: Boolean = false,
             icon: Icon? = null,
             psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
-        ): CxLoggerModel = CxLoggerModel(
+        ): CxLoggerPresentation = CxLoggerPresentation(
             name = name,
             effectiveLevel = effectiveLevel,
-            parentName = if (name == CxLoggersConstants.ROOT_LOGGER_NAME) null else parentName,
+            parentName = if (name == CxLogConstants.ROOT_LOGGER_NAME) null else parentName,
             inherited = inherited,
             icon = icon?.asSafely<DeferredIcon>()?.baseIcon ?: icon ?: HybrisIcons.Log.Identifier.NA,
             psiElementPointer = psiElementPointer
         )
 
-        fun inherited(name: String, parentLogger: CxLoggerModel): CxLoggerModel = of(
+        fun inherited(name: String, parentLogger: CxLoggerPresentation): CxLoggerPresentation = of(
             name = name,
             effectiveLevel = parentLogger.effectiveLevel,
             parentName = parentLogger.name,
             inherited = true,
         )
 
-        fun rootFallback() = of(name = CxLoggersConstants.ROOT_LOGGER_NAME, effectiveLevel = "undefined")
+        fun rootFallback() = of(name = CxLogConstants.ROOT_LOGGER_NAME, effectiveLevel = "undefined")
     }
 }

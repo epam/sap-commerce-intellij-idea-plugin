@@ -24,9 +24,9 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.settings.CxLoggerTemplatesSettings
-import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
 import sap.commerce.toolset.logging.ui.CxCustomLoggerTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
 
@@ -44,14 +44,14 @@ class RenameCustomTemplateAction : AnAction() {
             ?.asSafely<CustomLoggersTemplateItemNode>()
             ?: return
 
-        val mutable = CxLoggerTemplatesSettings.getInstance(project)
-            .customLoggerTemplates
+        val mutable = CxCustomLogTemplatesSettings.getInstance(project)
+            .templates
             .find { it.uuid == templateNode.uuid }
             ?.mutable()
             ?: return
 
         if (CxCustomLoggerTemplateDialog(project, mutable, "Update a Logger Template").showAndGet()) {
-            CxLoggersTemplatesService.getInstance(project).updateCustomLoggerTemplate(mutable.immutable())
+            CxLogService.getInstance(project).updateTemplate(mutable.immutable())
         }
     }
 

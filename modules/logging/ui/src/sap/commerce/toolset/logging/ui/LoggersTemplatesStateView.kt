@@ -41,7 +41,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.awt.Dimension
 import javax.swing.JPanel
 
@@ -104,13 +104,13 @@ class LoggersTemplatesStateView(
     fun renderNothingSelected() = toggleView(showNothingSelected)
     fun renderNoLoggerTemplates() = toggleView(showNoLoggerTemplates)
 
-    fun renderLoggersTemplate(loggers: Map<String, CxLoggerModel>) {
+    fun renderLoggersTemplate(loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
         renderLoggersInternal(loggers)
     }
 
-    private fun renderLoggersInternal(loggers: Map<String, CxLoggerModel>) {
+    private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
         val view = if (loggers.isEmpty()) noLoggersView()
         else createLoggersPanel(loggers.values)
 
@@ -148,7 +148,7 @@ class LoggersTemplatesStateView(
         }.resizableRow()
     }
 
-    fun createLoggersPanel(data: Collection<CxLoggerModel>) = panel {
+    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { r ->
             row {
                 icon(r.level.icon)

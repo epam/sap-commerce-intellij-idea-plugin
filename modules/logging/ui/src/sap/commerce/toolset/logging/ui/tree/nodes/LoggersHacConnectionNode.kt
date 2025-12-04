@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.logging.CxLoggerAccess
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 
 class LoggersHacConnectionNode(
     val connectionUUID: String,
@@ -44,7 +44,7 @@ class LoggersHacConnectionNode(
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         if (activeConnection) {
-            val tip = CxLoggerAccess.getInstance(project).state(connectionUUID)
+            val tip = CxRemoteLogAccess.getInstance(project).state(connectionUUID)
                 .get()
                 ?.size
                 ?.let { size -> " active | $size logger(s)" }

@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLoggerAccess
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 
 class FetchLoggersStateAction : AnAction() {
 
@@ -35,7 +35,7 @@ class FetchLoggersStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccessService = CxLoggerAccess.getInstance(project)
+        val loggerAccessService = CxRemoteLogAccess.getInstance(project)
 
         loggerAccessService.fetch()
     }
@@ -45,11 +45,11 @@ class FetchLoggersStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccess = CxLoggerAccess.getInstance(project)
+        val loggerAccess = CxRemoteLogAccess.getInstance(project)
 
         e.presentation.isEnabled = loggerAccess.ready
 
-        val state = CxLoggerAccess.getInstance(project).stateInitialized
+        val state = CxRemoteLogAccess.getInstance(project).stateInitialized
 
         e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
         e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH

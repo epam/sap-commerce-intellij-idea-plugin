@@ -16,34 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.state
+package sap.commerce.toolset.logging.custom.settings.state
 
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
-import java.util.*
+import sap.commerce.toolset.logging.CxLogLevel
 
-data class CxCustomLoggerTemplateState(
-    @OptionTag val uuid: String = UUID.randomUUID().toString(),
+data class CxCustomLoggerState(
+    @OptionTag val effectiveLevel: CxLogLevel = CxLogLevel.ALL,
     @OptionTag val name: String = "",
-    @OptionTag val loggers: List<CxCustomLoggerConfig> = emptyList()
 ) {
-
     fun mutable() = Mutable(
-        uuid = uuid,
+        effectiveLevel = AtomicProperty(effectiveLevel),
         name = AtomicProperty(name),
-        loggers = AtomicProperty(loggers.map { it.mutable() }),
     )
 
     data class Mutable(
-        val uuid: String = UUID.randomUUID().toString(),
+        val effectiveLevel: ObservableMutableProperty<CxLogLevel>,
         val name: ObservableMutableProperty<String>,
-        val loggers: ObservableMutableProperty<List<CxCustomLoggerConfig.Mutable>>,
     ) {
-        fun immutable() = CxCustomLoggerTemplateState(
-            uuid = uuid,
+        fun immutable() = CxCustomLoggerState(
+            effectiveLevel = effectiveLevel.get(),
             name = name.get(),
-            loggers = loggers.get().map { it.immutable() },
         )
     }
 }

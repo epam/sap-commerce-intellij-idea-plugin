@@ -16,31 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.settings
+package sap.commerce.toolset.logging.custom.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
-import sap.commerce.toolset.logging.state.CxCustomLoggerTemplates
+import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
+import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplatesState
 
 @State(
     name = "[y] Custom Loggers Templates",
     storages = [Storage(HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
-class CxLoggerTemplatesSettings : SerializablePersistentStateComponent<CxCustomLoggerTemplates>(CxCustomLoggerTemplates()), ModificationTracker {
-    var customLoggerTemplates: List<CxCustomLoggerTemplateState>
-        get() = state.customLoggerTemplates
+class CxCustomLogTemplatesSettings : SerializablePersistentStateComponent<CxCustomLogTemplatesState>(CxCustomLogTemplatesState()), ModificationTracker {
+
+    var templates: List<CxCustomLogTemplateState>
+        get() = state.templates
         set(value) {
-            updateState { it.copy(customLoggerTemplates = value) }
+            updateState { it.copy(templates = value) }
         }
 
     override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): CxLoggerTemplatesSettings = project.service()
+        fun getInstance(project: Project): CxCustomLogTemplatesSettings = project.service()
     }
 }

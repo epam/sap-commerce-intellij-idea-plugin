@@ -44,9 +44,9 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.LogLevel
-import sap.commerce.toolset.logging.template.CxLoggersTemplatesService
+import sap.commerce.toolset.logging.CxLogLevel
+import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addKeyListener
 import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.Dimension
@@ -67,17 +67,18 @@ class CustomLoggersTemplatesStateView(
     private val canApply = AtomicBooleanProperty(false)
     private val editable = AtomicBooleanProperty(true)
 
+    private lateinit var dPanel: DialogPanel
+    private lateinit var loggerLevelField: ComboBox<CxLogLevel>
+    private lateinit var loggerNameField: JBTextField
     private lateinit var dataScrollPane: JBScrollPane
+
     private val panel by lazy {
-        lateinit var dPanel: DialogPanel
-        lateinit var loggerLevelField: ComboBox<LogLevel>
-        lateinit var loggerNameField: JBTextField
 
         object : ClearableLazyValue<DialogPanel>() {
             override fun compute() = panel {
                 row {
                     loggerLevelField = comboBox(
-                        model = EnumComboBoxModel(LogLevel::class.java),
+                        model = EnumComboBoxModel(CxLogLevel::class.java),
                         renderer = SimpleListCellRenderer.create { label, value, _ ->
                             if (value != null) {
                                 label.icon = value.icon
@@ -97,18 +98,14 @@ class CustomLoggersTemplatesStateView(
                         .addKeyListener(this@CustomLoggersTemplatesStateView, object : KeyListener {
                             override fun keyReleased(e: KeyEvent) {
                                 if (e.keyCode == KeyEvent.VK_ENTER) {
-                                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
-
-                                    resetInputs()
+                                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
                                 }
                             }
                         })
                         .component
 
                     button("Apply Logger") {
-                        applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
-
-                        resetInputs()
+                        applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
                     }
                 }
                     .visibleIf(showDataPanel)
@@ -158,11 +155,6 @@ class CustomLoggersTemplatesStateView(
                 .apply {
                     editable.set(true)
                 }
-
-            private fun resetInputs() {
-                loggerNameField.text = ""
-                loggerLevelField.selectedItem = LogLevel.ALL
-            }
         }
     }
 
@@ -171,7 +163,7 @@ class CustomLoggersTemplatesStateView(
 
     fun renderNothingSelected() = toggleView(showNothingSelected)
 
-    fun renderLoggersTemplate(templateUUID: String, loggers: Map<String, CxLoggerModel>) {
+    fun renderLoggersTemplate(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
         this.templateUUID = templateUUID
@@ -179,45 +171,7 @@ class CustomLoggersTemplatesStateView(
         renderLoggersInternal(loggers)
     }
 
-    private fun renderLoggersInternal(loggers: Map<String, CxLoggerModel>) {
-        val view = if (loggers.isEmpty()) noLoggersView()
-        else createLoggersPanel(loggers.values)
-
-        dataScrollPane.setViewportView(view)
-
-        toggleView(showDataPanel, initialized)
-    }
-
-    private fun toggleView(vararg unhide: AtomicBooleanProperty) {
-        listOf(
-            showNothingSelected,
-            showNoLoggerTemplates,
-            showDataPanel,
-            initialized
-        )
-            .forEach { it.set(unhide.contains(it)) }
-    }
-
-    private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
-        .visibleIf(property)
-        .align(Align.CENTER)
-        .resizableColumn()
-
-    private fun noLoggersView() = panel {
-        row {
-            cell(
-                InlineBanner(
-                    "Please, use the panel above to add a logger.",
-                    EditorNotificationPanel.Status.Info
-                )
-                    .showCloseButton(false)
-            )
-                .align(Align.CENTER)
-                .resizableColumn()
-        }.resizableRow()
-    }
-
-    fun createLoggersPanel(data: Collection<CxLoggerModel>) = panel {
+    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { r ->
             row {
                 icon(r.level.icon)
@@ -259,13 +213,55 @@ class CustomLoggersTemplatesStateView(
 
     override fun dispose() = panel.drop()
 
-    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: LogLevel) {
+    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: CxLogLevel) {
         canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
 
         if (!canApply.get()) return
 
-        CxLoggersTemplatesService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel.name)
-
-
+        CxLogService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
+        resetInputs()
     }
+
+    private fun resetInputs() {
+        loggerNameField.text = ""
+        loggerLevelField.selectedItem = CxLogLevel.ALL
+    }
+
+    private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
+        val view = if (loggers.isEmpty()) noLoggersView()
+        else createLoggersPanel(loggers.values)
+
+        dataScrollPane.setViewportView(view)
+
+        toggleView(showDataPanel, initialized)
+    }
+
+    private fun toggleView(vararg unhide: AtomicBooleanProperty) {
+        listOf(
+            showNothingSelected,
+            showNoLoggerTemplates,
+            showDataPanel,
+            initialized
+        )
+            .forEach { it.set(unhide.contains(it)) }
+    }
+
+    private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
+        .visibleIf(property)
+        .align(Align.CENTER)
+        .resizableColumn()
+
+    private fun noLoggersView() = panel {
+        row {
+            cell(
+                InlineBanner(
+                    "Please, use the panel above to add a logger.",
+                    EditorNotificationPanel.Status.Info
+                )
+                    .showCloseButton(false)
+            )
+                .align(Align.CENTER)
+                .resizableColumn()
+        }.resizableRow()
+    }§
 }

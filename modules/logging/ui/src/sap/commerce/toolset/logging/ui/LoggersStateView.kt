@@ -49,10 +49,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.logging.CxLoggerAccess
-import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.CxLoggersConstants
-import sap.commerce.toolset.logging.LogLevel
+import sap.commerce.toolset.logging.CxLogConstants
+import sap.commerce.toolset.logging.CxLogLevel
+import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addItemListener
 import sap.commerce.toolset.ui.addKeyListener
 import sap.commerce.toolset.ui.event.KeyListener
@@ -116,7 +116,7 @@ class LoggersStateView(
     fun renderFetchLoggers() = toggleView(showFetchLoggers)
     fun renderNothingSelected() = toggleView(showNothingSelected)
 
-    fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
+    fun renderLoggers(loggers: Map<String, CxLoggerPresentation>) {
         if (loggers.isEmpty()) dataScrollPane.setViewportView(noLoggersView())
         else {
             val viewport = dataScrollPane.getViewport()
@@ -161,14 +161,14 @@ class LoggersStateView(
         }.resizableRow()
     }
 
-    private fun loggersView(loggers: Map<String, CxLoggerModel>) = panel {
+    private fun loggersView(loggers: Map<String, CxLoggerPresentation>) = panel {
         loggers.values
             .filterNot { it.inherited }
             .sortedBy { it.name }
             .forEach { cxLogger ->
                 row {
                     comboBox(
-                        EnumComboBoxModel(LogLevel::class.java),
+                        EnumComboBoxModel(CxLogLevel::class.java),
                         renderer = SimpleListCellRenderer.create { label, value, _ ->
                             if (value != null) {
                                 label.icon = value.icon
@@ -180,12 +180,12 @@ class LoggersStateView(
                         .enabledIf(editable)
                         .bindItem({ cxLogger.level }, { _ -> })
                         .addItemListener(this@LoggersStateView) { event ->
-                            event.item.asSafely<LogLevel>()
+                            event.item.asSafely<CxLogLevel>()
                                 ?.takeUnless { it == cxLogger.level }
                                 ?.let { newLogLevel ->
                                     editable.set(false)
 
-                                    CxLoggerAccess.getInstance(project).setLogger(cxLogger.name, newLogLevel) { _, _ ->
+                                    CxRemoteLogAccess.getInstance(project).setLogger(cxLogger.name, newLogLevel) { _, _ ->
                                         editable.set(true)
                                     }
                                 }
@@ -227,21 +227,21 @@ class LoggersStateView(
             }
     }
 
-    private val CxLoggerModel.presentableParent
+    private val CxLoggerPresentation.presentableParent
         get() = this.parentName
             ?.takeIf { it.isNotEmpty() }
-            ?.takeIf { it != CxLoggersConstants.ROOT_LOGGER_NAME }
+            ?.takeIf { it != CxLogConstants.ROOT_LOGGER_NAME }
             ?.let { "child of $it" }
 
     private fun newLoggerPanel(): DialogPanel {
         lateinit var dPanel: DialogPanel
-        lateinit var loggerLevelField: ComboBox<LogLevel>
+        lateinit var loggerLevelField: ComboBox<CxLogLevel>
         lateinit var loggerNameField: JBTextField
 
         return panel {
             row {
                 loggerLevelField = comboBox(
-                    model = EnumComboBoxModel(LogLevel::class.java),
+                    model = EnumComboBoxModel(CxLogLevel::class.java),
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                         if (value != null) {
                             label.icon = value.icon
@@ -265,14 +265,14 @@ class LoggersStateView(
                     .addKeyListener(this@LoggersStateView, object : KeyListener {
                         override fun keyReleased(e: KeyEvent) {
                             if (e.keyCode == KeyEvent.VK_ENTER) {
-                                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
+                                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
                             }
                         }
                     })
                     .component
 
                 button("Apply Logger") {
-                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
+                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
                 }
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -293,14 +293,14 @@ class LoggersStateView(
             }
     }
 
-    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, level: LogLevel) {
+    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, level: CxLogLevel) {
         canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
 
         if (!canApply.get()) return
 
         editable.set(false)
 
-        CxLoggerAccess.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
+        CxRemoteLogAccess.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
             coroutineScope.launch {
                 withContext(Dispatchers.EDT) {
                     editable.set(true)

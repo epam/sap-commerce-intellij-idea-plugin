@@ -16,28 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.state
+package sap.commerce.toolset.logging.bundled
 
-import com.intellij.openapi.observable.properties.AtomicProperty
-import com.intellij.openapi.observable.properties.ObservableMutableProperty
-import com.intellij.util.xmlb.annotations.OptionTag
+import com.google.gson.annotations.SerializedName
 
-data class CxCustomLoggerConfig(
-    @OptionTag val effectiveLevel: String = "ALL",
-    @OptionTag val name: String = "",
-) {
-    fun mutable() = Mutable(
-        effectiveLevel = AtomicProperty(effectiveLevel),
-        name = AtomicProperty(name),
-    )
-
-    data class Mutable(
-        val effectiveLevel: ObservableMutableProperty<String>,
-        val name: ObservableMutableProperty<String>,
-    ) {
-        fun immutable() = CxCustomLoggerConfig(
-            effectiveLevel = effectiveLevel.get(),
-            name = name.get(),
-        )
-    }
-}
+data class CxBundledLogTemplate(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("loggers")
+    var loggers: List<CxBundledLogger>,
+    @SerializedName("icon")
+    var iconName: String? = null
+)

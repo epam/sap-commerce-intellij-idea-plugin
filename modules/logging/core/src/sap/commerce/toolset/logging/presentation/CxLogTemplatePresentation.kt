@@ -16,24 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.exec.context
+package sap.commerce.toolset.logging.presentation
 
-import org.apache.http.HttpStatus
-import sap.commerce.toolset.exec.context.ExecResult
-import sap.commerce.toolset.logging.CxLoggerModel
+import java.util.*
+import javax.swing.Icon
 
-data class LoggingExecResult(
-    val statusCode: Int = HttpStatus.SC_OK,
-    override val errorMessage: String? = null,
-    override val errorDetailMessage: String? = null,
-    private val result: List<CxLoggerModel>? = null,
-) : ExecResult {
-
-    val loggers
-        get() = result
-            ?.distinctBy { it.name }
-            ?.associateBy { it.name }
-
-    val hasError
-        get() = errorMessage != null
-}
+data class CxLogTemplatePresentation(
+    val uuid: String = UUID.randomUUID().toString(),
+    val name: String,
+    var loggers: List<CxLoggerPresentation>,
+    var icon: Icon
+)

@@ -23,17 +23,17 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.logging.CxLoggerAccess
-import sap.commerce.toolset.logging.CxLoggersConstants
-import sap.commerce.toolset.logging.LogLevel
+import sap.commerce.toolset.logging.CxLogConstants
+import sap.commerce.toolset.logging.CxLogLevel
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 
-abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
+abstract class CxLoggerAction(private val logLevel: CxLogLevel) : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val logIdentifier = e.getData(CxLoggersConstants.DATA_KEY_LOGGER_IDENTIFIER)
+        val logIdentifier = e.getData(CxLogConstants.DATA_KEY_LOGGER_IDENTIFIER)
 
         if (logIdentifier == null) {
             Notifications.error("Unable to change the log level", "Cannot retrieve a logger name.")
@@ -42,7 +42,7 @@ abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
             return
         }
 
-        CxLoggerAccess.getInstance(project).setLogger(logIdentifier, logLevel)
+        CxRemoteLogAccess.getInstance(project).setLogger(logIdentifier, logLevel)
     }
 
     override fun update(e: AnActionEvent) {
@@ -54,16 +54,16 @@ abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 
         e.presentation.text = logLevel.name
         e.presentation.icon = logLevel.icon
-        e.presentation.isEnabled = CxLoggerAccess.getInstance(project).ready
+        e.presentation.isEnabled = CxRemoteLogAccess.getInstance(project).ready
     }
 }
 
-class AllLoggerAction : CxLoggerAction(LogLevel.ALL)
-class OffLoggerAction : CxLoggerAction(LogLevel.OFF)
-class TraceLoggerAction : CxLoggerAction(LogLevel.TRACE)
-class DebugLoggerAction : CxLoggerAction(LogLevel.DEBUG)
-class InfoLoggerAction : CxLoggerAction(LogLevel.INFO)
-class WarnLoggerAction : CxLoggerAction(LogLevel.WARN)
-class ErrorLoggerAction : CxLoggerAction(LogLevel.ERROR)
-class FatalLoggerAction : CxLoggerAction(LogLevel.FATAL)
+class AllLoggerAction : CxLoggerAction(CxLogLevel.ALL)
+class OffLoggerAction : CxLoggerAction(CxLogLevel.OFF)
+class TraceLoggerAction : CxLoggerAction(CxLogLevel.TRACE)
+class DebugLoggerAction : CxLoggerAction(CxLogLevel.DEBUG)
+class InfoLoggerAction : CxLoggerAction(CxLogLevel.INFO)
+class WarnLoggerAction : CxLoggerAction(CxLogLevel.WARN)
+class ErrorLoggerAction : CxLoggerAction(CxLogLevel.ERROR)
+class FatalLoggerAction : CxLoggerAction(CxLogLevel.FATAL)
 

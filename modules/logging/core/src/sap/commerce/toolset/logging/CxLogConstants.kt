@@ -16,15 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.template
+package sap.commerce.toolset.logging
 
-import sap.commerce.toolset.logging.CxLoggerModel
-import java.util.*
-import javax.swing.Icon
+import com.intellij.openapi.actionSystem.DataKey
 
-data class CxLoggersTemplateModel(
-    val uuid: String = UUID.randomUUID().toString(),
-    val name: String,
-    var loggers: List<CxLoggerModel>,
-    var icon: Icon
-)
+object CxLogConstants {
+
+    const val ROOT_LOGGER_NAME = "root"
+    const val EXTENSION_STATE_SCRIPT = "cx-loggers-state.groovy"
+    const val UPDATE_CX_LOGGERS_STATE = "update-cx-loggers-state.groovy"
+    val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
+}

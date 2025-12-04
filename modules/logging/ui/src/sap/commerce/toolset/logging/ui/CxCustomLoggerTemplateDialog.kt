@@ -25,12 +25,12 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
-import sap.commerce.toolset.logging.state.CxCustomLoggerTemplateState
+import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import javax.swing.JComponent
 
 class CxCustomLoggerTemplateDialog(
     project: Project,
-    private val mutable: CxCustomLoggerTemplateState.Mutable,
+    private val mutable: CxCustomLogTemplateState.Mutable,
     private val title: String
 ) : DialogWrapper(project) {
 

@@ -16,22 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree.nodes
+package sap.commerce.toolset.logging.exec.context
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 
-class CustomLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Custom Templates", HybrisIcons.Log.Template.CUSTOM, project) {
-
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLogService.getInstance(project).customTemplates()
-        .associate { template ->
-            template.uuid to CustomLoggersTemplateItemNode.of(project, template)
-        }
-
-    override fun update(existingNode: LoggersNode, newNode: LoggersNode) {
-        if (existingNode is CustomLoggersTemplateItemNode && newNode is CustomLoggersTemplateItemNode) {
-            existingNode.update(newNode)
-        }
-    }
-}
+data class CxRemoteLogGroovyScriptExecResult(
+    val loggers: Map<String, CxLoggerPresentation>? = null,
+    val result: DefaultExecResult
+)

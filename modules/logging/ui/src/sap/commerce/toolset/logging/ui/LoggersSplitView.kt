@@ -30,10 +30,10 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.logging.CxLoggerAccess
-import sap.commerce.toolset.logging.event.CxCustomLoggerTemplateStateListener
-import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
-import sap.commerce.toolset.logging.template.CxLoggersTemplateModel
+import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateStateListener
+import sap.commerce.toolset.logging.exec.event.CxRemoteLogStateListener
+import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
 import sap.commerce.toolset.logging.ui.tree.nodes.*
@@ -76,7 +76,7 @@ class LoggersSplitView(
                 override fun onDelete(connection: HacConnectionSettingsState) = updateTree()
             })
 
-            subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
+            subscribe(CxRemoteLogStateListener.TOPIC, object : CxRemoteLogStateListener {
                 override fun onLoggersStateChanged(remoteConnection: HacConnectionSettingsState) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
@@ -87,12 +87,12 @@ class LoggersSplitView(
                 }
             })
 
-            subscribe(CxCustomLoggerTemplateStateListener.TOPIC, object : CxCustomLoggerTemplateStateListener {
-                override fun onLoggerTemplatesUpdated(templateUUID: String) = updateTree()
+            subscribe(CxCustomLogTemplateStateListener.TOPIC, object : CxCustomLogTemplateStateListener {
+                override fun onTemplateUpdated(templateUUID: String) = updateTree()
 
-                override fun onLoggerTemplatesDeleted() = updateTree()
+                override fun onTemplateDeleted() = updateTree()
 
-                override fun onLoggerTemplateUpdated(modifiedTemplate: CxLoggersTemplateModel) {
+                override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
                     val nodeForUpdate = tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
                         ?.userObject
@@ -134,7 +134,7 @@ class LoggersSplitView(
                         e.consume()
                         HacExecConnectionService.getInstance(project).connections
                             .find { connection -> connection.uuid == it.connectionUUID }
-                            ?.let { connection -> CxLoggerAccess.getInstance(project).fetch(connection) }
+                            ?.let { connection -> CxRemoteLogAccess.getInstance(project).fetch(connection) }
                     }
             }
         })
@@ -147,7 +147,7 @@ class LoggersSplitView(
                 is LoggersHacConnectionNode -> {
                     secondComponent = loggersStateView.view
 
-                    CxLoggerAccess.getInstance(project).state(node.connectionUUID).get()
+                    CxRemoteLogAccess.getInstance(project).state(node.connectionUUID).get()
                         ?.let { loggersStateView.renderLoggers(it) }
                         ?: loggersStateView.renderFetchLoggers()
                 }

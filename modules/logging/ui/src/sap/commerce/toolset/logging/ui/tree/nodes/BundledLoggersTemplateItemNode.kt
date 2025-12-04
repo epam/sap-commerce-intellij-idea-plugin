@@ -21,11 +21,11 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import javax.swing.Icon
 
 class BundledLoggersTemplateItemNode(
-    val loggers: List<CxLoggerModel>,
+    val loggers: List<CxLoggerPresentation>,
     text: String,
     icon: Icon?,
     project: Project

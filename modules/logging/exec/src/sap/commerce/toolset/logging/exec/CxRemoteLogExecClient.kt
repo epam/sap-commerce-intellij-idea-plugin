@@ -34,19 +34,19 @@ import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.ExecClient
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
-import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.exec.context.LoggingExecContext
-import sap.commerce.toolset.logging.exec.context.LoggingExecResult
+import sap.commerce.toolset.logging.exec.context.CxRemoteLogExecContext
+import sap.commerce.toolset.logging.exec.context.CxRemoteLogExecResult
 import sap.commerce.toolset.logging.getPsiElementPointer
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.logging.resolveIcon
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class LoggingExecClient(project: Project, coroutineScope: CoroutineScope) : ExecClient<LoggingExecContext, LoggingExecResult>(project, coroutineScope) {
+class CxRemoteLogExecClient(project: Project, coroutineScope: CoroutineScope) : ExecClient<CxRemoteLogExecContext, CxRemoteLogExecResult>(project, coroutineScope) {
 
-    override suspend fun execute(context: LoggingExecContext): LoggingExecResult {
+    override suspend fun execute(context: CxRemoteLogExecContext): CxRemoteLogExecResult {
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
 
         val params = context.params()
@@ -60,7 +60,7 @@ class LoggingExecClient(project: Project, coroutineScope: CoroutineScope) : Exec
         val statusCode = statusLine.statusCode
 
         if (statusCode != HttpStatus.SC_OK || response.entity == null) {
-            return LoggingExecResult(
+            return CxRemoteLogExecResult(
                 statusCode = statusCode,
                 errorMessage = "[$statusCode] ${statusLine.reasonPhrase}",
             )
@@ -80,29 +80,29 @@ class LoggingExecClient(project: Project, coroutineScope: CoroutineScope) : Exec
                     val psiElementPointer = getPsiElementPointer(project, name)
                     val icon = resolveIcon(project, name)
 
-                    CxLoggerModel.of(name, effectiveLevel, parentName, false, icon, psiElementPointer)
+                    CxLoggerPresentation.of(name, effectiveLevel, parentName, false, icon, psiElementPointer)
                 }
 
-            return LoggingExecResult(
+            return CxRemoteLogExecResult(
                 statusCode = statusCode,
                 result = loggerModels,
             )
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
 
-            return LoggingExecResult(
+            return CxRemoteLogExecResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 errorMessage = "Cannot parse response from the server...",
             )
         } catch (e: IOException) {
-            return LoggingExecResult(
+            return CxRemoteLogExecResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 errorMessage = "${e.message} $actionUrl",
             )
         }
     }
 
-    override suspend fun onError(context: LoggingExecContext, exception: Throwable) = LoggingExecResult(
+    override suspend fun onError(context: CxRemoteLogExecContext, exception: Throwable) = CxRemoteLogExecResult(
         errorMessage = exception.message,
         errorDetailMessage = exception.stackTraceToString(),
     )
@@ -111,7 +111,7 @@ class LoggingExecClient(project: Project, coroutineScope: CoroutineScope) : Exec
         @Serial
         private const val serialVersionUID: Long = 576041226131571722L
 
-        fun getInstance(project: Project): LoggingExecClient = project.service()
+        fun getInstance(project: Project): CxRemoteLogExecClient = project.service()
     }
 
 }
