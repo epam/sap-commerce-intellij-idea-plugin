@@ -31,7 +31,9 @@ class CxRemoteHacInstancesNode(project: Project) : CxLoggersNode(
     override fun getNewChildren(): Map<String, CxRemoteLogStateNode> = with(HacExecConnectionService.getInstance(project)) {
         connections
             .filter { it == activeConnection } // only active connections
-            .map { CxRemoteLogStateNode(it.uuid, project) }
-            .associateBy { it.connectionUUID }
+            .map { CxRemoteLogStateNode(it, project) }
+            .associateBy { it.connection.uuid }
     }
+
+    override fun update(existingNode: CxLoggersNode, newNode: CxLoggersNode) = update(newNode.presentation)
 }

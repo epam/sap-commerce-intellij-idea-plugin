@@ -35,9 +35,8 @@ class CxFetchRemoteLogStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccessService = CxRemoteLogAccess.getInstance(project)
 
-        loggerAccessService.fetch()
+        CxRemoteLogAccess.getInstance(project).fetch()
     }
 
     override fun update(e: AnActionEvent) {

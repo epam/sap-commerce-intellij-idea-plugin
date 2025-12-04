@@ -78,12 +78,15 @@ class CxLoggersSplitView(
 
             subscribe(CxRemoteLogStateListener.TOPIC, object : CxRemoteLogStateListener {
                 override fun onLoggersStateChanged(remoteConnection: HacConnectionSettingsState) {
-                    tree.lastSelectedPathComponent
+                    val node = tree.lastSelectedPathComponent
                         ?.asSafely<CxLoggersTreeNode>()
                         ?.userObject
                         ?.asSafely<CxRemoteLogStateNode>()
-                        ?.takeIf { it.connectionUUID == remoteConnection.uuid }
-                        ?.let { updateSecondComponent(it) }
+                        ?.takeIf { it.connection.uuid == remoteConnection.uuid }
+                        ?: return
+
+                    node.update()
+                    updateSecondComponent(node)
                 }
             })
 
@@ -93,14 +96,15 @@ class CxLoggersSplitView(
                 override fun onTemplateDeleted() = updateTree()
 
                 override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
-                    val nodeForUpdate = tree.lastSelectedPathComponent
+                    val node = tree.lastSelectedPathComponent
                         ?.asSafely<CxLoggersTreeNode>()
                         ?.userObject
                         ?.asSafely<CxCustomLogTemplateItemNode>()
                         ?.takeIf { it.uuid == modifiedTemplate.uuid }
                         ?: return
-                    nodeForUpdate.update(modifiedTemplate)
-                    updateSecondComponent(nodeForUpdate)
+
+                    node.update(modifiedTemplate)
+                    updateSecondComponent(node)
                 }
             })
         }
@@ -133,7 +137,7 @@ class CxLoggersSplitView(
                     ?.let {
                         e.consume()
                         HacExecConnectionService.getInstance(project).connections
-                            .find { connection -> connection.uuid == it.connectionUUID }
+                            .find { connection -> connection.uuid == it.connection.uuid }
                             ?.let { connection -> CxRemoteLogAccess.getInstance(project).fetch(connection) }
                     }
             }
@@ -147,7 +151,7 @@ class CxLoggersSplitView(
                 is CxRemoteLogStateNode -> {
                     secondComponent = remoteLogStateView.view
 
-                    CxRemoteLogAccess.getInstance(project).state(node.connectionUUID).get()
+                    CxRemoteLogAccess.getInstance(project).state(node.connection.uuid).get()
                         ?.let { remoteLogStateView.renderLoggers(it) }
                         ?: remoteLogStateView.renderFetchLoggers()
                 }

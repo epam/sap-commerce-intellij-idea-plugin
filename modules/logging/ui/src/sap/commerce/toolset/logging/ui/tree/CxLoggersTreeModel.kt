@@ -47,7 +47,7 @@ class CxLoggersTreeModel(
 
     override fun getInvoker() = myInvoker
 
-    fun reload() = treeStructureChanged(TreePath(root), null, null)
+    fun reload(path: TreePath) = treeStructureChanged(path, null, null)
 
     override fun dispose() {
         super.dispose()

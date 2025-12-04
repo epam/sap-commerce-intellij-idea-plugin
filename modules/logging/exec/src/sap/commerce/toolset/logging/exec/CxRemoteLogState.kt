@@ -40,7 +40,7 @@ class CxRemoteLogState {
         ?: createLoggerModel(loggerIdentifier)
 
     fun update(loggers: Map<String, CxLoggerPresentation>) {
-        synchronized(loggers) {
+        synchronized(_loggers) {
             this._loggers.clear()
             this._loggers.putAll(loggers)
             _initialized = true

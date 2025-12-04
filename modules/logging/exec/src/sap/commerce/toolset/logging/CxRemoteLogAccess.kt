@@ -67,8 +67,8 @@ class CxRemoteLogAccess(private val project: Project, private val coroutineScope
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
                 override fun onActive(connection: HacConnectionSettingsState) = refresh()
-                override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it.uuid) }
-                override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it.uuid) }
+                override fun onUpdate(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it) }
+                override fun onSave(settings: Collection<HacConnectionSettingsState>) = settings.forEach { clearState(it) }
                 override fun onDelete(connection: HacConnectionSettingsState) {
                     loggersStates.remove(connection.uuid)
                 }
@@ -93,10 +93,8 @@ class CxRemoteLogAccess(private val project: Project, private val coroutineScope
         fetching = true
 
         CxRemoteLogExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
-            updateState(execResult.loggers, activeConnection.uuid)
+            updateState(execResult.loggers, activeConnection)
             callback.invoke(coroutineScope, execResult)
-
-            project.messageBus.syncPublisher(CxRemoteLogStateListener.TOPIC).onLoggersStateChanged(activeConnection)
 
             if (execResult.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
@@ -235,14 +233,13 @@ class CxRemoteLogAccess(private val project: Project, private val coroutineScope
                     ?.takeIf { it.isNotEmpty() }
 
                 if (loggers == null || execResult.hasError) {
-                    clearState(server.uuid)
+                    clearState(server)
+                    project.messageBus.syncPublisher(CxRemoteLogStateListener.TOPIC).onLoggersStateChanged(server)
                 } else {
-                    updateState(loggers, server.uuid)
+                    updateState(loggers, server)
                 }
 
                 callback.invoke(coroutineScope, CxRemoteLogGroovyScriptExecResult(loggers, execResult))
-
-                project.messageBus.syncPublisher(CxRemoteLogStateListener.TOPIC).onLoggersStateChanged(server)
             }
         }
     }
@@ -250,16 +247,18 @@ class CxRemoteLogAccess(private val project: Project, private val coroutineScope
     fun state(settingsUUID: String): CxRemoteLogState = loggersStates
         .computeIfAbsent(settingsUUID) { CxRemoteLogState() }
 
-    private fun updateState(loggers: Map<String, CxLoggerPresentation>?, settingsUUID: String) {
+    private fun updateState(loggers: Map<String, CxLoggerPresentation>?, activeConnection: HacConnectionSettingsState) {
         coroutineScope.launch {
 
-            state(settingsUUID).update(loggers ?: emptyMap())
+            state(activeConnection.uuid).update(loggers ?: emptyMap())
 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
             }
 
             fetching = false
+
+            project.messageBus.syncPublisher(CxRemoteLogStateListener.TOPIC).onLoggersStateChanged(activeConnection)
         }
     }
 
@@ -273,8 +272,8 @@ class CxRemoteLogAccess(private val project: Project, private val coroutineScope
         loggersStates.clear()
     }
 
-    private fun clearState(settingsUUID: String) {
-        val logState = loggersStates[settingsUUID]
+    private fun clearState(server: HacConnectionSettingsState) {
+        val logState = loggersStates[server.uuid]
         logState?.clear()
 
         coroutineScope.launch {

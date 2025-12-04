@@ -35,7 +35,8 @@ private const val SEARCH_CAN_EXPAND = true
 
 class CxLoggersTree(myProject: Project) : Tree(), Disposable {
 
-    private val myTreeModel = CxLoggersTreeModel(CxLoggersTreeNode(CxLoggersRootNode(myProject)))
+    private val rootNode = CxLoggersTreeNode(CxLoggersRootNode(myProject))
+    private val myTreeModel = CxLoggersTreeModel(rootNode)
 
     init {
         isRootVisible = false
@@ -51,7 +52,8 @@ class CxLoggersTree(myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update() = myTreeModel.reload()
+    fun update() = update(TreePath(rootNode))
+    fun update(path: TreePath) = myTreeModel.reload(path)
 
     companion object {
         @Serial

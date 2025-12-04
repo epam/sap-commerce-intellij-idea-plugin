@@ -23,29 +23,26 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 
 class CxRemoteLogStateNode(
-    val connectionUUID: String,
+    val connection: HacConnectionSettingsState,
     project: Project,
 ) : CxLoggersNode(project) {
 
-    val activeConnection: Boolean
-        get() = connectionUUID == HacExecConnectionService.getInstance(project).activeConnection.uuid
-
-    override fun getName() = HacExecConnectionService.getInstance(project).connections
-        .find { it.uuid == connectionUUID }
-        ?.connectionName
-        ?: "remote"
+    override fun getName() = connection.connectionName
 
     override fun update(presentation: PresentationData) {
         if (myProject == null || myProject.isDisposed) return
+        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+        val active = activeConnection == connection
 
-        val connectionIcon = if (activeConnection) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
+        val connectionIcon = if (active) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        if (activeConnection) {
-            val tip = CxRemoteLogAccess.getInstance(project).state(connectionUUID)
+        if (active) {
+            val tip = CxRemoteLogAccess.getInstance(project).state(connection.uuid)
                 .get()
                 ?.size
                 ?.let { size -> " active | $size logger(s)" }

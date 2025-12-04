@@ -31,6 +31,6 @@ class CxLoggersRootNode(project: Project) : CxLoggersNode(project, "root") {
     override fun getNewChildren() = listOf(
         CxRemoteHacInstancesNode(project),
         CxBundledLogTemplateGroupNode(project),
-        CxCustomLogTemplateGroupNode(project)
+        CxCustomLogTemplateGroupNode(project),
     ).associateBy { it.name }
 }

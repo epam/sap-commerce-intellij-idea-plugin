@@ -37,6 +37,7 @@ abstract class CxLoggersNode(
     override fun getElement() = this
     override fun getLeafState() = LeafState.ASYNC
     override fun dispose() = myChildren.clear()
+    override fun toString() = name
     override fun getName(): String = presentationName
 
     fun getChildren(): Collection<CxLoggersNode> {
