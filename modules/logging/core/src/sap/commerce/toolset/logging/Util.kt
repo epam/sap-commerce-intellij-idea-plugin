@@ -53,22 +53,7 @@ suspend fun getPsiElementPointer(project: Project, loggerIdentifier: String): Sm
 
 fun CxBundledLogTemplate.presentation(project: Project) = CxLogTemplatePresentation(
     name = name,
-    loggers = loggers
-        .map { bundledLogger ->
-            val identifier = bundledLogger.identifier
-            val icon = application.runReadAction<Icon?> { computeIcon(project, identifier) }
-            val pointer = application.runReadAction<SmartPsiElementPointer<PsiElement>?> {
-                findPsiElement(project, identifier)
-                    ?.let { SmartPointerManager.getInstance(it.project).createSmartPsiElementPointer(it) }
-            }
-
-            CxLoggerPresentation.of(
-                name = identifier,
-                effectiveLevel = bundledLogger.effectiveLevel,
-                icon = icon,
-                psiElementPointer = pointer
-            )
-        },
+    loggers = loggers.map { presentation(project, it.identifier, it.effectiveLevel) },
     icon = iconName
         ?.let { iconsMap.getOrElse(it) { HybrisIcons.Log.Template.DEFAULT } }
         ?: HybrisIcons.Log.Template.DEFAULT
@@ -77,13 +62,22 @@ fun CxBundledLogTemplate.presentation(project: Project) = CxLogTemplatePresentat
 fun CxCustomLogTemplateState.presentation(project: Project) = CxLogTemplatePresentation(
     uuid = uuid,
     name = name,
-    loggers = loggers
-        .map { loggerState ->
-            // TODO: resolve reference to class/package
-            CxLoggerPresentation.of(loggerState.name, loggerState.effectiveLevel.name)
-        }
-        .toList(),
+    loggers = loggers.map { presentation(project, it.name, it.effectiveLevel.name) },
     icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+)
+
+private fun presentation(
+    project: Project,
+    identifier: String,
+    level: String,
+) = CxLoggerPresentation.of(
+    name = identifier,
+    effectiveLevel = level,
+    icon = application.runReadAction<Icon?> { computeIcon(project, identifier) },
+    psiElementPointer = application.runReadAction<SmartPsiElementPointer<PsiElement>?> {
+        findPsiElement(project, identifier)
+            ?.let { SmartPointerManager.getInstance(it.project).createSmartPsiElementPointer(it) }
+    },
 )
 
 private val iconsMap = mapOf(

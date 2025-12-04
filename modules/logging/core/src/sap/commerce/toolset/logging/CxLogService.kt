@@ -22,6 +22,8 @@ import com.google.gson.Gson
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.ResourceUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.logging.bundled.CxBundledLogTemplates
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateStateListener
@@ -31,7 +33,7 @@ import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
 import java.io.InputStreamReader
 
 @Service(Service.Level.PROJECT)
-class CxLogService(private val project: Project) {
+class CxLogService(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun bundledTemplates(): List<CxLogTemplatePresentation> = ResourceUtil.getResourceAsStream(
         this.javaClass.classLoader,
@@ -88,7 +90,10 @@ class CxLogService(private val project: Project) {
 
         updateCustomLoggerTemplateInternal(loggerTemplateState)
 
-        project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerUpdated(loggerTemplateState.presentation(project))
+        coroutineScope.launch {
+            val modifiedTemplate = loggerTemplateState.presentation(project)
+            project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerUpdated(modifiedTemplate)
+        }
     }
 
     private fun updateCustomLoggerTemplateInternal(template: CxCustomLogTemplateState) {

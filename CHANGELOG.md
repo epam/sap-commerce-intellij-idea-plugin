@@ -14,10 +14,10 @@
 - Adjusted directories excluded from the modules scan [#1676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1676)
 
 ### `SAP CX Logging` enhancements
-- Added support for Custom Loggers Template - add a template [#1677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1677)
-- Added support for Custom Loggers Template - actions: delete, rename template [#1679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1679)
+- Added support for Custom Log Template - add a template [#1677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1677)
+- Added support for Custom Log Template - actions: delete, rename template [#1679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1679)
 - Supported adding a logger for a logger template [#1680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1680)
-- Restructure log implementation packages and classes [#1681](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1681)
+- Support navigable packages & loggers for Custom Log Templates [#1681](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1681)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)
