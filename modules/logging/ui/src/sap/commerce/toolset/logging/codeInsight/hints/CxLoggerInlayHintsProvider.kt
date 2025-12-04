@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui
+package sap.commerce.toolset.logging.codeInsight.hints
 
 import com.intellij.codeInsight.codeVision.CodeVisionAnchorKind
 import com.intellij.codeInsight.codeVision.CodeVisionEntry
@@ -71,7 +71,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             }
             .map { (psiElement, loggerIdentifier) ->
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(psiElement)
-                val logger = CxRemoteLogAccess.getInstance(project).logger(loggerIdentifier)
+                val logger = CxRemoteLogAccess.Companion.getInstance(project).logger(loggerIdentifier)
                 val text = if (logger == null) RichText("[y] log level")
                 else {
                     val style = if (logger.inherited) SimpleTextAttributes(
@@ -107,11 +107,11 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             if (isInlaySettingsEditor(editor)) return
             val element = elementPointer.element ?: return
 
-            handleClick(editor, element, loggerIdentifier, event)
+            handleClick(editor, loggerIdentifier, event)
         }
     }
 
-    fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String, event: MouseEvent?) {
+    fun handleClick(editor: Editor, loggerIdentifier: String, event: MouseEvent?) {
         val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions") as ActionGroup
         val project = editor.project ?: return
         val dataContext = SimpleDataContext.builder()
