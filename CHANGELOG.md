@@ -12,11 +12,12 @@
 - Adjusted the approach to identify a config module [#1671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1671)
 - Inform a developer about a missing `config` module [#1675](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1675)
 - Adjusted directories excluded from the modules scan [#1676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1676)
-- Add a logger for a logger template [#1680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1680)
+
 
 ### `SAP CX Logging` enhancements
 - Added support for Custom Loggers Template - add a template [#1677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1677)
 - Added support for Custom Loggers Template - actions: delete, rename template [#1679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1679)
+- Supported adding a logger for a logger template [#1680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1680)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)
