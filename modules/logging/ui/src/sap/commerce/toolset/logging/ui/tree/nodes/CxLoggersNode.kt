@@ -22,23 +22,25 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
+import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.tree.LeafState
+import javax.swing.Icon
 
-abstract class LoggersNode : PresentableNodeDescriptor<LoggersNode>, LeafState.Supplier, Disposable {
+abstract class CxLoggersNode(
+    project: Project,
+    private val presentationName: String = "",
+    private val icon: Icon? = null,
+) : PresentableNodeDescriptor<CxLoggersNode>(project, null), LeafState.Supplier, Disposable {
 
-    internal val myChildren = mutableMapOf<String, LoggersNode>()
-    internal var parameters: LoggersNodeParameters? = null
-
-    protected constructor(project: Project) : super(project, null)
+    internal val myChildren = mutableMapOf<String, CxLoggersNode>()
+    internal var parameters: CxLoggersNodeParameters? = null
 
     override fun getElement() = this
     override fun getLeafState() = LeafState.ASYNC
-    override fun toString(): String = name
     override fun dispose() = myChildren.clear()
+    override fun getName(): String = presentationName
 
-    abstract override fun update(presentation: PresentationData)
-
-    fun getChildren(parameters: LoggersNodeParameters): Collection<LoggersNode> {
+    fun getChildren(parameters: CxLoggersNodeParameters): Collection<CxLoggersNode> {
         val newChildren = getNewChildren(parameters)
 
         myChildren.keys
@@ -60,6 +62,13 @@ abstract class LoggersNode : PresentableNodeDescriptor<LoggersNode>, LeafState.S
             .onEach { it.parameters = parameters }
     }
 
-    open fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = emptyMap()
-    open fun update(existingNode: LoggersNode, newNode: LoggersNode) = Unit
+    open fun getNewChildren(nodeParameters: CxLoggersNodeParameters): Map<String, CxLoggersNode> = emptyMap()
+    open fun update(existingNode: CxLoggersNode, newNode: CxLoggersNode) = Unit
+
+    override fun update(presentation: PresentationData) {
+        presentation.clearText()
+
+        presentation.addText(presentationName, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.setIcon(icon)
+    }
 }

@@ -22,15 +22,11 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.util.asSafely
+import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
-import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
-import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.ui.CxCustomLoggerTemplateDialog
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 
-class RenameCustomTemplateAction : AnAction() {
+class CxFetchRemoteLogStateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -39,24 +35,24 @@ class RenameCustomTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
+        val loggerAccessService = CxRemoteLogAccess.getInstance(project)
 
-        val templateNode = e.selectedNode()
-            ?.asSafely<CustomLoggersTemplateItemNode>()
-            ?: return
-
-        val mutable = CxCustomLogTemplatesSettings.getInstance(project)
-            .templates
-            .find { it.uuid == templateNode.uuid }
-            ?.mutable()
-            ?: return
-
-        if (CxCustomLoggerTemplateDialog(project, mutable, "Update a Logger Template").showAndGet()) {
-            CxLogService.getInstance(project).updateTemplate(mutable.immutable())
-        }
+        loggerAccessService.fetch()
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "Rename Template"
-        e.presentation.icon = HybrisIcons.Log.Template.EDIT_CUSTOM_TEMPLATE
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        val project = e.project ?: return
+        val loggerAccess = CxRemoteLogAccess.getInstance(project)
+
+        e.presentation.isEnabled = loggerAccess.ready
+
+        val state = CxRemoteLogAccess.getInstance(project).stateInitialized
+
+        e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
+        e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
+        e.presentation.disabledIcon = if (loggerAccess.ready) null else AnimatedIcon.Default.INSTANCE
     }
 }

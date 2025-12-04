@@ -19,16 +19,16 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <codeInsight.daemonBoundCodeVisionProvider implementation="sap.commerce.toolset.logging.codeInsight.hints.LoggerInlayHintsProvider"/>
+        <codeInsight.daemonBoundCodeVisionProvider implementation="sap.commerce.toolset.logging.ui.CxLoggerInlayHintsProvider"/>
     </extensions>
 
     <actions>
-        <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.FetchLoggersStateAction"/>
+        <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.CxFetchRemoteLogStateAction"/>
 
-        <action id="sap.cx.loggers.apply.bundle.template" class="sap.commerce.toolset.logging.actionSystem.ApplyBundledTemplateAction"/>
-        <action id="sap.cx.loggers.add.custom.template" class="sap.commerce.toolset.logging.actionSystem.AddCustomTemplateAction"/>
-        <action id="sap.cx.loggers.delete.custom.template" class="sap.commerce.toolset.logging.actionSystem.DeleteCustomTemplateAction"/>
-        <action id="sap.cx.loggers.rename.custom.template" class="sap.commerce.toolset.logging.actionSystem.RenameCustomTemplateAction"/>
+        <action id="sap.cx.loggers.apply.log.template" class="sap.commerce.toolset.logging.actionSystem.CxApplyLogTemplateAction"/>
+        <action id="sap.cx.loggers.add.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxAddCustomLogTemplateAction"/>
+        <action id="sap.cx.loggers.delete.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxDeleteCustomLogTemplateAction"/>
+        <action id="sap.cx.loggers.rename.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxRenameCustomLogTemplateAction"/>
 
         <group id="sap.cx.loggers.template.item.actions" searchable="false">
             <reference ref="sap.cx.loggers.rename.custom.template"/>
@@ -47,16 +47,16 @@
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
 
             <separator text="Log Levels"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.OffLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.AllLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.TraceLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.DebugLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.InfoLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.WarnLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.ErrorLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actionSystem.FatalLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxOffLoggerLevelAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxAllLoggerLevelAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxTraceLoggerLevelAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxDebugLoggerLevelAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxInfoLoggerLevelAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxWarnLoggerLevelAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxErrorLoggerLevelAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.CxFatalLoggerLevelAction"/>
         </group>
 
-        <group id="sap.cx.loggers.toolwindow.menu" popup="true" searchable="false" class="sap.commerce.toolset.logging.actionSystem.CxLoggersContextMenuActionGroup"/>
+        <group id="sap.cx.loggers.toolwindow.menu" popup="true" searchable="false" class="sap.commerce.toolset.logging.actionSystem.CxLogTemplateContextMenuActionGroup"/>
     </actions>
 </idea-plugin>

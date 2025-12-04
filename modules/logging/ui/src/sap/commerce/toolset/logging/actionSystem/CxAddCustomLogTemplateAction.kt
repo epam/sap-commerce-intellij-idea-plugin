@@ -24,11 +24,13 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateItemNode
+import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
+import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateGroupNode
 
-class ApplyBundledTemplateAction : AnAction() {
+class CxAddCustomLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -37,17 +39,19 @@ class ApplyBundledTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-
         e.selectedNode()
-            ?.asSafely<BundledLoggersTemplateItemNode>()
-            ?.loggers
-            ?.let {
-                CxRemoteLogAccess.getInstance(project).setLoggers(it)
-            }
+            ?.asSafely<CxCustomLogTemplateGroupNode>()
+            ?: return
+
+        val mutable = CxCustomLogTemplateState().mutable()
+
+        if (CxCustomLogTemplateDialog(project, mutable, "Create a Log Template").showAndGet()) {
+            CxLogService.getInstance(project).addTemplate(mutable.immutable())
+        }
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "Apply Template"
-        e.presentation.icon = HybrisIcons.Log.Template.EXECUTE
+        e.presentation.text = "New Template"
+        e.presentation.icon = HybrisIcons.Log.Template.ADD_CUSTOM_TEMPLATE
     }
 }

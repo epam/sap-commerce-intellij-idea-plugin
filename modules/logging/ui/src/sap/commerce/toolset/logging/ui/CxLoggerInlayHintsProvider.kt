@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.codeInsight.hints
+package sap.commerce.toolset.logging.ui
 
 import com.intellij.codeInsight.codeVision.CodeVisionAnchorKind
 import com.intellij.codeInsight.codeVision.CodeVisionEntry
@@ -45,7 +45,7 @@ import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 import java.awt.event.MouseEvent
 
-class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
+class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
     override val defaultAnchor: CodeVisionAnchorKind = CodeVisionAnchorKind.Default
     override val id: String = "SAPCxLoggerInlayHintsProvider"

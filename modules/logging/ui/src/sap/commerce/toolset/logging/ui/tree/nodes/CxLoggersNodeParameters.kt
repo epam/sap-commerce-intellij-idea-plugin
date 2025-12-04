@@ -18,24 +18,6 @@
 
 package sap.commerce.toolset.logging.ui.tree.nodes
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
-import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import javax.swing.Icon
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
-class BundledLoggersTemplateItemNode(
-    val loggers: List<CxLoggerPresentation>,
-    text: String,
-    icon: Icon?,
-    project: Project
-) : LoggersOptionsNode(text, icon, project) {
-
-    override fun update(presentation: PresentationData) {
-        super.update(presentation)
-
-        val tip = " ${loggers.size} logger(s)"
-
-        presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
-    }
-}
+data class CxLoggersNodeParameters(val connections: List<HacConnectionSettingsState>)

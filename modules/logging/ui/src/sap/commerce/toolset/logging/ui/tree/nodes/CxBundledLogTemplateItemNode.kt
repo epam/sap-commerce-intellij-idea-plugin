@@ -16,18 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui.tree
+package sap.commerce.toolset.logging.ui.tree.nodes
 
-import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
-import java.io.Serial
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.openapi.project.Project
+import com.intellij.ui.SimpleTextAttributes
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
+import javax.swing.Icon
 
-class LoggersOptionsTreeNode(private val node: LoggersNode) : javax.swing.tree.DefaultMutableTreeNode(node) {
+class CxBundledLogTemplateItemNode(
+    val loggers: List<CxLoggerPresentation>,
+    text: String,
+    icon: Icon?,
+    project: Project
+) : CxLoggersNode(project, text, icon) {
 
-    override fun toString(): String = node.toString()
+    override fun update(presentation: PresentationData) {
+        super.update(presentation)
 
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = 1489184180280379316L
+        val tip = " ${loggers.size} logger(s)"
+
+        presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
     }
-
 }

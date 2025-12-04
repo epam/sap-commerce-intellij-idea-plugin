@@ -24,29 +24,29 @@ import com.intellij.util.asSafely
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
-import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNodeParameters
+import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNodeParameters
 import javax.swing.tree.TreePath
 
-class LoggersOptionsModel(
-    private val rootTreeNode: LoggersOptionsTreeNode
-) : BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
+class CxLoggersTreeModel(
+    private val rootTreeNode: CxLoggersTreeNode
+) : BaseTreeModel<CxLoggersTreeNode>(), Disposable, InvokerSupplier {
 
     //map of connections to their active state
     private var connections: List<HacConnectionSettingsState>? = null
-    private val nodes = mutableMapOf<LoggersNode, LoggersOptionsTreeNode>()
+    private val nodes = mutableMapOf<CxLoggersNode, CxLoggersTreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)
 
     override fun getRoot() = rootTreeNode
 
     override fun getChildren(parent: Any?) = parent
-        .asSafely<LoggersOptionsTreeNode>()
+        .asSafely<CxLoggersTreeNode>()
         ?.userObject
-        ?.asSafely<LoggersNode>()
-        ?.getChildren(LoggersNodeParameters(connections ?: emptyList()))
+        ?.asSafely<CxLoggersNode>()
+        ?.getChildren(CxLoggersNodeParameters(connections ?: emptyList()))
         ?.onEach { it.update() }
         ?.map {
-            nodes.computeIfAbsent(it) { _ -> LoggersOptionsTreeNode(it) }
+            nodes.computeIfAbsent(it) { _ -> CxLoggersTreeNode(it) }
         }
 
     override fun getInvoker() = myInvoker

@@ -22,14 +22,15 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.ui.Messages
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
+import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
+import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
-class DeleteCustomTemplateAction : AnAction() {
+class CxRenameCustomLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -40,22 +41,22 @@ class DeleteCustomTemplateAction : AnAction() {
         val project = e.project ?: return
 
         val templateNode = e.selectedNode()
-            ?.asSafely<CustomLoggersTemplateItemNode>()
+            ?.asSafely<CxCustomLogTemplateItemNode>()
             ?: return
 
-        if (Messages.showYesNoDialog(
-                project,
-                "Delete template ${templateNode.name}?",
-                "Delete Custom Template",
-                HybrisIcons.Log.Action.DELETE
-            ) != Messages.YES
-        ) return
+        val mutable = CxCustomLogTemplatesSettings.getInstance(project)
+            .templates
+            .find { it.uuid == templateNode.uuid }
+            ?.mutable()
+            ?: return
 
-        CxLogService.getInstance(project).deleteTemplate(templateNode.uuid)
+        if (CxCustomLogTemplateDialog(project, mutable, "Update a Log Template").showAndGet()) {
+            CxLogService.getInstance(project).updateTemplate(mutable.immutable())
+        }
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "Delete Template"
-        e.presentation.icon = HybrisIcons.Log.Template.DELETE_CUSTOM_TEMPLATE
+        e.presentation.text = "Rename Template"
+        e.presentation.icon = HybrisIcons.Log.Template.EDIT_CUSTOM_TEMPLATE
     }
 }

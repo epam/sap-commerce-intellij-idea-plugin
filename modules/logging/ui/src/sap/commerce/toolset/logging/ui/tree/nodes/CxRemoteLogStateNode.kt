@@ -21,21 +21,37 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import javax.swing.Icon
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 
-abstract class LoggersOptionsNode(
-    open val text: String,
-    private val icon: Icon?,
-    project: Project
-) : LoggersNode(project) {
+class CxRemoteLogStateNode(
+    val connectionUUID: String,
+    project: Project,
+) : CxLoggersNode(project) {
 
-    override fun getName() = text
+    val activeConnection: Boolean
+        get() = connectionUUID == HacExecConnectionService.getInstance(project).activeConnection.uuid
+
+    override fun getName() = HacExecConnectionService.getInstance(project).connections
+        .find { it.uuid == connectionUUID }
+        ?.connectionName
+        ?: "remote"
 
     override fun update(presentation: PresentationData) {
-        presentation.clearText()
+        if (myProject == null || myProject.isDisposed) return
+
+        val connectionIcon = if (activeConnection) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(icon)
+        if (activeConnection) {
+            val tip = CxRemoteLogAccess.getInstance(project).state(connectionUUID)
+                .get()
+                ?.size
+                ?.let { size -> " active | $size logger(s)" }
+                ?: " (active)"
+            presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
+        }
+        presentation.setIcon(connectionIcon)
     }
-
 }

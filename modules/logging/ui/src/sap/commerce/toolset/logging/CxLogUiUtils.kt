@@ -21,11 +21,11 @@ package sap.commerce.toolset.logging
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.util.asSafely
-import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
+import sap.commerce.toolset.logging.ui.tree.CxLoggersTree
 import javax.swing.tree.DefaultMutableTreeNode
 
 internal fun AnActionEvent.selectedNode(): Any? = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-    ?.asSafely<LoggersOptionsTree>()
+    ?.asSafely<CxLoggersTree>()
     ?.selectionPath
     ?.lastPathComponent
     ?.asSafely<DefaultMutableTreeNode>()

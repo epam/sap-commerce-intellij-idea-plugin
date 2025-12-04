@@ -20,18 +20,19 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
 
-class CustomLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Custom Templates", HybrisIcons.Log.Template.CUSTOM, project) {
+class CxRemoteHacInstancesNode(project: Project) : CxLoggersNode(
+    project = project,
+    presentationName = "Remote hAC Instances",
+    icon = HybrisIcons.Y.REMOTES,
+) {
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = CxLogService.getInstance(project).customTemplates()
-        .associate { template ->
-            template.uuid to CustomLoggersTemplateItemNode.of(project, template)
-        }
-
-    override fun update(existingNode: LoggersNode, newNode: LoggersNode) {
-        if (existingNode is CustomLoggersTemplateItemNode && newNode is CustomLoggersTemplateItemNode) {
-            existingNode.update(newNode)
-        }
+    override fun getNewChildren(nodeParameters: CxLoggersNodeParameters): Map<String, CxRemoteLogStateNode> {
+        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+        return nodeParameters.connections
+            .filter { it == activeConnection } // only active connections
+            .map { CxRemoteLogStateNode(it.uuid, project) }
+            .associateBy { it.connectionUUID }
     }
 }

@@ -23,11 +23,11 @@ import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.psi.PsiClass
@@ -35,81 +35,30 @@ import com.intellij.psi.PsiPackage
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.InlineBanner
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.logging.CxLogLevel
-import sap.commerce.toolset.logging.CxLogService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import sap.commerce.toolset.ui.addKeyListener
-import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.Dimension
-import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
-class CustomLoggersTemplatesStateView(
+class CxBundledLogTemplatesView(
     private val project: Project,
     private val coroutineScope: CoroutineScope
 ) : Disposable {
-
-    private var templateUUID: String = ""
 
     private val showNothingSelected = AtomicBooleanProperty(true)
     private val showNoLoggerTemplates = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
-    private val canApply = AtomicBooleanProperty(false)
-    private val editable = AtomicBooleanProperty(true)
 
-    private lateinit var dPanel: DialogPanel
-    private lateinit var loggerLevelField: ComboBox<CxLogLevel>
-    private lateinit var loggerNameField: JBTextField
     private lateinit var dataScrollPane: JBScrollPane
-
     private val panel by lazy {
-
         object : ClearableLazyValue<DialogPanel>() {
             override fun compute() = panel {
-                row {
-                    loggerLevelField = comboBox(
-                        model = EnumComboBoxModel(CxLogLevel::class.java),
-                        renderer = SimpleListCellRenderer.create { label, value, _ ->
-                            if (value != null) {
-                                label.icon = value.icon
-                                label.text = value.name
-                            }
-                        }
-                    )
-                        .component
-
-                    loggerNameField = textField()
-                        .resizableColumn()
-                        .align(AlignX.FILL)
-                        .validationOnApply {
-                            if (it.text.isBlank()) error("Please enter a logger name")
-                            else null
-                        }
-                        .addKeyListener(this@CustomLoggersTemplatesStateView, object : KeyListener {
-                            override fun keyReleased(e: KeyEvent) {
-                                if (e.keyCode == KeyEvent.VK_ENTER) {
-                                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                                }
-                            }
-                        })
-                        .component
-
-                    button("Apply Logger") {
-                        applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                    }
-                }
-                    .visibleIf(showDataPanel)
-                    .layout(RowLayout.PARENT_GRID)
                 row {
                     cellNoData(showNoLoggerTemplates, "No Logger Templates")
                     cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
@@ -146,15 +95,6 @@ class CustomLoggersTemplatesStateView(
                 .apply {
                     border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
                 }
-                .apply {
-                    registerValidators(this@CustomLoggersTemplatesStateView) { validations ->
-                        canApply.set(validations.values.all { it.okEnabled })
-                    }
-                    dPanel = this
-                }
-                .apply {
-                    editable.set(true)
-                }
         }
     }
 
@@ -162,69 +102,12 @@ class CustomLoggersTemplatesStateView(
         get() = panel.value
 
     fun renderNothingSelected() = toggleView(showNothingSelected)
+    fun renderNoLoggerTemplates() = toggleView(showNoLoggerTemplates)
 
-    fun renderLoggersTemplate(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
+    fun renderLoggersTemplate(loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
-        this.templateUUID = templateUUID
-
         renderLoggersInternal(loggers)
-    }
-
-    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
-        data.forEach { r ->
-            row {
-                icon(r.level.icon)
-                label(r.level.name)
-                    .applyToComponent {
-                        preferredSize = Dimension(JBUI.scale(68), preferredSize.height)
-                    }
-
-                icon(r.icon)
-                if (r.resolved) {
-                    link(r.name) {
-                        r.psiElementPointer?.element?.let { psiElement ->
-                            when (psiElement) {
-                                is PsiPackage -> {
-                                    coroutineScope.launch {
-                                        val directory = readAction {
-                                            psiElement.getDirectories(GlobalSearchScope.allScope(project))
-                                                .firstOrNull()
-                                        } ?: return@launch
-
-                                        edtWriteAction {
-                                            ProjectView.getInstance(project).selectPsiElement(directory, true)
-                                        }
-                                    }
-                                }
-
-                                is PsiClass -> PsiNavigationSupport.getInstance()
-                                    .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
-                                    .navigate(true)
-                            }
-                        }
-                    }.resizableColumn()
-                } else {
-                    label(r.name)
-                }
-            }
-        }
-    }
-
-    override fun dispose() = panel.drop()
-
-    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: CxLogLevel) {
-        canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
-
-        if (!canApply.get()) return
-
-        CxLogService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
-        resetInputs()
-    }
-
-    private fun resetInputs() {
-        loggerNameField.text = ""
-        loggerLevelField.selectedItem = CxLogLevel.ALL
     }
 
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
@@ -255,13 +138,59 @@ class CustomLoggersTemplatesStateView(
         row {
             cell(
                 InlineBanner(
-                    "Please, use the panel above to add a logger.",
-                    EditorNotificationPanel.Status.Info
+                    "Unable to get list of loggers for the connection.",
+                    EditorNotificationPanel.Status.Warning
                 )
                     .showCloseButton(false)
             )
                 .align(Align.CENTER)
                 .resizableColumn()
         }.resizableRow()
-    }§
+    }
+
+    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
+        data.forEach { r ->
+            row {
+                icon(r.level.icon)
+                label(r.level.name)
+                    .applyToComponent {
+                        preferredSize = Dimension(JBUI.scale(68), preferredSize.height)
+                    }
+
+                icon(r.icon)
+                if (r.resolved) {
+                    link(r.name) {
+                        r.psiElementPointer?.element?.let { psiElement ->
+                            when (psiElement) {
+                                is PsiPackage -> {
+                                    coroutineScope.launch {
+                                        val directory = readAction {
+                                            psiElement.getDirectories(GlobalSearchScope.allScope(project))
+                                                .firstOrNull()
+                                        } ?: return@launch
+
+                                        edtWriteAction {
+                                            ProjectView.getInstance(project).selectPsiElement(directory, true)
+                                        }
+                                    }
+                                }
+
+                                is PsiClass -> invokeLater {
+                                    PsiNavigationSupport.getInstance()
+                                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
+                                        .navigate(true)
+                                }
+                            }
+                        }
+                    }.resizableColumn()
+                } else {
+                    label(r.name)
+                }
+            }
+        }
+    }
+
+
+    override fun dispose() = panel.drop()
+
 }

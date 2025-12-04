@@ -25,8 +25,8 @@ import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
-import sap.commerce.toolset.logging.ui.tree.nodes.LoggersRootNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersRootNode
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
@@ -34,9 +34,9 @@ import javax.swing.tree.TreePath
 private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
-class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
+class CxLoggersTree(myProject: Project) : Tree(), Disposable {
 
-    private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(myProject)))
+    private val myTreeModel = CxLoggersTreeModel(CxLoggersTreeNode(CxLoggersRootNode(myProject)))
 
     init {
         isRootVisible = false
@@ -44,7 +44,7 @@ class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
 
         TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
-                is LoggersNode -> return@Convertor uObj.name
+                is CxLoggersNode -> return@Convertor uObj.name
                 else -> return@Convertor ""
             }
         }, SEARCH_CAN_EXPAND)

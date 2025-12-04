@@ -59,8 +59,7 @@ import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
-
-class LoggersStateView(
+class CxRemoteLogStateView(
     private val project: Project,
     private val coroutineScope: CoroutineScope
 ) : Disposable {
@@ -179,7 +178,7 @@ class LoggersStateView(
                         .align(AlignX.FILL)
                         .enabledIf(editable)
                         .bindItem({ cxLogger.level }, { _ -> })
-                        .addItemListener(this@LoggersStateView) { event ->
+                        .addItemListener(this@CxRemoteLogStateView) { event ->
                             event.item.asSafely<CxLogLevel>()
                                 ?.takeUnless { it == cxLogger.level }
                                 ?.let { newLogLevel ->
@@ -262,7 +261,7 @@ class LoggersStateView(
                         if (it.text.isBlank()) error("Please enter a logger name")
                         else null
                     }
-                    .addKeyListener(this@LoggersStateView, object : KeyListener {
+                    .addKeyListener(this@CxRemoteLogStateView, object : KeyListener {
                         override fun keyReleased(e: KeyEvent) {
                             if (e.keyCode == KeyEvent.VK_ENTER) {
                                 applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
@@ -286,7 +285,7 @@ class LoggersStateView(
             }.layout(RowLayout.PARENT_GRID)
         }
             .apply {
-                registerValidators(this@LoggersStateView) { validations ->
+                registerValidators(this@CxRemoteLogStateView) { validations ->
                     canApply.set(validations.values.all { it.okEnabled })
                 }
                 dPanel = this

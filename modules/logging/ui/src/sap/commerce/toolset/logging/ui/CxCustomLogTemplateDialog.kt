@@ -28,7 +28,7 @@ import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import javax.swing.JComponent
 
-class CxCustomLoggerTemplateDialog(
+class CxCustomLogTemplateDialog(
     project: Project,
     private val mutable: CxCustomLogTemplateState.Mutable,
     private val title: String

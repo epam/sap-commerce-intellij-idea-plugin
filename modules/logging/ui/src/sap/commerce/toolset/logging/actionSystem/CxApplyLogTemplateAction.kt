@@ -22,15 +22,12 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
-import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
+import sap.commerce.toolset.logging.CxRemoteLogAccess
 import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.ui.CxCustomLoggerTemplateDialog
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateGroupNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
 
-class AddCustomTemplateAction : AnAction() {
+class CxApplyLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -39,19 +36,18 @@ class AddCustomTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        e.selectedNode()
-            ?.asSafely<CustomLoggersTemplateGroupNode>()
-            ?: return
 
-        val mutable = CxCustomLogTemplateState().mutable()
-
-        if (CxCustomLoggerTemplateDialog(project, mutable, "Create a Logger Template").showAndGet()) {
-            CxLogService.getInstance(project).addTemplate(mutable.immutable())
+        val selectedNode = e.selectedNode() ?: return
+        val loggers = when (selectedNode) {
+            is CxBundledLogTemplateItemNode -> selectedNode.loggers
+            else -> return
         }
+
+        CxRemoteLogAccess.getInstance(project).setLoggers(loggers)
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "New Template"
-        e.presentation.icon = HybrisIcons.Log.Template.ADD_CUSTOM_TEMPLATE
+        e.presentation.text = "Apply Template"
+        e.presentation.icon = HybrisIcons.Log.Template.EXECUTE
     }
 }

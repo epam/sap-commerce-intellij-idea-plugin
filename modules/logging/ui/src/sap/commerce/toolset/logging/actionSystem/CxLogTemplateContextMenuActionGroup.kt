@@ -21,11 +21,11 @@ package sap.commerce.toolset.logging.actionSystem
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.DumbAware
 import sap.commerce.toolset.logging.selectedNode
-import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateItemNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateGroupNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateItemNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateGroupNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
-class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
+class CxLogTemplateContextMenuActionGroup : ActionGroup(), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -34,9 +34,9 @@ class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
         val actionManager = ActionManager.getInstance()
 
         return when (selectedNode) {
-            is BundledLoggersTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.apply.bundle.template"))
-            is CustomLoggersTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.template.item.actions"))
-            is CustomLoggersTemplateGroupNode -> arrayOf(actionManager.getAction("sap.cx.loggers.add.custom.template"))
+            is CxBundledLogTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.apply.log.template"))
+            is CxCustomLogTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.template.item.actions"))
+            is CxCustomLogTemplateGroupNode -> arrayOf(actionManager.getAction("sap.cx.loggers.add.custom.template"))
             else -> emptyArray()
         }
     }
@@ -44,8 +44,8 @@ class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
     override fun update(e: AnActionEvent) {
         val selectedNode = e.selectedNode()
 
-        e.presentation.isEnabledAndVisible = selectedNode is BundledLoggersTemplateItemNode
-            || selectedNode is CustomLoggersTemplateGroupNode
-            || selectedNode is CustomLoggersTemplateItemNode
+        e.presentation.isEnabledAndVisible = selectedNode is CxBundledLogTemplateItemNode
+            || selectedNode is CxCustomLogTemplateGroupNode
+            || selectedNode is CxCustomLogTemplateItemNode
     }
 }

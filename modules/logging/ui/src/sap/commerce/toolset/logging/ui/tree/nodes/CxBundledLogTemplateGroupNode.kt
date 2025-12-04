@@ -18,6 +18,18 @@
 
 package sap.commerce.toolset.logging.ui.tree.nodes
 
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.logging.CxLogService
 
-data class LoggersNodeParameters(val connections: List<HacConnectionSettingsState>)
+class CxBundledLogTemplateGroupNode(private val project: Project) : CxLoggersNode(
+    project = project,
+    presentationName = "Bundled Templates",
+    icon = HybrisIcons.Log.Template.TEMPLATES,
+) {
+
+    override fun getNewChildren(nodeParameters: CxLoggersNodeParameters): Map<String, CxLoggersNode> = CxLogService.getInstance(project).bundledTemplates()
+        .associate { item ->
+            item.name to CxBundledLogTemplateItemNode(item.loggers, item.name, item.icon, project)
+        }
+}

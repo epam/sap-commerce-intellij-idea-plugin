@@ -34,8 +34,8 @@ import sap.commerce.toolset.logging.CxRemoteLogAccess
 import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateStateListener
 import sap.commerce.toolset.logging.exec.event.CxRemoteLogStateListener
 import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
-import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
-import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
+import sap.commerce.toolset.logging.ui.tree.CxLoggersTree
+import sap.commerce.toolset.logging.ui.tree.CxLoggersTreeNode
 import sap.commerce.toolset.logging.ui.tree.nodes.*
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
@@ -47,25 +47,25 @@ import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
 
-class LoggersSplitView(
+class CxLoggersSplitView(
     private val project: Project,
     private val coroutineScope: CoroutineScope
 ) : OnePixelSplitter(false, 0.25f), Disposable {
 
-    private val tree = LoggersOptionsTree(project).apply { registerListeners(this) }
-    private val loggersStateView = LoggersStateView(project, coroutineScope)
-    private val loggersTemplatesStateView = LoggersTemplatesStateView(project, coroutineScope)
-    private val customLoggersTemplatesStateView = CustomLoggersTemplatesStateView(project, coroutineScope)
+    private val tree = CxLoggersTree(project).apply { registerListeners(this) }
+    private val remoteLogStateView = CxRemoteLogStateView(project, coroutineScope)
+    private val bundledLogTemplatesView = CxBundledLogTemplatesView(project, coroutineScope)
+    private val customLogTemplatesView = CxCustomLogTemplatesView(project, coroutineScope)
 
     init {
         firstComponent = JBScrollPane(tree)
-        secondComponent = loggersStateView.view
+        secondComponent = remoteLogStateView.view
 
         PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
-        Disposer.register(this, loggersStateView)
-        Disposer.register(this, loggersTemplatesStateView)
-        Disposer.register(this, customLoggersTemplatesStateView)
+        Disposer.register(this, remoteLogStateView)
+        Disposer.register(this, bundledLogTemplatesView)
+        Disposer.register(this, customLogTemplatesView)
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
@@ -79,9 +79,9 @@ class LoggersSplitView(
             subscribe(CxRemoteLogStateListener.TOPIC, object : CxRemoteLogStateListener {
                 override fun onLoggersStateChanged(remoteConnection: HacConnectionSettingsState) {
                     tree.lastSelectedPathComponent
-                        ?.asSafely<LoggersOptionsTreeNode>()
+                        ?.asSafely<CxLoggersTreeNode>()
                         ?.userObject
-                        ?.asSafely<LoggersHacConnectionNode>()
+                        ?.asSafely<CxRemoteLogStateNode>()
                         ?.takeIf { it.connectionUUID == remoteConnection.uuid }
                         ?.let { updateSecondComponent(it) }
                 }
@@ -94,9 +94,9 @@ class LoggersSplitView(
 
                 override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
                     val nodeForUpdate = tree.lastSelectedPathComponent
-                        ?.asSafely<LoggersOptionsTreeNode>()
+                        ?.asSafely<CxLoggersTreeNode>()
                         ?.userObject
-                        ?.asSafely<CustomLoggersTemplateItemNode>()
+                        ?.asSafely<CxCustomLogTemplateItemNode>()
                         ?.takeIf { it.uuid == modifiedTemplate.uuid }
                         ?: return
                     nodeForUpdate.update(modifiedTemplate)
@@ -110,17 +110,17 @@ class LoggersSplitView(
         tree.update(HacExecConnectionService.getInstance(project).connections)
     }
 
-    private fun registerListeners(tree: LoggersOptionsTree) = tree
+    private fun registerListeners(tree: CxLoggersTree) = tree
         .addTreeSelectionListener(tree) {
             it.newLeadSelectionPath
-                ?.pathData(LoggersNode::class)
+                ?.pathData(CxLoggersNode::class)
                 ?.let { node -> updateSecondComponent(node) }
         }
         .addTreeModelListener(tree, object : TreeModelListener {
             override fun treeNodesChanged(e: TreeModelEvent) {
                 tree.selectionPath
                     ?.takeIf { e.treePath?.lastPathComponent == it.parentPath?.lastPathComponent }
-                    ?.pathData(LoggersNode::class)
+                    ?.pathData(CxLoggersNode::class)
                     ?.let { node -> updateSecondComponent(node) }
             }
         })
@@ -129,7 +129,7 @@ class LoggersSplitView(
                 tree
                     .takeIf { e.getClickCount() == 2 && !e.isConsumed }
                     ?.getPathForLocation(e.getX(), e.getY())
-                    ?.pathData(LoggersHacConnectionNode::class)
+                    ?.pathData(CxRemoteLogStateNode::class)
                     ?.let {
                         e.consume()
                         HacExecConnectionService.getInstance(project).connections
@@ -139,51 +139,51 @@ class LoggersSplitView(
             }
         })
 
-    private fun updateSecondComponent(node: LoggersNode) {
+    private fun updateSecondComponent(node: CxLoggersNode) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
             when (node) {
-                is LoggersHacConnectionNode -> {
-                    secondComponent = loggersStateView.view
+                is CxRemoteLogStateNode -> {
+                    secondComponent = remoteLogStateView.view
 
                     CxRemoteLogAccess.getInstance(project).state(node.connectionUUID).get()
-                        ?.let { loggersStateView.renderLoggers(it) }
-                        ?: loggersStateView.renderFetchLoggers()
+                        ?.let { remoteLogStateView.renderLoggers(it) }
+                        ?: remoteLogStateView.renderFetchLoggers()
                 }
 
-                is BundledLoggersTemplateGroupNode -> {
-                    secondComponent = loggersTemplatesStateView.view
+                is CxBundledLogTemplateGroupNode -> {
+                    secondComponent = bundledLogTemplatesView.view
 
-                    loggersTemplatesStateView.renderNothingSelected()
+                    bundledLogTemplatesView.renderNothingSelected()
                 }
 
-                is CustomLoggersTemplateGroupNode -> {
-                    secondComponent = customLoggersTemplatesStateView.view
-
-                    customLoggersTemplatesStateView.renderNothingSelected()
-                }
-
-                is BundledLoggersTemplateItemNode -> {
-                    secondComponent = loggersTemplatesStateView.view
+                is CxBundledLogTemplateItemNode -> {
+                    secondComponent = bundledLogTemplatesView.view
 
                     node.loggers.associateBy { it.name }.let {
-                        loggersTemplatesStateView.renderLoggersTemplate(it)
+                        bundledLogTemplatesView.renderLoggersTemplate(it)
                     }
                 }
 
-                is CustomLoggersTemplateItemNode -> {
-                    secondComponent = customLoggersTemplatesStateView.view
+                is CxCustomLogTemplateGroupNode -> {
+                    secondComponent = customLogTemplatesView.view
+
+                    customLogTemplatesView.renderNothingSelected()
+                }
+
+                is CxCustomLogTemplateItemNode -> {
+                    secondComponent = customLogTemplatesView.view
 
                     node.loggers.associateBy { it.name }.let {
-                        customLoggersTemplatesStateView.renderLoggersTemplate(node.uuid, it)
+                        customLogTemplatesView.renderLoggersTemplate(node.uuid, it)
                     }
                 }
 
                 else -> {
-                    secondComponent = loggersStateView.view
+                    secondComponent = remoteLogStateView.view
 
-                    loggersStateView.renderNothingSelected()
+                    remoteLogStateView.renderNothingSelected()
                 }
             }
         }

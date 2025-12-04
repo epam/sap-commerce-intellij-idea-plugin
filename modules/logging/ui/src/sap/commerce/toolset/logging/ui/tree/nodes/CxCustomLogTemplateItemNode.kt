@@ -26,13 +26,13 @@ import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.util.*
 import javax.swing.Icon
 
-class CustomLoggersTemplateItemNode private constructor(
+class CxCustomLogTemplateItemNode private constructor(
     val uuid: String = UUID.randomUUID().toString(),
     loggers: List<CxLoggerPresentation>,
-    override var text: String = "",
+    private var text: String = "",
     icon: Icon?,
     project: Project
-) : LoggersOptionsNode(text, icon, project) {
+) : CxLoggersNode(project, text, icon) {
 
     var loggers = loggers
         private set
@@ -49,7 +49,7 @@ class CustomLoggersTemplateItemNode private constructor(
         this.update(presentation)
     }
 
-    fun update(source: LoggersNode) {
+    fun update(source: CxLoggersNode) {
         text = source.name
         update(presentation)
     }
@@ -63,7 +63,7 @@ class CustomLoggersTemplateItemNode private constructor(
     }
 
     companion object {
-        fun of(project: Project, template: CxLogTemplatePresentation) = CustomLoggersTemplateItemNode(
+        fun of(project: Project, template: CxLogTemplatePresentation) = CxCustomLogTemplateItemNode(
             uuid = template.uuid,
             loggers = template.loggers,
             text = template.name,

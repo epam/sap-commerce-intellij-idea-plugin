@@ -27,7 +27,7 @@ import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 
-abstract class CxLoggerAction(private val logLevel: CxLogLevel) : AnAction() {
+abstract class CxLoggerLevelAction(private val logLevel: CxLogLevel) : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -58,12 +58,11 @@ abstract class CxLoggerAction(private val logLevel: CxLogLevel) : AnAction() {
     }
 }
 
-class AllLoggerAction : CxLoggerAction(CxLogLevel.ALL)
-class OffLoggerAction : CxLoggerAction(CxLogLevel.OFF)
-class TraceLoggerAction : CxLoggerAction(CxLogLevel.TRACE)
-class DebugLoggerAction : CxLoggerAction(CxLogLevel.DEBUG)
-class InfoLoggerAction : CxLoggerAction(CxLogLevel.INFO)
-class WarnLoggerAction : CxLoggerAction(CxLogLevel.WARN)
-class ErrorLoggerAction : CxLoggerAction(CxLogLevel.ERROR)
-class FatalLoggerAction : CxLoggerAction(CxLogLevel.FATAL)
-
+class CxAllLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.ALL)
+class CxOffLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.OFF)
+class CxTraceLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.TRACE)
+class CxDebugLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.DEBUG)
+class CxInfoLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.INFO)
+class CxWarnLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.WARN)
+class CxErrorLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.ERROR)
+class CxFatalLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.FATAL)

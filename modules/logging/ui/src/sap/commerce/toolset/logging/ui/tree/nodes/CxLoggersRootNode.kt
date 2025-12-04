@@ -21,36 +21,16 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.logging.CxRemoteLogAccess
 
-class LoggersHacConnectionNode(
-    val connectionUUID: String,
-    project: Project
-) : LoggersNode(project) {
-
-    val activeConnection: Boolean
-        get() = connectionUUID == HacExecConnectionService.getInstance(project).activeConnection.uuid
-
-    override fun getName() = HacExecConnectionService.getInstance(project).connections
-        .find { it.uuid == connectionUUID }
-        ?.connectionName
+class CxLoggersRootNode(project: Project) : CxLoggersNode(project, "root") {
 
     override fun update(presentation: PresentationData) {
-        if (myProject == null || myProject.isDisposed) return
-
-        val connectionIcon = if (activeConnection) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
-
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        if (activeConnection) {
-            val tip = CxRemoteLogAccess.getInstance(project).state(connectionUUID)
-                .get()
-                ?.size
-                ?.let { size -> " active | $size logger(s)" }
-                ?: " (active)"
-            presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
-        }
-        presentation.setIcon(connectionIcon)
     }
+
+    override fun getNewChildren(nodeParameters: CxLoggersNodeParameters) = listOf(
+        CxRemoteHacInstancesNode(project),
+        CxBundledLogTemplateGroupNode(project),
+        CxCustomLogTemplateGroupNode(project)
+    ).associateBy { it.name }
 }

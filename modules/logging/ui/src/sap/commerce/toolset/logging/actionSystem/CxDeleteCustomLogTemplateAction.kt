@@ -22,11 +22,14 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.ui.AnimatedIcon
+import com.intellij.openapi.ui.Messages
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
-class FetchLoggersStateAction : AnAction() {
+class CxDeleteCustomLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -35,24 +38,24 @@ class FetchLoggersStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccessService = CxRemoteLogAccess.getInstance(project)
 
-        loggerAccessService.fetch()
+        val templateNode = e.selectedNode()
+            ?.asSafely<CxCustomLogTemplateItemNode>()
+            ?: return
+
+        if (Messages.showYesNoDialog(
+                project,
+                "Delete template ${templateNode.name}?",
+                "Delete Custom Template",
+                HybrisIcons.Log.Action.DELETE
+            ) != Messages.YES
+        ) return
+
+        CxLogService.getInstance(project).deleteTemplate(templateNode.uuid)
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
-        val loggerAccess = CxRemoteLogAccess.getInstance(project)
-
-        e.presentation.isEnabled = loggerAccess.ready
-
-        val state = CxRemoteLogAccess.getInstance(project).stateInitialized
-
-        e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
-        e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
-        e.presentation.disabledIcon = if (loggerAccess.ready) null else AnimatedIcon.Default.INSTANCE
+        e.presentation.text = "Delete Template"
+        e.presentation.icon = HybrisIcons.Log.Template.DELETE_CUSTOM_TEMPLATE
     }
 }
