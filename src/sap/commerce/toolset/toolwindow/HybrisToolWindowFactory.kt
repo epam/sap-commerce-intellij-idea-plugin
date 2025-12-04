@@ -35,7 +35,7 @@ import sap.commerce.toolset.beanSystem.ui.BSToolWindow
 import sap.commerce.toolset.ccv2.toolwindow.CCv2View
 import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.logging.ui.LoggersView
+import sap.commerce.toolset.logging.ui.CxLoggersView
 import sap.commerce.toolset.typeSystem.ui.TSView
 import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
 
@@ -51,7 +51,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
                     createBSContent(toolWindow, BSToolWindow(project)),
                     createConsolesContent(toolWindow, project, HybrisConsolesToolWindow.getInstance(project)),
                     createCCv2CLIContent(toolWindow, project, CCv2View(project)),
-                    createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
+                    createLoggersContent(toolWindow, CxLoggersView(project, coroutineScope))
                 ).forEach { toolWindow.contentManager.addContent(it) }
 
                 toolWindow.contentManager.addContentManagerListener(object : ContentManagerListener {
@@ -117,7 +117,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
             this
         }
 
-    private fun createLoggersContent(toolWindow: ToolWindow, panel: LoggersView) = with(toolWindow.contentManager.factory.createContent(panel, LoggersView.ID, true)) {
+    private fun createLoggersContent(toolWindow: ToolWindow, panel: CxLoggersView) = with(toolWindow.contentManager.factory.createContent(panel, CxLoggersView.ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false

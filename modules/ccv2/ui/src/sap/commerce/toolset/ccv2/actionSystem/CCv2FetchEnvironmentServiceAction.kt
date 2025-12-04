@@ -59,7 +59,7 @@ class CCv2FetchEnvironmentServiceAction : DumbAwareAction("Fetch Service", null,
                     if (fetchedService != null) {
                         serviceCallback.invoke(fetchedService)
                     } else {
-                        Notifications.Companion.create(
+                        Notifications.create(
                             NotificationType.WARNING,
                             "Unable to fetch service",
                             "Service ${service.code} is not found."

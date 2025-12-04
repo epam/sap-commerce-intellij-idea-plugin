@@ -22,47 +22,36 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.logging.CxLogConstants
-import sap.commerce.toolset.logging.CxLogLevel
+import com.intellij.ui.AnimatedIcon
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 
-abstract class CxLoggerLevelAction(private val logLevel: CxLogLevel) : AnAction() {
+class CxFetchRemoteLogStateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val project = e.project ?: return
-        val logIdentifier = e.getData(CxLogConstants.DATA_KEY_LOGGER_IDENTIFIER)
 
-        if (logIdentifier == null) {
-            Notifications.error("Unable to change the log level", "Cannot retrieve a logger name.")
-                .hideAfter(5)
-                .notify(project)
-            return
-        }
-
-        CxRemoteLogAccess.getInstance(project).setLogger(logIdentifier, logLevel)
+        CxRemoteLogAccess.getInstance(project).fetch()
     }
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
 
-        super.update(e)
         val project = e.project ?: return
+        val loggerAccess = CxRemoteLogAccess.getInstance(project)
 
-        e.presentation.text = logLevel.name
-        e.presentation.icon = logLevel.icon
-        e.presentation.isEnabled = CxRemoteLogAccess.getInstance(project).ready
+        e.presentation.isEnabled = loggerAccess.ready
+
+        val state = CxRemoteLogAccess.getInstance(project).stateInitialized
+
+        e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
+        e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
+        e.presentation.disabledIcon = if (loggerAccess.ready) null else AnimatedIcon.Default.INSTANCE
     }
 }
-
-class CxAllLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.ALL)
-class CxOffLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.OFF)
-class CxTraceLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.TRACE)
-class CxDebugLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.DEBUG)
-class CxInfoLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.INFO)
-class CxWarnLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.WARN)
-class CxErrorLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.ERROR)
-class CxFatalLoggerLevelAction : CxLoggerLevelAction(CxLogLevel.FATAL)

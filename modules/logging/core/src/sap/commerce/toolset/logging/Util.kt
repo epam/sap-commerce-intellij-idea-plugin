@@ -27,7 +27,11 @@ import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.application
-import sap.commerce.toolset.logging.template.CxLoggerDto
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.logging.bundled.CxBundledLogTemplate
+import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
+import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import javax.swing.Icon
 
 fun findPsiElement(project: Project, loggerIdentifier: String): PsiElement? = with(JavaPsiFacade.getInstance(project)) {
@@ -39,15 +43,6 @@ suspend fun resolveIcon(project: Project, loggerIdentifier: String): Icon? = rea
     computeIcon(project, loggerIdentifier)
 }
 
-fun CxLoggerDto.resolveIconBlocking(project: Project): Icon? = application.runReadAction<Icon?> {
-    computeIcon(project, this.identifier)
-}
-
-fun CxLoggerDto.resolvePsiElementPointerBlocking(project: Project): SmartPsiElementPointer<PsiElement>? = application.runReadAction<SmartPsiElementPointer<PsiElement>?> {
-    findPsiElement(project, this.identifier)
-        ?.let { SmartPointerManager.getInstance(it.project).createSmartPsiElementPointer(it) }
-}
-
 private fun computeIcon(project: Project, loggerIdentifier: String): Icon? = findPsiElement(project, loggerIdentifier)
     ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
 
@@ -55,3 +50,37 @@ suspend fun getPsiElementPointer(project: Project, loggerIdentifier: String): Sm
     findPsiElement(project, loggerIdentifier)
         ?.let { SmartPointerManager.getInstance(it.project).createSmartPsiElementPointer(it) }
 }
+
+fun CxBundledLogTemplate.presentation(project: Project) = CxLogTemplatePresentation(
+    name = name,
+    loggers = loggers.map { presentation(project, it.identifier, it.effectiveLevel) },
+    icon = iconName
+        ?.let { iconsMap.getOrElse(it) { HybrisIcons.Log.Template.DEFAULT } }
+        ?: HybrisIcons.Log.Template.DEFAULT
+)
+
+fun CxCustomLogTemplateState.presentation(project: Project) = CxLogTemplatePresentation(
+    uuid = uuid,
+    name = name,
+    loggers = loggers.map { presentation(project, it.name, it.effectiveLevel.name) },
+    icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+)
+
+private fun presentation(
+    project: Project,
+    identifier: String,
+    level: String,
+) = CxLoggerPresentation.of(
+    name = identifier,
+    effectiveLevel = level,
+    icon = application.runReadAction<Icon?> { computeIcon(project, identifier) },
+    psiElementPointer = application.runReadAction<SmartPsiElementPointer<PsiElement>?> {
+        findPsiElement(project, identifier)
+            ?.let { SmartPointerManager.getInstance(it.project).createSmartPsiElementPointer(it) }
+    },
+)
+
+private val iconsMap = mapOf(
+    "DISABLE" to HybrisIcons.Log.Template.DISABLE,
+    "ENABLE" to HybrisIcons.Log.Template.ENABLE
+)

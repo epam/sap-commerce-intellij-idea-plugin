@@ -1,0 +1,49 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.logging.custom.settings.state
+
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.properties.ObservableMutableProperty
+import com.intellij.util.xmlb.annotations.OptionTag
+import java.util.*
+
+data class CxCustomLogTemplateState(
+    @OptionTag val uuid: String = UUID.randomUUID().toString(),
+    @OptionTag val name: String = "",
+    @OptionTag val loggers: List<CxCustomLoggerState> = emptyList()
+) {
+
+    fun mutable() = Mutable(
+        uuid = uuid,
+        name = AtomicProperty(name),
+        loggers = AtomicProperty(loggers.map { it.mutable() }),
+    )
+
+    data class Mutable(
+        val uuid: String = UUID.randomUUID().toString(),
+        val name: ObservableMutableProperty<String>,
+        val loggers: ObservableMutableProperty<List<CxCustomLoggerState.Mutable>>,
+    ) {
+        fun immutable() = CxCustomLogTemplateState(
+            uuid = uuid,
+            name = name.get(),
+            loggers = loggers.get().map { it.immutable() },
+        )
+    }
+}

@@ -39,7 +39,7 @@ class CCv2ShowServiceDetailsAction : DumbAwareAction("Show Service Details", nul
         val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
         val environment = e.getData(CCv2UiConstants.DataKeys.Environment) ?: return
         val service = e.getData(CCv2UiConstants.DataKeys.Service) ?: return
-        val toolWindow = ToolWindowManager.Companion.getInstance(project)
+        val toolWindow = ToolWindowManager.getInstance(project)
             .getToolWindow(HybrisConstants.TOOLWINDOW_ID) ?: return
         val contentManager = toolWindow.contentManager
         val panel = CCv2ServiceDetailsView(project, subscription, environment, service)
