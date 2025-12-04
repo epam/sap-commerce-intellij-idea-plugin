@@ -26,6 +26,7 @@ import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
@@ -47,15 +48,12 @@ import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
 
-class CxLoggersSplitView(
-    private val project: Project,
-    private val coroutineScope: CoroutineScope
-) : OnePixelSplitter(false, 0.25f), Disposable {
+class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), Disposable {
 
     private val tree = CxLoggersTree(project).apply { registerListeners(this) }
-    private val remoteLogStateView = CxRemoteLogStateView(project, coroutineScope)
-    private val bundledLogTemplatesView = CxBundledLogTemplatesView(project, coroutineScope)
-    private val customLogTemplatesView = CxCustomLogTemplatesView(project, coroutineScope)
+    private val remoteLogStateView = CxRemoteLogStateView(project)
+    private val bundledLogTemplatesView = CxBundledLogTemplatesView(project)
+    private val customLogTemplatesView = CxCustomLogTemplatesView(project)
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -144,7 +142,7 @@ class CxLoggersSplitView(
         })
 
     private fun updateSecondComponent(node: CxLoggersNode) {
-        coroutineScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
 
             when (node) {

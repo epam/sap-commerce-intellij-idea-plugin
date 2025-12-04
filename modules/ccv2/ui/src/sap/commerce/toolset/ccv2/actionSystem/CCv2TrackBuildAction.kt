@@ -23,10 +23,10 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2BuildRequest
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
 class CCv2TrackBuildAction : CCv2Action(
-    tab = CCv2Tab.BUILDS,
+    tab = CCv2ToolWindowContentTab.BUILDS,
     text = "Track Build",
     icon = HybrisIcons.CCv2.Build.Actions.WATCH
 ) {

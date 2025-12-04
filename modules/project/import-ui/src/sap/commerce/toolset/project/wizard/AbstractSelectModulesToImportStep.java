@@ -34,7 +34,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisI18nBundle.message;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.MANDATORY;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.UNUSED;
 

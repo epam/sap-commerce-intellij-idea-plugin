@@ -21,8 +21,8 @@ import com.intellij.diagram.DiagramAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.triggerAction
 import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramDataModel
 
 class RestoreRemovedNodesDiagramAction : DiagramAction(

@@ -18,6 +18,10 @@
 
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <ui.toolWindowProvider implementation="sap.commerce.toolset.logging.ui.CxLoggingToolWindowContentProvider"/>
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.daemonBoundCodeVisionProvider implementation="sap.commerce.toolset.logging.codeInsight.hints.CxLoggerInlayHintsProvider"/>
     </extensions>

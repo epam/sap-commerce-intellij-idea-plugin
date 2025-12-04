@@ -23,12 +23,12 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-import sap.commerce.toolset.ccv2.toolwindow.CCv2View
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindow
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 import javax.swing.Icon
 
 abstract class CCv2Action(
-    val tab: CCv2Tab,
+    val tab: CCv2ToolWindowContentTab,
     text: String,
     description: String? = null,
     icon: Icon
@@ -42,7 +42,7 @@ abstract class CCv2Action(
 
         e.presentation.isEnabled = isEnabled(e)
         e.presentation.isVisible = e.project
-            ?.let { CCv2View.getActiveTab(it) == tab }
+            ?.let { CCv2ToolWindow.getActiveTab(it) == tab }
             ?: false
     }
 

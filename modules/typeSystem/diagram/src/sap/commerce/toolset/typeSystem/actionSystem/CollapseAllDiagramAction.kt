@@ -22,7 +22,7 @@ import com.intellij.idea.ActionsBundle
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.triggerAction
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.typeSystem.diagram.node.TSDiagramDataModel
 
 class CollapseAllDiagramAction : DiagramAction(

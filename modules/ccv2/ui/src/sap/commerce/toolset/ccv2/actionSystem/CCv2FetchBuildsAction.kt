@@ -21,10 +21,10 @@ package sap.commerce.toolset.ccv2.actionSystem
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
 class CCv2FetchBuildsAction : CCv2FetchAction<CCv2BuildDto>(
-    tab = CCv2Tab.BUILDS,
+    tab = CCv2ToolWindowContentTab.BUILDS,
     text = "Fetch Builds",
     icon = HybrisIcons.CCv2.Actions.FETCH,
     fetch = { project, subscriptions, onCompleteCallback ->

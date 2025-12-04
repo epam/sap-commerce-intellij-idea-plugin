@@ -16,17 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.toolwindow
+package sap.commerce.toolset.ui.toolwindow
 
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.ui.view.CCv2BuildsDataView
-import sap.commerce.toolset.ccv2.ui.view.CCv2DataView
-import sap.commerce.toolset.ccv2.ui.view.CCv2DeploymentsDataView
-import sap.commerce.toolset.ccv2.ui.view.CCv2EnvironmentsDataView
-import javax.swing.Icon
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.ui.SimpleToolWindowPanel
+import java.io.Serial
 
-enum class CCv2Tab(val title: String, val icon: Icon, val view: CCv2DataView<*>) {
-    ENVIRONMENTS("Environments", HybrisIcons.CCv2.ENVIRONMENTS, CCv2EnvironmentsDataView),
-    BUILDS("Builds", HybrisIcons.CCv2.BUILDS, CCv2BuildsDataView),
-    DEPLOYMENTS("Deployments", HybrisIcons.CCv2.DEPLOYMENTS, CCv2DeploymentsDataView),
+abstract class CxToolWindow(vertical: Boolean = false) : SimpleToolWindowPanel(vertical), Disposable {
+    open fun onActivated() = Unit
+    open fun onDeactivated() = Unit
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -2396557987841007677L
+    }
 }

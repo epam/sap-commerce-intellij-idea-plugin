@@ -22,17 +22,12 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.actionSystem.HybrisActionPlaces
-import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
+import sap.commerce.toolset.ui.toolwindow.CxToolWindow
 import java.io.Serial
 
-class CxLoggersView(
-    val project: Project,
-    coroutineScope: CoroutineScope
-) : SimpleToolWindowPanel(false), ContentActivationAware, Disposable {
+class CxLoggersToolWindow(val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
     var activated = false;
     val treePane: CxLoggersSplitView
@@ -41,10 +36,11 @@ class CxLoggersView(
 
     init {
         installToolbar()
-        treePane = CxLoggersSplitView(project, coroutineScope)
+        treePane = CxLoggersSplitView(project)
         setContent(treePane)
         //todo add a listener for project import completion event
 
+        Disposer.register(parentDisposable, this)
         Disposer.register(this, treePane)
     }
 
@@ -74,7 +70,5 @@ class CxLoggersView(
     companion object {
         @Serial
         private const val serialVersionUID: Long = -7345745538412361349L
-
-        const val ID = "Loggers"
     }
 }

@@ -27,7 +27,7 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 
 import java.io.File;
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisI18nBundle.message;
 
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 

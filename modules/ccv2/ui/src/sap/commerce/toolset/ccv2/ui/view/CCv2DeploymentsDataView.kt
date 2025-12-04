@@ -30,7 +30,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 import sap.commerce.toolset.ccv2.ui.date
 import sap.commerce.toolset.ccv2.ui.sUser
 import sap.commerce.toolset.ui.actionsButton
@@ -38,8 +38,8 @@ import sap.commerce.toolset.ui.scrollPanel
 
 object CCv2DeploymentsDataView : CCv2DataView<CCv2DeploymentDto>() {
 
-    override val tab: CCv2Tab
-        get() = CCv2Tab.DEPLOYMENTS
+    override val tab: CCv2ToolWindowContentTab
+        get() = CCv2ToolWindowContentTab.DEPLOYMENTS
 
     override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2DeploymentDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {

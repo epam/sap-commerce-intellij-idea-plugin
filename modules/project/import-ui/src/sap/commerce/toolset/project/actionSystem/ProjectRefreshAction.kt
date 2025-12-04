@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil.SHOW_TEXT_IN_TOOLBAR
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.ProjectRefreshService
 import sap.commerce.toolset.settings.WorkspaceSettings

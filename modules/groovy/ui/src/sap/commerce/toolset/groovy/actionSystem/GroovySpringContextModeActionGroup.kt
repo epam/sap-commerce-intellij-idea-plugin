@@ -25,11 +25,11 @@ import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import com.intellij.ui.GotItTooltip
 import com.intellij.ui.scale.JBUIScale
 import sap.commerce.toolset.GotItTooltips
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
-import sap.commerce.toolset.triggerAction
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
 class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponentAction {

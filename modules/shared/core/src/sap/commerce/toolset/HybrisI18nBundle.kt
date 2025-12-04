@@ -16,11 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.console
+package sap.commerce.toolset
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.console.HybrisConsoleProvider
+import com.intellij.AbstractBundle
+import org.apache.commons.lang3.StringUtils
+import org.jetbrains.annotations.PropertyKey
 
-class ImpExConsoleProvider : HybrisConsoleProvider<ImpExConsole> {
-    override fun console(project: Project) = ImpExConsole(project, coroutineScope)
+object HybrisI18nBundle : AbstractBundle("i18n.HybrisBundle") {
+
+    @JvmStatic
+    fun message(
+        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
+        vararg params: Any
+    ): String {
+        if (StringUtils.isBlank(key)) {
+            return ""
+        }
+
+        val message = getMessage(key, *params)
+
+        return if (StringUtils.isBlank(message)) key else message
+    }
+
+    fun messageFallback(
+        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
+        fallback: String,
+        vararg params: Any
+    ) = messageOrDefault(key, fallback, *params)!!
 }

@@ -16,18 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.console
+package sap.commerce.toolset.ui.toolwindow
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.exec.context.ExecContext
+import com.intellij.openapi.wm.ToolWindow
+import javax.swing.Icon
+import javax.swing.JComponent
 
-interface HybrisConsoleProvider<T : HybrisConsole<out ExecContext>> {
+abstract class ToolWindowContentProvider(
+    private val displayName: String,
+    private val icon: Icon,
+    val order: Int,
+) {
 
-    fun console(project: Project): T?
+    protected abstract fun createComponent(project: Project, parentDisposable: Disposable): JComponent
+
+    fun create(project: Project, toolWindow: ToolWindow) = toolWindow.contentManager.factory.createContent(
+        createComponent(project, toolWindow.disposable),
+        displayName,
+        true
+    ).also {
+        it.isCloseable = false
+        it.icon = icon
+        it.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+    }
 
     companion object {
-        val EP = ExtensionPointName
-            .create<HybrisConsoleProvider<HybrisConsole<out ExecContext>>>("sap.commerce.toolset.consoleProvider")
+        val EP = ExtensionPointName.create<ToolWindowContentProvider>("sap.commerce.toolset.ui.toolWindowProvider")
     }
 }

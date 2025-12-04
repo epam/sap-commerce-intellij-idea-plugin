@@ -16,11 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.console
+package sap.commerce.toolset.ccv2.ui
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.console.HybrisConsoleProvider
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
 
-class ImpExConsoleProvider : HybrisConsoleProvider<ImpExConsole> {
-    override fun console(project: Project) = ImpExConsole(project, coroutineScope)
+class CCv2ToolWindowContentProvider : ToolWindowContentProvider(
+    CCv2ToolWindow.ID,
+    HybrisIcons.CCv2.DESCRIPTOR,
+    4,
+) {
+    override fun createComponent(project: Project, parentDisposable: Disposable) = CCv2ToolWindow(project, parentDisposable)
 }

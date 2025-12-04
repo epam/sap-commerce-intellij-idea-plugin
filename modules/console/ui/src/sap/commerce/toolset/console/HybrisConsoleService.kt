@@ -25,7 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
+import sap.commerce.toolset.console.ui.CxConsolesToolWindow
 import sap.commerce.toolset.exec.context.ExecContext
 import kotlin.reflect.KClass
 
@@ -64,15 +64,15 @@ class HybrisConsoleService(private val project: Project) {
         ?.contentManager
         ?.let { contentManager ->
             contentManager
-                .findContent(HybrisConsolesToolWindow.ID)
+                .findContent(CxConsolesToolWindow.ID)
                 ?.let { contentManager.setSelectedContent(it) }
         }
 
     private fun findConsolesView() = hybrisToolWindow()
         ?.contentManager
-        ?.findContent(HybrisConsolesToolWindow.ID)
+        ?.findContent(CxConsolesToolWindow.ID)
         ?.component
-        ?.asSafely<HybrisConsolesToolWindow>()
+        ?.asSafely<CxConsolesToolWindow>()
 
     private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisConstants.TOOLWINDOW_ID)
 

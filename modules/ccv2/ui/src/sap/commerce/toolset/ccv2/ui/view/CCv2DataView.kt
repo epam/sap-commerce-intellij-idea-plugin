@@ -29,12 +29,12 @@ import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.ccv2.dto.CCv2Dto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 import sap.commerce.toolset.ui.scrollPanel
 
 abstract class CCv2DataView<T : CCv2Dto> {
 
-    abstract val tab: CCv2Tab
+    abstract val tab: CCv2ToolWindowContentTab
     abstract fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<T>>): DialogPanel
 
     fun fetchingInProgressPanel(subscriptions: Collection<CCv2Subscription>): DialogPanel = panel {

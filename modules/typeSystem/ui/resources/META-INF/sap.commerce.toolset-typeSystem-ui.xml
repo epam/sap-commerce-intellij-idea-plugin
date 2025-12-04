@@ -17,6 +17,10 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <ui.toolWindowProvider implementation="sap.commerce.toolset.typeSystem.ui.TSToolWindowContentProvider"/>
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.typeSystem.folding.ItemsXmlFoldingBuilder"/>
         <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.typeSystem.folding.DeploymentModelFoldingBuilder"/>

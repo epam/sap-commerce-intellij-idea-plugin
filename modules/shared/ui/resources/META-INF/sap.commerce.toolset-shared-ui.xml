@@ -17,6 +17,13 @@
   -->
 <idea-plugin>
 
+    <extensionPoints>
+        <extensionPoint qualifiedName="sap.commerce.toolset.ui.toolWindowProvider"
+                        interface="sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider"
+                        dynamic="true"/>
+    </extensionPoints>
+
+
     <extensions defaultExtensionNs="com.intellij">
         <editorFactoryListener implementation="sap.commerce.toolset.ui.editor.event.HybrisEditorFactoryListener"/>
 

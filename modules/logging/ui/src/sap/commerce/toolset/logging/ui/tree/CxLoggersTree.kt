@@ -33,9 +33,9 @@ import javax.swing.tree.TreePath
 private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
-class CxLoggersTree(myProject: Project) : Tree(), Disposable {
+class CxLoggersTree(project: Project) : Tree(), Disposable {
 
-    private val rootNode = CxLoggersTreeNode(CxLoggersRootNode(myProject))
+    private val rootNode = CxLoggersTreeNode(CxLoggersRootNode(project))
     private val myTreeModel = CxLoggersTreeModel(rootNode)
 
     init {

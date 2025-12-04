@@ -51,7 +51,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisI18nBundle.message;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.MANDATORY;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.UNUSED;
 

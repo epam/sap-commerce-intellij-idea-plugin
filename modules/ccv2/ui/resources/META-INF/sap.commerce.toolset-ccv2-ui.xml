@@ -18,6 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
+        <ui.toolWindowProvider implementation="sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentProvider"/>
         <hac.connectionSettingsProvider implementation="sap.commerce.toolset.ccv2.hac.CCv2HacConnectionSettingsProvider"/>
     </extensions>
 

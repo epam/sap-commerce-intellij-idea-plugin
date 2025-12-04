@@ -16,11 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.console
+package sap.commerce.toolset.actionSystem
 
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.console.HybrisConsoleProvider
 
-class ImpExConsoleProvider : HybrisConsoleProvider<ImpExConsole> {
-    override fun console(project: Project) = ImpExConsole(project, coroutineScope)
-}
+fun Project.triggerAction(
+    actionId: String,
+    place: String = ActionPlaces.UNKNOWN,
+    uiKind: ActionUiKind = ActionUiKind.Companion.NONE,
+    dataContextProvider: () -> DataContext = { SimpleDataContext.getProjectContext(this) }
+) = ActionManager.getInstance().getAction(actionId)
+    ?.let {
+        val event = AnActionEvent.createEvent(
+            it, dataContextProvider.invoke(),
+            null, place, uiKind, null
+        );
+        ActionUtil.performAction(it, event)
+    }
+
+fun triggerAction(
+    actionId: String,
+    event: AnActionEvent,
+) = ActionManager.getInstance().getAction(actionId)
+    ?.let { ActionUtil.performAction(it, event) }

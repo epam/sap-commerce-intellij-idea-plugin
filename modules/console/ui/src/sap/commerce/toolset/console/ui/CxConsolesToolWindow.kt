@@ -16,26 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.console.toolWindow
+package sap.commerce.toolset.console.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionToolbar
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleProvider
 import sap.commerce.toolset.exec.context.ExecContext
-import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
+import sap.commerce.toolset.ui.toolwindow.CxToolWindow
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
@@ -43,8 +39,7 @@ import javax.swing.SwingConstants
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
-@Service(Service.Level.PROJECT)
-class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope) : SimpleToolWindowPanel(true), ContentActivationAware, Disposable {
+class CxConsolesToolWindow(project: Project, parentDisposable: Disposable) : CxToolWindow(true) {
 
     override fun dispose() {
         //NOP
@@ -54,10 +49,14 @@ class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope)
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
 
     // TODO: refresh on plugin reloads, f.e. Groovy
-    private val consoles = HybrisConsoleProvider.EP.extensionList
-        .mapNotNull { it.console(project, coroutineScope) }
+    private val consoles = HybrisConsoleProvider.Companion.EP.extensionList
+        .mapNotNull { it.console(project) }
 
     init {
+        // TODO: this looks wrong
+//        Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), parentDisposable)
+        Disposer.register(parentDisposable, this)
+
         layout = BorderLayout()
 
         val actionManager = ActionManager.getInstance()
@@ -77,7 +76,6 @@ class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope)
                 ?.component
                 ?.asSafely<HybrisConsole<in ExecContext>>()
                 ?: return@addChangeListener
-
 
             console.onSelection()
         }
@@ -104,7 +102,5 @@ class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope)
         private val serialVersionUID: Long = 5761094275961283320L
 
         const val ID = "Consoles"
-
-        fun getInstance(project: Project): HybrisConsolesToolWindow = project.service()
     }
 }

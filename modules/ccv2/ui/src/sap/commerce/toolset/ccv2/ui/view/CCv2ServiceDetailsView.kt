@@ -41,11 +41,7 @@ import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceProperties
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
-import sap.commerce.toolset.ccv2.ui.ccv2ServiceModifiedTimeRow
-import sap.commerce.toolset.ccv2.ui.ccv2ServiceReplicasRow
-import sap.commerce.toolset.ccv2.ui.ccv2ServiceStatusRow
-import sap.commerce.toolset.ccv2.ui.sUser
+import sap.commerce.toolset.ccv2.ui.*
 import sap.commerce.toolset.ui.actionsButton
 import sap.commerce.toolset.ui.copyLink
 import sap.commerce.toolset.ui.scrollPanel
@@ -201,7 +197,7 @@ class CCv2ServiceDetailsView(
 
                 invokeLater {
                     val panel = if (it != null) panelProvider.invoke(it)
-                    else CCv2ViewUtil.noDataPanel("No ${serviceProperties.title} found")
+                    else CCv2ToolWindowUtil.noDataPanel("No ${serviceProperties.title} found")
 
                     container.removeAll()
                     container.add(panel)

@@ -20,8 +20,6 @@ package sap.commerce.toolset.toolwindow
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentManagerEvent
@@ -30,14 +28,9 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.ui.BSToolWindow
-import sap.commerce.toolset.ccv2.toolwindow.CCv2View
-import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.logging.ui.CxLoggersView
-import sap.commerce.toolset.typeSystem.ui.TSView
-import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
+import sap.commerce.toolset.ui.toolwindow.CxToolWindow
+import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
 
 class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
 
@@ -46,26 +39,20 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     ) {
         coroutineScope.launch(Dispatchers.IO) {
             edtWriteAction {
-                arrayOf(
-                    createTSContent(toolWindow, TSView(project)),
-                    createBSContent(toolWindow, BSToolWindow(project)),
-                    createConsolesContent(toolWindow, project, HybrisConsolesToolWindow.getInstance(project)),
-                    createCCv2CLIContent(toolWindow, project, CCv2View(project)),
-                    createLoggersContent(toolWindow, CxLoggersView(project, coroutineScope))
-                ).forEach { toolWindow.contentManager.addContent(it) }
+                ToolWindowContentProvider.EP.extensionList
+                    .sortedBy { it.order }
+                    .map { it.create(project, toolWindow) }
+                    .forEach { toolWindow.contentManager.addContent(it) }
 
                 toolWindow.contentManager.addContentManagerListener(object : ContentManagerListener {
                     override fun selectionChanged(event: ContentManagerEvent) {
-                        event.content.component
-                            .asSafely<ContentActivationAware>()
-                            ?.onActivated()
+                        event.content.component.asSafely<CxToolWindow>()?.onActivated()
+
                         toolWindow.contentManager.contents
                             .filter { it.displayName != event.content.displayName }
-                            .forEach {
-                                it.component
-                                    .asSafely<ContentActivationAware>()
-                                    ?.onDeactivated()
-                            }
+                            .map { it.component }
+                            .filterIsInstance<CxToolWindow>()
+                            .forEach { it.onDeactivated() }
                     }
                 })
             }
@@ -75,55 +62,4 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     override suspend fun isApplicableAsync(project: Project) = project.isHybrisProject
     override fun shouldBeAvailable(project: Project) = project.isHybrisProject
 
-    private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TSView.ID, true)) {
-        Disposer.register(toolWindow.disposable, panel)
-
-        isCloseable = false
-        icon = HybrisIcons.TypeSystem.FILE
-        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-
-        this
-    }
-
-    private fun createBSContent(toolWindow: ToolWindow, panel: BSToolWindow) = with(toolWindow.contentManager.factory.createContent(panel, BSToolWindow.ID, true)) {
-        Disposer.register(toolWindow.disposable, panel)
-
-        isCloseable = false
-        icon = HybrisIcons.BeanSystem.FILE
-        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-        this
-    }
-
-    private fun createConsolesContent(toolWindow: ToolWindow, project: Project, panel: HybrisConsolesToolWindow) =
-        with(toolWindow.contentManager.factory.createContent(panel, HybrisConsolesToolWindow.ID, true)) {
-            Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
-            Disposer.register(toolWindow.disposable, panel)
-
-            isCloseable = false
-            icon = HybrisIcons.Console.DESCRIPTOR
-            putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-            this
-        }
-
-    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) =
-        with(toolWindow.contentManager.factory.createContent(panel, CCv2View.TAB_NAME, true)) {
-            Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
-            Disposer.register(toolWindow.disposable, panel)
-
-            isCloseable = false
-            icon = HybrisIcons.CCv2.DESCRIPTOR
-            putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-
-            this
-        }
-
-    private fun createLoggersContent(toolWindow: ToolWindow, panel: CxLoggersView) = with(toolWindow.contentManager.factory.createContent(panel, CxLoggersView.ID, true)) {
-        Disposer.register(toolWindow.disposable, panel)
-
-        isCloseable = false
-        icon = HybrisIcons.Log.LOG
-        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-
-        this
-    }
 }

@@ -35,7 +35,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import sap.commerce.toolset.*
+import sap.commerce.toolset.GotItTooltips
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
@@ -47,6 +50,7 @@ import sap.commerce.toolset.flexibleSearch.ui.FlexibleSearchRestrictionsDialog
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.readResource
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import java.awt.Dimension

@@ -16,9 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.toolwindow
+package sap.commerce.toolset.console.ui
 
-interface ContentActivationAware {
-    fun onActivated() = Unit
-    fun onDeactivated() = Unit
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
+
+class CxConsolesToolWindowContentProvider : ToolWindowContentProvider(
+    CxConsolesToolWindow.ID,
+    HybrisIcons.Console.DESCRIPTOR,
+    3,
+) {
+    override fun createComponent(project: Project, parentDisposable: Disposable) = CxConsolesToolWindow(project, parentDisposable)
 }

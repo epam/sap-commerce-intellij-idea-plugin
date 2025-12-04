@@ -24,10 +24,10 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import com.intellij.ui.GotItTooltip
 import sap.commerce.toolset.GotItTooltips
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
-import sap.commerce.toolset.triggerAction
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
 class GroovyTransactionModeActionGroup : DefaultActionGroup(), CustomComponentAction {

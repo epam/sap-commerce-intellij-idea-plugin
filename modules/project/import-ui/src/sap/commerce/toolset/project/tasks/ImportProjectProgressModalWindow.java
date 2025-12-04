@@ -36,7 +36,7 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 import java.util.List;
 import java.util.Optional;
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisI18nBundle.message;
 
 public class ImportProjectProgressModalWindow extends Task.Modal {
 

@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -58,37 +58,13 @@ infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.siz
 fun i18n(
     @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
     vararg params: Any
-) = HybrisI18NBundleUtils.message(key, *params)
+) = HybrisI18nBundle.message(key, *params)
 
 fun i18nFallback(
     @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
     fallback: String,
     vararg params: Any
-) = HybrisI18NBundleUtils.messageFallback(key, fallback, *params)
-
-fun Project.triggerAction(
-    actionId: String,
-    place: String = ActionPlaces.UNKNOWN,
-    uiKind: ActionUiKind = ActionUiKind.NONE,
-    dataContextProvider: () -> DataContext = { SimpleDataContext.getProjectContext(this) }
-) {
-    ActionManager.getInstance().getAction(actionId)
-        ?.let {
-            val event = AnActionEvent.createEvent(
-                it, dataContextProvider.invoke(),
-                null, place, uiKind, null
-            );
-            ActionUtil.performAction(it, event)
-        }
-}
-
-fun triggerAction(
-    actionId: String,
-    event: AnActionEvent,
-) {
-    ActionManager.getInstance().getAction(actionId)
-        ?.let { ActionUtil.performAction(it, event) }
-}
+) = HybrisI18nBundle.messageFallback(key, fallback, *params)
 
 fun Any.readResource(resourcePath: String) = javaClass.classLoader.getResourceAsStream(resourcePath)
     ?.bufferedReader(StandardCharsets.UTF_8)?.use { it.readText() }
