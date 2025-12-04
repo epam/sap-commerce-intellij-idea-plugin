@@ -30,7 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.ui.toolwindow.CxToolWindowActivationAware
-import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 
 class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
 
@@ -55,7 +55,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
 
         coroutineScope.launch(Dispatchers.IO) {
             edtWriteAction {
-                ToolWindowContentProvider.EP.extensionList
+                CxToolWindowContentProvider.EP.extensionList
                     .sortedBy { it.order }
                     .map { it.create(project, toolWindow) }
                     .forEach { toolWindow.contentManager.addContent(it) }

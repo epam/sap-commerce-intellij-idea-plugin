@@ -21,9 +21,9 @@ package sap.commerce.toolset.console.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 
-class CxConsolesToolWindowContentProvider : ToolWindowContentProvider(
+class CxConsolesToolWindowContentProvider : CxToolWindowContentProvider(
     CxConsolesToolWindow.ID,
     HybrisIcons.Console.DESCRIPTOR,
     3,

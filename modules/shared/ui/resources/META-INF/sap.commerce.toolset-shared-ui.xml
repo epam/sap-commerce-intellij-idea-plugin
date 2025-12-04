@@ -19,7 +19,7 @@
 
     <extensionPoints>
         <extensionPoint qualifiedName="sap.commerce.toolset.ui.toolWindowProvider"
-                        interface="sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider"
+                        interface="sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider"
                         dynamic="true"/>
     </extensionPoints>
 

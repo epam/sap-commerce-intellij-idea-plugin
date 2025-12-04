@@ -25,7 +25,7 @@ import com.intellij.openapi.wm.ToolWindow
 import javax.swing.Icon
 import javax.swing.JComponent
 
-abstract class ToolWindowContentProvider(
+abstract class CxToolWindowContentProvider(
     private val displayName: String,
     private val icon: Icon,
     val order: Int,
@@ -44,6 +44,6 @@ abstract class ToolWindowContentProvider(
     }
 
     companion object {
-        val EP = ExtensionPointName.create<ToolWindowContentProvider>("sap.commerce.toolset.ui.toolWindowProvider")
+        val EP = ExtensionPointName.create<CxToolWindowContentProvider>("sap.commerce.toolset.ui.toolWindowProvider")
     }
 }

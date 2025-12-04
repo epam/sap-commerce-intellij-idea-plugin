@@ -21,9 +21,9 @@ package sap.commerce.toolset.typeSystem.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 
-class TSToolWindowContentProvider : ToolWindowContentProvider(
+class TSToolWindowContentProvider : CxToolWindowContentProvider(
     "Type System",
     HybrisIcons.TypeSystem.FILE,
     1

@@ -21,9 +21,9 @@ package sap.commerce.toolset.ccv2.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 
-class CCv2ToolWindowContentProvider : ToolWindowContentProvider(
+class CCv2ToolWindowContentProvider : CxToolWindowContentProvider(
     CCv2ToolWindow.ID,
     HybrisIcons.CCv2.DESCRIPTOR,
     4,

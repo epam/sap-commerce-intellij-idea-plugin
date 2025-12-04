@@ -20,9 +20,9 @@ package sap.commerce.toolset.logging.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ui.toolwindow.ToolWindowContentProvider
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 
-class CxLoggingToolWindowContentProvider : ToolWindowContentProvider(
+class CxLoggingToolWindowContentProvider : CxToolWindowContentProvider(
     "Loggers",
     HybrisIcons.Log.LOG,
     5
