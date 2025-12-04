@@ -2,7 +2,7 @@
 
 <cite>Release contributors</cite>
 - 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
-- 5 PR(s) by [Eugeni_Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
+- 5 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `Project Import` enhancements
 - Automatically download 3rd-party library sources [#1669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1669)
