@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
@@ -38,7 +39,7 @@ import javax.swing.SwingConstants
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
-class CxConsolesToolWindow(project: Project, parentDisposable: Disposable) : CxToolWindow(true) {
+class CxConsolesToolWindow(private val project: Project, parentDisposable: Disposable) : CxToolWindow(true) {
 
     override fun dispose() = Unit
 
@@ -46,12 +47,11 @@ class CxConsolesToolWindow(project: Project, parentDisposable: Disposable) : CxT
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
 
     // TODO: refresh on plugin reloads, f.e. Groovy
-    private val consoles = HybrisConsoleProvider.Companion.EP.extensionList
-        .mapNotNull { it.console(project) }
+    private lateinit var consoles: List<HybrisConsole<out ExecContext>>
 
     init {
         // TODO: this looks wrong
-//        Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), parentDisposable)
+        Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), parentDisposable)
         Disposer.register(parentDisposable, this)
 
         layout = BorderLayout()
@@ -61,6 +61,8 @@ class CxConsolesToolWindow(project: Project, parentDisposable: Disposable) : CxT
         if (!initialized) {
             initialized = true
 
+            consoles = HybrisConsoleProvider.EP.extensionList
+                .mapNotNull { it.console(project) }
             val actionManager = ActionManager.getInstance()
             val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
             val actionToolbar = actionManager.createActionToolbar(ConsoleUiConstants.PLACE_TOOLBAR, toolbarActions, false)

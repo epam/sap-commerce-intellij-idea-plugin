@@ -20,6 +20,7 @@ package sap.commerce.toolset.logging.ui.tree
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
@@ -37,6 +38,8 @@ class CxLoggersTree(project: Project) : Tree(), CxToolWindowActivationAware, Dis
     private val myTreeModel = CxLoggersTreeModel(rootNode)
 
     init {
+        Disposer.register(this, myTreeModel)
+
         isRootVisible = false
 
         TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { treePath: TreePath ->

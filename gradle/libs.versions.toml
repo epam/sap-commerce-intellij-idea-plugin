@@ -36,7 +36,7 @@ serialization = "1.9.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 kotlin = "2.2.0-RC2"
 # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
-gradleIntelliJPlugin = "2.10.4"
+gradleIntelliJPlugin = "2.10.5"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.4.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
