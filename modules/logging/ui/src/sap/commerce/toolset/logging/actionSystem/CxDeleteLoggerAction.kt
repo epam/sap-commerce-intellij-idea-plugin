@@ -27,8 +27,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLogService
 import sap.commerce.toolset.logging.CxLogUiConstants
 
-class CxRemoveLoggerAction(
-) : AnAction() {
+class CxDeleteLoggerAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -40,10 +39,9 @@ class CxRemoveLoggerAction(
         val templateUUID = e.getData(CxLogUiConstants.DataKeys.TemplateUUID) ?: return
         val loggerName = e.getData(CxLogUiConstants.DataKeys.LoggerName) ?: return
 
-
         if (Messages.showYesNoDialog(
                 project,
-                "Delete logger `${loggerName}`?",
+                "Delete logger \"${loggerName}\"?",
                 "Confirm Logger Deletion",
                 HybrisIcons.Log.Action.DELETE
             ) != Messages.YES
