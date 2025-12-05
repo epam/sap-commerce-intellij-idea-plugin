@@ -22,6 +22,8 @@ import com.intellij.ide.IdeBundle
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
@@ -47,7 +49,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.CxLogUiConstants
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
+import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.addKeyListener
 import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.Dimension
@@ -203,7 +207,14 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                         }
                     }.resizableColumn()
                 } else {
-                    label(r.name)
+                    label(r.name).resizableColumn()
+                }
+
+                actionButton(
+                    ActionManager.getInstance().getAction("sap.cx.loggers.delete.logger")
+                ) {
+                    it[CxLogUiConstants.DataKeys.TemplateUUID] = templateUUID
+                    it[CxLogUiConstants.DataKeys.LoggerName] = r.name
                 }
             }
         }
@@ -229,7 +240,9 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         val view = if (loggers.isEmpty()) noLoggersView()
         else createLoggersPanel(loggers.values)
 
-        dataScrollPane.setViewportView(view)
+        CoroutineScope(Dispatchers.EDT).launch {
+            dataScrollPane.setViewportView(view)
+        }
 
         toggleView(showDataPanel, initialized)
     }
