@@ -178,7 +178,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { r ->
             row {
-
                 comboBox(
                     model = EnumComboBoxModel(CxLogLevel::class.java),
                     renderer = SimpleListCellRenderer.create { label, value, _ ->

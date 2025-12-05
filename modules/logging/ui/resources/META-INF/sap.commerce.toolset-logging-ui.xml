@@ -36,6 +36,7 @@
         <action id="sap.cx.loggers.delete.logger" class="sap.commerce.toolset.logging.actionSystem.CxDeleteLoggerAction"/>
 
         <group id="sap.cx.loggers.template.item.actions" searchable="false">
+            <reference ref="sap.cx.loggers.apply.log.template"/>
             <reference ref="sap.cx.loggers.rename.custom.template"/>
             <reference ref="sap.cx.loggers.delete.custom.template"/>
         </group>
