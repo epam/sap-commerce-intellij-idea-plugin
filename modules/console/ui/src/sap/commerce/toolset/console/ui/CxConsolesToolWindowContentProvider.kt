@@ -16,11 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.console
+package sap.commerce.toolset.console.ui
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.console.HybrisConsoleProvider
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 
-class ImpExConsoleProvider : HybrisConsoleProvider<ImpExConsole> {
-    override fun console(project: Project) = ImpExConsole(project)
+class CxConsolesToolWindowContentProvider : CxToolWindowContentProvider(
+    CxConsolesToolWindow.ID,
+    HybrisIcons.Console.DESCRIPTOR,
+    3,
+) {
+    override fun createComponent(project: Project, parentDisposable: Disposable) = CxConsolesToolWindow(project, parentDisposable)
 }

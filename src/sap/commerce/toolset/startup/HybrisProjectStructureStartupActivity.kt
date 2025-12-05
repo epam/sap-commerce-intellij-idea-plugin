@@ -23,7 +23,11 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.util.text.VersionComparatorUtil
-import sap.commerce.toolset.*
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.actionSystem.triggerAction
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.WorkspaceSettings

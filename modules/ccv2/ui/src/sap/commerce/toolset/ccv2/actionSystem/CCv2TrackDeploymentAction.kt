@@ -22,10 +22,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.CCv2UiConstants
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
 class CCv2TrackDeploymentAction : CCv2Action(
-    tab = CCv2Tab.DEPLOYMENTS,
+    tab = CCv2ToolWindowContentTab.DEPLOYMENTS,
     text = "Track Deployment",
     icon = HybrisIcons.CCv2.Deployment.Actions.WATCH
 ) {

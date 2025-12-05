@@ -16,31 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset
+package sap.commerce.toolset.ccv2.ui
 
-import com.intellij.AbstractBundle
-import org.apache.commons.lang3.StringUtils
-import org.jetbrains.annotations.PropertyKey
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.ui.view.CCv2BuildsDataView
+import sap.commerce.toolset.ccv2.ui.view.CCv2DataView
+import sap.commerce.toolset.ccv2.ui.view.CCv2DeploymentsDataView
+import sap.commerce.toolset.ccv2.ui.view.CCv2EnvironmentsDataView
+import javax.swing.Icon
 
-object HybrisI18NBundleUtils : AbstractBundle("i18n.HybrisBundle") {
-
-    @JvmStatic
-    fun message(
-        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
-        vararg params: Any
-    ): String {
-        if (StringUtils.isBlank(key)) {
-            return ""
-        }
-
-        val message = getMessage(key, *params)
-
-        return if (StringUtils.isBlank(message)) key else message
-    }
-
-    fun messageFallback(
-        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
-        fallback: String,
-        vararg params: Any
-    ) = messageOrDefault(key, fallback, *params)!!
+enum class CCv2ToolWindowContentTab(val title: String, val icon: Icon, val view: CCv2DataView<*>) {
+    ENVIRONMENTS("Environments", HybrisIcons.CCv2.ENVIRONMENTS, CCv2EnvironmentsDataView),
+    BUILDS("Builds", HybrisIcons.CCv2.BUILDS, CCv2BuildsDataView),
+    DEPLOYMENTS("Deployments", HybrisIcons.CCv2.DEPLOYMENTS, CCv2DeploymentsDataView),
 }

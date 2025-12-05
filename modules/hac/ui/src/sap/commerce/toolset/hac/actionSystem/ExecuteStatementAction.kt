@@ -56,13 +56,11 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecContext>, F : Fi
         actionPerformed(e, project, content)
     }
 
-    protected fun openConsole(project: Project, content: String): C? {
-        val console = HybrisConsoleService.getInstance(project).openConsole(consoleClass) ?: return null
+    protected fun openConsole(project: Project, content: String, onActivation: (C) -> Unit) = HybrisConsoleService.getInstance(project).openConsole(consoleClass) {
+        it.setInputText(content)
+        it.beforeExecution()
 
-        console.setInputText(content)
-        console.beforeExecution()
-
-        return console
+        onActivation(it)
     }
 
     override fun update(e: AnActionEvent) {

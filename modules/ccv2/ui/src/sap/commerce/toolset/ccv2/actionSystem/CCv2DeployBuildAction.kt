@@ -21,11 +21,11 @@ package sap.commerce.toolset.ccv2.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2UiConstants
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ccv2.ui.CCv2DeployBuildDialog
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
 class CCv2DeployBuildAction : CCv2Action(
-    tab = CCv2Tab.BUILDS,
+    tab = CCv2ToolWindowContentTab.BUILDS,
     text = "Deploy Build",
     icon = HybrisIcons.CCv2.Build.Actions.DEPLOY
 ) {

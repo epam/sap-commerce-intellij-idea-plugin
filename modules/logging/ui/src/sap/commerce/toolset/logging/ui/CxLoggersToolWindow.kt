@@ -22,41 +22,28 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.actionSystem.HybrisActionPlaces
-import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
+import sap.commerce.toolset.ui.toolwindow.CxToolWindow
 import java.io.Serial
 
-class CxLoggersView(
-    val project: Project,
-    coroutineScope: CoroutineScope
-) : SimpleToolWindowPanel(false), ContentActivationAware, Disposable {
+class CxLoggersToolWindow(val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
-    var activated = false;
-    val treePane: CxLoggersSplitView
+    private val splitView: CxLoggersSplitView
 
     override fun dispose() = Unit
 
     init {
         installToolbar()
-        treePane = CxLoggersSplitView(project, coroutineScope)
-        setContent(treePane)
+        splitView = CxLoggersSplitView(project)
+        setContent(splitView)
         //todo add a listener for project import completion event
 
-        Disposer.register(this, treePane)
+        Disposer.register(parentDisposable, this)
+        Disposer.register(this, splitView)
     }
 
-    override fun onActivated() {
-        activated = true
-        //todo refresh tree only if project import has been completed
-        treePane.updateTree()
-    }
-
-    override fun onDeactivated() {
-        activated = false
-    }
+    override fun onActivated() = splitView.onActivated()
 
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {
@@ -74,7 +61,5 @@ class CxLoggersView(
     companion object {
         @Serial
         private const val serialVersionUID: Long = -7345745538412361349L
-
-        const val ID = "Loggers"
     }
 }

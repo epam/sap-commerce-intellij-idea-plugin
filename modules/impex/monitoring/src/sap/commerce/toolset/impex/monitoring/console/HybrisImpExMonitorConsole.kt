@@ -25,7 +25,6 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.panel
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
@@ -42,10 +41,7 @@ import java.io.File
 import java.io.Serial
 import java.util.concurrent.TimeUnit
 
-class HybrisImpExMonitorConsole(
-    project: Project,
-    coroutineScope: CoroutineScope
-) : HybrisConsole<ImpExMonitorExecContext>(project, "[y] Monitor Console", ImpExLanguage, coroutineScope) {
+class HybrisImpExMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecContext>(project, "[y] Monitor Console", ImpExLanguage) {
 
     private lateinit var timeComboBox: ComboBox<TimeOption>
 

@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2UiConstants
-import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowUtil
 
 class CCv2ShowBuildDetailsAction : DumbAwareAction(
     "Show Build Details",
@@ -39,7 +39,7 @@ class CCv2ShowBuildDetailsAction : DumbAwareAction(
         val subscription = e.getData(CCv2UiConstants.DataKeys.Subscription) ?: return
         val build = e.getData(CCv2UiConstants.DataKeys.Build) ?: return
 
-        CCv2ViewUtil.showBuildDetailsTab(project, subscription, build)
+        CCv2ToolWindowUtil.showBuildDetailsTab(project, subscription, build)
     }
 
     override fun update(e: AnActionEvent) {

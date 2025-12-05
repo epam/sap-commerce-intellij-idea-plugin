@@ -30,8 +30,8 @@ import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentStatusEnum
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowUtil
 import sap.commerce.toolset.ccv2.ui.dynatrace
 import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.scrollPanel
@@ -39,8 +39,8 @@ import java.util.*
 
 object CCv2EnvironmentsDataView : CCv2DataView<CCv2EnvironmentDto>() {
 
-    override val tab: CCv2Tab
-        get() = CCv2Tab.ENVIRONMENTS
+    override val tab: CCv2ToolWindowContentTab
+        get() = CCv2ToolWindowContentTab.ENVIRONMENTS
 
     override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(project, data)
 
@@ -144,7 +144,7 @@ object CCv2EnvironmentsDataView : CCv2DataView<CCv2EnvironmentDto>() {
                     icon(HybrisIcons.CCv2.BUILDS)
                         .gap(RightGap.SMALL)
                     link(deployedBuild.name) {
-                        CCv2ViewUtil.showBuildDetailsTab(project, subscription, deployedBuild)
+                        CCv2ToolWindowUtil.showBuildDetailsTab(project, subscription, deployedBuild)
                     }
                         .bold()
                         .comment("Build name")

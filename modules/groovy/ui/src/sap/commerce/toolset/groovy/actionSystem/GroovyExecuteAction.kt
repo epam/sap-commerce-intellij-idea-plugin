@@ -103,13 +103,13 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 }
             )
         } else {
-            val console = openConsole(project, content) ?: return
-
-            execClient.execute(
-                contexts = contexts,
-                resultCallback = { _, result -> console.print(result, false) },
-                afterCallback = { _, _ -> console.afterExecution() }
-            )
+            openConsole(project, content) { console ->
+                execClient.execute(
+                    contexts = contexts,
+                    resultCallback = { _, result -> console.print(result, false) },
+                    afterCallback = { _, _ -> console.afterExecution() }
+                )
+            }
         }
     }
 

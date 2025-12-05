@@ -21,11 +21,11 @@ package sap.commerce.toolset.ccv2.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ccv2.ui.CCv2CreateBuildDialog
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
 class CCv2CreateBuildAction : CCv2Action(
-    tab = CCv2Tab.BUILDS,
+    tab = CCv2ToolWindowContentTab.BUILDS,
     text = "Schedule Build",
     icon = HybrisIcons.CCv2.Build.Actions.CREATE
 ) {

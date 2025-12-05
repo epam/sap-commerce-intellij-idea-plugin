@@ -69,10 +69,10 @@ class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>
                 }
             }
         } else {
-            val console = openConsole(project, content) ?: return
-
-            ImpExExecClient.getInstance(project).execute(context) { coroutineScope, execResult ->
-                console.print(execResult)
+            openConsole(project, content) { console ->
+                ImpExExecClient.getInstance(project).execute(context) { _, execResult ->
+                    console.print(execResult)
+                }
             }
         }
     }

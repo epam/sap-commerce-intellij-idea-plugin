@@ -26,7 +26,6 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
@@ -40,12 +39,13 @@ import sap.commerce.toolset.typeSystem.settings.TSViewSettings
 import sap.commerce.toolset.typeSystem.settings.event.TSViewSettingsListener
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.components.TSTreePanel
-import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
+import sap.commerce.toolset.ui.toolwindow.CxToolWindow
 import java.awt.GridBagLayout
 import java.io.Serial
 
-class TSView(private val project: Project) : SimpleToolWindowPanel(false, true), ContentActivationAware, Disposable {
+class TSToolWindow(private val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
+    private var initialized = false
     private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
     private val mySettings = TSViewSettings.getInstance(project)
     private val myTreePane = TSTreePanel(project)
@@ -55,8 +55,17 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
     }
 
     init {
-        installToolbar()
+        Disposer.register(parentDisposable, this)
+        Disposer.register(this, myTreePane)
 
+        installToolbar()
+        installSettingsListener()
+    }
+
+    override fun onActivated() {
+        if (initialized) return
+
+        initialized = true
         when {
             DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
                 add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
@@ -67,9 +76,6 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
             else -> refreshContent(ChangeType.FULL)
         }
-
-        Disposer.register(this, myTreePane)
-        installSettingsListener()
     }
 
     private fun installToolbar() {
@@ -153,8 +159,5 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
     companion object {
         @Serial
         private val serialVersionUID: Long = 74100584202830949L
-
-        const val ID = "Type System"
     }
-
 }

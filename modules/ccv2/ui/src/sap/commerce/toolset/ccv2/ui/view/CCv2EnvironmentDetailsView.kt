@@ -45,7 +45,6 @@ import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
 import sap.commerce.toolset.ui.*
 import java.awt.GridBagLayout
@@ -95,7 +94,7 @@ class CCv2EnvironmentDetailsView(
             override fun onScalingFetched(environment: CCv2EnvironmentDto, data: CCv2EnvironmentScalingDto?) {
                 if (this@CCv2EnvironmentDetailsView.environment.link != environment.link) return
                 val panel = if (data != null) scalingPanel(data)
-                else CCv2ViewUtil.noDataPanel("No cluster details found for the given environment.")
+                else CCv2ToolWindowUtil.noDataPanel("No cluster details found for the given environment.")
 
                 scalingPanel.removeAll()
                 scalingPanel.add(panel)
@@ -104,7 +103,7 @@ class CCv2EnvironmentDetailsView(
 
             override fun onScalingFetchingError(environment: CCv2EnvironmentDto, e: Throwable) {
                 if (this@CCv2EnvironmentDetailsView.environment.link != environment.link) return
-                val panel = CCv2ViewUtil.noDataPanel("Insufficient permissions to view scaling details", EditorNotificationPanel.Status.Warning)
+                val panel = CCv2ToolWindowUtil.noDataPanel("Insufficient permissions to view scaling details", EditorNotificationPanel.Status.Warning)
 
                 scalingPanel.removeAll()
                 scalingPanel.add(panel)
@@ -184,7 +183,7 @@ class CCv2EnvironmentDetailsView(
 
                 invokeLater {
                     val panel = if (build != null) buildPanel(build)
-                    else CCv2ViewUtil.noDataPanel("No build found")
+                    else CCv2ToolWindowUtil.noDataPanel("No build found")
 
                     buildPanel.removeAll()
                     buildPanel.add(panel)
@@ -211,7 +210,7 @@ class CCv2EnvironmentDetailsView(
 
                 invokeLater {
                     val panel = if (it != null) servicesPanel(environment, it)
-                    else CCv2ViewUtil.noDataPanel("No services found")
+                    else CCv2ToolWindowUtil.noDataPanel("No services found")
 
                     servicesPanel.removeAll()
                     servicesPanel.add(panel)
@@ -238,7 +237,7 @@ class CCv2EnvironmentDetailsView(
 
                 invokeLater {
                     val panel = if (it != null) endpointsPanel(it)
-                    else CCv2ViewUtil.noDataPanel("No public endpoints found")
+                    else CCv2ToolWindowUtil.noDataPanel("No public endpoints found")
 
                     endpointsPanel.removeAll()
                     endpointsPanel.add(panel)
@@ -265,7 +264,7 @@ class CCv2EnvironmentDetailsView(
 
                 invokeLater {
                     val panel = if (it != null) dataBackupsPanel(it)
-                    else CCv2ViewUtil.noDataPanel("No data backups found")
+                    else CCv2ToolWindowUtil.noDataPanel("No data backups found")
 
                     dataBackupsPanel.removeAll()
                     dataBackupsPanel.add(panel)

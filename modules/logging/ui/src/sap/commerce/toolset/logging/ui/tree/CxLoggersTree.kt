@@ -20,27 +20,27 @@ package sap.commerce.toolset.logging.ui.tree
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersRootNode
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowActivationAware
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
-private const val SHOW_LOADING_NODE = true
-private const val SEARCH_CAN_EXPAND = true
+class CxLoggersTree(project: Project) : Tree(), CxToolWindowActivationAware, Disposable {
 
-class CxLoggersTree(myProject: Project) : Tree(), Disposable {
-
-    private val rootNode = CxLoggersTreeNode(CxLoggersRootNode(myProject))
+    private val rootNode = CxLoggersTreeNode(CxLoggersRootNode(project))
     private val myTreeModel = CxLoggersTreeModel(rootNode)
 
     init {
+        Disposer.register(this, myTreeModel)
+
         isRootVisible = false
-        model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
 
         TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
@@ -52,11 +52,22 @@ class CxLoggersTree(myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update() = update(TreePath(rootNode))
+    override fun onActivated() = update()
+
+    fun update() {
+        if (model !is AsyncTreeModel) {
+            model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
+        }
+
+        update(TreePath(rootNode))
+    }
+
     fun update(path: TreePath) = myTreeModel.reload(path)
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -8893365004297012022L
+        private const val SHOW_LOADING_NODE = true
+        private const val SEARCH_CAN_EXPAND = true
     }
 }

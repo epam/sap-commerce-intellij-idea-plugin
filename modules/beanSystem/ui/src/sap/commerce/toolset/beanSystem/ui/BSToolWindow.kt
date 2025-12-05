@@ -26,7 +26,6 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
@@ -42,12 +41,13 @@ import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 import sap.commerce.toolset.beanSystem.settings.event.BSViewSettingsListener
 import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.ui.toolwindow.ContentActivationAware
+import sap.commerce.toolset.ui.toolwindow.CxToolWindow
 import java.awt.GridBagLayout
 import java.io.Serial
 
-class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, true), ContentActivationAware, Disposable {
+class BSToolWindow(private val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
+    private var initialized = false
     private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BSViewSettings.getInstance(project)
     private val myTreePane = BSTreePanel(project)
@@ -57,7 +57,17 @@ class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, 
     }
 
     init {
+        Disposer.register(parentDisposable, this)
+        Disposer.register(this, myTreePane)
+
         installToolbar()
+        installSettingsListener()
+    }
+
+    override fun onActivated() {
+        if (initialized) return
+
+        initialized = true
 
         when {
             DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
@@ -69,9 +79,6 @@ class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, 
 
             else -> refreshContent(ChangeType.FULL)
         }
-
-        Disposer.register(this, myTreePane)
-        installSettingsListener()
     }
 
     private fun installToolbar() {
@@ -146,8 +153,6 @@ class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, 
     companion object {
         @Serial
         private val serialVersionUID: Long = 5943815445616586522L
-
-        const val ID = "Bean System"
     }
 
 }

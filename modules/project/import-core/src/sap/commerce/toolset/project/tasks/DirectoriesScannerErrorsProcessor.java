@@ -25,7 +25,7 @@ import com.intellij.openapi.ui.Messages;
 import java.io.File;
 import java.util.List;
 
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisI18nBundle.message;
 
 public class DirectoriesScannerErrorsProcessor implements TaskProgressProcessor<List<File>> {
 

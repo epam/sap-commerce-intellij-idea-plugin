@@ -31,6 +31,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.ui.AnimatedIcon
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.exec.context.ConsoleAwareExecResult
 import sap.commerce.toolset.exec.context.ExecContext
@@ -40,8 +41,7 @@ import java.io.Serial
 import javax.swing.Icon
 
 abstract class HybrisConsole<E : ExecContext>(
-    project: Project, title: String, language: Language,
-    private val coroutineScope: CoroutineScope
+    project: Project, title: String, language: Language
 ) : LanguageConsoleImpl(project, title, language) {
 
     private val consoleId: String = "hybris.console.$title"
@@ -53,11 +53,7 @@ abstract class HybrisConsole<E : ExecContext>(
 
         consoleHistoryController.install()
 
-        coroutineScope.launch {
-            edtWriteAction {
-                printDefaultText()
-            }
-        }
+        printDefaultText()
     }
 
     val content: String
@@ -83,7 +79,7 @@ abstract class HybrisConsole<E : ExecContext>(
     }
 
     fun beforeExecution() {
-        coroutineScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             edtWriteAction {
                 isEditable = false
                 addQueryToHistory()
@@ -92,14 +88,14 @@ abstract class HybrisConsole<E : ExecContext>(
     }
 
     fun afterExecution() {
-        coroutineScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             edtWriteAction { isEditable = true }
             readAction { ActivityTracker.getInstance().inc() }
         }
     }
 
     fun print(result: ConsoleAwareExecResult, isEditable: Boolean = true) {
-        coroutineScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             edtWriteAction {
                 printResult(result)
                 this@HybrisConsole.isEditable = isEditable

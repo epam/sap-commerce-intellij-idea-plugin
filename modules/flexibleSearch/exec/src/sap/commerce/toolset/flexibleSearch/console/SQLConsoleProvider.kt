@@ -19,9 +19,8 @@
 package sap.commerce.toolset.flexibleSearch.console
 
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class SQLConsoleProvider : HybrisConsoleProvider<SQLConsole> {
-    override fun console(project: Project, coroutineScope: CoroutineScope) = SQLConsole(project, coroutineScope)
+    override fun console(project: Project) = SQLConsole(project)
 }

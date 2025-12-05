@@ -35,7 +35,6 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.whenItemSelectedFromUi
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsole
@@ -51,10 +50,7 @@ import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JLabel
 
-class HybrisSolrSearchConsole(
-    project: Project,
-    coroutineScope: CoroutineScope
-) : HybrisConsole<SolrQueryExecContext>(project, "[y] Solr search", PlainTextLanguage.INSTANCE, coroutineScope) {
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecContext>(project, "[y] Solr search", PlainTextLanguage.INSTANCE) {
 
     val docs = "Docs: "
     val coresComboBoxModel = MutableCollectionComboBoxModel<SolrCoreData>()

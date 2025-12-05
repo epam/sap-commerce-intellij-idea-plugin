@@ -35,62 +35,62 @@ class TSViewSettings(private val project: Project) : SerializablePersistentState
     var showOnlyCustom: Boolean
         get() = state.showOnlyCustom
         set(value) {
-            updateState { it }
+            updateState { it.copy(showOnlyCustom = value) }
         }
     var showMetaItems: Boolean
         get() = state.showMetaItems
         set(value) {
-            updateState { it.copy(showOnlyCustom = value) }
+            updateState { it.copy(showMetaItems = value) }
         }
     var showMetaRelations: Boolean
         get() = state.showMetaRelations
         set(value) {
-            updateState { it.copy(showMetaItems = value) }
+            updateState { it.copy(showMetaRelations = value) }
         }
     var showMetaEnums: Boolean
         get() = state.showMetaEnums
         set(value) {
-            updateState { it.copy(showMetaRelations = value) }
+            updateState { it.copy(showMetaEnums = value) }
         }
     var showMetaCollections: Boolean
         get() = state.showMetaCollections
         set(value) {
-            updateState { it.copy(showMetaEnums = value) }
+            updateState { it.copy(showMetaCollections = value) }
         }
     var showMetaAtomics: Boolean
         get() = state.showMetaAtomics
         set(value) {
-            updateState { it.copy(showMetaCollections = value) }
+            updateState { it.copy(showMetaAtomics = value) }
         }
     var showMetaMaps: Boolean
         get() = state.showMetaMaps
         set(value) {
-            updateState { it.copy(showMetaAtomics = value) }
+            updateState { it.copy(showMetaMaps = value) }
         }
     var showMetaEnumValues: Boolean
         get() = state.showMetaEnumValues
         set(value) {
-            updateState { it.copy(showMetaMaps = value) }
+            updateState { it.copy(showMetaEnumValues = value) }
         }
     var showMetaItemIndexes: Boolean
         get() = state.showMetaItemIndexes
         set(value) {
-            updateState { it.copy(showMetaEnumValues = value) }
+            updateState { it.copy(showMetaItemIndexes = value) }
         }
     var showMetaItemAttributes: Boolean
         get() = state.showMetaItemAttributes
         set(value) {
-            updateState { it.copy(showMetaItemIndexes = value) }
+            updateState { it.copy(showMetaItemAttributes = value) }
         }
     var showMetaItemCustomProperties: Boolean
         get() = state.showMetaItemCustomProperties
         set(value) {
-            updateState { it.copy(showMetaItemAttributes = value) }
+            updateState { it.copy(showMetaItemCustomProperties = value) }
         }
     var groupItemByParent: Boolean
         get() = state.groupItemByParent
         set(value) {
-            updateState { it.copy(showMetaItemCustomProperties = value) }
+            updateState { it.copy(groupItemByParent = value) }
         }
 
     companion object {

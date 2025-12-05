@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.toolwindow
+package sap.commerce.toolset.ccv2.ui
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -31,7 +31,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.view.CCv2BuildDetailsView
 import sap.commerce.toolset.ui.inlineBanner
 
-object CCv2ViewUtil {
+object CCv2ToolWindowUtil {
 
     fun showBuildDetailsTab(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
         val toolWindow = ToolWindowManager.getInstance(project)

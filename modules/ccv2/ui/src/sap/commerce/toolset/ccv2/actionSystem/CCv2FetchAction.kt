@@ -31,12 +31,12 @@ import sap.commerce.toolset.ccv2.dto.CCv2Dto
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 import java.util.*
 import javax.swing.Icon
 
 abstract class CCv2FetchAction<T : CCv2Dto>(
-    tab: CCv2Tab,
+    tab: CCv2ToolWindowContentTab,
     private val text: String,
     description: String? = null,
     private val icon: Icon,

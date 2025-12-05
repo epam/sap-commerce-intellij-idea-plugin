@@ -36,7 +36,6 @@ import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.event.CCv2SubscriptionsListener
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ui.contextHelp
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Component
@@ -153,7 +152,7 @@ internal class CCv2SubscriptionDialog(
         project.messageBus.connect(disposable).subscribe(CCv2SubscriptionsListener.TOPIC, object : CCv2SubscriptionsListener {
             override fun onFetchingComplete(data: Collection<SubscriptionDTO>) {
                 val panel = if (data.isNotEmpty()) subscriptionsPanel(data)
-                else CCv2ViewUtil.noDataPanel("No subscriptions found for the given token.")
+                else CCv2ToolWindowUtil.noDataPanel("No subscriptions found for the given token.")
 
                 subscriptionsPanel.add(panel)
                 showSubscriptions.set(true)
@@ -161,7 +160,7 @@ internal class CCv2SubscriptionDialog(
             }
 
             override fun onFetchingError(e: Throwable) {
-                val panel = CCv2ViewUtil.noDataPanel("Unable to get subscriptions due: </br>${e.message}", EditorNotificationPanel.Status.Error)
+                val panel = CCv2ToolWindowUtil.noDataPanel("Unable to get subscriptions due: </br>${e.message}", EditorNotificationPanel.Status.Error)
                 subscriptionsPanel.add(panel)
                 showSubscriptions.set(true)
                 peer.window?.pack()

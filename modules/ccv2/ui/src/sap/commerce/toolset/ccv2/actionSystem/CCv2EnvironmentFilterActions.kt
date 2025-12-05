@@ -22,10 +22,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentStatus
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2SettingsState
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
 abstract class CCv2ShowEnvironmentWithStatusAction(status: CCv2EnvironmentStatus) : CCv2ShowWithStatusAction<CCv2EnvironmentStatus>(
-    CCv2Tab.ENVIRONMENTS,
+    CCv2ToolWindowContentTab.ENVIRONMENTS,
     status,
     status.title,
     status.icon

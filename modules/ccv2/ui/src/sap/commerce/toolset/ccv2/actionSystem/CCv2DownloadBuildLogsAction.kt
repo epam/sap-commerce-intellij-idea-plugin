@@ -26,10 +26,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.CCv2UiConstants
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
 class CCv2DownloadBuildLogsAction : CCv2Action(
-    tab = CCv2Tab.BUILDS,
+    tab = CCv2ToolWindowContentTab.BUILDS,
     text = "Download Build Logs",
     icon = HybrisIcons.CCv2.Build.Actions.DOWNLOAD_LOGS
 ) {

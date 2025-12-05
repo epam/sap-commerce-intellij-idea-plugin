@@ -39,6 +39,7 @@ import com.intellij.util.io.ZipUtil
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.ccv2.api.CCv1Api
 import sap.commerce.toolset.ccv2.api.CCv2Api
 import sap.commerce.toolset.ccv2.dto.*
@@ -48,7 +49,6 @@ import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.triggerAction
 import java.io.Serial
 import java.net.SocketTimeoutException
 import java.nio.file.Files

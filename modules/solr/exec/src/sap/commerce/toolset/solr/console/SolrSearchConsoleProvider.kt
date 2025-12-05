@@ -19,9 +19,8 @@
 package sap.commerce.toolset.solr.console
 
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class SolrSearchConsoleProvider : HybrisConsoleProvider<HybrisSolrSearchConsole> {
-    override fun console(project: Project, coroutineScope: CoroutineScope) = HybrisSolrSearchConsole(project, coroutineScope)
+    override fun console(project: Project) = HybrisSolrSearchConsole(project)
 }

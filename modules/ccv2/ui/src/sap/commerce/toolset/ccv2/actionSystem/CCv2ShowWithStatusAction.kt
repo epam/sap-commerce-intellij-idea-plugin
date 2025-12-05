@@ -24,12 +24,12 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2SettingsState
-import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-import sap.commerce.toolset.ccv2.toolwindow.CCv2View
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindow
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 import javax.swing.Icon
 
 abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
-    private val tab: CCv2Tab,
+    private val tab: CCv2ToolWindowContentTab,
     protected val status: T,
     text: String,
     icon: Icon
@@ -48,7 +48,7 @@ abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
         super.update(e)
 
         e.presentation.isVisible = e.project
-            ?.let { CCv2View.getActiveTab(it) == tab }
+            ?.let { CCv2ToolWindow.getActiveTab(it) == tab }
             ?: false
     }
 

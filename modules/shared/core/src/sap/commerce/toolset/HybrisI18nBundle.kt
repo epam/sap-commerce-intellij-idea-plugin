@@ -16,9 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.toolwindow
+package sap.commerce.toolset
 
-interface ContentActivationAware {
-    fun onActivated() = Unit
-    fun onDeactivated() = Unit
+import com.intellij.AbstractBundle
+import org.apache.commons.lang3.StringUtils
+import org.jetbrains.annotations.PropertyKey
+
+object HybrisI18nBundle : AbstractBundle("i18n.HybrisBundle") {
+
+    @JvmStatic
+    fun message(
+        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
+        vararg params: Any
+    ): String {
+        if (StringUtils.isBlank(key)) {
+            return ""
+        }
+
+        val message = getMessage(key, *params)
+
+        return if (StringUtils.isBlank(message)) key else message
+    }
+
+    fun messageFallback(
+        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
+        fallback: String,
+        vararg params: Any
+    ) = messageOrDefault(key, fallback, *params)!!
 }

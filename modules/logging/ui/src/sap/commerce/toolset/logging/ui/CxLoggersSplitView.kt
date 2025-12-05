@@ -26,6 +26,7 @@ import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
@@ -43,19 +44,17 @@ import sap.commerce.toolset.ui.addTreeSelectionListener
 import sap.commerce.toolset.ui.event.MouseListener
 import sap.commerce.toolset.ui.event.TreeModelListener
 import sap.commerce.toolset.ui.pathData
+import sap.commerce.toolset.ui.toolwindow.CxToolWindowActivationAware
 import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
 
-class CxLoggersSplitView(
-    private val project: Project,
-    private val coroutineScope: CoroutineScope
-) : OnePixelSplitter(false, 0.25f), Disposable {
+class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), CxToolWindowActivationAware, Disposable {
 
     private val tree = CxLoggersTree(project).apply { registerListeners(this) }
-    private val remoteLogStateView = CxRemoteLogStateView(project, coroutineScope)
-    private val bundledLogTemplatesView = CxBundledLogTemplatesView(project, coroutineScope)
-    private val customLogTemplatesView = CxCustomLogTemplatesView(project, coroutineScope)
+    private val remoteLogStateView by lazy { CxRemoteLogStateView(project).also { Disposer.register(this, it) } }
+    private val bundledLogTemplatesView by lazy { CxBundledLogTemplatesView(project).also { Disposer.register(this, it) } }
+    private val customLogTemplatesView by lazy { CxCustomLogTemplatesView(project).also { Disposer.register(this, it) } }
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -63,9 +62,6 @@ class CxLoggersSplitView(
 
         PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
-        Disposer.register(this, remoteLogStateView)
-        Disposer.register(this, bundledLogTemplatesView)
-        Disposer.register(this, customLogTemplatesView)
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
@@ -92,7 +88,6 @@ class CxLoggersSplitView(
 
             subscribe(CxCustomLogTemplateStateListener.TOPIC, object : CxCustomLogTemplateStateListener {
                 override fun onTemplateUpdated(templateUUID: String) = updateTree()
-
                 override fun onTemplateDeleted() = updateTree()
 
                 override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
@@ -110,9 +105,8 @@ class CxLoggersSplitView(
         }
     }
 
-    fun updateTree() {
-        tree.update()
-    }
+    override fun onActivated() = updateTree()
+    private fun updateTree() = tree.onActivated()
 
     private fun registerListeners(tree: CxLoggersTree) = tree
         .addTreeSelectionListener(tree) {
@@ -131,8 +125,8 @@ class CxLoggersSplitView(
         .addMouseListener(tree, object : MouseListener {
             override fun mouseClicked(e: MouseEvent) {
                 tree
-                    .takeIf { e.getClickCount() == 2 && !e.isConsumed }
-                    ?.getPathForLocation(e.getX(), e.getY())
+                    .selectionPath
+                    ?.takeIf { e.getClickCount() == 2 && !e.isConsumed }
                     ?.pathData(CxRemoteLogStateNode::class)
                     ?.let {
                         e.consume()
@@ -144,7 +138,7 @@ class CxLoggersSplitView(
         })
 
     private fun updateSecondComponent(node: CxLoggersNode) {
-        coroutineScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
 
             when (node) {

@@ -43,6 +43,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxLogService
@@ -53,10 +54,7 @@ import java.awt.Dimension
 import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
-class CxCustomLogTemplatesView(
-    private val project: Project,
-    private val coroutineScope: CoroutineScope
-) : Disposable {
+class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private var templateUUID: String = ""
 
@@ -186,7 +184,7 @@ class CxCustomLogTemplatesView(
                         r.psiElementPointer?.element?.let { psiElement ->
                             when (psiElement) {
                                 is PsiPackage -> {
-                                    coroutineScope.launch {
+                                    CoroutineScope(Dispatchers.Default).launch {
                                         val directory = readAction {
                                             psiElement.getDirectories(GlobalSearchScope.allScope(project))
                                                 .firstOrNull()

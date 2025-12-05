@@ -59,10 +59,7 @@ import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
-class CxRemoteLogStateView(
-    private val project: Project,
-    private val coroutineScope: CoroutineScope
-) : Disposable {
+class CxRemoteLogStateView(private val project: Project) : Disposable {
 
     private val showNothingSelected = AtomicBooleanProperty(true)
     private val showFetchLoggers = AtomicBooleanProperty(false)
@@ -198,7 +195,7 @@ class CxRemoteLogStateView(
                             cxLogger.psiElementPointer?.element?.let { psiElement ->
                                 when (psiElement) {
                                     is PsiPackage -> {
-                                        coroutineScope.launch {
+                                        CoroutineScope(Dispatchers.Default).launch {
                                             val directory = readAction {
                                                 psiElement.getDirectories(GlobalSearchScope.allScope(project))
                                                     .firstOrNull()

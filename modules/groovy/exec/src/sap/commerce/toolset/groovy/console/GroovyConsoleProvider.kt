@@ -19,11 +19,10 @@
 package sap.commerce.toolset.groovy.console
 
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class GroovyConsoleProvider : HybrisConsoleProvider<HybrisGroovyConsole> {
-    override fun console(project: Project, coroutineScope: CoroutineScope) = Plugin.GROOVY
-        .ifActive { HybrisGroovyConsole(project, coroutineScope) }
+    override fun console(project: Project) = Plugin.GROOVY
+        .ifActive { HybrisGroovyConsole(project) }
 }
