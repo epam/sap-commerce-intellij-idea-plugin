@@ -160,5 +160,4 @@ class TSToolWindow(private val project: Project, parentDisposable: Disposable) :
         @Serial
         private val serialVersionUID: Long = 74100584202830949L
     }
-
 }
