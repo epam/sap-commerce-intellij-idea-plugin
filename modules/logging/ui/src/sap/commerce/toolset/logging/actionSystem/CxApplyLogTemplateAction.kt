@@ -26,6 +26,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
 class CxApplyLogTemplateAction : AnAction() {
 
@@ -40,6 +41,7 @@ class CxApplyLogTemplateAction : AnAction() {
         val selectedNode = e.selectedNode() ?: return
         val loggers = when (selectedNode) {
             is CxBundledLogTemplateItemNode -> selectedNode.loggers
+            is CxCustomLogTemplateItemNode -> selectedNode.loggers
             else -> return
         }
 
