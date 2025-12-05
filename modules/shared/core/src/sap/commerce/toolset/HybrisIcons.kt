@@ -543,6 +543,7 @@ object HybrisIcons {
             val CUSTOM_TEMPLATE = getIcon("/icons/logging/template/customLoggersTemplate.svg")
             val ADD_CUSTOM_TEMPLATE = AllIcons.General.Add
             val DELETE_CUSTOM_TEMPLATE = AllIcons.General.Delete
+            val DELETE_LOGGER = AllIcons.General.Delete
             val EDIT_CUSTOM_TEMPLATE = AllIcons.General.Inline_edit
             val DISABLE = AllIcons.Nodes.Template
             val DEFAULT = AllIcons.Nodes.Template

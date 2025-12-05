@@ -33,6 +33,7 @@
         <action id="sap.cx.loggers.add.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxAddCustomLogTemplateAction"/>
         <action id="sap.cx.loggers.delete.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxDeleteCustomLogTemplateAction"/>
         <action id="sap.cx.loggers.rename.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxRenameCustomLogTemplateAction"/>
+        <action id="sap.cx.loggers.delete.logger" class="sap.commerce.toolset.logging.actionSystem.CxRemoveLoggerAction"/>
 
         <group id="sap.cx.loggers.template.item.actions" searchable="false">
             <reference ref="sap.cx.loggers.rename.custom.template"/>
