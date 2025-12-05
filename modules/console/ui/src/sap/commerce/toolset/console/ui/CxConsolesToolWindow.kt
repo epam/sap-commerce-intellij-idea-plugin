@@ -47,62 +47,67 @@ class CxConsolesToolWindow(private val project: Project, parentDisposable: Dispo
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
 
     // TODO: refresh on plugin reloads, f.e. Groovy
-    private val consoles: List<HybrisConsole<out ExecContext>> by lazy {
-        HybrisConsoleProvider.EP.extensionList.mapNotNull { it.console(project) }
-    }
+    private val consoles: List<HybrisConsole<out ExecContext>> by lazy { HybrisConsoleProvider.EP.extensionList.mapNotNull { it.console(project) } }
 
     init {
-        // TODO: this looks wrong
         Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), parentDisposable)
         Disposer.register(parentDisposable, this)
 
         layout = BorderLayout()
     }
 
-    override fun onActivated() = init()
+    override fun onActivated() {
+        init()
+    }
 
     private fun init() {
-        if (!initialized) {
-            initialized = true
+        if (initialized) return
 
-            val actionManager = ActionManager.getInstance()
-            val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
-            val actionToolbar = actionManager.createActionToolbar(ConsoleUiConstants.PLACE_TOOLBAR, toolbarActions, false)
+        initialized = true
+        val actionManager = ActionManager.getInstance()
+        val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
+        val actionToolbar = actionManager.createActionToolbar(ConsoleUiConstants.PLACE_TOOLBAR, toolbarActions, false)
 
-            val rootPanel = JPanel(BorderLayout())
+        val rootPanel = JPanel(BorderLayout())
 
-            consoles.forEachIndexed { index, console ->
-                Disposer.register(this, console)
-                tabsPanel.insertTab(console.title(), console.icon(), console.component, console.tip(), index)
-            }
-
-            tabsPanel.addChangeListener { event ->
-                val console = event.source.asSafely<JBEditorTabs>()
-                    ?.selectedInfo
-                    ?.component
-                    ?.asSafely<HybrisConsole<in ExecContext>>()
-                    ?: return@addChangeListener
-
-                console.onSelection()
-            }
-
-            actionToolbar.targetComponent = tabsPanel.component
-
-            rootPanel.add(tabsPanel.component, BorderLayout.CENTER)
-            rootPanel.add(actionToolbar.component, BorderLayout.WEST)
-
-            add(rootPanel)
+        consoles.forEachIndexed { index, console ->
+            Disposer.register(this, console)
+            tabsPanel.insertTab(console.title(), console.icon(), console.component, console.tip(), index)
         }
+
+        tabsPanel.addChangeListener { event ->
+            val console = event.source.asSafely<JBEditorTabs>()
+                ?.selectedInfo
+                ?.component
+                ?.asSafely<HybrisConsole<in ExecContext>>()
+                ?: return@addChangeListener
+
+            console.onSelection()
+        }
+
+        actionToolbar.targetComponent = tabsPanel.component
+
+        rootPanel.add(tabsPanel.component, BorderLayout.CENTER)
+        rootPanel.add(actionToolbar.component, BorderLayout.WEST)
+
+        add(rootPanel)
     }
 
     var activeConsole: HybrisConsole<out ExecContext>
         set(console) {
             tabsPanel.selectedIndex = consoles.indexOf(console)
         }
-        get() = consoles[tabsPanel.selectedIndex]
+        get() {
+            if (!initialized) init()
 
-    fun <C : HybrisConsole<out ExecContext>> findConsole(consoleClass: KClass<C>): C? = consoles
-        .firstNotNullOfOrNull { consoleClass.safeCast(it) }
+            return consoles[tabsPanel.selectedIndex]
+        }
+
+    fun <C : HybrisConsole<out ExecContext>> findConsole(consoleClass: KClass<C>): C? {
+        if (!initialized) init()
+
+        return consoles.firstNotNullOfOrNull { consoleClass.safeCast(it) }
+    }
 
     companion object {
         @Serial

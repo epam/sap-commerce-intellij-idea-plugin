@@ -63,18 +63,18 @@ class TSToolWindow(private val project: Project, parentDisposable: Disposable) :
     }
 
     override fun onActivated() {
-        if (!initialized) {
-            initialized = true
-            when {
-                DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-                    add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
-                    setContent(this)
-                }
+        if (initialized) return
 
-                !TSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
-
-                else -> refreshContent(ChangeType.FULL)
+        initialized = true
+        when {
+            DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+                add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                setContent(this)
             }
+
+            !TSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
+
+            else -> refreshContent(ChangeType.FULL)
         }
     }
 

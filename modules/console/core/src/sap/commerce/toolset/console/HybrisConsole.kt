@@ -55,6 +55,7 @@ abstract class HybrisConsole<E : ExecContext>(
 
         CoroutineScope(Dispatchers.Default).launch {
             edtWriteAction {
+                println("Default print - ${this@HybrisConsole::class.simpleName}")
                 printDefaultText()
             }
         }

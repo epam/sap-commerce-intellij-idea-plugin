@@ -42,10 +42,12 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
                 if (event.isConsumed) return
 
                 when (event.operation) {
-                    ContentManagerEvent.ContentOperation.add -> event.content.component.asSafely<CxToolWindowActivationAware>()
+                    ContentManagerEvent.ContentOperation.add -> event.content.component
+                        .asSafely<CxToolWindowActivationAware>()
                         ?.onActivated()
 
-                    ContentManagerEvent.ContentOperation.remove -> event.content.component.asSafely<CxToolWindowActivationAware>()
+                    ContentManagerEvent.ContentOperation.remove -> event.content.component
+                        .asSafely<CxToolWindowActivationAware>()
                         ?.onDeactivated()
 
                     else -> Unit

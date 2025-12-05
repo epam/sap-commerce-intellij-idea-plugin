@@ -57,6 +57,8 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecContext>, F : Fi
     }
 
     protected fun openConsole(project: Project, content: String, onActivation: (C) -> Unit) = HybrisConsoleService.getInstance(project).openConsole(consoleClass) {
+
+        println("Content print")
         it.setInputText(content)
         it.beforeExecution()
 

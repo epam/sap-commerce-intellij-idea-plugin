@@ -36,6 +36,7 @@
 
 ### Other
 - Updated Plugin icon [#1667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1667)
+- Lazy-init toolwindows [#1682](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1682)
 
 ## [2025.2.5.0]
 

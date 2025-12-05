@@ -65,19 +65,19 @@ class BSToolWindow(private val project: Project, parentDisposable: Disposable) :
     }
 
     override fun onActivated() {
-        if (!initialized) {
-            initialized = true
+        if (initialized) return
 
-            when {
-                DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-                    add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
-                    setContent(this)
-                }
+        initialized = true
 
-                !BSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
-
-                else -> refreshContent(ChangeType.FULL)
+        when {
+            DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+                add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                setContent(this)
             }
+
+            !BSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
+
+            else -> refreshContent(ChangeType.FULL)
         }
     }
 
