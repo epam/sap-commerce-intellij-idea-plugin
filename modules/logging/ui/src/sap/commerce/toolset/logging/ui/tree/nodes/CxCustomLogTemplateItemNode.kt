@@ -37,20 +37,18 @@ class CxCustomLogTemplateItemNode private constructor(
     var loggers = loggers
         private set
 
-    override fun getName() = text
-
     fun update(template: CxLogTemplatePresentation) {
         if (uuid != template.uuid) return
 
         loggers = template.loggers
-        text = template.name
+        presentationName = template.name
         icon = template.icon
 
         this.update(presentation)
     }
 
     fun update(source: CxLoggersNode) {
-        text = source.name
+        presentationName = source.name
         update(presentation)
     }
 

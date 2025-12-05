@@ -28,7 +28,7 @@ import javax.swing.Icon
 
 abstract class CxLoggersNode(
     project: Project,
-    private val presentationName: String = "",
+    protected var presentationName: String = "",
     private val icon: Icon? = null,
 ) : PresentableNodeDescriptor<CxLoggersNode>(project, null), LeafState.Supplier, Disposable {
 
