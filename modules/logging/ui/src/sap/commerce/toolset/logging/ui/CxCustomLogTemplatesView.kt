@@ -176,12 +176,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { r ->
             row {
-                actionButton(
-                    ActionManager.getInstance().getAction("sap.cx.loggers.delete.logger")
-                ) {
-                    it[CxLogUiConstants.DataKeys.TemplateUUID] = templateUUID
-                    it[CxLogUiConstants.DataKeys.LoggerName] = r.name
-                }
                 icon(r.level.icon)
                 label(r.level.name)
                     .applyToComponent {

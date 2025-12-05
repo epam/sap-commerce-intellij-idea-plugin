@@ -18,7 +18,7 @@
 - Added support for Custom Log Template - actions: delete, rename template [#1679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1679)
 - Supported adding a logger for a logger template [#1680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1680)
 - Support navigable packages & loggers for Custom Log Templates [#1681](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1681)
-- Supported removing a logger for a logger template [#1682](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1682)
+- Supported removing a logger for a logger template [#1683](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1683)
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)
