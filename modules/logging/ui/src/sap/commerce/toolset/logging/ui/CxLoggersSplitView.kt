@@ -125,8 +125,8 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
         .addMouseListener(tree, object : MouseListener {
             override fun mouseClicked(e: MouseEvent) {
                 tree
-                    .takeIf { e.getClickCount() == 2 && !e.isConsumed }
-                    ?.getPathForLocation(e.getX(), e.getY())
+                    .selectionPath
+                    ?.takeIf { e.getClickCount() == 2 && !e.isConsumed }
                     ?.pathData(CxRemoteLogStateNode::class)
                     ?.let {
                         e.consume()
