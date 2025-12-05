@@ -26,7 +26,7 @@ import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 class CCv2ToolWindowContentProvider : CxToolWindowContentProvider(
     CCv2ToolWindow.ID,
     HybrisIcons.CCv2.DESCRIPTOR,
-    4,
+    5,
 ) {
     override fun createComponent(project: Project, parentDisposable: Disposable) = CCv2ToolWindow(project, parentDisposable)
 }

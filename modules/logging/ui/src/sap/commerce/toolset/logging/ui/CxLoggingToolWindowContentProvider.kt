@@ -25,7 +25,7 @@ import sap.commerce.toolset.ui.toolwindow.CxToolWindowContentProvider
 class CxLoggingToolWindowContentProvider : CxToolWindowContentProvider(
     "Loggers",
     HybrisIcons.Log.LOG,
-    5
+    4,
 ) {
     override fun createComponent(project: Project, parentDisposable: Disposable) = CxLoggersToolWindow(project, parentDisposable)
 }

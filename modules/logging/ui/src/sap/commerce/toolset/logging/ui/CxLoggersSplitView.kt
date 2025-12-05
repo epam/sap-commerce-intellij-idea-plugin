@@ -52,9 +52,9 @@ import javax.swing.event.TreeModelEvent
 class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), CxToolWindowActivationAware, Disposable {
 
     private val tree = CxLoggersTree(project).apply { registerListeners(this) }
-    private val remoteLogStateView = CxRemoteLogStateView(project)
-    private val bundledLogTemplatesView = CxBundledLogTemplatesView(project)
-    private val customLogTemplatesView = CxCustomLogTemplatesView(project)
+    private val remoteLogStateView by lazy { CxRemoteLogStateView(project).also { Disposer.register(this, it) } }
+    private val bundledLogTemplatesView by lazy { CxBundledLogTemplatesView(project).also { Disposer.register(this, it) } }
+    private val customLogTemplatesView by lazy { CxCustomLogTemplatesView(project).also { Disposer.register(this, it) } }
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -62,9 +62,6 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
 
         PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
-        Disposer.register(this, remoteLogStateView)
-        Disposer.register(this, bundledLogTemplatesView)
-        Disposer.register(this, customLogTemplatesView)
 
         with(project.messageBus.connect(this)) {
             subscribe(HacConnectionSettingsListener.TOPIC, object : HacConnectionSettingsListener {
