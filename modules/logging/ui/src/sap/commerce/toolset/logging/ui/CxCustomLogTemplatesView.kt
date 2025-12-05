@@ -23,8 +23,9 @@ import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.application.EDT
+import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
@@ -43,6 +44,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -176,10 +178,19 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { r ->
             row {
-                icon(r.level.icon)
-                label(r.level.name)
-                    .applyToComponent {
-                        preferredSize = Dimension(JBUI.scale(68), preferredSize.height)
+
+                comboBox(
+                    model = EnumComboBoxModel(CxLogLevel::class.java),
+                    renderer = SimpleListCellRenderer.create { label, value, _ ->
+                        if (value != null) {
+                            label.icon = value.icon
+                            label.text = value.name
+                        }
+                    }
+                )
+                    .bindItem({ r.level }, { _ -> })
+                    .onChanged { listener ->
+                        CxLogService.getInstance(project).updateLogger(templateUUID, r.name, listener.item)
                     }
 
                 icon(r.icon)
@@ -211,11 +222,12 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                 }
 
                 actionButton(
-                    ActionManager.getInstance().getAction("sap.cx.loggers.delete.logger")
-                ) {
-                    it[CxLogUiConstants.DataKeys.TemplateUUID] = templateUUID
-                    it[CxLogUiConstants.DataKeys.LoggerName] = r.name
-                }
+                    ActionManager.getInstance().getAction("sap.cx.loggers.delete.logger"), sinkExtender = fun(it: DataSink) {
+                        it[CxLogUiConstants.DataKeys.TemplateUUID] = templateUUID
+                        it[CxLogUiConstants.DataKeys.LoggerName] = r.name
+                    }
+                )
+                    .customize(UnscaledGaps(0, 0, 0, 25))
             }
         }
     }
@@ -240,8 +252,13 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         val view = if (loggers.isEmpty()) noLoggersView()
         else createLoggersPanel(loggers.values)
 
-        CoroutineScope(Dispatchers.EDT).launch {
-            dataScrollPane.setViewportView(view)
+        val viewport = dataScrollPane.getViewport()
+        val pos = viewport.getViewPosition()
+
+        dataScrollPane.setViewportView(view)
+
+        invokeLater {
+            viewport.viewPosition = pos
         }
 
         toggleView(showDataPanel, initialized)

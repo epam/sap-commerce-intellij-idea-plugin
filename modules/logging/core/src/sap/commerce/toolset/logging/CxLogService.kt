@@ -117,6 +117,27 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         }
     }
 
+    fun updateLogger(templateUUID: String, loggerName: String, effectiveLevel: CxLogLevel) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
+        val loggerTemplateState = templates
+            .find { it.uuid == templateUUID }
+            ?.mutable()
+            ?.apply {
+
+                loggers.get().find { logger -> logger.name.get() == loggerName }
+                    ?.effectiveLevel
+                    ?.set(effectiveLevel)
+            }
+            ?.immutable()
+            ?: return@with
+
+        updateCustomLoggerTemplateInternal(loggerTemplateState)
+
+        coroutineScope.launch {
+            val modifiedTemplate = loggerTemplateState.presentation(project)
+            project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerUpdated(modifiedTemplate)
+        }
+    }
+
     private fun updateCustomLoggerTemplateInternal(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
             templates = templates.toMutableList().apply {

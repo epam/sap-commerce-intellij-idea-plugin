@@ -19,6 +19,7 @@
 package sap.commerce.toolset.logging.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
@@ -138,7 +139,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
         })
 
     private fun updateSecondComponent(node: CxLoggersNode) {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.EDT).launch {
             if (project.isDisposed) return@launch
 
             when (node) {
