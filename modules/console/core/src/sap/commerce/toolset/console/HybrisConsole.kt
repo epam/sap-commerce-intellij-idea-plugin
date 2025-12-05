@@ -53,12 +53,7 @@ abstract class HybrisConsole<E : ExecContext>(
 
         consoleHistoryController.install()
 
-        CoroutineScope(Dispatchers.Default).launch {
-            edtWriteAction {
-                println("Default print - ${this@HybrisConsole::class.simpleName}")
-                printDefaultText()
-            }
-        }
+        printDefaultText()
     }
 
     val content: String
