@@ -175,6 +175,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                         .align(AlignX.FILL)
                         .enabledIf(editable)
                         .bindItem({ cxLogger.level }, { _ -> })
+                        .onChanged {  }
                         .addItemListener(this@CxRemoteLogStateView) { event ->
                             event.item.asSafely<CxLogLevel>()
                                 ?.takeUnless { it == cxLogger.level }

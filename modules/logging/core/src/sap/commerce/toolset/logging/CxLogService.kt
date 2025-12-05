@@ -101,8 +101,8 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
             .find { it.uuid == templateUUID }
             ?.mutable()
             ?.apply {
-                //remove logger
-                val newLoggerConfigs = loggers.get().filter { logger -> logger.name.get() != loggerName }
+                val newLoggerConfigs = loggers.get()
+                    .filter { logger -> logger.name.get() != loggerName }
 
                 loggers.set(newLoggerConfigs)
             }
@@ -122,7 +122,6 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
             .find { it.uuid == templateUUID }
             ?.mutable()
             ?.apply {
-
                 loggers.get().find { logger -> logger.name.get() == loggerName }
                     ?.effectiveLevel
                     ?.set(effectiveLevel)
