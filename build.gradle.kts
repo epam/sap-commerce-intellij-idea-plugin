@@ -29,7 +29,8 @@ plugins {
     id("idea") // IDEA support
     id("org.jetbrains.intellij.platform") // IDEA support
     alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.changelog) // Gradle IntelliJ Plugin
+//    alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
+    alias(libs.plugins.changelog) // ChangeLog Plugin
     alias(libs.plugins.openAPIGenerator) // openapi Generator
 }
 
@@ -214,7 +215,7 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.dtdparser)
     implementation(libs.maven.model)
-    implementation(project(":jps-plugin"))
+//    implementation(project(":jps-plugin"))
     testImplementation(kotlin("test"))
     testRuntimeOnly("junit:junit:4.13.2")
 
@@ -227,15 +228,16 @@ dependencies {
 
         pluginVerifier()
 
-        rootProject.childProjects.keys
-            .filter { it != "jps-plugin" }
-            .forEach {
-                pluginComposedModule(implementation(project(it)))
-            }
+//        rootProject.childProjects.keys
+//            .filter { it != "jps-plugin" }
+//            .forEach {
+//                pluginComposedModule(implementation(project(it)))
+//            }
         bundledModules(
             "intellij.grid.impl",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
+            "intellij.platform.langInjection",
         )
 
         // printBundledPlugins for bundled plugins
@@ -244,7 +246,6 @@ dependencies {
             "com.intellij.java",
             "com.intellij.java-i18n",
             "com.intellij.cron",
-            "org.intellij.intelliLang",
             "com.intellij.copyright",
             "com.intellij.database",
             "com.intellij.diagram",

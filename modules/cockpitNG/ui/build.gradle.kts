@@ -49,9 +49,8 @@ dependencies {
     implementation(project(":typeSystem-ui"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+        intellijIdea(properties("intellij.version"), useInstaller = false)
+
         bundledPlugins(
             "com.intellij.java",
             "com.intellij.java-i18n",

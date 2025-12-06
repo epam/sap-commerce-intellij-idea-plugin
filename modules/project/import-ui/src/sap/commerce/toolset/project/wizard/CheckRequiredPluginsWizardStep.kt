@@ -76,7 +76,6 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         ANGULAR.id to ANGULAR,
         JREBEL.id to JREBEL,
         JAVASCRIPT.id to JAVASCRIPT,
-        INTELLILANG.id to INTELLILANG,
     )
 
     private val cellRenderer = object : ColoredListCellRenderer<PluginId>() {

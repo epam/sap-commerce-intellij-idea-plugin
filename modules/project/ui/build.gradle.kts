@@ -41,8 +41,6 @@ dependencies {
     implementation(project(":project-core"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+        intellijIdea(properties("intellij.version"), useInstaller = false)
     }
 }

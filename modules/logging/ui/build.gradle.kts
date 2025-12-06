@@ -42,9 +42,8 @@ dependencies {
     implementation(project(":hac-exec"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+        intellijIdea(properties("intellij.version"), useInstaller = false)
+
         bundledPlugins(
             "com.intellij.java",
         )

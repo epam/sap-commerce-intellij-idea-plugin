@@ -51,9 +51,7 @@ dependencies {
     implementation(libs.kotlinxJson)
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+        intellijIdea(properties("intellij.version"), useInstaller = false)
 
         bundledModules(
             "intellij.libraries.microba",

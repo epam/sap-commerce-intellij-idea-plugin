@@ -37,16 +37,16 @@ dependencyResolutionManagement {
     }
 }
 
-include(":jps-plugin")
+//include(":jps-plugin")
 
 // auto-import sub-mobules
-File(rootDir, "modules").walk()
-    .maxDepth(4)
-    .filter { it.isFile && it.name == "build.gradle.kts" }
-    .map { it.parentFile.relativeTo(rootDir).path }
-    .forEach { modulePath ->
-        include(modulePath)
-        project(":$modulePath").name = modulePath
-            .replaceFirst("modules${File.separatorChar}", "")
-            .replace(File.separatorChar, '-')
-    }
+//File(rootDir, "modules").walk()
+//    .maxDepth(4)
+//    .filter { it.isFile && it.name == "build.gradle.kts" }
+//    .map { it.parentFile.relativeTo(rootDir).path }
+//    .forEach { modulePath ->
+//        include(modulePath)
+//        project(":$modulePath").name = modulePath
+//            .replaceFirst("modules${File.separatorChar}", "")
+//            .replace(File.separatorChar, '-')
+//    }

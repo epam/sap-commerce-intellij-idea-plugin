@@ -47,8 +47,6 @@ dependencies {
     implementation(project(":impex-ui"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+        intellijIdea(properties("intellij.version"), useInstaller = false)
     }
 }
