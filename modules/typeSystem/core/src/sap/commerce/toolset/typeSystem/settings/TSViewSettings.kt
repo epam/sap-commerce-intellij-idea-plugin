@@ -25,8 +25,11 @@ import sap.commerce.toolset.typeSystem.settings.event.TSViewSettingsListener
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.settings.state.TSViewSettingsState
 
-@State(name = "[y] Type System View settings", category = SettingsCategory.PLUGINS)
-@Storage(value = HybrisConstants.STORAGE_HYBRIS_TS_VIEW, roamingType = RoamingType.LOCAL)
+@State(
+    name = "[y] Type System View settings",
+    category = SettingsCategory.PLUGINS,
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_TS_VIEW, roamingType = RoamingType.LOCAL)]
+)
 @Service(Service.Level.PROJECT)
 class TSViewSettings(private val project: Project) : SerializablePersistentStateComponent<TSViewSettingsState>(TSViewSettingsState()) {
 

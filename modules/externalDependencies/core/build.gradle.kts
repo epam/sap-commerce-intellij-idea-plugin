@@ -43,9 +43,10 @@ dependencies {
     implementation(project(":shared-core"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
+
         bundledPlugins(
             "org.jetbrains.idea.maven",
         )

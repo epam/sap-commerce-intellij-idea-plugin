@@ -32,7 +32,6 @@ object HybrisConstants {
 
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
 
-    const val IDEA_EDITION_ULTIMATE = "Ultimate Edition"
     const val UPDATE_TIMESTAMP_PROPERTY = "sap.commerce.update.timestamp"
 
     const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"

@@ -41,9 +41,10 @@ dependencies {
     implementation(project(":project-localextensions"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
+
         bundledPlugins(
             "com.intellij.java",
             "com.intellij.properties",

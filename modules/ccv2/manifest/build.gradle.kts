@@ -40,7 +40,7 @@ dependencies {
     implementation(project(":ccv2-core"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
 

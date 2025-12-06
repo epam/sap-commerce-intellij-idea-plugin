@@ -91,7 +91,6 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
         try {
             this.lock.lock();
             if (this.hybrisProjectDescriptor != null) {
-                this.hybrisProjectDescriptor.clear();
                 this.hybrisProjectDescriptor = null;
             }
         } finally {

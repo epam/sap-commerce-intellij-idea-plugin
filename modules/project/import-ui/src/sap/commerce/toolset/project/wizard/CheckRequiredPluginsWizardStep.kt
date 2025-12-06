@@ -22,73 +22,35 @@ import com.intellij.ide.BrowserUtil
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.projectWizard.WizardContext
-import com.intellij.openapi.application.ApplicationNamesInfo
-import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.*
 import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.application
-import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin.*
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.Plugin.HYBRIS
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.io.Serial
-import javax.swing.JButton
 import javax.swing.JList
 import javax.swing.ListModel
 
 class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWizardStep(context) {
 
-    private val ultimateEditionOnly by lazy {
-        listOf(
-            DATABASE,
-            SPRING,
-            JAVAEE,
-            JAVAEE_WEB,
-            JAVAEE_EL,
-            DIAGRAM,
-            JAVASCRIPT,
-            CRON,
-            ANGULAR,
-        )
-            .map { it.id }
-    }
-    private val plugins = mapOf(
-        SPRING.id to SPRING,
-        KOTLIN.id to KOTLIN,
-        GROOVY.id to GROOVY,
-        GRADLE.id to GRADLE,
-        DATABASE.id to DATABASE,
-        DIAGRAM.id to DIAGRAM,
-        PROPERTIES.id to PROPERTIES,
-        COPYRIGHT.id to COPYRIGHT,
-        JAVAEE_EL.id to JAVAEE_EL,
-        JAVAEE_WEB.id to JAVAEE_WEB,
-        JAVAEE.id to JAVAEE,
-        JAVAEE.id to JAVAEE,
-        MAVEN.id to MAVEN,
-        ANT_SUPPORT.id to ANT_SUPPORT,
-        ANGULAR.id to ANGULAR,
-        JREBEL.id to JREBEL,
-        JAVASCRIPT.id to JAVASCRIPT,
-        INTELLILANG.id to INTELLILANG,
-    )
+    private val declaredPluginDependencies = Plugin.entries
+        .filterNot { it == HYBRIS }
+        .associateBy { it.id }
 
     private val cellRenderer = object : ColoredListCellRenderer<PluginId>() {
         @Serial
         private val serialVersionUID: Long = -7396769063069852812L
 
         override fun customizeCellRenderer(list: JList<out PluginId>, value: PluginId, index: Int, selected: Boolean, hasFocus: Boolean) {
-            plugins[value.idString]
+            declaredPluginDependencies[value.idString]
                 ?.takeIf { it.url != null }
-                ?.let {
-                    append(value.idString, SimpleTextAttributes.LINK_ATTRIBUTES)
-                }
+                ?.let { append(value.idString, SimpleTextAttributes.LINK_ATTRIBUTES) }
                 ?: append(value.idString)
         }
     }
@@ -114,12 +76,11 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         val index = list.locationToIndex(e.point)
         if (index == -1) return
         val element = model.getElementAt(index)
-        plugins[element.idString]
+
+        declaredPluginDependencies[element.idString]
             ?.url
             ?.let { BrowserUtil.browse(it) }
     }
-
-    private lateinit var enablePlugins: JButton
 
     override fun updateDataModel() = Unit
 
@@ -130,8 +91,12 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                 .align(Align.CENTER)
                 .comment(
                     """
-                        Some of the required or optional plugins are not installed or disabled.<br>
-                        SAP Commerce import may not work properly.
+                        Since IntelliJ IDEA 2025.3 and the introduction of the new unified distribution model,<br>
+                        it is advisable to activate your subscription (if you have one) before importing the project.
+                        <br><br>
+                        One or more required or optional plugins are missing or disabled.<br>
+                        As a result, the SAP Commerce import may not function correctly.<br>
+                        For the best experience, it is recommended to activate the additional plugins prior to importing the project.
                     """.trimIndent()
                 )
                 .component.also {
@@ -139,19 +104,10 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                     it.foreground = ColorUtil.withAlpha(JBColor(0x660000, 0xC93B48), 0.7)
                 }
         }
+
         group("Not Enabled Plugins") {
             row {
                 cell(notEnabledList)
-            }
-            row {
-                enablePlugins = button("Enable and Restart") { _ ->
-                    if (!enablePlugins.isEnabled) return@button
-                    enablePlugins.isEnabled = false
-                    enablePlugins.text = "Enabling ${notEnabledModel.items.size} plugins, IDE will restart automatically.."
-
-                    enablePlugins(notEnabledModel.items)
-                }
-                    .component
             }
         }
 
@@ -163,9 +119,6 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
     }
 
     override fun isStepVisible(): Boolean {
-        val isUltimate = HybrisConstants.IDEA_EDITION_ULTIMATE.equals(ApplicationNamesInfo.getInstance().editionName, true)
-        val isCommunity = !isUltimate
-
         notInstalledModel.removeAll()
         notEnabledModel.removeAll()
 
@@ -174,30 +127,18 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
 
         hybrisPlugin.dependencies
             .filter { it.isOptional }
-            .map { it.pluginId }
-            .map { pluginId ->
-                if (isCommunity && ultimateEditionOnly.contains(pluginId.idString)) return@map
-
+            .map { it.pluginId }.distinct()
+            .onEach { pluginId ->
                 if (!PluginManager.isPluginInstalled(pluginId)) {
                     notInstalledModel.add(pluginId)
-                    return@map
+                    return@onEach
                 }
                 PluginManagerCore.getPlugin(pluginId)
-                    ?.takeIf { PluginManagerCore.isDisabled(pluginId) }
+                    ?.takeIf { !PluginManagerCore.isLoaded(pluginId) || PluginManagerCore.isDisabled(pluginId) }
                     ?.let { notEnabledModel.add(pluginId) }
             }
 
-        enablePlugins.isEnabled = !notEnabledModel.isEmpty
-
         return !notInstalledModel.isEmpty || !notEnabledModel.isEmpty
-    }
-
-    private fun enablePlugins(pluginIds: Collection<PluginId>) {
-        val pluginManager = PluginManager.getInstance()
-        pluginIds.forEach { pluginManager.enablePlugin(it) }
-
-        application.asSafely<ApplicationEx>()
-            ?.restart(true)
     }
 
 }

@@ -52,7 +52,7 @@ dependencies {
     implementation(project(":flexibleSearch-ui"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
 

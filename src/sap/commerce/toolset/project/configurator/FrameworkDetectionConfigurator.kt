@@ -28,10 +28,10 @@ import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 
-class UltimateFeaturesConfigurator : ProjectPreImportConfigurator {
+class FrameworkDetectionConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
-        get() = "Ultimate Features"
+        get() = "Framework Detection"
 
     override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return

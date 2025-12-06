@@ -40,7 +40,6 @@ enum class Plugin(val id: String, val url: String? = null) {
     PROPERTIES("com.intellij.properties", "https://plugins.jetbrains.com/plugin/11594-properties"),
     COPYRIGHT("com.intellij.copyright", "https://plugins.jetbrains.com/plugin/13114-copyright"),
     JAVASCRIPT("JavaScript", "https://plugins.jetbrains.com/plugin/22069-javascript-and-typescript"),
-    INTELLILANG("org.intellij.intelliLang", "https://plugins.jetbrains.com/plugin/13374-intellilang"),
     JAVAEE("com.intellij.javaee", "https://plugins.jetbrains.com/plugin/20207-jakarta-ee-platform"),
     JAVAEE_WEB("com.intellij.javaee.web", "https://plugins.jetbrains.com/plugin/20216-jakarta-ee-web-servlets"),
     JAVAEE_EL("com.intellij.javaee.el", "https://plugins.jetbrains.com/plugin/20208-jakarta-ee-expression-language-el-"),
