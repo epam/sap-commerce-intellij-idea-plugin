@@ -18,13 +18,10 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.components.service
-import com.intellij.spellchecker.dictionary.UserDictionary
 import com.intellij.spellchecker.state.ProjectDictionaryState
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 
 class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
-
-    private val dictionaryName = "sap.commerce.toolset"
 
     override val name: String
         get() = "Project Dictionaries"
@@ -35,17 +32,9 @@ class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
             .map { it.name.lowercase() }
             .toSet()
         val projectDictionary = project.service<ProjectDictionaryState>()
-            .getProjectDictionary()
+            .projectDictionary
 
-        projectDictionary.editableWords //ensure dictionaries exist
-
-        val hybrisDictionary = projectDictionary.dictionaries
-            .firstOrNull { it.name == dictionaryName }
-            ?: UserDictionary(dictionaryName).apply {
-                projectDictionary.dictionaries.add(this)
-            }
-        hybrisDictionary.addToDictionary(dictionaryName)
-        hybrisDictionary.addToDictionary(project.name.lowercase())
-        hybrisDictionary.addToDictionary(moduleNames)
+        projectDictionary.addToDictionary(project.name.lowercase())
+        projectDictionary.addToDictionary(moduleNames)
     }
 }
