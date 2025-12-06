@@ -66,7 +66,7 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
 
         val providers = ImportModuleAction.getProviders(null).toTypedArray()
 
-        withContext(Dispatchers.EDT) {
+        val modules = withContext(Dispatchers.EDT) {
             ImportModuleAction.doImport(null) {
                 val wizard = ImportModuleAction.createImportWizard(null, null, virtualFile, *providers)
                     ?.apply {
@@ -78,7 +78,8 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
             }
         }
 
-        return null
+        return modules.firstOrNull()
+            ?.project
     }
 
     override fun canOpenProject(file: VirtualFile) = if (super.canOpenProject(file)) true
