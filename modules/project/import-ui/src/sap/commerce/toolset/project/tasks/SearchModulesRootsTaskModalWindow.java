@@ -32,11 +32,11 @@ import static sap.commerce.toolset.HybrisI18nBundle.message;
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
     protected final File rootProjectDirectory;
-    protected final HybrisProjectDescriptor projectImportParameters;
+    protected final HybrisProjectDescriptor hybrisProjectDescriptor;
 
     public SearchModulesRootsTaskModalWindow(
         @NotNull final File rootProjectDirectory,
-        @NotNull final HybrisProjectDescriptor projectImportParameters
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),
@@ -45,12 +45,12 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
         );
 
         this.rootProjectDirectory = rootProjectDirectory;
-        this.projectImportParameters = projectImportParameters;
+        this.hybrisProjectDescriptor = hybrisProjectDescriptor;
     }
 
     @Override
     public void run(@NotNull final ProgressIndicator indicator) {
-        this.projectImportParameters.setRootDirectoryAndScanForModules(
+        this.hybrisProjectDescriptor.setRootDirectoryAndScanForModules(
             this.rootProjectDirectory,
             new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),
             new DirectoriesScannerErrorsProcessor()
@@ -59,6 +59,6 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
     @Override
     public void onCancel() {
-        this.projectImportParameters.clear();
+        this.hybrisProjectDescriptor.clear();
     }
 }
