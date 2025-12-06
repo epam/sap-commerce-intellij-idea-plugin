@@ -48,7 +48,9 @@ interface HybrisEditorToolbarProvider {
         .forEach { toggle(project, it) }
 
     fun toggle(project: Project, editor: EditorEx) {
-        if (isEnabled(project, editor.virtualFile)) enableToolbar(project, editor)
+        val vf = editor.virtualFile ?: return
+
+        if (isEnabled(project, vf)) enableToolbar(project, editor)
         else toggle(editor, false)
     }
 

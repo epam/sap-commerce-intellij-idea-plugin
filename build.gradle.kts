@@ -29,7 +29,7 @@ plugins {
     id("idea") // IDEA support
     id("org.jetbrains.intellij.platform") // IDEA support
     alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.changelog) // Gradle IntelliJ Plugin
+    alias(libs.plugins.changelog) // ChangeLog Plugin
     alias(libs.plugins.openAPIGenerator) // openapi Generator
 }
 
@@ -121,7 +121,7 @@ intellijPlatform {
 
         ides {
             select {
-                types = listOf(IntelliJPlatformType.IntellijIdeaUltimate, IntelliJPlatformType.IntellijIdeaCommunity)
+                types = listOf(IntelliJPlatformType.IntellijIdea)
                 channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
                 sinceBuild = properties("intellij.plugin.since.build")
                 untilBuild = properties("intellij.plugin.until.build")
@@ -163,7 +163,7 @@ tasks {
 
     printProductsReleases {
         channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
-        types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
+        types = listOf(IntelliJPlatformType.IntellijIdea)
         untilBuild = provider { null }
 
         doLast {
@@ -188,23 +188,6 @@ tasks {
     }
 }
 
-intellijPlatformTesting {
-    runIde {
-        val runIdeCommunity by registering {
-            type = IntelliJPlatformType.IntellijIdeaCommunity
-            version = properties("intellij.version")
-            useInstaller = false
-
-            task {
-                jvmArgs = projectJvmArguments
-                maxHeapSize = properties("intellij.maxHeapSize").get()
-
-                applyRunIdeSystemSettings()
-            }
-        }
-    }
-}
-
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     implementation(libs.bundles.openapi)
@@ -221,7 +204,7 @@ dependencies {
     intellijPlatform {
         // https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html#dependenciesLocalPlatform
         // local("/Users/<user>/Applications/IntelliJ IDEA Community Edition 2025.1.4.1.app")
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
 
@@ -236,6 +219,7 @@ dependencies {
             "intellij.grid.impl",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
+            "intellij.platform.langInjection",
         )
 
         // printBundledPlugins for bundled plugins
@@ -244,7 +228,6 @@ dependencies {
             "com.intellij.java",
             "com.intellij.java-i18n",
             "com.intellij.cron",
-            "org.intellij.intelliLang",
             "com.intellij.copyright",
             "com.intellij.database",
             "com.intellij.diagram",

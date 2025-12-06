@@ -25,7 +25,6 @@ import com.intellij.database.dataSource.DatabaseAuthProviderNames
 import com.intellij.database.dataSource.LocalDataSource
 import com.intellij.database.dataSource.LocalDataSourceManager
 import com.intellij.database.model.DasDataSource
-import com.intellij.database.util.DbImplUtil
 import com.intellij.database.util.LoaderContext
 import com.intellij.database.util.performAutoIntrospection
 import com.intellij.openapi.application.edtWriteAction
@@ -90,8 +89,6 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
 
 
     private fun loadDatabaseDriver(project: Project, dataSource: LocalDataSource) {
-        if (DbImplUtil.hasDriverFiles(dataSource)) return
-
         val driver = dataSource.databaseDriver ?: return
 
         if (driver.additionalClasspathElements.isNotEmpty()) return

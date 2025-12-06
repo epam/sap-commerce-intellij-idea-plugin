@@ -48,7 +48,8 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                             progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
                                 try {
                                     it.asyncPostImport(hybrisProjectDescriptor)
-                                } catch (_: Exception) {
+                                } catch (e: Exception) {
+                                    println(e)
                                     // ignore
                                 }
                             }
@@ -58,6 +59,7 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                 }
             }
 
+            hybrisProjectDescriptor.clear()
             notifyImportFinished(project, hybrisProjectDescriptor.refresh)
         }
     }

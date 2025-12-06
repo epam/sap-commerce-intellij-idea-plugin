@@ -44,8 +44,10 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
             .flatMap { rootDetector.detect(it) }
         detectedRoots.addAll(roots)
 
-        vcsManager.directoryMappings = detectedRoots
+        val directoryMappings = detectedRoots
             .filter { it.vcs != null }
             .map { VcsDirectoryMapping(it.path.path, it.vcs!!.name) }
+
+        vcsManager.setDirectoryMappings(directoryMappings)
     }
 }

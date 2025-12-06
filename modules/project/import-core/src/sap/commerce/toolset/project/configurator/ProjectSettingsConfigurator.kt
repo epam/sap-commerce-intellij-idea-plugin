@@ -125,12 +125,13 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     }
 
     private fun createModulesOnBlackList(hybrisProjectDescriptor: HybrisProjectDescriptor): Set<String> {
-        val toBeImportedNames = hybrisProjectDescriptor.chosenModuleDescriptors
+        val chosenModuleDescriptors = hybrisProjectDescriptor.chosenModuleDescriptors
+        val toBeImportedNames = chosenModuleDescriptors
             .map { it.name }
             .toSet()
 
         return hybrisProjectDescriptor.foundModules
-            .filterNot { hybrisProjectDescriptor.chosenModuleDescriptors.contains(it) }
+            .filterNot { chosenModuleDescriptors.contains(it) }
             .filter { toBeImportedNames.contains(it.name) }
             .map { it.getRelativePath() }
             .toSet()

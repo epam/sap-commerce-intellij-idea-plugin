@@ -39,9 +39,10 @@ dependencies {
     implementation(project(":project-import-core"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
+
         compatiblePlugins(
             "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
         )

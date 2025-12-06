@@ -42,7 +42,7 @@ dependencies {
     implementation(project(":groovy-exec"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
     }
