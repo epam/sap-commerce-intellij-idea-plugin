@@ -22,7 +22,6 @@ import com.intellij.ide.BrowserUtil
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.projectWizard.WizardContext
-import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.projectImport.ProjectImportWizardStep
@@ -33,7 +32,6 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -44,20 +42,6 @@ import javax.swing.ListModel
 
 class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWizardStep(context) {
 
-    private val ultimateEditionOnly by lazy {
-        listOf(
-            DATABASE,
-            SPRING,
-            JAVAEE,
-            JAVAEE_WEB,
-            JAVAEE_EL,
-            DIAGRAM,
-            JAVASCRIPT,
-            CRON,
-            ANGULAR,
-        )
-            .map { it.id }
-    }
     private val plugins = mapOf(
         SPRING.id to SPRING,
         KOTLIN.id to KOTLIN,
@@ -129,8 +113,11 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                 .align(Align.CENTER)
                 .comment(
                     """
-                        Some of the required or optional plugins are not installed or disabled.<br>
-                        SAP Commerce import may not work properly.
+                        Since IntelliJ IDEA 2025.3 and the introduction of the new unified distribution model, it is advisable to activate your subscription (if you have one) before importing the project.
+                        <br><br>
+                        One or more required or optional plugins are missing or disabled.<br>
+                        As a result, the SAP Commerce import may not function correctly.<br>
+                        For the best experience, it is recommended to activate the additional plugins prior to importing the project.
                     """.trimIndent()
                 )
                 .component.also {
@@ -138,6 +125,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                     it.foreground = ColorUtil.withAlpha(JBColor(0x660000, 0xC93B48), 0.7)
                 }
         }
+
         group("Not Enabled Plugins") {
             row {
                 cell(notEnabledList)
@@ -162,9 +150,6 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
     }
 
     override fun isStepVisible(): Boolean {
-        val isUltimate = HybrisConstants.IDEA_EDITION_ULTIMATE.equals(ApplicationNamesInfo.getInstance().editionName, true)
-        val isCommunity = !isUltimate
-
         notInstalledModel.removeAll()
         notEnabledModel.removeAll()
 
@@ -174,12 +159,10 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         hybrisPlugin.dependencies
             .filter { it.isOptional }
             .map { it.pluginId }
-            .map { pluginId ->
-                if (isCommunity && ultimateEditionOnly.contains(pluginId.idString)) return@map
-
+            .forEach { pluginId ->
                 if (!PluginManager.isPluginInstalled(pluginId)) {
                     notInstalledModel.add(pluginId)
-                    return@map
+                    return@forEach
                 }
                 PluginManagerCore.getPlugin(pluginId)
                     ?.takeIf { PluginManagerCore.isDisabled(pluginId) }

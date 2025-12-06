@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project
 
 import com.intellij.ide.actions.ImportModuleAction
-import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.projectRoots.ProjectJdkTable
@@ -30,15 +30,19 @@ import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
 import com.intellij.util.asSafely
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisConstants
 
 class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
 
-    override fun doOpenProject(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {
+    override suspend fun openProjectAsync(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {
         val jdkTable = ProjectJdkTable.getInstance()
         val orderRootTypes = OrderRootType.getAllTypes()
 
-        runInEdt { jdkTable.preconfigure() }
+        withContext(Dispatchers.EDT) {
+            jdkTable.preconfigure()
+        }
 
         ProgressManager.getInstance().runProcessWithProgressSynchronously<Unit, RuntimeException>(
             {
@@ -62,14 +66,15 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
 
         val providers = ImportModuleAction.getProviders(null).toTypedArray()
 
-        runInEdt {
+        withContext(Dispatchers.EDT) {
             ImportModuleAction.doImport(null) {
-                ImportModuleAction.createImportWizard(null, null, virtualFile, *providers)
+                val wizard = ImportModuleAction.createImportWizard(null, null, virtualFile, *providers)
                     ?.apply {
                         cancelButton.addActionListener {
                             WelcomeFrame.showIfNoProjectOpened()
                         }
                     }
+                wizard
             }
         }
 
