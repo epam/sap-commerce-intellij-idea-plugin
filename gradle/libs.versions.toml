@@ -13,7 +13,7 @@ mavenModel = "3.9.11"
 # https://mvnrepository.com/artifact/commons-codec/commons-codec
 commonsCodec = "1.20.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-commonsLang3 = "3.19.0"
+commonsLang3 = "3.20.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
 commonsCollections4 = "4.5.0"
 # https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
@@ -28,17 +28,15 @@ solrSolrj = "8.11.4"
 # https://mvnrepository.com/artifact/com.squareup.moshi/moshi
 moshi = "1.15.2"
 # https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/
-okhttp = "5.3.0"
+okhttp = "5.3.2"
 # https://central.sonatype.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-core/1.9.0
 serialization = "1.9.0"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 kotlin = "2.2.0-RC2"
-# https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
-gradleIntelliJPlugin = "2.10.5"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-changelog = "2.4.0"
+changelog = "2.5.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
 # Generator: https://openapi-generator.tech/docs/generators/kotlin
 openAPIGenerator = "7.17.0"
@@ -67,7 +65,6 @@ jaxb = ["jaxb-impl", "jakarta-xml-bind-api"]
 openapi = ["moshi", "moshi-adapters", "moshi-kotin", "okhttp"]
 
 [plugins]
-gradleIntelliJPlugin = { id = "org.jetbrains.intellij.platform", version.ref = "gradleIntelliJPlugin" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 openAPIGenerator = { id = "org.openapi.generator", version.ref = "openAPIGenerator" }

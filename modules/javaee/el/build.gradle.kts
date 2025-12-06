@@ -38,7 +38,7 @@ dependencies {
     implementation(project(":cockpitNG-core"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
 

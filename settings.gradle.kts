@@ -21,7 +21,9 @@ import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 rootProject.name = "SAP Commerce Developers Toolset"
 
 plugins {
-    id("org.jetbrains.intellij.platform.settings") version "2.7.1"
+    // https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform.settings
+    // https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html#configuration.dependencyResolutionManagement
+    id("org.jetbrains.intellij.platform.settings") version "2.10.5"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 

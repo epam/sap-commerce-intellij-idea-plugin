@@ -39,9 +39,10 @@ dependencies {
     implementation(project(":acl-core"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
+        intellijIdea(properties("intellij.version")) {
             useInstaller = false
         }
+
         bundledPlugins(
             "com.intellij.copyright",
         )

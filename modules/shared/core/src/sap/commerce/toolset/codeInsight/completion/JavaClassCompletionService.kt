@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.codeInsight.completion
 
-import ai.grazie.utils.toLinkedSet
 import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.components.Service
@@ -40,13 +39,12 @@ class JavaClassCompletionService(val myProject: Project) {
             .asSequence()
             .mapNotNull { psiFacade.findClass(it, allScope) }
             .map { ClassInheritorsSearch.search(it, allScope, true) }
-            .map { it.findAll() }
-            .flatten()
+            .flatMap { it.findAll() }
             .filterNot { it.isInterface }
             .mapNotNull { createLookupElement(it) }
             .distinctBy { it.lookupString }
             .sortedBy { it.lookupString }
-            .toLinkedSet()
+            .toSet()
     }
 
     fun getImplementationsPsiClassesForClasses(vararg qualifiedNames: String): Set<PsiClass> {
@@ -57,12 +55,11 @@ class JavaClassCompletionService(val myProject: Project) {
             .asSequence()
             .mapNotNull { psiFacade.findClass(it, allScope) }
             .map { ClassInheritorsSearch.search(it, allScope, true) }
-            .map { it.findAll() }
-            .flatten()
+            .flatMap { it.findAll() }
             .filterNot { it.isInterface }
             .distinctBy { it }
             .sortedBy { it.qualifiedName }
-            .toLinkedSet()
+            .toSet()
     }
 
     fun createLookupElement(psiClass: PsiClass): LookupElement? {
