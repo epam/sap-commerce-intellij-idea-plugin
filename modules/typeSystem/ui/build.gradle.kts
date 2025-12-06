@@ -47,7 +47,9 @@ dependencies {
     implementation(project(":typeSystem-core"))
 
     intellijPlatform {
-        intellijIdea(properties("intellij.version"), useInstaller = false)
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
 
         bundledPlugins(
             "com.intellij.java",

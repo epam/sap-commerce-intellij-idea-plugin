@@ -43,6 +43,8 @@ dependencies {
     implementation(project(":hac-exec"))
 
     intellijPlatform {
-        intellijIdea(properties("intellij.version"), useInstaller = false)
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
     }
 }

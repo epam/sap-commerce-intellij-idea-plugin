@@ -52,7 +52,9 @@ dependencies {
     implementation(project(":flexibleSearch-ui"))
 
     intellijPlatform {
-        intellijIdea(properties("intellij.version"), useInstaller = false)
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
 
         bundledModules(
             "intellij.libraries.microba",

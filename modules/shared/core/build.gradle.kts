@@ -35,7 +35,9 @@ sourceSets {
 
 dependencies {
     intellijPlatform {
-        intellijIdea(properties("intellij.version"), useInstaller = false)
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
 
         bundledPlugins(
             "com.intellij.java",

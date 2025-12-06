@@ -45,7 +45,9 @@ dependencies {
     implementation(project(":project-import-core"))
 
     intellijPlatform {
-        intellijIdea(properties("intellij.version"), useInstaller = false)
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
 
         compatiblePlugins(
             "JRebelPlugin",                     // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel

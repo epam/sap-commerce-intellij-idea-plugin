@@ -40,7 +40,9 @@ dependencies {
     implementation(project(":ccv2-core"))
 
     intellijPlatform {
-        intellijIdea(properties("intellij.version"), useInstaller = false)
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
 
         bundledModules(
             "com.intellij.modules.json"

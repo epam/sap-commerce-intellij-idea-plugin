@@ -35,8 +35,6 @@ serialization = "1.9.0"
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 kotlin = "2.2.0-RC2"
-# https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
-gradleIntelliJPlugin = "2.10.5"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.5.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
@@ -67,7 +65,6 @@ jaxb = ["jaxb-impl", "jakarta-xml-bind-api"]
 openapi = ["moshi", "moshi-adapters", "moshi-kotin", "okhttp"]
 
 [plugins]
-gradleIntelliJPlugin = { id = "org.jetbrains.intellij.platform", version.ref = "gradleIntelliJPlugin" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 openAPIGenerator = { id = "org.openapi.generator", version.ref = "openAPIGenerator" }

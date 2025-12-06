@@ -21,7 +21,9 @@ import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 rootProject.name = "SAP Commerce Developers Toolset"
 
 plugins {
-    id("org.jetbrains.intellij.platform.settings") version "2.7.1"
+    // https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform.settings
+    // https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html#configuration.dependencyResolutionManagement
+    id("org.jetbrains.intellij.platform.settings") version "2.10.5"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
@@ -37,16 +39,16 @@ dependencyResolutionManagement {
     }
 }
 
-//include(":jps-plugin")
+include(":jps-plugin")
 
 // auto-import sub-mobules
-//File(rootDir, "modules").walk()
-//    .maxDepth(4)
-//    .filter { it.isFile && it.name == "build.gradle.kts" }
-//    .map { it.parentFile.relativeTo(rootDir).path }
-//    .forEach { modulePath ->
-//        include(modulePath)
-//        project(":$modulePath").name = modulePath
-//            .replaceFirst("modules${File.separatorChar}", "")
-//            .replace(File.separatorChar, '-')
-//    }
+File(rootDir, "modules").walk()
+    .maxDepth(4)
+    .filter { it.isFile && it.name == "build.gradle.kts" }
+    .map { it.parentFile.relativeTo(rootDir).path }
+    .forEach { modulePath ->
+        include(modulePath)
+        project(":$modulePath").name = modulePath
+            .replaceFirst("modules${File.separatorChar}", "")
+            .replace(File.separatorChar, '-')
+    }
