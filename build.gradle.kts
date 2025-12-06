@@ -121,7 +121,7 @@ intellijPlatform {
 
         ides {
             select {
-                types = listOf(IntelliJPlatformType.IntellijIdeaUltimate, IntelliJPlatformType.IntellijIdeaCommunity)
+                types = listOf(IntelliJPlatformType.IntellijIdea)
                 channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
                 sinceBuild = properties("intellij.plugin.since.build")
                 untilBuild = properties("intellij.plugin.until.build")
@@ -163,7 +163,7 @@ tasks {
 
     printProductsReleases {
         channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
-        types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
+        types = listOf(IntelliJPlatformType.IntellijIdea)
         untilBuild = provider { null }
 
         doLast {
@@ -184,23 +184,6 @@ tasks {
         doLast {
             sandboxConfigDirectory.file("disabled_plugins.txt").get().asFile
                 .writeText(originalDisabledPluginsContent)
-        }
-    }
-}
-
-intellijPlatformTesting {
-    runIde {
-        val runIdeCommunity by registering {
-            type = IntelliJPlatformType.IntellijIdeaCommunity
-            version = properties("intellij.version")
-            useInstaller = false
-
-            task {
-                jvmArgs = projectJvmArguments
-                maxHeapSize = properties("intellij.maxHeapSize").get()
-
-                applyRunIdeSystemSettings()
-            }
         }
     }
 }
