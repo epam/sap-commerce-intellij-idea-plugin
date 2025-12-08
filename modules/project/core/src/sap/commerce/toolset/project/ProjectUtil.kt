@@ -41,6 +41,7 @@ object ProjectUtil {
         ProjectConstants.Directory.DATA,
 
         ProjectConstants.Directory.CLASSES,
+        ProjectConstants.Directory.ECLIPSE_BIN,
         ProjectConstants.Directory.TEST_CLASSES,
         ProjectConstants.Directory.MODEL_CLASSES,
 

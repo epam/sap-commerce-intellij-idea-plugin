@@ -29,16 +29,29 @@
     </extensions>
 
     <actions>
-        <group id="BSView.ToolWindow">
-            <group id="BSView.ToolWindow.TreePopup">
-                <action class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSNodeAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
+        <action id="sap.commerce.toolset.beanSystem.goToDeclaration"
+                class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSNodeAction"
+                use-shortcut-of="GotoDeclaration"/>
 
-            <group id="BSView.ToolWindow.TablePopup">
-                <action class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSTableAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
+        <group id="sap.commerce.toolset.beanSystem.viewOptions" searchable="false"
+               text="View Options" popup="true"
+               icon="AllIcons.Actions.Show">
+            <separator text="Show"/>
+            <action class="sap.commerce.toolset.beanSystem.actionSystem.BSShowOnlyCustomAction"/>
+            <action class="sap.commerce.toolset.beanSystem.actionSystem.BSShowOnlyDeprecatedAction"/>
+            <separator text="-- Enum --"/>
+            <action class="sap.commerce.toolset.beanSystem.actionSystem.BSShowMetaEnumValuesAction"/>
+            <separator text="-- Bean --"/>
+            <action class="sap.commerce.toolset.beanSystem.actionSystem.BSShowMetaBeanPropertiesAction"/>
+        </group>
+
+        <group id="BSView.ToolWindow.TreePopup">
+            <reference ref="sap.commerce.toolset.beanSystem.goToDeclaration"/>
+        </group>
+
+        <group id="BSView.ToolWindow.TablePopup">
+            <action class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSTableAction"
+                    use-shortcut-of="GotoDeclaration"/>
         </group>
     </actions>
 
