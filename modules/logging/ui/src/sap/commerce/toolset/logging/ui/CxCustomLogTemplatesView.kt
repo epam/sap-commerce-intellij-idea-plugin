@@ -171,6 +171,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         initialized.set(false)
 
         this.templateUUID = templateUUID
+        loggerLevelField.selectedItem = CxLogService.getInstance(project).findTemplate(templateUUID)?.defaultEffectiveLevel ?: CxLogLevel.ALL
 
         renderLoggersInternal(loggers)
     }
