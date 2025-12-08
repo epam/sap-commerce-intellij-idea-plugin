@@ -21,6 +21,8 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.asSafely
+import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.util.*
@@ -30,10 +32,13 @@ class CxCustomLogTemplateItemNode private constructor(
     val uuid: String = UUID.randomUUID().toString(),
     loggers: List<CxLoggerPresentation>,
     private var text: String = "",
+    defaultLogLevel: CxLogLevel,
     icon: Icon?,
     project: Project
 ) : CxLoggersNode(project, text, icon) {
 
+    var defaultLogLevel = defaultLogLevel
+        private set
     var loggers = loggers
         private set
 
@@ -43,12 +48,18 @@ class CxCustomLogTemplateItemNode private constructor(
         loggers = template.loggers
         presentationName = template.name
         icon = template.icon
+        template.defaultLogLevel
+            ?.let { defaultLogLevel = it }
 
         this.update(presentation)
     }
 
     fun update(source: CxLoggersNode) {
         presentationName = source.name
+        source.asSafely<CxCustomLogTemplateItemNode>()
+            ?.defaultLogLevel
+            ?.let { defaultLogLevel = it }
+
         update(presentation)
     }
 
@@ -56,6 +67,8 @@ class CxCustomLogTemplateItemNode private constructor(
         super.update(presentation)
 
         val tip = " ${loggers.size} logger(s)"
+
+        presentation.tooltip = "Default level: ${defaultLogLevel.name}"
 
         presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
     }
@@ -66,6 +79,7 @@ class CxCustomLogTemplateItemNode private constructor(
             loggers = template.loggers,
             text = template.name,
             icon = template.icon,
+            defaultLogLevel = template.defaultLogLevel ?: CxLogLevel.INFO,
             project = project,
         )
     }

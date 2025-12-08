@@ -63,7 +63,8 @@ fun CxCustomLogTemplateState.presentation(project: Project) = CxLogTemplatePrese
     uuid = uuid,
     name = name,
     loggers = loggers.map { presentation(project, it.name, it.effectiveLevel.name) },
-    icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE
+    icon = HybrisIcons.Log.Template.CUSTOM_TEMPLATE,
+    defaultLogLevel = defaultEffectiveLevel
 )
 
 private fun presentation(
