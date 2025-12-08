@@ -19,37 +19,25 @@
 package sap.commerce.toolset.logging.ui
 
 import com.intellij.ide.IdeBundle
-import com.intellij.ide.projectView.ProjectView
-import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiPackage
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.startOffset
-import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
@@ -113,7 +101,9 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     fun renderNothingSelected() = toggleView(showNothingSelected)
 
     fun renderLoggers(loggers: Map<String, CxLoggerPresentation>) {
-        if (loggers.isEmpty()) dataScrollPane.setViewportView(noLoggersView())
+        if (loggers.isEmpty()) dataScrollPane.setViewportView(
+            noLoggersView("Unable to get list of loggers for the connection.")
+        )
         else {
             val viewport = dataScrollPane.getViewport()
             val pos = viewport.getViewPosition()
@@ -136,25 +126,6 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             showDataPanel
         )
             .forEach { it.set(unhide.contains(it)) }
-    }
-
-    private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
-        .visibleIf(property)
-        .align(Align.CENTER)
-        .resizableColumn()
-
-    private fun noLoggersView() = panel {
-        row {
-            cell(
-                InlineBanner(
-                    "Unable to get list of loggers for the connection.",
-                    EditorNotificationPanel.Status.Warning
-                )
-                    .showCloseButton(false)
-            )
-                .align(Align.CENTER)
-                .resizableColumn()
-        }.resizableRow()
     }
 
     private fun loggersView(loggers: Map<String, CxLoggerPresentation>) = panel {
@@ -187,47 +158,11 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                                 }
                         }
 
-                    icon(cxLogger.icon)
-                        .gap(RightGap.SMALL)
-
-                    if (cxLogger.resolved) {
-                        link(cxLogger.name) {
-                            cxLogger.psiElementPointer?.element?.let { psiElement ->
-                                when (psiElement) {
-                                    is PsiPackage -> {
-                                        CoroutineScope(Dispatchers.Default).launch {
-                                            val directory = readAction {
-                                                psiElement.getDirectories(GlobalSearchScope.allScope(project))
-                                                    .firstOrNull()
-                                            } ?: return@launch
-
-                                            edtWriteAction {
-                                                ProjectView.getInstance(project).selectPsiElement(directory, true)
-                                            }
-                                        }
-                                    }
-
-                                    is PsiClass -> PsiNavigationSupport.getInstance()
-                                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
-                                        .navigate(true)
-                                }
-                            }
-                        }
-                            .comment(cxLogger.presentableParent)
-                    } else {
-                        label(cxLogger.name)
-                            .comment(cxLogger.presentableParent)
-                    }
+                    loggerName(project, cxLogger)
                 }
                     .layout(RowLayout.PARENT_GRID)
             }
     }
-
-    private val CxLoggerPresentation.presentableParent
-        get() = this.parentName
-            ?.takeIf { it.isNotEmpty() }
-            ?.takeIf { it != CxLogConstants.ROOT_LOGGER_NAME }
-            ?.let { "child of $it" }
 
     private fun newLoggerPanel(): DialogPanel {
         lateinit var dPanel: DialogPanel
@@ -272,6 +207,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                 }
             }
                 .layout(RowLayout.PARENT_GRID)
+
             row {
                 label("Effective level")
                     .bold()
@@ -279,7 +215,8 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                     .bold()
                     .align(AlignX.FILL)
 
-            }.layout(RowLayout.PARENT_GRID)
+            }
+                .layout(RowLayout.PARENT_GRID)
         }
             .apply {
                 registerValidators(this@CxRemoteLogStateView) { validations ->
