@@ -66,7 +66,6 @@ class CxCustomLogTemplateDialog(
                 .label("Default level:")
                 .bindItem(mutable.defaultEffectiveLevel)
                 .align(AlignX.FILL)
-                .addValidationRule("Default Log Level cannot be empty") { it.selectedItem == null }
         }.layout(RowLayout.PARENT_GRID)
     }
 

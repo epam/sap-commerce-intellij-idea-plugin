@@ -60,7 +60,6 @@ class CxCustomLogTemplateItemNode private constructor(
             ?.defaultLogLevel
             ?.let { defaultLogLevel = it }
 
-
         update(presentation)
     }
 

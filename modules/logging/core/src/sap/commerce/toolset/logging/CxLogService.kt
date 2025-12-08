@@ -137,9 +137,9 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         }
     }
 
-    fun findTemplate(templateUUID: String) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
-        return@with templates.find {it.uuid == templateUUID}
-    }
+    fun findTemplate(templateUUID: String) = CxCustomLogTemplatesSettings.getInstance(project)
+        .templates
+        .find { it.uuid == templateUUID }
 
     private fun updateCustomLoggerTemplateInternal(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {

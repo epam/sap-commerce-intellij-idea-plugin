@@ -30,7 +30,7 @@ import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
-class CxRenameCustomLogTemplateAction : AnAction() {
+class CxEditCustomLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
