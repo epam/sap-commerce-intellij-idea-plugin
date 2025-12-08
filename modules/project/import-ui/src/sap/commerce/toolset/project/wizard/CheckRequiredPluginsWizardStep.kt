@@ -30,7 +30,6 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.Plugin.HYBRIS
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.io.Serial
@@ -40,7 +39,8 @@ import javax.swing.ListModel
 class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWizardStep(context) {
 
     private val declaredPluginDependencies = Plugin.entries
-        .filterNot { it == HYBRIS }
+        .filterNot { it == Plugin.HYBRIS }
+        .filterNot { it == Plugin.ULTIMATE }
         .associateBy { it.id }
 
     private val cellRenderer = object : ColoredListCellRenderer<PluginId>() {
@@ -122,7 +122,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         notInstalledModel.removeAll()
         notEnabledModel.removeAll()
 
-        val hybrisPlugin = HYBRIS.pluginDescriptor
+        val hybrisPlugin = Plugin.HYBRIS.pluginDescriptor
             ?: return false
 
         hybrisPlugin.dependencies
@@ -134,7 +134,10 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                     return@onEach
                 }
                 PluginManagerCore.getPlugin(pluginId)
-                    ?.takeIf { !PluginManagerCore.isLoaded(pluginId) || PluginManagerCore.isDisabled(pluginId) }
+                    ?.takeIf {
+                        Plugin.of(pluginId.idString)?.isDisabled()
+                            ?: (!PluginManagerCore.isLoaded(pluginId) || PluginManagerCore.isDisabled(pluginId))
+                    }
                     ?.let { notEnabledModel.add(pluginId) }
             }
 

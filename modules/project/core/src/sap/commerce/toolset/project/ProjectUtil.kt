@@ -30,22 +30,37 @@ object ProjectUtil {
     private val KEY_HYBRIS_PROJECT_DIRECTORY = Key.create<Boolean>("IS_HYBRIS_FILE")
     private val SKIP_DIRS = setOf(
         ProjectConstants.Directory.NODE_MODULES,
-        ProjectConstants.Directory.CLASSES,
+
+        ProjectConstants.Directory.IDEA,
+        ProjectConstants.Directory.SVN,
+        ProjectConstants.Directory.GRADLE,
+
         ProjectConstants.Directory.TEMP,
+        ProjectConstants.Directory.TMP,
         ProjectConstants.Directory.LOG,
         ProjectConstants.Directory.DATA,
-        ProjectConstants.Directory.RESOURCES,
-        ProjectConstants.Directory.IDEA,
+
+        ProjectConstants.Directory.CLASSES,
+        ProjectConstants.Directory.TEST_CLASSES,
+        ProjectConstants.Directory.MODEL_CLASSES,
+
         ProjectConstants.Directory.SRC,
+        ProjectConstants.Directory.GEN_SRC,
         ProjectConstants.Directory.GROOVY_SRC,
         ProjectConstants.Directory.KOTLIN_SRC,
+        ProjectConstants.Directory.SCALA_SRC,
+
         ProjectConstants.Directory.TEST_SRC,
         ProjectConstants.Directory.GROOVY_TEST_SRC,
         ProjectConstants.Directory.KOTLIN_TEST_SRC,
+        ProjectConstants.Directory.SCALA_TEST_SRC,
+
+        ProjectConstants.Directory.RESOURCES,
+
         "installer",
         "build-tools",
         "licenses",
-        "js-storefront",
+        ProjectConstants.Directory.JS_STOREFRONT,
     )
 
     @JvmStatic
