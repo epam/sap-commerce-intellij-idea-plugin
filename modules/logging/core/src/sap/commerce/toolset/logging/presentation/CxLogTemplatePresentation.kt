@@ -27,5 +27,5 @@ data class CxLogTemplatePresentation(
     val name: String,
     var loggers: List<CxLoggerPresentation>,
     var icon: Icon,
-    var defaultLogLevel:CxLogLevel? = null
+    var defaultLogLevel: CxLogLevel? = null
 )
