@@ -16,15 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.settings.state
+package sap.commerce.toolset.beanSystem.actionSystem
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 
-@Tag("Settings")
-data class BSViewSettingsState(
-    @OptionTag val showCustomOnly: Boolean = false,
-    @OptionTag val showDeprecatedOnly: Boolean = false,
-    @OptionTag val showEnumValues: Boolean = true,
-    @OptionTag val showBeanProperties: Boolean = true,
-)
+internal val AnActionEvent.bsViewSettings
+    get() = project
+        ?.let { BSViewSettings.getInstance(it) }
