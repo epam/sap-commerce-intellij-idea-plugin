@@ -40,6 +40,8 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     val isSingleton: Boolean
     val isJaloOnly: Boolean
     val isCatalogAware: Boolean
+    val isDeprecated: Boolean
+    val deprecatedSince: String?
 
     interface TSMetaItemIndex : TSMetaClassifier<Index> {
         override val name: String

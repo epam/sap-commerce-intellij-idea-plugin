@@ -17,6 +17,10 @@
   -->
 <idea-plugin>
 
+<!--    <extensions defaultExtensionNs="sap.commerce.toolset">-->
+<!--        <project.postImportConfigurator implementation="sap.commerce.toolset.typeSystem.configurator.TypeSystemProjectDictionaryConfigurator"/>-->
+<!--    </extensions>-->
+
     <extensions defaultExtensionNs="com.intellij">
         <dom.fileMetaData rootTagName="items" stubVersion="24" implementation="sap.commerce.toolset.typeSystem.TSDomFileDescription"/>
         <dom.fileMetaData rootTagName="model" stubVersion="3" implementation="sap.commerce.toolset.typeSystem.TSDeploymentModelDomFileDescription"/>

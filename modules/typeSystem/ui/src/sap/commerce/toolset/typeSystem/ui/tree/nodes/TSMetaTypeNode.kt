@@ -40,6 +40,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
     }
 
     override fun update(project: Project, presentation: PresentationData) {
+        val viewSettings = TSViewSettings.getInstance(myProject)
+        val showOnlyCustom = viewSettings.showOnlyCustom
+        val showOnlyDeprecated = viewSettings.showOnlyDeprecated
+
+        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+
         when (metaType) {
             TSMetaType.META_ATOMIC -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_ATOMIC)
             TSMetaType.META_ITEM -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_ITEM)
@@ -48,15 +54,22 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
             TSMetaType.META_MAP -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_MAP)
             TSMetaType.META_RELATION -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_RELATION)
         }
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
-        val showOnlyCustom = TSViewSettings.getInstance(myProject).showOnlyCustom
-        val entries = globalMetaModel
-            ?.getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType)
-            ?.values
-            ?.filter { if (showOnlyCustom) it.isCustom else true }
-            ?.size
-            ?: 0
+        val entries = when (metaType) {
+            TSMetaType.META_ITEM -> globalMetaModel?.getItems()?.values
+                ?.filter { if (showOnlyCustom) it.isCustom else true }
+                ?.filter { if (showOnlyDeprecated) it.isDeprecated else true }
+                ?.size
+            TSMetaType.META_ENUM -> globalMetaModel?.getEnums()?.values
+                ?.filter { if (showOnlyCustom) it.isCustom else true }
+                ?.filter { if (showOnlyDeprecated) it.isDeprecated else true }
+                ?.size
+            else -> if (showOnlyDeprecated) 0
+            else globalMetaModel?.getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType)?.values
+                ?.filter { if (showOnlyCustom) it.isCustom else true }
+                ?.size
+        } ?: 0
+
         if (entries > 0) {
             presentation.locationString = "$entries"
         }
@@ -82,6 +95,7 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
             ?.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
             ?.values
             ?.filter { if (settings.showOnlyCustom) it.isCustom else true }
+            ?.filter { if (settings.showOnlyDeprecated) it.isDeprecated else true }
             ?: emptyList()
 
         val groupedByName = items.associateBy { it.name }
@@ -103,7 +117,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
         ?.values
         ?.filter { if (settings.showOnlyCustom) it.isCustom else true }
         ?.mapNotNull {
-            when (it) {
+            if (settings.showOnlyDeprecated) when (it) {
+                is TSGlobalMetaItem -> if (it.isDeprecated) TSMetaItemNode(this, it) else null
+                is TSGlobalMetaEnum -> if (it.isDeprecated) TSMetaEnumNode(this, it) else null
+                else -> null
+
+            } else when (it) {
                 is TSGlobalMetaItem -> if (settings.showMetaItems) TSMetaItemNode(this, it) else null
                 is TSGlobalMetaEnum -> if (settings.showMetaEnums) TSMetaEnumNode(this, it) else null
                 is TSGlobalMetaRelation -> if (settings.showMetaRelations) TSMetaRelationNode(this, it) else null
@@ -112,6 +131,7 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
                 is TSGlobalMetaMap -> if (settings.showMetaMaps) TSMetaMapNode(this, it) else null
                 else -> null
             }
+
         }
         ?.associateBy { it.name }
         ?: emptyMap()
