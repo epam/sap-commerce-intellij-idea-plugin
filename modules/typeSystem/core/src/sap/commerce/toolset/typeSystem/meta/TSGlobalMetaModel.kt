@@ -40,12 +40,19 @@ class TSGlobalMetaModel : GlobalMetaModel {
     fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: TSMetaType): ConcurrentMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
-    fun getMetaAtomic(name: String?) = getMetaType<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC)[name]
-    fun getMetaEnum(name: String?) = getMetaType<TSGlobalMetaEnum>(TSMetaType.META_ENUM)[name]
-    fun getMetaMap(name: String?) = getMetaType<TSGlobalMetaMap>(TSMetaType.META_MAP)[name]
-    fun getMetaRelation(name: String?) = getMetaType<TSGlobalMetaRelation>(TSMetaType.META_RELATION)[name]
-    fun getMetaItem(name: String?) = getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[name]
-    fun getMetaCollection(name: String?) = getMetaType<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION)[name]
+    fun getAtomics() = getMetaType<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC)
+    fun getEnums() = getMetaType<TSGlobalMetaEnum>(TSMetaType.META_ENUM)
+    fun getMaps() = getMetaType<TSGlobalMetaMap>(TSMetaType.META_MAP)
+    fun getRelations() = getMetaType<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
+    fun getItems() = getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+    fun getCollections() = getMetaType<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION)
+
+    fun getMetaAtomic(name: String?) = getAtomics()[name]
+    fun getMetaEnum(name: String?) = getEnums()[name]
+    fun getMetaMap(name: String?) = getMaps()[name]
+    fun getMetaRelation(name: String?) = getRelations()[name]
+    fun getMetaItem(name: String?) = getItems()[name]
+    fun getMetaCollection(name: String?) = getCollections()[name]
 
     fun getMetaTypes() = myMetaCache
 

@@ -43,6 +43,7 @@ public interface ItemType extends DomElement {
     String CODE = "code";
     String EXTENDS = "extends";
     String JALO_CLASS = "jaloclass";
+    String DEPRECATED_SINCE = "deprecatedSince";
     String DEPLOYMENT = "deployment";
     String SINGLETON = "singleton";
     String JALO_ONLY = "jaloonly";
@@ -115,6 +116,20 @@ public interface ItemType extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute(JALO_CLASS)
     GenericAttributeValue<String> getJaloClass();
+
+
+    /**
+     * Returns the value of the deprecatedSince child.
+     * <pre>
+     * <h3>Attribute null:deprecatedSince documentation</h3>
+     * Marks item as deprecated since specified version.
+     * </pre>
+     *
+     * @return the value of the jaloclass child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute(DEPRECATED_SINCE)
+    GenericAttributeValue<String> getDeprecatedSince();
 
 
     /**

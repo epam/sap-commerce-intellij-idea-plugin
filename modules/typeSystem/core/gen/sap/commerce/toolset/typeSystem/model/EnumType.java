@@ -39,6 +39,7 @@ public interface EnumType extends DomElement {
     String CODE = "code";
     String DYNAMIC = "dynamic";
     String VALUE = "value";
+    String DEPRECATED_SINCE = "deprecatedSince";
 
     /**
      * Returns the value of the code child.
@@ -96,6 +97,20 @@ public interface EnumType extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("jaloclass")
     GenericAttributeValue<String> getJaloClass();
+
+
+    /**
+     * Returns the value of the deprecatedSince child.
+     * <pre>
+     * <h3>Attribute null:deprecatedSince documentation</h3>
+     * Marks item as deprecated since specified version.
+     * </pre>
+     *
+     * @return the value of the jaloclass child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute(DEPRECATED_SINCE)
+    GenericAttributeValue<String> getDeprecatedSince();
 
 
     /**

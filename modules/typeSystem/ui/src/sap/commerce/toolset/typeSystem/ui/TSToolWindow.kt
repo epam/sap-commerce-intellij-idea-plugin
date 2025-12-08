@@ -20,7 +20,6 @@ package sap.commerce.toolset.typeSystem.ui
 
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.ActionsBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -29,13 +28,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
-import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.typeSystem.actionSystem.*
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
-import sap.commerce.toolset.typeSystem.settings.TSViewSettings
 import sap.commerce.toolset.typeSystem.settings.event.TSViewSettingsListener
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.components.TSTreePanel
@@ -46,8 +42,6 @@ import java.io.Serial
 class TSToolWindow(private val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
     private var initialized = false
-    private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
-    private val mySettings = TSViewSettings.getInstance(project)
     private val myTreePane = TSTreePanel(project)
 
     override fun dispose() {
@@ -79,13 +73,14 @@ class TSToolWindow(private val project: Project, parentDisposable: Disposable) :
     }
 
     private fun installToolbar() {
-        val actionsManager = CommonActionsManager.getInstance()
+        val commonActionsManager = CommonActionsManager.getInstance()
+        val actionManager = ActionManager.getInstance()
         val toolbar = with(DefaultActionGroup()) {
-            add(myItemsViewActionGroup)
+            add(actionManager.getAction("sap.commerce.toolset.typeSystem.viewOptions"))
             addSeparator()
-            add(actionsManager.createExpandAllHeaderAction(myTreePane.tree))
-            add(actionsManager.createCollapseAllHeaderAction(myTreePane.tree))
-            ActionManager.getInstance().createActionToolbar("HybrisTSView", this, false)
+            add(commonActionsManager.createExpandAllHeaderAction(myTreePane.tree))
+            add(commonActionsManager.createCollapseAllHeaderAction(myTreePane.tree))
+            actionManager.createActionToolbar("HybrisTSView", this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)
@@ -127,33 +122,6 @@ class TSToolWindow(private val project: Project, parentDisposable: Disposable) :
             add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", i18n("hybris.toolwindow.ts.suspended.initializing.text"))))
             setContent(this)
         }
-    }
-
-    private fun initItemsViewActionGroup(): DefaultActionGroup = with(
-        DefaultActionGroup(
-            i18n("hybris.toolwindow.action.view_options.text"),
-            true
-        )
-    ) {
-        templatePresentation.icon = HybrisIcons.TypeSystem.Preview.Actions.SHOW
-
-        addSeparator(ActionsBundle.message("separator.show"))
-        add(TSShowOnlyCustomAction(mySettings))
-        addSeparator("-- Types --")
-        add(TSShowMetaAtomicsAction(mySettings))
-        add(TSShowMetaEnumsAction(mySettings))
-        add(TSShowMetaCollectionsAction(mySettings))
-        add(TSShowMetaMapsAction(mySettings))
-        add(TSShowMetaRelationsAction(mySettings))
-        add(TSShowMetaItemsAction(mySettings))
-        addSeparator("-- Enum --")
-        add(TSShowMetaEnumValuesAction(mySettings))
-        addSeparator("-- Item --")
-        add(TSShowMetaItemIndexesAction(mySettings))
-        add(TSShowMetaItemAttributesAction(mySettings))
-        add(TSShowMetaItemCustomPropertiesAction(mySettings))
-        add(TSGroupItemByParentAction(mySettings))
-        this
     }
 
     companion object {
