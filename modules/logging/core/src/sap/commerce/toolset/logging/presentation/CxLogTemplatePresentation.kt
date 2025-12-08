@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.logging.presentation
 
+import sap.commerce.toolset.logging.CxLogLevel
 import java.util.*
 import javax.swing.Icon
 
@@ -25,5 +26,6 @@ data class CxLogTemplatePresentation(
     val uuid: String = UUID.randomUUID().toString(),
     val name: String,
     var loggers: List<CxLoggerPresentation>,
-    var icon: Icon
+    var icon: Icon,
+    var defaultLogLevel:CxLogLevel? = null
 )

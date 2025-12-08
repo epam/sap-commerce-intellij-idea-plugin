@@ -21,6 +21,8 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.asSafely
+import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.util.*
@@ -30,10 +32,13 @@ class CxCustomLogTemplateItemNode private constructor(
     val uuid: String = UUID.randomUUID().toString(),
     loggers: List<CxLoggerPresentation>,
     private var text: String = "",
+    defaultLogLevel: CxLogLevel? = null,
     icon: Icon?,
     project: Project
 ) : CxLoggersNode(project, text, icon) {
 
+    var defaultLogLevel = defaultLogLevel
+        private set
     var loggers = loggers
         private set
 
@@ -43,12 +48,15 @@ class CxCustomLogTemplateItemNode private constructor(
         loggers = template.loggers
         presentationName = template.name
         icon = template.icon
+        defaultLogLevel = template.defaultLogLevel
 
         this.update(presentation)
     }
 
     fun update(source: CxLoggersNode) {
         presentationName = source.name
+        defaultLogLevel = source.asSafely<CxCustomLogTemplateItemNode>()?.defaultLogLevel
+
         update(presentation)
     }
 
@@ -56,6 +64,10 @@ class CxCustomLogTemplateItemNode private constructor(
         super.update(presentation)
 
         val tip = " ${loggers.size} logger(s)"
+
+        defaultLogLevel?.let {
+            presentation.tooltip = "Default level: ${it.name}"
+        }
 
         presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
     }
@@ -66,6 +78,7 @@ class CxCustomLogTemplateItemNode private constructor(
             loggers = template.loggers,
             text = template.name,
             icon = template.icon,
+            defaultLogLevel = template.defaultLogLevel,
             project = project,
         )
     }

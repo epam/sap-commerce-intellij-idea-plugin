@@ -20,11 +20,11 @@ package sap.commerce.toolset.logging.ui
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
+import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import javax.swing.JComponent
 
@@ -51,7 +51,22 @@ class CxCustomLogTemplateDialog(
                 .addValidationRule("Template Name cannot be blank") { it.text.isNullOrBlank() }
                 .addValidationRule("Template Name cannot exceed 255 characters") { it.text.length > 255 }
                 .component
+        }.layout(RowLayout.PARENT_GRID)
 
+        row {
+            comboBox(
+                model = EnumComboBoxModel(CxLogLevel::class.java),
+                renderer = SimpleListCellRenderer.create { label, value, _ ->
+                    if (value != null) {
+                        label.icon = value.icon
+                        label.text = value.name
+                    }
+                }
+            )
+                .label("Default level:")
+                .bindItem(mutable.defaultEffectiveLevel)
+                .align(AlignX.FILL)
+                .addValidationRule("Default Log Level cannot be empty") { it.selectedItem == null }
         }.layout(RowLayout.PARENT_GRID)
     }
 

@@ -56,7 +56,7 @@ class CxRenameCustomLogTemplateAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "Rename Template"
+        e.presentation.text = "Edit Template"
         e.presentation.icon = HybrisIcons.Log.Template.EDIT_CUSTOM_TEMPLATE
     }
 }

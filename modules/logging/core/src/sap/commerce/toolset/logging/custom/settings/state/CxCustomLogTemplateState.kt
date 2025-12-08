@@ -21,28 +21,33 @@ package sap.commerce.toolset.logging.custom.settings.state
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.util.xmlb.annotations.OptionTag
+import sap.commerce.toolset.logging.CxLogLevel
 import java.util.*
 
 data class CxCustomLogTemplateState(
     @OptionTag val uuid: String = UUID.randomUUID().toString(),
     @OptionTag val name: String = "",
+    @OptionTag val defaultEffectiveLevel: CxLogLevel = CxLogLevel.ALL,
     @OptionTag val loggers: List<CxCustomLoggerState> = emptyList()
 ) {
 
     fun mutable() = Mutable(
         uuid = uuid,
         name = AtomicProperty(name),
+        defaultEffectiveLevel = AtomicProperty(defaultEffectiveLevel),
         loggers = AtomicProperty(loggers.map { it.mutable() }),
     )
 
     data class Mutable(
         val uuid: String = UUID.randomUUID().toString(),
         val name: ObservableMutableProperty<String>,
+        val defaultEffectiveLevel: ObservableMutableProperty<CxLogLevel>,
         val loggers: ObservableMutableProperty<List<CxCustomLoggerState.Mutable>>,
     ) {
         fun immutable() = CxCustomLogTemplateState(
             uuid = uuid,
             name = name.get(),
+            defaultEffectiveLevel = defaultEffectiveLevel.get(),
             loggers = loggers.get().map { it.immutable() },
         )
     }
