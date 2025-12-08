@@ -18,20 +18,22 @@
 
 package sap.commerce.toolset.typeSystem.settings.state
 
+import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
 @Tag("Settings")
 data class TSViewSettingsState(
-    val showOnlyCustom: Boolean = false,
-    val showMetaItems: Boolean = true,
-    val showMetaRelations: Boolean = true,
-    val showMetaEnums: Boolean = true,
-    val showMetaCollections: Boolean = true,
-    val showMetaAtomics: Boolean = true,
-    val showMetaMaps: Boolean = true,
-    val showMetaEnumValues: Boolean = true,
-    val showMetaItemIndexes: Boolean = true,
-    val showMetaItemAttributes: Boolean = true,
-    val showMetaItemCustomProperties: Boolean = true,
-    val groupItemByParent: Boolean = false,
+    @OptionTag val showOnlyCustom: Boolean = false,
+    @OptionTag val showOnlyDeprecated: Boolean = false,
+    @OptionTag val showMetaItems: Boolean = true,
+    @OptionTag val showMetaRelations: Boolean = true,
+    @OptionTag val showMetaEnums: Boolean = true,
+    @OptionTag val showMetaCollections: Boolean = true,
+    @OptionTag val showMetaAtomics: Boolean = true,
+    @OptionTag val showMetaMaps: Boolean = true,
+    @OptionTag val showMetaEnumValues: Boolean = true,
+    @OptionTag val showMetaItemIndexes: Boolean = true,
+    @OptionTag val showMetaItemAttributes: Boolean = true,
+    @OptionTag val showMetaItemCustomProperties: Boolean = true,
+    @OptionTag val groupItemByParent: Boolean = false,
 )
