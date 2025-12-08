@@ -40,9 +40,6 @@ import sap.commerce.toolset.logging.CxLogUiConstants
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.addItemListener
-import sap.commerce.toolset.ui.addKeyListener
-import sap.commerce.toolset.ui.event.KeyListener
-import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
 class CxCustomLogTemplatesView(private val project: Project) : Disposable {
@@ -104,6 +101,8 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
+    override fun dispose() = panel.drop()
+
     fun render(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
@@ -136,22 +135,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         }
     }
 
-    override fun dispose() = panel.drop()
-
-    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: CxLogLevel) {
-        canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
-
-        if (!canApply.get()) return
-
-        CxLogService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
-        resetInputs()
-    }
-
-    private fun resetInputs() {
-        loggerNameField.text = ""
-        loggerLevelField.selectedItem = CxLogLevel.ALL
-    }
-
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
         val view = if (loggers.isEmpty()) noLoggersView(
             "Please, use the panel above to add a logger.",
@@ -175,20 +158,9 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         row {
             loggerLevelField = logLevelComboBox().component
 
-            loggerNameField = textField()
-                .resizableColumn()
-                .align(AlignX.FILL)
-                .validationOnApply {
-                    if (it.text.isBlank()) error("Please enter a logger name")
-                    else null
-                }
-                .addKeyListener(this@CxCustomLogTemplatesView, object : KeyListener {
-                    override fun keyReleased(e: KeyEvent) {
-                        if (e.keyCode == KeyEvent.VK_ENTER) {
-                            applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                        }
-                    }
-                })
+            loggerNameField = newLoggerTextField(this@CxCustomLogTemplatesView) {
+                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+            }
                 .component
 
             button("Apply Logger") {
@@ -216,5 +188,19 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             initialized
         )
             .forEach { it.set(unhide.contains(it)) }
+    }
+
+    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: CxLogLevel) {
+        canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
+
+        if (!canApply.get()) return
+
+        CxLogService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
+        resetInputs()
+    }
+
+    private fun resetInputs() {
+        loggerNameField.text = ""
+        loggerLevelField.selectedItem = CxLogLevel.ALL
     }
 }

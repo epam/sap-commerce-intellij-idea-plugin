@@ -38,9 +38,6 @@ import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addItemListener
-import sap.commerce.toolset.ui.addKeyListener
-import sap.commerce.toolset.ui.event.KeyListener
-import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
 class CxRemoteLogStateView(private val project: Project) : Disposable {
@@ -87,6 +84,8 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
     val view: DialogPanel
         get() = panel.value
+
+    override fun dispose() = panel.drop()
 
     fun render(loggers: Map<String, CxLoggerPresentation>?) {
         if (loggers == null) {
@@ -156,24 +155,9 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             row {
                 loggerLevelField = logLevelComboBox().component
 
-                loggerNameField = textField()
-                    .resizableColumn()
-                    .align(AlignX.FILL)
-                    .validationOnInput {
-                        if (it.text.isBlank()) error("Please enter a logger name")
-                        else null
-                    }
-                    .validationOnApply {
-                        if (it.text.isBlank()) error("Please enter a logger name")
-                        else null
-                    }
-                    .addKeyListener(this@CxRemoteLogStateView, object : KeyListener {
-                        override fun keyReleased(e: KeyEvent) {
-                            if (e.keyCode == KeyEvent.VK_ENTER) {
-                                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                            }
-                        }
-                    })
+                loggerNameField = newLoggerTextField(this@CxRemoteLogStateView) {
+                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+                }
                     .component
 
                 button("Apply Logger") {
@@ -215,7 +199,5 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             }
         }
     }
-
-    override fun dispose() = panel.drop()
 
 }

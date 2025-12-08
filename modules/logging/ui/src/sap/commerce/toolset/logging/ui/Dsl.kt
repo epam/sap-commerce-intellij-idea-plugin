@@ -20,6 +20,7 @@ package sap.commerce.toolset.logging.ui
 
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
@@ -34,6 +35,7 @@ import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.*
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +46,9 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
+import sap.commerce.toolset.ui.addKeyListener
+import sap.commerce.toolset.ui.event.KeyListener
+import java.awt.event.KeyEvent
 
 internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
     val placeholderIcon = placeholder().gap(RightGap.SMALL)
@@ -51,6 +56,7 @@ internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
     val placeholderName = placeholder().resizableColumn().gap(RightGap.SMALL)
 
     placeholderIcon.component = icon(AnimatedIcon.Default.INSTANCE).component
+    placeholderName.component = label(cxLogger.name).component
 
     CoroutineScope(Dispatchers.Default).launch {
         val psiElement = smartReadAction(project) {
@@ -119,6 +125,22 @@ internal fun Row.logLevelComboBox(): Cell<ComboBox<CxLogLevel>> = comboBox(
         }
     }
 )
+
+internal fun Row.newLoggerTextField(parentDisposable: Disposable, apply: () -> Unit): Cell<JBTextField> = textField()
+    .resizableColumn()
+    .align(AlignX.FILL)
+    .validationOnApply {
+        if (it.text.isBlank()) error("Please enter a logger name")
+        else null
+    }
+    .addKeyListener(parentDisposable, object : KeyListener {
+        override fun keyReleased(e: KeyEvent) {
+            if (e.keyCode == KeyEvent.VK_ENTER) {
+                apply()
+            }
+        }
+    })
+
 
 internal fun noLoggersView(
     messageText: String,

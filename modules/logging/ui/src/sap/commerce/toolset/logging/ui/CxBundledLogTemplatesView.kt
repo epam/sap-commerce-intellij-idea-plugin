@@ -75,6 +75,8 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
+    override fun dispose() = panel.drop()
+
     fun render(loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
@@ -98,7 +100,7 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
             .forEach { it.set(unhide.contains(it)) }
     }
 
-    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
+    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { cxLogger ->
             row {
                 icon(cxLogger.level.icon)
@@ -111,6 +113,4 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
             }
         }
     }
-
-    override fun dispose() = panel.drop()
 }
