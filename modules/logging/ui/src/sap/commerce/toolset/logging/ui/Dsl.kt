@@ -22,7 +22,6 @@ import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
@@ -30,6 +29,7 @@ import com.intellij.openapi.util.Iconable
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiPackage
+import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.AnimatedIcon
@@ -44,12 +44,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 
 internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
     val placeholderIcon = placeholder().gap(RightGap.SMALL)
-    val placeholderHelp = placeholder().gap(RightGap.SMALL)
-    val placeholderName = placeholder().resizableColumn()
+    val placeholderHelp = placeholder()
+    val placeholderName = placeholder().resizableColumn().gap(RightGap.SMALL)
 
     placeholderIcon.component = icon(AnimatedIcon.Default.INSTANCE).component
 
@@ -66,12 +67,16 @@ internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
         } ?: HybrisIcons.Log.Identifier.NA
 
         val navigableComponent = if (psiElement != null) {
+            val pointer = smartReadAction(project) {
+                SmartPointerManager.getInstance(project).createSmartPsiElementPointer(psiElement)
+            }
+
             link(cxLogger.name) {
-                when (psiElement) {
+                when (val resolvedPsiElement = pointer.element) {
                     is PsiPackage -> {
-                        launch {
-                            val directory = readAction {
-                                psiElement.getDirectories(GlobalSearchScope.allScope(project))
+                        CoroutineScope(Dispatchers.Default).launch {
+                            val directory = smartReadAction(project) {
+                                resolvedPsiElement.getDirectories(GlobalSearchScope.allScope(project))
                                     .firstOrNull()
                             } ?: return@launch
 
@@ -82,17 +87,19 @@ internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
                     }
 
                     is PsiClass -> PsiNavigationSupport.getInstance()
-                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
+                        .createNavigatable(project, resolvedPsiElement.containingFile.virtualFile, resolvedPsiElement.startOffset)
                         .navigate(true)
+
+                    else -> Notifications.warning(
+                        "Logger declaration could not be found",
+                        "Unable to locate logger declaration for name: ${cxLogger.name}.",
+                    )
+                        .hideAfter(10)
+                        .notify(project)
                 }
-            }
-                .comment(cxLogger.presentableParent)
-                .resizableColumn()
-                .component
+            }.component
         } else {
-            label(cxLogger.name)
-                .comment(cxLogger.presentableParent)
-                .component
+            label(cxLogger.name).component
         }
 
         withContext(Dispatchers.EDT) {
