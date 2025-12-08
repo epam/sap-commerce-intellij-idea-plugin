@@ -43,6 +43,8 @@ internal class TSMetaEnumImpl(
     override val isDynamic = dom.dynamic.toBoolean()
     override val description = dom.description.stringValue
     override val jaloClass = dom.jaloClass.stringValue
+    override val deprecatedSince = dom.deprecatedSince.stringValue
+    override val isDeprecated = deprecatedSince != null
 
     override fun toString() = "Enum(module=$extensionName, name=$name, isDynamic=$isDynamic, isCustom=$isCustom)"
 
@@ -59,11 +61,9 @@ internal class TSMetaEnumImpl(
 
         override fun toString() = "EnumValue(module=$extensionName, name=$name, isCustom=$isCustom)"
     }
-
 }
 
-internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
-    : TSMetaSelfMerge<EnumType, TSMetaEnum>(localMeta), TSGlobalMetaEnum {
+internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum) : TSMetaSelfMerge<EnumType, TSMetaEnum>(localMeta), TSGlobalMetaEnum {
 
     override val values = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, TSMetaEnum.TSMetaEnumValue>()
     override val domAnchor = localMeta.domAnchor
@@ -74,15 +74,19 @@ internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
     override var isDynamic = localMeta.isDynamic
     override var description = localMeta.description
     override var jaloClass = localMeta.jaloClass
+    override var deprecatedSince = localMeta.deprecatedSince
+    override var isDeprecated = deprecatedSince != null
     override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     override fun mergeInternally(localMeta: TSMetaEnum) {
-        jaloClass?:let { jaloClass = localMeta.jaloClass }
-        description?:let { description = localMeta.description }
+        jaloClass ?: let { jaloClass = localMeta.jaloClass }
+        description ?: let { description = localMeta.description }
+        deprecatedSince ?: let { deprecatedSince = localMeta.deprecatedSince }
 
         if (localMeta.isDynamic) isDynamic = localMeta.isDynamic
         if (localMeta.isAutoCreate) isAutoCreate = localMeta.isAutoCreate
         if (localMeta.isGenerate) isGenerate = localMeta.isGenerate
+        if (localMeta.isDeprecated) isDeprecated = localMeta.isDeprecated
 
         localMeta.values.values
             .filterNot { values.contains(it.name) }

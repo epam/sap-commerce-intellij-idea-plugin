@@ -27,9 +27,11 @@ interface TSMetaEnum : TSMetaClassifier<EnumType> {
     val values: Map<String, TSMetaEnumValue>
     val description: String?
     val jaloClass: String?
+    val deprecatedSince: String?
     val isAutoCreate: Boolean
     val isGenerate: Boolean
     val isDynamic: Boolean
+    val isDeprecated: Boolean
 
     interface TSMetaEnumValue : TSMetaClassifier<EnumValue> {
         override val name: String

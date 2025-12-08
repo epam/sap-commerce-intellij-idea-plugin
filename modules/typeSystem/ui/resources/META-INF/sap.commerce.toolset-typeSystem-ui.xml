@@ -52,16 +52,36 @@
     </extensions>
 
     <actions>
-        <group id="TSView.ToolWindow">
-            <group id="TSView.ToolWindow.TreePopup">
-                <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationNodeAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
+        <group id="sap.commerce.toolset.typeSystem.viewOptions" searchable="false"
+               text="View Options" popup="true"
+               icon="AllIcons.Actions.Show">
+            <separator text="Show"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowOnlyCustomAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowOnlyDeprecatedAction"/>
+            <separator text="-- Type --"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaAtomicsAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaEnumsAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaCollectionsAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaMapsAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaRelationsAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaItemsAction"/>
+            <separator text="-- Enum --"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaEnumValuesAction"/>
+            <separator text="-- Item --"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaItemIndexesAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaItemAttributesAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSShowMetaItemCustomPropertiesAction"/>
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGroupItemByParentAction"/>
+        </group>
 
-            <group id="TSView.ToolWindow.TablePopup">
-                <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationTableAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
+        <group id="TSView.ToolWindow.TreePopup">
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationNodeAction"
+                    use-shortcut-of="GotoDeclaration"/>
+        </group>
+
+        <group id="TSView.ToolWindow.TablePopup">
+            <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationTableAction"
+                    use-shortcut-of="GotoDeclaration"/>
         </group>
     </actions>
 

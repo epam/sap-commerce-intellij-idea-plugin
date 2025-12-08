@@ -53,6 +53,8 @@ internal class TSMetaItemImpl(
     override val isJaloOnly = dom.jaloOnly.toBoolean()
     override val isCatalogAware = TSMetaHelper.isCatalogAware(dom.customProperties)
     override val jaloClass = dom.jaloClass.stringValue
+    override val deprecatedSince = dom.deprecatedSince.stringValue
+    override val isDeprecated = deprecatedSince != null
     override val description = dom.description.xmlTag?.value?.text
     override var extendedMetaItemName = dom.extends.stringValue
 
@@ -136,6 +138,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     override var isSingleton = localMeta.isSingleton
     override var isJaloOnly = localMeta.isJaloOnly
     override var jaloClass = localMeta.jaloClass
+    override var deprecatedSince = localMeta.deprecatedSince
+    override var isDeprecated = localMeta.isDeprecated
     override var description = localMeta.description
     override var deployment = localMeta.deployment
     override var isCatalogAware = localMeta.isCatalogAware
@@ -204,6 +208,11 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
         if (localMeta.isJaloOnly) isJaloOnly = localMeta.isJaloOnly
         if (localMeta.isSingleton) isJaloOnly = localMeta.isSingleton
         if (localMeta.isCatalogAware) isCatalogAware = localMeta.isCatalogAware
+        if (localMeta.isDeprecated) isDeprecated = localMeta.isDeprecated
+
+        jaloClass ?: let { jaloClass = localMeta.jaloClass }
+        description ?: let { description = localMeta.description }
+        deprecatedSince ?: let { deprecatedSince = localMeta.deprecatedSince }
 
         if (localMeta.deployment?.retrieveDom()?.exists() == true) deployment = localMeta.deployment
 

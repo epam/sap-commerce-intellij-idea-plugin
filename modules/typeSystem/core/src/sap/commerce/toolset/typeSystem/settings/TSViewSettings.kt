@@ -40,6 +40,11 @@ class TSViewSettings(private val project: Project) : SerializablePersistentState
         set(value) {
             updateState { it.copy(showOnlyCustom = value) }
         }
+    var showOnlyDeprecated: Boolean
+        get() = state.showOnlyDeprecated
+        set(value) {
+            updateState { it.copy(showOnlyDeprecated = value) }
+        }
     var showMetaItems: Boolean
         get() = state.showMetaItems
         set(value) {
