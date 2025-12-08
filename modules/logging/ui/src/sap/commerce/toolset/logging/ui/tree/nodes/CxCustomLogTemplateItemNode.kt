@@ -32,7 +32,7 @@ class CxCustomLogTemplateItemNode private constructor(
     val uuid: String = UUID.randomUUID().toString(),
     loggers: List<CxLoggerPresentation>,
     private var text: String = "",
-    defaultLogLevel: CxLogLevel? = null,
+    defaultLogLevel: CxLogLevel,
     icon: Icon?,
     project: Project
 ) : CxLoggersNode(project, text, icon) {
@@ -48,14 +48,18 @@ class CxCustomLogTemplateItemNode private constructor(
         loggers = template.loggers
         presentationName = template.name
         icon = template.icon
-        defaultLogLevel = template.defaultLogLevel
+        template.defaultLogLevel
+            ?.let { defaultLogLevel = it }
 
         this.update(presentation)
     }
 
     fun update(source: CxLoggersNode) {
         presentationName = source.name
-        defaultLogLevel = source.asSafely<CxCustomLogTemplateItemNode>()?.defaultLogLevel
+        source.asSafely<CxCustomLogTemplateItemNode>()
+            ?.defaultLogLevel
+            ?.let { defaultLogLevel = it }
+
 
         update(presentation)
     }
@@ -65,9 +69,7 @@ class CxCustomLogTemplateItemNode private constructor(
 
         val tip = " ${loggers.size} logger(s)"
 
-        defaultLogLevel?.let {
-            presentation.tooltip = "Default level: ${it.name}"
-        }
+        presentation.tooltip = "Default level: ${defaultLogLevel.name}"
 
         presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
     }
@@ -78,7 +80,7 @@ class CxCustomLogTemplateItemNode private constructor(
             loggers = template.loggers,
             text = template.name,
             icon = template.icon,
-            defaultLogLevel = template.defaultLogLevel,
+            defaultLogLevel = template.defaultLogLevel ?: CxLogLevel.INFO,
             project = project,
         )
     }
