@@ -20,7 +20,6 @@ package sap.commerce.toolset.beanSystem.ui
 
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.ActionsBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -29,11 +28,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.actionSystem.BSShowMetaBeanPropertiesAction
-import sap.commerce.toolset.beanSystem.actionSystem.BSShowMetaEnumValuesAction
-import sap.commerce.toolset.beanSystem.actionSystem.BSShowOnlyCustomAction
-import sap.commerce.toolset.beanSystem.actionSystem.BSShowOnlyDeprecatedAction
 import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
@@ -48,7 +42,6 @@ import java.io.Serial
 class BSToolWindow(private val project: Project, parentDisposable: Disposable) : CxToolWindow() {
 
     private var initialized = false
-    private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BSViewSettings.getInstance(project)
     private val myTreePane = BSTreePanel(project)
 
@@ -82,13 +75,14 @@ class BSToolWindow(private val project: Project, parentDisposable: Disposable) :
     }
 
     private fun installToolbar() {
-        val actionsManager = CommonActionsManager.getInstance()
+        val commonActionsManager = CommonActionsManager.getInstance()
+        val actionManager = ActionManager.getInstance()
         val toolbar = with(DefaultActionGroup()) {
-            add(myBeansViewActionGroup)
+            add(actionManager.getAction("sap.commerce.toolset.beanSystem.viewOptions"))
             addSeparator()
-            add(actionsManager.createExpandAllHeaderAction(myTreePane.tree))
-            add(actionsManager.createCollapseAllHeaderAction(myTreePane.tree))
-            ActionManager.getInstance().createActionToolbar("HybrisBSView", this, false)
+            add(commonActionsManager.createExpandAllHeaderAction(myTreePane.tree))
+            add(commonActionsManager.createCollapseAllHeaderAction(myTreePane.tree))
+            actionManager.createActionToolbar("HybrisBSView", this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)
@@ -130,24 +124,6 @@ class BSToolWindow(private val project: Project, parentDisposable: Disposable) :
             add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", i18n("hybris.toolwindow.bs.suspended.initializing.text"))))
             setContent(this)
         }
-    }
-
-    private fun initBeansViewActionGroup(): DefaultActionGroup = with(
-        DefaultActionGroup(
-            i18n("hybris.toolwindow.action.view_options.text"),
-            true
-        )
-    ) {
-        templatePresentation.icon = HybrisIcons.BeanSystem.Preview.SHOW
-
-        addSeparator(ActionsBundle.message("separator.show"))
-        add(BSShowOnlyCustomAction(mySettings))
-        add(BSShowOnlyDeprecatedAction(mySettings))
-        addSeparator("-- Enum --")
-        add(BSShowMetaEnumValuesAction(mySettings))
-        addSeparator("-- Bean --")
-        add(BSShowMetaBeanPropertiesAction(mySettings))
-        this
     }
 
     companion object {
