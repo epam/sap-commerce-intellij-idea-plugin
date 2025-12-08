@@ -7,6 +7,9 @@
 ### `Bean System` enhancements
 - Preserve Preview view settings on IDE restart [#1689](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1689)
 
+### `Type System` enhancements
+- Preserve Preview view settings on IDE restart [#1690](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1690)
+
 ### `SAP CX Logging` enhancements
 - Support a default log level for a Custom Log Template [#1687](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1687)
 
