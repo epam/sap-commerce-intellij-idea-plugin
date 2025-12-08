@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
@@ -27,7 +26,6 @@ import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
@@ -36,7 +34,6 @@ import javax.swing.JPanel
 
 class CxBundledLogTemplatesView(private val project: Project) : Disposable {
 
-    private val showNothingSelected = AtomicBooleanProperty(true)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
 
@@ -44,13 +41,6 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     private val panel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
             override fun compute() = panel {
-                row {
-                    cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
-                }
-                    .visibleIf(showNothingSelected)
-                    .resizableRow()
-                    .topGap(TopGap.MEDIUM)
-
                 row {
                     label("Effective level")
                         .bold()
@@ -85,9 +75,7 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    fun renderNothingSelected() = toggleView(showNothingSelected)
-
-    fun renderLoggersTemplate(loggers: Map<String, CxLoggerPresentation>) {
+    fun render(loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
         renderLoggersInternal(loggers)
@@ -104,7 +92,6 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
         listOf(
-            showNothingSelected,
             showDataPanel,
             initialized,
         )

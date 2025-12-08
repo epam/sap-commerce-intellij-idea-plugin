@@ -18,20 +18,16 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
-import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -53,7 +49,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private var templateUUID: String = ""
 
-    private val showNothingSelected = AtomicBooleanProperty(true)
     private val showNoLoggerTemplates = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
@@ -70,9 +65,8 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             override fun compute() = panel {
                 row {
                     cellNoData(showNoLoggerTemplates, "No Logger Templates")
-                    cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
                 }
-                    .visibleIf(showNoLoggerTemplates.or(showNothingSelected))
+                    .visibleIf(showNoLoggerTemplates)
                     .resizableRow()
                     .topGap(TopGap.MEDIUM)
 
@@ -110,9 +104,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    fun renderNothingSelected() = toggleView(showNothingSelected)
-
-    fun renderLoggersTemplate(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
+    fun render(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
         this.templateUUID = templateUUID
@@ -124,15 +116,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { cxLogger ->
             row {
-                comboBox(
-                    model = EnumComboBoxModel(CxLogLevel::class.java),
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = value.icon
-                            label.text = value.name
-                        }
-                    }
-                )
+                logLevelComboBox()
                     .bindItem({ cxLogger.level }, { _ -> })
                     .addItemListener(this@CxCustomLogTemplatesView) { event ->
                         val newLevel = event.item.asSafely<CxLogLevel>() ?: return@addItemListener
@@ -189,16 +173,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private fun newLoggerPanel(): DialogPanel = panel {
         row {
-            loggerLevelField = comboBox(
-                model = EnumComboBoxModel(CxLogLevel::class.java),
-                renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    if (value != null) {
-                        label.icon = value.icon
-                        label.text = value.name
-                    }
-                }
-            )
-                .component
+            loggerLevelField = logLevelComboBox().component
 
             loggerNameField = textField()
                 .resizableColumn()
@@ -236,7 +211,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
         listOf(
-            showNothingSelected,
             showNoLoggerTemplates,
             showDataPanel,
             initialized

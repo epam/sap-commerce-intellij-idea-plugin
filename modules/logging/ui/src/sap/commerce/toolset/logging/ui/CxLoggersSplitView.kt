@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.logging.ui
 
+import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
@@ -25,6 +26,8 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +41,10 @@ import sap.commerce.toolset.logging.exec.event.CxRemoteLogStateListener
 import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
 import sap.commerce.toolset.logging.ui.tree.CxLoggersTree
 import sap.commerce.toolset.logging.ui.tree.CxLoggersTreeNode
-import sap.commerce.toolset.logging.ui.tree.nodes.*
+import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxLoggersNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxRemoteLogStateNode
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
 import sap.commerce.toolset.ui.addTreeSelectionListener
@@ -146,43 +152,35 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                 is CxRemoteLogStateNode -> {
                     secondComponent = remoteLogStateView.view
 
-                    CxRemoteLogAccess.getInstance(project).state(node.connection.uuid).get()
-                        ?.let { remoteLogStateView.renderLoggers(it) }
-                        ?: remoteLogStateView.renderFetchLoggers()
-                }
-
-                is CxBundledLogTemplateGroupNode -> {
-                    secondComponent = bundledLogTemplatesView.view
-
-                    bundledLogTemplatesView.renderNothingSelected()
+                    val loggers = CxRemoteLogAccess.getInstance(project).state(node.connection.uuid).get()
+                    remoteLogStateView.render(loggers)
                 }
 
                 is CxBundledLogTemplateItemNode -> {
                     secondComponent = bundledLogTemplatesView.view
 
                     node.loggers.associateBy { it.name }.let {
-                        bundledLogTemplatesView.renderLoggersTemplate(it)
+                        bundledLogTemplatesView.render(it)
                     }
-                }
-
-                is CxCustomLogTemplateGroupNode -> {
-                    secondComponent = customLogTemplatesView.view
-
-                    customLogTemplatesView.renderNothingSelected()
                 }
 
                 is CxCustomLogTemplateItemNode -> {
                     secondComponent = customLogTemplatesView.view
 
                     node.loggers.associateBy { it.name }.let {
-                        customLogTemplatesView.renderLoggersTemplate(node.uuid, it)
+                        customLogTemplatesView.render(node.uuid, it)
                     }
                 }
 
                 else -> {
-                    secondComponent = remoteLogStateView.view
-
-                    remoteLogStateView.renderNothingSelected()
+                    secondComponent = panel {
+                        row {
+                            label(IdeBundle.message("empty.text.nothing.selected"))
+                                .resizableColumn()
+                                .align(Align.CENTER)
+                        }
+                            .resizableRow()
+                    }
                 }
             }
         }

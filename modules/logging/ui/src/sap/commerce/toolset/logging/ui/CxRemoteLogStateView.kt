@@ -18,18 +18,14 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.ide.IdeBundle
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
-import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
-import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -49,9 +45,7 @@ import javax.swing.JPanel
 
 class CxRemoteLogStateView(private val project: Project) : Disposable {
 
-    private val showNothingSelected = AtomicBooleanProperty(true)
     private val showFetchLoggers = AtomicBooleanProperty(false)
-    private val showNoLogger = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val editable = AtomicBooleanProperty(true)
     private val canApply = AtomicBooleanProperty(false)
@@ -62,12 +56,9 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             override fun compute() = panel {
                 row {
                     cellNoData(showFetchLoggers, "Fetch Loggers State")
-                    cellNoData(showNoLogger, "No Logger Templates")
-                    cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
                 }
-                    .visibleIf(showFetchLoggers.or(showNoLogger).or(showNothingSelected))
+                    .visibleIf(showFetchLoggers)
                     .resizableRow()
-                    .topGap(TopGap.MEDIUM)
 
                 row {
                     cell(newLoggerPanel())
@@ -97,14 +88,17 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    fun renderFetchLoggers() = toggleView(showFetchLoggers)
-    fun renderNothingSelected() = toggleView(showNothingSelected)
+    fun render(loggers: Map<String, CxLoggerPresentation>?) {
+        if (loggers == null) {
+            toggleView(showFetchLoggers)
+            return
+        }
 
-    fun renderLoggers(loggers: Map<String, CxLoggerPresentation>) {
-        if (loggers.isEmpty()) dataScrollPane.setViewportView(
-            noLoggersView("Unable to get list of loggers for the connection.")
-        )
-        else {
+        if (loggers.isEmpty()) {
+            dataScrollPane.setViewportView(
+                noLoggersView("Unable to get list of loggers for the connection.")
+            )
+        } else {
             val viewport = dataScrollPane.getViewport()
             val pos = viewport.getViewPosition()
 
@@ -120,9 +114,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
         listOf(
-            showNothingSelected,
             showFetchLoggers,
-            showNoLogger,
             showDataPanel
         )
             .forEach { it.set(unhide.contains(it)) }
@@ -134,16 +126,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             .sortedBy { it.name }
             .forEach { cxLogger ->
                 row {
-                    comboBox(
-                        EnumComboBoxModel(CxLogLevel::class.java),
-                        renderer = SimpleListCellRenderer.create { label, value, _ ->
-                            if (value != null) {
-                                label.icon = value.icon
-                                label.text = value.name
-                            }
-                        }
-                    )
-                        .align(AlignX.FILL)
+                    logLevelComboBox()
                         .enabledIf(editable)
                         .bindItem({ cxLogger.level }, { _ -> })
                         .addItemListener(this@CxRemoteLogStateView) { event ->
@@ -171,16 +154,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
         return panel {
             row {
-                loggerLevelField = comboBox(
-                    model = EnumComboBoxModel(CxLogLevel::class.java),
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = value.icon
-                            label.text = value.name
-                        }
-                    }
-                )
-                    .component
+                loggerLevelField = logLevelComboBox().component
 
                 loggerNameField = textField()
                     .resizableColumn()

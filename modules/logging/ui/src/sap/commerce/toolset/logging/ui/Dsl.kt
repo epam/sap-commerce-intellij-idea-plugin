@@ -25,6 +25,7 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.Iconable
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
@@ -32,19 +33,16 @@ import com.intellij.psi.PsiPackage
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
-import com.intellij.ui.AnimatedIcon
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.RightGap
-import com.intellij.ui.dsl.builder.Row
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.*
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Cell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 
 internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
@@ -111,6 +109,16 @@ internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
         }
     }
 }
+
+internal fun Row.logLevelComboBox(): Cell<ComboBox<CxLogLevel>> = comboBox(
+    model = EnumComboBoxModel(CxLogLevel::class.java),
+    renderer = SimpleListCellRenderer.create { label, value, _ ->
+        if (value != null) {
+            label.icon = value.icon
+            label.text = value.name
+        }
+    }
+)
 
 internal fun noLoggersView(
     messageText: String,
