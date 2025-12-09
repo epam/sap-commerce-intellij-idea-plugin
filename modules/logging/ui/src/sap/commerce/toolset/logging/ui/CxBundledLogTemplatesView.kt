@@ -18,38 +18,28 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.ide.IdeBundle
-import com.intellij.ide.projectView.ProjectView
-import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
-import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiPackage
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.startOffset
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.SupervisorJob
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.awt.Dimension
 import javax.swing.JPanel
 
 class CxBundledLogTemplatesView(private val project: Project) : Disposable {
 
-    private val showNothingSelected = AtomicBooleanProperty(true)
-    private val showNoLoggerTemplates = AtomicBooleanProperty(false)
+    private var job = SupervisorJob()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
+
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
 
@@ -57,14 +47,6 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     private val panel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
             override fun compute() = panel {
-                row {
-                    cellNoData(showNoLoggerTemplates, "No Logger Templates")
-                    cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
-                }
-                    .visibleIf(showNoLoggerTemplates.or(showNothingSelected))
-                    .resizableRow()
-                    .topGap(TopGap.MEDIUM)
-
                 row {
                     label("Effective level")
                         .bold()
@@ -99,17 +81,20 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    fun renderNothingSelected() = toggleView(showNothingSelected)
-    fun renderNoLoggerTemplates() = toggleView(showNoLoggerTemplates)
+    override fun dispose() {
+        job.cancel()
+        panel.drop()
+    }
 
-    fun renderLoggersTemplate(loggers: Map<String, CxLoggerPresentation>) {
+    fun render(loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
+        initLazyRenderingScope()
 
         renderLoggersInternal(loggers)
     }
 
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
-        val view = if (loggers.isEmpty()) noLoggersView()
+        val view = if (loggers.isEmpty()) noLoggersView("No loggers configured for bundled Log Templates.")
         else createLoggersPanel(loggers.values)
 
         dataScrollPane.setViewportView(view)
@@ -117,78 +102,31 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
         toggleView(showDataPanel, initialized)
     }
 
+    private fun initLazyRenderingScope() {
+        job.cancel()
+        job = SupervisorJob()
+        coroutineScope = CoroutineScope(Dispatchers.Default + job)
+    }
+
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
         listOf(
-            showNothingSelected,
-            showNoLoggerTemplates,
             showDataPanel,
-            initialized
+            initialized,
         )
             .forEach { it.set(unhide.contains(it)) }
     }
 
-    private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
-        .visibleIf(property)
-        .align(Align.CENTER)
-        .resizableColumn()
-
-    private fun noLoggersView() = panel {
-        row {
-            cell(
-                InlineBanner(
-                    "Unable to get list of loggers for the connection.",
-                    EditorNotificationPanel.Status.Warning
-                )
-                    .showCloseButton(false)
-            )
-                .align(Align.CENTER)
-                .resizableColumn()
-        }.resizableRow()
-    }
-
-    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
-        data.forEach { r ->
+    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
+        data.forEach { cxLogger ->
             row {
-                icon(r.level.icon)
-                label(r.level.name)
+                icon(cxLogger.level.icon)
+                label(cxLogger.level.name)
                     .applyToComponent {
                         preferredSize = Dimension(JBUI.scale(68), preferredSize.height)
                     }
 
-                icon(r.icon)
-                if (r.resolved) {
-                    link(r.name) {
-                        r.psiElementPointer?.element?.let { psiElement ->
-                            when (psiElement) {
-                                is PsiPackage -> {
-                                    CoroutineScope(Dispatchers.Default).launch {
-                                        val directory = readAction {
-                                            psiElement.getDirectories(GlobalSearchScope.allScope(project))
-                                                .firstOrNull()
-                                        } ?: return@launch
-
-                                        edtWriteAction {
-                                            ProjectView.getInstance(project).selectPsiElement(directory, true)
-                                        }
-                                    }
-                                }
-
-                                is PsiClass -> invokeLater {
-                                    PsiNavigationSupport.getInstance()
-                                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
-                                        .navigate(true)
-                                }
-                            }
-                        }
-                    }.resizableColumn()
-                } else {
-                    label(r.name)
-                }
+                lazyLoggerDetails(project, coroutineScope, cxLogger)
             }
         }
     }
-
-
-    override fun dispose() = panel.drop()
-
 }

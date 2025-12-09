@@ -18,43 +18,33 @@
 
 package sap.commerce.toolset.logging.presentation
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.SmartPsiElementPointer
-import com.intellij.ui.DeferredIcon
-import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
-import javax.swing.Icon
 
 data class CxLoggerPresentation(
     private val effectiveLevel: String,
     val name: String,
     val parentName: String?,
     val inherited: Boolean,
-    val icon: Icon,
     val level: CxLogLevel = CxLogLevel.of(effectiveLevel),
-    val psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
 ) {
-    val resolved: Boolean
-        get() = icon != HybrisIcons.Log.Identifier.NA
+    val presentableParent
+        get() = this.parentName
+            ?.takeIf { it.isNotEmpty() }
+            ?.takeIf { it != CxLogConstants.ROOT_LOGGER_NAME }
+            ?.let { "child of $it" }
 
     companion object {
-
         fun of(
             name: String,
             effectiveLevel: String,
             parentName: String? = null,
-            inherited: Boolean = false,
-            icon: Icon? = null,
-            psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
+            inherited: Boolean = false
         ): CxLoggerPresentation = CxLoggerPresentation(
             name = name,
             effectiveLevel = effectiveLevel,
             parentName = if (name == CxLogConstants.ROOT_LOGGER_NAME) null else parentName,
             inherited = inherited,
-            icon = icon?.asSafely<DeferredIcon>()?.baseIcon ?: icon ?: HybrisIcons.Log.Identifier.NA,
-            psiElementPointer = psiElementPointer
         )
 
         fun inherited(name: String, parentLogger: CxLoggerPresentation): CxLoggerPresentation = of(

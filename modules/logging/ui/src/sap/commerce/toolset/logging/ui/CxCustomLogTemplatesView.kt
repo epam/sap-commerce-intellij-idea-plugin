@@ -18,53 +18,40 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.ide.IdeBundle
-import com.intellij.ide.projectView.ProjectView
-import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataSink
-import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
-import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiPackage
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.startOffset
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.InlineBanner
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.SupervisorJob
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxLogService
 import sap.commerce.toolset.logging.CxLogUiConstants
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.actionButton
-import sap.commerce.toolset.ui.addKeyListener
-import sap.commerce.toolset.ui.event.KeyListener
-import java.awt.Dimension
-import java.awt.event.KeyEvent
+import sap.commerce.toolset.ui.addItemListener
 import javax.swing.JPanel
 
 class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private var templateUUID: String = ""
 
-    private val showNothingSelected = AtomicBooleanProperty(true)
+    private var job = SupervisorJob()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
+
     private val showNoLoggerTemplates = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
@@ -77,62 +64,20 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     private lateinit var dataScrollPane: JBScrollPane
 
     private val panel by lazy {
-
         object : ClearableLazyValue<DialogPanel>() {
             override fun compute() = panel {
                 row {
-                    loggerLevelField = comboBox(
-                        model = EnumComboBoxModel(CxLogLevel::class.java),
-                        renderer = SimpleListCellRenderer.create { label, value, _ ->
-                            if (value != null) {
-                                label.icon = value.icon
-                                label.text = value.name
-                            }
-                        }
-                    )
-                        .component
-
-                    loggerNameField = textField()
-                        .resizableColumn()
-                        .align(AlignX.FILL)
-                        .validationOnApply {
-                            if (it.text.isBlank()) error("Please enter a logger name")
-                            else null
-                        }
-                        .addKeyListener(this@CxCustomLogTemplatesView, object : KeyListener {
-                            override fun keyReleased(e: KeyEvent) {
-                                if (e.keyCode == KeyEvent.VK_ENTER) {
-                                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                                }
-                            }
-                        })
-                        .component
-
-                    button("Apply Logger") {
-                        applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                    }
-                }
-                    .visibleIf(showDataPanel)
-                    .layout(RowLayout.PARENT_GRID)
-                row {
                     cellNoData(showNoLoggerTemplates, "No Logger Templates")
-                    cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
                 }
-                    .visibleIf(showNoLoggerTemplates.or(showNothingSelected))
+                    .visibleIf(showNoLoggerTemplates)
                     .resizableRow()
                     .topGap(TopGap.MEDIUM)
 
                 row {
-                    label("Effective level")
-                        .bold()
-                        .applyToComponent {
-                            preferredSize = Dimension(JBUI.scale(100), preferredSize.height)
-                        }
-                    label("Logger (package or class name)")
-                        .bold()
+                    cell(newLoggerPanel())
+                        .visibleIf(showDataPanel)
                         .align(AlignX.FILL)
                 }
-                    .visibleIf(showDataPanel)
 
                 separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
                     .visibleIf(showDataPanel)
@@ -149,15 +94,12 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             }
                 .apply {
                     border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
-                }
-                .apply {
+                    dPanel = this
+                    editable.set(true)
+
                     registerValidators(this@CxCustomLogTemplatesView) { validations ->
                         canApply.set(validations.values.all { it.okEnabled })
                     }
-                    dPanel = this
-                }
-                .apply {
-                    editable.set(true)
                 }
         }
     }
@@ -165,9 +107,12 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    fun renderNothingSelected() = toggleView(showNothingSelected)
+    override fun dispose() {
+        job.cancel()
+        panel.drop()
+    }
 
-    fun renderLoggersTemplate(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
+    fun render(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
 
         this.templateUUID = templateUUID
@@ -176,55 +121,22 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         renderLoggersInternal(loggers)
     }
 
-    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
-        data.forEach { r ->
+    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
+        data.forEach { cxLogger ->
             row {
-                comboBox(
-                    model = EnumComboBoxModel(CxLogLevel::class.java),
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = value.icon
-                            label.text = value.name
-                        }
-                    }
-                )
-                    .bindItem({ r.level }, { _ -> })
-                    .onChanged { listener ->
-                        CxLogService.getInstance(project).updateLogger(templateUUID, r.name, listener.item)
+                logLevelComboBox()
+                    .bindItem({ cxLogger.level }, { _ -> })
+                    .addItemListener(this@CxCustomLogTemplatesView) { event ->
+                        val newLevel = event.item.asSafely<CxLogLevel>() ?: return@addItemListener
+                        CxLogService.getInstance(project).updateLogger(templateUUID, cxLogger.name, newLevel)
                     }
 
-                icon(r.icon)
-                if (r.resolved) {
-                    link(r.name) {
-                        r.psiElementPointer?.element?.let { psiElement ->
-                            when (psiElement) {
-                                is PsiPackage -> {
-                                    CoroutineScope(Dispatchers.Default).launch {
-                                        val directory = readAction {
-                                            psiElement.getDirectories(GlobalSearchScope.allScope(project))
-                                                .firstOrNull()
-                                        } ?: return@launch
-
-                                        edtWriteAction {
-                                            ProjectView.getInstance(project).selectPsiElement(directory, true)
-                                        }
-                                    }
-                                }
-
-                                is PsiClass -> PsiNavigationSupport.getInstance()
-                                    .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
-                                    .navigate(true)
-                            }
-                        }
-                    }.resizableColumn()
-                } else {
-                    label(r.name).resizableColumn()
-                }
+                lazyLoggerDetails(project, coroutineScope, cxLogger)
 
                 actionButton(
                     ActionManager.getInstance().getAction("sap.cx.loggers.delete.logger"), sinkExtender = fun(it: DataSink) {
                         it[CxLogUiConstants.DataKeys.TemplateUUID] = templateUUID
-                        it[CxLogUiConstants.DataKeys.LoggerName] = r.name
+                        it[CxLogUiConstants.DataKeys.LoggerName] = cxLogger.name
                     }
                 )
                     .customize(UnscaledGaps(0, 0, 0, 25))
@@ -232,24 +144,13 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         }
     }
 
-    override fun dispose() = panel.drop()
-
-    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: CxLogLevel) {
-        canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
-
-        if (!canApply.get()) return
-
-        CxLogService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
-        resetInputs()
-    }
-
-    private fun resetInputs() {
-        loggerNameField.text = ""
-        loggerLevelField.selectedItem = CxLogLevel.ALL
-    }
-
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
-        val view = if (loggers.isEmpty()) noLoggersView()
+        initLazyRenderingScope()
+
+        val view = if (loggers.isEmpty()) noLoggersView(
+            "Please, use the panel above to add a logger.",
+            EditorNotificationPanel.Status.Info,
+        )
         else createLoggersPanel(loggers.values)
 
         val viewport = dataScrollPane.getViewport()
@@ -264,9 +165,41 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         toggleView(showDataPanel, initialized)
     }
 
+    private fun initLazyRenderingScope() {
+        job.cancel()
+        job = SupervisorJob()
+        coroutineScope = CoroutineScope(Dispatchers.Default + job)
+    }
+
+    private fun newLoggerPanel(): DialogPanel = panel {
+        row {
+            loggerLevelField = logLevelComboBox().component
+
+            loggerNameField = newLoggerTextField(this@CxCustomLogTemplatesView) {
+                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+            }
+                .component
+
+            button("Apply Logger") {
+                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+            }
+        }
+            .visibleIf(showDataPanel)
+            .layout(RowLayout.PARENT_GRID)
+
+        row {
+            label("Effective level")
+                .bold()
+            label("Logger (package or class name)")
+                .bold()
+                .align(AlignX.FILL)
+        }
+            .layout(RowLayout.PARENT_GRID)
+            .visibleIf(showDataPanel)
+    }
+
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
         listOf(
-            showNothingSelected,
             showNoLoggerTemplates,
             showDataPanel,
             initialized
@@ -274,22 +207,17 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             .forEach { it.set(unhide.contains(it)) }
     }
 
-    private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
-        .visibleIf(property)
-        .align(Align.CENTER)
-        .resizableColumn()
+    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: CxLogLevel) {
+        canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
 
-    private fun noLoggersView() = panel {
-        row {
-            cell(
-                InlineBanner(
-                    "Please, use the panel above to add a logger.",
-                    EditorNotificationPanel.Status.Info
-                )
-                    .showCloseButton(false)
-            )
-                .align(Align.CENTER)
-                .resizableColumn()
-        }.resizableRow()
+        if (!canApply.get()) return
+
+        CxLogService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
+        resetInputs()
+    }
+
+    private fun resetInputs() {
+        loggerNameField.text = ""
+        loggerLevelField.selectedItem = CxLogLevel.ALL
     }
 }

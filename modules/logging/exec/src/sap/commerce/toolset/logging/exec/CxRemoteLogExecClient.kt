@@ -36,9 +36,7 @@ import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.logging.exec.context.CxRemoteLogExecContext
 import sap.commerce.toolset.logging.exec.context.CxRemoteLogExecResult
-import sap.commerce.toolset.logging.getPsiElementPointer
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import sap.commerce.toolset.logging.resolveIcon
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -77,10 +75,8 @@ class CxRemoteLogExecClient(project: Project, coroutineScope: CoroutineScope) : 
                     val name = it.jsonObject["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val effectiveLevel = it.jsonObject["effectiveLevel"]?.jsonObject["standardLevel"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val parentName = it.jsonObject["parentName"]?.jsonPrimitive?.content
-                    val psiElementPointer = getPsiElementPointer(project, name)
-                    val icon = resolveIcon(project, name)
 
-                    CxLoggerPresentation.of(name, effectiveLevel, parentName, false, icon, psiElementPointer)
+                    CxLoggerPresentation.of(name, effectiveLevel, parentName, false)
                 }
 
             return CxRemoteLogExecResult(

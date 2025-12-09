@@ -223,10 +223,7 @@ class CxRemoteLogAccess(private val project: Project, private val coroutineScope
                         val effectiveLevel = it[1]
                         val parentName = it[2]
 
-                        val psiElementPointer = getPsiElementPointer(project, loggerIdentifier)
-                        val icon = resolveIcon(project, loggerIdentifier)
-
-                        CxLoggerPresentation.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
+                        CxLoggerPresentation.of(loggerIdentifier, effectiveLevel, parentName, false)
                     }
                     ?.distinctBy { it.name }
                     ?.associateBy { it.name }

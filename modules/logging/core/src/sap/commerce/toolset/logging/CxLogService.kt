@@ -47,11 +47,11 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         }
         .templates
         .takeIf { it.isNotEmpty() }
-        ?.map { it.presentation(project) }
+        ?.map { it.presentation() }
         ?: emptyList()
 
     fun customTemplates() = CxCustomLogTemplatesSettings.getInstance(project).templates
-        .map { it.presentation(project) }
+        .map { it.presentation() }
 
     fun addTemplate(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
@@ -91,7 +91,7 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         updateCustomLoggerTemplateInternal(loggerTemplateState)
 
         coroutineScope.launch {
-            val modifiedTemplate = loggerTemplateState.presentation(project)
+            val modifiedTemplate = loggerTemplateState.presentation()
             project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerUpdated(modifiedTemplate)
         }
     }
@@ -112,7 +112,7 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         updateCustomLoggerTemplateInternal(loggerTemplateState)
 
         coroutineScope.launch {
-            val modifiedTemplate = loggerTemplateState.presentation(project)
+            val modifiedTemplate = loggerTemplateState.presentation()
             project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerUpdated(modifiedTemplate)
         }
     }
@@ -132,7 +132,7 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         updateCustomLoggerTemplateInternal(loggerTemplateState)
 
         coroutineScope.launch {
-            val modifiedTemplate = loggerTemplateState.presentation(project)
+            val modifiedTemplate = loggerTemplateState.presentation()
             project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerUpdated(modifiedTemplate)
         }
     }

@@ -1,7 +1,7 @@
 ## [2025.3.0]
 
 <cite>Release contributors</cite>
-- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Amlytvyn+is%3Apr)
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `Bean System` enhancements
@@ -13,6 +13,7 @@
 
 ### `SAP CX Logging` enhancements
 - Support a default log level for a Custom Log Template [#1687](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1687)
+- Unified bundle, custom and remote UI API [#1692](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1692)
 
 ### Other
 - Compatibility API changes for IDEA `2025.3` [#1686](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1686)
