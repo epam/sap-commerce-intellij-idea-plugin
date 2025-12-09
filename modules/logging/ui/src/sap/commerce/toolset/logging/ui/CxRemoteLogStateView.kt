@@ -31,9 +31,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogAccess
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
@@ -41,6 +39,9 @@ import sap.commerce.toolset.ui.addItemListener
 import javax.swing.JPanel
 
 class CxRemoteLogStateView(private val project: Project) : Disposable {
+
+    private var job = SupervisorJob()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
     private val showFetchLoggers = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
@@ -85,9 +86,14 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    override fun dispose() = panel.drop()
+    override fun dispose() {
+        job.cancel()
+        panel.drop()
+    }
 
     fun render(loggers: Map<String, CxLoggerPresentation>?) {
+        initLazyRenderingScope()
+
         if (loggers == null) {
             toggleView(showFetchLoggers)
             return
@@ -109,6 +115,12 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
         }
 
         toggleView(showDataPanel)
+    }
+
+    private fun initLazyRenderingScope() {
+        job.cancel()
+        job = SupervisorJob()
+        coroutineScope = CoroutineScope(Dispatchers.Default + job)
     }
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
@@ -140,7 +152,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                                 }
                         }
 
-                    loggerName(project, cxLogger)
+                    lazyLoggerDetails(project, coroutineScope, cxLogger)
                 }
                     .layout(RowLayout.PARENT_GRID)
             }

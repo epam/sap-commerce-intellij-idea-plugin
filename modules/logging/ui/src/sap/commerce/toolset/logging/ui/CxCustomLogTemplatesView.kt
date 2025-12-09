@@ -34,6 +34,9 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxLogService
 import sap.commerce.toolset.logging.CxLogUiConstants
@@ -45,6 +48,9 @@ import javax.swing.JPanel
 class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private var templateUUID: String = ""
+
+    private var job = SupervisorJob()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
     private val showNoLoggerTemplates = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
@@ -101,7 +107,10 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    override fun dispose() = panel.drop()
+    override fun dispose() {
+        job.cancel()
+        panel.drop()
+    }
 
     fun render(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
@@ -112,7 +121,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         renderLoggersInternal(loggers)
     }
 
-    fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
+    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
         data.forEach { cxLogger ->
             row {
                 logLevelComboBox()
@@ -122,7 +131,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                         CxLogService.getInstance(project).updateLogger(templateUUID, cxLogger.name, newLevel)
                     }
 
-                loggerName(project, cxLogger)
+                lazyLoggerDetails(project, coroutineScope, cxLogger)
 
                 actionButton(
                     ActionManager.getInstance().getAction("sap.cx.loggers.delete.logger"), sinkExtender = fun(it: DataSink) {
@@ -136,6 +145,8 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     }
 
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
+        initLazyRenderingScope()
+
         val view = if (loggers.isEmpty()) noLoggersView(
             "Please, use the panel above to add a logger.",
             EditorNotificationPanel.Status.Info,
@@ -152,6 +163,12 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         }
 
         toggleView(showDataPanel, initialized)
+    }
+
+    private fun initLazyRenderingScope() {
+        job.cancel()
+        job = SupervisorJob()
+        coroutineScope = CoroutineScope(Dispatchers.Default + job)
     }
 
     private fun newLoggerPanel(): DialogPanel = panel {

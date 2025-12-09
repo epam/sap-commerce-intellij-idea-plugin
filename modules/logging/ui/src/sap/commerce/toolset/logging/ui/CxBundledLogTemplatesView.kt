@@ -28,11 +28,17 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.awt.Dimension
 import javax.swing.JPanel
 
 class CxBundledLogTemplatesView(private val project: Project) : Disposable {
+
+    private var job = SupervisorJob()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
@@ -75,7 +81,10 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    override fun dispose() = panel.drop()
+    override fun dispose() {
+        job.cancel()
+        panel.drop()
+    }
 
     fun render(loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
@@ -84,12 +93,20 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     }
 
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
+        initLazyRenderingScope()
+
         val view = if (loggers.isEmpty()) noLoggersView("No loggers configured for bundled Log Templates.")
         else createLoggersPanel(loggers.values)
 
         dataScrollPane.setViewportView(view)
 
         toggleView(showDataPanel, initialized)
+    }
+
+    private fun initLazyRenderingScope() {
+        job.cancel()
+        job = SupervisorJob()
+        coroutineScope = CoroutineScope(Dispatchers.Default + job)
     }
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
@@ -109,7 +126,7 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
                         preferredSize = Dimension(JBUI.scale(68), preferredSize.height)
                     }
 
-                loggerName(project, cxLogger)
+                lazyLoggerDetails(project, coroutineScope, cxLogger)
             }
         }
     }

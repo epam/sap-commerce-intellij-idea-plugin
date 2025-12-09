@@ -50,7 +50,7 @@ import sap.commerce.toolset.ui.addKeyListener
 import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.event.KeyEvent
 
-internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
+internal fun Row.lazyLoggerDetails(project: Project, coroutineScope: CoroutineScope, cxLogger: CxLoggerPresentation) {
     val placeholderIcon = placeholder().gap(RightGap.SMALL)
     val placeholderHelp = placeholder()
     val placeholderName = placeholder().resizableColumn().gap(RightGap.SMALL)
@@ -58,7 +58,7 @@ internal fun Row.loggerName(project: Project, cxLogger: CxLoggerPresentation) {
     placeholderIcon.component = icon(AnimatedIcon.Default.INSTANCE).component
     placeholderName.component = label(cxLogger.name).component
 
-    CoroutineScope(Dispatchers.Default).launch {
+    coroutineScope.launch {
         val psiElement = smartReadAction(project) {
             val javaPsiFacade = JavaPsiFacade.getInstance(project)
 
