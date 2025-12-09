@@ -532,6 +532,7 @@ object HybrisIcons {
             val FETCH = AllIcons.Vcs.Fetch
             val REFRESH = Actions.REFRESH
             val DELETE = AllIcons.General.Delete
+            val SAVE_AS_TEMPLATE = AllIcons.Actions.MenuSaveall
         }
 
         object Template {

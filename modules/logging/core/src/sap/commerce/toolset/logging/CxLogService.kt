@@ -30,6 +30,7 @@ import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateSta
 import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import sap.commerce.toolset.logging.custom.settings.state.CxCustomLoggerState
 import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.io.InputStreamReader
 
 @Service(Service.Level.PROJECT)
@@ -140,6 +141,24 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
     fun findTemplate(templateUUID: String) = CxCustomLogTemplatesSettings.getInstance(project)
         .templates
         .find { it.uuid == templateUUID }
+
+    fun createTemplateFromLoggers(connectionName: String, loggers: Map<String, CxLoggerPresentation>) = loggers.values
+        .map { CxCustomLoggerState(it.level, it.name) }
+        .let {
+            CxCustomLogTemplateState(
+                name = generateCustomTemplateName(connectionName),
+                defaultEffectiveLevel = CxLogLevel.INFO,
+                loggers = it
+            )
+        }
+
+    private fun generateCustomTemplateName(connectionName: String): String {
+        val customTemplateName = "Remote '$connectionName' | template"
+        val count = CxCustomLogTemplatesSettings.getInstance(project).templates.count { it.name.startsWith(customTemplateName) }
+
+        return if (count >= 1) "$customTemplateName ($count)"
+        else customTemplateName
+    }
 
     private fun updateCustomLoggerTemplateInternal(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {

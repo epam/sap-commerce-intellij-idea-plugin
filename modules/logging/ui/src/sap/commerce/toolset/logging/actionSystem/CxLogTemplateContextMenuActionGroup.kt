@@ -24,6 +24,7 @@ import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateGroupNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
+import sap.commerce.toolset.logging.ui.tree.nodes.CxRemoteLogStateNode
 
 class CxLogTemplateContextMenuActionGroup : ActionGroup(), DumbAware {
 
@@ -34,6 +35,7 @@ class CxLogTemplateContextMenuActionGroup : ActionGroup(), DumbAware {
         val actionManager = ActionManager.getInstance()
 
         return when (selectedNode) {
+            is CxRemoteLogStateNode -> arrayOf(actionManager.getAction("sap.cx.remote.state.save.as.template"))
             is CxBundledLogTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.apply.log.template"))
             is CxCustomLogTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.template.item.actions"))
             is CxCustomLogTemplateGroupNode -> arrayOf(actionManager.getAction("sap.cx.loggers.add.custom.template"))
@@ -47,5 +49,6 @@ class CxLogTemplateContextMenuActionGroup : ActionGroup(), DumbAware {
         e.presentation.isEnabledAndVisible = selectedNode is CxBundledLogTemplateItemNode
             || selectedNode is CxCustomLogTemplateGroupNode
             || selectedNode is CxCustomLogTemplateItemNode
+            || selectedNode is CxRemoteLogStateNode
     }
 }

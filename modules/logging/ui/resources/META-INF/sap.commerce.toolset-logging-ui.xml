@@ -28,6 +28,7 @@
 
     <actions>
         <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.CxFetchRemoteLogStateAction"/>
+        <action id="sap.cx.remote.state.save.as.template" class="sap.commerce.toolset.logging.actionSystem.CxCreateCustomTemplateFromRemoteLogStateAction"/>
 
         <action id="sap.cx.loggers.apply.log.template" class="sap.commerce.toolset.logging.actionSystem.CxApplyLogTemplateAction"/>
         <action id="sap.cx.loggers.add.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxAddCustomLogTemplateAction"/>
