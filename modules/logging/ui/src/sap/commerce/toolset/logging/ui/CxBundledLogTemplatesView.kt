@@ -88,13 +88,12 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
 
     fun render(loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
+        initLazyRenderingScope()
 
         renderLoggersInternal(loggers)
     }
 
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
-        initLazyRenderingScope()
-
         val view = if (loggers.isEmpty()) noLoggersView("No loggers configured for bundled Log Templates.")
         else createLoggersPanel(loggers.values)
 
