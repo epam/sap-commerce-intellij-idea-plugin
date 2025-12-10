@@ -25,6 +25,7 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -50,38 +51,43 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
     private lateinit var dataScrollPane: JBScrollPane
 
-    private val viewPanel = panel {
-        row {
-            cellNoData(showFetchLoggers, "Fetch Loggers State")
+    private val lazyViewPanel by lazy {
+        object : ClearableLazyValue<DialogPanel>() {
+            override fun compute() = panel {
+                row {
+                    cellNoData(showFetchLoggers, "Fetch Loggers State")
+                }
+                    .visibleIf(showFetchLoggers)
+                    .resizableRow()
+
+                row {
+                    cell(newLoggerPanel())
+                        .visibleIf(showDataPanel)
+                        .align(AlignX.FILL)
+                }
+
+                separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+                    .visibleIf(showDataPanel)
+
+                row {
+                    dataScrollPane = JBScrollPane(JPanel())
+                        .apply { border = null }
+
+                    cell(dataScrollPane)
+                        .align(Align.FILL)
+                        .visibleIf(showDataPanel)
+                }
+                    .resizableRow()
+            }.apply {
+                border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
+            }
         }
-            .visibleIf(showFetchLoggers)
-            .resizableRow()
-
-        row {
-            cell(newLoggerPanel())
-                .visibleIf(showDataPanel)
-                .align(AlignX.FILL)
-        }
-
-        separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-            .visibleIf(showDataPanel)
-
-        row {
-            dataScrollPane = JBScrollPane(JPanel())
-                .apply { border = null }
-
-            cell(dataScrollPane)
-                .align(Align.FILL)
-                .visibleIf(showDataPanel)
-        }
-            .resizableRow()
-    }.apply {
-        border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
     }
 
-    override fun dispose() = Unit
+    override fun dispose() = lazyViewPanel.drop()
 
     suspend fun render(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>?): JComponent {
+        val viewPanel = lazyViewPanel.value
         if (loggers == null) {
             toggleView(showFetchLoggers)
             return viewPanel
