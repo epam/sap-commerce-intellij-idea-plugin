@@ -2,7 +2,7 @@
 
 <cite>Release contributors</cite>
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Amlytvyn+is%3Apr)
-- 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Aekalenchuk+is%3Apr++is%3Apr)
+- 3 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `Bean System` enhancements
 - Preserve Preview view settings on IDE restart [#1689](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1689)
@@ -15,6 +15,7 @@
 - Support a default log level for a Custom Log Template [#1687](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1687)
 - Unified bundle, custom and remote UI API [#1692](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1692)
 - Support creation of a template based on the remote state [#1693](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1693)
+- Support deletion for multiple selected custom nodes  [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)
 
 ### Other
 - Compatibility API changes for IDEA `2025.3` [#1686](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1686)

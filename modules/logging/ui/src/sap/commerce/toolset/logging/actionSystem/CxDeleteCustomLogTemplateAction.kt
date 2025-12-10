@@ -27,6 +27,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
 class CxDeleteCustomLogTemplateAction : AnAction() {
@@ -39,19 +40,21 @@ class CxDeleteCustomLogTemplateAction : AnAction() {
 
         val project = e.project ?: return
 
+        val selectedNodes = e.selectedNodes()
+            ?.mapNotNull { it.asSafely<CxCustomLogTemplateItemNode>()?.uuid } ?: return
         val templateNode = e.selectedNode()
             ?.asSafely<CxCustomLogTemplateItemNode>()
             ?: return
 
         if (Messages.showYesNoDialog(
                 project,
-                "Delete template \"${templateNode.name}\"?",
-                "Delete Custom Template",
+                if (selectedNodes.size == 1) "Delete template \"${templateNode.name}\"?" else "Delete templates?",
+                "Confirm Deletion",
                 HybrisIcons.Log.Action.DELETE
             ) != Messages.YES
         ) return
 
-        CxCustomLogTemplateService.getInstance(project).deleteCustomTemplate(templateNode.uuid)
+        CxCustomLogTemplateService.getInstance(project).deleteCustomTemplates(selectedNodes)
     }
 
     override fun update(e: AnActionEvent) {

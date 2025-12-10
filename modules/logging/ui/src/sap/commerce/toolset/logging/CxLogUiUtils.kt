@@ -30,3 +30,8 @@ internal fun AnActionEvent.selectedNode(): Any? = this.getData(PlatformCoreDataK
     ?.lastPathComponent
     ?.asSafely<DefaultMutableTreeNode>()
     ?.userObject
+
+internal fun AnActionEvent.selectedNodes() = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
+    ?.asSafely<CxLoggersTree>()
+    ?.selectionPaths
+    ?.mapNotNull { it.lastPathComponent?.asSafely<DefaultMutableTreeNode>()?.userObject }

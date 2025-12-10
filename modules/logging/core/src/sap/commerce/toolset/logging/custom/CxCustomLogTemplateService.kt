@@ -49,6 +49,16 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateUpdated(template.uuid)
     }
 
+    fun deleteCustomTemplates(templateIds: List<String>) {
+        if (templateIds.isEmpty()) return
+
+        with(CxCustomLogTemplatesSettings.getInstance(project)) {
+            templates = templates.filter { !templateIds.contains(it.uuid) }
+        }
+
+        project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateDeleted()
+    }
+
     fun deleteCustomTemplate(templateId: String) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
             templates = templates.filter { it.uuid != templateId }
