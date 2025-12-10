@@ -26,7 +26,6 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
@@ -41,6 +40,7 @@ import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.addItemListener
+import javax.swing.JComponent
 import javax.swing.JPanel
 
 class CxCustomLogTemplatesView(private val project: Project) : Disposable {
@@ -58,81 +58,81 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     private lateinit var loggerNameField: JBTextField
     private lateinit var dataScrollPane: JBScrollPane
 
-    private val panel by lazy {
-        object : ClearableLazyValue<DialogPanel>() {
-            override fun compute() = panel {
-                row {
-                    cellNoData(showNoLoggerTemplates, "No Logger Templates")
-                }
-                    .visibleIf(showNoLoggerTemplates)
-                    .resizableRow()
-                    .topGap(TopGap.MEDIUM)
+    private val viewPanel = panel {
+        row {
+            cellNoData(showNoLoggerTemplates, "No Logger Templates")
+        }
+            .visibleIf(showNoLoggerTemplates)
+            .resizableRow()
+            .topGap(TopGap.MEDIUM)
 
-                row {
-                    cell(newLoggerPanel())
-                        .visibleIf(showDataPanel)
-                        .align(AlignX.FILL)
-                }
+        row {
+            cell(newLoggerPanel())
+                .visibleIf(showDataPanel)
+                .align(AlignX.FILL)
+        }
 
-                separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-                    .visibleIf(showDataPanel)
+        separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+            .visibleIf(showDataPanel)
 
-                row {
-                    dataScrollPane = JBScrollPane(JPanel())
-                        .apply { border = null }
+        row {
+            dataScrollPane = JBScrollPane(JPanel())
+                .apply { border = null }
 
-                    cell(dataScrollPane)
-                        .align(Align.FILL)
-                        .visibleIf(showDataPanel)
-                }
-                    .resizableRow()
-            }
-                .apply {
-                    border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
-                    dPanel = this
-                    editable.set(true)
+            cell(dataScrollPane)
+                .align(Align.FILL)
+                .visibleIf(showDataPanel)
+        }
+            .resizableRow()
+    }.apply {
+        border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
+        dPanel = this
+        editable.set(true)
 
-                    registerValidators(this@CxCustomLogTemplatesView) { validations ->
-                        canApply.set(validations.values.all { it.okEnabled })
-                    }
-                }
+        registerValidators(this@CxCustomLogTemplatesView) { validations ->
+            canApply.set(validations.values.all { it.okEnabled })
         }
     }
 
-    val view: DialogPanel
-        get() = panel.value
+    override fun dispose() = Unit
 
-    override fun dispose() = panel.drop()
-
-    fun render(coroutineScope: CoroutineScope, templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
+    suspend fun render(coroutineScope: CoroutineScope, templateUUID: String, loggers: Collection<CxLoggerPresentation>): JComponent {
         initialized.set(false)
-
         this.templateUUID = templateUUID
-        loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findTemplate(templateUUID)?.defaultEffectiveLevel ?: CxLogLevel.ALL
 
-        renderLoggersInternal(coroutineScope, loggers)
-    }
+        loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findTemplate(templateUUID)
+            ?.defaultEffectiveLevel
+            ?: CxLogLevel.ALL
 
-    private fun renderLoggersInternal(coroutineScope: CoroutineScope, loggers: Map<String, CxLoggerPresentation>) {
-        val view = if (loggers.isEmpty()) noLoggersView(
-            "Please, use the panel above to add a logger.",
-            EditorNotificationPanel.Status.Info,
-        )
-        else createLoggersPanel(coroutineScope, loggers.values)
+        if (loggers.isEmpty()) {
+            val view = noLoggersView(
+                "Please, use the panel above to add a logger.",
+                EditorNotificationPanel.Status.Info,
+            )
+            dataScrollPane.setViewportView(view)
+        } else {
+            val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
+            val view = createLoggersPanel(loggers, lazyLoggerRows)
+            val viewport = dataScrollPane.getViewport()
+            val pos = viewport.getViewPosition()
 
-        val viewport = dataScrollPane.getViewport()
-        val pos = viewport.getViewPosition()
+            lazyLoggerRows.forEach {
+                lazyLoggerDetails(project, coroutineScope, it)
+            }
 
-        dataScrollPane.setViewportView(view)
+            dataScrollPane.setViewportView(view)
 
-        invokeLater {
-            viewport.viewPosition = pos
+            invokeLater {
+                viewport.viewPosition = pos
+            }
         }
 
         toggleView(showDataPanel, initialized)
+
+        return viewPanel
     }
 
-    private fun createLoggersPanel(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>) = panel {
+    private fun createLoggersPanel(loggers: Collection<CxLoggerPresentation>, lazyLoggerRows: MutableCollection<LazyLoggerRow>) = panel {
         loggers.forEach { cxLogger ->
             row {
                 logLevelComboBox()
@@ -142,7 +142,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                         CxCustomLogTemplateService.getInstance(project).updateLogger(templateUUID, cxLogger.name, newLevel)
                     }
 
-                lazyLoggerDetails(project, coroutineScope, cxLogger)
+                loggerDetailsPlaceholders(cxLogger).also { lazyLoggerRows.add(it) }
 
                 actionButton(
                     ActionManager.getInstance().getAction("sap.cx.loggers.custom.deleteLogger"), sinkExtender = fun(it: DataSink) {
@@ -182,14 +182,8 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             .visibleIf(showDataPanel)
     }
 
-    private fun toggleView(vararg unhide: AtomicBooleanProperty) {
-        listOf(
-            showNoLoggerTemplates,
-            showDataPanel,
-            initialized
-        )
-            .forEach { it.set(unhide.contains(it)) }
-    }
+    private fun toggleView(vararg unhide: AtomicBooleanProperty) = listOf(showNoLoggerTemplates, showDataPanel, initialized)
+        .forEach { it.set(unhide.contains(it)) }
 
     private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, effectiveLevel: CxLogLevel) {
         canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })

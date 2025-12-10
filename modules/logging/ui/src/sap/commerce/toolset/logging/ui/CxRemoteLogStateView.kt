@@ -25,7 +25,6 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -39,6 +38,7 @@ import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addItemListener
+import javax.swing.JComponent
 import javax.swing.JPanel
 
 class CxRemoteLogStateView(private val project: Project) : Disposable {
@@ -49,60 +49,59 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     private val canApply = AtomicBooleanProperty(false)
 
     private lateinit var dataScrollPane: JBScrollPane
-    private val panel by lazy {
-        object : ClearableLazyValue<DialogPanel>() {
-            override fun compute() = panel {
-                row {
-                    cellNoData(showFetchLoggers, "Fetch Loggers State")
-                }
-                    .visibleIf(showFetchLoggers)
-                    .resizableRow()
 
-                row {
-                    cell(newLoggerPanel())
-                        .visibleIf(showDataPanel)
-                        .align(AlignX.FILL)
-                }
-
-                separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-                    .visibleIf(showDataPanel)
-
-                row {
-                    dataScrollPane = JBScrollPane(JPanel())
-                        .apply { border = null }
-
-                    cell(dataScrollPane)
-                        .align(Align.FILL)
-                        .visibleIf(showDataPanel)
-                }
-                    .resizableRow()
-            }
-                .apply {
-                    border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
-                }
+    private val viewPanel = panel {
+        row {
+            cellNoData(showFetchLoggers, "Fetch Loggers State")
         }
+            .visibleIf(showFetchLoggers)
+            .resizableRow()
+
+        row {
+            cell(newLoggerPanel())
+                .visibleIf(showDataPanel)
+                .align(AlignX.FILL)
+        }
+
+        separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+            .visibleIf(showDataPanel)
+
+        row {
+            dataScrollPane = JBScrollPane(JPanel())
+                .apply { border = null }
+
+            cell(dataScrollPane)
+                .align(Align.FILL)
+                .visibleIf(showDataPanel)
+        }
+            .resizableRow()
+    }.apply {
+        border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
     }
 
-    val view: DialogPanel
-        get() = panel.value
+    override fun dispose() = Unit
 
-    override fun dispose() = panel.drop()
-
-    fun render(coroutineScope: CoroutineScope, loggers: Map<String, CxLoggerPresentation>?) {
+    suspend fun render(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>?): JComponent {
         if (loggers == null) {
             toggleView(showFetchLoggers)
-            return
+            return viewPanel
         }
 
         if (loggers.isEmpty()) {
-            dataScrollPane.setViewportView(
-                noLoggersView("Unable to get list of loggers for the connection.")
-            )
+            val view = noLoggersView("Unable to get list of loggers for the connection.")
+
+            dataScrollPane.setViewportView(view)
         } else {
+            val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
             val viewport = dataScrollPane.getViewport()
             val pos = viewport.getViewPosition()
+            val view = loggersView(loggers, lazyLoggerRows)
 
-            dataScrollPane.setViewportView(loggersView(coroutineScope, loggers))
+            lazyLoggerRows.forEach {
+                lazyLoggerDetails(project, coroutineScope, it)
+            }
+
+            dataScrollPane.setViewportView(view)
 
             invokeLater {
                 viewport.viewPosition = pos
@@ -110,19 +109,15 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
         }
 
         toggleView(showDataPanel)
+
+        return viewPanel
     }
 
-    private fun toggleView(vararg unhide: AtomicBooleanProperty) {
-        listOf(
-            showFetchLoggers,
-            showDataPanel
-        )
-            .forEach { it.set(unhide.contains(it)) }
-    }
+    private fun toggleView(vararg unhide: AtomicBooleanProperty) = listOf(showFetchLoggers, showDataPanel)
+        .forEach { it.set(unhide.contains(it)) }
 
-    private fun loggersView(coroutineScope: CoroutineScope, loggers: Map<String, CxLoggerPresentation>) = panel {
-        loggers.values
-            .filterNot { it.inherited }
+    private fun loggersView(loggers: Collection<CxLoggerPresentation>, lazyLoggerRows: MutableList<LazyLoggerRow>) = panel {
+        loggers
             .sortedBy { it.name }
             .forEach { cxLogger ->
                 row {
@@ -141,7 +136,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                                 }
                         }
 
-                    lazyLoggerDetails(project, coroutineScope, cxLogger)
+                    loggerDetailsPlaceholders(cxLogger).also { lazyLoggerRows.add(it) }
                 }
                     .layout(RowLayout.PARENT_GRID)
             }

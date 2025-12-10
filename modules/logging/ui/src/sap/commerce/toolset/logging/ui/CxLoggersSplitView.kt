@@ -58,16 +58,21 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
 
     private val tree = CxLoggersTree(project).apply { registerListeners(this) }
 
+    private var viewDisposable = Disposer.newDisposable()
     private var job = SupervisorJob()
     private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
-
-    private val remoteLogStateView by lazy { CxRemoteLogStateView(project).also { Disposer.register(this, it) } }
-    private val bundledLogTemplatesView by lazy { CxBundledLogTemplatesView(project).also { Disposer.register(this, it) } }
-    private val customLogTemplatesView by lazy { CxCustomLogTemplatesView(project).also { Disposer.register(this, it) } }
+    private val nothingSelectedPanel = panel {
+        row {
+            label(IdeBundle.message("empty.text.nothing.selected"))
+                .resizableColumn()
+                .align(Align.CENTER)
+        }
+            .resizableRow()
+    }
 
     init {
         firstComponent = JBScrollPane(tree)
-        secondComponent = remoteLogStateView.view
+        secondComponent = nothingSelectedPanel
 
         PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
@@ -164,58 +169,54 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
         job.cancel()
         job = SupervisorJob()
         coroutineScope = CoroutineScope(Dispatchers.Default + job)
+        viewDisposable.dispose()
+        viewDisposable = Disposer.newDisposable()
 
         coroutineScope.launch {
             ensureActive()
             if (project.isDisposed) return@launch
 
-            val view = when (node) {
-                is CxRemoteLogStateNode -> remoteLogStateView.view
-                    .apply {
-                        val loggers = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
+            val viewComponent = when (node) {
+                is CxRemoteLogStateNode -> {
+                    val view = CxRemoteLogStateView(project).also { Disposer.register(viewDisposable, it) }
+                    val loggers = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
+                        ?.values
+                        ?.filterNot { it.inherited }
 
-                        withContext(Dispatchers.EDT) {
-                            ensureActive()
-                            remoteLogStateView.render(coroutineScope, loggers)
-                        }
+                    withContext(Dispatchers.EDT) {
+                        ensureActive()
+                        view.render(coroutineScope, loggers)
                     }
-
-                is CxBundledLogTemplateItemNode -> bundledLogTemplatesView.view
-                    .apply {
-                        node.loggers.associateBy { it.name }.let { loggers ->
-                            withContext(Dispatchers.EDT) {
-                                ensureActive()
-                                bundledLogTemplatesView.render(coroutineScope, loggers)
-                            }
-                        }
-                    }
-
-                is CxCustomLogTemplateItemNode -> customLogTemplatesView.view
-                    .apply {
-                        node.loggers.associateBy { it.name }.let { loggers ->
-                            withContext(Dispatchers.EDT) {
-                                ensureActive()
-                                customLogTemplatesView.render(coroutineScope, node.uuid, loggers)
-                            }
-                        }
-                    }
-
-                else -> panel {
-                    row {
-                        label(IdeBundle.message("empty.text.nothing.selected"))
-                            .resizableColumn()
-                            .align(Align.CENTER)
-                    }
-                        .resizableRow()
                 }
+
+                is CxBundledLogTemplateItemNode -> {
+                    val view = CxBundledLogTemplatesView(project).also { Disposer.register(viewDisposable, it) }
+
+                    withContext(Dispatchers.EDT) {
+                        ensureActive()
+                        view.render(coroutineScope, node.loggers)
+                    }
+                }
+
+                is CxCustomLogTemplateItemNode -> {
+                    val view = CxCustomLogTemplatesView(project).also { Disposer.register(viewDisposable, it) }
+
+                    withContext(Dispatchers.EDT) {
+                        ensureActive()
+                        view.render(coroutineScope, node.uuid, node.loggers)
+                    }
+                }
+
+                else -> nothingSelectedPanel
             }
 
             withContext(Dispatchers.EDT) {
                 ensureActive()
-                secondComponent = view
+                secondComponent = viewComponent
             }
         }
     }
+
 
     companion object {
         @Serial
