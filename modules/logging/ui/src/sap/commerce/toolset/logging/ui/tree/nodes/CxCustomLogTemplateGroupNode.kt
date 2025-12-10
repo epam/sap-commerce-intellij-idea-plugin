@@ -19,8 +19,9 @@
 package sap.commerce.toolset.logging.ui.tree.nodes
 
 import com.intellij.openapi.project.Project
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 
 class CxCustomLogTemplateGroupNode(project: Project) : CxLoggersNode(
     project = project,
@@ -28,14 +29,13 @@ class CxCustomLogTemplateGroupNode(project: Project) : CxLoggersNode(
     icon = HybrisIcons.Log.Template.CUSTOM,
 ) {
 
-    override fun getNewChildren(): Map<String, CxLoggersNode> = CxLogService.getInstance(project).customTemplates()
+    override fun getNewChildren(): Map<String, CxLoggersNode> = CxCustomLogTemplateService.getInstance(project).getTemplates()
         .associate { template ->
             template.uuid to CxCustomLogTemplateItemNode.of(project, template)
         }
 
-    override fun update(existingNode: CxLoggersNode, newNode: CxLoggersNode) {
-        if (existingNode is CxCustomLogTemplateItemNode && newNode is CxCustomLogTemplateItemNode) {
-            existingNode.update(newNode)
-        }
+    override fun update(newNode: CxLoggersNode) {
+        newNode.asSafely<CxCustomLogTemplateItemNode>()
+            ?.let { update(it.presentation) }
     }
 }

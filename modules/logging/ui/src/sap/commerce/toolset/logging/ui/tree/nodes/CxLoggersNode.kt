@@ -51,10 +51,11 @@ abstract class CxLoggersNode(
             }
 
         newChildren.forEach { (newName, newNode) ->
-            if (myChildren[newName] == null) {
+            val existingNode = myChildren[newName]
+            if (existingNode == null) {
                 myChildren[newName] = newNode
             } else {
-                update(myChildren[newName]!!, newNode)
+                existingNode.update(newNode)
             }
         }
 
@@ -62,7 +63,7 @@ abstract class CxLoggersNode(
     }
 
     open fun getNewChildren(): Map<String, CxLoggersNode> = emptyMap()
-    open fun update(existingNode: CxLoggersNode, newNode: CxLoggersNode) = Unit
+    protected open fun update(newNode: CxLoggersNode) = Unit
 
     override fun update(presentation: PresentationData) {
         presentation.clearText()

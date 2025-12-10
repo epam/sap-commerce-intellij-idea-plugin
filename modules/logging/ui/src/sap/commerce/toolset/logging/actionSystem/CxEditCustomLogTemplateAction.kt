@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
+import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
@@ -51,7 +51,7 @@ class CxEditCustomLogTemplateAction : AnAction() {
             ?: return
 
         if (CxCustomLogTemplateDialog(project, mutable, "Update a Log Template").showAndGet()) {
-            CxLogService.getInstance(project).updateTemplate(mutable.immutable())
+            CxCustomLogTemplateService.getInstance(project).updateCustomTemplate(mutable.immutable())
         }
     }
 

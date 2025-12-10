@@ -23,7 +23,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
@@ -45,7 +45,7 @@ class CxApplyLogTemplateAction : AnAction() {
             else -> return
         }
 
-        CxRemoteLogAccess.getInstance(project).setLoggers(loggers)
+        CxRemoteLogStateService.getInstance(project).setLoggers(loggers)
     }
 
     override fun update(e: AnActionEvent) {

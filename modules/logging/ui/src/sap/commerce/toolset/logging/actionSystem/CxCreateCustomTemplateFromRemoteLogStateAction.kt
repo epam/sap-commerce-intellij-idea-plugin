@@ -23,10 +23,15 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxRemoteLogStateService
+import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
+import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
+import sap.commerce.toolset.logging.ui.tree.nodes.CxRemoteLogStateNode
 
-class CxFetchRemoteLogStateAction : AnAction() {
+class CxCreateCustomTemplateFromRemoteLogStateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -36,22 +41,39 @@ class CxFetchRemoteLogStateAction : AnAction() {
 
         val project = e.project ?: return
 
-        CxRemoteLogStateService.getInstance(project).fetch()
+        val node = e.selectedNode()
+            ?.asSafely<CxRemoteLogStateNode>()
+            ?: return
+
+        val customLogTemplateService = CxCustomLogTemplateService.getInstance(project)
+        val connectionName = node.connection.shortenConnectionName
+        val customTemplate = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
+            ?.let { customLogTemplateService.createTemplateFromLoggers(connectionName, it) }
+            ?.mutable()
+            ?: return
+
+        if (CxCustomLogTemplateDialog(project, customTemplate, "Create a Log Template").showAndGet()) {
+            customLogTemplateService.addTemplate(customTemplate.immutable())
+        }
     }
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
         val project = e.project ?: return
+        val node = e.selectedNode()
+            ?.asSafely<CxRemoteLogStateNode>()
+            ?: return
+
         val loggerAccess = CxRemoteLogStateService.getInstance(project)
 
         e.presentation.isEnabled = loggerAccess.ready
+            && loggerAccess.stateInitialized
+            && loggerAccess.state(node.connection.uuid).get()?.isNotEmpty() ?: false
 
-        val state = CxRemoteLogStateService.getInstance(project).stateInitialized
+        if (!e.presentation.isVisible) return
 
-        e.presentation.text = if (state) "Refresh Remote Loggers" else "Fetch Remote Loggers"
-        e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
+        e.presentation.text = "Save as Template"
+        e.presentation.icon = HybrisIcons.Log.Action.SAVE_AS_TEMPLATE
         e.presentation.disabledIcon = if (loggerAccess.ready) null else AnimatedIcon.Default.INSTANCE
     }
 }

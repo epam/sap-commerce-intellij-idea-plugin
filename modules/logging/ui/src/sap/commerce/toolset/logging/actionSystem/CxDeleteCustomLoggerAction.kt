@@ -24,10 +24,10 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
 import sap.commerce.toolset.logging.CxLogUiConstants
+import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 
-class CxDeleteLoggerAction : AnAction() {
+class CxDeleteCustomLoggerAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -47,7 +47,7 @@ class CxDeleteLoggerAction : AnAction() {
             ) != Messages.YES
         ) return
 
-        CxLogService.getInstance(project).deleteLogger(templateUUID, loggerName)
+        CxCustomLogTemplateService.getInstance(project).deleteCustomLogger(templateUUID, loggerName)
     }
 
     override fun update(e: AnActionEvent) {

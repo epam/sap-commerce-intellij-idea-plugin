@@ -16,41 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging
+package sap.commerce.toolset.logging.custom
 
-import com.google.gson.Gson
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.util.ResourceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.logging.bundled.CxBundledLogTemplates
+import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateStateListener
 import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import sap.commerce.toolset.logging.custom.settings.state.CxCustomLoggerState
-import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
-import java.io.InputStreamReader
+import sap.commerce.toolset.logging.presentation
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 
 @Service(Service.Level.PROJECT)
-class CxLogService(private val project: Project, private val coroutineScope: CoroutineScope) {
+class CxCustomLogTemplateService(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun bundledTemplates(): List<CxLogTemplatePresentation> = ResourceUtil.getResourceAsStream(
-        this.javaClass.classLoader,
-        "cx-loggers",
-        "templates.json"
-    )
-        .use { input ->
-            InputStreamReader(input, Charsets.UTF_8).use { reader ->
-                Gson().fromJson(reader, CxBundledLogTemplates::class.java)
-            }
-        }
-        .templates
-        .takeIf { it.isNotEmpty() }
-        ?.map { it.presentation() }
-        ?: emptyList()
-
-    fun customTemplates() = CxCustomLogTemplatesSettings.getInstance(project).templates
+    fun getTemplates() = CxCustomLogTemplatesSettings.getInstance(project).templates
         .map { it.presentation() }
 
     fun addTemplate(template: CxCustomLogTemplateState) {
@@ -61,12 +44,12 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateUpdated(template.uuid)
     }
 
-    fun updateTemplate(template: CxCustomLogTemplateState) {
+    fun updateCustomTemplate(template: CxCustomLogTemplateState) {
         updateCustomLoggerTemplateInternal(template)
         project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateUpdated(template.uuid)
     }
 
-    fun deleteTemplate(templateId: String) {
+    fun deleteCustomTemplate(templateId: String) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
             templates = templates.filter { it.uuid != templateId }
         }
@@ -74,7 +57,7 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateDeleted()
     }
 
-    fun addLogger(templateUUID: String, logger: String, effectiveLevel: CxLogLevel) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
+    fun addCustomLogger(templateUUID: String, logger: String, effectiveLevel: CxLogLevel) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
         val loggerTemplateState = templates
             .find { it.uuid == templateUUID }
             ?.mutable()
@@ -96,7 +79,7 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         }
     }
 
-    fun deleteLogger(templateUUID: String, loggerName: String) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
+    fun deleteCustomLogger(templateUUID: String, loggerName: String) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
         val loggerTemplateState = templates
             .find { it.uuid == templateUUID }
             ?.mutable()
@@ -113,11 +96,11 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
 
         coroutineScope.launch {
             val modifiedTemplate = loggerTemplateState.presentation()
-            project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerUpdated(modifiedTemplate)
+            project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onLoggerDeleted(modifiedTemplate)
         }
     }
 
-    fun updateLogger(templateUUID: String, loggerName: String, effectiveLevel: CxLogLevel) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
+    fun updateCustomLogger(templateUUID: String, loggerName: String, effectiveLevel: CxLogLevel) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
         val loggerTemplateState = templates
             .find { it.uuid == templateUUID }
             ?.mutable()
@@ -137,9 +120,27 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
         }
     }
 
-    fun findTemplate(templateUUID: String) = CxCustomLogTemplatesSettings.getInstance(project)
+    fun findCustomTemplate(templateUUID: String) = CxCustomLogTemplatesSettings.getInstance(project)
         .templates
         .find { it.uuid == templateUUID }
+
+    fun createTemplateFromLoggers(connectionName: String, loggers: Map<String, CxLoggerPresentation>) = loggers.values
+        .map { CxCustomLoggerState(it.level, it.name) }
+        .let {
+            CxCustomLogTemplateState(
+                name = generateCustomTemplateName(connectionName),
+                defaultEffectiveLevel = CxLogLevel.INFO,
+                loggers = it
+            )
+        }
+
+    private fun generateCustomTemplateName(connectionName: String): String {
+        val customTemplateName = "Remote '$connectionName' | template"
+        val count = CxCustomLogTemplatesSettings.getInstance(project).templates.count { it.name.startsWith(customTemplateName) }
+
+        return if (count >= 1) "$customTemplateName ($count)"
+        else customTemplateName
+    }
 
     private fun updateCustomLoggerTemplateInternal(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
@@ -152,6 +153,6 @@ class CxLogService(private val project: Project, private val coroutineScope: Cor
     }
 
     companion object {
-        fun getInstance(project: Project): CxLogService = project.getService(CxLogService::class.java)
+        fun getInstance(project: Project): CxCustomLogTemplateService = project.getService(CxCustomLogTemplateService::class.java)
     }
 }

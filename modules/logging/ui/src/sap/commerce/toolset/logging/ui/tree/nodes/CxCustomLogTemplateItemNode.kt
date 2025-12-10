@@ -54,9 +54,10 @@ class CxCustomLogTemplateItemNode private constructor(
         this.update(presentation)
     }
 
-    fun update(source: CxLoggersNode) {
-        presentationName = source.name
-        source.asSafely<CxCustomLogTemplateItemNode>()
+    override fun update(newNode: CxLoggersNode) {
+        presentationName = newNode.name
+
+        newNode.asSafely<CxCustomLogTemplateItemNode>()
             ?.defaultLogLevel
             ?.let { defaultLogLevel = it }
 
