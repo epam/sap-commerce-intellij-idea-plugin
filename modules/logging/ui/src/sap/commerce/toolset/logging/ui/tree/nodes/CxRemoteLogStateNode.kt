@@ -21,13 +21,14 @@ package sap.commerce.toolset.logging.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxRemoteLogStateService
 
 class CxRemoteLogStateNode(
-    val connection: HacConnectionSettingsState,
+    var connection: HacConnectionSettingsState,
     project: Project,
 ) : CxLoggersNode(project) {
 
@@ -42,7 +43,7 @@ class CxRemoteLogStateNode(
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         if (active) {
-            val tip = CxRemoteLogAccess.getInstance(project).state(connection.uuid)
+            val tip = CxRemoteLogStateService.getInstance(project).state(connection.uuid)
                 .get()
                 ?.values
                 ?.count { !it.inherited }
@@ -51,5 +52,13 @@ class CxRemoteLogStateNode(
             presentation.addText(ColoredFragment(tip, SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
         }
         presentation.setIcon(connectionIcon)
+    }
+
+    override fun update(newNode: CxLoggersNode) {
+        newNode.asSafely<CxRemoteLogStateNode>()
+            ?.let {
+                connection = it.connection
+                update(it.presentation)
+            }
     }
 }

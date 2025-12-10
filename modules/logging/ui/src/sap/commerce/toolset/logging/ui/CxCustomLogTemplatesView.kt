@@ -38,8 +38,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import sap.commerce.toolset.logging.CxLogLevel
-import sap.commerce.toolset.logging.CxLogService
 import sap.commerce.toolset.logging.CxLogUiConstants
+import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.actionButton
 import sap.commerce.toolset.ui.addItemListener
@@ -114,39 +114,15 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     fun render(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
+        initLazyRenderingScope()
 
         this.templateUUID = templateUUID
-        loggerLevelField.selectedItem = CxLogService.getInstance(project).findTemplate(templateUUID)?.defaultEffectiveLevel ?: CxLogLevel.ALL
+        loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findCustomTemplate(templateUUID)?.defaultEffectiveLevel ?: CxLogLevel.ALL
 
         renderLoggersInternal(loggers)
     }
 
-    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
-        data.forEach { cxLogger ->
-            row {
-                logLevelComboBox()
-                    .bindItem({ cxLogger.level }, { _ -> })
-                    .addItemListener(this@CxCustomLogTemplatesView) { event ->
-                        val newLevel = event.item.asSafely<CxLogLevel>() ?: return@addItemListener
-                        CxLogService.getInstance(project).updateLogger(templateUUID, cxLogger.name, newLevel)
-                    }
-
-                lazyLoggerDetails(project, coroutineScope, cxLogger)
-
-                actionButton(
-                    ActionManager.getInstance().getAction("sap.cx.loggers.delete.logger"), sinkExtender = fun(it: DataSink) {
-                        it[CxLogUiConstants.DataKeys.TemplateUUID] = templateUUID
-                        it[CxLogUiConstants.DataKeys.LoggerName] = cxLogger.name
-                    }
-                )
-                    .customize(UnscaledGaps(0, 0, 0, 25))
-            }
-        }
-    }
-
     private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
-        initLazyRenderingScope()
-
         val view = if (loggers.isEmpty()) noLoggersView(
             "Please, use the panel above to add a logger.",
             EditorNotificationPanel.Status.Info,
@@ -163,6 +139,29 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         }
 
         toggleView(showDataPanel, initialized)
+    }
+
+    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
+        data.forEach { cxLogger ->
+            row {
+                logLevelComboBox()
+                    .bindItem({ cxLogger.level }, { _ -> })
+                    .addItemListener(this@CxCustomLogTemplatesView) { event ->
+                        val newLevel = event.item.asSafely<CxLogLevel>() ?: return@addItemListener
+                        CxCustomLogTemplateService.getInstance(project).updateCustomLogger(templateUUID, cxLogger.name, newLevel)
+                    }
+
+                lazyLoggerDetails(project, coroutineScope, cxLogger)
+
+                actionButton(
+                    ActionManager.getInstance().getAction("sap.cx.loggers.custom.deleteLogger"), sinkExtender = fun(it: DataSink) {
+                        it[CxLogUiConstants.DataKeys.TemplateUUID] = templateUUID
+                        it[CxLogUiConstants.DataKeys.LoggerName] = cxLogger.name
+                    }
+                )
+                    .customize(UnscaledGaps(0, 0, 0, 25))
+            }
+        }
     }
 
     private fun initLazyRenderingScope() {
@@ -212,7 +211,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
         if (!canApply.get()) return
 
-        CxLogService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
+        CxCustomLogTemplateService.getInstance(project).addCustomLogger(templateUUID, logger, effectiveLevel)
         resetInputs()
     }
 

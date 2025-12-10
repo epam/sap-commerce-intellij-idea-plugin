@@ -25,7 +25,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxRemoteLogStateService
 
 abstract class CxLoggerLevelAction(private val logLevel: CxLogLevel) : AnAction() {
 
@@ -42,7 +42,7 @@ abstract class CxLoggerLevelAction(private val logLevel: CxLogLevel) : AnAction(
             return
         }
 
-        CxRemoteLogAccess.getInstance(project).setLogger(logIdentifier, logLevel)
+        CxRemoteLogStateService.getInstance(project).setLogger(logIdentifier, logLevel)
     }
 
     override fun update(e: AnActionEvent) {
@@ -54,7 +54,7 @@ abstract class CxLoggerLevelAction(private val logLevel: CxLogLevel) : AnAction(
 
         e.presentation.text = logLevel.name
         e.presentation.icon = logLevel.icon
-        e.presentation.isEnabled = CxRemoteLogAccess.getInstance(project).ready
+        e.presentation.isEnabled = CxRemoteLogStateService.getInstance(project).ready
     }
 }
 

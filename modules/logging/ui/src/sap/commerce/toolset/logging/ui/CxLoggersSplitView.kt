@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateStateListener
 import sap.commerce.toolset.logging.exec.event.CxRemoteLogStateListener
 import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
@@ -97,17 +97,26 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                 override fun onTemplateUpdated(templateUUID: String) = updateTree()
                 override fun onTemplateDeleted() = updateTree()
 
-                override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
-                    val node = tree.lastSelectedPathComponent
-                        ?.asSafely<CxLoggersTreeNode>()
-                        ?.userObject
-                        ?.asSafely<CxCustomLogTemplateItemNode>()
-                        ?.takeIf { it.uuid == modifiedTemplate.uuid }
+                override fun onLoggerDeleted(modifiedTemplate: CxLogTemplatePresentation) {
+                    val node = customLogTemplateItemNode(modifiedTemplate)
                         ?: return
 
                     node.update(modifiedTemplate)
                     updateSecondComponent(node)
                 }
+
+                override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
+                    val node = customLogTemplateItemNode(modifiedTemplate)
+                        ?: return
+
+                    node.update(modifiedTemplate)
+                }
+
+                private fun customLogTemplateItemNode(modifiedTemplate: CxLogTemplatePresentation): CxCustomLogTemplateItemNode? = tree.lastSelectedPathComponent
+                    ?.asSafely<CxLoggersTreeNode>()
+                    ?.userObject
+                    ?.asSafely<CxCustomLogTemplateItemNode>()
+                    ?.takeIf { it.uuid == modifiedTemplate.uuid }
             })
         }
     }
@@ -139,7 +148,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                         e.consume()
                         HacExecConnectionService.getInstance(project).connections
                             .find { connection -> connection.uuid == it.connection.uuid }
-                            ?.let { connection -> CxRemoteLogAccess.getInstance(project).fetch(connection) }
+                            ?.let { connection -> CxRemoteLogStateService.getInstance(project).fetch(connection) }
                     }
             }
         })
@@ -152,7 +161,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                 is CxRemoteLogStateNode -> {
                     secondComponent = remoteLogStateView.view
 
-                    val loggers = CxRemoteLogAccess.getInstance(project).state(node.connection.uuid).get()
+                    val loggers = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
                     remoteLogStateView.render(loggers)
                 }
 

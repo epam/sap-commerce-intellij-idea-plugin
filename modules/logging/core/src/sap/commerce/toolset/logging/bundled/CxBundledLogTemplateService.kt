@@ -16,20 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.custom.settings.event
+package sap.commerce.toolset.logging.bundled
 
-import com.intellij.util.messages.Topic
+import com.google.gson.Gson
+import com.intellij.openapi.components.Service
+import com.intellij.util.ResourceUtil
+import com.intellij.util.application
+import sap.commerce.toolset.logging.presentation
 import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
+import java.io.InputStreamReader
 
-interface CxCustomLogTemplateStateListener {
+@Service
+class CxBundledLogTemplateService {
 
-    fun onTemplateUpdated(templateUUID: String) = Unit
-    fun onTemplateDeleted() = Unit
-
-    fun onLoggerDeleted(modifiedTemplate: CxLogTemplatePresentation) = Unit
-    fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) = Unit
+    fun getTemplates(): List<CxLogTemplatePresentation> = ResourceUtil.getResourceAsStream(
+        this.javaClass.classLoader,
+        "cx-loggers",
+        "templates.json"
+    )
+        .use { input ->
+            InputStreamReader(input, Charsets.UTF_8).use { reader ->
+                Gson().fromJson(reader, CxBundledLogTemplates::class.java)
+            }
+        }
+        .templates
+        .takeIf { it.isNotEmpty() }
+        ?.map { it.presentation() }
+        ?: emptyList()
 
     companion object {
-        val TOPIC = Topic(CxCustomLogTemplateStateListener::class.java)
+        fun getInstance(): CxBundledLogTemplateService = application.getService(CxBundledLogTemplateService::class.java)
     }
 }

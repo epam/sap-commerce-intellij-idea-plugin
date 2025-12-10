@@ -35,5 +35,5 @@ class CxRemoteHacInstancesNode(project: Project) : CxLoggersNode(
             .associateBy { it.connection.uuid }
     }
 
-    override fun update(existingNode: CxLoggersNode, newNode: CxLoggersNode) = update(newNode.presentation)
+    override fun update(newNode: CxLoggersNode) = update(newNode.presentation)
 }

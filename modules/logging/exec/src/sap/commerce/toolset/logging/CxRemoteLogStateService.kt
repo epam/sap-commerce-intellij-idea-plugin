@@ -47,7 +47,7 @@ import sap.commerce.toolset.settings.state.TransactionMode
 import java.util.*
 
 @Service(Service.Level.PROJECT)
-class CxRemoteLogAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
+class CxRemoteLogStateService(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
 
     private var fetching: Boolean = false
 
@@ -295,7 +295,7 @@ class CxRemoteLogAccess(private val project: Project, private val coroutineScope
     }
 
     companion object {
-        fun getInstance(project: Project): CxRemoteLogAccess = project.service()
+        fun getInstance(project: Project): CxRemoteLogStateService = project.service()
     }
 }
 

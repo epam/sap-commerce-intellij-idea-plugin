@@ -33,7 +33,7 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
 import sap.commerce.toolset.logging.CxLogLevel
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addItemListener
 import javax.swing.JPanel
@@ -146,7 +146,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                                 ?.let { newLogLevel ->
                                     editable.set(false)
 
-                                    CxRemoteLogAccess.getInstance(project).setLogger(cxLogger.name, newLogLevel) { _, _ ->
+                                    CxRemoteLogStateService.getInstance(project).setLogger(cxLogger.name, newLogLevel) { _, _ ->
                                         editable.set(true)
                                     }
                                 }
@@ -203,7 +203,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
         editable.set(false)
 
-        CxRemoteLogAccess.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
+        CxRemoteLogStateService.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
             coroutineScope.launch {
                 withContext(Dispatchers.EDT) {
                     editable.set(true)

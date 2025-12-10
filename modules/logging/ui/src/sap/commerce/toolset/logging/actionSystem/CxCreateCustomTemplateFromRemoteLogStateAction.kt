@@ -25,8 +25,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.logging.CxLogService
-import sap.commerce.toolset.logging.CxRemoteLogAccess
+import sap.commerce.toolset.logging.CxRemoteLogStateService
+import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CxRemoteLogStateNode
@@ -45,16 +45,16 @@ class CxCreateCustomTemplateFromRemoteLogStateAction : AnAction() {
             ?.asSafely<CxRemoteLogStateNode>()
             ?: return
 
+        val customLogTemplateService = CxCustomLogTemplateService.getInstance(project)
         val connectionName = node.connection.shortenConnectionName
-        val customTemplate = CxRemoteLogAccess.getInstance(project).state(node.connection.uuid).get()
-            ?.let { CxLogService.getInstance(project).createTemplateFromLoggers(connectionName, it) }
+        val customTemplate = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
+            ?.let { customLogTemplateService.createTemplateFromLoggers(connectionName, it) }
             ?.mutable()
             ?: return
 
-        if (CxCustomLogTemplateDialog(project, customTemplate, "Create a Log Template | Remote '$connectionName'").showAndGet()) {
-            CxLogService.getInstance(project).addTemplate(customTemplate.immutable())
+        if (CxCustomLogTemplateDialog(project, customTemplate, "Create a Log Template").showAndGet()) {
+            customLogTemplateService.addTemplate(customTemplate.immutable())
         }
-
     }
 
     override fun update(e: AnActionEvent) {
@@ -64,12 +64,11 @@ class CxCreateCustomTemplateFromRemoteLogStateAction : AnAction() {
             ?.asSafely<CxRemoteLogStateNode>()
             ?: return
 
-        val loggerAccess = CxRemoteLogAccess.getInstance(project)
+        val loggerAccess = CxRemoteLogStateService.getInstance(project)
 
-        val stateInitialized = CxRemoteLogAccess.getInstance(project).stateInitialized
         e.presentation.isEnabled = loggerAccess.ready
-            && stateInitialized
-            && CxRemoteLogAccess.getInstance(project).state(node.connection.uuid).get()?.isNotEmpty() ?: false
+            && loggerAccess.stateInitialized
+            && loggerAccess.state(node.connection.uuid).get()?.isNotEmpty() ?: false
 
         if (!e.presentation.isVisible) return
 

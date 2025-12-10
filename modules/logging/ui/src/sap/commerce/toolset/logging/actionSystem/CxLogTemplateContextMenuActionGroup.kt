@@ -35,10 +35,10 @@ class CxLogTemplateContextMenuActionGroup : ActionGroup(), DumbAware {
         val actionManager = ActionManager.getInstance()
 
         return when (selectedNode) {
-            is CxRemoteLogStateNode -> arrayOf(actionManager.getAction("sap.cx.remote.state.save.as.template"))
-            is CxBundledLogTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.apply.log.template"))
+            is CxRemoteLogStateNode -> arrayOf(actionManager.getAction("sap.cx.loggers.remote.saveAsTemplate"))
+            is CxBundledLogTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.applyLogTemplate"))
             is CxCustomLogTemplateItemNode -> arrayOf(actionManager.getAction("sap.cx.loggers.template.item.actions"))
-            is CxCustomLogTemplateGroupNode -> arrayOf(actionManager.getAction("sap.cx.loggers.add.custom.template"))
+            is CxCustomLogTemplateGroupNode -> arrayOf(actionManager.getAction("sap.cx.loggers.custom.addTemplate"))
             else -> emptyArray()
         }
     }

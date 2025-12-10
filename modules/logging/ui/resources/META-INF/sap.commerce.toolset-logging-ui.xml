@@ -27,28 +27,29 @@
     </extensions>
 
     <actions>
-        <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.CxFetchRemoteLogStateAction"/>
-        <action id="sap.cx.remote.state.save.as.template" class="sap.commerce.toolset.logging.actionSystem.CxCreateCustomTemplateFromRemoteLogStateAction"/>
+        <action id="sap.cx.loggers.remote.fetch" class="sap.commerce.toolset.logging.actionSystem.CxFetchRemoteLogStateAction"/>
+        <action id="sap.cx.loggers.remote.saveAsTemplate" class="sap.commerce.toolset.logging.actionSystem.CxCreateCustomTemplateFromRemoteLogStateAction"/>
 
-        <action id="sap.cx.loggers.apply.log.template" class="sap.commerce.toolset.logging.actionSystem.CxApplyLogTemplateAction"/>
-        <action id="sap.cx.loggers.add.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxAddCustomLogTemplateAction"/>
-        <action id="sap.cx.loggers.delete.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxDeleteCustomLogTemplateAction"/>
-        <action id="sap.cx.loggers.rename.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxEditCustomLogTemplateAction"/>
-        <action id="sap.cx.loggers.delete.logger" class="sap.commerce.toolset.logging.actionSystem.CxDeleteLoggerAction"/>
+        <action id="sap.cx.loggers.applyLogTemplate" class="sap.commerce.toolset.logging.actionSystem.CxApplyLogTemplateAction"/>
+
+        <action id="sap.cx.loggers.custom.addTemplate" class="sap.commerce.toolset.logging.actionSystem.CxAddCustomLogTemplateAction"/>
+        <action id="sap.cx.loggers.custom.deleteTemplate" class="sap.commerce.toolset.logging.actionSystem.CxDeleteCustomLogTemplateAction"/>
+        <action id="sap.cx.loggers.custom.editTemplate" class="sap.commerce.toolset.logging.actionSystem.CxEditCustomLogTemplateAction"/>
+        <action id="sap.cx.loggers.custom.deleteLogger" class="sap.commerce.toolset.logging.actionSystem.CxDeleteCustomLoggerAction"/>
 
         <group id="sap.cx.loggers.template.item.actions" searchable="false">
-            <reference ref="sap.cx.loggers.apply.log.template"/>
-            <reference ref="sap.cx.loggers.rename.custom.template"/>
-            <reference ref="sap.cx.loggers.delete.custom.template"/>
+            <reference ref="sap.cx.loggers.applyLogTemplate"/>
+            <reference ref="sap.cx.loggers.custom.editTemplate"/>
+            <reference ref="sap.cx.loggers.custom.deleteTemplate"/>
         </group>
 
         <group id="sap.cx.loggers.toolbar.actions" searchable="false">
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
-            <reference ref="sap.cx.fetch.loggers.action"/>
+            <reference ref="sap.cx.loggers.remote.fetch"/>
         </group>
 
         <group id="sap.cx.logging.actions" popup="true" searchable="false">
-            <reference ref="sap.cx.fetch.loggers.action"/>
+            <reference ref="sap.cx.loggers.remote.fetch"/>
 
             <separator text="Active Connection"/>
             <reference ref="sap.commerce.toolset.hac.chooseConnection"/>
