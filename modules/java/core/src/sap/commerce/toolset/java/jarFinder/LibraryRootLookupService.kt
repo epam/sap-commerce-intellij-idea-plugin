@@ -107,7 +107,7 @@ class LibraryRootLookupService {
     }
 
     private suspend fun remoteExists(baseUrls: Collection<String>, urlProvider: (String) -> String): String? = baseUrls
-        .firstOrNull { baseUrl -> remoteExists(urlProvider(baseUrl)) }
+        .firstNotNullOfOrNull { baseUrl -> urlProvider(baseUrl).takeIf { remoteExists(it) } }
 
     private suspend fun remoteExists(url: String): Boolean {
         checkCanceled()

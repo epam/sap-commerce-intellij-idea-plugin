@@ -1,3 +1,11 @@
+## [2025.2.5.2]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.2+author%3Amlytvyn+is%3Apr)
+
+### `Project Import` enhancements
+- Ensure that 3rd-party library sources are downloaded [#1694](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1694)
+
 ## [2025.2.5.1]
 
 <cite>Release contributors</cite>
