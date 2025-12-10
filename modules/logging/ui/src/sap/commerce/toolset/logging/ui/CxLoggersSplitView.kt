@@ -95,7 +95,10 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
 
             subscribe(CxCustomLogTemplateStateListener.TOPIC, object : CxCustomLogTemplateStateListener {
                 override fun onTemplateUpdated(templateUUID: String) = updateTree()
-                override fun onTemplatesDeleted() = updateTree()
+                override fun onTemplatesDeleted() {
+                    updateTree()
+                    updateSecondComponent(null)
+                }
 
                 override fun onLoggerDeleted(modifiedTemplate: CxLogTemplatePresentation) {
                     val node = customLogTemplateItemNode(modifiedTemplate)
@@ -125,8 +128,10 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
     private fun updateTree() = tree.onActivated()
 
     private fun registerListeners(tree: CxLoggersTree) = tree
-        .addTreeSelectionListener(tree) {
-            it.newLeadSelectionPath
+        .addTreeSelectionListener(tree) { event ->
+            event
+                .takeIf { it.isAddedPath }
+                ?.newLeadSelectionPath
                 ?.pathData(CxLoggersNode::class)
                 ?.let { node -> updateSecondComponent(node) }
         }
@@ -153,7 +158,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
             }
         })
 
-    private fun updateSecondComponent(node: CxLoggersNode) {
+    private fun updateSecondComponent(node: CxLoggersNode?) {
         CoroutineScope(Dispatchers.EDT).launch {
             if (project.isDisposed) return@launch
 
