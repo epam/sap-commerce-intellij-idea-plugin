@@ -97,32 +97,24 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                         ?.takeIf { it.connection.uuid == remoteConnection.uuid }
                         ?: return
 
-                    node.update()
-                    updateSecondComponent(node)
+                    updateSecondComponent(node) { node.update() }
                 }
             })
 
             subscribe(CxCustomLogTemplateStateListener.TOPIC, object : CxCustomLogTemplateStateListener {
                 override fun onTemplateUpdated(templateUUID: String) = updateTree()
                 override fun onTemplatesDeleted() {
-                    updateTree()
-                    updateSecondComponent(null)
+                    updateSecondComponent(null) { updateTree() }
                 }
 
                 override fun onLoggerDeleted(modifiedTemplate: CxLogTemplatePresentation) {
-                    val node = customLogTemplateItemNode(modifiedTemplate)
-                        ?: return
-
-                    node.update(modifiedTemplate)
-                    updateSecondComponent(node)
+                    customLogTemplateItemNode(modifiedTemplate)
+                        ?.let { node -> updateSecondComponent(node) { node.update(modifiedTemplate) } }
                 }
 
                 override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
-                    val node = customLogTemplateItemNode(modifiedTemplate)
-                        ?: return
-
-                    node.update(modifiedTemplate)
-                    updateSecondComponent(node)
+                    customLogTemplateItemNode(modifiedTemplate)
+                        ?.let { node -> updateSecondComponent(node) { node.update(modifiedTemplate) } }
                 }
 
                 private fun customLogTemplateItemNode(modifiedTemplate: CxLogTemplatePresentation): CxCustomLogTemplateItemNode? = tree.lastSelectedPathComponent
@@ -168,7 +160,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
             }
         })
 
-    private fun updateSecondComponent(node: CxLoggersNode?) {
+    private fun updateSecondComponent(node: CxLoggersNode?, beforeUpdate: () -> Unit = {}) {
         job.cancel()
         job = SupervisorJob()
         coroutineScope = CoroutineScope(Dispatchers.Default + job)
@@ -176,6 +168,10 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
         coroutineScope.launch {
             ensureActive()
             if (project.isDisposed) return@launch
+
+            withContext(Dispatchers.EDT) {
+                beforeUpdate()
+            }
 
             val viewComponent = when (node) {
                 is CxRemoteLogStateNode -> {
