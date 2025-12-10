@@ -166,6 +166,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
         coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
         coroutineScope.launch {
+            ensureActive()
             if (project.isDisposed) return@launch
 
             val view = when (node) {
@@ -174,6 +175,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                         val loggers = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
 
                         withContext(Dispatchers.EDT) {
+                            ensureActive()
                             remoteLogStateView.render(coroutineScope, loggers)
                         }
                     }
@@ -182,6 +184,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                     .apply {
                         node.loggers.associateBy { it.name }.let { loggers ->
                             withContext(Dispatchers.EDT) {
+                                ensureActive()
                                 bundledLogTemplatesView.render(coroutineScope, loggers)
                             }
                         }
@@ -191,6 +194,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                     .apply {
                         node.loggers.associateBy { it.name }.let { loggers ->
                             withContext(Dispatchers.EDT) {
+                                ensureActive()
                                 customLogTemplatesView.render(coroutineScope, node.uuid, loggers)
                             }
                         }
@@ -207,6 +211,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
             }
 
             withContext(Dispatchers.EDT) {
+                ensureActive()
                 secondComponent = view
             }
         }

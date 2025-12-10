@@ -38,10 +38,7 @@ import com.intellij.ui.*
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogLevel
@@ -59,6 +56,7 @@ internal fun Row.lazyLoggerDetails(project: Project, coroutineScope: CoroutineSc
     placeholderName.component = label(cxLogger.name).component
 
     coroutineScope.launch {
+        ensureActive()
         val psiElement = smartReadAction(project) {
             val javaPsiFacade = JavaPsiFacade.getInstance(project)
 
@@ -107,6 +105,7 @@ internal fun Row.lazyLoggerDetails(project: Project, coroutineScope: CoroutineSc
         }
 
         withContext(Dispatchers.EDT) {
+            ensureActive()
             placeholderIcon.component = icon(icon).component
             placeholderName.component = navigableComponent
 
