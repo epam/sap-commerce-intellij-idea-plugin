@@ -4,7 +4,7 @@
 - 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `SAP CX Logging` enhancements
-- Support deletion for multiple selected custom nodes  [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)
+- Support deletion for multiple selected custom nodes [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)
 
 ## [2025.3.0]
 
