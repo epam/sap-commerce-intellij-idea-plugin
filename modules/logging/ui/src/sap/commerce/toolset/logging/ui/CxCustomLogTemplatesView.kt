@@ -117,7 +117,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         initLazyRenderingScope()
 
         this.templateUUID = templateUUID
-        loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findCustomTemplate(templateUUID)?.defaultEffectiveLevel ?: CxLogLevel.ALL
+        loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findTemplate(templateUUID)?.defaultEffectiveLevel ?: CxLogLevel.ALL
 
         renderLoggersInternal(loggers)
     }
@@ -148,7 +148,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                     .bindItem({ cxLogger.level }, { _ -> })
                     .addItemListener(this@CxCustomLogTemplatesView) { event ->
                         val newLevel = event.item.asSafely<CxLogLevel>() ?: return@addItemListener
-                        CxCustomLogTemplateService.getInstance(project).updateCustomLogger(templateUUID, cxLogger.name, newLevel)
+                        CxCustomLogTemplateService.getInstance(project).updateLogger(templateUUID, cxLogger.name, newLevel)
                     }
 
                 lazyLoggerDetails(project, coroutineScope, cxLogger)
@@ -211,7 +211,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
         if (!canApply.get()) return
 
-        CxCustomLogTemplateService.getInstance(project).addCustomLogger(templateUUID, logger, effectiveLevel)
+        CxCustomLogTemplateService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
         resetInputs()
     }
 

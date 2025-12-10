@@ -24,14 +24,15 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.logging.ui.tree.CxLoggersTree
 import javax.swing.tree.DefaultMutableTreeNode
 
-internal fun AnActionEvent.selectedNode(): Any? = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
+private fun AnActionEvent.tree(): CxLoggersTree? = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
     ?.asSafely<CxLoggersTree>()
+
+internal fun AnActionEvent.selectedNode(): Any? = tree()
     ?.selectionPath
     ?.lastPathComponent
     ?.asSafely<DefaultMutableTreeNode>()
     ?.userObject
 
-internal fun AnActionEvent.selectedNodes() = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-    ?.asSafely<CxLoggersTree>()
+internal fun AnActionEvent.selectedNodes() = tree()
     ?.selectionPaths
     ?.mapNotNull { it.lastPathComponent?.asSafely<DefaultMutableTreeNode>()?.userObject }

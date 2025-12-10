@@ -26,7 +26,6 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
-import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
@@ -39,26 +38,30 @@ class CxDeleteCustomLogTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-
-        val selectedNodes = e.selectedNodes()
-            ?.mapNotNull { it.asSafely<CxCustomLogTemplateItemNode>()?.uuid } ?: return
-        val templateNode = e.selectedNode()
-            ?.asSafely<CxCustomLogTemplateItemNode>()
-            ?: return
+        val selectedNodes = customLogTemplateItemNodes(e) ?: return
+        val message = if (selectedNodes.size == 1) "Delete template \"${selectedNodes.first().name}\"?"
+        else "Delete ${selectedNodes.size} templates?"
 
         if (Messages.showYesNoDialog(
                 project,
-                if (selectedNodes.size == 1) "Delete template \"${templateNode.name}\"?" else "Delete templates?",
+                message,
                 "Confirm Deletion",
                 HybrisIcons.Log.Action.DELETE
             ) != Messages.YES
         ) return
 
-        CxCustomLogTemplateService.getInstance(project).deleteCustomTemplates(selectedNodes)
+        val templateIds = selectedNodes.map { it.uuid }
+
+        CxCustomLogTemplateService.getInstance(project).deleteTemplates(templateIds)
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "Delete Template"
+        val selectedNodes = customLogTemplateItemNodes(e) ?: return
+
+        e.presentation.text = if (selectedNodes.size == 1) "Delete Template" else "Delete Templates"
         e.presentation.icon = HybrisIcons.Log.Template.DELETE_CUSTOM_TEMPLATE
     }
+
+    private fun customLogTemplateItemNodes(e: AnActionEvent): List<CxCustomLogTemplateItemNode>? = e.selectedNodes()
+        ?.mapNotNull { it.asSafely<CxCustomLogTemplateItemNode>() }
 }

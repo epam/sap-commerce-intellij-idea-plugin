@@ -44,31 +44,24 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateUpdated(template.uuid)
     }
 
-    fun updateCustomTemplate(template: CxCustomLogTemplateState) {
-        updateCustomLoggerTemplateInternal(template)
+    fun updateTemplate(template: CxCustomLogTemplateState) {
+        updateLoggerTemplateInternal(template)
+
         project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateUpdated(template.uuid)
     }
 
-    fun deleteCustomTemplates(templateIds: List<String>) {
+    fun deleteTemplates(templateIds: List<String>) {
         if (templateIds.isEmpty()) return
 
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
             templates = templates.filter { !templateIds.contains(it.uuid) }
         }
 
-        project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateDeleted()
+        project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplatesDeleted()
     }
 
-    fun deleteCustomTemplate(templateId: String) {
-        with(CxCustomLogTemplatesSettings.getInstance(project)) {
-            templates = templates.filter { it.uuid != templateId }
-        }
-
-        project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateDeleted()
-    }
-
-    fun addCustomLogger(templateUUID: String, logger: String, effectiveLevel: CxLogLevel) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
-        val loggerTemplateState = templates
+    fun addLogger(templateUUID: String, logger: String, effectiveLevel: CxLogLevel) {
+        val loggerTemplateState = CxCustomLogTemplatesSettings.getInstance(project).templates
             .find { it.uuid == templateUUID }
             ?.mutable()
             ?.apply {
@@ -79,9 +72,9 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
                 loggers.set(newLoggerConfigs)
             }
             ?.immutable()
-            ?: return@with
+            ?: return
 
-        updateCustomLoggerTemplateInternal(loggerTemplateState)
+        updateLoggerTemplateInternal(loggerTemplateState)
 
         coroutineScope.launch {
             val modifiedTemplate = loggerTemplateState.presentation()
@@ -89,8 +82,8 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         }
     }
 
-    fun deleteCustomLogger(templateUUID: String, loggerName: String) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
-        val loggerTemplateState = templates
+    fun deleteLogger(templateUUID: String, loggerName: String) {
+        val loggerTemplateState = CxCustomLogTemplatesSettings.getInstance(project).templates
             .find { it.uuid == templateUUID }
             ?.mutable()
             ?.apply {
@@ -100,9 +93,9 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
                 loggers.set(newLoggerConfigs)
             }
             ?.immutable()
-            ?: return@with
+            ?: return
 
-        updateCustomLoggerTemplateInternal(loggerTemplateState)
+        updateLoggerTemplateInternal(loggerTemplateState)
 
         coroutineScope.launch {
             val modifiedTemplate = loggerTemplateState.presentation()
@@ -110,8 +103,8 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         }
     }
 
-    fun updateCustomLogger(templateUUID: String, loggerName: String, effectiveLevel: CxLogLevel) = with(CxCustomLogTemplatesSettings.getInstance(project)) {
-        val loggerTemplateState = templates
+    fun updateLogger(templateUUID: String, loggerName: String, effectiveLevel: CxLogLevel) {
+        val loggerTemplateState = CxCustomLogTemplatesSettings.getInstance(project).templates
             .find { it.uuid == templateUUID }
             ?.mutable()
             ?.apply {
@@ -120,9 +113,9 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
                     ?.set(effectiveLevel)
             }
             ?.immutable()
-            ?: return@with
+            ?: return
 
-        updateCustomLoggerTemplateInternal(loggerTemplateState)
+        updateLoggerTemplateInternal(loggerTemplateState)
 
         coroutineScope.launch {
             val modifiedTemplate = loggerTemplateState.presentation()
@@ -130,7 +123,7 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         }
     }
 
-    fun findCustomTemplate(templateUUID: String) = CxCustomLogTemplatesSettings.getInstance(project)
+    fun findTemplate(templateUUID: String) = CxCustomLogTemplatesSettings.getInstance(project)
         .templates
         .find { it.uuid == templateUUID }
 
@@ -138,21 +131,21 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         .map { CxCustomLoggerState(it.level, it.name) }
         .let {
             CxCustomLogTemplateState(
-                name = generateCustomTemplateName(connectionName),
+                name = generateTemplateName(connectionName),
                 defaultEffectiveLevel = CxLogLevel.INFO,
                 loggers = it
             )
         }
 
-    private fun generateCustomTemplateName(connectionName: String): String {
-        val customTemplateName = "Remote '$connectionName' | template"
-        val count = CxCustomLogTemplatesSettings.getInstance(project).templates.count { it.name.startsWith(customTemplateName) }
+    private fun generateTemplateName(connectionName: String): String {
+        val templateName = "Remote '$connectionName' | template"
+        val count = CxCustomLogTemplatesSettings.getInstance(project).templates.count { it.name.startsWith(templateName) }
 
-        return if (count >= 1) "$customTemplateName ($count)"
-        else customTemplateName
+        return if (count >= 1) "$templateName ($count)"
+        else templateName
     }
 
-    private fun updateCustomLoggerTemplateInternal(template: CxCustomLogTemplateState) {
+    private fun updateLoggerTemplateInternal(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
             templates = templates.toMutableList().apply {
                 val position = indexOfFirst { it.uuid == template.uuid }

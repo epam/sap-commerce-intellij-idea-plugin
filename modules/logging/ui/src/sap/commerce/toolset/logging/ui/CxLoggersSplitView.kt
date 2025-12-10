@@ -95,7 +95,7 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
 
             subscribe(CxCustomLogTemplateStateListener.TOPIC, object : CxCustomLogTemplateStateListener {
                 override fun onTemplateUpdated(templateUUID: String) = updateTree()
-                override fun onTemplateDeleted() = updateTree()
+                override fun onTemplatesDeleted() = updateTree()
 
                 override fun onLoggerDeleted(modifiedTemplate: CxLogTemplatePresentation) {
                     val node = customLogTemplateItemNode(modifiedTemplate)

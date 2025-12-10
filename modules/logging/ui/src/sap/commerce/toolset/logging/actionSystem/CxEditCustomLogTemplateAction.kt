@@ -54,7 +54,7 @@ class CxEditCustomLogTemplateAction : AnAction() {
             ?: return
 
         if (CxCustomLogTemplateDialog(project, mutable, "Update a Log Template").showAndGet()) {
-            CxCustomLogTemplateService.getInstance(project).updateCustomTemplate(mutable.immutable())
+            CxCustomLogTemplateService.getInstance(project).updateTemplate(mutable.immutable())
         }
     }
 

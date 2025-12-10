@@ -47,7 +47,7 @@ class CxDeleteCustomLoggerAction : AnAction() {
             ) != Messages.YES
         ) return
 
-        CxCustomLogTemplateService.getInstance(project).deleteCustomLogger(templateUUID, loggerName)
+        CxCustomLogTemplateService.getInstance(project).deleteLogger(templateUUID, loggerName)
     }
 
     override fun update(e: AnActionEvent) {
