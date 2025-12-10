@@ -35,8 +35,6 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxLogUiConstants
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
@@ -48,9 +46,6 @@ import javax.swing.JPanel
 class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private var templateUUID: String = ""
-
-    private var job = SupervisorJob()
-    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
     private val showNoLoggerTemplates = AtomicBooleanProperty(false)
     private val showDataPanel = AtomicBooleanProperty(false)
@@ -107,27 +102,23 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    override fun dispose() {
-        job.cancel()
-        panel.drop()
-    }
+    override fun dispose() = panel.drop()
 
-    fun render(templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
+    fun render(coroutineScope: CoroutineScope, templateUUID: String, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
-        initLazyRenderingScope()
 
         this.templateUUID = templateUUID
         loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findTemplate(templateUUID)?.defaultEffectiveLevel ?: CxLogLevel.ALL
 
-        renderLoggersInternal(loggers)
+        renderLoggersInternal(coroutineScope, loggers)
     }
 
-    private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
+    private fun renderLoggersInternal(coroutineScope: CoroutineScope, loggers: Map<String, CxLoggerPresentation>) {
         val view = if (loggers.isEmpty()) noLoggersView(
             "Please, use the panel above to add a logger.",
             EditorNotificationPanel.Status.Info,
         )
-        else createLoggersPanel(loggers.values)
+        else createLoggersPanel(coroutineScope, loggers.values)
 
         val viewport = dataScrollPane.getViewport()
         val pos = viewport.getViewPosition()
@@ -141,8 +132,8 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         toggleView(showDataPanel, initialized)
     }
 
-    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
-        data.forEach { cxLogger ->
+    private fun createLoggersPanel(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>) = panel {
+        loggers.forEach { cxLogger ->
             row {
                 logLevelComboBox()
                     .bindItem({ cxLogger.level }, { _ -> })
@@ -162,12 +153,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                     .customize(UnscaledGaps(0, 0, 0, 25))
             }
         }
-    }
-
-    private fun initLazyRenderingScope() {
-        job.cancel()
-        job = SupervisorJob()
-        coroutineScope = CoroutineScope(Dispatchers.Default + job)
     }
 
     private fun newLoggerPanel(): DialogPanel = panel {

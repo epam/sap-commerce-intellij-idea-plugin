@@ -29,9 +29,7 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -59,6 +57,10 @@ import javax.swing.event.TreeModelEvent
 class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), CxToolWindowActivationAware, Disposable {
 
     private val tree = CxLoggersTree(project).apply { registerListeners(this) }
+
+    private var job = SupervisorJob()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
+
     private val remoteLogStateView by lazy { CxRemoteLogStateView(project).also { Disposer.register(this, it) } }
     private val bundledLogTemplatesView by lazy { CxBundledLogTemplatesView(project).also { Disposer.register(this, it) } }
     private val customLogTemplatesView by lazy { CxCustomLogTemplatesView(project).also { Disposer.register(this, it) } }
@@ -159,43 +161,53 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
         })
 
     private fun updateSecondComponent(node: CxLoggersNode?) {
-        CoroutineScope(Dispatchers.EDT).launch {
+        job.cancel()
+        job = SupervisorJob()
+        coroutineScope = CoroutineScope(Dispatchers.Default + job)
+
+        coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            when (node) {
-                is CxRemoteLogStateNode -> {
-                    secondComponent = remoteLogStateView.view
+            val view = when (node) {
+                is CxRemoteLogStateNode -> remoteLogStateView.view
+                    .apply {
+                        val loggers = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
 
-                    val loggers = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
-                    remoteLogStateView.render(loggers)
-                }
-
-                is CxBundledLogTemplateItemNode -> {
-                    secondComponent = bundledLogTemplatesView.view
-
-                    node.loggers.associateBy { it.name }.let {
-                        bundledLogTemplatesView.render(it)
-                    }
-                }
-
-                is CxCustomLogTemplateItemNode -> {
-                    secondComponent = customLogTemplatesView.view
-
-                    node.loggers.associateBy { it.name }.let {
-                        customLogTemplatesView.render(node.uuid, it)
-                    }
-                }
-
-                else -> {
-                    secondComponent = panel {
-                        row {
-                            label(IdeBundle.message("empty.text.nothing.selected"))
-                                .resizableColumn()
-                                .align(Align.CENTER)
+                        withContext(Dispatchers.EDT) {
+                            remoteLogStateView.render(coroutineScope, loggers)
                         }
-                            .resizableRow()
                     }
+
+                is CxBundledLogTemplateItemNode -> bundledLogTemplatesView.view
+                    .apply {
+                        node.loggers.associateBy { it.name }.let { loggers ->
+                            withContext(Dispatchers.EDT) {
+                                bundledLogTemplatesView.render(coroutineScope, loggers)
+                            }
+                        }
+                    }
+
+                is CxCustomLogTemplateItemNode -> customLogTemplatesView.view
+                    .apply {
+                        node.loggers.associateBy { it.name }.let { loggers ->
+                            withContext(Dispatchers.EDT) {
+                                customLogTemplatesView.render(coroutineScope, node.uuid, loggers)
+                            }
+                        }
+                    }
+
+                else -> panel {
+                    row {
+                        label(IdeBundle.message("empty.text.nothing.selected"))
+                            .resizableColumn()
+                            .align(Align.CENTER)
+                    }
+                        .resizableRow()
                 }
+            }
+
+            withContext(Dispatchers.EDT) {
+                secondComponent = view
             }
         }
     }

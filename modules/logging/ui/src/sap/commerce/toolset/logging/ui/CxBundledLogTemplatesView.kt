@@ -29,16 +29,11 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.awt.Dimension
 import javax.swing.JPanel
 
 class CxBundledLogTemplatesView(private val project: Project) : Disposable {
-
-    private var job = SupervisorJob()
-    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
@@ -81,31 +76,21 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
     val view: DialogPanel
         get() = panel.value
 
-    override fun dispose() {
-        job.cancel()
-        panel.drop()
-    }
+    override fun dispose() = panel.drop()
 
-    fun render(loggers: Map<String, CxLoggerPresentation>) {
+    fun render(coroutineScope: CoroutineScope, loggers: Map<String, CxLoggerPresentation>) {
         initialized.set(false)
-        initLazyRenderingScope()
 
-        renderLoggersInternal(loggers)
+        renderLoggersInternal(coroutineScope, loggers)
     }
 
-    private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
+    private fun renderLoggersInternal(coroutineScope: CoroutineScope, loggers: Map<String, CxLoggerPresentation>) {
         val view = if (loggers.isEmpty()) noLoggersView("No loggers configured for bundled Log Templates.")
-        else createLoggersPanel(loggers.values)
+        else createLoggersPanel(coroutineScope, loggers.values)
 
         dataScrollPane.setViewportView(view)
 
         toggleView(showDataPanel, initialized)
-    }
-
-    private fun initLazyRenderingScope() {
-        job.cancel()
-        job = SupervisorJob()
-        coroutineScope = CoroutineScope(Dispatchers.Default + job)
     }
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
@@ -116,8 +101,8 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
             .forEach { it.set(unhide.contains(it)) }
     }
 
-    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
-        data.forEach { cxLogger ->
+    private fun createLoggersPanel(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>) = panel {
+        loggers.forEach { cxLogger ->
             row {
                 icon(cxLogger.level.icon)
                 label(cxLogger.level.name)
