@@ -22,8 +22,10 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxRemoteLogStateService
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
@@ -38,13 +40,46 @@ class CxApplyLogTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        e.presentation.isEnabled = e.selectedNodes()?.size == 1
-
+        val selectedNodes = e.selectedNodes() ?: return
         val selectedNode = e.selectedNode() ?: return
-        val loggers = when (selectedNode) {
-            is CxBundledLogTemplateItemNode -> selectedNode.loggers
-            is CxCustomLogTemplateItemNode -> selectedNode.loggers
-            else -> return
+
+        val loggers = if (selectedNodes.size == 1) {
+            when (selectedNode) {
+                is CxBundledLogTemplateItemNode -> selectedNode.loggers
+                is CxCustomLogTemplateItemNode -> selectedNode.loggers
+                else -> return
+            }
+        } else {
+            selectedNodes
+                .mapNotNull {
+                    return@mapNotNull when (it) {
+                        is CxBundledLogTemplateItemNode -> it.loggers
+                        is CxCustomLogTemplateItemNode -> it.loggers
+                        else -> null
+                    }
+                }
+                .flatten()
+                .fold(linkedMapOf<String, CxLoggerPresentation>()) { acc, log ->
+                    acc[log.name] = log
+                    acc
+                }
+                .values
+                .toList()
+        }
+
+        if (selectedNodes.size > 1) {
+            if (Messages.showYesNoDialog(
+                    project,
+                    """
+                                    Some loggers may have the same name in multiple templates.
+                                    If you continue, only the logger from the last template will be kept for each duplicated name and earlier ones will be overwritten.
+                                    
+                                    Do you want to proceed?
+                                """.trimIndent(),
+                    "Confirm Applying Templates",
+                    HybrisIcons.Log.Template.EXECUTE
+                ) != Messages.YES
+            ) return
         }
 
         CxRemoteLogStateService.getInstance(project).setLoggers(loggers)
@@ -53,6 +88,5 @@ class CxApplyLogTemplateAction : AnAction() {
     override fun update(e: AnActionEvent) {
         e.presentation.text = "Apply Template"
         e.presentation.icon = HybrisIcons.Log.Template.EXECUTE
-        e.presentation.isEnabled = e.selectedNodes()?.size == 1
     }
 }
