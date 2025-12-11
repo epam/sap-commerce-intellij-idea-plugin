@@ -43,7 +43,7 @@ class CxApplyLogTemplateAction : AnAction() {
         val selectedNodes = e.selectedNodes() ?: return
         val selectedNode = e.selectedNode() ?: return
 
-        val loggers = if (selectedNodes.size == 1) {
+        var loggers = if (selectedNodes.size == 1) {
             when (selectedNode) {
                 is CxBundledLogTemplateItemNode -> selectedNode.loggers
                 is CxCustomLogTemplateItemNode -> selectedNode.loggers
@@ -59,27 +59,32 @@ class CxApplyLogTemplateAction : AnAction() {
                     }
                 }
                 .flatten()
+        }
+
+        val hasDuplicates = selectedNodes.size > 1 && loggers.groupBy { it.name }.filter { it.value.size > 1 }.isNotEmpty()
+
+        if (hasDuplicates) {
+            if (Messages.showYesNoDialog(
+                    project,
+                    """
+                                    Some loggers are defined more than once.
+                                    For each duplicated logger, only the logger from the last template will be kept and earlier ones will be overwritten.
+                                    
+                                    Do you want to continue?
+                                """.trimIndent(),
+                    "Confirm Applying Templates",
+                    HybrisIcons.Log.Template.EXECUTE
+                ) != Messages.YES
+            ) return
+
+            //remove duplicates
+            loggers = loggers
                 .fold(linkedMapOf<String, CxLoggerPresentation>()) { acc, log ->
                     acc[log.name] = log
                     acc
                 }
                 .values
                 .toList()
-        }
-
-        if (selectedNodes.size > 1) {
-            if (Messages.showYesNoDialog(
-                    project,
-                    """
-                                    Some loggers may have the same name in multiple templates.
-                                    If you continue, only the logger from the last template will be kept for each duplicated name and earlier ones will be overwritten.
-                                    
-                                    Do you want to proceed?
-                                """.trimIndent(),
-                    "Confirm Applying Templates",
-                    HybrisIcons.Log.Template.EXECUTE
-                ) != Messages.YES
-            ) return
         }
 
         CxRemoteLogStateService.getInstance(project).setLoggers(loggers)
