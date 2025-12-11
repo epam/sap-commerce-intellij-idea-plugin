@@ -86,7 +86,9 @@ class CxApplyLogTemplateAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "Apply Template"
+        val selectedNodes = e.selectedNodes() ?: return
+
+        e.presentation.text = if (selectedNodes.size == 1) "Apply Template" else "Apply Templates"
         e.presentation.icon = HybrisIcons.Log.Template.EXECUTE
     }
 }
