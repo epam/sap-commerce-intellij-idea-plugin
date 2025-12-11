@@ -45,7 +45,7 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
     }
 
     fun updateTemplate(template: CxCustomLogTemplateState) {
-        updateLoggerTemplateInternal(template)
+        updateTemplateState(template)
 
         project.messageBus.syncPublisher(CxCustomLogTemplateStateListener.TOPIC).onTemplateUpdated(template.uuid)
     }
@@ -74,7 +74,7 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
             ?.immutable()
             ?: return
 
-        updateLoggerTemplateInternal(loggerTemplateState)
+        updateTemplateState(loggerTemplateState)
 
         coroutineScope.launch {
             val modifiedTemplate = loggerTemplateState.presentation()
@@ -95,7 +95,7 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
             ?.immutable()
             ?: return
 
-        updateLoggerTemplateInternal(loggerTemplateState)
+        updateTemplateState(loggerTemplateState)
 
         coroutineScope.launch {
             val modifiedTemplate = loggerTemplateState.presentation()
@@ -115,7 +115,7 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
             ?.immutable()
             ?: return
 
-        updateLoggerTemplateInternal(loggerTemplateState)
+        updateTemplateState(loggerTemplateState)
 
         coroutineScope.launch {
             val modifiedTemplate = loggerTemplateState.presentation()
@@ -145,7 +145,7 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         else templateName
     }
 
-    private fun updateLoggerTemplateInternal(template: CxCustomLogTemplateState) {
+    private fun updateTemplateState(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
             templates = templates.toMutableList().apply {
                 val position = indexOfFirst { it.uuid == template.uuid }
