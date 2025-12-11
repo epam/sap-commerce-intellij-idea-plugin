@@ -43,7 +43,7 @@ class CxApplyLogTemplateAction : AnAction() {
         val selectedNodes = e.selectedNodes() ?: return
         val selectedNode = e.selectedNode() ?: return
 
-        var loggers = if (selectedNodes.size == 1) {
+        val loggers = if (selectedNodes.size == 1) {
             when (selectedNode) {
                 is CxBundledLogTemplateItemNode -> selectedNode.loggers
                 is CxCustomLogTemplateItemNode -> selectedNode.loggers
@@ -60,10 +60,16 @@ class CxApplyLogTemplateAction : AnAction() {
                 }
                 .flatten()
         }
+        val uniqueLoggers = loggers
+            .fold(linkedMapOf<String, CxLoggerPresentation>()) { acc, log ->
+                acc[log.name] = log
+                acc
+            }
+            .values
+            .toList()
 
-        val hasDuplicates = selectedNodes.size > 1 && loggers.groupBy { it.name }.filter { it.value.size > 1 }.isNotEmpty()
 
-        if (hasDuplicates) {
+        if (selectedNodes.size > 1 && loggers.size != uniqueLoggers.size) {
             if (Messages.showYesNoDialog(
                     project,
                     """
@@ -76,18 +82,9 @@ class CxApplyLogTemplateAction : AnAction() {
                     HybrisIcons.Log.Template.EXECUTE
                 ) != Messages.YES
             ) return
-
-            //remove duplicates
-            loggers = loggers
-                .fold(linkedMapOf<String, CxLoggerPresentation>()) { acc, log ->
-                    acc[log.name] = log
-                    acc
-                }
-                .values
-                .toList()
         }
 
-        CxRemoteLogStateService.getInstance(project).setLoggers(loggers)
+        CxRemoteLogStateService.getInstance(project).setLoggers(uniqueLoggers)
     }
 
     override fun update(e: AnActionEvent) {
