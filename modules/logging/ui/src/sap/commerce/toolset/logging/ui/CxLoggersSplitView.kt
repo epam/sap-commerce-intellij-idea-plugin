@@ -179,21 +179,14 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                         ?.values
                         ?.filterNot { it.inherited }
 
-                    withContext(Dispatchers.EDT) {
-                        ensureActive()
-                        remoteLogStateView.render(coroutineScope, loggers)
-                    }
+                    remoteLogStateView.render(coroutineScope, loggers)
                 }
 
-                is CxBundledLogTemplateItemNode -> withContext(Dispatchers.EDT) {
-                    ensureActive()
-                    bundledLogTemplatesView.render(coroutineScope, node.loggers)
-                }
+                is CxBundledLogTemplateItemNode -> bundledLogTemplatesView
+                    .render(coroutineScope, node.loggers)
 
-                is CxCustomLogTemplateItemNode -> withContext(Dispatchers.EDT) {
-                    ensureActive()
-                    customLogTemplatesView.render(coroutineScope, node.uuid, node.loggers)
-                }
+                is CxCustomLogTemplateItemNode -> customLogTemplatesView
+                    .render(coroutineScope, node.uuid, node.loggers)
 
                 else -> nothingSelectedPanel
             }

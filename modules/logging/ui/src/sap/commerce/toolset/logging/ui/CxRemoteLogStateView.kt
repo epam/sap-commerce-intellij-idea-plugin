@@ -96,7 +96,9 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
         if (loggers.isEmpty()) {
             val view = noLoggersView("Unable to get list of loggers for the connection.")
 
-            dataScrollPane.setViewportView(view)
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
         } else {
             val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
             val viewport = dataScrollPane.getViewport()
@@ -107,7 +109,9 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                 lazyLoggerDetails(project, coroutineScope, it)
             }
 
-            dataScrollPane.setViewportView(view)
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
 
             invokeLater {
                 viewport.viewPosition = pos

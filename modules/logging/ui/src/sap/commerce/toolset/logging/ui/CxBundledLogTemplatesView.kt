@@ -19,6 +19,7 @@
 package sap.commerce.toolset.logging.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -29,6 +30,8 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.awt.Dimension
 import javax.swing.JComponent
@@ -82,7 +85,9 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
         if (loggers.isEmpty()) {
             val view = noLoggersView("No loggers configured for bundled Log Templates.")
 
-            dataScrollPane.setViewportView(view)
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
         } else {
             val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
             val view = createLoggersPanel(loggers, lazyLoggerRows)
@@ -91,7 +96,9 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
                 lazyLoggerDetails(project, coroutineScope, it)
             }
 
-            dataScrollPane.setViewportView(view)
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
         }
 
         toggleView(showDataPanel, initialized)

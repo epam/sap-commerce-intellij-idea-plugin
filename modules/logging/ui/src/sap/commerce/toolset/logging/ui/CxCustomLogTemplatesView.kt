@@ -21,6 +21,7 @@ package sap.commerce.toolset.logging.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataSink
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
@@ -35,6 +36,8 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxLogUiConstants
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
@@ -116,7 +119,10 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                 "Please, use the panel above to add a logger.",
                 EditorNotificationPanel.Status.Info,
             )
-            dataScrollPane.setViewportView(view)
+
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
         } else {
             val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
             val view = createLoggersPanel(loggers, lazyLoggerRows)
@@ -127,7 +133,9 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                 lazyLoggerDetails(project, coroutineScope, it)
             }
 
-            dataScrollPane.setViewportView(view)
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
 
             invokeLater {
                 viewport.viewPosition = pos
