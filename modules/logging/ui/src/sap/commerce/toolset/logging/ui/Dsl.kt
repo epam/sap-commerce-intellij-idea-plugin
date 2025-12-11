@@ -38,10 +38,7 @@ import com.intellij.ui.*
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogLevel
@@ -49,14 +46,35 @@ import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addKeyListener
 import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.event.KeyEvent
+import javax.swing.JComponent
 
-internal fun Row.lazyLoggerDetails(project: Project, coroutineScope: CoroutineScope, cxLogger: CxLoggerPresentation) {
+data class LazyLoggerRow(
+    val cxLogger: CxLoggerPresentation,
+    val placeholderIcon: Placeholder,
+    val placeholderHelp: Placeholder,
+    val placeholderName: Placeholder,
+)
+
+internal fun Row.loggerDetailsPlaceholders(cxLogger: CxLoggerPresentation): LazyLoggerRow {
     val placeholderIcon = placeholder().gap(RightGap.SMALL)
     val placeholderHelp = placeholder()
     val placeholderName = placeholder().resizableColumn().gap(RightGap.SMALL)
 
     placeholderIcon.component = icon(AnimatedIcon.Default.INSTANCE).component
-    placeholderName.component = label(cxLogger.name).component
+    placeholderName.component = label(cxLogger.name)
+        .align(AlignX.FILL)
+        .gap(RightGap.SMALL)
+        .resizableColumn()
+        .component
+
+    return LazyLoggerRow(cxLogger, placeholderIcon, placeholderHelp, placeholderName)
+}
+
+internal suspend fun lazyLoggerDetails(
+    project: Project, coroutineScope: CoroutineScope, lazyLoggerRow: LazyLoggerRow,
+) {
+    coroutineScope.ensureActive()
+    val cxLogger = lazyLoggerRow.cxLogger
 
     coroutineScope.launch {
         val psiElement = smartReadAction(project) {
@@ -70,48 +88,62 @@ internal fun Row.lazyLoggerDetails(project: Project, coroutineScope: CoroutineSc
             psiElement?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
         } ?: HybrisIcons.Log.Identifier.NA
 
-        val navigableComponent = if (psiElement != null) {
-            val pointer = smartReadAction(project) {
-                SmartPointerManager.getInstance(project).createSmartPsiElementPointer(psiElement)
-            }
+        lateinit var iconComponent: JComponent
+        lateinit var navigableComponent: JComponent
+        var placeholderHelp: JComponent? = null
 
-            link(cxLogger.name) {
-                when (val resolvedPsiElement = pointer.element) {
-                    is PsiPackage -> {
-                        CoroutineScope(Dispatchers.Default).launch {
-                            val directory = smartReadAction(project) {
-                                resolvedPsiElement.getDirectories(GlobalSearchScope.allScope(project))
-                                    .firstOrNull()
-                            } ?: return@launch
+        val pointer = if (psiElement != null) smartReadAction(project) {
+            SmartPointerManager.getInstance(project).createSmartPsiElementPointer(psiElement)
+        } else null
 
-                            edtWriteAction {
-                                ProjectView.getInstance(project).selectPsiElement(directory, true)
+
+        panel {
+            row {
+                cxLogger.presentableParent
+                    ?.let { placeholderHelp = contextHelp(it).component }
+
+                iconComponent = icon(icon).component
+
+                if (pointer != null) {
+                    navigableComponent = link(cxLogger.name) {
+                        when (val resolvedPsiElement = pointer.element) {
+                            is PsiPackage -> {
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    val directory = smartReadAction(project) {
+                                        resolvedPsiElement.getDirectories(GlobalSearchScope.allScope(project))
+                                            .firstOrNull()
+                                    } ?: return@launch
+
+                                    edtWriteAction {
+                                        ProjectView.getInstance(project).selectPsiElement(directory, true)
+                                    }
+                                }
                             }
+
+                            is PsiClass -> PsiNavigationSupport.getInstance()
+                                .createNavigatable(project, resolvedPsiElement.containingFile.virtualFile, resolvedPsiElement.startOffset)
+                                .navigate(true)
+
+                            else -> Notifications.warning(
+                                "Logger declaration could not be found",
+                                "Unable to locate logger declaration for name: ${cxLogger.name}.",
+                            )
+                                .hideAfter(10)
+                                .notify(project)
                         }
-                    }
-
-                    is PsiClass -> PsiNavigationSupport.getInstance()
-                        .createNavigatable(project, resolvedPsiElement.containingFile.virtualFile, resolvedPsiElement.startOffset)
-                        .navigate(true)
-
-                    else -> Notifications.warning(
-                        "Logger declaration could not be found",
-                        "Unable to locate logger declaration for name: ${cxLogger.name}.",
-                    )
-                        .hideAfter(10)
-                        .notify(project)
+                    }.component
+                } else {
+                    navigableComponent = label(cxLogger.name).component
                 }
-            }.component
-        } else {
-            label(cxLogger.name).component
+            }
         }
 
         withContext(Dispatchers.EDT) {
-            placeholderIcon.component = icon(icon).component
-            placeholderName.component = navigableComponent
+            ensureActive()
+            lazyLoggerRow.placeholderIcon.component = iconComponent
+            lazyLoggerRow.placeholderName.component = navigableComponent
 
-            cxLogger.presentableParent
-                ?.let { placeholderHelp.component = contextHelp(it).component }
+            if (placeholderHelp != null) lazyLoggerRow.placeholderHelp.component = placeholderHelp
         }
     }
 }

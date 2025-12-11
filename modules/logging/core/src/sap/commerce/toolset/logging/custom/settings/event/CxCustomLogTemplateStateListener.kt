@@ -24,7 +24,7 @@ import sap.commerce.toolset.logging.presentation.CxLogTemplatePresentation
 interface CxCustomLogTemplateStateListener {
 
     fun onTemplateUpdated(templateUUID: String) = Unit
-    fun onTemplateDeleted() = Unit
+    fun onTemplatesDeleted() = Unit
 
     fun onLoggerDeleted(modifiedTemplate: CxLogTemplatePresentation) = Unit
     fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) = Unit

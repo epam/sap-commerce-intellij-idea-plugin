@@ -29,9 +29,7 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.event.HacConnectionSettingsListener
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
@@ -59,13 +57,24 @@ import javax.swing.event.TreeModelEvent
 class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false, 0.25f), CxToolWindowActivationAware, Disposable {
 
     private val tree = CxLoggersTree(project).apply { registerListeners(this) }
+
+    private var job = SupervisorJob()
+    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
     private val remoteLogStateView by lazy { CxRemoteLogStateView(project).also { Disposer.register(this, it) } }
     private val bundledLogTemplatesView by lazy { CxBundledLogTemplatesView(project).also { Disposer.register(this, it) } }
     private val customLogTemplatesView by lazy { CxCustomLogTemplatesView(project).also { Disposer.register(this, it) } }
+    private val nothingSelectedPanel = panel {
+        row {
+            label(IdeBundle.message("empty.text.nothing.selected"))
+                .resizableColumn()
+                .align(Align.CENTER)
+        }
+            .resizableRow()
+    }
 
     init {
         firstComponent = JBScrollPane(tree)
-        secondComponent = remoteLogStateView.view
+        secondComponent = nothingSelectedPanel
 
         PopupHandler.installPopupMenu(tree, "sap.cx.loggers.toolwindow.menu", "Sap.Cx.LoggersToolWindow")
         Disposer.register(this, tree)
@@ -88,28 +97,24 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
                         ?.takeIf { it.connection.uuid == remoteConnection.uuid }
                         ?: return
 
-                    node.update()
-                    updateSecondComponent(node)
+                    updateSecondComponent(node) { node.update() }
                 }
             })
 
             subscribe(CxCustomLogTemplateStateListener.TOPIC, object : CxCustomLogTemplateStateListener {
                 override fun onTemplateUpdated(templateUUID: String) = updateTree()
-                override fun onTemplateDeleted() = updateTree()
+                override fun onTemplatesDeleted() {
+                    updateSecondComponent(null) { updateTree() }
+                }
 
                 override fun onLoggerDeleted(modifiedTemplate: CxLogTemplatePresentation) {
-                    val node = customLogTemplateItemNode(modifiedTemplate)
-                        ?: return
-
-                    node.update(modifiedTemplate)
-                    updateSecondComponent(node)
+                    customLogTemplateItemNode(modifiedTemplate)
+                        ?.let { node -> updateSecondComponent(node) { node.update(modifiedTemplate) } }
                 }
 
                 override fun onLoggerUpdated(modifiedTemplate: CxLogTemplatePresentation) {
-                    val node = customLogTemplateItemNode(modifiedTemplate)
-                        ?: return
-
-                    node.update(modifiedTemplate)
+                    customLogTemplateItemNode(modifiedTemplate)
+                        ?.let { node -> updateSecondComponent(node) { node.update(modifiedTemplate) } }
                 }
 
                 private fun customLogTemplateItemNode(modifiedTemplate: CxLogTemplatePresentation): CxCustomLogTemplateItemNode? = tree.lastSelectedPathComponent
@@ -125,8 +130,10 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
     private fun updateTree() = tree.onActivated()
 
     private fun registerListeners(tree: CxLoggersTree) = tree
-        .addTreeSelectionListener(tree) {
-            it.newLeadSelectionPath
+        .addTreeSelectionListener(tree) { event ->
+            event
+                .takeIf { it.isAddedPath }
+                ?.newLeadSelectionPath
                 ?.pathData(CxLoggersNode::class)
                 ?.let { node -> updateSecondComponent(node) }
         }
@@ -153,47 +160,44 @@ class CxLoggersSplitView(private val project: Project) : OnePixelSplitter(false,
             }
         })
 
-    private fun updateSecondComponent(node: CxLoggersNode) {
-        CoroutineScope(Dispatchers.EDT).launch {
+    private fun updateSecondComponent(node: CxLoggersNode?, beforeUpdate: () -> Unit = {}) {
+        job.cancel()
+        job = SupervisorJob()
+        coroutineScope = CoroutineScope(Dispatchers.Default + job)
+
+        coroutineScope.launch {
+            ensureActive()
             if (project.isDisposed) return@launch
 
-            when (node) {
+            withContext(Dispatchers.EDT) {
+                beforeUpdate()
+            }
+
+            val viewComponent = when (node) {
                 is CxRemoteLogStateNode -> {
-                    secondComponent = remoteLogStateView.view
-
                     val loggers = CxRemoteLogStateService.getInstance(project).state(node.connection.uuid).get()
-                    remoteLogStateView.render(loggers)
+                        ?.values
+                        ?.filterNot { it.inherited }
+
+                    remoteLogStateView.render(coroutineScope, loggers)
                 }
 
-                is CxBundledLogTemplateItemNode -> {
-                    secondComponent = bundledLogTemplatesView.view
+                is CxBundledLogTemplateItemNode -> bundledLogTemplatesView
+                    .render(coroutineScope, node.loggers)
 
-                    node.loggers.associateBy { it.name }.let {
-                        bundledLogTemplatesView.render(it)
-                    }
-                }
+                is CxCustomLogTemplateItemNode -> customLogTemplatesView
+                    .render(coroutineScope, node.uuid, node.loggers)
 
-                is CxCustomLogTemplateItemNode -> {
-                    secondComponent = customLogTemplatesView.view
+                else -> nothingSelectedPanel
+            }
 
-                    node.loggers.associateBy { it.name }.let {
-                        customLogTemplatesView.render(node.uuid, it)
-                    }
-                }
-
-                else -> {
-                    secondComponent = panel {
-                        row {
-                            label(IdeBundle.message("empty.text.nothing.selected"))
-                                .resizableColumn()
-                                .align(Align.CENTER)
-                        }
-                            .resizableRow()
-                    }
-                }
+            withContext(Dispatchers.EDT) {
+                ensureActive()
+                secondComponent = viewComponent
             }
         }
     }
+
 
     companion object {
         @Serial

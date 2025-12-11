@@ -25,6 +25,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
@@ -37,6 +38,7 @@ class CxApplyLogTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
+        e.presentation.isEnabled = e.selectedNodes()?.size == 1
 
         val selectedNode = e.selectedNode() ?: return
         val loggers = when (selectedNode) {
@@ -51,5 +53,6 @@ class CxApplyLogTemplateAction : AnAction() {
     override fun update(e: AnActionEvent) {
         e.presentation.text = "Apply Template"
         e.presentation.icon = HybrisIcons.Log.Template.EXECUTE
+        e.presentation.isEnabled = e.selectedNodes()?.size == 1
     }
 }

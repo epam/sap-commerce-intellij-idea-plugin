@@ -19,6 +19,7 @@
 package sap.commerce.toolset.logging.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -30,21 +31,19 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.awt.Dimension
+import javax.swing.JComponent
 import javax.swing.JPanel
 
 class CxBundledLogTemplatesView(private val project: Project) : Disposable {
-
-    private var job = SupervisorJob()
-    private var coroutineScope = CoroutineScope(Dispatchers.Default + job)
 
     private val showDataPanel = AtomicBooleanProperty(false)
     private val initialized = AtomicBooleanProperty(true)
 
     private lateinit var dataScrollPane: JBScrollPane
-    private val panel by lazy {
+    private val lazyViewPanel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
             override fun compute() = panel {
                 row {
@@ -71,53 +70,47 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
                         .visibleIf(showDataPanel)
                 }
                     .resizableRow()
+            }.apply {
+                border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
             }
-                .apply {
-                    border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
-                }
         }
     }
 
-    val view: DialogPanel
-        get() = panel.value
+    override fun dispose() = lazyViewPanel.drop()
 
-    override fun dispose() {
-        job.cancel()
-        panel.drop()
-    }
-
-    fun render(loggers: Map<String, CxLoggerPresentation>) {
+    suspend fun render(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>): JComponent {
         initialized.set(false)
-        initLazyRenderingScope()
+        val viewPanel = lazyViewPanel.value
 
-        renderLoggersInternal(loggers)
-    }
+        if (loggers.isEmpty()) {
+            val view = noLoggersView("No loggers configured for bundled Log Templates.")
 
-    private fun renderLoggersInternal(loggers: Map<String, CxLoggerPresentation>) {
-        val view = if (loggers.isEmpty()) noLoggersView("No loggers configured for bundled Log Templates.")
-        else createLoggersPanel(loggers.values)
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
+        } else {
+            val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
+            val view = createLoggersPanel(loggers, lazyLoggerRows)
 
-        dataScrollPane.setViewportView(view)
+            lazyLoggerRows.forEach {
+                lazyLoggerDetails(project, coroutineScope, it)
+            }
+
+            withContext(Dispatchers.EDT) {
+                dataScrollPane.setViewportView(view)
+            }
+        }
 
         toggleView(showDataPanel, initialized)
+
+        return viewPanel
     }
 
-    private fun initLazyRenderingScope() {
-        job.cancel()
-        job = SupervisorJob()
-        coroutineScope = CoroutineScope(Dispatchers.Default + job)
-    }
+    private fun toggleView(vararg unhide: AtomicBooleanProperty) = listOf(showDataPanel, initialized)
+        .forEach { it.set(unhide.contains(it)) }
 
-    private fun toggleView(vararg unhide: AtomicBooleanProperty) {
-        listOf(
-            showDataPanel,
-            initialized,
-        )
-            .forEach { it.set(unhide.contains(it)) }
-    }
-
-    private fun createLoggersPanel(data: Collection<CxLoggerPresentation>) = panel {
-        data.forEach { cxLogger ->
+    private fun createLoggersPanel(loggers: Collection<CxLoggerPresentation>, lazyLoggerRows: MutableList<LazyLoggerRow>) = panel {
+        loggers.forEach { cxLogger ->
             row {
                 icon(cxLogger.level.icon)
                 label(cxLogger.level.name)
@@ -125,7 +118,7 @@ class CxBundledLogTemplatesView(private val project: Project) : Disposable {
                         preferredSize = Dimension(JBUI.scale(68), preferredSize.height)
                     }
 
-                lazyLoggerDetails(project, coroutineScope, cxLogger)
+                loggerDetailsPlaceholders(cxLogger).also { lazyLoggerRows.add(it) }
             }
         }
     }

@@ -27,6 +27,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
@@ -40,6 +41,8 @@ class CxEditCustomLogTemplateAction : AnAction() {
 
         val project = e.project ?: return
 
+        e.presentation.isEnabled = e.selectedNodes()?.size == 1
+
         val templateNode = e.selectedNode()
             ?.asSafely<CxCustomLogTemplateItemNode>()
             ?: return
@@ -51,12 +54,13 @@ class CxEditCustomLogTemplateAction : AnAction() {
             ?: return
 
         if (CxCustomLogTemplateDialog(project, mutable, "Update a Log Template").showAndGet()) {
-            CxCustomLogTemplateService.getInstance(project).updateCustomTemplate(mutable.immutable())
+            CxCustomLogTemplateService.getInstance(project).updateTemplate(mutable.immutable())
         }
     }
 
     override fun update(e: AnActionEvent) {
         e.presentation.text = "Edit Template"
         e.presentation.icon = HybrisIcons.Log.Template.EDIT_CUSTOM_TEMPLATE
+        e.presentation.isEnabled = e.selectedNodes()?.size == 1
     }
 }
