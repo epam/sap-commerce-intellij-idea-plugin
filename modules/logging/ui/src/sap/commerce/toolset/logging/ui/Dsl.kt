@@ -43,9 +43,6 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import sap.commerce.toolset.ui.addKeyListener
-import sap.commerce.toolset.ui.event.KeyListener
-import java.awt.event.KeyEvent
 import javax.swing.JComponent
 
 data class LazyLoggerRow(
@@ -165,14 +162,11 @@ internal fun Row.newLoggerTextField(parentDisposable: Disposable, apply: () -> U
         if (it.text.isBlank()) error("Please enter a logger name")
         else null
     }
-    .addKeyListener(parentDisposable, object : KeyListener {
-        override fun keyReleased(e: KeyEvent) {
-            if (e.keyCode == KeyEvent.VK_ENTER) {
-                apply()
-            }
+    .applyToComponent {
+        addActionListener {
+            apply()
         }
-    })
-
+    }
 
 internal fun noLoggersView(
     messageText: String,
