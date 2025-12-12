@@ -58,7 +58,6 @@ class CxApplyLogTemplateAction : AnAction() {
             .values
             .toList()
 
-
         if (selectedNodes.size > 1 && loggers.size != uniqueLoggers.size) {
             if (Messages.showYesNoDialog(
                     project,
