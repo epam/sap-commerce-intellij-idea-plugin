@@ -51,26 +51,26 @@ class CxApplyLogTemplateAction : AnAction() {
             .flatten()
 
         val uniqueLoggers = loggers
-            .fold(linkedMapOf<String, CxLoggerPresentation>()) { acc, log ->
-                acc[log.name] = log
-                acc
+            .fold(linkedMapOf<String, CxLoggerPresentation>()) { mergedLoggers, log ->
+                mergedLoggers[log.name] = log
+                mergedLoggers
             }
             .values
             .toList()
 
         if (selectedNodes.size > 1 && loggers.size != uniqueLoggers.size) {
-            if (Messages.showYesNoDialog(
-                    project,
-                    """
-                                    Some loggers are defined more than once.
-                                    For each duplicated logger, only the logger from the last template will be kept and earlier ones will be overwritten.
-                                    
-                                    Do you want to continue?
+            val userDecision = Messages.showYesNoDialog(
+                project,
+                """
+                                Some loggers are defined more than once.
+                                For each duplicated logger, only the logger from the last template will be kept and earlier ones will be overwritten.
+
+                                Do you want to continue?
                                 """.trimIndent(),
-                    "Confirm Applying Templates",
-                    HybrisIcons.Log.Template.EXECUTE
-                ) != Messages.YES
-            ) return
+                "Confirm Applying Templates",
+                HybrisIcons.Log.Template.EXECUTE
+            )
+            if (userDecision != Messages.YES) return
         }
 
         CxRemoteLogStateService.getInstance(project).setLoggers(uniqueLoggers)
