@@ -42,7 +42,7 @@ class CxApplyLogTemplateAction : AnAction() {
         val selectedNodes = e.selectedNodes() ?: return
         val loggers = selectedNodes
             .mapNotNull {
-                return@mapNotNull when (it) {
+                when (it) {
                     is CxBundledLogTemplateItemNode -> it.loggers
                     is CxCustomLogTemplateItemNode -> it.loggers
                     else -> null
