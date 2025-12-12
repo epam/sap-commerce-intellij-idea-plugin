@@ -22,9 +22,10 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxRemoteLogStateService
-import sap.commerce.toolset.logging.selectedNode
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
@@ -38,21 +39,47 @@ class CxApplyLogTemplateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        e.presentation.isEnabled = e.selectedNodes()?.size == 1
+        val selectedNodes = e.selectedNodes() ?: return
+        val loggers = selectedNodes
+            .mapNotNull {
+                when (it) {
+                    is CxBundledLogTemplateItemNode -> it.loggers
+                    is CxCustomLogTemplateItemNode -> it.loggers
+                    else -> null
+                }
+            }
+            .flatten()
 
-        val selectedNode = e.selectedNode() ?: return
-        val loggers = when (selectedNode) {
-            is CxBundledLogTemplateItemNode -> selectedNode.loggers
-            is CxCustomLogTemplateItemNode -> selectedNode.loggers
-            else -> return
+        val uniqueLoggers = loggers
+            .fold(linkedMapOf<String, CxLoggerPresentation>()) { mergedLoggers, log ->
+                mergedLoggers[log.name] = log
+                mergedLoggers
+            }
+            .values
+            .toList()
+
+        if (selectedNodes.size > 1 && loggers.size != uniqueLoggers.size) {
+            val userDecision = Messages.showYesNoDialog(
+                project,
+                """
+                                Some loggers are defined more than once.
+                                For each duplicated logger, only the logger from the last template will be kept and earlier ones will be overwritten.
+
+                                Do you want to continue?
+                                """.trimIndent(),
+                "Confirm Applying Templates",
+                HybrisIcons.Log.Template.EXECUTE
+            )
+            if (userDecision != Messages.YES) return
         }
 
-        CxRemoteLogStateService.getInstance(project).setLoggers(loggers)
+        CxRemoteLogStateService.getInstance(project).setLoggers(uniqueLoggers)
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.text = "Apply Template"
+        val selectedNodes = e.selectedNodes() ?: return
+
+        e.presentation.text = if (selectedNodes.size == 1) "Apply Template" else "Apply Templates"
         e.presentation.icon = HybrisIcons.Log.Template.EXECUTE
-        e.presentation.isEnabled = e.selectedNodes()?.size == 1
     }
 }
