@@ -26,7 +26,6 @@ import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
@@ -41,25 +40,16 @@ class CxApplyLogTemplateAction : AnAction() {
 
         val project = e.project ?: return
         val selectedNodes = e.selectedNodes() ?: return
-        val selectedNode = e.selectedNode() ?: return
-
-        val loggers = if (selectedNodes.size == 1) {
-            when (selectedNode) {
-                is CxBundledLogTemplateItemNode -> selectedNode.loggers
-                is CxCustomLogTemplateItemNode -> selectedNode.loggers
-                else -> return
-            }
-        } else {
-            selectedNodes
-                .mapNotNull {
-                    return@mapNotNull when (it) {
-                        is CxBundledLogTemplateItemNode -> it.loggers
-                        is CxCustomLogTemplateItemNode -> it.loggers
-                        else -> null
-                    }
+        val loggers = selectedNodes
+            .mapNotNull {
+                return@mapNotNull when (it) {
+                    is CxBundledLogTemplateItemNode -> it.loggers
+                    is CxCustomLogTemplateItemNode -> it.loggers
+                    else -> null
                 }
-                .flatten()
-        }
+            }
+            .flatten()
+
         val uniqueLoggers = loggers
             .fold(linkedMapOf<String, CxLoggerPresentation>()) { acc, log ->
                 acc[log.name] = log
