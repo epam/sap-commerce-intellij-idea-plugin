@@ -16,21 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.ex
+package sap.commerce.toolset.project.descriptor
 
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+data class ProjectImportContext(
+    var isOpenProjectSettingsAfterImport: Boolean = false,
 
-internal object ReadonlyConfiguratorEx {
+    var isImportOotbModulesInReadOnlyMode: Boolean = false,
+    var isFollowSymlink: Boolean = false,
+    var isScanThroughExternalModule: Boolean = false,
+    var isExcludeTestSources: Boolean = false,
+    var isImportCustomAntBuildFiles: Boolean = false,
+    var isIgnoreNonExistingSourceDirectories: Boolean = false,
 
-    fun configure(moduleDescriptor: ModuleDescriptor) {
-        val descriptorType = moduleDescriptor.descriptorType
-        val hasReadOnlySettings = moduleDescriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode
-        val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
-            || descriptorType === ModuleDescriptorType.PLATFORM
-            || descriptorType === ModuleDescriptorType.EXT
-        val readOnly = hasReadOnlySettings && isReadOnlyType
+    var isWithStandardProvidedSources: Boolean = false,
+    var isWithExternalLibrarySources: Boolean = false,
+    var isWithExternalLibraryJavadocs: Boolean = false,
 
-        moduleDescriptor.extensionDescriptor().readonly = readOnly
-    }
-}
+    var isUseFakeOutputPathForCustomExtensions: Boolean = false,
+)

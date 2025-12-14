@@ -248,18 +248,22 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
             row {
                 withExternalLibrarySources = checkBox("Download & attach library sources")
-                    .comment("""
+                    .comment(
+                        """
                         Enable possibility to download & attach sources for jar files within '/lib' directories registered as Libraries.
                         By default, all source files will be downloaded to directory set via system key 'idea.library.source.dir', usually '.ideaLibSources' under user home.
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 withExternalLibraryJavadocs = checkBox("Download & attach library javadocs")
-                    .comment("""
+                    .comment(
+                        """
                         Similarly to sources, it is also possible to download & attach javadocs for jar files within '/lib' directories registered as Libraries.
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -345,12 +349,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
         wizardContext.projectName = projectNameTextField.text
 
-        with(context.getHybrisProjectDescriptor()) {
-            this.hybrisVersion = hybrisVersionTextField.text
-            this.hybrisDistributionDirectory = FileUtils.toFile(hybrisDistributionDirectoryFilesInChooser.text)
-
-            this.javadocUrl = javadocUrlTextField.text
-
+        with(context.getProjectImportSettings()) {
             this.isIgnoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.isSelected
             this.isWithStandardProvidedSources = withStandardProvidedSources.isSelected
             this.isWithExternalLibrarySources = withExternalLibrarySources.isSelected
@@ -361,6 +360,13 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isImportCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected
             this.isScanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected
             this.isUseFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected
+        }
+
+        with(context.getHybrisProjectDescriptor()) {
+            this.hybrisVersion = hybrisVersionTextField.text
+            this.hybrisDistributionDirectory = FileUtils.toFile(hybrisDistributionDirectoryFilesInChooser.text)
+
+            this.javadocUrl = javadocUrlTextField.text
 
             this.excludedFromScanning = excludedFromScanningList.data.toMutableSet()
 
@@ -394,34 +400,14 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateStep() {
-        val appSettings = ApplicationSettings.getInstance()
+        val applicationSettings = ApplicationSettings.getInstance()
         storeModuleFilesInChooser.text = File(
             builder.fileToImport, HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
         ).absolutePath
 
         projectNameTextField.text = wizardContext.projectName
 
-        with(context().getHybrisProjectDescriptor()) {
-            this.isImportOotbModulesInReadOnlyMode = appSettings.defaultPlatformInReadOnly
-            this.isFollowSymlink = appSettings.followSymlink
-            this.isScanThroughExternalModule = appSettings.scanThroughExternalModule
-            this.isExcludeTestSources = appSettings.excludeTestSources
-            this.isImportCustomAntBuildFiles = appSettings.importCustomAntBuildFiles
-            this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
-            this.isWithStandardProvidedSources = appSettings.withStandardProvidedSources
-            this.isWithExternalLibrarySources = appSettings.withExternalLibrarySources
-            this.isWithExternalLibraryJavadocs = appSettings.withExternalLibraryJavadocs
-
-            ignoreNonExistingSourceDirectories.isSelected = this.isIgnoreNonExistingSourceDirectories
-            withStandardProvidedSources.isSelected = this.isWithStandardProvidedSources
-            withExternalLibrarySources.isSelected = this.isWithExternalLibrarySources
-            withExternalLibraryJavadocs.isSelected = this.isWithExternalLibraryJavadocs
-            importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
-            scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
-            followSymlinkCheckbox.setSelected(this.isFollowSymlink)
-            excludeTestSourcesCheckBox.isSelected = this.isExcludeTestSources
-            importCustomAntBuildFilesCheckBox.isSelected = this.isImportCustomAntBuildFiles
-        }
+        applyApplicationSettings(applicationSettings)
 
         if (hybrisDistributionDirectoryFilesInChooser.text.isBlank()) {
             val task = SearchHybrisDistributionDirectoryTaskModalWindow(File(builder.fileToImport)) {
@@ -455,7 +441,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.PLATFORM_DB_DRIVER
                 ).absolutePath
 
-                val externalDbDriversDirectory = appSettings.externalDbDriversDirectory
+                val externalDbDriversDirectory = applicationSettings.externalDbDriversDirectory
                 if (externalDbDriversDirectory != null) {
                     File(externalDbDriversDirectory)
                         .takeIf { it.isDirectory }
@@ -472,9 +458,9 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
             val hybrisVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, false)
             hybrisVersionTextField.text = hybrisVersion
-            val sourceCodeDirectory = appSettings.sourceCodeDirectory
+            val sourceCodeDirectory = applicationSettings.sourceCodeDirectory
             val sourceFile = when {
-                appSettings.sourceZipUsed && sourceCodeDirectory != null -> findSourceZip(sourceCodeDirectory, hybrisVersion)
+                applicationSettings.sourceZipUsed && sourceCodeDirectory != null -> findSourceZip(sourceCodeDirectory, hybrisVersion)
                 sourceCodeDirectory != null -> File(sourceCodeDirectory)
                 else -> null
             }
@@ -506,6 +492,9 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         val context = context()
         context.cleanup()
 
+        applyApplicationSettings(ApplicationSettings.getInstance())
+        applyProjectSettings(projectSettings)
+
         with(context.getHybrisProjectDescriptor()) {
             this.hybrisVersion = project?.directory
                 ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), false) }
@@ -519,19 +508,6 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.externalExtensionsDirectory = FileUtils.toFile(projectSettings.externalExtensionsDirectory, true)
             this.externalConfigDirectory = FileUtils.toFile(projectSettings.externalConfigDirectory, true)
             this.externalDbDriversDirectory = FileUtils.toFile(projectSettings.externalDbDriversDirectory, true)
-            this.isImportOotbModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode
-            this.isFollowSymlink = projectSettings.followSymlink
-            this.isExcludeTestSources = projectSettings.excludeTestSources
-            this.isImportCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles
-            this.isScanThroughExternalModule = projectSettings.scanThroughExternalModule
-            this.isUseFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
-
-            val appSettings = ApplicationSettings.getInstance()
-            val ccv2ProjectSettings = CCv2ProjectSettings.getInstance()
-            this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
-            this.isWithStandardProvidedSources = appSettings.withStandardProvidedSources
-            this.isWithExternalLibrarySources = appSettings.withExternalLibrarySources
-            this.isWithExternalLibraryJavadocs = appSettings.withExternalLibraryJavadocs
 
             this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory
                 ?.let { File(it) }
@@ -540,7 +516,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
                 )
 
-            this.ccv2Token = ccv2ProjectSettings.getCCv2Token()
+            this.ccv2Token = CCv2ProjectSettings.getInstance().getCCv2Token()
 
             val hybrisDirectory = projectSettings.hybrisDirectory
             if (hybrisDirectory != null) {
@@ -650,4 +626,42 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
     private fun context() = builder as DefaultHybrisProjectImportBuilder
+
+    private fun applyApplicationSettings(applicationSettings: ApplicationSettings) = with(context().getProjectImportSettings()) {
+        this.isImportOotbModulesInReadOnlyMode = applicationSettings.defaultPlatformInReadOnly
+        this.isFollowSymlink = applicationSettings.followSymlink
+        this.isScanThroughExternalModule = applicationSettings.scanThroughExternalModule
+        this.isExcludeTestSources = applicationSettings.excludeTestSources
+        this.isImportCustomAntBuildFiles = applicationSettings.importCustomAntBuildFiles
+        this.isIgnoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories
+        this.isWithStandardProvidedSources = applicationSettings.withStandardProvidedSources
+        this.isWithExternalLibrarySources = applicationSettings.withExternalLibrarySources
+        this.isWithExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs
+
+        importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
+        followSymlinkCheckbox.setSelected(this.isFollowSymlink)
+        scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
+        excludeTestSourcesCheckBox.isSelected = this.isExcludeTestSources
+        importCustomAntBuildFilesCheckBox.isSelected = this.isImportCustomAntBuildFiles
+        ignoreNonExistingSourceDirectories.isSelected = this.isIgnoreNonExistingSourceDirectories
+        withStandardProvidedSources.isSelected = this.isWithStandardProvidedSources
+        withExternalLibrarySources.isSelected = this.isWithExternalLibrarySources
+        withExternalLibraryJavadocs.isSelected = this.isWithExternalLibraryJavadocs
+    }
+
+    private fun applyProjectSettings(projectSettings: ProjectSettings) = with(context().getProjectImportSettings()) {
+        this.isImportOotbModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode
+        this.isFollowSymlink = projectSettings.followSymlink
+        this.isScanThroughExternalModule = projectSettings.scanThroughExternalModule
+        this.isExcludeTestSources = projectSettings.excludeTestSources
+        this.isImportCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles
+        this.isUseFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
+
+        importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
+        followSymlinkCheckbox.setSelected(this.isFollowSymlink)
+        scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
+        excludeTestSourcesCheckBox.isSelected = this.isExcludeTestSources
+        importCustomAntBuildFilesCheckBox.isSelected = this.isImportCustomAntBuildFiles
+        useFakeOutputPathForCustomExtensionsCheckbox.isSelected = this.isUseFakeOutputPathForCustomExtensions
+    }
 }

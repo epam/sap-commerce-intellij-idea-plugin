@@ -62,9 +62,14 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
     protected final Lock lock = new ReentrantLock();
 
     @Nullable
-    private volatile HybrisProjectDescriptor hybrisProjectDescriptor;
+    private HybrisProjectDescriptor _hybrisProjectDescriptor;
     private List<ModuleDescriptor> moduleList;
     private List<ModuleDescriptor> _hybrisModulesToImport;
+
+    @Override
+    public @NotNull ProjectImportContext getProjectImportSettings() {
+        return getHybrisProjectDescriptor().getImportSettings();
+    }
 
     @Override
     @Nullable
@@ -90,8 +95,8 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
         try {
             this.lock.lock();
-            if (this.hybrisProjectDescriptor != null) {
-                this.hybrisProjectDescriptor = null;
+            if (this._hybrisProjectDescriptor != null) {
+                this._hybrisProjectDescriptor = null;
             }
         } finally {
             this.lock.unlock();
@@ -104,13 +109,13 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
         try {
             this.lock.lock();
 
-            if (null == this.hybrisProjectDescriptor) {
-                this.hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor();
-                this.hybrisProjectDescriptor.setRefresh(isUpdate());
-                this.hybrisProjectDescriptor.setProject(getCurrentProject());
+            if (null == this._hybrisProjectDescriptor) {
+                this._hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor();
+                this._hybrisProjectDescriptor.setRefresh(isUpdate());
+                this._hybrisProjectDescriptor.setProject(getCurrentProject());
             }
 
-            return this.hybrisProjectDescriptor;
+            return this._hybrisProjectDescriptor;
         } finally {
             this.lock.unlock();
         }
@@ -118,12 +123,12 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
     @Override
     public boolean isOpenProjectSettingsAfter() {
-        return this.getHybrisProjectDescriptor().isOpenProjectSettingsAfterImport();
+        return this.getHybrisProjectDescriptor().getImportSettings().isOpenProjectSettingsAfterImport();
     }
 
     @Override
     public void setOpenProjectSettingsAfter(final boolean on) {
-        this.getHybrisProjectDescriptor().setOpenProjectSettingsAfterImport(on);
+        this.getHybrisProjectDescriptor().getImportSettings().setOpenProjectSettingsAfterImport(on);
     }
 
     @Nullable
@@ -168,7 +173,7 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
     @Deprecated(since = "Compare to refresh action, looks like we may not remove existing modules in case of configured IML files.")
     protected void performProjectsCleanup(@NotNull final Iterable<ModuleDescriptor> modulesChosenForImport) {
         final List<File> alreadyExistingModuleFiles;
-        final File dir = hybrisProjectDescriptor.getModulesFilesDirectory();
+        final File dir = getHybrisProjectDescriptor().getModulesFilesDirectory();
         if (dir != null && dir.isDirectory()) {
             alreadyExistingModuleFiles = getAllImlFiles(dir);
         } else {

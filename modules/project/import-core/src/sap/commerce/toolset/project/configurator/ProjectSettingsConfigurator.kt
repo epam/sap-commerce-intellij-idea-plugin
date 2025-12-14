@@ -88,25 +88,40 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         val projectSettings = hybrisProjectDescriptor.project?.ySettings ?: return
         val applicationSettings = ApplicationSettings.getInstance()
 
-        applicationSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
-        applicationSettings.ignoreNonExistingSourceDirectories = hybrisProjectDescriptor.isIgnoreNonExistingSourceDirectories
-        applicationSettings.withStandardProvidedSources = hybrisProjectDescriptor.isWithStandardProvidedSources
-        applicationSettings.withExternalLibrarySources = hybrisProjectDescriptor.isWithExternalLibrarySources
-        applicationSettings.withExternalLibraryJavadocs = hybrisProjectDescriptor.isWithExternalLibraryJavadocs
+        val importSettings = hybrisProjectDescriptor.importSettings
 
-        projectSettings.importOotbModulesInReadOnlyMode = hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode
+        applicationSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
+
+        with(applicationSettings) {
+            this.defaultPlatformInReadOnly = importSettings.isImportOotbModulesInReadOnlyMode
+            this.followSymlink = importSettings.isFollowSymlink
+            this.scanThroughExternalModule = importSettings.isScanThroughExternalModule
+            this.excludeTestSources = importSettings.isExcludeTestSources
+            this.importCustomAntBuildFiles = importSettings.isImportCustomAntBuildFiles
+            this.ignoreNonExistingSourceDirectories = importSettings.isIgnoreNonExistingSourceDirectories
+            this.withStandardProvidedSources = importSettings.isWithStandardProvidedSources
+            this.withExternalLibrarySources = importSettings.isWithExternalLibrarySources
+            this.withExternalLibraryJavadocs = importSettings.isWithExternalLibraryJavadocs
+        }
+
+        with (projectSettings) {
+            this.importOotbModulesInReadOnlyMode = importSettings.isImportOotbModulesInReadOnlyMode
+            this.followSymlink = importSettings.isFollowSymlink
+            this.scanThroughExternalModule = importSettings.isScanThroughExternalModule
+            this.excludeTestSources = importSettings.isExcludeTestSources
+            this.importCustomAntBuildFiles = importSettings.isImportCustomAntBuildFiles
+            this.useFakeOutputPathForCustomExtensions = importSettings.isUseFakeOutputPathForCustomExtensions
+        }
+
         projectSettings.externalExtensionsDirectory = hybrisProjectDescriptor.externalExtensionsDirectory?.directorySystemIndependentName
         projectSettings.externalConfigDirectory = hybrisProjectDescriptor.externalConfigDirectory?.directorySystemIndependentName
         projectSettings.ideModulesFilesDirectory = hybrisProjectDescriptor.modulesFilesDirectory?.directorySystemIndependentName
         projectSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
         projectSettings.configDirectory = hybrisProjectDescriptor.configHybrisModuleDescriptor?.moduleRootDirectory?.directorySystemIndependentName
 
-        projectSettings.followSymlink = hybrisProjectDescriptor.isFollowSymlink
-        projectSettings.scanThroughExternalModule = hybrisProjectDescriptor.isScanThroughExternalModule
         projectSettings.modulesOnBlackList = createModulesOnBlackList(hybrisProjectDescriptor)
         projectSettings.hybrisVersion = hybrisProjectDescriptor.hybrisVersion
         projectSettings.javadocUrl = hybrisProjectDescriptor.javadocUrl
-        projectSettings.excludeTestSources = hybrisProjectDescriptor.isExcludeTestSources
 
         hybrisProjectDescriptor.sourceCodeFile
             ?.takeIf { it.exists() }

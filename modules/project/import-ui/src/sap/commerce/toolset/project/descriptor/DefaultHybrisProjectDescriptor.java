@@ -105,8 +105,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File sourceCodeFile;
     @Nullable
     protected File projectIconFile;
-    protected boolean openProjectSettingsAfterImport;
-    protected boolean importOotbModulesInReadOnlyMode;
     @Nullable
     protected File hybrisDistributionDirectory;
     @Nullable
@@ -119,15 +117,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected String javadocUrl;
     @Nullable
     protected String hybrisVersion;
-    protected boolean followSymlink;
-    protected boolean excludeTestSources;
-    protected boolean importCustomAntBuildFiles;
-    protected boolean scanThroughExternalModule;
-    private boolean withStandardProvidedSources;
-    private boolean withExternalLibrarySources;
-    private boolean withExternalLibraryJavadocs;
-    private boolean ignoreNonExistingSourceDirectories;
-    private boolean useFakeOutputPathForCustomExtensions;
+    private final ProjectImportContext importSettings = new ProjectImportContext();
 
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
@@ -441,7 +431,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final var moduleRootDirectories = processDirectoriesByTypePriority(
             moduleRootMap,
             excludedFromScanning,
-            isScanThroughExternalModule(),
+            importSettings.isScanThroughExternalModule(),
             progressListenerProcessor
         );
 
@@ -802,7 +792,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (importService.isDirectoryExcluded(file)) {
                 return false;
             }
-            return !Files.isSymbolicLink(file) || followSymlink;
+            return !Files.isSymbolicLink(file) || importSettings.isFollowSymlink();
         });
         if (files != null) {
             for (final var file : files) {
@@ -826,7 +816,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 .filter(Objects::nonNull)
                 .filter(Files::isDirectory)
                 .filter(Predicate.not(importService::isDirectoryExcluded))
-                .filter(file -> !Files.isSymbolicLink(file) || followSymlink)
+                .filter(file -> !Files.isSymbolicLink(file) || importSettings.isFollowSymlink())
                 .map(Path::toFile)
                 .toList();
             for (final var moduleRoot : moduleRoots) {
@@ -1074,26 +1064,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public boolean isOpenProjectSettingsAfterImport() {
-        return this.openProjectSettingsAfterImport;
-    }
-
-    @Override
-    public void setOpenProjectSettingsAfterImport(final boolean openProjectSettingsAfterImport) {
-        this.openProjectSettingsAfterImport = openProjectSettingsAfterImport;
-    }
-
-    @Override
-    public boolean isImportOotbModulesInReadOnlyMode() {
-        return importOotbModulesInReadOnlyMode;
-    }
-
-    @Override
-    public void setImportOotbModulesInReadOnlyMode(final boolean importOotbModulesInReadOnlyMode) {
-        this.importOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyMode;
-    }
-
-    @Override
     @Nullable
     public File getHybrisDistributionDirectory() {
         return hybrisDistributionDirectory;
@@ -1137,56 +1107,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.externalDbDriversDirectory = externalDbDriversDirectory;
     }
 
-    @Override
-    public boolean isWithStandardProvidedSources() {
-        return withStandardProvidedSources;
-    }
-
-    @Override
-    public void setWithStandardProvidedSources(final boolean withStandardProvidedSources) {
-        this.withStandardProvidedSources = withStandardProvidedSources;
-    }
-
-    @Override
-    public boolean isWithExternalLibrarySources() {
-        return withExternalLibrarySources;
-    }
-
-    @Override
-    public void setWithExternalLibrarySources(final boolean withExternalLibrarySources) {
-        this.withExternalLibrarySources = withExternalLibrarySources;
-    }
-
-    @Override
-    public boolean isWithExternalLibraryJavadocs() {
-        return withExternalLibraryJavadocs;
-    }
-
-    @Override
-    public void setWithExternalLibraryJavadocs(final boolean withExternalLibraryJavadocs) {
-        this.withExternalLibraryJavadocs = withExternalLibraryJavadocs;
-    }
-
-    @Override
-    public boolean isIgnoreNonExistingSourceDirectories() {
-        return ignoreNonExistingSourceDirectories;
-    }
-
-    @Override
-    public void setIgnoreNonExistingSourceDirectories(final boolean ignoreNonExistingSourceDirectories) {
-        this.ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories;
-    }
-
-    @Override
-    public boolean isUseFakeOutputPathForCustomExtensions() {
-        return useFakeOutputPathForCustomExtensions;
-    }
-
-    @Override
-    public void setUseFakeOutputPathForCustomExtensions(final boolean useFakeOutputPathForCustomExtensions) {
-        this.useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensions;
-    }
-
     @Nullable
     @Override
     public String getJavadocUrl() {
@@ -1196,46 +1116,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setJavadocUrl(@Nullable final String javadocUrl) {
         this.javadocUrl = javadocUrl;
-    }
-
-    @Override
-    public boolean isFollowSymlink() {
-        return followSymlink;
-    }
-
-    @Override
-    public void setFollowSymlink(final boolean followSymlink) {
-        this.followSymlink = followSymlink;
-    }
-
-    @Override
-    public boolean isExcludeTestSources() {
-        return excludeTestSources;
-    }
-
-    @Override
-    public void setExcludeTestSources(final boolean excludeTestSources) {
-        this.excludeTestSources = excludeTestSources;
-    }
-
-    @Override
-    public void setImportCustomAntBuildFiles(final boolean importCustomAntBuildFiles) {
-        this.importCustomAntBuildFiles = importCustomAntBuildFiles;
-    }
-
-    @Override
-    public boolean isImportCustomAntBuildFiles() {
-        return importCustomAntBuildFiles;
-    }
-
-    @Override
-    public boolean isScanThroughExternalModule() {
-        return scanThroughExternalModule;
-    }
-
-    @Override
-    public void setScanThroughExternalModule(final boolean scanThroughExternalModule) {
-        this.scanThroughExternalModule = scanThroughExternalModule;
     }
 
     @Override
@@ -1270,19 +1150,19 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             "rootDirectory=" + rootDirectory +
             ", modulesFilesDirectory=" + modulesFilesDirectory +
             ", sourceCodeFile=" + sourceCodeFile +
-            ", openProjectSettingsAfterImport=" + openProjectSettingsAfterImport +
-            ", importOotbModulesInReadOnlyMode=" + importOotbModulesInReadOnlyMode +
             ", hybrisDistributionDirectory=" + hybrisDistributionDirectory +
             ", externalExtensionsDirectory=" + externalExtensionsDirectory +
             ", externalConfigDirectory=" + externalConfigDirectory +
             ", externalDbDriversDirectory=" + externalDbDriversDirectory +
-            ", importCustomAntBuildFiles=" + importCustomAntBuildFiles +
             ", javadocUrl='" + javadocUrl + '\'' +
             ", hybrisVersion='" + hybrisVersion + '\'' +
-            ", followSymlink=" + followSymlink +
-            ", excludeTestSources=" + excludeTestSources +
-            ", scanThroughExternalModule=" + scanThroughExternalModule +
+            ", importSettings=" + importSettings +
             '}';
+    }
+
+    @Override
+    public @NotNull ProjectImportContext getImportSettings() {
+        return importSettings;
     }
 
     protected enum DirectoryType {

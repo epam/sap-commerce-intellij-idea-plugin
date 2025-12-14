@@ -79,7 +79,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
         descriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
-                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
+                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode
                 val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }
                     .filter { it.isDirectory }
@@ -157,7 +157,7 @@ private fun addLibrariesToNonCustomModule(
     descriptorType: ModuleDescriptorType?,
     libs: MutableList<JavaLibraryDescriptor>
 ) {
-    if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
+    if (!descriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode) return
     if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
     val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
@@ -268,11 +268,11 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
-    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
+    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode
     allYModules.values
         .filter { it.getDirectDependencies().contains(descriptor.owner) }
         .filter { it != descriptor }
-        .map { yModule ->
+        .forEach { yModule ->
             // process owner extension dependencies
             val addonSourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                 .map { File(yModule.moduleRootDirectory, it) }

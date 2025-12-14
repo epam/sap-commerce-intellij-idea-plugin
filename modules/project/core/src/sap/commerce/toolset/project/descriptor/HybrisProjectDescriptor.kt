@@ -23,6 +23,7 @@ import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import java.io.File
 
 interface HybrisProjectDescriptor {
+
     fun setHybrisProject(project: Project?)
     fun clear()
     fun setRootDirectoryAndScanForModules(
@@ -31,6 +32,7 @@ interface HybrisProjectDescriptor {
         errorsProcessor: TaskProgressProcessor<MutableList<File>>?
     )
 
+    val importSettings: ProjectImportContext
     var project: Project?
     var refresh: Boolean
     val foundModules: MutableList<ModuleDescriptor>
@@ -45,24 +47,24 @@ interface HybrisProjectDescriptor {
     var ccv2Token: String?
     var sourceCodeFile: File?
     var projectIconFile: File?
-    var isOpenProjectSettingsAfterImport: Boolean
-    var isImportOotbModulesInReadOnlyMode: Boolean
+//    var isOpenProjectSettingsAfterImport: Boolean
+//    var isImportOotbModulesInReadOnlyMode: Boolean
     var hybrisDistributionDirectory: File?
     var externalExtensionsDirectory: File?
     var externalConfigDirectory: File?
     var externalDbDriversDirectory: File?
-    var isIgnoreNonExistingSourceDirectories: Boolean
-    var isUseFakeOutputPathForCustomExtensions: Boolean
+//    var isIgnoreNonExistingSourceDirectories: Boolean
+//    var isUseFakeOutputPathForCustomExtensions: Boolean
     var javadocUrl: String?
-    var isFollowSymlink: Boolean
-    var isExcludeTestSources: Boolean
-    var isImportCustomAntBuildFiles: Boolean
-    var isScanThroughExternalModule: Boolean
+//    var isFollowSymlink: Boolean
+//    var isExcludeTestSources: Boolean
+//    var isImportCustomAntBuildFiles: Boolean
+//    var isScanThroughExternalModule: Boolean
     var hybrisVersion: String?
     val detectedVcs: MutableSet<File>
-    var isWithStandardProvidedSources: Boolean
-    var isWithExternalLibrarySources: Boolean
-    var isWithExternalLibraryJavadocs: Boolean
+//    var isWithStandardProvidedSources: Boolean
+//    var isWithExternalLibrarySources: Boolean
+//    var isWithExternalLibraryJavadocs: Boolean
     var excludedFromScanning: MutableSet<String>
     val excludedFromScanningDirectories: MutableSet<File>?
 

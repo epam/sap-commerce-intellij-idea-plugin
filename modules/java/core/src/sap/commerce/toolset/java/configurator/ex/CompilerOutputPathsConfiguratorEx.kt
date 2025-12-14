@@ -32,8 +32,8 @@ internal object CompilerOutputPathsConfiguratorEx {
         moduleDescriptor: ModuleDescriptor
     ) {
         val rootProjectDescriptor = moduleDescriptor.rootProjectDescriptor
-        val fakeOutputPath = rootProjectDescriptor.isUseFakeOutputPathForCustomExtensions
-        val ootbReadonlyMode = rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
+        val fakeOutputPath = rootProjectDescriptor.importSettings.isUseFakeOutputPathForCustomExtensions
+        val ootbReadonlyMode = rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode
 
         val output = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) {
             if (fakeOutputPath) ProjectConstants.Directory.ECLIPSE_BIN

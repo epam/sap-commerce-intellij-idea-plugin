@@ -20,6 +20,7 @@ package sap.commerce.toolset.project
 
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ProjectImportContext
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.File
 
@@ -27,6 +28,7 @@ interface HybrisProjectImportBuilder {
 
     var hybrisModulesToImport: MutableList<ModuleDescriptor>
 
+    fun getProjectImportSettings(): ProjectImportContext
     fun getHybrisProjectDescriptor(): HybrisProjectDescriptor
     fun setRootProjectDirectory(directory: File)
     fun setAllModuleList()
