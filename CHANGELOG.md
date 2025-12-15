@@ -1,19 +1,16 @@
 ## [2025.3.1]
 
 <cite>Release contributors</cite>
-- 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
+- 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 
-### `SAP CX Logging` enhancements
-- Support deletion for multiple selected custom nodes [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)
-- Prevented creating a logger by pressing `Enter` in a child component [#1696](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1696)
-- Support applying loggers for multiple selected nodes (custom and bundled) [#1697](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1697)
-- Support merging and cloning logger templates [#1698](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1698)
+### `WSL` enhancements
+- Ensure correctness of classpath during build execution [#1663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1663)
 
 ## [2025.3.0]
 
 <cite>Release contributors</cite>
-- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Amlytvyn+is%3Apr)
-- 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Aekalenchuk+is%3Apr++is%3Apr)
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Amlytvyn+is%3Apr)
+- 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.0+author%3Aekalenchuk+is%3Apr++is%3Apr)
 
 ### `Bean System` enhancements
 - Preserve Preview view settings on IDE restart [#1689](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1689)
@@ -24,63 +21,10 @@
 
 ### `SAP CX Logging` enhancements
 - Support a default log level for a Custom Log Template [#1687](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1687)
-- Unified bundle, custom and remote UI API [#1692](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1692)
-- Support creation of a template based on the remote state [#1693](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1693)
 
 ### Other
 - Compatibility API changes for IDEA `2025.3` [#1686](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1686)
 - Compatibility API changes for IDEA `2025.3` OpenSource Edition [#1688](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1688)
-
-## [2025.2.5.2]
-
-<cite>Release contributors</cite>
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.2+author%3Amlytvyn+is%3Apr)
-
-### `Project Import` enhancements
-- Ensure that 3rd-party library sources are downloaded [#1694](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1694)
-
-## [2025.2.5.1]
-
-<cite>Release contributors</cite>
-- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Amlytvyn+is%3Apr)
-- 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.2.5.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
-
-### `Project Import` enhancements
-- Automatically download 3rd-party library sources [#1669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1669)
-- Automatically download 3rd-party library javadocs [#1670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1670)
-- Rely on Maven repositories configured via `Remote Jar Repositories` to download library sources [#1672](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1672)
-- Notify on completion of the libraries sources download [#1673](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1673)
-- Adjusted the approach to identify a config module [#1671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1671)
-- Inform a developer about a missing `config` module [#1675](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1675)
-- Adjusted directories excluded from the modules scan [#1676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1676)
-
-### `SAP CX Logging` enhancements
-- Added support for Custom Log Template - add a template [#1677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1677)
-- Added support for Custom Log Template - actions: delete, rename template [#1679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1679)
-- Supported adding a logger for a logger template [#1680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1680)
-- Support navigable packages & loggers for Custom Log Templates [#1681](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1681)
-- Supported removing a logger for a logger template [#1683](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1683)
-- Supported modifying a logger for a logger template [#1684](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1684)
-- Supported applying a custom logger template [#1685](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1685)
-
-### `hAC` enhancements
-- Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)
-
-### `Bean System` enhancements
-- Improved folding for elements without required values [#1665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1665)
-
-### `Type System` enhancements
-- Improved folding for elements without required values [#1666](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1666)
-
-### `Cockpit NG` enhancements
-- Added folding for `simple-search:sort-field` [#1674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1674)
-
-### `hAC` enhancements
-- Improved warning message in case of credentials issue [#1678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1678)
-
-### Other
-- Updated Plugin icon [#1667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1667)
-- Lazy-init toolwindows [#1682](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1682)
 
 ## [2025.2.5.0]
 

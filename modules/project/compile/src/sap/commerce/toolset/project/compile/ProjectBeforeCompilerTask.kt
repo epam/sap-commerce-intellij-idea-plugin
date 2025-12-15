@@ -22,7 +22,9 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.JavaCommandLineStateUtil
 import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
-import com.intellij.execution.wsl.WSLUtil
+import com.intellij.execution.wsl.WSLCommandLineOptions
+import com.intellij.execution.wsl.WslDistributionManager
+import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -30,7 +32,6 @@ import com.intellij.openapi.projectRoots.JavaSdkType
 import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.application
@@ -158,46 +159,51 @@ class ProjectBeforeCompilerTask : CompileTask {
         vmExecutablePath: String
     ): GeneralCommandLine {
 
-        var internalCoreModuleRoot = coreModuleRoot.resolve("lib").toString() + "/*"
-        var internalBootstrapDirectory = bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
-        var internalVmExecutablePath = vmExecutablePath
-        var internalPlatformModuleRootPath = platformModuleRoot
 
-        val isRunFromWsl = internalCoreModuleRoot.contains(WSLUtil.getUncPrefix())
-        if (isRunFromWsl) {
-            internalCoreModuleRoot = convertWindowsPath(internalCoreModuleRoot)
-            internalBootstrapDirectory = convertWindowsPath(internalBootstrapDirectory)
-            internalVmExecutablePath = convertWindowsPath(internalVmExecutablePath)
-            internalPlatformModuleRootPath = Paths.get(convertWindowsPath(internalPlatformModuleRootPath.toString()))
-        }
+        val platformModuleRootWslPath = WslPath.parseWindowsUncPath(platformModuleRoot.toString())
+        val platformModuleRootPath = platformModuleRootWslPath?.linuxPath
+            ?: platformModuleRoot.toString()
 
+
+        val classpathSeparator = if (platformModuleRootWslPath != null) ":" else File.pathSeparator
         val classpath = setOf(
-            internalCoreModuleRoot,
-            internalBootstrapDirectory
+            osSpecificPath(coreModuleRoot.resolve("lib").toString() + "/*"),
+            osSpecificPath(bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString())
         )
-        val fileSeparator = if (isRunFromWsl) ":" else File.pathSeparator
-        val gcl = GeneralCommandLine()
+            .joinToString(classpathSeparator)
+
+        val result = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkDirectory(internalPlatformModuleRootPath.toFile())
-            .withExePath(internalVmExecutablePath)
+            .withWorkDirectory(platformModuleRoot.toFile())
+            .withExePath(osSpecificPath(vmExecutablePath))
             .withCharset(StandardCharsets.UTF_8)
             .withParameters(
                 "-Dfile.encoding=UTF-8",
                 "-cp",
-                classpath.joinToString(fileSeparator),
+                classpath,
                 HybrisConstants.CLASS_FQN_CODE_GENERATOR,
-                internalPlatformModuleRootPath.toString()
+                platformModuleRootPath
             )
-        return gcl
+
+        if (platformModuleRootWslPath != null) {
+            patchCommandLineToRunViaWsl(result)
+        }
+
+        return result
     }
 
-    private fun convertWindowsPath(windowsAbsolutePath: String): @NlsSafe String {
-        require(windowsAbsolutePath.length >= 3) {
-            "Invalid Windows path: $windowsAbsolutePath"
-        }
-        return windowsAbsolutePath[0].lowercaseChar().toString() +
-            FileUtil.toSystemIndependentName(windowsAbsolutePath.substring(2))
+    fun patchCommandLineToRunViaWsl(commandLine: GeneralCommandLine) {
+        val manager = WslDistributionManager.getInstance()
+        val distributions = manager.installedDistributions
+        val dist = distributions.firstOrNull()
+        val options = WSLCommandLineOptions()
+            .setExecuteCommandInShell(true)
+            .setLaunchWithWslExe(true)
+        dist?.patchCommandLine<GeneralCommandLine>(commandLine, null, options)
     }
+
+    private fun osSpecificPath(path: String) = path
+        .let { WslPath.parseWindowsUncPath(it)?.linuxPath ?: it }
 
     private fun invokeCodeCompilation(
         context: CompileContext,
