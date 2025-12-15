@@ -28,6 +28,7 @@ import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
+import sap.commerce.toolset.logging.ui.LogTemplateDialogContext
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateGroupNode
 
 class CxAddCustomLogTemplateAction : AnAction() {
@@ -44,8 +45,13 @@ class CxAddCustomLogTemplateAction : AnAction() {
             ?: return
 
         val mutable = CxCustomLogTemplateState().mutable()
+        val dialogContext = LogTemplateDialogContext(
+            project = project,
+            mutable = mutable,
+            title = "Create a Log Template"
+        )
 
-        if (CxCustomLogTemplateDialog(project, mutable, "Create a Log Template").showAndGet()) {
+        if (CxCustomLogTemplateDialog(dialogContext).showAndGet()) {
             CxCustomLogTemplateService.getInstance(project).addTemplate(mutable.immutable())
         }
     }
