@@ -29,7 +29,6 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.logging.CxLogLevel
-import java.io.Serial
 import javax.swing.JComponent
 
 class CxCustomLogTemplateDialog(
@@ -45,7 +44,7 @@ class CxCustomLogTemplateDialog(
     }
 
     override fun createNorthPanel() = if (context.duplicatedSourceTemplates) {
-        DuplicatesWarningEditorNotificationPanel(status = EditorNotificationPanel.Status.Warning).apply {
+        EditorNotificationPanel(null as FileEditor?, EditorNotificationPanel.Status.Warning).apply {
             text = "Duplicates were found. The last occurrence wins."
             val insideBorder = border
             val outsideBorder = ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER)
@@ -89,19 +88,9 @@ class CxCustomLogTemplateDialog(
                     .align(AlignX.FILL)
             }.layout(RowLayout.PARENT_GRID)
         }
-
     }.apply {
         this.border = JBUI.Borders.empty(16)
     }
 
     override fun getPreferredFocusedComponent(): JComponent = nameTextField
-
-}
-
-class DuplicatesWarningEditorNotificationPanel(fileEditor: FileEditor? = null, status: EditorNotificationPanel.Status) : EditorNotificationPanel(fileEditor, status) {
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = 7285047316752982361L
-    }
 }
