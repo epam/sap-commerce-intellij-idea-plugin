@@ -88,7 +88,7 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
         }
 
         val platformAntBuildVirtualFile = getBuildVirtualFile(platformDescriptor)
-        val customAntBuildVirtualFiles = if (hybrisProjectDescriptor.importSettings.importCustomAntBuildFiles) customHybrisModuleDescriptors
+        val customAntBuildVirtualFiles = if (hybrisProjectDescriptor.importContext.importCustomAntBuildFiles) customHybrisModuleDescriptors
             .mapNotNull { getBuildVirtualFile(it) }
         else emptyList()
 

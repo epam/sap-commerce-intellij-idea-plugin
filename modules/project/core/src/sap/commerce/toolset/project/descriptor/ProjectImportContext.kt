@@ -18,6 +18,9 @@
 
 package sap.commerce.toolset.project.descriptor
 
+import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.settings.ApplicationSettings
+
 data class ProjectImportContext(
     var isOpenProjectSettingsAfterImport: Boolean = false,
 
@@ -27,10 +30,26 @@ data class ProjectImportContext(
     var excludeTestSources: Boolean = false,
     var importCustomAntBuildFiles: Boolean = false,
     var ignoreNonExistingSourceDirectories: Boolean = false,
+    var useFakeOutputPathForCustomExtensions: Boolean = false,
 
     var withStandardProvidedSources: Boolean = false,
     var withExternalLibrarySources: Boolean = false,
     var withExternalLibraryJavadocs: Boolean = false,
+) {
 
-    var useFakeOutputPathForCustomExtensions: Boolean = false,
-)
+    companion object {
+        fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportContext(
+            importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
+            followSymlink = projectSettings.followSymlink,
+            scanThroughExternalModule = projectSettings.scanThroughExternalModule,
+            excludeTestSources = projectSettings.excludeTestSources,
+            importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles,
+            ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
+            useFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions,
+
+            withStandardProvidedSources = applicationSettings.withStandardProvidedSources,
+            withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
+            withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
+        )
+    }
+}

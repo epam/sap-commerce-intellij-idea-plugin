@@ -32,7 +32,7 @@ interface HybrisProjectDescriptor {
         errorsProcessor: TaskProgressProcessor<MutableList<File>>?
     )
 
-    val importSettings: ProjectImportContext
+    val importContext: ProjectImportContext
     var project: Project?
     var refresh: Boolean
     val foundModules: MutableList<ModuleDescriptor>

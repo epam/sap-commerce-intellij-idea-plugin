@@ -24,7 +24,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
-import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBPasswordField
@@ -37,11 +36,11 @@ import org.apache.commons.lang3.StringUtils
 import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
-import sap.commerce.toolset.directory
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.descriptor.ProjectImportContext
+import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -50,7 +49,7 @@ import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.nio.file.Paths
+import java.nio.file.Path
 import java.util.*
 import javax.swing.JLabel
 import javax.swing.JTextField
@@ -59,7 +58,7 @@ import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.isDirectory
 
-class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardStep(context), OpenSupport, RefreshSupport {
+class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardStep(context), RefreshSupport {
 
     private val logger = Logger.getInstance(ProjectImportWizardRootStep::class.java)
 
@@ -358,25 +357,22 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateDataModel() {
-        val importBuilder = importBuilder().also {
-            it.cleanup()
-        }
-        val hybrisProjectDescriptor = importBuilder.getHybrisProjectDescriptor()
+        val importBuilder = importBuilder()
+        val projectImportContext = ProjectImportContext(
+            ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectoriesCheckBox.isSelected,
+            importOOTBModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected,
+            followSymlink = followSymlinkCheckbox.isSelected,
+            excludeTestSources = excludeTestSourcesCheckBox.isSelected,
+            importCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected,
+            scanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected,
+            useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected,
+            withStandardProvidedSources = withStandardProvidedSourcesCheckBox.isSelected,
+            withExternalLibrarySources = withExternalLibrarySourcesCheckBox.isSelected,
+            withExternalLibraryJavadocs = withExternalLibraryJavadocsCheckBox.isSelected,
+        )
+        val hybrisProjectDescriptor = importBuilder.createHybrisProjectDescriptor(projectImportContext)
 
         wizardContext.projectName = projectNameTextField.text
-
-        with(hybrisProjectDescriptor.importSettings) {
-            this.ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectoriesCheckBox.isSelected
-            this.withStandardProvidedSources = withStandardProvidedSourcesCheckBox.isSelected
-            this.withExternalLibrarySources = withExternalLibrarySourcesCheckBox.isSelected
-            this.withExternalLibraryJavadocs = withExternalLibraryJavadocsCheckBox.isSelected
-            this.importOOTBModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected
-            this.followSymlink = followSymlinkCheckbox.isSelected
-            this.excludeTestSources = excludeTestSourcesCheckBox.isSelected
-            this.importCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected
-            this.scanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected
-            this.useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected
-        }
 
         with(hybrisProjectDescriptor) {
             this.hybrisVersion = hybrisVersionTextField.text
@@ -435,14 +431,16 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         }
 
         if (hybrisDistributionDirectoryFilesInChooser.text.isNotBlank()) {
+            val platformPath = Path(hybrisDistributionDirectoryFilesInChooser.text)
+
             if (overrideCustomDirChooser.getText().isBlank()) {
-                overrideCustomDirChooser.text = Path(hybrisDistributionDirectoryFilesInChooser.text)
+                overrideCustomDirChooser.text = platformPath
                     .resolve(ProjectConstants.Directory.PATH_BIN_CUSTOM)
                     .absolutePathString()
             }
 
             if (StringUtils.isBlank(overrideConfigDirChooser.getText())) {
-                overrideConfigDirChooser.text = Path(hybrisDistributionDirectoryFilesInChooser.text)
+                overrideConfigDirChooser.text = platformPath
                     .resolve(ProjectConstants.Extension.CONFIG)
                     .absolutePathString()
             }
@@ -456,15 +454,16 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                             overrideDBDriverDirCheckBox.doClick()
                         }
                     }
-                    ?: Paths.get(hybrisDistributionDirectoryFilesInChooser.text)
+                    ?: platformPath
                         .resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM)
                         .resolve(ProjectConstants.Directory.PATH_LIB_DB_DRIVER)
 
                 overrideDBDriverDirChooser.text = dbDriversDirAbsolutePath.absolutePathString()
             }
 
-            val hybrisVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, false)
+            val hybrisVersion = getHybrisVersion(platformPath, false)
             hybrisVersionTextField.text = hybrisVersion
+
             val sourceCodeDirectory = applicationSettings.sourceCodeDirectory
             val sourceFile = when {
                 applicationSettings.sourceZipUsed && sourceCodeDirectory != null -> findSourceZip(sourceCodeDirectory, hybrisVersion)
@@ -479,7 +478,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 sourceCodeFilesInChooser.text = sourceFile.path
             }
 
-            val hybrisApiVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, true)
+            val hybrisApiVersion = getHybrisVersion(platformPath, true)
             val defaultJavadocUrl = getDefaultJavadocUrl(hybrisApiVersion)
             if (defaultJavadocUrl.isNotBlank()) {
                 javadocUrlTextField.text = defaultJavadocUrl
@@ -491,35 +490,17 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         }
     }
 
-    override fun open(projectSettings: ProjectSettings) {
-        updateStep()
-        updateDataModel()
-    }
-
-    override fun refresh(projectSettings: ProjectSettings) {
+    override fun refresh(refreshContext: ProjectRefreshContext) {
         val importBuilder = importBuilder()
-        val projectDescriptor = importBuilder.getHybrisProjectDescriptor()
-        val applicationSettings = ApplicationSettings.getInstance()
+        val projectDescriptor = importBuilder.createHybrisProjectDescriptor(refreshContext.importContext)
+        val projectSettings = refreshContext.projectSettings
 
-        with(projectDescriptor.importSettings) {
-            this.importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode
-            this.followSymlink = projectSettings.followSymlink
-            this.scanThroughExternalModule = projectSettings.scanThroughExternalModule
-            this.excludeTestSources = projectSettings.excludeTestSources
-            this.importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles
-            this.useFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
-
-            this.withStandardProvidedSources = applicationSettings.withStandardProvidedSources
-            this.withExternalLibrarySources = applicationSettings.withExternalLibrarySources
-            this.withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs
-            this.ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories
-        }
         with(projectDescriptor) {
-            this.hybrisVersion = project?.directory
-                ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), false) }
+            val platformPath = refreshContext.projectPath.resolve("hybris")
+
+            this.hybrisVersion = getHybrisVersion(platformPath, false)
                 ?: projectSettings.hybrisVersion
-            this.javadocUrl = project?.directory
-                ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), true) }
+            this.javadocUrl = getHybrisVersion(platformPath, true)
                 ?.let { getDefaultJavadocUrl(it) }
                 ?.takeIf { it.isNotBlank() }
                 ?: projectSettings.javadocUrl
@@ -594,8 +575,9 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         return true
     }
 
-    private fun getHybrisVersion(hybrisRootDir: String, apiOnly: Boolean): String? {
-        val buildInfoFile = File(hybrisRootDir + HybrisConstants.BUILD_NUMBER_FILE_PATH)
+    private fun getHybrisVersion(hybrisRootDir: Path, apiOnly: Boolean): String? {
+        val buildInfoFile = hybrisRootDir.resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM_BUILD_NUMBER)
+            .toFile()
         val buildProperties = Properties()
 
         try {

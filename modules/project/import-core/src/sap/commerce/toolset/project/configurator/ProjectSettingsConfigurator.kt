@@ -88,7 +88,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         val projectSettings = hybrisProjectDescriptor.project?.ySettings ?: return
         val applicationSettings = ApplicationSettings.getInstance()
 
-        val importSettings = hybrisProjectDescriptor.importSettings
+        val importSettings = hybrisProjectDescriptor.importContext
 
         applicationSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
 

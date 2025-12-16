@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project
+package sap.commerce.toolset.project.refresh
 
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
 import com.intellij.openapi.application.ApplicationManager
@@ -30,18 +30,19 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.projectImport.ProjectImportProvider
-import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.HybrisProjectImportProvider
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.wizard.RefreshSupport
+import kotlin.io.path.absolutePathString
 
 @Service(Service.Level.PROJECT)
 class ProjectRefreshService(private val project: Project) {
 
     @Throws(ConfigurationException::class)
-    fun refresh() {
-        val projectDirectory = project.directory ?: return
+    fun refresh(refreshContext: ProjectRefreshContext) {
+        val projectDirectory = refreshContext.projectPath.absolutePathString()
         val provider = getHybrisProjectImportProvider() ?: return
         val compilerProjectExtension = CompilerProjectExtension.getInstance(project) ?: return
         val projectSettings = ProjectSettings.getInstance(project)
@@ -60,9 +61,10 @@ class ProjectRefreshService(private val project: Project) {
 
         wizard.sequence.allSteps
             .filterIsInstance<RefreshSupport>()
-            .forEach { step -> step.refresh(projectSettings) }
+            .forEach { step -> step.refresh(refreshContext) }
 
         wizard.projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER)
+        wizard.projectBuilder.cleanup()
     }
 
     private fun removeOldProjectData() {

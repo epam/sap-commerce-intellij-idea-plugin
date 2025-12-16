@@ -67,11 +67,6 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
     private List<ModuleDescriptor> _hybrisModulesToImport;
 
     @Override
-    public @NotNull ProjectImportContext getProjectImportSettings() {
-        return getHybrisProjectDescriptor().getImportSettings();
-    }
-
-    @Override
     @Nullable
     public Project createProject(@NotNull final String name, @NotNull final String path) {
         final Project project = super.createProject(name, path);
@@ -95,9 +90,22 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
         try {
             this.lock.lock();
-            if (this._hybrisProjectDescriptor != null) {
-                this._hybrisProjectDescriptor = null;
-            }
+            this._hybrisProjectDescriptor = null;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    @NotNull
+    public HybrisProjectDescriptor createHybrisProjectDescriptor(final @NotNull ProjectImportContext importContext) {
+        try {
+            this.lock.lock();
+
+            this._hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor(importContext);
+            this._hybrisProjectDescriptor.setRefresh(isUpdate());
+            this._hybrisProjectDescriptor.setProject(getCurrentProject());
+
+            return this._hybrisProjectDescriptor;
         } finally {
             this.lock.unlock();
         }
@@ -109,12 +117,6 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
         try {
             this.lock.lock();
 
-            if (null == this._hybrisProjectDescriptor) {
-                this._hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor();
-                this._hybrisProjectDescriptor.setRefresh(isUpdate());
-                this._hybrisProjectDescriptor.setProject(getCurrentProject());
-            }
-
             return this._hybrisProjectDescriptor;
         } finally {
             this.lock.unlock();
@@ -123,12 +125,12 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
     @Override
     public boolean isOpenProjectSettingsAfter() {
-        return this.getHybrisProjectDescriptor().getImportSettings().isOpenProjectSettingsAfterImport();
+        return this.getHybrisProjectDescriptor().getImportContext().isOpenProjectSettingsAfterImport();
     }
 
     @Override
     public void setOpenProjectSettingsAfter(final boolean on) {
-        this.getHybrisProjectDescriptor().getImportSettings().setOpenProjectSettingsAfterImport(on);
+        this.getHybrisProjectDescriptor().getImportContext().setOpenProjectSettingsAfterImport(on);
     }
 
     @Nullable

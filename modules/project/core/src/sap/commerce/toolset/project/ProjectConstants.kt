@@ -85,6 +85,7 @@ object ProjectConstants {
 
         val PATH_PLATFORM_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
         val PATH_BIN_PLATFORM: Path = Path(BIN, "platform")
+        val PATH_BIN_PLATFORM_BUILD_NUMBER: Path = PATH_BIN_PLATFORM.resolve("build.number")
         val PATH_BIN_CUSTOM = Path(BIN, "custom")
         val PATH_LIB_DB_DRIVER: Path = Path("lib", "dbdriver")
         val PATH_IDEA_MODULES: Path = Path(".idea", "idea-modules")

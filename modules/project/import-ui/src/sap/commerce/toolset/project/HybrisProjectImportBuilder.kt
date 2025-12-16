@@ -28,7 +28,7 @@ interface HybrisProjectImportBuilder {
 
     var hybrisModulesToImport: MutableList<ModuleDescriptor>
 
-    fun getProjectImportSettings(): ProjectImportContext
+    fun createHybrisProjectDescriptor(importContext: ProjectImportContext): HybrisProjectDescriptor
     fun getHybrisProjectDescriptor(): HybrisProjectDescriptor
     fun setRootProjectDirectory(directory: File)
     fun setAllModuleList()

@@ -26,9 +26,9 @@ import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
-import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 
-class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectModulesToImportStep(wizard), OpenSupport, RefreshSupport {
+class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectModulesToImportStep(wizard), RefreshSupport {
 
     private var selectionMode = ModuleDescriptorImportStatus.MANDATORY
 
@@ -119,13 +119,9 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
         context.hybrisModulesToImport = allElements
     }
 
-    override fun open(projectSettings: ProjectSettings) {
-        refresh(projectSettings)
-    }
-
-    override fun refresh(projectSettings: ProjectSettings) {
+    override fun refresh(refreshContext: ProjectRefreshContext) {
         try {
-            val filteredModuleToImport = context.getBestMatchingExtensionsToImport(projectSettings)
+            val filteredModuleToImport = context.getBestMatchingExtensionsToImport(refreshContext.projectSettings)
             context.list = filteredModuleToImport
         } catch (e: ConfigurationException) {
             // no-op already validated

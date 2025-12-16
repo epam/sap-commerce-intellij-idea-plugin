@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,12 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.wizard
 
-import com.intellij.openapi.options.ConfigurationException
+package sap.commerce.toolset.project.refresh
+
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.project.descriptor.ProjectImportContext
 import sap.commerce.toolset.project.settings.ProjectSettings
+import java.nio.file.Path
 
-interface OpenSupport {
-    @Throws(ConfigurationException::class)
-    fun open(projectSettings: ProjectSettings)
-}
+data class ProjectRefreshContext(
+    val project: Project,
+    val projectPath: Path,
+    val importContext: ProjectImportContext,
+    val projectSettings: ProjectSettings,
+)

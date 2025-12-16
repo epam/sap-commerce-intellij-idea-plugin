@@ -118,7 +118,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected String javadocUrl;
     @Nullable
     protected String hybrisVersion;
-    private final ProjectImportContext importSettings = new ProjectImportContext();
+    private final ProjectImportContext importContext;
 
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
@@ -126,6 +126,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private PlatformModuleDescriptor platformHybrisModuleDescriptor;
     @Nullable
     private ModuleDescriptor kotlinNatureModuleDescriptor;
+
+    public DefaultHybrisProjectDescriptor(final @NotNull ProjectImportContext importContext) {
+        this.importContext = importContext;
+    }
 
     @Override
     public @NotNull Map<@NotNull String, @NotNull YModuleDescriptor> getYModuleDescriptorsToImport() {
@@ -432,7 +436,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final var moduleRootDirectories = processDirectoriesByTypePriority(
             moduleRootMap,
             excludedFromScanning,
-            importSettings.getScanThroughExternalModule(),
+            importContext.getScanThroughExternalModule(),
             progressListenerProcessor
         );
 
@@ -793,7 +797,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (importService.isDirectoryExcluded(file)) {
                 return false;
             }
-            return !Files.isSymbolicLink(file) || importSettings.getFollowSymlink();
+            return !Files.isSymbolicLink(file) || importContext.getFollowSymlink();
         });
         if (files != null) {
             for (final var file : files) {
@@ -817,7 +821,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 .filter(Objects::nonNull)
                 .filter(Files::isDirectory)
                 .filter(Predicate.not(importService::isDirectoryExcluded))
-                .filter(file -> !Files.isSymbolicLink(file) || importSettings.getFollowSymlink())
+                .filter(file -> !Files.isSymbolicLink(file) || importContext.getFollowSymlink())
                 .map(Path::toFile)
                 .toList();
             for (final var moduleRoot : moduleRoots) {
@@ -1157,13 +1161,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ", externalDbDriversDirectory=" + externalDbDriversDirectory +
             ", javadocUrl='" + javadocUrl + '\'' +
             ", hybrisVersion='" + hybrisVersion + '\'' +
-            ", importSettings=" + importSettings +
+            ", importSettings=" + importContext +
             '}';
     }
 
     @Override
-    public @NotNull ProjectImportContext getImportSettings() {
-        return importSettings;
+    public @NotNull ProjectImportContext getImportContext() {
+        return importContext;
     }
 
     protected enum DirectoryType {

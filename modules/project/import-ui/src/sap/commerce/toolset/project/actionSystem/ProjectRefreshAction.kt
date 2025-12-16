@@ -26,8 +26,15 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.ProjectRefreshService
+import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.descriptor.ProjectImportContext
+import sap.commerce.toolset.project.refresh.ProjectRefreshContext
+import sap.commerce.toolset.project.refresh.ProjectRefreshService
+import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
+import kotlin.io.path.Path
+import kotlin.io.path.isDirectory
 
 class ProjectRefreshAction : DumbAwareAction(
     "Refresh SAP Commerce Project",
@@ -38,9 +45,18 @@ class ProjectRefreshAction : DumbAwareAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+        val projectPath = project.directory
+            ?.let { Path(it) }
+            ?.takeIf { it.isDirectory() }
+            ?: return
+        val applicationSettings = ApplicationSettings.getInstance()
+        val projectSettings = ProjectSettings.getInstance(project)
+        val importContext = ProjectImportContext.of(applicationSettings, projectSettings)
+        val refreshContext = ProjectRefreshContext(project, projectPath, importContext, projectSettings)
 
         try {
-            ProjectRefreshService.getInstance(project).refresh()
+            // TODO: show refresh wizard
+            ProjectRefreshService.getInstance(project).refresh(refreshContext)
         } catch (ex: ConfigurationException) {
             Messages.showErrorDialog(
                 project,
