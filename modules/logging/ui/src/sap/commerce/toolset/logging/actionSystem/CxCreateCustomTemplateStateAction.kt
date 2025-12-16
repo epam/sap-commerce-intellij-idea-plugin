@@ -46,10 +46,8 @@ class CxCreateCustomTemplateStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-
-        val customLogTemplateService = CxCustomLogTemplateService.getInstance(project)
-
         val selectedNodes = e.selectedNodes() ?: return
+
         if (selectedNodes.groupBy { it.javaClass }.keys.size > 1) {
             Messages.showErrorDialog("A custom template cannot be created from the current selection.", "Incompatible Nodes Selected")
             return
@@ -57,7 +55,6 @@ class CxCreateCustomTemplateStateAction : AnAction() {
 
         val node = selectedNodes.first()
         val multiChoice = selectedNodes.size > 1
-
         val templateName = templateName(project, node, multiChoice) ?: return
         val dialogTitle = getDialogTitle(node, multiChoice)
         val loggers = loggers(project, selectedNodes)
@@ -69,6 +66,7 @@ class CxCreateCustomTemplateStateAction : AnAction() {
             .values
             .toList()
 
+        val customLogTemplateService = CxCustomLogTemplateService.getInstance(project)
         val customTemplate = customLogTemplateService.createTemplateFromLoggers(templateName, uniqueLoggers).mutable()
         val dialogContext = LogTemplateDialogContext(
             project = project,
@@ -113,7 +111,7 @@ class CxCreateCustomTemplateStateAction : AnAction() {
     private fun loggers(project: Project, selectedNodes: Collection<CxLoggersNode>) = selectedNodes
         .mapNotNull {
             when (it) {
-                is CxRemoteLogStateNode -> CxRemoteLogStateService.getInstance(project).state(it.connection.uuid).get()?.values ?: emptyList()
+                is CxRemoteLogStateNode -> CxRemoteLogStateService.getInstance(project).state(it.connection.uuid).get()?.values
                 is CxBundledLogTemplateItemNode -> it.loggers
                 is CxCustomLogTemplateItemNode -> it.loggers
                 else -> null
