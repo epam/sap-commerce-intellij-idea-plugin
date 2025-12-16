@@ -27,11 +27,11 @@
     </extensions>
 
     <actions>
-        <action id="sap.cx.loggers.remote.fetch" class="sap.commerce.toolset.logging.actionSystem.CxFetchRemoteLogStateAction"/>
-        <action id="sap.cx.loggers.custom.createTemplate" class="sap.commerce.toolset.logging.actionSystem.CxCreateCustomTemplateStateAction"/>
-
         <action id="sap.cx.loggers.applyLogTemplate" class="sap.commerce.toolset.logging.actionSystem.CxApplyLogTemplateAction"/>
 
+        <action id="sap.cx.loggers.remote.fetch" class="sap.commerce.toolset.logging.actionSystem.CxFetchRemoteLogStateAction"/>
+
+        <action id="sap.cx.loggers.custom.createTemplate" class="sap.commerce.toolset.logging.actionSystem.CxCreateCustomTemplateStateAction"/>
         <action id="sap.cx.loggers.custom.addTemplate" class="sap.commerce.toolset.logging.actionSystem.CxAddCustomLogTemplateAction"/>
         <action id="sap.cx.loggers.custom.deleteTemplate" class="sap.commerce.toolset.logging.actionSystem.CxDeleteCustomLogTemplateAction"/>
         <action id="sap.cx.loggers.custom.editTemplate" class="sap.commerce.toolset.logging.actionSystem.CxEditCustomLogTemplateAction"/>
