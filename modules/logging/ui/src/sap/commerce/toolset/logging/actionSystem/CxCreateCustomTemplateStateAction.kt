@@ -94,18 +94,27 @@ class CxCreateCustomTemplateStateAction : AnAction() {
         }
     }
 
+    override fun update(e: AnActionEvent) {
+        val selectedNodes = e.selectedNodes() ?: return
+        val project = e.project ?: return
+        val selectedNodeType = selectedNodeType(project, selectedNodes)
+
+        val isVisible = ActionPlaces.ACTION_SEARCH != e.place && selectedNodeType != null
+        e.presentation.isVisible = isVisible
+
+        if (!isVisible) return
+
+        val multiChoice = selectedNodes.size > 1
+
+        e.presentation.icon = HybrisIcons.Log.Action.SAVE_AS_TEMPLATE
+        e.presentation.text = actionLabel(selectedNodeType, multiChoice)
+        e.presentation.disabledIcon = disabledIcon(project, selectedNodeType)
+    }
+
     private fun getDialogTitle(selectedNode: CxLoggersNode, multiChoice: Boolean) = when (selectedNode) {
         is CxRemoteLogStateNode -> "Create a Log Template"
         is CxBundledLogTemplateItemNode, is CxCustomLogTemplateItemNode -> if (multiChoice) "Merge Templates" else "Clone Template"
         else -> "Create a Log Template"
-    }
-
-    private fun templateNameFromConnection(project: Project, connectionName: String): String {
-        val templateName = "Remote '$connectionName' | template"
-        val count = CxCustomLogTemplatesSettings.getInstance(project).templates.count { it.name.startsWith(templateName) }
-
-        return if (count >= 1) "$templateName ($count)"
-        else templateName
     }
 
     private fun loggers(project: Project, selectedNodes: Collection<CxLoggersNode>) = selectedNodes
@@ -126,21 +135,12 @@ class CxCreateCustomTemplateStateAction : AnAction() {
         else -> null
     }
 
-    override fun update(e: AnActionEvent) {
-        val selectedNodes = e.selectedNodes() ?: return
-        val project = e.project ?: return
-        val selectedNodeType = selectedNodeType(project, selectedNodes)
+    private fun templateNameFromConnection(project: Project, connectionName: String): String {
+        val templateName = "Remote '$connectionName' | template"
+        val count = CxCustomLogTemplatesSettings.getInstance(project).templates.count { it.name.startsWith(templateName) }
 
-        val isVisible = ActionPlaces.ACTION_SEARCH != e.place && selectedNodeType != null
-        e.presentation.isVisible = isVisible
-
-        if (!isVisible) return
-
-        val multiChoice = selectedNodes.size > 1
-
-        e.presentation.icon = HybrisIcons.Log.Action.SAVE_AS_TEMPLATE
-        e.presentation.text = actionLabel(selectedNodeType, multiChoice)
-        e.presentation.disabledIcon = disabledIcon(project, selectedNodeType)
+        return if (count >= 1) "$templateName ($count)"
+        else templateName
     }
 
     private fun selectedNodeType(project: Project, selectedNodes: List<CxLoggersNode>) = selectedNodes
