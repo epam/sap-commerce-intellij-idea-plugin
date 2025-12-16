@@ -25,7 +25,7 @@ internal object ReadonlyConfiguratorEx {
 
     fun configure(moduleDescriptor: ModuleDescriptor) {
         val descriptorType = moduleDescriptor.descriptorType
-        val hasReadOnlySettings = moduleDescriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode
+        val hasReadOnlySettings = moduleDescriptor.rootProjectDescriptor.importSettings.importOOTBModulesInReadOnlyMode
         val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
             || descriptorType === ModuleDescriptorType.PLATFORM
             || descriptorType === ModuleDescriptorType.EXT

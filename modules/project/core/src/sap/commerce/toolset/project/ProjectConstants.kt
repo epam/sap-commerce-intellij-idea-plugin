@@ -83,7 +83,10 @@ object ProjectConstants {
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 
-        val PATH_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
+        val PATH_PLATFORM_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
+        val PATH_BIN_PLATFORM: Path = Path(BIN, "platform")
+        val PATH_BIN_CUSTOM = Path(BIN, "custom")
+        val PATH_LIB_DB_DRIVER: Path = Path("lib", "dbdriver")
 
         @JvmField
         val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)

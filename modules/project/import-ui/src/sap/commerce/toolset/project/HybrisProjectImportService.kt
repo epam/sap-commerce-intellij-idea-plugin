@@ -58,7 +58,7 @@ class HybrisProjectImportService {
     }
 
     fun isDirectoryExcluded(path: Path): Boolean = excludedDirectories.contains(path.name)
-        || path.endsWith(ProjectConstants.Directory.PATH_BOOTSTRAP)
+        || path.endsWith(ProjectConstants.Directory.PATH_PLATFORM_BOOTSTRAP)
 
     companion object {
         @JvmStatic

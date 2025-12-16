@@ -79,7 +79,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
         descriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
-                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode
+                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importSettings.importOOTBModulesInReadOnlyMode
                 val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }
                     .filter { it.isDirectory }
@@ -157,7 +157,7 @@ private fun addLibrariesToNonCustomModule(
     descriptorType: ModuleDescriptorType?,
     libs: MutableList<JavaLibraryDescriptor>
 ) {
-    if (!descriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode) return
+    if (!descriptor.rootProjectDescriptor.importSettings.importOOTBModulesInReadOnlyMode) return
     if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
     val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
@@ -268,7 +268,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
-    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importSettings.isImportOotbModulesInReadOnlyMode
+    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importSettings.importOOTBModulesInReadOnlyMode
     allYModules.values
         .filter { it.getDirectDependencies().contains(descriptor.owner) }
         .filter { it != descriptor }

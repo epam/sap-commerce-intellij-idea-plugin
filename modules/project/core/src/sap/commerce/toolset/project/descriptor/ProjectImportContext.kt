@@ -21,16 +21,16 @@ package sap.commerce.toolset.project.descriptor
 data class ProjectImportContext(
     var isOpenProjectSettingsAfterImport: Boolean = false,
 
-    var isImportOotbModulesInReadOnlyMode: Boolean = false,
-    var isFollowSymlink: Boolean = false,
-    var isScanThroughExternalModule: Boolean = false,
-    var isExcludeTestSources: Boolean = false,
-    var isImportCustomAntBuildFiles: Boolean = false,
+    var importOOTBModulesInReadOnlyMode: Boolean = false,
+    var followSymlink: Boolean = false,
+    var scanThroughExternalModule: Boolean = false,
+    var excludeTestSources: Boolean = false,
+    var importCustomAntBuildFiles: Boolean = false,
     var isIgnoreNonExistingSourceDirectories: Boolean = false,
 
     var isWithStandardProvidedSources: Boolean = false,
     var isWithExternalLibrarySources: Boolean = false,
     var isWithExternalLibraryJavadocs: Boolean = false,
 
-    var isUseFakeOutputPathForCustomExtensions: Boolean = false,
+    var useFakeOutputPathForCustomExtensions: Boolean = false,
 )

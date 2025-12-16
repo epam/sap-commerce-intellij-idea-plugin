@@ -93,11 +93,11 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         applicationSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
 
         with(applicationSettings) {
-            this.defaultPlatformInReadOnly = importSettings.isImportOotbModulesInReadOnlyMode
-            this.followSymlink = importSettings.isFollowSymlink
-            this.scanThroughExternalModule = importSettings.isScanThroughExternalModule
-            this.excludeTestSources = importSettings.isExcludeTestSources
-            this.importCustomAntBuildFiles = importSettings.isImportCustomAntBuildFiles
+            this.defaultPlatformInReadOnly = importSettings.importOOTBModulesInReadOnlyMode
+            this.followSymlink = importSettings.followSymlink
+            this.scanThroughExternalModule = importSettings.scanThroughExternalModule
+            this.excludeTestSources = importSettings.excludeTestSources
+            this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
             this.ignoreNonExistingSourceDirectories = importSettings.isIgnoreNonExistingSourceDirectories
             this.withStandardProvidedSources = importSettings.isWithStandardProvidedSources
             this.withExternalLibrarySources = importSettings.isWithExternalLibrarySources
@@ -105,12 +105,12 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         }
 
         with (projectSettings) {
-            this.importOotbModulesInReadOnlyMode = importSettings.isImportOotbModulesInReadOnlyMode
-            this.followSymlink = importSettings.isFollowSymlink
-            this.scanThroughExternalModule = importSettings.isScanThroughExternalModule
-            this.excludeTestSources = importSettings.isExcludeTestSources
-            this.importCustomAntBuildFiles = importSettings.isImportCustomAntBuildFiles
-            this.useFakeOutputPathForCustomExtensions = importSettings.isUseFakeOutputPathForCustomExtensions
+            this.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
+            this.followSymlink = importSettings.followSymlink
+            this.scanThroughExternalModule = importSettings.scanThroughExternalModule
+            this.excludeTestSources = importSettings.excludeTestSources
+            this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
+            this.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
         }
 
         projectSettings.externalExtensionsDirectory = hybrisProjectDescriptor.externalExtensionsDirectory?.directorySystemIndependentName

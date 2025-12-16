@@ -50,10 +50,14 @@ import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+import java.nio.file.Paths
 import java.util.*
 import javax.swing.JLabel
 import javax.swing.JTextField
 import javax.swing.ScrollPaneConstants
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.isDirectory
 
 class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardStep(context), OpenSupport, RefreshSupport {
 
@@ -92,7 +96,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         "hybris.import.settings.excludedFromScanning.directory.popup.edit.text",
     )
 
-    private var panel = panel {
+    private var _panel = panel {
+        val applicationSettings = ApplicationSettings.getInstance()
         row {
             label("Project name:")
                 .bold()
@@ -164,11 +169,13 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             row {
                 scanThroughExternalModuleCheckbox = checkBox("Scan for SAP CX modules even in external modules")
                     .comment("Eclipse, Gradle and Maven projects. (slower import/refresh)")
+                    .selected(applicationSettings.scanThroughExternalModule)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 followSymlinkCheckbox = checkBox("Include symbolic links for a project import")
+                    .selected(applicationSettings.followSymlink)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -227,22 +234,26 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }.layout(RowLayout.PARENT_GRID)
             row {
                 importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode")
+                    .selected(applicationSettings.defaultPlatformInReadOnly)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 excludeTestSourcesCheckBox = checkBox("Exclude test sources for OOTB modules")
+                    .selected(applicationSettings.excludeTestSources)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 ignoreNonExistingSourceDirectories = checkBox("Ignore non-existing source directories")
+                    .selected(applicationSettings.ignoreNonExistingSourceDirectories)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 withStandardProvidedSources = checkBox("Attach standard sources")
                     .comment("(e.g. backoffice), platformservices module sources will be always attached.")
+                    .selected(applicationSettings.withStandardProvidedSources)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -254,6 +265,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                         By default, all source files will be downloaded to directory set via system key 'idea.library.source.dir', usually '.ideaLibSources' under user home.
                     """.trimIndent()
                     )
+                    .selected(applicationSettings.withExternalLibrarySources)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -264,12 +276,14 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                         Similarly to sources, it is also possible to download & attach javadocs for jar files within '/lib' directories registered as Libraries.
                     """.trimIndent()
                     )
+                    .selected(applicationSettings.withExternalLibraryJavadocs)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 importCustomAntBuildFilesCheckBox = checkBox("Import Ant build files for custom modules")
                     .comment("Due nature of the Ant plugin may negatively affect project import/refresh performance.")
+                    .selected(applicationSettings.importCustomAntBuildFiles)
                     .component
             }.layout(RowLayout.PARENT_GRID)
         }
@@ -332,7 +346,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             .expanded = true
     }
 
-    override fun getComponent() = with(JBScrollPane(panel)) {
+    override fun getComponent() = with(JBScrollPane(_panel)) {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
 
@@ -344,25 +358,27 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateDataModel() {
-        val context = context()
-        context.cleanup()
+        val context = context().also {
+            it.cleanup()
+        }
+        val hybrisProjectDescriptor = context.getHybrisProjectDescriptor()
 
         wizardContext.projectName = projectNameTextField.text
 
-        with(context.getProjectImportSettings()) {
+        with(hybrisProjectDescriptor.importSettings) {
             this.isIgnoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.isSelected
             this.isWithStandardProvidedSources = withStandardProvidedSources.isSelected
             this.isWithExternalLibrarySources = withExternalLibrarySources.isSelected
             this.isWithExternalLibraryJavadocs = withExternalLibraryJavadocs.isSelected
-            this.isImportOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected
-            this.isFollowSymlink = followSymlinkCheckbox.isSelected
-            this.isExcludeTestSources = excludeTestSourcesCheckBox.isSelected
-            this.isImportCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected
-            this.isScanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected
-            this.isUseFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected
+            this.importOOTBModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected
+            this.followSymlink = followSymlinkCheckbox.isSelected
+            this.excludeTestSources = excludeTestSourcesCheckBox.isSelected
+            this.importCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected
+            this.scanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected
+            this.useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected
         }
 
-        with(context.getHybrisProjectDescriptor()) {
+        with(hybrisProjectDescriptor) {
             this.hybrisVersion = hybrisVersionTextField.text
             this.hybrisDistributionDirectory = FileUtils.toFile(hybrisDistributionDirectoryFilesInChooser.text)
 
@@ -407,8 +423,6 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
         projectNameTextField.text = wizardContext.projectName
 
-        applyApplicationSettings(applicationSettings)
-
         if (hybrisDistributionDirectoryFilesInChooser.text.isBlank()) {
             val task = SearchHybrisDistributionDirectoryTaskModalWindow(File(builder.fileToImport)) {
                 hybrisDistributionDirectoryFilesInChooser.text = it
@@ -422,38 +436,31 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
         if (hybrisDistributionDirectoryFilesInChooser.text.isNotBlank()) {
             if (overrideCustomDirChooser.getText().isBlank()) {
-                overrideCustomDirChooser.text = File(
-                    hybrisDistributionDirectoryFilesInChooser.text,
-                    HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH
-                ).absolutePath
+                overrideCustomDirChooser.text = Path(hybrisDistributionDirectoryFilesInChooser.text)
+                    .resolve(ProjectConstants.Directory.PATH_BIN_CUSTOM)
+                    .absolutePathString()
             }
 
             if (StringUtils.isBlank(overrideConfigDirChooser.getText())) {
-                overrideConfigDirChooser.text = File(
-                    hybrisDistributionDirectoryFilesInChooser.text,
-                    ProjectConstants.Extension.CONFIG
-                ).absolutePath
+                overrideConfigDirChooser.text = Path(hybrisDistributionDirectoryFilesInChooser.text)
+                    .resolve(ProjectConstants.Extension.CONFIG)
+                    .absolutePathString()
             }
 
             if (overrideDBDriverDirChooser.getText().isBlank()) {
-                var dbDriversDirAbsPath = File(
-                    hybrisDistributionDirectoryFilesInChooser.text,
-                    HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.PLATFORM_DB_DRIVER
-                ).absolutePath
-
-                val externalDbDriversDirectory = applicationSettings.externalDbDriversDirectory
-                if (externalDbDriversDirectory != null) {
-                    File(externalDbDriversDirectory)
-                        .takeIf { it.isDirectory }
-                        ?.let {
-                            dbDriversDirAbsPath = it.absolutePath
-
-                            if (!overrideDBDriverDirCheckBox.isSelected) {
-                                overrideDBDriverDirCheckBox.doClick()
-                            }
+                val dbDriversDirAbsolutePath = applicationSettings.externalDbDriversDirectory
+                    ?.let { Path(it) }
+                    ?.takeIf { it.isDirectory() }
+                    ?.also {
+                        if (!overrideDBDriverDirCheckBox.isSelected) {
+                            overrideDBDriverDirCheckBox.doClick()
                         }
-                }
-                overrideDBDriverDirChooser.text = dbDriversDirAbsPath
+                    }
+                    ?: Paths.get(hybrisDistributionDirectoryFilesInChooser.text)
+                        .resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM)
+                        .resolve(ProjectConstants.Directory.PATH_LIB_DB_DRIVER)
+
+                overrideDBDriverDirChooser.text = dbDriversDirAbsolutePath.absolutePathString()
             }
 
             val hybrisVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, false)
@@ -472,7 +479,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 sourceCodeFilesInChooser.text = sourceFile.path
             }
 
-            val defaultJavadocUrl = getDefaultJavadocUrl(getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, true))
+            val hybrisApiVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.text, true)
+            val defaultJavadocUrl = getDefaultJavadocUrl(hybrisApiVersion)
             if (defaultJavadocUrl.isNotBlank()) {
                 javadocUrlTextField.text = defaultJavadocUrl
             }
@@ -490,12 +498,17 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
     override fun refresh(projectSettings: ProjectSettings) {
         val context = context()
-        context.cleanup()
 
-        applyApplicationSettings(ApplicationSettings.getInstance())
-        applyProjectSettings(projectSettings)
-
-        with(context.getHybrisProjectDescriptor()) {
+        val projectDescriptor = context.getHybrisProjectDescriptor()
+        with (projectDescriptor.importSettings) {
+            this.importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode
+            this.followSymlink = projectSettings.followSymlink
+            this.scanThroughExternalModule = projectSettings.scanThroughExternalModule
+            this.excludeTestSources = projectSettings.excludeTestSources
+            this.importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles
+            this.useFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
+        }
+        with(projectDescriptor) {
             this.hybrisVersion = project?.directory
                 ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), false) }
                 ?: projectSettings.hybrisVersion
@@ -583,7 +596,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             FileInputStream(buildInfoFile).use { fis ->
                 buildProperties.load(fis)
             }
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             return null
         }
 
@@ -627,41 +640,4 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
     private fun context() = builder as DefaultHybrisProjectImportBuilder
 
-    private fun applyApplicationSettings(applicationSettings: ApplicationSettings) = with(context().getProjectImportSettings()) {
-        this.isImportOotbModulesInReadOnlyMode = applicationSettings.defaultPlatformInReadOnly
-        this.isFollowSymlink = applicationSettings.followSymlink
-        this.isScanThroughExternalModule = applicationSettings.scanThroughExternalModule
-        this.isExcludeTestSources = applicationSettings.excludeTestSources
-        this.isImportCustomAntBuildFiles = applicationSettings.importCustomAntBuildFiles
-        this.isIgnoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories
-        this.isWithStandardProvidedSources = applicationSettings.withStandardProvidedSources
-        this.isWithExternalLibrarySources = applicationSettings.withExternalLibrarySources
-        this.isWithExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs
-
-        importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
-        followSymlinkCheckbox.setSelected(this.isFollowSymlink)
-        scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
-        excludeTestSourcesCheckBox.isSelected = this.isExcludeTestSources
-        importCustomAntBuildFilesCheckBox.isSelected = this.isImportCustomAntBuildFiles
-        ignoreNonExistingSourceDirectories.isSelected = this.isIgnoreNonExistingSourceDirectories
-        withStandardProvidedSources.isSelected = this.isWithStandardProvidedSources
-        withExternalLibrarySources.isSelected = this.isWithExternalLibrarySources
-        withExternalLibraryJavadocs.isSelected = this.isWithExternalLibraryJavadocs
-    }
-
-    private fun applyProjectSettings(projectSettings: ProjectSettings) = with(context().getProjectImportSettings()) {
-        this.isImportOotbModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode
-        this.isFollowSymlink = projectSettings.followSymlink
-        this.isScanThroughExternalModule = projectSettings.scanThroughExternalModule
-        this.isExcludeTestSources = projectSettings.excludeTestSources
-        this.isImportCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles
-        this.isUseFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
-
-        importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
-        followSymlinkCheckbox.setSelected(this.isFollowSymlink)
-        scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
-        excludeTestSourcesCheckBox.isSelected = this.isExcludeTestSources
-        importCustomAntBuildFilesCheckBox.isSelected = this.isImportCustomAntBuildFiles
-        useFakeOutputPathForCustomExtensionsCheckbox.isSelected = this.isUseFakeOutputPathForCustomExtensions
-    }
 }

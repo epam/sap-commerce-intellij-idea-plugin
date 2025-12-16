@@ -98,12 +98,12 @@ public final class ContentRootConfiguratorEx {
         final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
         if (customModuleDescriptor
-            || !rootProjectDescriptor.getImportSettings().isImportOotbModulesInReadOnlyMode()
+            || !rootProjectDescriptor.getImportSettings().getImportOOTBModulesInReadOnlyMode()
             || ProjectConstants.Extension.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
         ) {
             addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directory.SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
 
-            if (customModuleDescriptor || !rootProjectDescriptor.getImportSettings().isExcludeTestSources()) {
+            if (customModuleDescriptor || !rootProjectDescriptor.getImportSettings().getExcludeTestSources()) {
                 addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directory.TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
             }
 
@@ -161,7 +161,7 @@ public final class ContentRootConfiguratorEx {
         ));
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || !moduleDescriptor.getRootProjectDescriptor().getImportSettings().isImportOotbModulesInReadOnlyMode()) {
+            || !moduleDescriptor.getRootProjectDescriptor().getImportSettings().getImportOOTBModulesInReadOnlyMode()) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directory.CLASSES));
         }
     }
@@ -189,7 +189,7 @@ public final class ContentRootConfiguratorEx {
 
         final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
 
-        if (isCustomModuleDescriptor(moduleDescriptor) || !rootProjectDescriptor.getImportSettings().isImportOotbModulesInReadOnlyMode()) {
+        if (isCustomModuleDescriptor(moduleDescriptor) || !rootProjectDescriptor.getImportSettings().getImportOOTBModulesInReadOnlyMode()) {
             configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directory.COMMON_WEB_SRC, JavaSourceRootType.SOURCE);
             configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directory.ADDON_SRC, JavaSourceRootType.SOURCE);
         }
@@ -336,7 +336,7 @@ public final class ContentRootConfiguratorEx {
         final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || (!moduleDescriptor.getRootProjectDescriptor().getImportSettings().isImportOotbModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
+            || (!moduleDescriptor.getRootProjectDescriptor().getImportSettings().getImportOOTBModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEBROOT_WEBINF_CLASSES_PATH));
         }

@@ -105,6 +105,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File sourceCodeFile;
     @Nullable
     protected File projectIconFile;
+    // TODO: why nullable, it is mandatory, without it we should not create this class
     @Nullable
     protected File hybrisDistributionDirectory;
     @Nullable
@@ -431,7 +432,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final var moduleRootDirectories = processDirectoriesByTypePriority(
             moduleRootMap,
             excludedFromScanning,
-            importSettings.isScanThroughExternalModule(),
+            importSettings.getScanThroughExternalModule(),
             progressListenerProcessor
         );
 
@@ -792,7 +793,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (importService.isDirectoryExcluded(file)) {
                 return false;
             }
-            return !Files.isSymbolicLink(file) || importSettings.isFollowSymlink();
+            return !Files.isSymbolicLink(file) || importSettings.getFollowSymlink();
         });
         if (files != null) {
             for (final var file : files) {
@@ -816,7 +817,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 .filter(Objects::nonNull)
                 .filter(Files::isDirectory)
                 .filter(Predicate.not(importService::isDirectoryExcluded))
-                .filter(file -> !Files.isSymbolicLink(file) || importSettings.isFollowSymlink())
+                .filter(file -> !Files.isSymbolicLink(file) || importSettings.getFollowSymlink())
                 .map(Path::toFile)
                 .toList();
             for (final var moduleRoot : moduleRoots) {

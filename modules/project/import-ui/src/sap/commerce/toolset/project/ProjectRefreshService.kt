@@ -58,12 +58,11 @@ class ProjectRefreshService(private val project: Project) {
             it.compilerOutputDirectory = compilerProjectExtension.compilerOutputUrl
         }
 
-        wizard.sequence.getAllSteps()
+        wizard.sequence.allSteps
             .filterIsInstance<RefreshSupport>()
             .forEach { step -> step.refresh(projectSettings) }
 
-        wizard.projectBuilder
-            .commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
+        wizard.projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER)
     }
 
     private fun removeOldProjectData() {
