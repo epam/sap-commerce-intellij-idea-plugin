@@ -26,11 +26,11 @@ data class ProjectImportContext(
     var scanThroughExternalModule: Boolean = false,
     var excludeTestSources: Boolean = false,
     var importCustomAntBuildFiles: Boolean = false,
-    var isIgnoreNonExistingSourceDirectories: Boolean = false,
+    var ignoreNonExistingSourceDirectories: Boolean = false,
 
-    var isWithStandardProvidedSources: Boolean = false,
-    var isWithExternalLibrarySources: Boolean = false,
-    var isWithExternalLibraryJavadocs: Boolean = false,
+    var withStandardProvidedSources: Boolean = false,
+    var withExternalLibrarySources: Boolean = false,
+    var withExternalLibraryJavadocs: Boolean = false,
 
     var useFakeOutputPathForCustomExtensions: Boolean = false,
 )

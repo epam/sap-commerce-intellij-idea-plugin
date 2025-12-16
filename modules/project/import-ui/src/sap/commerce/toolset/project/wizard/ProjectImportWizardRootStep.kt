@@ -74,10 +74,10 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private lateinit var overrideCustomDirChooser: TextFieldWithBrowseButton
     private lateinit var overrideConfigDirChooser: TextFieldWithBrowseButton
     private lateinit var overrideDBDriverDirChooser: TextFieldWithBrowseButton
-    private lateinit var ignoreNonExistingSourceDirectories: JBCheckBox
-    private lateinit var withStandardProvidedSources: JBCheckBox
-    private lateinit var withExternalLibrarySources: JBCheckBox
-    private lateinit var withExternalLibraryJavadocs: JBCheckBox
+    private lateinit var ignoreNonExistingSourceDirectoriesCheckBox: JBCheckBox
+    private lateinit var withStandardProvidedSourcesCheckBox: JBCheckBox
+    private lateinit var withExternalLibrarySourcesCheckBox: JBCheckBox
+    private lateinit var withExternalLibraryJavadocsCheckBox: JBCheckBox
     private lateinit var importCustomAntBuildFilesCheckBox: JBCheckBox
     private lateinit var importOotbModulesInReadOnlyModeCheckBox: JBCheckBox
     private lateinit var excludeTestSourcesCheckBox: JBCheckBox
@@ -245,20 +245,20 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                ignoreNonExistingSourceDirectories = checkBox("Ignore non-existing source directories")
+                ignoreNonExistingSourceDirectoriesCheckBox = checkBox("Ignore non-existing source directories")
                     .selected(applicationSettings.ignoreNonExistingSourceDirectories)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withStandardProvidedSources = checkBox("Attach standard sources")
+                withStandardProvidedSourcesCheckBox = checkBox("Attach standard sources")
                     .comment("(e.g. backoffice), platformservices module sources will be always attached.")
                     .selected(applicationSettings.withStandardProvidedSources)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withExternalLibrarySources = checkBox("Download & attach library sources")
+                withExternalLibrarySourcesCheckBox = checkBox("Download & attach library sources")
                     .comment(
                         """
                         Enable possibility to download & attach sources for jar files within '/lib' directories registered as Libraries.
@@ -270,7 +270,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withExternalLibraryJavadocs = checkBox("Download & attach library javadocs")
+                withExternalLibraryJavadocsCheckBox = checkBox("Download & attach library javadocs")
                     .comment(
                         """
                         Similarly to sources, it is also possible to download & attach javadocs for jar files within '/lib' directories registered as Libraries.
@@ -358,18 +358,18 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateDataModel() {
-        val context = context().also {
+        val importBuilder = importBuilder().also {
             it.cleanup()
         }
-        val hybrisProjectDescriptor = context.getHybrisProjectDescriptor()
+        val hybrisProjectDescriptor = importBuilder.getHybrisProjectDescriptor()
 
         wizardContext.projectName = projectNameTextField.text
 
         with(hybrisProjectDescriptor.importSettings) {
-            this.isIgnoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.isSelected
-            this.isWithStandardProvidedSources = withStandardProvidedSources.isSelected
-            this.isWithExternalLibrarySources = withExternalLibrarySources.isSelected
-            this.isWithExternalLibraryJavadocs = withExternalLibraryJavadocs.isSelected
+            this.ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectoriesCheckBox.isSelected
+            this.withStandardProvidedSources = withStandardProvidedSourcesCheckBox.isSelected
+            this.withExternalLibrarySources = withExternalLibrarySourcesCheckBox.isSelected
+            this.withExternalLibraryJavadocs = withExternalLibraryJavadocsCheckBox.isSelected
             this.importOOTBModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected
             this.followSymlink = followSymlinkCheckbox.isSelected
             this.excludeTestSources = excludeTestSourcesCheckBox.isSelected
@@ -411,15 +411,15 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             logger.info("importing a project with the following settings: $this")
         }
 
-        FileUtils.toFile(context.fileToImport)
-            ?.let { context.setRootProjectDirectory(it) }
+        FileUtils.toFile(importBuilder.fileToImport)
+            ?.let { importBuilder.setRootProjectDirectory(it) }
     }
 
     override fun updateStep() {
         val applicationSettings = ApplicationSettings.getInstance()
-        storeModuleFilesInChooser.text = File(
-            builder.fileToImport, HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
-        ).absolutePath
+        storeModuleFilesInChooser.text = Path(builder.fileToImport)
+            .resolve(ProjectConstants.Directory.PATH_IDEA_MODULES)
+            .absolutePathString()
 
         projectNameTextField.text = wizardContext.projectName
 
@@ -497,16 +497,22 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun refresh(projectSettings: ProjectSettings) {
-        val context = context()
+        val importBuilder = importBuilder()
+        val projectDescriptor = importBuilder.getHybrisProjectDescriptor()
+        val applicationSettings = ApplicationSettings.getInstance()
 
-        val projectDescriptor = context.getHybrisProjectDescriptor()
-        with (projectDescriptor.importSettings) {
+        with(projectDescriptor.importSettings) {
             this.importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode
             this.followSymlink = projectSettings.followSymlink
             this.scanThroughExternalModule = projectSettings.scanThroughExternalModule
             this.excludeTestSources = projectSettings.excludeTestSources
             this.importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles
             this.useFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
+
+            this.withStandardProvidedSources = applicationSettings.withStandardProvidedSources
+            this.withExternalLibrarySources = applicationSettings.withExternalLibrarySources
+            this.withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs
+            this.ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories
         }
         with(projectDescriptor) {
             this.hybrisVersion = project?.directory
@@ -541,7 +547,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
             this.excludedFromScanning = projectSettings.excludedFromScanning.toMutableSet()
             val rootProjectDirectory = FileUtils.toFile(builder.fileToImport)!!
-            context.setRootProjectDirectory(rootProjectDirectory)
+            importBuilder.setRootProjectDirectory(rootProjectDirectory)
 
             if (hybrisDirectory == null) {
                 // refreshing a project which was never imported by this plugin
@@ -638,6 +644,6 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private fun getDefaultJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, hybrisApiVersion)
     else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
-    private fun context() = builder as DefaultHybrisProjectImportBuilder
+    private fun importBuilder() = builder as DefaultHybrisProjectImportBuilder
 
 }

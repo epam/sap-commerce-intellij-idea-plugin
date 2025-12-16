@@ -98,10 +98,10 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
             this.scanThroughExternalModule = importSettings.scanThroughExternalModule
             this.excludeTestSources = importSettings.excludeTestSources
             this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
-            this.ignoreNonExistingSourceDirectories = importSettings.isIgnoreNonExistingSourceDirectories
-            this.withStandardProvidedSources = importSettings.isWithStandardProvidedSources
-            this.withExternalLibrarySources = importSettings.isWithExternalLibrarySources
-            this.withExternalLibraryJavadocs = importSettings.isWithExternalLibraryJavadocs
+            this.ignoreNonExistingSourceDirectories = importSettings.ignoreNonExistingSourceDirectories
+            this.withStandardProvidedSources = importSettings.withStandardProvidedSources
+            this.withExternalLibrarySources = importSettings.withExternalLibrarySources
+            this.withExternalLibraryJavadocs = importSettings.withExternalLibraryJavadocs
         }
 
         with (projectSettings) {

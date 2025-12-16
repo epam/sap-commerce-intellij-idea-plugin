@@ -58,8 +58,8 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
     override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val libraryRootTypes = buildSet {
-            if (hybrisProjectDescriptor.importSettings.isWithExternalLibrarySources) add(LibraryRootType.SOURCES)
-            if (hybrisProjectDescriptor.importSettings.isWithExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
+            if (hybrisProjectDescriptor.importSettings.withExternalLibrarySources) add(LibraryRootType.SOURCES)
+            if (hybrisProjectDescriptor.importSettings.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
         }
             .takeIf { it.isNotEmpty() }
             ?: return

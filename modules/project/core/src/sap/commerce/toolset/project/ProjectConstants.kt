@@ -87,6 +87,7 @@ object ProjectConstants {
         val PATH_BIN_PLATFORM: Path = Path(BIN, "platform")
         val PATH_BIN_CUSTOM = Path(BIN, "custom")
         val PATH_LIB_DB_DRIVER: Path = Path("lib", "dbdriver")
+        val PATH_IDEA_MODULES: Path = Path(".idea", "idea-modules")
 
         @JvmField
         val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
