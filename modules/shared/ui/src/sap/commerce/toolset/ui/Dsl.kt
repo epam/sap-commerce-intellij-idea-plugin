@@ -23,21 +23,22 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
-import com.intellij.ui.ContextHelpLabel
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
-import com.intellij.ui.UIBundle
+import com.intellij.ui.*
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.impl.DslComponentPropertyInternal
 import com.intellij.util.MathUtil
+import com.intellij.util.ui.JBUI
 import org.jetbrains.annotations.NonNls
 import sap.commerce.toolset.Notifications
 import java.awt.Dimension
@@ -52,6 +53,14 @@ fun DialogWrapper.repackDialog() {
     invokeLater {
         peer.window?.pack()
     }
+}
+
+fun DialogWrapper.banner(text: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) = EditorNotificationPanel(null as FileEditor?, status).apply {
+    this.text = text
+    border = JBUI.Borders.compound(
+        ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER),
+        border
+    )
 }
 
 fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null): Cell<JBTextField> {

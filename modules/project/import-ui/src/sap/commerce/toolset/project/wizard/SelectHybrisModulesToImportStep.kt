@@ -123,6 +123,8 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
         try {
             val filteredModuleToImport = context.getBestMatchingExtensionsToImport(refreshContext.projectSettings)
             context.list = filteredModuleToImport
+            // ensure that mandatory modules are set in the context, even if existing modules are not removed
+            context.getHybrisProjectDescriptor().initMandatoryModules(filteredModuleToImport)
         } catch (e: ConfigurationException) {
             // no-op already validated
         }

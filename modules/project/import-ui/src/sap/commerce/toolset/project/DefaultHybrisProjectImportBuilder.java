@@ -125,12 +125,12 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
     @Override
     public boolean isOpenProjectSettingsAfter() {
-        return this.getHybrisProjectDescriptor().getImportContext().isOpenProjectSettingsAfterImport();
+        return this.getHybrisProjectDescriptor().getOpenProjectSettingsAfterImport();
     }
 
     @Override
     public void setOpenProjectSettingsAfter(final boolean on) {
-        this.getHybrisProjectDescriptor().getImportContext().setOpenProjectSettingsAfterImport(on);
+        this.getHybrisProjectDescriptor().setOpenProjectSettingsAfterImport(on);
     }
 
     @Nullable

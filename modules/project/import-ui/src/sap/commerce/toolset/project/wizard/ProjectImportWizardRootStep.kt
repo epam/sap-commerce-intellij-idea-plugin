@@ -227,61 +227,53 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     .component
             }.layout(RowLayout.PARENT_GRID)
             row {
-                useFakeOutputPathForCustomExtensionsCheckbox = checkBox("Use fake output path")
-                    .comment("When enabled the `eclipsebin’ folder will be used as an output path for extensions")
+                useFakeOutputPathForCustomExtensionsCheckbox = checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
+                    .comment(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
                     .component
             }.layout(RowLayout.PARENT_GRID)
             row {
-                importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode")
+                importOotbModulesInReadOnlyModeCheckBox = checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                    .comment(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
                     .selected(applicationSettings.defaultPlatformInReadOnly)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                excludeTestSourcesCheckBox = checkBox("Exclude test sources for OOTB modules")
+                excludeTestSourcesCheckBox = checkBox(i18n("hybris.project.import.excludeTestSources"))
                     .selected(applicationSettings.excludeTestSources)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                ignoreNonExistingSourceDirectoriesCheckBox = checkBox("Ignore non-existing source directories")
+                ignoreNonExistingSourceDirectoriesCheckBox = checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
                     .selected(applicationSettings.ignoreNonExistingSourceDirectories)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withStandardProvidedSourcesCheckBox = checkBox("Attach standard sources")
-                    .comment("(e.g. backoffice), platformservices module sources will be always attached.")
+                withStandardProvidedSourcesCheckBox = checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
+                    .comment(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
                     .selected(applicationSettings.withStandardProvidedSources)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withExternalLibrarySourcesCheckBox = checkBox("Download & attach library sources")
-                    .comment(
-                        """
-                        Enable possibility to download & attach sources for jar files within '/lib' directories registered as Libraries.
-                        By default, all source files will be downloaded to directory set via system key 'idea.library.source.dir', usually '.ideaLibSources' under user home.
-                    """.trimIndent()
-                    )
+                withExternalLibrarySourcesCheckBox = checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
+                    .comment(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
                     .selected(applicationSettings.withExternalLibrarySources)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                withExternalLibraryJavadocsCheckBox = checkBox("Download & attach library javadocs")
-                    .comment(
-                        """
-                        Similarly to sources, it is also possible to download & attach javadocs for jar files within '/lib' directories registered as Libraries.
-                    """.trimIndent()
-                    )
+                withExternalLibraryJavadocsCheckBox = checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
+                    .comment(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
                     .selected(applicationSettings.withExternalLibraryJavadocs)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                importCustomAntBuildFilesCheckBox = checkBox("Import Ant build files for custom modules")
-                    .comment("Due nature of the Ant plugin may negatively affect project import/refresh performance.")
+                importCustomAntBuildFilesCheckBox = checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
+                    .comment(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
                     .selected(applicationSettings.importCustomAntBuildFiles)
                     .component
             }.layout(RowLayout.PARENT_GRID)

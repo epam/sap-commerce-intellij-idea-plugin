@@ -31,38 +31,44 @@ interface HybrisProjectDescriptor {
         progressListenerProcessor: TaskProgressProcessor<File>?,
         errorsProcessor: TaskProgressProcessor<MutableList<File>>?
     )
+    fun initMandatoryModules(moduleDescriptors: Collection<ModuleDescriptor>)
 
     val importContext: ProjectImportContext
     var project: Project?
     var refresh: Boolean
     val foundModules: MutableList<ModuleDescriptor>
     var chosenModuleDescriptors: MutableList<ModuleDescriptor>
+
     val configHybrisModuleDescriptor: ConfigModuleDescriptor?
     val platformHybrisModuleDescriptor: PlatformModuleDescriptor
     val kotlinNatureModuleDescriptor: ModuleDescriptor?
 
-    val alreadyOpenedModules: MutableSet<ModuleDescriptor?>
+    val alreadyOpenedModules: MutableSet<ModuleDescriptor>
     val rootDirectory: File?
     var modulesFilesDirectory: File?
     var ccv2Token: String?
     var sourceCodeFile: File?
     var projectIconFile: File?
-//    var isOpenProjectSettingsAfterImport: Boolean
-//    var isImportOotbModulesInReadOnlyMode: Boolean
+    var openProjectSettingsAfterImport: Boolean
+
+    //    var isImportOotbModulesInReadOnlyMode: Boolean
     var hybrisDistributionDirectory: File?
     var externalExtensionsDirectory: File?
     var externalConfigDirectory: File?
     var externalDbDriversDirectory: File?
-//    var isIgnoreNonExistingSourceDirectories: Boolean
+
+    //    var isIgnoreNonExistingSourceDirectories: Boolean
 //    var isUseFakeOutputPathForCustomExtensions: Boolean
     var javadocUrl: String?
-//    var isFollowSymlink: Boolean
+
+    //    var isFollowSymlink: Boolean
 //    var isExcludeTestSources: Boolean
 //    var isImportCustomAntBuildFiles: Boolean
 //    var isScanThroughExternalModule: Boolean
     var hybrisVersion: String?
     val detectedVcs: MutableSet<File>
-//    var isWithStandardProvidedSources: Boolean
+
+    //    var isWithStandardProvidedSources: Boolean
 //    var isWithExternalLibrarySources: Boolean
 //    var isWithExternalLibraryJavadocs: Boolean
     var excludedFromScanning: MutableSet<String>

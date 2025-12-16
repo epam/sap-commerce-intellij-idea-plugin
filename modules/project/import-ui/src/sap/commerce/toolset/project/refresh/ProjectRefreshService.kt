@@ -45,9 +45,9 @@ class ProjectRefreshService(private val project: Project) {
         val projectDirectory = refreshContext.projectPath.absolutePathString()
         val provider = getHybrisProjectImportProvider() ?: return
         val compilerProjectExtension = CompilerProjectExtension.getInstance(project) ?: return
-        val projectSettings = ProjectSettings.getInstance(project)
 
-        removeOldProjectData()
+        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(project) }
+        if (refreshContext.removeOldProjectData) removeOldProjectData()
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {
             override fun init() = Unit
@@ -83,8 +83,6 @@ class ProjectRefreshService(private val project: Project) {
             moduleModel.commit()
             libraryModel.commit()
         }
-
-        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(project) }
     }
 
     private fun getHybrisProjectImportProvider() = ProjectImportProvider.PROJECT_IMPORT_PROVIDER.extensionsIfPointIsRegistered

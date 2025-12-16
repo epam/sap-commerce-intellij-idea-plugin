@@ -18,24 +18,61 @@
 
 package sap.commerce.toolset.project.descriptor
 
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.ApplicationSettings
 
 data class ProjectImportContext(
-    var isOpenProjectSettingsAfterImport: Boolean = false,
-
-    var importOOTBModulesInReadOnlyMode: Boolean = false,
-    var followSymlink: Boolean = false,
-    var scanThroughExternalModule: Boolean = false,
-    var excludeTestSources: Boolean = false,
-    var importCustomAntBuildFiles: Boolean = false,
-    var ignoreNonExistingSourceDirectories: Boolean = false,
-    var useFakeOutputPathForCustomExtensions: Boolean = false,
-
-    var withStandardProvidedSources: Boolean = false,
-    var withExternalLibrarySources: Boolean = false,
-    var withExternalLibraryJavadocs: Boolean = false,
+    val importOOTBModulesInReadOnlyMode: Boolean = false,
+    val followSymlink: Boolean = false,
+    val scanThroughExternalModule: Boolean = false,
+    val excludeTestSources: Boolean = false,
+    val importCustomAntBuildFiles: Boolean = false,
+    val ignoreNonExistingSourceDirectories: Boolean = false,
+    val useFakeOutputPathForCustomExtensions: Boolean = false,
+    val withStandardProvidedSources: Boolean = false,
+    val withExternalLibrarySources: Boolean = false,
+    val withExternalLibraryJavadocs: Boolean = false,
 ) {
+
+    fun mutable() = Mutable(
+        importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
+        followSymlink = AtomicBooleanProperty(followSymlink),
+        scanThroughExternalModule = AtomicBooleanProperty(scanThroughExternalModule),
+        excludeTestSources = AtomicBooleanProperty(excludeTestSources),
+        importCustomAntBuildFiles = AtomicBooleanProperty(importCustomAntBuildFiles),
+        ignoreNonExistingSourceDirectories = AtomicBooleanProperty(ignoreNonExistingSourceDirectories),
+        useFakeOutputPathForCustomExtensions = AtomicBooleanProperty(useFakeOutputPathForCustomExtensions),
+        withStandardProvidedSources = AtomicBooleanProperty(withStandardProvidedSources),
+        withExternalLibrarySources = AtomicBooleanProperty(withExternalLibrarySources),
+        withExternalLibraryJavadocs = AtomicBooleanProperty(withExternalLibraryJavadocs),
+    )
+
+    data class Mutable(
+        val importOOTBModulesInReadOnlyMode: AtomicBooleanProperty,
+        val followSymlink: AtomicBooleanProperty,
+        val scanThroughExternalModule: AtomicBooleanProperty,
+        val excludeTestSources: AtomicBooleanProperty,
+        val importCustomAntBuildFiles: AtomicBooleanProperty,
+        val ignoreNonExistingSourceDirectories: AtomicBooleanProperty,
+        val useFakeOutputPathForCustomExtensions: AtomicBooleanProperty,
+        val withStandardProvidedSources: AtomicBooleanProperty,
+        val withExternalLibrarySources: AtomicBooleanProperty,
+        val withExternalLibraryJavadocs: AtomicBooleanProperty,
+    ) {
+        fun immutable() = ProjectImportContext(
+            importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
+            followSymlink = followSymlink.get(),
+            scanThroughExternalModule = scanThroughExternalModule.get(),
+            excludeTestSources = excludeTestSources.get(),
+            importCustomAntBuildFiles = importCustomAntBuildFiles.get(),
+            ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.get(),
+            useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensions.get(),
+            withStandardProvidedSources = withStandardProvidedSources.get(),
+            withExternalLibrarySources = withExternalLibrarySources.get(),
+            withExternalLibraryJavadocs = withExternalLibraryJavadocs.get(),
+        )
+    }
 
     companion object {
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportContext(

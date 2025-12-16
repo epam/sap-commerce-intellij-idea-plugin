@@ -58,7 +58,7 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                     .bindSelected(applicationSettings::ignoreNonExistingSourceDirectories)
             }
             row {
-                checkBox(i18n("hybris.project.attach.standard.sources"))
+                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
                     .bindSelected(applicationSettings::withStandardProvidedSources)
             }
             row {

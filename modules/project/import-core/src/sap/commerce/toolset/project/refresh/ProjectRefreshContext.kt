@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.refresh
 
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.project.descriptor.ProjectImportContext
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -26,6 +27,24 @@ import java.nio.file.Path
 data class ProjectRefreshContext(
     val project: Project,
     val projectPath: Path,
-    val importContext: ProjectImportContext,
     val projectSettings: ProjectSettings,
-)
+    val importContext: ProjectImportContext,
+    val removeOldProjectData: Boolean = true,
+) {
+    data class Mutable(
+        val importContext: ProjectImportContext.Mutable,
+        val removeOldProjectData: AtomicBooleanProperty = AtomicBooleanProperty(true),
+    ) {
+        fun immutable(
+            project: Project,
+            projectPath: Path,
+            projectSettings: ProjectSettings
+        ) = ProjectRefreshContext(
+            project = project,
+            projectPath = projectPath,
+            projectSettings = projectSettings,
+            importContext = importContext.immutable(),
+            removeOldProjectData = removeOldProjectData.get(),
+        )
+    }
+}

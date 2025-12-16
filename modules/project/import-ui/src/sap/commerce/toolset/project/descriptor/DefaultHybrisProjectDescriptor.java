@@ -95,6 +95,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected Project project;
     private Boolean refresh;
+    private Boolean openProjectSettingsAfterImport;
     @Nullable
     protected File rootDirectory;
     @Nullable
@@ -928,17 +929,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     public void setChosenModuleDescriptors(@NotNull final List<ModuleDescriptor> moduleDescriptors) {
         this.modulesChosenForImport.clear();
         this.modulesChosenForImport.addAll(moduleDescriptors);
-        moduleDescriptors.forEach(module -> {
-            if (module instanceof final ConfigModuleDescriptor configModuleDescriptor && configModuleDescriptor.isMainConfig()) {
-                configHybrisModuleDescriptor = configModuleDescriptor;
-            }
-            if (module instanceof PlatformModuleDescriptor) {
-                platformHybrisModuleDescriptor = (PlatformModuleDescriptor) module;
-            }
-            if (ProjectConstants.Extension.KOTLIN_NATURE.equals(module.getName())) {
-                kotlinNatureModuleDescriptor = module;
-            }
-        });
+
+        initMandatoryModules(modulesChosenForImport);
     }
 
     @Nullable
@@ -1032,6 +1024,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public @Nullable File getProjectIconFile() {
         return projectIconFile;
+    }
+
+    @Override
+    public boolean getOpenProjectSettingsAfterImport() {
+        return openProjectSettingsAfterImport;
+    }
+
+    @Override
+    public void setOpenProjectSettingsAfterImport(final boolean openProjectSettingsAfterImport) {
+        this.openProjectSettingsAfterImport = openProjectSettingsAfterImport;
     }
 
     @Override
@@ -1168,6 +1170,21 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public @NotNull ProjectImportContext getImportContext() {
         return importContext;
+    }
+
+    @Override
+    public void initMandatoryModules(@NotNull final Collection<? extends @NotNull ModuleDescriptor> moduleDescriptors) {
+        moduleDescriptors.forEach(module -> {
+            if (module instanceof final ConfigModuleDescriptor configModuleDescriptor && configModuleDescriptor.isMainConfig()) {
+                configHybrisModuleDescriptor = configModuleDescriptor;
+            }
+            if (module instanceof final PlatformModuleDescriptor platformModuleDescriptor) {
+                platformHybrisModuleDescriptor = platformModuleDescriptor;
+            }
+            if (ProjectConstants.Extension.KOTLIN_NATURE.equals(module.getName())) {
+                kotlinNatureModuleDescriptor = module;
+            }
+        });
     }
 
     protected enum DirectoryType {
