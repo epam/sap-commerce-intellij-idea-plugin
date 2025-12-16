@@ -61,4 +61,5 @@ class CxRemoteLogStateNode(
                 update(it.presentation)
             }
     }
+
 }

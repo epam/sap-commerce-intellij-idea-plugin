@@ -18,35 +18,47 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.ClientProperty
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.logging.CxLogLevel
-import sap.commerce.toolset.logging.custom.settings.state.CxCustomLogTemplateState
 import javax.swing.JComponent
 
 class CxCustomLogTemplateDialog(
-    project: Project,
-    private val mutable: CxCustomLogTemplateState.Mutable,
-    private val title: String
-) : DialogWrapper(project) {
+    private val context: LogTemplateDialogContext
+) : DialogWrapper(context.project) {
 
     private lateinit var nameTextField: JBTextField
 
     init {
-        super.title = title
+        super.title = context.title
         isResizable = false
         init()
     }
+
+    override fun createNorthPanel() = if (context.duplicatedSourceTemplates) {
+        EditorNotificationPanel(null as FileEditor?, EditorNotificationPanel.Status.Warning).apply {
+            text = "Duplicates were found. The last occurrence wins."
+            val insideBorder = border
+            val outsideBorder = ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER)
+            border = JBUI.Borders.compound(outsideBorder, insideBorder)
+        }
+    } else null
+
+    override fun getStyle() = DialogStyle.COMPACT
 
     override fun createCenterPanel(): JComponent = panel {
         row {
             nameTextField = textField()
                 .label("Name:")
-                .bindText(mutable.name)
+                .bindText(context.mutable.name)
                 .align(AlignX.FILL)
                 .addValidationRule("Template Name cannot be blank") { it.text.isNullOrBlank() }
                 .addValidationRule("Template Name cannot exceed 255 characters") { it.text.length > 255 }
@@ -64,11 +76,21 @@ class CxCustomLogTemplateDialog(
                 }
             )
                 .label("Default level:")
-                .bindItem(mutable.defaultEffectiveLevel)
+                .bindItem(context.mutable.defaultEffectiveLevel)
                 .align(AlignX.FILL)
+
         }.layout(RowLayout.PARENT_GRID)
+
+        if (context.showRemoveSourceTemplates) {
+            row {
+                checkBox("Remove source templates")
+                    .bindSelected(context.removeSourceTemplates)
+                    .align(AlignX.FILL)
+            }.layout(RowLayout.PARENT_GRID)
+        }
+    }.apply {
+        this.border = JBUI.Borders.empty(16)
     }
 
     override fun getPreferredFocusedComponent(): JComponent = nameTextField
-
 }

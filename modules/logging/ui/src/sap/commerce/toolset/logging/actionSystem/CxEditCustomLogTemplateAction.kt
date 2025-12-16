@@ -29,6 +29,7 @@ import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.selectedNode
 import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
+import sap.commerce.toolset.logging.ui.LogTemplateDialogContext
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
 
 class CxEditCustomLogTemplateAction : AnAction() {
@@ -53,7 +54,13 @@ class CxEditCustomLogTemplateAction : AnAction() {
             ?.mutable()
             ?: return
 
-        if (CxCustomLogTemplateDialog(project, mutable, "Update a Log Template").showAndGet()) {
+        val dialogContext = LogTemplateDialogContext(
+            project = project,
+            mutable = mutable,
+            title = "Update a Log Template"
+        )
+
+        if (CxCustomLogTemplateDialog(dialogContext).showAndGet()) {
             CxCustomLogTemplateService.getInstance(project).updateTemplate(mutable.immutable())
         }
     }

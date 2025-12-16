@@ -127,23 +127,15 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         .templates
         .find { it.uuid == templateUUID }
 
-    fun createTemplateFromLoggers(connectionName: String, loggers: Map<String, CxLoggerPresentation>) = loggers.values
+    fun createTemplateFromLoggers(templateName: String, loggers: Collection<CxLoggerPresentation>) = loggers
         .map { CxCustomLoggerState(it.level, it.name) }
         .let {
             CxCustomLogTemplateState(
-                name = generateTemplateName(connectionName),
+                name = templateName,
                 defaultEffectiveLevel = CxLogLevel.INFO,
                 loggers = it
             )
         }
-
-    private fun generateTemplateName(connectionName: String): String {
-        val templateName = "Remote '$connectionName' | template"
-        val count = CxCustomLogTemplatesSettings.getInstance(project).templates.count { it.name.startsWith(templateName) }
-
-        return if (count >= 1) "$templateName ($count)"
-        else templateName
-    }
 
     private fun updateTemplateState(template: CxCustomLogTemplateState) {
         with(CxCustomLogTemplatesSettings.getInstance(project)) {
