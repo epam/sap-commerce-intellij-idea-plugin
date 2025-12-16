@@ -32,12 +32,10 @@ import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.logging.selectedNodes
-import sap.commerce.toolset.logging.ui.CxAdvancedCustomLogTemplateDialog
 import sap.commerce.toolset.logging.ui.CxCustomLogTemplateDialog
 import sap.commerce.toolset.logging.ui.LogTemplateDialogContext
-import sap.commerce.toolset.logging.ui.tree.nodes.CxBundledLogTemplateItemNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
-import sap.commerce.toolset.logging.ui.tree.nodes.CxRemoteLogStateNode
+import sap.commerce.toolset.logging.ui.tree.nodes.*
+import kotlin.reflect.KClass
 
 class CxCreateCustomTemplateStateAction : AnAction() {
 
@@ -57,8 +55,11 @@ class CxCreateCustomTemplateStateAction : AnAction() {
             return
         }
 
-        val dialogTitle = getDialogTitle(selectedNodes)
-        val templateName = templateName(project, selectedNodes)
+        val node = selectedNodes.first()
+        val multiChoice = selectedNodes.size > 1
+
+        val templateName = templateName(project, node, multiChoice) ?: return
+        val dialogTitle = getDialogTitle(node, multiChoice)
         val loggers = loggers(project, selectedNodes)
         val uniqueLoggers = loggers
             .fold(linkedMapOf<String, CxLoggerPresentation>()) { mergedLoggers, log ->
@@ -74,11 +75,12 @@ class CxCreateCustomTemplateStateAction : AnAction() {
             mutable = customTemplate,
             title = dialogTitle,
             duplicatedSourceTemplates = loggers.size != uniqueLoggers.size,
+            showRemoveSourceTemplates = node is CxCustomLogTemplateItemNode
         )
-        val dialog = when (selectedNodes.first()) {
+        val dialog = when (node) {
             is CxRemoteLogStateNode -> CxCustomLogTemplateDialog(dialogContext)
             is CxBundledLogTemplateItemNode -> CxCustomLogTemplateDialog(dialogContext)
-            is CxCustomLogTemplateItemNode -> CxAdvancedCustomLogTemplateDialog(dialogContext)
+            is CxCustomLogTemplateItemNode -> CxCustomLogTemplateDialog(dialogContext)
             else -> null
         } ?: return
 
@@ -94,10 +96,9 @@ class CxCreateCustomTemplateStateAction : AnAction() {
         }
     }
 
-    private fun getDialogTitle(selectedNodes: List<Any>) = when (selectedNodes.first()) {
+    private fun getDialogTitle(selectedNode: CxLoggersNode, multiChoice: Boolean) = when (selectedNode) {
         is CxRemoteLogStateNode -> "Create a Log Template"
-        is CxBundledLogTemplateItemNode -> if (selectedNodes.size > 1) "Merge Templates" else "Clone Template"
-        is CxCustomLogTemplateItemNode -> if (selectedNodes.size > 1) "Merge Templates" else "Clone Template"
+        is CxBundledLogTemplateItemNode, is CxCustomLogTemplateItemNode -> if (multiChoice) "Merge Templates" else "Clone Template"
         else -> "Create a Log Template"
     }
 
@@ -109,7 +110,7 @@ class CxCreateCustomTemplateStateAction : AnAction() {
         else templateName
     }
 
-    private fun loggers(project: Project, selectedNodes: List<Any>) = selectedNodes
+    private fun loggers(project: Project, selectedNodes: Collection<CxLoggersNode>) = selectedNodes
         .mapNotNull {
             when (it) {
                 is CxRemoteLogStateNode -> CxRemoteLogStateService.getInstance(project).state(it.connection.uuid).get()?.values ?: emptyList()
@@ -120,55 +121,63 @@ class CxCreateCustomTemplateStateAction : AnAction() {
         }
         .flatten()
 
-    private fun templateName(project: Project, selectedNodes: List<Any>) = when (val firstNode = selectedNodes.first()) {
-        is CxRemoteLogStateNode -> templateNameFromConnection(project, firstNode.connection.shortenConnectionName)
-        is CxBundledLogTemplateItemNode -> if (selectedNodes.size > 1) "Merged templates" else "Copy of '${firstNode.name}'"
-        is CxCustomLogTemplateItemNode -> if (selectedNodes.size > 1) "Merged templates" else "Copy of '${firstNode.name}'"
-        else -> ""
-    }
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        val selectedNodes = e.selectedNodes() ?: return
-        val project = e.project ?: return
-
-        e.presentation.isEnabled = isActionEnabled(project, selectedNodes)
-
-        if (!e.presentation.isVisible) return
-
-        e.presentation.text = actionLabel(selectedNodes)
-        e.presentation.icon = HybrisIcons.Log.Action.SAVE_AS_TEMPLATE
-        e.presentation.disabledIcon = disabledIcon(project, selectedNodes)
-    }
-
-    private fun isActionEnabled(project: Project, selectedNodes: List<Any>): Boolean {
-        //if incompatible nodes selected => disable the action
-        if (selectedNodes.groupBy { it.javaClass }.keys.size > 1) return false
-
-        val loggerAccess = CxRemoteLogStateService.getInstance(project)
-
-        return when (val firstNode = selectedNodes.first()) {
-            //if remote state is fetched ==> enable the action
-            is CxRemoteLogStateNode -> loggerAccess.ready
-                && loggerAccess.stateInitialized
-                && loggerAccess.state(firstNode.connection.uuid).get()?.isNotEmpty() ?: false
-
-            is CxBundledLogTemplateItemNode -> true
-            is CxCustomLogTemplateItemNode -> true
-            else -> false
-        }
-    }
-
-    private fun disabledIcon(project: Project, selectedNodes: List<Any>) = when (selectedNodes.first()) {
-        //if remote state is not fetched ==> disabled icon
-        is CxRemoteLogStateNode -> if (CxRemoteLogStateService.getInstance(project).ready) null else AnimatedIcon.Default.INSTANCE
+    private fun templateName(project: Project, node: CxLoggersNode, multiChoice: Boolean) = when (node) {
+        is CxRemoteLogStateNode -> templateNameFromConnection(project, node.connection.shortenConnectionName)
+        is CxBundledLogTemplateItemNode, is CxCustomLogTemplateItemNode -> if (multiChoice) "Merged templates" else "Copy of '${node.name}'"
+        is CxCustomLogTemplateGroupNode -> ""
         else -> null
     }
 
-    private fun actionLabel(selectedNodes: List<Any>) = when (selectedNodes.first()) {
-        is CxRemoteLogStateNode -> if (selectedNodes.size > 1) "Merge States & Save as Template" else "Save as Template"
-        is CxBundledLogTemplateItemNode -> if (selectedNodes.size > 1) "Merge Templates" else "Clone Template"
-        is CxCustomLogTemplateItemNode -> if (selectedNodes.size > 1) "Merge Templates" else "Clone Template"
-        else -> "Create a Log Template"
+    override fun update(e: AnActionEvent) {
+        val selectedNodes = e.selectedNodes() ?: return
+        val project = e.project ?: return
+        val selectedNodeType = selectedNodeType(project, selectedNodes)
+
+        val isVisible = ActionPlaces.ACTION_SEARCH != e.place && selectedNodeType != null
+        e.presentation.isVisible = isVisible
+
+        if (!isVisible) return
+
+        val multiChoice = selectedNodes.size > 1
+
+        e.presentation.icon = HybrisIcons.Log.Action.SAVE_AS_TEMPLATE
+        e.presentation.text = actionLabel(selectedNodeType, multiChoice)
+        e.presentation.disabledIcon = disabledIcon(project, selectedNodeType)
+    }
+
+    private fun selectedNodeType(project: Project, selectedNodes: List<CxLoggersNode>) = selectedNodes
+        //if multiple remote nodes selected => disable the action
+        .takeUnless { nodes -> nodes.count { it is CxRemoteLogStateNode } > 1 }
+        //if incompatible nodes selected => disable the action
+        ?.takeUnless { nodes -> nodes.groupBy { it.javaClass }.keys.size > 1 }
+        ?.firstOrNull()
+        ?.takeIf { node ->
+            when (node) {
+                is CxRemoteLogStateNode -> CxRemoteLogStateService.getInstance(project)
+                    .takeIf { state -> state.ready && state.stateInitialized }
+                    ?.state(node.connection.uuid)
+                    ?.get()
+                    ?.isNotEmpty()
+                    ?: false
+
+                is CxBundledLogTemplateItemNode,
+                is CxCustomLogTemplateItemNode -> true
+
+                else -> false
+            }
+        }
+        ?.let { it::class }
+
+    private fun disabledIcon(project: Project, nodeType: KClass<out CxLoggersNode>) = when (nodeType) {
+        //if remote state is not fetched ==> disabled icon
+        CxRemoteLogStateNode::class -> if (CxRemoteLogStateService.getInstance(project).ready) null else AnimatedIcon.Default.INSTANCE
+        else -> null
+    }
+
+    private fun actionLabel(nodeType: KClass<out CxLoggersNode>, multiChoice: Boolean) = when (nodeType) {
+        CxRemoteLogStateNode::class -> if (multiChoice) "Merge States & Save as Template" else "Save as Template"
+        CxBundledLogTemplateItemNode::class, CxCustomLogTemplateItemNode::class -> if (multiChoice) "Merge Templates" else "Clone Template"
+        CxCustomLogTemplateGroupNode::class -> "Create a Log Template"
+        else -> null
     }
 }

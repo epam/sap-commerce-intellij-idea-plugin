@@ -28,7 +28,7 @@
 
     <actions>
         <action id="sap.cx.loggers.remote.fetch" class="sap.commerce.toolset.logging.actionSystem.CxFetchRemoteLogStateAction"/>
-        <action id="sap.cx.loggers.create.custom.template" class="sap.commerce.toolset.logging.actionSystem.CxCreateCustomTemplateStateAction"/>
+        <action id="sap.cx.loggers.custom.createTemplate" class="sap.commerce.toolset.logging.actionSystem.CxCreateCustomTemplateStateAction"/>
 
         <action id="sap.cx.loggers.applyLogTemplate" class="sap.commerce.toolset.logging.actionSystem.CxApplyLogTemplateAction"/>
 
@@ -39,12 +39,12 @@
 
         <group id="sap.cx.loggers.bundled.template.item.actions" searchable="false">
             <reference ref="sap.cx.loggers.applyLogTemplate"/>
-            <reference ref="sap.cx.loggers.create.custom.template"/>
+            <reference ref="sap.cx.loggers.custom.createTemplate"/>
         </group>
 
         <group id="sap.cx.loggers.template.item.actions" searchable="false">
             <reference ref="sap.cx.loggers.applyLogTemplate"/>
-            <reference ref="sap.cx.loggers.create.custom.template"/>
+            <reference ref="sap.cx.loggers.custom.createTemplate"/>
             <reference ref="sap.cx.loggers.custom.editTemplate"/>
             <reference ref="sap.cx.loggers.custom.deleteTemplate"/>
         </group>

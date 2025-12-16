@@ -18,34 +18,44 @@
 
 package sap.commerce.toolset.logging.ui
 
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.ClientProperty
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.logging.CxLogLevel
+import java.io.Serial
 import javax.swing.JComponent
 
-open class CxCustomLogTemplateDialog(
-//    project: Project,
-//    private val mutable: CxCustomLogTemplateState.Mutable,
-//    private val title: String
-    protected val context: LogTemplateDialogContext
+class CxCustomLogTemplateDialog(
+    private val context: LogTemplateDialogContext
 ) : DialogWrapper(context.project) {
 
     private lateinit var nameTextField: JBTextField
 
     init {
-        super.title = title
+        super.title = context.title
         isResizable = false
         init()
     }
 
-    override fun createCenterPanel(): JComponent = panel {
-        beforePanel()
+    override fun createNorthPanel() = if (context.duplicatedSourceTemplates) {
+        DuplicatesWarningEditorNotificationPanel(status = EditorNotificationPanel.Status.Warning).apply {
+            text = "Duplicates were found. The last occurrence wins."
+            val insideBorder = border
+            val outsideBorder = ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER)
+            border = JBUI.Borders.compound(outsideBorder, insideBorder)
+        }
+    } else null
 
+    override fun getStyle() = DialogStyle.COMPACT
+
+    override fun createCenterPanel(): JComponent = panel {
         row {
             nameTextField = textField()
                 .label("Name:")
@@ -69,57 +79,29 @@ open class CxCustomLogTemplateDialog(
                 .label("Default level:")
                 .bindItem(context.mutable.defaultEffectiveLevel)
                 .align(AlignX.FILL)
+
         }.layout(RowLayout.PARENT_GRID)
 
-        afterPanel()
-    }
+        if (context.showRemoveSourceTemplates) {
+            row {
+                checkBox("Remove source templates")
+                    .bindSelected(context.removeSourceTemplates)
+                    .align(AlignX.FILL)
+            }.layout(RowLayout.PARENT_GRID)
+        }
 
-    open fun Panel.beforePanel() {
-
-    }
-
-    open fun Panel.afterPanel() {
-
+    }.apply {
+        this.border = JBUI.Borders.empty(16)
     }
 
     override fun getPreferredFocusedComponent(): JComponent = nameTextField
 
 }
 
-class CxAdvancedCustomLogTemplateDialog(
-    context: LogTemplateDialogContext
-) : CxCustomLogTemplateDialog(context) {
+class DuplicatesWarningEditorNotificationPanel(fileEditor: FileEditor? = null, status: EditorNotificationPanel.Status) : EditorNotificationPanel(fileEditor, status) {
 
-    override fun Panel.beforePanel() {
-        if (context.duplicatedSourceTemplates) {
-            row {
-                cell(
-                    InlineBanner(
-                        """
-                            Some loggers are defined more than once.
-                            <br/>
-                            For each duplicated logger, only the logger <br/>
-                            from the last template will be kept and <br/>
-                            earlier ones will be overwritten.
-                        """.trimIndent(),
-                        EditorNotificationPanel.Status.Warning
-                    )
-                        .showCloseButton(false)
-                )
-                    .align(AlignX.FILL)
-                    .resizableColumn()
-            }.resizableRow()
-        }
-
-    }
-
-
-    override fun Panel.afterPanel() {
-        group("Additional Parameters") {
-            row {
-                checkBox("Remove source templates")
-                    .bindSelected(context.removeSourceTemplates)
-            }
-        }
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 7285047316752982361L
     }
 }

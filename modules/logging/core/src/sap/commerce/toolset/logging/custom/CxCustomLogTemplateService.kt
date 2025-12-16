@@ -127,7 +127,7 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
         .templates
         .find { it.uuid == templateUUID }
 
-    fun createTemplateFromLoggers(templateName: String, loggers: List<CxLoggerPresentation>) = loggers
+    fun createTemplateFromLoggers(templateName: String, loggers: Collection<CxLoggerPresentation>) = loggers
         .map { CxCustomLoggerState(it.level, it.name) }
         .let {
             CxCustomLogTemplateState(

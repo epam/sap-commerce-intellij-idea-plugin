@@ -28,5 +28,6 @@ data class LogTemplateDialogContext(
     val mutable: CxCustomLogTemplateState.Mutable,
     val title: String,
     val removeSourceTemplates: MutableBooleanProperty = AtomicBooleanProperty(false),
-    val duplicatedSourceTemplates: Boolean = false
+    val duplicatedSourceTemplates: Boolean = false,
+    val showRemoveSourceTemplates: Boolean = false,
 )
