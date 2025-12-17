@@ -119,7 +119,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         val pathToBeDeleted = bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC)
         cleanDirectory(context, pathToBeDeleted)
 
-        val gcl = getCodeGenerationCommandLine(coreModuleRoot, bootstrapDirectory, platformModuleRoot, vmExecutablePath)
+        val gcl = getCodeGenerationCommandLine(context, coreModuleRoot, bootstrapDirectory, platformModuleRoot, vmExecutablePath)
 
         var result = false
         val handler = JavaCommandLineStateUtil.startProcess(gcl, true)
@@ -153,17 +153,16 @@ class ProjectBeforeCompilerTask : CompileTask {
     }
 
     private fun getCodeGenerationCommandLine(
+        context: CompileContext,
         coreModuleRoot: Path,
         bootstrapDirectory: Path,
         platformModuleRoot: Path,
         vmExecutablePath: String
     ): GeneralCommandLine {
-
-
         val platformModuleRootWslPath = WslPath.parseWindowsUncPath(platformModuleRoot.toString())
-        val platformModuleRootPath = platformModuleRootWslPath?.linuxPath
+        val platformModuleRootPath = platformModuleRootWslPath
+            ?.linuxPath
             ?: platformModuleRoot.toString()
-
 
         val classpathSeparator = if (platformModuleRootWslPath != null) ":" else File.pathSeparator
         val classpath = setOf(
@@ -172,7 +171,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         )
             .joinToString(classpathSeparator)
 
-        val result = GeneralCommandLine()
+        val commandLine = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
             .withWorkDirectory(platformModuleRoot.toFile())
             .withExePath(osSpecificPath(vmExecutablePath))
@@ -186,20 +185,18 @@ class ProjectBeforeCompilerTask : CompileTask {
             )
 
         if (platformModuleRootWslPath != null) {
-            patchCommandLineToRunViaWsl(result)
+            patchCommandLineToRunViaWsl(context, commandLine)
         }
 
-        return result
+        return commandLine
     }
 
-    fun patchCommandLineToRunViaWsl(commandLine: GeneralCommandLine) {
-        val manager = WslDistributionManager.getInstance()
-        val distributions = manager.installedDistributions
-        val dist = distributions.firstOrNull()
+    fun patchCommandLineToRunViaWsl(context: CompileContext, commandLine: GeneralCommandLine) {
         val options = WSLCommandLineOptions()
             .setExecuteCommandInShell(true)
             .setLaunchWithWslExe(true)
-        dist?.patchCommandLine<GeneralCommandLine>(commandLine, null, options)
+        WslDistributionManager.getInstance().installedDistributions.firstOrNull()
+            ?.patchCommandLine<GeneralCommandLine>(commandLine, context.project, options)
     }
 
     private fun osSpecificPath(path: String) = path
