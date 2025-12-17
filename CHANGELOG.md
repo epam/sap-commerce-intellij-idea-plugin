@@ -2,12 +2,16 @@
 
 <cite>Release contributors</cite>
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
+- 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 
 ### `SAP CX Logging` enhancements
 - Support deletion for multiple selected custom nodes [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)
 - Prevented creating a logger by pressing `Enter` in a child component [#1696](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1696)
 - Support applying loggers for multiple selected nodes (custom and bundled) [#1697](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1697)
 - Support merging and cloning logger templates [#1698](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1698)
+
+### `WSL` enhancements
+- Ensure correctness of classpath during build execution [#1663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1663)
 
 ## [2025.3.0]
 

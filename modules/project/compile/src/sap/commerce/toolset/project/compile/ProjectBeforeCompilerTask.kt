@@ -22,6 +22,9 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.JavaCommandLineStateUtil
 import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
+import com.intellij.execution.wsl.WSLCommandLineOptions
+import com.intellij.execution.wsl.WslDistributionManager
+import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -116,22 +119,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         val pathToBeDeleted = bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC)
         cleanDirectory(context, pathToBeDeleted)
 
-        val classpath = setOf(
-            coreModuleRoot.resolve("lib").toString() + "/*",
-            bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
-        )
-        val gcl = GeneralCommandLine()
-            .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkDirectory(platformModuleRoot.toFile())
-            .withExePath(vmExecutablePath)
-            .withCharset(StandardCharsets.UTF_8)
-            .withParameters(
-                "-Dfile.encoding=UTF-8",
-                "-cp",
-                classpath.joinToString(File.pathSeparator),
-                HybrisConstants.CLASS_FQN_CODE_GENERATOR,
-                platformModuleRoot.toString()
-            )
+        val gcl = getCodeGenerationCommandLine(context, coreModuleRoot, bootstrapDirectory, platformModuleRoot, vmExecutablePath)
 
         var result = false
         val handler = JavaCommandLineStateUtil.startProcess(gcl, true)
@@ -163,6 +151,56 @@ class ProjectBeforeCompilerTask : CompileTask {
         }
         return result
     }
+
+    private fun getCodeGenerationCommandLine(
+        context: CompileContext,
+        coreModuleRoot: Path,
+        bootstrapDirectory: Path,
+        platformModuleRoot: Path,
+        vmExecutablePath: String
+    ): GeneralCommandLine {
+        val platformModuleRootWslPath = WslPath.parseWindowsUncPath(platformModuleRoot.toString())
+        val platformModuleRootPath = platformModuleRootWslPath
+            ?.linuxPath
+            ?: platformModuleRoot.toString()
+
+        val classpathSeparator = if (platformModuleRootWslPath != null) ":" else File.pathSeparator
+        val classpath = setOf(
+            osSpecificPath(coreModuleRoot.resolve("lib").toString() + "/*"),
+            osSpecificPath(bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString())
+        )
+            .joinToString(classpathSeparator)
+
+        val commandLine = GeneralCommandLine()
+            .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+            .withWorkDirectory(platformModuleRoot.toFile())
+            .withExePath(osSpecificPath(vmExecutablePath))
+            .withCharset(StandardCharsets.UTF_8)
+            .withParameters(
+                "-Dfile.encoding=UTF-8",
+                "-cp",
+                classpath,
+                HybrisConstants.CLASS_FQN_CODE_GENERATOR,
+                platformModuleRootPath
+            )
+
+        if (platformModuleRootWslPath != null) {
+            patchCommandLineToRunViaWsl(context, commandLine)
+        }
+
+        return commandLine
+    }
+
+    fun patchCommandLineToRunViaWsl(context: CompileContext, commandLine: GeneralCommandLine) {
+        val options = WSLCommandLineOptions()
+            .setExecuteCommandInShell(true)
+            .setLaunchWithWslExe(true)
+        WslDistributionManager.getInstance().installedDistributions.firstOrNull()
+            ?.patchCommandLine<GeneralCommandLine>(commandLine, context.project, options)
+    }
+
+    private fun osSpecificPath(path: String) = path
+        .let { WslPath.parseWindowsUncPath(it)?.linuxPath ?: it }
 
     private fun invokeCodeCompilation(
         context: CompileContext,
