@@ -215,11 +215,11 @@ dependencies {
             .forEach {
                 pluginComposedModule(implementation(project(it)))
             }
+
         bundledModules(
             "intellij.grid.impl",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
-            "intellij.platform.langInjection",
         )
 
         // printBundledPlugins for bundled plugins
@@ -227,7 +227,6 @@ dependencies {
             "intellij.grid.plugin",
             "com.intellij.java",
             "com.intellij.java-i18n",
-            "com.intellij.cron",
             "com.intellij.copyright",
             "com.intellij.database",
             "com.intellij.diagram",
@@ -242,7 +241,6 @@ dependencies {
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
             "com.intellij.diagram",
-            "JavaScript",
             "JUnit",
         )
 

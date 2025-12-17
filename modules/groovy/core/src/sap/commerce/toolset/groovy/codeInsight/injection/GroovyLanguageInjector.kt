@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.codeInsight.injection
+
+package sap.commerce.toolset.groovy.codeInsight.injection
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
@@ -24,6 +25,7 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.plugins.groovy.GroovyLanguage
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.businessProcess.psi.tryInject
 import sap.commerce.toolset.impex.psi.ImpExGroovyScriptBody
 import sap.commerce.toolset.impex.psi.ImpExString
@@ -40,6 +42,8 @@ class GroovyLanguageInjector : LanguageInjector {
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
+        if (Plugin.GROOVY.isDisabled()) return
+
         handleImpex(host, injectionPlacesRegistrar)
         handleBusinessProcess(host, injectionPlacesRegistrar)
     }

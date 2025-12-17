@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.codeInsight.injection
+
+package sap.commerce.toolset.javascript.codeInsight.injection
 
 import com.intellij.lang.javascript.JavascriptLanguage
 import com.intellij.openapi.util.TextRange
@@ -23,6 +24,7 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.xml.XmlFile
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.businessProcess.psi.tryInject
 import sap.commerce.toolset.impex.psi.ImpExString
 import sap.commerce.toolset.impex.psi.getScriptType
@@ -34,6 +36,8 @@ class JavaScriptLanguageInjector : LanguageInjector {
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
+        if (Plugin.JAVASCRIPT.isDisabled()) return
+
         handleImpex(host, injectionPlacesRegistrar)
         handleBusinessProcess(host, injectionPlacesRegistrar)
     }

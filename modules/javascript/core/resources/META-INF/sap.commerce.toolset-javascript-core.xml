@@ -15,11 +15,13 @@
   ~ You should have received a copy of the GNU Lesser General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <idea-plugin>
+    <dependencies>
+        <plugin id="JavaScript"/>
+    </dependencies>
 
     <extensions defaultExtensionNs="com.intellij">
-        <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.GroovyLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.javascript.codeInsight.injection.JavaScriptLanguageInjector"/>
     </extensions>
 
 </idea-plugin>

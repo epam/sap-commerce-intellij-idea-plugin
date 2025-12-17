@@ -16,10 +16,16 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <idea-plugin>
+    <dependencies>
+        <module name="intellij.platform.langInjection"/>
+    </dependencies>
+
+    <extensions defaultExtensionNs="org.intellij.intelliLang">
+        <injectionConfig config="injection/languageInjections.xml"/>
+    </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <multiHostInjector implementation="sap.commerce.toolset.javaee.el.codeInsight.injection.HybrisSpringELInjector"/>
-        <spring.el.contexts order="first" implementation="sap.commerce.toolset.javaee.el.CngSpringELContextsExtension"/>
+        <backgroundPostStartupActivity implementation="sap.commerce.toolset.intelliLang.startup.HybrisIntelliLangStartupActivity"/>
     </extensions>
 
 </idea-plugin>
