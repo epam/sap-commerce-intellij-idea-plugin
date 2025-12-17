@@ -25,7 +25,7 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.HybrisIntelliLangStartupActivity"/>
+        <backgroundPostStartupActivity implementation="sap.commerce.toolset.intelliLang.startup.HybrisIntelliLangStartupActivity"/>
     </extensions>
 
 </idea-plugin>

@@ -215,11 +215,11 @@ dependencies {
             .forEach {
                 pluginComposedModule(implementation(project(it)))
             }
+
         bundledModules(
             "intellij.grid.impl",
             "intellij.spellchecker",
             "intellij.spellchecker.xml",
-            "intellij.platform.langInjection",
         )
 
         // printBundledPlugins for bundled plugins

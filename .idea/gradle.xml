@@ -51,6 +51,7 @@
             <option value="$PROJECT_DIR$/modules/impex/exec" />
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />
             <option value="$PROJECT_DIR$/modules/impex/ui" />
+            <option value="$PROJECT_DIR$/modules/intelliLang/core" />
             <option value="$PROJECT_DIR$/modules/java/core" />
             <option value="$PROJECT_DIR$/modules/java/jsp" />
             <option value="$PROJECT_DIR$/modules/javaee/core" />

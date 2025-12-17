@@ -114,6 +114,7 @@
 
     <xi:include href="/META-INF/sap.commerce.toolset-java-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-java-jsp.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-intelliLang-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <depends optional="true" config-file="sap.commerce.toolset-businessProcess-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="sap.commerce.toolset-typeSystem-diagram.xml">com.intellij.diagram</depends>
@@ -140,6 +141,5 @@
     <depends optional="true" config-file="sap.commerce.toolset-cron-core.xml">com.intellij.cron</depends>
     <depends optional="true" config-file="sap.commerce.toolset-javascript-core.xml">JavaScript</depends>
 
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>
