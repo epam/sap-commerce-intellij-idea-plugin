@@ -28,12 +28,15 @@ import com.intellij.psi.xml.XmlTagChild
 import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.SpringELLanguage
 import com.intellij.spring.model.utils.SpringCommonUtils
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Labels
 
 class HybrisSpringELInjector : MultiHostInjector {
 
     override fun getLanguagesToInject(registrar: MultiHostRegistrar, context: PsiElement) {
+        if (Plugin.JAVAEE_EL.isDisabled()) return
+
         val project = context.project
         if (project.isDefault) return
         if (!SpringCommonUtils.isSpringConfigured(project)) return

@@ -137,11 +137,8 @@
     <depends optional="true" config-file="sap.commerce.toolset-javaee-el.xml">com.intellij.spring</depends>
 
     <depends optional="true" config-file="sap.commerce.toolset-database-core.xml">com.intellij.database</depends>
-
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javascript.xml">JavaScript</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-cron-core.xml">com.intellij.cron</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-javascript-core.xml">JavaScript</depends>
 
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>

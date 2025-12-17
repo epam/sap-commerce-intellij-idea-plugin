@@ -23,6 +23,7 @@
     <extensions defaultExtensionNs="org.intellij.intelliLang">
         <injectionConfig config="injection/languageInjections.xml"/>
     </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.HybrisIntelliLangStartupActivity"/>
     </extensions>

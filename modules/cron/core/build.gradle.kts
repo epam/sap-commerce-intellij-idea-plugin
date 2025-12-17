@@ -25,7 +25,7 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src")
+        java.srcDirs("src", "gen")
         resources.srcDirs("resources")
     }
     test {
@@ -34,13 +34,8 @@ sourceSets {
 }
 
 dependencies {
-    implementation(libs.jsoup)
     implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":typeSystem-core"))
     implementation(project(":impex-core"))
-    implementation(project(":businessProcess-core"))
-    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
@@ -48,7 +43,7 @@ dependencies {
         }
 
         bundledPlugins(
-            "org.intellij.groovy",
+            "com.intellij.cron"
         )
     }
 }

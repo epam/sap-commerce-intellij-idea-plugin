@@ -16,8 +16,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <idea-plugin>
-
-    <depends>org.intellij.groovy</depends>
+    <dependencies>
+        <plugin id="org.intellij.groovy"/>
+    </dependencies>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <editor.toolbarProvider implementation="sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider"/>
@@ -25,5 +26,9 @@
 
     <extensions defaultExtensionNs="org.intellij.groovy">
         <membersContributor implementation="sap.commerce.toolset.groovy.lang.resolve.GroovySpringBeanNonCodeMembersContributor" />
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <languageInjector implementation="sap.commerce.toolset.groovy.codeInsight.injection.GroovyLanguageInjector"/>
     </extensions>
 </idea-plugin>

@@ -16,10 +16,12 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <idea-plugin>
+    <dependencies>
+        <plugin id="com.intellij.cron"/>
+    </dependencies>
 
     <extensions defaultExtensionNs="com.intellij">
-        <multiHostInjector implementation="sap.commerce.toolset.javaee.el.codeInsight.injection.HybrisSpringELInjector"/>
-        <spring.el.contexts order="first" implementation="sap.commerce.toolset.javaee.el.CngSpringELContextsExtension"/>
+        <languageInjector implementation="sap.commerce.toolset.cron.codeInsight.injection.CronExpLanguageInjector" />
     </extensions>
 
 </idea-plugin>
