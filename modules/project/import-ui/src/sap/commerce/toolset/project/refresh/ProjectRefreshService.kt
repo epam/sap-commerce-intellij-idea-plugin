@@ -21,19 +21,30 @@ package sap.commerce.toolset.project.refresh
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.ConfigurationException
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.CompilerProjectExtension
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.projectImport.ProjectImportProvider
-import com.intellij.util.application
+import com.intellij.util.asSafely
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.HybrisProjectImportProvider
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.factories.ModuleDescriptorFactory
 import sap.commerce.toolset.project.wizard.RefreshSupport
 import kotlin.io.path.absolutePathString
 
-@Service
-class ProjectRefreshService() {
+@Service(Service.Level.PROJECT)
+class ProjectRefreshService(private val project: Project) {
 
     @Throws(ConfigurationException::class)
     fun refresh(refreshContext: ProjectRefreshContext) {
@@ -62,11 +73,36 @@ class ProjectRefreshService() {
         wizard.projectBuilder.cleanup()
     }
 
+    fun openModuleDescriptors(rootProjectDescriptor: HybrisProjectDescriptor): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
+        .filter { module -> YFacet.getState(module)?.subModuleType == null }
+        .mapNotNull { module ->
+            ModuleRootManager.getInstance(module).contentRoots
+                .firstOrNull()
+                ?.let { VfsUtil.virtualToIoFile(it) }
+                ?.let {
+                    try {
+                        ModuleDescriptorFactory.createDescriptor(it, rootProjectDescriptor)
+                    } catch (e: HybrisConfigurationException) {
+                        thisLogger().error(e)
+                        return@let null
+                    }
+                }
+        }
+        .flatMap { moduleDescriptor ->
+            buildList {
+                add(moduleDescriptor)
+                moduleDescriptor.asSafely<YModuleDescriptor>()
+                    ?.let {
+                        addAll(it.getSubModules())
+                    }
+            }
+        }
+
     private fun getHybrisProjectImportProvider() = ProjectImportProvider.PROJECT_IMPORT_PROVIDER.extensionsIfPointIsRegistered
         .filterIsInstance<HybrisProjectImportProvider>()
         .firstOrNull()
 
     companion object {
-        fun getInstance(): ProjectRefreshService = application.service()
+        fun getInstance(project: Project): ProjectRefreshService = project.service()
     }
 }

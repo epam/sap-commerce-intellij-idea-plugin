@@ -43,7 +43,6 @@ interface HybrisProjectDescriptor {
     val platformHybrisModuleDescriptor: PlatformModuleDescriptor
     val kotlinNatureModuleDescriptor: ModuleDescriptor?
 
-    val alreadyOpenedModules: MutableSet<ModuleDescriptor>
     val rootDirectory: File?
     var modulesFilesDirectory: File?
     var ccv2Token: String?

@@ -64,7 +64,7 @@ class ProjectRefreshAction : DumbAwareAction(
             projectSettings.removeOldProjectData = refreshContext.removeOldProjectData
             projectSettings.removeExternalModulesOnRefresh = refreshContext.removeExternalModules
 
-            ProjectRefreshService.getInstance().refresh(refreshContext)
+            ProjectRefreshService.getInstance(project).refresh(refreshContext)
         } catch (ex: ConfigurationException) {
             Messages.showErrorDialog(
                 project,

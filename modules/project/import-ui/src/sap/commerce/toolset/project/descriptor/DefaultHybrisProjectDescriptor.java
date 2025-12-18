@@ -24,20 +24,14 @@ import com.intellij.execution.wsl.WSLDistribution;
 import com.intellij.execution.wsl.WslDistributionManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.PropertiesUtil;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,8 +81,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected final List<ModuleDescriptor> foundModules = new ArrayList<>();
     @NotNull
     protected final List<ModuleDescriptor> modulesChosenForImport = new ArrayList<>();
-    @NotNull
-    protected final Set<ModuleDescriptor> alreadyOpenedModules = new HashSet<>();
     protected final Lock lock = new ReentrantLock();
     private final Set<File> vcs = new HashSet<>();
     private final Set<String> excludedFromScanning = new HashSet<>();
@@ -951,26 +943,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         return kotlinNatureModuleDescriptor;
     }
 
-    @NotNull
-    @Override
-    public Set<ModuleDescriptor> getAlreadyOpenedModules() {
-        if (null == getProject()) {
-            return Collections.emptySet();
-        }
-
-        this.lock.lock();
-
-        try {
-            if (this.alreadyOpenedModules.isEmpty()) {
-                this.alreadyOpenedModules.addAll(this.getAlreadyOpenedModules(getProject()));
-            }
-        } finally {
-            this.lock.unlock();
-        }
-
-        return Collections.unmodifiableSet(this.alreadyOpenedModules);
-    }
-
     @Nullable
     @Override
     public File getRootDirectory() {
@@ -1128,27 +1100,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public Set<File> getDetectedVcs() {
         return vcs;
-    }
-
-    @NotNull
-    protected Set<ModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
-        final Set<ModuleDescriptor> existingModules = new HashSet<>();
-
-        for (Module module : ModuleManager.getInstance(project).getModules()) {
-            try {
-                final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
-
-                if (!ArrayUtils.isEmpty(contentRoots)) {
-                    existingModules.add(ModuleDescriptorFactory.INSTANCE.createDescriptor(
-                        VfsUtil.virtualToIoFile(contentRoots[0]), this
-                    ));
-                }
-            } catch (final HybrisConfigurationException e) {
-                LOG.error(e);
-            }
-        }
-
-        return existingModules;
     }
 
     @Override

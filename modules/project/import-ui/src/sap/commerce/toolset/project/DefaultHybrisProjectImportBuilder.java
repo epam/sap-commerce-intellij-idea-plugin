@@ -37,6 +37,7 @@ import sap.commerce.toolset.Notifications;
 import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
+import sap.commerce.toolset.project.refresh.ProjectRefreshService;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.project.tasks.ImportProjectProgressModalWindow;
 import sap.commerce.toolset.project.tasks.SearchModulesRootsTaskModalWindow;
@@ -307,9 +308,10 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
         final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
 
         final var chosenForImport = new ArrayList<>(list);
-        final var alreadyOpenedModules = isUpdate()
-            ? hybrisProjectDescriptor.getAlreadyOpenedModules() // TODO: so what's the purpose if on refresh we remove modules in the ProjectRefreshAction.removeOldProjectData(project);
-            : Collections.emptySet();
+        final var project = hybrisProjectDescriptor.getProject();
+        final var alreadyOpenedModules = isUpdate() && project != null
+            ? ProjectRefreshService.Companion.getInstance(project).openModuleDescriptors(hybrisProjectDescriptor)
+            : Collections.<ModuleDescriptor>emptySet();
         chosenForImport.removeAll(alreadyOpenedModules);
 
         hybrisProjectDescriptor.setChosenModuleDescriptors(chosenForImport);
