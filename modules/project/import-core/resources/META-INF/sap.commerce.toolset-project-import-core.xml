@@ -33,6 +33,8 @@
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
 
+        <project.refreshConfigurator order="first" implementation="sap.commerce.toolset.project.configurator.CleanupProjectRefreshConfigurator"/>
+
         <project.module.facetConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
     </extensions>
 

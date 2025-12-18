@@ -29,22 +29,33 @@ data class ProjectRefreshContext(
     val projectPath: Path,
     val projectSettings: ProjectSettings,
     val importContext: ProjectImportContext,
-    val removeOldProjectData: Boolean = true,
+    val removeOldProjectData: Boolean,
+    val removeExternalModules: Boolean,
 ) {
+    fun mutable() = Mutable(
+        project = project,
+        projectPath = projectPath,
+        projectSettings = projectSettings,
+        importContext = importContext.mutable(),
+        removeOldProjectData = AtomicBooleanProperty(removeOldProjectData),
+        removeExternalModules = AtomicBooleanProperty(removeExternalModules),
+    )
+
     data class Mutable(
+        val project: Project,
+        val projectPath: Path,
+        val projectSettings: ProjectSettings,
         val importContext: ProjectImportContext.Mutable,
-        val removeOldProjectData: AtomicBooleanProperty = AtomicBooleanProperty(true),
+        val removeOldProjectData: AtomicBooleanProperty,
+        val removeExternalModules: AtomicBooleanProperty,
     ) {
-        fun immutable(
-            project: Project,
-            projectPath: Path,
-            projectSettings: ProjectSettings
-        ) = ProjectRefreshContext(
+        fun immutable() = ProjectRefreshContext(
             project = project,
             projectPath = projectPath,
             projectSettings = projectSettings,
             importContext = importContext.immutable(),
             removeOldProjectData = removeOldProjectData.get(),
+            removeExternalModules = removeExternalModules.get(),
         )
     }
 }

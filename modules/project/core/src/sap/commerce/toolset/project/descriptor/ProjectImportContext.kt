@@ -23,21 +23,19 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.ApplicationSettings
 
 data class ProjectImportContext(
-    val removeExternalModulesOnRefresh: Boolean = false,
-    val importOOTBModulesInReadOnlyMode: Boolean = false,
-    val followSymlink: Boolean = false,
-    val scanThroughExternalModule: Boolean = false,
-    val excludeTestSources: Boolean = false,
-    val importCustomAntBuildFiles: Boolean = false,
-    val ignoreNonExistingSourceDirectories: Boolean = false,
-    val useFakeOutputPathForCustomExtensions: Boolean = false,
-    val withStandardProvidedSources: Boolean = false,
-    val withExternalLibrarySources: Boolean = false,
-    val withExternalLibraryJavadocs: Boolean = false,
+    val importOOTBModulesInReadOnlyMode: Boolean,
+    val followSymlink: Boolean,
+    val scanThroughExternalModule: Boolean,
+    val excludeTestSources: Boolean,
+    val importCustomAntBuildFiles: Boolean,
+    val ignoreNonExistingSourceDirectories: Boolean,
+    val useFakeOutputPathForCustomExtensions: Boolean,
+    val withStandardProvidedSources: Boolean,
+    val withExternalLibrarySources: Boolean,
+    val withExternalLibraryJavadocs: Boolean,
 ) {
 
     fun mutable() = Mutable(
-        removeExternalModulesOnRefresh = AtomicBooleanProperty(removeExternalModulesOnRefresh),
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
         followSymlink = AtomicBooleanProperty(followSymlink),
         scanThroughExternalModule = AtomicBooleanProperty(scanThroughExternalModule),
@@ -51,7 +49,6 @@ data class ProjectImportContext(
     )
 
     data class Mutable(
-        val removeExternalModulesOnRefresh: AtomicBooleanProperty,
         val importOOTBModulesInReadOnlyMode: AtomicBooleanProperty,
         val followSymlink: AtomicBooleanProperty,
         val scanThroughExternalModule: AtomicBooleanProperty,
@@ -64,7 +61,6 @@ data class ProjectImportContext(
         val withExternalLibraryJavadocs: AtomicBooleanProperty,
     ) {
         fun immutable() = ProjectImportContext(
-            removeExternalModulesOnRefresh = removeExternalModulesOnRefresh.get(),
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
             followSymlink = followSymlink.get(),
             scanThroughExternalModule = scanThroughExternalModule.get(),
@@ -80,7 +76,6 @@ data class ProjectImportContext(
 
     companion object {
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportContext(
-            removeExternalModulesOnRefresh = projectSettings.removeExternalModulesOnRefresh,
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
             followSymlink = projectSettings.followSymlink,
             scanThroughExternalModule = projectSettings.scanThroughExternalModule,

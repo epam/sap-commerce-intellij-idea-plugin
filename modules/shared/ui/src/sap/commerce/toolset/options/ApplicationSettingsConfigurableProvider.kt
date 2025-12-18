@@ -101,13 +101,14 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                             .bindText(applicationSettings::groupCCv2)
                     }.layout(RowLayout.PARENT_GRID)
                 }.visibleIf(groupModulesCheckBox.selected)
+
                 row {
                     externalModulesCheckBox = checkBox("Group external modules")
                         .bindSelected(applicationSettings::groupExternalModules)
-                        .comment(i18n("hybris.project.view.external.module.tooltip"))
                         .component
-
+                    contextHelp(i18n("hybris.project.view.external.module.tooltip"))
                 }
+
                 indent {
                     row {
                         icon(HybrisIcons.Module.EXTERNAL_GROUP)
@@ -146,6 +147,12 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
             group("Project Structure") {
                 row {
+                    checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
+                        .bindSelected(applicationSettings::useFakeOutputPathForCustomExtensions)
+                    contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
+                }
+
+                row {
                     checkBox(i18n("hybris.project.import.excludeTestSources"))
                         .bindSelected(applicationSettings::excludeTestSources)
                 }
@@ -167,11 +174,13 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                         .bindSelected(applicationSettings::withStandardProvidedSources)
                     contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
                 }
+
                 row {
                     checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
                         .bindSelected(applicationSettings::withExternalLibrarySources)
                     contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
                 }
+
                 row {
                     checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                         .bindSelected(applicationSettings::withExternalLibraryJavadocs)

@@ -47,19 +47,21 @@ class ProjectRefreshAction : DumbAwareAction(
         val projectPath = project.path ?: return
         val applicationSettings = ApplicationSettings.getInstance()
         val projectSettings = ProjectSettings.getInstance(project)
-        val refreshContext = ProjectRefreshContext.Mutable(
-            importContext = ProjectImportContext.of(applicationSettings, projectSettings).mutable(),
+        val refreshContext = ProjectRefreshContext(
+            project = project,
+            projectPath = projectPath,
+            projectSettings = projectSettings,
+            importContext = ProjectImportContext.of(applicationSettings, projectSettings),
+            removeOldProjectData = projectSettings.removeOldProjectData,
+            removeExternalModules = projectSettings.removeExternalModulesOnRefresh,
         )
+            .mutable()
             .takeIf { ProjectRefreshDialog(project, it).showAndGet() }
-            ?.immutable(
-                project = project,
-                projectPath = projectPath,
-                projectSettings = projectSettings,
-            )
+            ?.immutable()
             ?: return
 
         try {
-            ProjectRefreshService.getInstance(project).refresh(refreshContext)
+            ProjectRefreshService.getInstance().refresh(refreshContext)
         } catch (ex: ConfigurationException) {
             Messages.showErrorDialog(
                 project,

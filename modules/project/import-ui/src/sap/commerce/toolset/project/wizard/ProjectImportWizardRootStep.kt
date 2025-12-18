@@ -229,6 +229,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             row {
                 useFakeOutputPathForCustomExtensionsCheckbox = checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
                     .comment(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
+                    .bindSelected(applicationSettings::useFakeOutputPathForCustomExtensions)
                     .component
             }.layout(RowLayout.PARENT_GRID)
             row {

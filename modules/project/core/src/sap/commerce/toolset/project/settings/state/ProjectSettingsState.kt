@@ -43,6 +43,7 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val excludeTestSources: Boolean = false,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
     @JvmField @OptionTag val showFullModuleName: Boolean = false,
+    @JvmField @OptionTag val removeOldProjectData: Boolean = true,
     @JvmField @OptionTag val removeExternalModulesOnRefresh: Boolean = false,
     @JvmField val unusedExtensions: Set<String> = emptySet(),
     @JvmField val modulesOnBlackList: Set<String> = emptySet(),

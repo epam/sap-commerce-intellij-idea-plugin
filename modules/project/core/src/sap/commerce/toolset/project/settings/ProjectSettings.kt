@@ -109,6 +109,11 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(importCustomAntBuildFiles = value) }
         }
+    var removeOldProjectData
+        get() = state.removeOldProjectData
+        set(value) {
+            updateState { it.copy(removeOldProjectData = value) }
+        }
     var removeExternalModulesOnRefresh
         get() = state.removeExternalModulesOnRefresh
         set(value) {

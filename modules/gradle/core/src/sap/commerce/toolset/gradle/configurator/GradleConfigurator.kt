@@ -81,7 +81,7 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     }
 
     override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
-        if (!refreshContext.importContext.removeExternalModulesOnRefresh) return
+        if (!refreshContext.removeExternalModules) return
 
         val project = refreshContext.project
 

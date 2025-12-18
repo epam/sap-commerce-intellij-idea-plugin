@@ -53,7 +53,7 @@ class ProjectRefreshDialog(
 
             row {
                 checkBox("Remove external modules")
-                    .bindSelected(refreshContext.importContext.removeExternalModulesOnRefresh)
+                    .bindSelected(refreshContext.removeExternalModules)
                 contextHelp("Non SAP Commerce external modules will be removed during the project refresh.")
             }
         }

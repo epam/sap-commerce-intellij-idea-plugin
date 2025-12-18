@@ -19,35 +19,30 @@
 package sap.commerce.toolset.project.refresh
 
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.ConfigurationException
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.CompilerProjectExtension
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.projectImport.ProjectImportProvider
+import com.intellij.util.application
 import sap.commerce.toolset.project.HybrisProjectImportProvider
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
-import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.wizard.RefreshSupport
 import kotlin.io.path.absolutePathString
 
-@Service(Service.Level.PROJECT)
-class ProjectRefreshService(private val project: Project) {
+@Service
+class ProjectRefreshService() {
 
     @Throws(ConfigurationException::class)
     fun refresh(refreshContext: ProjectRefreshContext) {
+        val project = refreshContext.project
         val projectDirectory = refreshContext.projectPath.absolutePathString()
         val provider = getHybrisProjectImportProvider() ?: return
         val compilerProjectExtension = CompilerProjectExtension.getInstance(project) ?: return
 
         ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(refreshContext) }
-        if (refreshContext.removeOldProjectData) removeOldProjectData()
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {
             override fun init() = Unit
@@ -67,29 +62,11 @@ class ProjectRefreshService(private val project: Project) {
         wizard.projectBuilder.cleanup()
     }
 
-    private fun removeOldProjectData() {
-        val projectSettings = ProjectSettings.getInstance(project)
-        val moduleModel = ModuleManager.getInstance(project).getModifiableModel()
-        val libraryModel = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-        val removeExternalModulesOnRefresh = projectSettings.removeExternalModulesOnRefresh
-
-        moduleModel.modules
-            .filter { removeExternalModulesOnRefresh || YFacet.get(it) != null }
-            .forEach { moduleModel.disposeModule(it) }
-
-        libraryModel.libraries.forEach { libraryModel.removeLibrary(it) }
-
-        ApplicationManager.getApplication().runWriteAction {
-            moduleModel.commit()
-            libraryModel.commit()
-        }
-    }
-
     private fun getHybrisProjectImportProvider() = ProjectImportProvider.PROJECT_IMPORT_PROVIDER.extensionsIfPointIsRegistered
         .filterIsInstance<HybrisProjectImportProvider>()
         .firstOrNull()
 
     companion object {
-        fun getInstance(project: Project): ProjectRefreshService = project.service()
+        fun getInstance(): ProjectRefreshService = application.service()
     }
 }

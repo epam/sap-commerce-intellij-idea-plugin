@@ -88,6 +88,11 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(scanThroughExternalModule = value) }
         }
+    var useFakeOutputPathForCustomExtensions: Boolean
+        get() = state.useFakeOutputPathForCustomExtensions
+        set(value) {
+            updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
+        }
     var excludeTestSources: Boolean
         get() = state.excludeTestSources
         set(value) {
