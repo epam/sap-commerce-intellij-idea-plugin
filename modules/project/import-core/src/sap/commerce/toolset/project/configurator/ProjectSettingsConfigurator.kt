@@ -104,7 +104,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
             this.withExternalLibraryJavadocs = importSettings.withExternalLibraryJavadocs
         }
 
-        with (projectSettings) {
+        with(projectSettings) {
             this.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
             this.followSymlink = importSettings.followSymlink
             this.scanThroughExternalModule = importSettings.scanThroughExternalModule
@@ -123,15 +123,11 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         projectSettings.hybrisVersion = hybrisProjectDescriptor.hybrisVersion
         projectSettings.javadocUrl = hybrisProjectDescriptor.javadocUrl
 
-        hybrisProjectDescriptor.sourceCodeFile
+        projectSettings.sourceCodeFile = hybrisProjectDescriptor.sourceCodeFile
             ?.takeIf { it.exists() }
-            ?.let { sourceCodeFile ->
-                projectSettings.sourceCodeFile = sourceCodeFile.fileSystemIndependentName
-                applicationSettings.sourceZipUsed = sourceCodeFile.isDirectory
-                applicationSettings.sourceCodeDirectory = if (applicationSettings.sourceZipUsed) sourceCodeFile.parentFile.directorySystemIndependentName
-                else sourceCodeFile.fileSystemIndependentName
-            }
+            ?.fileSystemIndependentName
         projectSettings.availableExtensions = hybrisProjectDescriptor.foundModules
+            .asSequence()
             .filterNot { it is YSubModuleDescriptor }
             .filterIsInstance<YModuleDescriptor>()
             .toSet()

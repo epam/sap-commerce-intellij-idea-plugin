@@ -36,6 +36,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionListPanel
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModel
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 
 class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
@@ -96,18 +97,14 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                 separator()
 
                 row {
-                    label("CCv2 token:")
+                    label(i18n("hybris.settings.application.ccv2Token"))
                     defaultCCv2TokenTextField = passwordField()
-                        .comment(
-                            """
-                                            Specify developer specific Token for CCv2 API, it will be stored in the OS specific secure storage under <strong>SAP CX CCv2 Token</strong> alias.<br>
-                                            Official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html">help.sap.com - Generating API Tokens</a>.
-                                        """.trimIndent()
-                        )
+                        .comment(i18n("hybris.settings.application.ccv2Token.tooltip"))
                         .align(AlignX.FILL)
                         .enabledIf(editable)
                         .onIsModified { (originalToken ?: "") != String(defaultCCv2TokenTextField.password) }
                         .component
+                    contextHelp(i18n("hybris.settings.application.ccv2Token.comment"))
                 }.layout(RowLayout.PARENT_GRID)
 
                 row {

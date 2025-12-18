@@ -142,6 +142,7 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 row {
                     checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
                         .bindSelected(applicationSettings::importCustomAntBuildFiles)
+                    contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
                 }
             }
 

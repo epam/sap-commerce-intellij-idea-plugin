@@ -20,9 +20,8 @@ package sap.commerce.toolset.project
 
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
-import com.intellij.ui.dsl.builder.MutableProperty
-import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.project.descriptor.ProjectImportSettings
+import sap.commerce.toolset.ui.dsl.builder.MutableListProperty
 
 data class ProjectImportRootContext(
     val projectName: AtomicProperty<String> = AtomicProperty(""),
@@ -32,14 +31,13 @@ data class ProjectImportRootContext(
 
     val javadocUrl: AtomicProperty<String> = AtomicProperty(""),
 
-    val platformReadOnlyMode: AtomicBooleanProperty = AtomicBooleanProperty(false),
     val platformVersion: AtomicProperty<String> = AtomicProperty(""),
     val platformDirectory: AtomicProperty<String> = AtomicProperty(""),
 
     val sourceCodeDirectoryOverride: AtomicBooleanProperty = AtomicBooleanProperty(false),
     val sourceCodeDirectory: AtomicProperty<String> = AtomicProperty(""),
 
-    val moduleFilesStorage: AtomicBooleanProperty = AtomicBooleanProperty(false),
+    val moduleFilesStorage: AtomicBooleanProperty = AtomicBooleanProperty(true),
     val moduleFilesStorageDirectory: AtomicProperty<String> = AtomicProperty(""),
 
     val customDirectoryOverride: AtomicBooleanProperty = AtomicBooleanProperty(false),
@@ -56,16 +54,5 @@ data class ProjectImportRootContext(
 
     val ccv2Token: AtomicProperty<String> = AtomicProperty(""),
 
-    val importSettings: ProjectImportSettings.Mutable,
+    val settings: ProjectImportSettings.Mutable,
 )
-
-class MutableListProperty : MutableProperty<List<String>> {
-    private var _value = mutableListOf<String>()
-
-    override fun get() = _value.toImmutableList()
-
-    override fun set(value: List<String>) {
-        _value.clear()
-        _value.addAll(value)
-    }
-}

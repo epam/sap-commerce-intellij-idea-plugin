@@ -25,6 +25,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.scale.JBUIScale
+import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.i18n
@@ -34,7 +35,7 @@ import sap.commerce.toolset.project.ProjectImportRootContext
 import sap.commerce.toolset.project.descriptor.ProjectImportSettings
 import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
-import sap.commerce.toolset.project.ui.ProjectImportRootStepUiSupplier
+import sap.commerce.toolset.project.ui.ui
 import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.awt.Dimension
@@ -48,26 +49,29 @@ import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.isDirectory
 
-class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardStep(context), RefreshSupport {
+class ProjectImportWizardRootStep(wizardContext: WizardContext) : ProjectImportWizardStep(wizardContext), RefreshSupport {
 
-    private val context = ProjectImportRootContext(
-        importSettings = ProjectImportSettings.of(ApplicationSettings.getInstance()).mutable()
-    )
+    private val context by lazy {
+        ProjectImportRootContext(
+            settings = ProjectImportSettings.of(ApplicationSettings.getInstance()).mutable()
+        )
+    }
+    private val _ui by lazy { ui(context) }
 
-    override fun getComponent() = with(JBScrollPane(ProjectImportRootStepUiSupplier.ui(context))) {
+    override fun getComponent() = JBScrollPane(_ui).apply {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
 
         CCv2ProjectSettings.getInstance().loadDefaultCCv2Token { ccv2Token ->
             if (ccv2Token != null) context.ccv2Token.set(ccv2Token)
         }
-
-        this
     }
 
     override fun updateDataModel() {
+        _ui.apply()
+
         val importBuilder = importBuilder()
-        val importContext = context.importSettings.immutable()
+        val importContext = context.settings.immutable()
         val hybrisProjectDescriptor = importBuilder.createHybrisProjectDescriptor(importContext)
 
         wizardContext.projectName = context.projectName.get()
@@ -76,7 +80,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.hybrisVersion = context.platformVersion.get()
             this.hybrisDistributionDirectory = FileUtils.toFile(context.platformDirectory.get())
             this.javadocUrl = context.javadocUrl.get()
-            this.excludedFromScanning = context.excludedFromScanningDirectories.get().toMutableSet()
+            this.excludedFromScanning = context.excludedFromScanningDirectories.get().toImmutableSet()
 
             this.externalExtensionsDirectory = context.customDirectory.takeIf { context.customDirectoryOverride.get() }
                 ?.let { FileUtils.toFile(it.get()) }
@@ -92,7 +96,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.sourceCodeFile = context.sourceCodeDirectory.takeIf { context.sourceCodeDirectoryOverride.get() }
                 ?.let { FileUtils.toFile(it.get()) }
                 ?.let {
-                    return@let if (it.isDirectory && it.absolutePath == hybrisDistributionDirectory?.absolutePath) null
+                    if (it.isDirectory && it.absolutePath == hybrisDistributionDirectory?.absolutePath) null
                     else it
                 }
 
@@ -106,8 +110,6 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateStep() {
-        val applicationSettings = ApplicationSettings.getInstance()
-
         context.moduleFilesStorageDirectory.set(
             Path(builder.fileToImport)
                 .resolve(ProjectConstants.Directory.PATH_IDEA_MODULES)
@@ -116,70 +118,62 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         context.projectName.set(wizardContext.projectName)
 
         if (context.platformDirectory.get().isBlank()) {
-            val task = SearchHybrisDistributionDirectoryTaskModalWindow(File(builder.fileToImport)) {
+            val rootProjectDirectory = File(builder.fileToImport)
+            val task = SearchHybrisDistributionDirectoryTaskModalWindow(rootProjectDirectory) {
                 context.platformDirectory.set(it)
-
-                if (context.sourceCodeDirectory.get().isBlank()) {
-                    context.sourceCodeDirectory.set(it)
-                }
             }
             ProgressManager.getInstance().run(task)
         }
 
-        if (context.platformDirectory.get().isNotBlank()) {
-            val platformPath = Path(context.platformDirectory.get())
+        val platformDirectory = context.platformDirectory.get()
+            .takeIf { it.isNotBlank() }
+            ?: return
 
-            if (context.customDirectory.get().isBlank()) {
-                context.customDirectory.set(
-                    platformPath
-                        .resolve(ProjectConstants.Directory.PATH_BIN_CUSTOM)
-                        .absolutePathString()
-                )
-            }
+        val platformPath = Path(platformDirectory)
+        val hybrisApiVersion = getHybrisVersion(platformPath, true)
+            ?.also { context.platformVersion.set(it) }
+        val hybrisVersion = getHybrisVersion(platformPath, false)
+            ?.also { context.platformVersion.set(it) }
 
-            if (context.configDirectory.get().isBlank()) {
-                context.configDirectory.set(
-                    platformPath
-                        .resolve(ProjectConstants.Extension.CONFIG)
-                        .absolutePathString()
-                )
-            }
-
-            if (context.dbDriverDirectory.get().isBlank()) {
-                val dbDriversDirAbsolutePath = applicationSettings.externalDbDriversDirectory
-                    ?.let { Path(it) }
-                    ?.takeIf { it.isDirectory() }
-                    ?.also { context.dbDriverDirectoryOverride.set(true) }
-                    ?: platformPath
-                        .resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM)
-                        .resolve(ProjectConstants.Directory.PATH_LIB_DB_DRIVER)
-
-                context.dbDriverDirectory.set(dbDriversDirAbsolutePath.absolutePathString())
-            }
-
-            val hybrisVersion = getHybrisVersion(platformPath, false)
-                ?.also { context.platformVersion.set(it) }
-
-            val sourceCodeDirectory = applicationSettings.sourceCodeDirectory
-            val sourceFile = when {
-                applicationSettings.sourceZipUsed && sourceCodeDirectory != null -> findSourceZip(sourceCodeDirectory, hybrisVersion)
-                sourceCodeDirectory != null -> File(sourceCodeDirectory)
-                else -> null
-            }
-
-            if (sourceFile != null) {
-                context.sourceCodeDirectoryOverride.set(true)
-                context.sourceCodeDirectory.set(sourceFile.path)
-            }
-
-            val hybrisApiVersion = getHybrisVersion(platformPath, true)
-            getPlatformJavadocUrl(hybrisApiVersion)
-                .takeIf { it.isNotBlank() }
-                ?.let { context.javadocUrl.set(it) }
+        if (context.customDirectory.get().isBlank()) {
+            context.customDirectory.set(
+                platformPath
+                    .resolve(ProjectConstants.Directory.PATH_BIN_CUSTOM)
+                    .absolutePathString()
+            )
         }
 
-        if (context.sourceCodeDirectory.get().isBlank()) {
-            context.sourceCodeDirectory.set(context.platformDirectory.get())
+        if (context.configDirectory.get().isBlank()) {
+            context.configDirectory.set(
+                platformPath
+                    .resolve(ProjectConstants.Extension.CONFIG)
+                    .absolutePathString()
+            )
+        }
+
+        if (context.dbDriverDirectory.get().isBlank()) {
+            val dbDriversDirAbsolutePath = context.dbDriverDirectory.get()
+                .let { Path(it) }
+                .takeIf { it.isDirectory() }
+                ?.also { context.dbDriverDirectoryOverride.set(true) }
+                ?: platformPath
+                    .resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM)
+                    .resolve(ProjectConstants.Directory.PATH_LIB_DB_DRIVER)
+
+            context.dbDriverDirectory.set(dbDriversDirAbsolutePath.absolutePathString())
+        }
+
+        getPlatformJavadocUrl(hybrisApiVersion)
+            .takeIf { it.isNotBlank() }
+            ?.let { context.javadocUrl.set(it) }
+
+        val sourceCodeDirectory = context.sourceCodeDirectory.get()
+        if (sourceCodeDirectory.isBlank()) {
+            val sourceCodeFile = findSourceZip(platformPath, hybrisVersion)
+                ?.absolutePath
+                ?: platformPath.absolutePathString()
+
+            context.sourceCodeDirectory.set(sourceCodeFile)
         }
     }
 
@@ -285,14 +279,13 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         return buildProperties.getProperty(HybrisConstants.HYBRIS_API_VERSION_KEY)
     }
 
-    private fun findSourceZip(sourceCodeDir: String, hybrisApiVersion: String?): File? {
+    private fun findSourceZip(sourceCodePath: Path, hybrisApiVersion: String?): File? {
         hybrisApiVersion ?: return null
-        if (sourceCodeDir.isBlank() || hybrisApiVersion.isBlank()) return null
+        if (hybrisApiVersion.isBlank()) return null
 
-        val sourceCodeDirectory = File(sourceCodeDir)
-        if (!sourceCodeDirectory.isDirectory) return null
+        if (!sourceCodePath.isDirectory()) return null
 
-        val sourceZipList = sourceCodeDirectory.listFiles()
+        val sourceZipList = sourceCodePath.toFile().listFiles()
             ?.filter { it.name.endsWith(".zip") }
             ?.filter { it.name.contains(hybrisApiVersion) }
             ?.takeIf { it.isNotEmpty() }

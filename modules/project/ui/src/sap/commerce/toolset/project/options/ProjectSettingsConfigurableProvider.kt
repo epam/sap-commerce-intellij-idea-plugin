@@ -57,17 +57,27 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .text(projectSettings.hybrisVersion ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
-                row(i18n("hybris.import.wizard.hybris.distribution.directory.label")) {
+
+                row {
                     textField()
+                        .label(i18n("hybris.import.wizard.hybris.distribution.directory.label"))
                         .enabled(false)
                         .text(projectSettings.hybrisDirectory ?: "")
                         .align(AlignX.FILL)
+                        .resizableColumn()
+
+                    contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.tooltip"))
                 }.layout(RowLayout.PARENT_GRID)
-                row(i18n("hybris.import.wizard.javadoc.url.label")) {
+
+                row {
                     textField()
+                        .label(i18n("hybris.import.wizard.javadoc.url.label"))
                         .enabled(false)
                         .text(projectSettings.javadocUrl ?: "")
                         .align(AlignX.FILL)
+                        .resizableColumn()
+
+                    contextHelp(i18n("hybris.import.wizard.javadoc.url.tooltip"))
                 }.layout(RowLayout.PARENT_GRID)
             }
 
@@ -105,9 +115,9 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                 }
             }
 
-            group("Directories excluded from the project scanning", false) {
+            group(i18n("hybris.project.import.isExcludedFromScanning"), false) {
                 row {
-                    comment("Specify directories related to the project root, use '/' separator for sub-directories.")
+                    comment(i18n("hybris.project.import.isExcludedFromScanning.tooltip"))
                 }
                 row {
                     cell(excludedFromScanning)

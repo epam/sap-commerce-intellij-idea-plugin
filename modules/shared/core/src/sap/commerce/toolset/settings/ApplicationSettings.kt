@@ -58,11 +58,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(followSymlink = value) }
         }
-    var sourceZipUsed: Boolean
-        get() = state.sourceZipUsed
-        set(value) {
-            updateState { it.copy(sourceZipUsed = value) }
-        }
     var ignoreNonExistingSourceDirectories: Boolean
         get() = state.ignoreNonExistingSourceDirectories
         set(value) {
@@ -147,11 +142,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         get() = state.externalDbDriversDirectory
         set(value) {
             updateState { it.copy(externalDbDriversDirectory = value) }
-        }
-    var sourceCodeDirectory: String?
-        get() = state.sourceCodeDirectory
-        set(value) {
-            updateState { it.copy(sourceCodeDirectory = value) }
         }
     var junkDirectoryList: List<String>
         get() = state.junkDirectoryList

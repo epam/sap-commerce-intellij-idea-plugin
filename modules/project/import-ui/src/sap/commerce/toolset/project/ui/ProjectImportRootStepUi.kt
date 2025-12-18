@@ -19,16 +19,20 @@
 package sap.commerce.toolset.project.ui
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import com.intellij.util.ui.JBUI
 import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.ProjectImportRootContext
 import sap.commerce.toolset.ui.CRUDListPanel
 
-object ProjectImportRootStepUiSupplier {
+internal fun ui(context: ProjectImportRootContext): DialogPanel {
+    val rightGaps = UnscaledGaps(0, 0, 0, 16)
 
-    fun ui(context: ProjectImportRootContext) = panel {
+    return panel {
         val excludedFromScanningList = CRUDListPanel(
             "hybris.import.settings.excludedFromScanning.directory.popup.add.title",
             "hybris.import.settings.excludedFromScanning.directory.popup.add.text",
@@ -43,16 +47,45 @@ object ProjectImportRootStepUiSupplier {
                 .bindText(context.projectName)
                 .align(AlignX.FILL)
 
-            label("SAP CX version:")
+            label("Platform version:")
                 .align(AlignX.RIGHT)
-                .gap(RightGap.SMALL)
+                .customize(rightGaps)
             label("")
                 .bindText(context.platformVersion)
                 .bold()
+        }
+
+        separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+
+        row {
+            cell(
+                textFieldWithBrowseButton(
+                    null,
+                    FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                        .withTitle(i18n("hybris.import.label.select.hybris.distribution.directory"))
+                )
+            )
+                .label(i18n("hybris.import.wizard.hybris.distribution.directory.label"))
+                .bindText(context.platformDirectory)
+                .align(AlignX.FILL)
+
+            contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.tooltip"))
+                .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
         row {
-            checkBox("Custom project icon:")
+            textField()
+                .label(i18n("hybris.import.wizard.javadoc.url.label"))
+                .bindText(context.javadocUrl)
+                .align(AlignX.FILL)
+                .resizableColumn()
+
+            contextHelp(i18n("hybris.import.wizard.javadoc.url.tooltip"))
+                .customize(rightGaps)
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            checkBox("Project icon:")
                 .bindSelected(context.projectIcon)
 
             cell(
@@ -65,12 +98,15 @@ object ProjectImportRootStepUiSupplier {
                 .bindText(context.projectIconFile)
                 .enabledIf(context.projectIcon)
                 .align(AlignX.FILL)
+                .resizableColumn()
+
+            contextHelp(i18n("hybris.import.label.select.hybris.project.icon.file"))
+                .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
         row {
-            checkBox("Store IDEA module files in:")
+            checkBox("Store .iml files in:")
                 .bindSelected(context.moduleFilesStorage)
-                .comment("If unchecked, .iml file will be stored in the root directory of the module.")
 
             cell(
                 textFieldWithBrowseButton(
@@ -82,48 +118,43 @@ object ProjectImportRootStepUiSupplier {
                 .bindText(context.moduleFilesStorageDirectory)
                 .enabledIf(context.moduleFilesStorage)
                 .align(AlignX.FILL)
+                .resizableColumn()
+
+            contextHelp("If unchecked, .iml file will be stored in the root directory of the module.")
+                .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
-        collapsibleGroup("CCv2") {
-            row {}.comment(
-                """
-                    These settings are non-project specific and shared across all Projects and IntelliJ IDEA instances.<br>
-                """.trimIndent()
-            )
+        row {
+            passwordField()
+                .label(i18n("hybris.settings.application.ccv2Token"))
+                .bindText(context.ccv2Token)
+                .align(AlignX.FILL)
+                .comment(i18n("hybris.settings.application.ccv2Token.tooltip"))
+                .resizableColumn()
 
-            row {
-                passwordField()
-                    .comment(
-                        """
-                        Specify developer specific Token for CCv2 API, it will be stored in the OS specific secure storage under <strong>SAP CX CCv2 Token</strong> alias.<br>
-                        Official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html">help.sap.com - Generating API Tokens</a>.
-                    """.trimIndent()
-                    )
-                    .label("CCv2 token:")
-                    .bindText(context.ccv2Token)
-                    .align(AlignX.FILL)
-            }
-                .layout(RowLayout.PARENT_GRID)
-        }
-            .expanded = true
+            contextHelp(i18n("hybris.settings.application.ccv2Token.comment"))
+                .customize(rightGaps)
+        }.layout(RowLayout.PARENT_GRID)
 
         collapsibleGroup("Scanning Settings") {
             row {
-                checkBox("Scan for SAP CX modules even in external modules")
-                    .comment("Eclipse, Gradle and Maven projects. (slower import/refresh)")
-                    .bindSelected(context.importSettings.scanThroughExternalModule)
+                checkBox(i18n("hybris.project.import.scanExternalModules"))
+                    .bindSelected(context.settings.scanThroughExternalModule)
+                contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
+                    .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                checkBox("Include symbolic links for a project import")
-                    .bindSelected(context.importSettings.followSymlink)
+                checkBox(i18n("hybris.project.import.followSymlink"))
+                    .bindSelected(context.settings.followSymlink)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                checkBox("Directories excluded from the project scanning")
-                    .comment("Specify directories related to the project root, use '/' separator for sub-directories.")
+                checkBox(i18n("hybris.project.import.isExcludedFromScanning"))
                     .bindSelected(context.isExcludedFromScanning)
+                contextHelp(i18n("hybris.project.import.isExcludedFromScanning.tooltip"))
+                    .customize(rightGaps)
             }
             row {
                 cell(excludedFromScanningList)
@@ -140,27 +171,62 @@ object ProjectImportRootStepUiSupplier {
 
         collapsibleGroup("Import Settings") {
             row {
-                cell(
-                    textFieldWithBrowseButton(
-                        null,
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(i18n("hybris.import.label.select.hybris.distribution.directory"))
-                    )
-                )
-                    .label("SAP CX directory:")
-                    .bindText(context.platformDirectory)
-                    .align(AlignX.FILL)
-            }.layout(RowLayout.PARENT_GRID)
+                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
+                    .bindSelected(context.settings.useFakeOutputPathForCustomExtensions)
+                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
+                    .customize(rightGaps)
+            }
 
             row {
-                textField()
-                    .label("SAP CX javadoc url:")
-                    .bindText(context.javadocUrl)
-                    .align(AlignX.FILL)
-            }.layout(RowLayout.PARENT_GRID)
+                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                    .bindSelected(context.settings.importOOTBModulesInReadOnlyMode)
+                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
+                    .customize(rightGaps)
+            }
 
             row {
-                checkBox("SAP CX source code:")
+                checkBox(i18n("hybris.project.import.excludeTestSources"))
+                    .bindSelected(context.settings.excludeTestSources)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
+                    .bindSelected(context.settings.ignoreNonExistingSourceDirectories)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
+                    .bindSelected(context.settings.withStandardProvidedSources)
+                contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
+                    .bindSelected(context.settings.withExternalLibrarySources)
+                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
+                    .bindSelected(context.settings.withExternalLibraryJavadocs)
+                contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
+                    .bindSelected(context.settings.importCustomAntBuildFiles)
+                contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
+                    .customize(rightGaps)
+            }
+        }
+            .expanded = true
+
+        collapsibleGroup("Override") {
+            row {
+                checkBox("Platform source code:")
                     .bindSelected(context.sourceCodeDirectoryOverride)
                 cell(
                     textFieldWithBrowseButton(
@@ -170,62 +236,15 @@ object ProjectImportRootStepUiSupplier {
                     )
                 )
                     .align(AlignX.FILL)
+                    .resizableColumn()
                     .bindText(context.sourceCodeDirectory)
                     .enabledIf(context.sourceCodeDirectoryOverride)
+                contextHelp("Select platform source code zip file or directory")
+                    .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                    .comment(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
-                    .bindSelected(context.importSettings.useFakeOutputPathForCustomExtensions)
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                    .comment(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                    .bindSelected(context.platformReadOnlyMode)
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(context.importSettings.excludeTestSources)
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                    .bindSelected(context.importSettings.ignoreNonExistingSourceDirectories)
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .comment(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
-                    .bindSelected(context.importSettings.withStandardProvidedSources)
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
-                    .comment(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-                    .bindSelected(context.importSettings.withExternalLibrarySources)
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
-                    .comment(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
-                    .bindSelected(context.importSettings.withExternalLibraryJavadocs)
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                    .comment(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
-                    .bindSelected(context.importSettings.importCustomAntBuildFiles)
-            }.layout(RowLayout.PARENT_GRID)
-        }
-            .expanded = true
-
-        collapsibleGroup("Override Settings") {
-            row {
-                checkBox("Override custom directory:")
-                    .comment("If your custom directory is in bin/ext-* directory or is outside the project root directory.")
+                checkBox("Custom directory:")
                     .bindSelected(context.customDirectoryOverride)
                 cell(
                     textFieldWithBrowseButton(
@@ -235,18 +254,16 @@ object ProjectImportRootStepUiSupplier {
                     )
                 )
                     .align(AlignX.FILL)
+                    .resizableColumn()
                     .bindText(context.customDirectory)
                     .enabledIf(context.customDirectoryOverride)
+
+                contextHelp("If your custom directory is in bin/ext-* directory or is outside the project root directory.")
+                    .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                checkBox("Override config directory:")
-                    .comment(
-                        """
-                    The config directory that will be used for import.<br>
-                    This is equivalent of environment parameter HYBRIS_CONFIG_DIR.
-                    """.trimIndent()
-                    )
+                checkBox("Config directory:")
                     .bindSelected(context.configDirectoryOverride)
                 cell(
                     textFieldWithBrowseButton(
@@ -256,13 +273,21 @@ object ProjectImportRootStepUiSupplier {
                     )
                 )
                     .align(AlignX.FILL)
+                    .resizableColumn()
                     .bindText(context.configDirectory)
                     .enabledIf(context.configDirectoryOverride)
+
+                contextHelp(
+                    """
+                    The config directory that will be used for import.<br>
+                    This is equivalent of environment parameter HYBRIS_CONFIG_DIR.
+                    """.trimIndent()
+                )
+                    .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                checkBox("Override DB driver directory:")
-                    .comment("The DB driver directory that contains DB driver jar files (used to execute Integration tests from IDE).")
+                checkBox("DB driver directory:")
                     .bindSelected(context.dbDriverDirectoryOverride)
                 cell(
                     textFieldWithBrowseButton(
@@ -272,8 +297,12 @@ object ProjectImportRootStepUiSupplier {
                     )
                 )
                     .align(AlignX.FILL)
+                    .resizableColumn()
                     .bindText(context.dbDriverDirectory)
                     .enabledIf(context.dbDriverDirectoryOverride)
+
+                contextHelp("The DB driver directory that contains DB driver jar files (used to execute Integration tests from IDE).")
+                    .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
         }
             .expanded = true

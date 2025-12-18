@@ -70,7 +70,7 @@ interface HybrisProjectDescriptor {
     //    var isWithStandardProvidedSources: Boolean
 //    var isWithExternalLibrarySources: Boolean
 //    var isWithExternalLibraryJavadocs: Boolean
-    var excludedFromScanning: MutableSet<String>
+    var excludedFromScanning: Set<String>
     val excludedFromScanningDirectories: MutableSet<File>?
 
     val yModuleDescriptorsToImport: Map<String, YModuleDescriptor>

@@ -88,12 +88,9 @@ internal object LibRootsConfiguratorEx {
 
     private fun getSourceCodeRoot(moduleDescriptor: ModuleDescriptor) = moduleDescriptor.rootProjectDescriptor.sourceCodeFile
         ?.let { VfsUtil.findFileByIoFile(it, true) }
-        ?.let {
-            if (it.isDirectory) {
-                it
-            } else {
-                JarFileSystem.getInstance().getJarRootForLocalFile(it)
-            }
+        ?.let { vf ->
+            if (vf.isDirectory) vf
+            else JarFileSystem.getInstance().getJarRootForLocalFile(vf)
         }
 
     private fun addClassesToModuleLibs(
