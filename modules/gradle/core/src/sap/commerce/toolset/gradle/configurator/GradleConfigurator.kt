@@ -24,7 +24,6 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.observation.launchTracked
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +36,7 @@ import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 
 class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator, ProjectRefreshConfigurator {
 
@@ -81,8 +80,10 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         }
     }
 
-    override fun beforeRefresh(project: Project) {
-        if (!ProjectSettings.getInstance(project).removeExternalModulesOnRefresh) return
+    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+        if (!refreshContext.importContext.removeExternalModulesOnRefresh) return
+
+        val project = refreshContext.project
 
         GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
     }

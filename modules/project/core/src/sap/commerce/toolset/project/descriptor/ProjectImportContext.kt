@@ -23,6 +23,7 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.ApplicationSettings
 
 data class ProjectImportContext(
+    val removeExternalModulesOnRefresh: Boolean = false,
     val importOOTBModulesInReadOnlyMode: Boolean = false,
     val followSymlink: Boolean = false,
     val scanThroughExternalModule: Boolean = false,
@@ -36,6 +37,7 @@ data class ProjectImportContext(
 ) {
 
     fun mutable() = Mutable(
+        removeExternalModulesOnRefresh = AtomicBooleanProperty(removeExternalModulesOnRefresh),
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
         followSymlink = AtomicBooleanProperty(followSymlink),
         scanThroughExternalModule = AtomicBooleanProperty(scanThroughExternalModule),
@@ -49,6 +51,7 @@ data class ProjectImportContext(
     )
 
     data class Mutable(
+        val removeExternalModulesOnRefresh: AtomicBooleanProperty,
         val importOOTBModulesInReadOnlyMode: AtomicBooleanProperty,
         val followSymlink: AtomicBooleanProperty,
         val scanThroughExternalModule: AtomicBooleanProperty,
@@ -61,6 +64,7 @@ data class ProjectImportContext(
         val withExternalLibraryJavadocs: AtomicBooleanProperty,
     ) {
         fun immutable() = ProjectImportContext(
+            removeExternalModulesOnRefresh = removeExternalModulesOnRefresh.get(),
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
             followSymlink = followSymlink.get(),
             scanThroughExternalModule = scanThroughExternalModule.get(),
@@ -76,6 +80,7 @@ data class ProjectImportContext(
 
     companion object {
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportContext(
+            removeExternalModulesOnRefresh = projectSettings.removeExternalModulesOnRefresh,
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
             followSymlink = projectSettings.followSymlink,
             scanThroughExternalModule = projectSettings.scanThroughExternalModule,

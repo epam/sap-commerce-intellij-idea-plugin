@@ -46,7 +46,7 @@ class ProjectRefreshService(private val project: Project) {
         val provider = getHybrisProjectImportProvider() ?: return
         val compilerProjectExtension = CompilerProjectExtension.getInstance(project) ?: return
 
-        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(project) }
+        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(refreshContext) }
         if (refreshContext.removeOldProjectData) removeOldProjectData()
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {

@@ -105,40 +105,6 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                 }
             }
 
-            group(i18n("hybris.settings.project.refresh.title")) {
-                row {
-                    checkBox("Remove external modules")
-                        .comment("If checked, non SAP Commerce external modules will be removed during the project refresh.")
-                        .bindSelected(projectSettings::removeExternalModulesOnRefresh)
-                }
-                row {
-                    checkBox("Use fake output path")
-                        .comment("When enabled the ‘eclipsebin’ folder will be used as an output path for extensions.")
-                        .bindSelected(projectSettings::useFakeOutputPathForCustomExtensions)
-                }
-                row {
-                    checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                        .comment(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                        .bindSelected(projectSettings::importOotbModulesInReadOnlyMode)
-                }
-                row {
-                    checkBox(i18n("hybris.import.wizard.exclude.test.sources.label"))
-                        .bindSelected(projectSettings::excludeTestSources)
-                }
-                row {
-                    checkBox(i18n("hybris.project.import.followSymlink"))
-                        .bindSelected(projectSettings::followSymlink)
-                }
-                row {
-                    checkBox(i18n("hybris.project.import.scanExternalModules"))
-                        .bindSelected(projectSettings::scanThroughExternalModule)
-                }
-                row {
-                    checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                        .bindSelected(projectSettings::importCustomAntBuildFiles)
-                }
-            }
-
             group("Directories excluded from the project scanning", false) {
                 row {
                     comment("Specify directories related to the project root, use '/' separator for sub-directories.")

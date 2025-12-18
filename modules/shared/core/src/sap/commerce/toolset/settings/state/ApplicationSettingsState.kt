@@ -31,7 +31,6 @@ data class ApplicationSettingsState(
     @JvmField @OptionTag val defaultPlatformInReadOnly: Boolean = true,
     @JvmField @OptionTag val followSymlink: Boolean = true,
     @JvmField @OptionTag val sourceZipUsed: Boolean = true,
-    @JvmField @OptionTag val warnIfGeneratedItemsAreOutOfDate: Boolean = true,
     @JvmField @OptionTag val ignoreNonExistingSourceDirectories: Boolean = false,
     @JvmField @OptionTag val withStandardProvidedSources: Boolean = true,
     @JvmField @OptionTag val withExternalLibrarySources: Boolean = true,

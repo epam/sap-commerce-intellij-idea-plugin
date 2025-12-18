@@ -19,11 +19,11 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.project.Project
+import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 
 interface ProjectRefreshConfigurator : Configurator {
 
-    fun beforeRefresh(project: Project)
+    fun beforeRefresh(refreshContext: ProjectRefreshContext)
 
     companion object {
         val EP = ExtensionPointName.create<ProjectRefreshConfigurator>("sap.commerce.toolset.project.refreshConfigurator")

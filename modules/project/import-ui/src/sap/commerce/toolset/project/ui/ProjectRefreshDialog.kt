@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.ui
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
@@ -45,69 +44,82 @@ class ProjectRefreshDialog(
     )
 
     override fun createCenterPanel() = panel {
-        row {
-            checkBox("Remove old project data")
-                .comment("Experimental feature, .iml files will not be removed on refresh.")
-                .bindSelected(refreshContext.removeOldProjectData)
-        }.layout(RowLayout.PARENT_GRID)
+        group("Cleanup") {
+            row {
+                checkBox("Remove old project data")
+                    .comment("Experimental feature! Modules with respective .iml files will be removed on refresh.")
+                    .bindSelected(refreshContext.removeOldProjectData)
+            }
 
-        separator()
+            row {
+                checkBox("Remove external modules")
+                    .bindSelected(refreshContext.importContext.removeExternalModulesOnRefresh)
+                contextHelp("Non SAP Commerce external modules will be removed during the project refresh.")
+            }
+        }
 
-        row {
-            checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                .comment(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                .bindSelected(refreshContext.importContext.importOOTBModulesInReadOnlyMode)
-        }.layout(RowLayout.PARENT_GRID)
+        group("Re-Import") {
+            row {
+                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                    .bindSelected(refreshContext.importContext.importOOTBModulesInReadOnlyMode)
+                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
+            }
 
-        row {
-            checkBox(i18n("hybris.project.import.followSymlink"))
-                .bindSelected(refreshContext.importContext.followSymlink)
-        }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox(i18n("hybris.project.import.scanExternalModules"))
+                    .bindSelected(refreshContext.importContext.scanThroughExternalModule)
+                contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
+            }
 
-        row {
-            checkBox(i18n("hybris.project.import.scanExternalModules"))
-                .bindSelected(refreshContext.importContext.scanThroughExternalModule)
-        }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox(i18n("hybris.project.import.followSymlink"))
+                    .bindSelected(refreshContext.importContext.followSymlink)
+            }
 
-        row {
-            checkBox(i18n("hybris.project.import.excludeTestSources"))
-                .bindSelected(refreshContext.importContext.excludeTestSources)
-        }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
+                    .bindSelected(refreshContext.importContext.importCustomAntBuildFiles)
+                contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
+            }
+        }
 
-        row {
-            checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                .comment(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
-                .bindSelected(refreshContext.importContext.importCustomAntBuildFiles)
-        }.layout(RowLayout.PARENT_GRID)
+        group("Project Structure") {
+            row {
+                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
+                    .bindSelected(refreshContext.importContext.useFakeOutputPathForCustomExtensions)
+                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
+            }
 
-        row {
-            checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                .bindSelected(refreshContext.importContext.ignoreNonExistingSourceDirectories)
-        }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox(i18n("hybris.project.import.excludeTestSources"))
+                    .bindSelected(refreshContext.importContext.excludeTestSources)
+            }
 
-        row {
-            checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                .comment(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
-                .bindSelected(refreshContext.importContext.useFakeOutputPathForCustomExtensions)
-        }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
+                    .bindSelected(refreshContext.importContext.ignoreNonExistingSourceDirectories)
+            }
+        }
 
-        row {
-            checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                .comment(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
-                .bindSelected(refreshContext.importContext.withStandardProvidedSources)
-        }.layout(RowLayout.PARENT_GRID)
+        group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
+            row {
+                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
+                    .bindSelected(refreshContext.importContext.withStandardProvidedSources)
+                contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
+            }
 
-        row {
-            checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
-                .comment(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-                .bindSelected(refreshContext.importContext.withExternalLibrarySources)
-        }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
+                    .bindSelected(refreshContext.importContext.withExternalLibrarySources)
+                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
+            }
 
-        row {
-            checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
-                .comment(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
-                .bindSelected(refreshContext.importContext.withExternalLibraryJavadocs)
-        }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
+                    .bindSelected(refreshContext.importContext.withExternalLibraryJavadocs)
+                contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
+            }
+        }
     }.apply {
         this.border = JBUI.Borders.empty(8, 16)
     }

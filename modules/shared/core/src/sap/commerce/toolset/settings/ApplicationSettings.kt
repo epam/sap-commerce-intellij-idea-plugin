@@ -63,11 +63,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(sourceZipUsed = value) }
         }
-    var warnIfGeneratedItemsAreOutOfDate: Boolean
-        get() = state.warnIfGeneratedItemsAreOutOfDate
-        set(value) {
-            updateState { it.copy(warnIfGeneratedItemsAreOutOfDate = value) }
-        }
     var ignoreNonExistingSourceDirectories: Boolean
         get() = state.ignoreNonExistingSourceDirectories
         set(value) {

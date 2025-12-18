@@ -20,10 +20,14 @@ package sap.commerce.toolset.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.selected
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.equalsIgnoreOrder
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.ui.CRUDListPanel
+import javax.swing.JCheckBox
 
 class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
@@ -32,59 +36,180 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
     class SettingsConfigurable : BoundSearchableConfigurable(
         "[y] SAP Commerce", "[y] SAP CX configuration."
     ) {
-
         private val applicationSettings = ApplicationSettings.getInstance()
+        private lateinit var groupModulesCheckBox: JCheckBox
+        private lateinit var externalModulesCheckBox: JCheckBox
+
+        private val junkList = CRUDListPanel(
+            "hybris.import.settings.junk.directory.popup.add.title",
+            "hybris.import.settings.junk.directory.popup.add.text",
+            "hybris.import.settings.junk.directory.popup.edit.title",
+            "hybris.import.settings.junk.directory.popup.edit.text",
+        )
+        private val excludeResources = CRUDListPanel(
+            "hybris.import.settings.exclude.resources.popup.add.title",
+            "hybris.import.settings.exclude.resources.popup.add.text",
+            "hybris.import.settings.exclude.resources.popup.edit.title",
+            "hybris.import.settings.exclude.resources.popup.edit.text",
+        )
+        private val excludeFromIndex = CRUDListPanel(
+            "hybris.import.settings.excludedFromIndex.directory.popup.add.title",
+            "hybris.import.settings.excludedFromIndex.directory.popup.add.text",
+            "hybris.import.settings.excludedFromIndex.directory.popup.edit.title",
+            "hybris.import.settings.excludedFromIndex.directory.popup.edit.text",
+        )
 
         override fun createPanel() = panel {
-            row {
-                checkBox(i18n("hybris.import.settings.import.ootb.modules.read.only.label"))
-                    .comment(i18n("hybris.import.settings.import.ootb.modules.read.only.tooltip"))
-                    .bindSelected(applicationSettings::defaultPlatformInReadOnly)
+            group("Modules Grouping") {
+                row {
+                    groupModulesCheckBox = checkBox(i18n("hybris.import.settings.group.modules"))
+                        .bindSelected(applicationSettings::groupModules)
+                        .component
+                }
+                indent {
+                    row {
+                        icon(HybrisIcons.Extension.OOTB)
+                        textField()
+                            .label(i18n("hybris.import.settings.group.hybris"))
+                            .bindText(applicationSettings::groupHybris)
+                        textField()
+                            .label(i18n("hybris.import.settings.group.unused"))
+                            .bindText(applicationSettings::groupOtherHybris)
+                    }.layout(RowLayout.PARENT_GRID)
+                    row {
+                        icon(HybrisIcons.Extension.CUSTOM)
+                        textField()
+                            .label(i18n("hybris.import.settings.group.custom"))
+                            .bindText(applicationSettings::groupCustom)
+                        textField()
+                            .label(i18n("hybris.import.settings.group.unused"))
+                            .bindText(applicationSettings::groupOtherCustom)
+                    }.layout(RowLayout.PARENT_GRID)
+                    row {
+                        icon(HybrisIcons.Extension.PLATFORM)
+                        textField()
+                            .label(i18n("hybris.import.settings.group.platform"))
+                            .bindText(applicationSettings::groupPlatform)
+                        textField()
+                            .label(i18n("hybris.import.settings.group.nonhybris"))
+                            .bindText(applicationSettings::groupNonHybris)
+                    }.layout(RowLayout.PARENT_GRID)
+                    row {
+                        icon(HybrisIcons.Module.CCV2_GROUP)
+                        textField()
+                            .label(i18n("hybris.import.settings.group.ccv2"))
+                            .bindText(applicationSettings::groupCCv2)
+                    }.layout(RowLayout.PARENT_GRID)
+                }.visibleIf(groupModulesCheckBox.selected)
+                row {
+                    externalModulesCheckBox = checkBox("Group external modules")
+                        .bindSelected(applicationSettings::groupExternalModules)
+                        .comment(i18n("hybris.project.view.external.module.tooltip"))
+                        .component
+
+                }
+                indent {
+                    row {
+                        icon(HybrisIcons.Module.EXTERNAL_GROUP)
+                        textField()
+                            .label("External modules:")
+                            .bindText(applicationSettings::groupNameExternalModules)
+                            .addValidationRule("Name cannot be blank.") { it.text.isBlank() }
+                            .enabledIf(externalModulesCheckBox.selected)
+                    }
+                }
             }
-            row {
-                checkBox(i18n("hybris.project.import.scanExternalModules"))
-                    .bindSelected(applicationSettings::scanThroughExternalModule)
+
+            group("Project Import") {
+                row {
+                    checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                        .bindSelected(applicationSettings::defaultPlatformInReadOnly)
+                    contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
+                }
+
+                row {
+                    checkBox(i18n("hybris.project.import.scanExternalModules"))
+                        .bindSelected(applicationSettings::scanThroughExternalModule)
+                    contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
+                }
+
+                row {
+                    checkBox(i18n("hybris.project.import.followSymlink"))
+                        .bindSelected(applicationSettings::followSymlink)
+                }
+
+                row {
+                    checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
+                        .bindSelected(applicationSettings::importCustomAntBuildFiles)
+                }
             }
-            row {
-                checkBox(i18n("hybris.project.import.followSymlink"))
-                    .bindSelected(applicationSettings::followSymlink)
+
+            group("Project Structure") {
+                row {
+                    checkBox(i18n("hybris.project.import.excludeTestSources"))
+                        .bindSelected(applicationSettings::excludeTestSources)
+                }
+
+                row {
+                    checkBox(i18n("hybris.project.import.ignore.non.existing.sources"))
+                        .bindSelected(applicationSettings::ignoreNonExistingSourceDirectories)
+                }
+
+                row {
+                    checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
+                        .bindSelected(applicationSettings::hideEmptyMiddleFolders)
+                }
             }
-            row {
-                checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
-                    .bindSelected(applicationSettings::hideEmptyMiddleFolders)
+
+            group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
+                row {
+                    checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
+                        .bindSelected(applicationSettings::withStandardProvidedSources)
+                    contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
+                }
+                row {
+                    checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
+                        .bindSelected(applicationSettings::withExternalLibrarySources)
+                    contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
+                }
+                row {
+                    checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
+                        .bindSelected(applicationSettings::withExternalLibraryJavadocs)
+                    contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
+                }
             }
-            row {
-                checkBox(i18n("hybris.project.import.ignore.non.existing.sources"))
-                    .bindSelected(applicationSettings::ignoreNonExistingSourceDirectories)
+
+            group(i18n("hybris.import.settings.junk.directory.name"), false) {
+                row {
+                    cell(junkList)
+                        .align(AlignX.FILL)
+                        .onApply { applicationSettings.junkDirectoryList = junkList.data }
+                        .onReset { junkList.data = applicationSettings.junkDirectoryList }
+                        .onIsModified { junkList.data.equalsIgnoreOrder(applicationSettings.junkDirectoryList).not() }
+                }
             }
-            row {
-                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .bindSelected(applicationSettings::withStandardProvidedSources)
+
+            group(i18n("hybris.import.settings.exclude.resources.name"), false) {
+                row {
+                    comment("Use SAP Commerce extension name, not fully qualified IDEA module name.")
+                }
+                row {
+                    cell(excludeResources)
+                        .align(AlignX.FILL)
+                        .onApply { applicationSettings.extensionsResourcesToExclude = excludeResources.data }
+                        .onReset { excludeResources.data = applicationSettings.extensionsResourcesToExclude }
+                        .onIsModified { excludeResources.data.equalsIgnoreOrder(applicationSettings.extensionsResourcesToExclude).not() }
+                }
             }
-            row {
-                checkBox("Download & attach library sources")
-                    .comment("""
-                        You can enable possibility to download & attach sources for jar files within '/lib' directories registered as Libraries.
-                        By default, all source files will be downloaded to directory set via system key 'idea.library.source.dir', usually '.ideaLibSources' under user home.
-                    """.trimIndent())
-                    .bindSelected(applicationSettings::withExternalLibrarySources)
-            }
-            row {
-                checkBox("Download & attach library javadocs")
-                    .comment("Similarly to sources, it is also possible to download & attach javadocs for jar files within '/lib' directories registered as Libraries.")
-                    .bindSelected(applicationSettings::withExternalLibraryJavadocs)
-            }
-            row {
-                checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(applicationSettings::excludeTestSources)
-            }
-            row {
-                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                    .bindSelected(applicationSettings::importCustomAntBuildFiles)
-            }
-            row {
-                checkBox(i18n("hybris.ts.items.validation.settings.enabled"))
-                    .bindSelected(applicationSettings::warnIfGeneratedItemsAreOutOfDate)
+
+            group(i18n("hybris.import.settings.excludedFromIndex.directory.name"), false) {
+                row {
+                    cell(excludeFromIndex)
+                        .align(AlignX.FILL)
+                        .onApply { applicationSettings.excludedFromIndexList = excludeFromIndex.data }
+                        .onReset { excludeFromIndex.data = applicationSettings.excludedFromIndexList }
+                        .onIsModified { excludeFromIndex.data.equalsIgnoreOrder(applicationSettings.excludedFromIndexList).not() }
+                }
             }
         }
     }

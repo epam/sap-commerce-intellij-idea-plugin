@@ -45,6 +45,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
+import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -58,7 +59,8 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
     override val name: String
         get() = "Ant"
 
-    override fun beforeRefresh(project: Project) {
+    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+        val project = refreshContext.project
         val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
 
         for (antBuildFile in antConfiguration.buildFiles) {
