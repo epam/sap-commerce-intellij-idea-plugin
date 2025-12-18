@@ -19,40 +19,30 @@
 package sap.commerce.toolset.project.wizard
 
 import com.intellij.ide.util.projectWizard.WizardContext
-import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.projectImport.ProjectImportWizardStep
-import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.textFieldWithBrowseButton
-import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.layout.selected
 import com.intellij.ui.scale.JBUIScale
-import org.apache.commons.lang3.StringUtils
-import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.ProjectImportContext
+import sap.commerce.toolset.project.ProjectImportRootContext
+import sap.commerce.toolset.project.descriptor.ProjectImportSettings
 import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
+import sap.commerce.toolset.project.ui.ProjectImportRootStepUiSupplier
 import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
-import sap.commerce.toolset.ui.CRUDListPanel
 import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.nio.file.Path
 import java.util.*
-import javax.swing.JLabel
-import javax.swing.JTextField
 import javax.swing.ScrollPaneConstants
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
@@ -60,290 +50,16 @@ import kotlin.io.path.isDirectory
 
 class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardStep(context), RefreshSupport {
 
-    private val logger = Logger.getInstance(ProjectImportWizardRootStep::class.java)
-
-    private lateinit var projectNameTextField: JTextField
-    private lateinit var hybrisVersionTextField: JLabel
-    private lateinit var javadocUrlTextField: JTextField
-    private lateinit var ccv2TokenTextField: JBPasswordField
-    private lateinit var hybrisDistributionDirectoryFilesInChooser: TextFieldWithBrowseButton
-    private lateinit var sourceCodeFilesInChooser: TextFieldWithBrowseButton
-    private lateinit var storeModuleFilesInChooser: TextFieldWithBrowseButton
-    private lateinit var customProjectIconChooser: TextFieldWithBrowseButton
-    private lateinit var overrideCustomDirChooser: TextFieldWithBrowseButton
-    private lateinit var overrideConfigDirChooser: TextFieldWithBrowseButton
-    private lateinit var overrideDBDriverDirChooser: TextFieldWithBrowseButton
-    private lateinit var ignoreNonExistingSourceDirectoriesCheckBox: JBCheckBox
-    private lateinit var withStandardProvidedSourcesCheckBox: JBCheckBox
-    private lateinit var withExternalLibrarySourcesCheckBox: JBCheckBox
-    private lateinit var withExternalLibraryJavadocsCheckBox: JBCheckBox
-    private lateinit var importCustomAntBuildFilesCheckBox: JBCheckBox
-    private lateinit var importOotbModulesInReadOnlyModeCheckBox: JBCheckBox
-    private lateinit var excludeTestSourcesCheckBox: JBCheckBox
-    private lateinit var scanThroughExternalModuleCheckbox: JBCheckBox
-    private lateinit var followSymlinkCheckbox: JBCheckBox
-    private lateinit var overrideDBDriverDirCheckBox: JBCheckBox
-    private lateinit var sourceCodeCheckBox: JBCheckBox
-    private lateinit var storeModuleFilesInCheckBox: JBCheckBox
-    private lateinit var excludedFromScanningCheckBox: JBCheckBox
-    private lateinit var useFakeOutputPathForCustomExtensionsCheckbox: JBCheckBox
-
-    private val excludedFromScanningList = CRUDListPanel(
-        "hybris.import.settings.excludedFromScanning.directory.popup.add.title",
-        "hybris.import.settings.excludedFromScanning.directory.popup.add.text",
-        "hybris.import.settings.excludedFromScanning.directory.popup.edit.title",
-        "hybris.import.settings.excludedFromScanning.directory.popup.edit.text",
+    private val context = ProjectImportRootContext(
+        importSettings = ProjectImportSettings.of(ApplicationSettings.getInstance()).mutable()
     )
 
-    private var _panel = panel {
-        val applicationSettings = ApplicationSettings.getInstance()
-        row {
-            label("Project name:")
-                .bold()
-            projectNameTextField = textField()
-                .align(AlignX.FILL)
-                .component
-            label("SAP CX version:")
-                .align(AlignX.RIGHT)
-                .gap(RightGap.SMALL)
-            hybrisVersionTextField = label("")
-                .bold()
-                .component
-        }.layout(RowLayout.PARENT_GRID)
-
-        row {
-            val projectIconCheckBox = checkBox("Custom project icon:").component
-            customProjectIconChooser = cell(
-                textFieldWithBrowseButton(
-                    null,
-                    FileChooserDescriptorFactory.createSingleFileDescriptor(SvgFileType.INSTANCE)
-                        .withTitle("Select Custom Project SVG Icon.")
-                )
-            )
-                .align(AlignX.FILL)
-                .enabledIf(projectIconCheckBox.selected)
-                .component
-        }.layout(RowLayout.PARENT_GRID)
-
-        row {
-            storeModuleFilesInCheckBox = checkBox("Store IDEA module files in:")
-                .selected(true)
-                .comment("If unchecked, .iml file will be stored in the root directory of the module.")
-                .component
-            storeModuleFilesInChooser = cell(
-                textFieldWithBrowseButton(
-                    null,
-                    FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                        .withTitle(i18n("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"))
-                )
-            )
-                .enabledIf(storeModuleFilesInCheckBox.selected)
-                .align(AlignX.FILL)
-                .component
-        }.layout(RowLayout.PARENT_GRID)
-
-        collapsibleGroup("CCv2") {
-            row {}.comment(
-                """
-                    These settings are non-project specific and shared across all Projects and IntelliJ IDEA instances.<br>
-                """.trimIndent()
-            )
-
-            row {
-                label("CCv2 token:")
-                ccv2TokenTextField = passwordField()
-                    .comment(
-                        """
-                        Specify developer specific Token for CCv2 API, it will be stored in the OS specific secure storage under <strong>SAP CX CCv2 Token</strong> alias.<br>
-                        Official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html">help.sap.com - Generating API Tokens</a>.
-                    """.trimIndent()
-                    )
-                    .align(AlignX.FILL)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-        }
-            .expanded = true
-
-        collapsibleGroup("Scanning Settings") {
-            row {
-                scanThroughExternalModuleCheckbox = checkBox("Scan for SAP CX modules even in external modules")
-                    .comment("Eclipse, Gradle and Maven projects. (slower import/refresh)")
-                    .selected(applicationSettings.scanThroughExternalModule)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                followSymlinkCheckbox = checkBox("Include symbolic links for a project import")
-                    .selected(applicationSettings.followSymlink)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                excludedFromScanningCheckBox = checkBox("Directories excluded from the project scanning")
-                    .comment("Specify directories related to the project root, use '/' separator for sub-directories.")
-                    .component
-            }
-            row {
-                cell(excludedFromScanningList)
-                    .enabledIf(excludedFromScanningCheckBox.selected)
-                    .visibleIf(excludedFromScanningCheckBox.selected)
-                    .align(AlignX.FILL)
-            }
-        }
-            .expanded = true
-
-        collapsibleGroup("Import Settings") {
-            row {
-                label("SAP CX installation directory:")
-                hybrisDistributionDirectoryFilesInChooser = cell(
-                    textFieldWithBrowseButton(
-                        null,
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(i18n("hybris.import.label.select.hybris.distribution.directory"))
-                    )
-                )
-                    .align(AlignX.FILL)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                label("SAP CX javadoc url:")
-                javadocUrlTextField = textField()
-                    .align(AlignX.FILL)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                sourceCodeCheckBox = checkBox("SAP CX source code:").component
-                sourceCodeFilesInChooser = cell(
-                    textFieldWithBrowseButton(
-                        null,
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(i18n("hybris.import.label.select.hybris.src.file"))
-                    )
-                )
-                    .align(AlignX.FILL)
-                    .enabledIf(sourceCodeCheckBox.selected)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-            row {
-                useFakeOutputPathForCustomExtensionsCheckbox = checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                    .comment(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
-                    .bindSelected(applicationSettings::useFakeOutputPathForCustomExtensions)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-            row {
-                importOotbModulesInReadOnlyModeCheckBox = checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                    .comment(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                    .selected(applicationSettings.defaultPlatformInReadOnly)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                excludeTestSourcesCheckBox = checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .selected(applicationSettings.excludeTestSources)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                ignoreNonExistingSourceDirectoriesCheckBox = checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                    .selected(applicationSettings.ignoreNonExistingSourceDirectories)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                withStandardProvidedSourcesCheckBox = checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .comment(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
-                    .selected(applicationSettings.withStandardProvidedSources)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                withExternalLibrarySourcesCheckBox = checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
-                    .comment(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-                    .selected(applicationSettings.withExternalLibrarySources)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                withExternalLibraryJavadocsCheckBox = checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
-                    .comment(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
-                    .selected(applicationSettings.withExternalLibraryJavadocs)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                importCustomAntBuildFilesCheckBox = checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                    .comment(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
-                    .selected(applicationSettings.importCustomAntBuildFiles)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-        }
-            .expanded = true
-
-        collapsibleGroup("Override Settings") {
-            row {
-                val overrideCustomDirCheckBox = checkBox("Override custom directory:")
-                    .comment("If your custom directory is in bin/ext-* directory or is outside the project root directory.")
-                    .component
-                overrideCustomDirChooser = cell(
-                    textFieldWithBrowseButton(
-                        null,
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(i18n("hybris.import.label.select.custom.extensions.directory"))
-                    )
-                )
-                    .align(AlignX.FILL)
-                    .enabledIf(overrideCustomDirCheckBox.selected)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                val overrideConfigDirCheckBox = checkBox("Override config directory:")
-                    .comment(
-                        """
-                    The config directory that will be used for import.<br>
-                    This is equivalent of environment parameter HYBRIS_CONFIG_DIR.
-                    """.trimIndent()
-                    )
-                    .component
-                overrideConfigDirChooser = cell(
-                    textFieldWithBrowseButton(
-                        null,
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(i18n("hybris.import.label.select.config.extensions.directory"))
-                    )
-                )
-                    .align(AlignX.FILL)
-                    .enabledIf(overrideConfigDirCheckBox.selected)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                overrideDBDriverDirCheckBox = checkBox("Override DB driver directory:")
-                    .comment("The DB driver directory that contains DB driver jar files (used to execute Integration tests from IDE).")
-                    .component
-                overrideDBDriverDirChooser = cell(
-                    textFieldWithBrowseButton(
-                        null,
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(i18n("hybris.import.label.select.dbdriver.extensions.directory"))
-                    )
-                )
-                    .align(AlignX.FILL)
-                    .enabledIf(overrideDBDriverDirCheckBox.selected)
-                    .component
-            }.layout(RowLayout.PARENT_GRID)
-        }
-            .expanded = true
-    }
-
-    override fun getComponent() = with(JBScrollPane(_panel)) {
+    override fun getComponent() = with(JBScrollPane(ProjectImportRootStepUiSupplier.ui(context))) {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
 
-        CCv2ProjectSettings.getInstance().loadDefaultCCv2Token {
-            ccv2TokenTextField.text = it
+        CCv2ProjectSettings.getInstance().loadDefaultCCv2Token { ccv2Token ->
+            if (ccv2Token != null) context.ccv2Token.set(ccv2Token)
         }
 
         this
@@ -351,53 +67,38 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
     override fun updateDataModel() {
         val importBuilder = importBuilder()
-        val projectImportContext = ProjectImportContext(
-            ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectoriesCheckBox.isSelected,
-            importOOTBModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected,
-            followSymlink = followSymlinkCheckbox.isSelected,
-            excludeTestSources = excludeTestSourcesCheckBox.isSelected,
-            importCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected,
-            scanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected,
-            useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected,
-            withStandardProvidedSources = withStandardProvidedSourcesCheckBox.isSelected,
-            withExternalLibrarySources = withExternalLibrarySourcesCheckBox.isSelected,
-            withExternalLibraryJavadocs = withExternalLibraryJavadocsCheckBox.isSelected,
-        )
-        val hybrisProjectDescriptor = importBuilder.createHybrisProjectDescriptor(projectImportContext)
+        val importContext = context.importSettings.immutable()
+        val hybrisProjectDescriptor = importBuilder.createHybrisProjectDescriptor(importContext)
 
-        wizardContext.projectName = projectNameTextField.text
+        wizardContext.projectName = context.projectName.get()
 
         with(hybrisProjectDescriptor) {
-            this.hybrisVersion = hybrisVersionTextField.text
-            this.hybrisDistributionDirectory = FileUtils.toFile(hybrisDistributionDirectoryFilesInChooser.text)
+            this.hybrisVersion = context.platformVersion.get()
+            this.hybrisDistributionDirectory = FileUtils.toFile(context.platformDirectory.get())
+            this.javadocUrl = context.javadocUrl.get()
+            this.excludedFromScanning = context.excludedFromScanningDirectories.get().toMutableSet()
 
-            this.javadocUrl = javadocUrlTextField.text
+            this.externalExtensionsDirectory = context.customDirectory.takeIf { context.customDirectoryOverride.get() }
+                ?.let { FileUtils.toFile(it.get()) }
+            this.externalConfigDirectory = context.configDirectory.takeIf { context.customDirectoryOverride.get() }
+                ?.let { FileUtils.toFile(it.get()) }
+            this.externalDbDriversDirectory = context.dbDriverDirectory.takeIf { context.dbDriverDirectoryOverride.get() }
+                ?.let { FileUtils.toFile(it.get()) }
+            this.projectIconFile = context.projectIconFile.takeIf { context.projectIcon.get() }
+                ?.let { FileUtils.toFile(it.get()) }
+            this.modulesFilesDirectory = context.moduleFilesStorageDirectory.takeIf { context.moduleFilesStorage.get() }
+                ?.let { FileUtils.toFile(it.get()) }
 
-            this.excludedFromScanning = excludedFromScanningList.data.toMutableSet()
-
-            this.externalExtensionsDirectory = overrideCustomDirChooser.takeIf { it.isEnabled }
-                ?.let { FileUtils.toFile(it.text) }
-            this.externalConfigDirectory = overrideConfigDirChooser.takeIf { it.isEnabled }
-                ?.let { FileUtils.toFile(it.text) }
-            this.externalDbDriversDirectory = overrideDBDriverDirChooser.takeIf { it.isEnabled }
-                ?.let { FileUtils.toFile(it.text) }
-            this.sourceCodeFile = sourceCodeFilesInChooser.takeIf { it.isEnabled }
-                ?.let { File(it.text) }
-                ?.takeIf { it.exists() }
+            this.sourceCodeFile = context.sourceCodeDirectory.takeIf { context.sourceCodeDirectoryOverride.get() }
+                ?.let { FileUtils.toFile(it.get()) }
                 ?.let {
-                    return@let if (it.isDirectory && it.absolutePath == File(hybrisDistributionDirectoryFilesInChooser.text).absolutePath) null
+                    return@let if (it.isDirectory && it.absolutePath == hybrisDistributionDirectory?.absolutePath) null
                     else it
                 }
-            this.projectIconFile = customProjectIconChooser.takeIf { it.isEnabled }
-                ?.let { File(it.text) }
-                ?.takeIf { it.exists() && it.isFile }
-            storeModuleFilesInChooser
-                .takeIf { it.isEnabled }
-                ?.let { this.modulesFilesDirectory = FileUtils.toFile(storeModuleFilesInChooser.text) }
 
-            this.ccv2Token = String(ccv2TokenTextField.password)
+            this.ccv2Token = context.ccv2Token.get()
 
-            logger.info("importing a project with the following settings: $this")
+            thisLogger().info("importing a project with the following settings: $this")
         }
 
         FileUtils.toFile(importBuilder.fileToImport)
@@ -406,56 +107,58 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
     override fun updateStep() {
         val applicationSettings = ApplicationSettings.getInstance()
-        storeModuleFilesInChooser.text = Path(builder.fileToImport)
-            .resolve(ProjectConstants.Directory.PATH_IDEA_MODULES)
-            .absolutePathString()
 
-        projectNameTextField.text = wizardContext.projectName
+        context.moduleFilesStorageDirectory.set(
+            Path(builder.fileToImport)
+                .resolve(ProjectConstants.Directory.PATH_IDEA_MODULES)
+                .absolutePathString()
+        )
+        context.projectName.set(wizardContext.projectName)
 
-        if (hybrisDistributionDirectoryFilesInChooser.text.isBlank()) {
+        if (context.platformDirectory.get().isBlank()) {
             val task = SearchHybrisDistributionDirectoryTaskModalWindow(File(builder.fileToImport)) {
-                hybrisDistributionDirectoryFilesInChooser.text = it
+                context.platformDirectory.set(it)
 
-                if (sourceCodeFilesInChooser.text.isBlank()) {
-                    sourceCodeFilesInChooser.text = hybrisDistributionDirectoryFilesInChooser.text
+                if (context.sourceCodeDirectory.get().isBlank()) {
+                    context.sourceCodeDirectory.set(it)
                 }
             }
             ProgressManager.getInstance().run(task)
         }
 
-        if (hybrisDistributionDirectoryFilesInChooser.text.isNotBlank()) {
-            val platformPath = Path(hybrisDistributionDirectoryFilesInChooser.text)
+        if (context.platformDirectory.get().isNotBlank()) {
+            val platformPath = Path(context.platformDirectory.get())
 
-            if (overrideCustomDirChooser.getText().isBlank()) {
-                overrideCustomDirChooser.text = platformPath
-                    .resolve(ProjectConstants.Directory.PATH_BIN_CUSTOM)
-                    .absolutePathString()
+            if (context.customDirectory.get().isBlank()) {
+                context.customDirectory.set(
+                    platformPath
+                        .resolve(ProjectConstants.Directory.PATH_BIN_CUSTOM)
+                        .absolutePathString()
+                )
             }
 
-            if (StringUtils.isBlank(overrideConfigDirChooser.getText())) {
-                overrideConfigDirChooser.text = platformPath
-                    .resolve(ProjectConstants.Extension.CONFIG)
-                    .absolutePathString()
+            if (context.configDirectory.get().isBlank()) {
+                context.configDirectory.set(
+                    platformPath
+                        .resolve(ProjectConstants.Extension.CONFIG)
+                        .absolutePathString()
+                )
             }
 
-            if (overrideDBDriverDirChooser.getText().isBlank()) {
+            if (context.dbDriverDirectory.get().isBlank()) {
                 val dbDriversDirAbsolutePath = applicationSettings.externalDbDriversDirectory
                     ?.let { Path(it) }
                     ?.takeIf { it.isDirectory() }
-                    ?.also {
-                        if (!overrideDBDriverDirCheckBox.isSelected) {
-                            overrideDBDriverDirCheckBox.doClick()
-                        }
-                    }
+                    ?.also { context.dbDriverDirectoryOverride.set(true) }
                     ?: platformPath
                         .resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM)
                         .resolve(ProjectConstants.Directory.PATH_LIB_DB_DRIVER)
 
-                overrideDBDriverDirChooser.text = dbDriversDirAbsolutePath.absolutePathString()
+                context.dbDriverDirectory.set(dbDriversDirAbsolutePath.absolutePathString())
             }
 
             val hybrisVersion = getHybrisVersion(platformPath, false)
-            hybrisVersionTextField.text = hybrisVersion
+                ?.also { context.platformVersion.set(it) }
 
             val sourceCodeDirectory = applicationSettings.sourceCodeDirectory
             val sourceFile = when {
@@ -465,21 +168,18 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }
 
             if (sourceFile != null) {
-                if (!sourceCodeCheckBox.isSelected) {
-                    sourceCodeCheckBox.doClick()
-                }
-                sourceCodeFilesInChooser.text = sourceFile.path
+                context.sourceCodeDirectoryOverride.set(true)
+                context.sourceCodeDirectory.set(sourceFile.path)
             }
 
             val hybrisApiVersion = getHybrisVersion(platformPath, true)
-            val defaultJavadocUrl = getDefaultJavadocUrl(hybrisApiVersion)
-            if (defaultJavadocUrl.isNotBlank()) {
-                javadocUrlTextField.text = defaultJavadocUrl
-            }
+            getPlatformJavadocUrl(hybrisApiVersion)
+                .takeIf { it.isNotBlank() }
+                ?.let { context.javadocUrl.set(it) }
         }
 
-        if (sourceCodeFilesInChooser.text.isBlank()) {
-            sourceCodeFilesInChooser.text = hybrisDistributionDirectoryFilesInChooser.text
+        if (context.sourceCodeDirectory.get().isBlank()) {
+            context.sourceCodeDirectory.set(context.platformDirectory.get())
         }
     }
 
@@ -494,7 +194,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.hybrisVersion = getHybrisVersion(platformPath, false)
                 ?: projectSettings.hybrisVersion
             this.javadocUrl = getHybrisVersion(platformPath, true)
-                ?.let { getDefaultJavadocUrl(it) }
+                ?.let { getPlatformJavadocUrl(it) }
                 ?.takeIf { it.isNotBlank() }
                 ?: projectSettings.javadocUrl
             this.sourceCodeFile = FileUtils.toFile(projectSettings.sourceCodeFile, true)
@@ -532,7 +232,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 ProgressManager.getInstance().run(task)
             }
 
-            logger.info("Refreshing a project with the following settings: $this")
+            thisLogger().info("Refreshing a project with the following settings: $this")
         }
     }
 
@@ -541,29 +241,25 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             return false
         }
 
-        if (customProjectIconChooser.isEnabled && !File(customProjectIconChooser.getText()).isFile()) {
-            throw ConfigurationException("Custom project icon should point to an existing SVG file.")
-        }
+        context.projectIconFile.takeIf { context.projectIcon.get() }
+            ?.takeUnless { FileUtils.toFile(it.get())?.isFile ?: false }
+            ?.let { throw ConfigurationException("Custom project icon should point to an existing SVG file.") }
 
-        if (overrideCustomDirChooser.isEnabled && !File(overrideCustomDirChooser.getText()).isDirectory()) {
-            throw ConfigurationException(i18n("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"))
-        }
+        context.customDirectory.takeIf { context.customDirectoryOverride.get() }
+            ?.takeUnless { FileUtils.toFile(it.get())?.isDirectory ?: false }
+            ?.let { throw ConfigurationException(i18n("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist")) }
 
-        if (overrideConfigDirChooser.isEnabled && !File(overrideConfigDirChooser.getText()).isDirectory()) {
-            throw ConfigurationException(i18n("hybris.import.wizard.validation.config.directory.does.not.exist"))
-        }
+        context.configDirectory.takeIf { context.configDirectoryOverride.get() }
+            ?.takeUnless { FileUtils.toFile(it.get())?.isDirectory ?: false }
+            ?.let { throw ConfigurationException(i18n("hybris.import.wizard.validation.config.directory.does.not.exist")) }
 
-        if (overrideDBDriverDirChooser.isEnabled && !File(overrideDBDriverDirChooser.getText()).isDirectory()) {
-            throw ConfigurationException(i18n("hybris.import.wizard.validation.dbdriver.directory.does.not.exist"))
-        }
+        context.dbDriverDirectory.takeIf { context.dbDriverDirectoryOverride.get() }
+            ?.takeUnless { FileUtils.toFile(it.get())?.isDirectory ?: false }
+            ?.let { throw ConfigurationException(i18n("hybris.import.wizard.validation.dbdriver.directory.does.not.exist")) }
 
-        if (hybrisDistributionDirectoryFilesInChooser.text.isBlank()) {
-            throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.empty"))
-        }
-
-        if (!File(hybrisDistributionDirectoryFilesInChooser.text).isDirectory) {
-            throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"))
-        }
+        val platformDirectory = context.platformDirectory.get()
+        if (platformDirectory.isBlank()) throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.empty"))
+        if (!Path(platformDirectory).isDirectory()) throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"))
 
         return true
     }
@@ -602,11 +298,11 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             ?.takeIf { it.isNotEmpty() }
             ?: return null
 
-        return if (sourceZipList.size > 1) sourceZipList.maxByOrNull { getPatch(it, hybrisApiVersion) }
+        return if (sourceZipList.size > 1) sourceZipList.maxByOrNull { getPatchVersion(it, hybrisApiVersion) }
         else sourceZipList[0]
     }
 
-    private fun getPatch(sourceZip: File, hybrisApiVersion: String): Int {
+    private fun getPatchVersion(sourceZip: File, hybrisApiVersion: String): Int {
         val name = sourceZip.name
         val index = name.indexOf(hybrisApiVersion)
         val firstDigit = name[index + hybrisApiVersion.length + 1]
@@ -616,7 +312,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         else Character.getNumericValue(firstDigit)
     }
 
-    private fun getDefaultJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, hybrisApiVersion)
+    private fun getPlatformJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, hybrisApiVersion)
     else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
     private fun importBuilder() = builder as DefaultHybrisProjectImportBuilder

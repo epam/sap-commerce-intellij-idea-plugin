@@ -86,8 +86,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private final Set<String> excludedFromScanning = new HashSet<>();
     @Nullable
     protected Project project;
-    private Boolean refresh;
-    private Boolean openProjectSettingsAfterImport;
+    private boolean refresh;
+    private boolean openProjectSettingsAfterImport;
     @Nullable
     protected File rootDirectory;
     @Nullable
@@ -111,7 +111,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected String javadocUrl;
     @Nullable
     protected String hybrisVersion;
-    private final ProjectImportContext importContext;
+    private final ProjectImportSettings importContext;
 
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
@@ -120,7 +120,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     private ModuleDescriptor kotlinNatureModuleDescriptor;
 
-    public DefaultHybrisProjectDescriptor(final @NotNull ProjectImportContext importContext) {
+    public DefaultHybrisProjectDescriptor(final @NotNull ProjectImportSettings importContext) {
         this.importContext = importContext;
     }
 
@@ -1119,7 +1119,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public @NotNull ProjectImportContext getImportContext() {
+    public @NotNull ProjectImportSettings getImportContext() {
         return importContext;
     }
 

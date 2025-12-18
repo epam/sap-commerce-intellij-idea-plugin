@@ -70,6 +70,7 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
             ImportModuleAction.doImport(null) {
                 val wizard = ImportModuleAction.createImportWizard(null, null, virtualFile, *providers)
                     ?.apply {
+                        // TODO: also support "ESC"
                         cancelButton.addActionListener {
                             WelcomeFrame.showIfNoProjectOpened()
                         }

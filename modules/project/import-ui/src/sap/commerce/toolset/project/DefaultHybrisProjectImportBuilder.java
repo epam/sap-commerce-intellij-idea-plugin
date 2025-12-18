@@ -98,7 +98,7 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
     }
 
     @NotNull
-    public HybrisProjectDescriptor createHybrisProjectDescriptor(final @NotNull ProjectImportContext importContext) {
+    public HybrisProjectDescriptor createHybrisProjectDescriptor(final @NotNull ProjectImportSettings importContext) {
         try {
             this.lock.lock();
 

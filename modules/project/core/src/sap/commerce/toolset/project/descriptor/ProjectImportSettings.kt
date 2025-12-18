@@ -22,7 +22,7 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.ApplicationSettings
 
-data class ProjectImportContext(
+data class ProjectImportSettings(
     val importOOTBModulesInReadOnlyMode: Boolean,
     val followSymlink: Boolean,
     val scanThroughExternalModule: Boolean,
@@ -60,7 +60,7 @@ data class ProjectImportContext(
         val withExternalLibrarySources: AtomicBooleanProperty,
         val withExternalLibraryJavadocs: AtomicBooleanProperty,
     ) {
-        fun immutable() = ProjectImportContext(
+        fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
             followSymlink = followSymlink.get(),
             scanThroughExternalModule = scanThroughExternalModule.get(),
@@ -75,7 +75,21 @@ data class ProjectImportContext(
     }
 
     companion object {
-        fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportContext(
+        fun of(applicationSettings: ApplicationSettings) = ProjectImportSettings(
+            importOOTBModulesInReadOnlyMode = applicationSettings.defaultPlatformInReadOnly,
+            followSymlink = applicationSettings.followSymlink,
+            scanThroughExternalModule = applicationSettings.scanThroughExternalModule,
+            excludeTestSources = applicationSettings.excludeTestSources,
+            importCustomAntBuildFiles = applicationSettings.importCustomAntBuildFiles,
+            ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
+            useFakeOutputPathForCustomExtensions = applicationSettings.useFakeOutputPathForCustomExtensions,
+
+            withStandardProvidedSources = applicationSettings.withStandardProvidedSources,
+            withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
+            withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
+        )
+
+        fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
             followSymlink = projectSettings.followSymlink,
             scanThroughExternalModule = projectSettings.scanThroughExternalModule,

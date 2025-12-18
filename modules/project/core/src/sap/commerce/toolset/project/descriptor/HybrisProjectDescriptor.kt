@@ -33,7 +33,7 @@ interface HybrisProjectDescriptor {
     )
     fun initMandatoryModules(moduleDescriptors: Collection<ModuleDescriptor>)
 
-    val importContext: ProjectImportContext
+    val importContext: ProjectImportSettings
     var project: Project?
     var refresh: Boolean
     val foundModules: MutableList<ModuleDescriptor>

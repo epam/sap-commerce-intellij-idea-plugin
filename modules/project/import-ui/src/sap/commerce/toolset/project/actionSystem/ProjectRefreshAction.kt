@@ -27,7 +27,7 @@ import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.path
-import sap.commerce.toolset.project.descriptor.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ProjectImportSettings
 import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 import sap.commerce.toolset.project.refresh.ProjectRefreshService
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -51,7 +51,7 @@ class ProjectRefreshAction : DumbAwareAction(
             project = project,
             projectPath = projectPath,
             projectSettings = projectSettings,
-            importContext = ProjectImportContext.of(applicationSettings, projectSettings),
+            importContext = ProjectImportSettings.of(applicationSettings, projectSettings),
             removeOldProjectData = projectSettings.removeOldProjectData,
             removeExternalModules = projectSettings.removeExternalModulesOnRefresh,
         )

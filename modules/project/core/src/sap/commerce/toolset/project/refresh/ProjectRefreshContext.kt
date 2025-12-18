@@ -20,7 +20,7 @@ package sap.commerce.toolset.project.refresh
 
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.descriptor.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ProjectImportSettings
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.nio.file.Path
 
@@ -28,7 +28,7 @@ data class ProjectRefreshContext(
     val project: Project,
     val projectPath: Path,
     val projectSettings: ProjectSettings,
-    val importContext: ProjectImportContext,
+    val importContext: ProjectImportSettings,
     val removeOldProjectData: Boolean,
     val removeExternalModules: Boolean,
 ) {
@@ -45,7 +45,7 @@ data class ProjectRefreshContext(
         val project: Project,
         val projectPath: Path,
         val projectSettings: ProjectSettings,
-        val importContext: ProjectImportContext.Mutable,
+        val importContext: ProjectImportSettings.Mutable,
         val removeOldProjectData: AtomicBooleanProperty,
         val removeExternalModules: AtomicBooleanProperty,
     ) {
