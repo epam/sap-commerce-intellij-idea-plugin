@@ -100,10 +100,11 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .bindSelected(projectSettings::generateCodeOnJUnitRunConfiguration)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)
                 }
-                row("Code generation timeout (in seconds):") {
+                row("Code generation timeout:") {
                     spinner(1..10000, 1)
                         .bindIntValue(projectSettings::generateCodeTimeoutSeconds)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)
+                        .commentRight("(seconds)")
                 }
             }
 

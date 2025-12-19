@@ -58,12 +58,13 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
         row {
             textField()
                 .align(AlignX.FILL)
-                .label("Timeout (ms):")
+                .label("Timeout:")
                 .validationOnInput {
                     if (it.text.toIntOrNull() == null) error(UIBundle.message("please.enter.a.number.from.0.to.1", 1, Int.MAX_VALUE))
                     else null
                 }
                 .focused()
+                .commentRight("(ms)")
                 .bindIntText(settings::timeout)
         }.layout(RowLayout.PARENT_GRID)
     }
