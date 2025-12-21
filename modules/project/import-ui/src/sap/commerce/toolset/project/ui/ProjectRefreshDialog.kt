@@ -109,12 +109,12 @@ class ProjectRefreshDialog(
             }
 
             row {
+                label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
+
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
                     .bindSelected(refreshContext.importContext.withExternalLibrarySources)
                 contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-            }
 
-            row {
                 checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                     .bindSelected(refreshContext.importContext.withExternalLibraryJavadocs)
                 contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))

@@ -16,9 +16,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <idea-plugin>
-    <dependencies>
-        <plugin id="com.intellij.cron"/>
-    </dependencies>
+    <depends>com.intellij.cron</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <languageInjector implementation="sap.commerce.toolset.cron.codeInsight.injection.CronExpLanguageInjector" />

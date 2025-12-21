@@ -136,19 +136,33 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                 .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
-        collapsibleGroup("Scanning Settings") {
+        group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
                 checkBox(i18n("hybris.project.import.scanExternalModules"))
                     .bindSelected(context.settings.scanThroughExternalModule)
                 contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
                     .customize(rightGaps)
-            }.layout(RowLayout.PARENT_GRID)
+            }
 
             row {
                 checkBox(i18n("hybris.project.import.followSymlink"))
                     .bindSelected(context.settings.followSymlink)
                     .component
-            }.layout(RowLayout.PARENT_GRID)
+            }
+
+            row {
+                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                    .bindSelected(context.settings.importOOTBModulesInReadOnlyMode)
+                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
+                    .bindSelected(context.settings.importCustomAntBuildFiles)
+                contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
+                    .customize(rightGaps)
+            }
 
             row {
                 checkBox(i18n("hybris.project.import.isExcludedFromScanning"))
@@ -156,6 +170,7 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                 contextHelp(i18n("hybris.project.import.isExcludedFromScanning.tooltip"))
                     .customize(rightGaps)
             }
+
             row {
                 cell(excludedFromScanningList)
                     .bind(
@@ -167,20 +182,11 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                     .align(AlignX.FILL)
             }
         }
-            .expanded = true
-
-        collapsibleGroup("Import Settings") {
+        group(i18n("hybris.project.import.projectStructure.title")) {
             row {
                 checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
                     .bindSelected(context.settings.useFakeOutputPathForCustomExtensions)
                 contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                    .bindSelected(context.settings.importOOTBModulesInReadOnlyMode)
-                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
                     .customize(rightGaps)
             }
 
@@ -195,6 +201,13 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
             }
 
             row {
+                checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
+                    .bindSelected(context.settings.hideEmptyMiddleFolders)
+            }
+        }
+
+        group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
+            row {
                 checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
                     .bindSelected(context.settings.withStandardProvidedSources)
                 contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
@@ -202,29 +215,21 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
             }
 
             row {
+                label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
+
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
                     .bindSelected(context.settings.withExternalLibrarySources)
                 contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
                     .customize(rightGaps)
-            }
 
-            row {
                 checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                     .bindSelected(context.settings.withExternalLibraryJavadocs)
                 contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
                     .customize(rightGaps)
             }
-
-            row {
-                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                    .bindSelected(context.settings.importCustomAntBuildFiles)
-                contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
-                    .customize(rightGaps)
-            }
         }
-            .expanded = true
 
-        collapsibleGroup("Override") {
+        group("Override") {
             row {
                 checkBox("Platform source code:")
                     .bindSelected(context.sourceCodeDirectoryOverride)
@@ -305,6 +310,5 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                     .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
         }
-            .expanded = true
     }
 }

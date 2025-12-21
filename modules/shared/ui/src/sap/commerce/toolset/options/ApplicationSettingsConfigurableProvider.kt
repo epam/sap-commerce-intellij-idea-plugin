@@ -121,13 +121,7 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
             }
 
-            group("Project Import") {
-                row {
-                    checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                        .bindSelected(applicationSettings::defaultPlatformInReadOnly)
-                    contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                }
-
+            group(i18n("hybris.project.import.projectImportSettings.title")) {
                 row {
                     checkBox(i18n("hybris.project.import.scanExternalModules"))
                         .bindSelected(applicationSettings::scanThroughExternalModule)
@@ -140,13 +134,19 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
 
                 row {
+                    checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                        .bindSelected(applicationSettings::defaultPlatformInReadOnly)
+                    contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
+                }
+
+                row {
                     checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
                         .bindSelected(applicationSettings::importCustomAntBuildFiles)
                     contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
                 }
             }
 
-            group("Project Structure") {
+            group(i18n("hybris.project.import.projectStructure.title")) {
                 row {
                     checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
                         .bindSelected(applicationSettings::useFakeOutputPathForCustomExtensions)
@@ -177,12 +177,12 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
 
                 row {
+                    label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
+
                     checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
                         .bindSelected(applicationSettings::withExternalLibrarySources)
                     contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-                }
 
-                row {
                     checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                         .bindSelected(applicationSettings::withExternalLibraryJavadocs)
                     contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
