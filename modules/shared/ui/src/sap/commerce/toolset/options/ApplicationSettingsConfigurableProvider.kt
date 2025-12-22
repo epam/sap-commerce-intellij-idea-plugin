@@ -75,6 +75,11 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                     .bindSelected(applicationSettings::withExternalLibraryJavadocs)
             }
             row {
+                checkBox("Decompile OOTB bin jars to doc/decompiledsrc when sources are missing")
+                    .comment("Runs after first import with consent; uses IntelliJ decompiler to populate doc/decompiledsrc for OOTB modules lacking sources.")
+                    .bindSelected(applicationSettings::withDecompiledOotbSources)
+            }
+            row {
                 checkBox(i18n("hybris.project.import.excludeTestSources"))
                     .bindSelected(applicationSettings::excludeTestSources)
             }

@@ -226,6 +226,7 @@ dependencies {
         bundledPlugins(
             "intellij.grid.plugin",
             "com.intellij.java",
+            "org.jetbrains.java.decompiler",
             "com.intellij.java-i18n",
             "com.intellij.copyright",
             "com.intellij.database",

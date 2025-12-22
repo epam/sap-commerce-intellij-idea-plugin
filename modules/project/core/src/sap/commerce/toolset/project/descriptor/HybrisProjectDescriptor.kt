@@ -63,6 +63,7 @@ interface HybrisProjectDescriptor {
     var isWithStandardProvidedSources: Boolean
     var isWithExternalLibrarySources: Boolean
     var isWithExternalLibraryJavadocs: Boolean
+    var isWithDecompiledOotbSources: Boolean
     var excludedFromScanning: MutableSet<String>
     val excludedFromScanningDirectories: MutableSet<File>?
 

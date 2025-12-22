@@ -93,6 +93,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         applicationSettings.withStandardProvidedSources = hybrisProjectDescriptor.isWithStandardProvidedSources
         applicationSettings.withExternalLibrarySources = hybrisProjectDescriptor.isWithExternalLibrarySources
         applicationSettings.withExternalLibraryJavadocs = hybrisProjectDescriptor.isWithExternalLibraryJavadocs
+        applicationSettings.withDecompiledOotbSources = hybrisProjectDescriptor.isWithDecompiledOotbSources
 
         projectSettings.importOotbModulesInReadOnlyMode = hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode
         projectSettings.externalExtensionsDirectory = hybrisProjectDescriptor.externalExtensionsDirectory?.directorySystemIndependentName
