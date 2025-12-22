@@ -26,7 +26,6 @@ import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
-import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 import java.io.File
 
@@ -50,6 +49,41 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
             saveCustomDirectoryLocation(hybrisProjectDescriptor)
             projectSettings.excludedFromScanning = hybrisProjectDescriptor.excludedFromScanning
         }
+    }
+
+    private fun applySettings(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+        val projectSettings = hybrisProjectDescriptor.project?.ySettings ?: return
+        val importSettings = hybrisProjectDescriptor.importContext
+
+        with(projectSettings) {
+            this.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
+            this.followSymlink = importSettings.followSymlink
+            this.scanThroughExternalModule = importSettings.scanThroughExternalModule
+            this.excludeTestSources = importSettings.excludeTestSources
+            this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
+            this.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
+        }
+
+        projectSettings.externalExtensionsDirectory = hybrisProjectDescriptor.externalExtensionsDirectory?.directorySystemIndependentName
+        projectSettings.externalConfigDirectory = hybrisProjectDescriptor.externalConfigDirectory?.directorySystemIndependentName
+        projectSettings.ideModulesFilesDirectory = hybrisProjectDescriptor.modulesFilesDirectory?.directorySystemIndependentName
+        projectSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
+        projectSettings.configDirectory = hybrisProjectDescriptor.configHybrisModuleDescriptor?.moduleRootDirectory?.directorySystemIndependentName
+
+        projectSettings.modulesOnBlackList = createModulesOnBlackList(hybrisProjectDescriptor)
+        projectSettings.hybrisVersion = hybrisProjectDescriptor.hybrisVersion
+        projectSettings.javadocUrl = hybrisProjectDescriptor.javadocUrl
+
+        projectSettings.sourceCodeFile = hybrisProjectDescriptor.sourceCodeFile
+            ?.takeIf { it.exists() }
+            ?.fileSystemIndependentName
+        projectSettings.availableExtensions = hybrisProjectDescriptor.foundModules
+            .asSequence()
+            .filterNot { it is YSubModuleDescriptor }
+            .filterIsInstance<YModuleDescriptor>()
+            .toSet()
+            .map { it.extensionDescriptor() }
+            .associateBy { it.name }
     }
 
     private fun saveCustomDirectoryLocation(hybrisProjectDescriptor: HybrisProjectDescriptor) {
@@ -83,58 +117,6 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
             .takeIf { it.exists() }
             ?.takeIf { it.isFile }
             ?.let { FileUtil.toSystemIndependentName(it.path) }
-
-    private fun applySettings(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val projectSettings = hybrisProjectDescriptor.project?.ySettings ?: return
-        val applicationSettings = ApplicationSettings.getInstance()
-
-        val importSettings = hybrisProjectDescriptor.importContext
-
-        applicationSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
-
-        with(applicationSettings) {
-            this.defaultPlatformInReadOnly = importSettings.importOOTBModulesInReadOnlyMode
-            this.followSymlink = importSettings.followSymlink
-            this.scanThroughExternalModule = importSettings.scanThroughExternalModule
-            this.excludeTestSources = importSettings.excludeTestSources
-            this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
-            this.ignoreNonExistingSourceDirectories = importSettings.ignoreNonExistingSourceDirectories
-            this.hideEmptyMiddleFolders = importSettings.hideEmptyMiddleFolders
-            this.withStandardProvidedSources = importSettings.withStandardProvidedSources
-            this.withExternalLibrarySources = importSettings.withExternalLibrarySources
-            this.withExternalLibraryJavadocs = importSettings.withExternalLibraryJavadocs
-        }
-
-        with(projectSettings) {
-            this.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
-            this.followSymlink = importSettings.followSymlink
-            this.scanThroughExternalModule = importSettings.scanThroughExternalModule
-            this.excludeTestSources = importSettings.excludeTestSources
-            this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
-            this.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
-        }
-
-        projectSettings.externalExtensionsDirectory = hybrisProjectDescriptor.externalExtensionsDirectory?.directorySystemIndependentName
-        projectSettings.externalConfigDirectory = hybrisProjectDescriptor.externalConfigDirectory?.directorySystemIndependentName
-        projectSettings.ideModulesFilesDirectory = hybrisProjectDescriptor.modulesFilesDirectory?.directorySystemIndependentName
-        projectSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
-        projectSettings.configDirectory = hybrisProjectDescriptor.configHybrisModuleDescriptor?.moduleRootDirectory?.directorySystemIndependentName
-
-        projectSettings.modulesOnBlackList = createModulesOnBlackList(hybrisProjectDescriptor)
-        projectSettings.hybrisVersion = hybrisProjectDescriptor.hybrisVersion
-        projectSettings.javadocUrl = hybrisProjectDescriptor.javadocUrl
-
-        projectSettings.sourceCodeFile = hybrisProjectDescriptor.sourceCodeFile
-            ?.takeIf { it.exists() }
-            ?.fileSystemIndependentName
-        projectSettings.availableExtensions = hybrisProjectDescriptor.foundModules
-            .asSequence()
-            .filterNot { it is YSubModuleDescriptor }
-            .filterIsInstance<YModuleDescriptor>()
-            .toSet()
-            .map { it.extensionDescriptor() }
-            .associateBy { it.name }
-    }
 
     private fun createModulesOnBlackList(hybrisProjectDescriptor: HybrisProjectDescriptor): Set<String> {
         val chosenModuleDescriptors = hybrisProjectDescriptor.chosenModuleDescriptors

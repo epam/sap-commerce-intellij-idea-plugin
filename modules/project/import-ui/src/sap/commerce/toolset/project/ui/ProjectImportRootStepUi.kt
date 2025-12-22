@@ -181,9 +181,7 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                     .visibleIf(context.isExcludedFromScanning)
                     .align(AlignX.FILL)
             }
-        }
 
-        group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
             row {
                 checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
                     .bindSelected(context.settings.withStandardProvidedSources)
@@ -196,12 +194,11 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
 
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
                     .bindSelected(context.settings.withExternalLibrarySources)
-                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-                    .customize(rightGaps)
 
                 checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                     .bindSelected(context.settings.withExternalLibraryJavadocs)
-                contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
+
+                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
                     .customize(rightGaps)
             }
         }

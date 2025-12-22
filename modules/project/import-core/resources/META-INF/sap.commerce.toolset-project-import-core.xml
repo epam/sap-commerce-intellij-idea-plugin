@@ -21,6 +21,8 @@
         <project.preImportConfigurator order="first" id="sap.commerce.toolset.configurator.ProjectSettingsConfigurator"
                                        implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
         <project.preImportConfigurator order="after sap.commerce.toolset.configurator.ProjectSettingsConfigurator"
+                                       implementation="sap.commerce.toolset.project.configurator.ApplicationSettingsConfigurator"/>
+        <project.preImportConfigurator order="after sap.commerce.toolset.configurator.ProjectSettingsConfigurator"
                                        implementation="sap.commerce.toolset.project.configurator.ProjectModulesDirectoryConfigurator"/>
         <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.GroupModuleConfigurator"/>
         <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectDictionaryConfigurator"/>

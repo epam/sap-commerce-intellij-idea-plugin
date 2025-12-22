@@ -40,14 +40,14 @@ class ProjectRefreshDialog(
     override fun getStyle(): DialogStyle = DialogStyle.COMPACT
 
     override fun createNorthPanel() = banner(
-        text = "Project \"${project.name}\" specific refresh settings.",
+        text = "Other settings can be found under SAP CX Settings.",
     )
 
     override fun createCenterPanel() = panel {
         group("Cleanup") {
             row {
                 checkBox("Remove old project data")
-                    .comment("Experimental feature! Modules with respective .iml files will be removed on refresh.")
+                    .comment("Experimental feature! Modules with respective .iml files will not be removed on refresh.")
                     .bindSelected(refreshContext.removeOldProjectData)
             }
 
@@ -58,7 +58,7 @@ class ProjectRefreshDialog(
             }
         }
 
-        group("Re-Import") {
+        group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
                 checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
                     .bindSelected(refreshContext.importContext.importOOTBModulesInReadOnlyMode)
@@ -81,9 +81,7 @@ class ProjectRefreshDialog(
                     .bindSelected(refreshContext.importContext.importCustomAntBuildFiles)
                 contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
             }
-        }
 
-        group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
             row {
                 checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
                     .bindSelected(refreshContext.importContext.withStandardProvidedSources)
@@ -95,11 +93,11 @@ class ProjectRefreshDialog(
 
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
                     .bindSelected(refreshContext.importContext.withExternalLibrarySources)
-                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
 
                 checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                     .bindSelected(refreshContext.importContext.withExternalLibraryJavadocs)
-                contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
+
+                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
             }
         }
 

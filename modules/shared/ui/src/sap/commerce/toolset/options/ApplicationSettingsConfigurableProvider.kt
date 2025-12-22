@@ -83,9 +83,7 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                         .bindSelected(applicationSettings::importCustomAntBuildFiles)
                     contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
                 }
-            }
 
-            group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
                 row {
                     checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
                         .bindSelected(applicationSettings::withStandardProvidedSources)
@@ -97,11 +95,11 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
                     checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
                         .bindSelected(applicationSettings::withExternalLibrarySources)
-                    contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
 
                     checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                         .bindSelected(applicationSettings::withExternalLibraryJavadocs)
-                    contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
+
+                    contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
                 }
             }
 

@@ -38,6 +38,7 @@ import java.util.Optional;
 
 import static sap.commerce.toolset.HybrisI18nBundle.message;
 
+// TODO: add logs and move to Kotlin
 public class ImportProjectProgressModalWindow extends Task.Modal {
 
     private final Project project;
