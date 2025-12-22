@@ -39,6 +39,7 @@ class ApplicationSettingsConfigurator : ProjectImportConfigurator {
             this.librarySourcesFetchMode = importSettings.librarySourcesFetchMode
             this.withExternalLibrarySources = importSettings.withExternalLibrarySources
             this.withExternalLibraryJavadocs = importSettings.withExternalLibraryJavadocs
+            this.withDecompiledOotbSources = importSettings.withDecompiledOotbSources
             this.groupModules = importSettings.groupModules
             this.groupExternalModules = importSettings.groupExternalModules
             this.groupHybris = importSettings.groupHybris
