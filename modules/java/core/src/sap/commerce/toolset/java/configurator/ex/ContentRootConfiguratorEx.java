@@ -101,15 +101,17 @@ public final class ContentRootConfiguratorEx {
             || !rootProjectDescriptor.getImportContext().getImportOOTBModulesInReadOnlyMode()
             || ProjectConstants.Extension.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
         ) {
-            addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directory.SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
+            final var moduleRootDirectory = moduleDescriptor.getModuleRootDirectory();
+
+            addSourceRoots(contentEntry, moduleRootDirectory, dirsToIgnore, appSettings, ProjectConstants.Directory.SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
 
             if (customModuleDescriptor || !rootProjectDescriptor.getImportContext().getExcludeTestSources()) {
-                addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directory.TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
+                addSourceRoots(contentEntry, moduleRootDirectory, dirsToIgnore, appSettings, ProjectConstants.Directory.TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
             }
 
             addSourceFolderIfNotIgnored(
                 contentEntry,
-                new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directory.GEN_SRC),
+                new File(moduleRootDirectory, ProjectConstants.Directory.GEN_SRC),
                 JavaSourceRootType.SOURCE,
                 JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
                 dirsToIgnore, appSettings
@@ -275,7 +277,7 @@ public final class ContentRootConfiguratorEx {
         @NotNull final ContentEntry contentEntry,
         @NotNull final File dir,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final ApplicationSettings appSettings,
+        @NotNull final ApplicationSettings applicationSettings,
         final List<String> directories,
         final JavaSourceRootType scope
     ) {
@@ -284,25 +286,10 @@ public final class ContentRootConfiguratorEx {
                 contentEntry,
                 new File(dir, directory),
                 scope,
-                dirsToIgnore, appSettings
+                scope.createDefaultProperties(),
+                dirsToIgnore, applicationSettings
             );
         }
-    }
-
-    private static <P extends JpsElement> void addSourceFolderIfNotIgnored(
-        @NotNull final ContentEntry contentEntry,
-        @NotNull final File testSrcDir,
-        @NotNull final JpsModuleSourceRootType<P> rootType,
-        @NotNull final List<File> dirsToIgnore,
-        @NotNull final ApplicationSettings appSettings
-    ) {
-        addSourceFolderIfNotIgnored(
-            contentEntry,
-            testSrcDir,
-            rootType,
-            rootType.createDefaultProperties(),
-            dirsToIgnore, appSettings
-        );
     }
 
     // /Users/Evgenii/work/upwork/test-projects/pawel-hybris/bin/ext-accelerator/acceleratorstorefrontcommons/testsrc

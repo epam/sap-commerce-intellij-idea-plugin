@@ -189,6 +189,7 @@ private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaL
     val binDir = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.BIN)
         .takeIf { it.isDirectory }
         ?: return
+    // TODO: server jar may not present, example -> apparelstore, electronicsstore,
     val serverJars = binDir
         .listFiles { _, name: String -> name.endsWith(HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX) }
         ?.takeIf { it.isNotEmpty() }

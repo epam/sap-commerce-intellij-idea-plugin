@@ -94,7 +94,7 @@ object ProjectConstants {
         val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
         @JvmField
-        val ALL_SRC_DIR_NAMES = listOf(TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
+        val ALL_SRC_DIR_NAMES = listOf(GEN_SRC, TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
         @JvmField
         val TEST_SRC_DIR_NAMES = listOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
