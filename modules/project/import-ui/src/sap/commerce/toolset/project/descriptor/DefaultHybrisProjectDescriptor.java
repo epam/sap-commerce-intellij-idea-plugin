@@ -126,6 +126,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private boolean withStandardProvidedSources;
     private boolean withExternalLibrarySources;
     private boolean withExternalLibraryJavadocs;
+    private boolean withDecompiledOotbSources;
     private boolean ignoreNonExistingSourceDirectories;
     private boolean useFakeOutputPathForCustomExtensions;
 
@@ -1165,6 +1166,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setWithExternalLibraryJavadocs(final boolean withExternalLibraryJavadocs) {
         this.withExternalLibraryJavadocs = withExternalLibraryJavadocs;
+    }
+
+    @Override
+    public boolean isWithDecompiledOotbSources() {
+        return withDecompiledOotbSources;
+    }
+
+    @Override
+    public void setWithDecompiledOotbSources(final boolean withDecompiledOotbSources) {
+        this.withDecompiledOotbSources = withDecompiledOotbSources;
     }
 
     @Override

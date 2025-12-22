@@ -39,6 +39,8 @@ data class ApplicationSettingsState(
     @JvmField @OptionTag val scanThroughExternalModule: Boolean = true,
     @JvmField @OptionTag val excludeTestSources: Boolean = true,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
+    @JvmField @OptionTag val decompiledOotbSourcesConsentAsked: Boolean = false,
+    @JvmField @OptionTag val withDecompiledOotbSources: Boolean = false,
     @JvmField @OptionTag val groupHybris: String = "Hybris",
     @JvmField @OptionTag val groupOtherHybris: String = "Hybris/Unused",
     @JvmField @OptionTag val groupCustom: String = "Custom",

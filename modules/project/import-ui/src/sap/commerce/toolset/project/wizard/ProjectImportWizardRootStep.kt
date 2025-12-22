@@ -74,6 +74,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private lateinit var withStandardProvidedSources: JBCheckBox
     private lateinit var withExternalLibrarySources: JBCheckBox
     private lateinit var withExternalLibraryJavadocs: JBCheckBox
+    private lateinit var withDecompiledOotbSources: JBCheckBox
     private lateinit var importCustomAntBuildFilesCheckBox: JBCheckBox
     private lateinit var importOotbModulesInReadOnlyModeCheckBox: JBCheckBox
     private lateinit var excludeTestSourcesCheckBox: JBCheckBox
@@ -264,6 +265,12 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }.layout(RowLayout.PARENT_GRID)
 
             row {
+                withDecompiledOotbSources = checkBox("Decompile OOTB bin jars to doc/decompiledsrc when sources are missing")
+                    .comment("Requires consent; uses IntelliJ decompiler in background after import for read-only OOTB modules.")
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
                 importCustomAntBuildFilesCheckBox = checkBox("Import Ant build files for custom modules")
                     .comment("Due nature of the Ant plugin may negatively affect project import/refresh performance.")
                     .component
@@ -355,6 +362,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isWithStandardProvidedSources = withStandardProvidedSources.isSelected
             this.isWithExternalLibrarySources = withExternalLibrarySources.isSelected
             this.isWithExternalLibraryJavadocs = withExternalLibraryJavadocs.isSelected
+            this.isWithDecompiledOotbSources = withDecompiledOotbSources.isSelected
             this.isImportOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyModeCheckBox.isSelected
             this.isFollowSymlink = followSymlinkCheckbox.isSelected
             this.isExcludeTestSources = excludeTestSourcesCheckBox.isSelected
@@ -416,6 +424,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             withStandardProvidedSources.isSelected = this.isWithStandardProvidedSources
             withExternalLibrarySources.isSelected = this.isWithExternalLibrarySources
             withExternalLibraryJavadocs.isSelected = this.isWithExternalLibraryJavadocs
+            withDecompiledOotbSources.isSelected = this.isWithDecompiledOotbSources
             importOotbModulesInReadOnlyModeCheckBox.isSelected = this.isImportOotbModulesInReadOnlyMode
             scanThroughExternalModuleCheckbox.isSelected = this.isScanThroughExternalModule
             followSymlinkCheckbox.setSelected(this.isFollowSymlink)
