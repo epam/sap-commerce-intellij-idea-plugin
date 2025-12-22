@@ -25,17 +25,13 @@ import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 
-import java.io.File;
-
 import static sap.commerce.toolset.HybrisI18nBundle.message;
 
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
-    protected final File rootProjectDirectory;
     protected final HybrisProjectDescriptor hybrisProjectDescriptor;
 
     public SearchModulesRootsTaskModalWindow(
-        @NotNull final File rootProjectDirectory,
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor
     ) {
         super(
@@ -44,14 +40,12 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
             true
         );
 
-        this.rootProjectDirectory = rootProjectDirectory;
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
     }
 
     @Override
     public void run(@NotNull final ProgressIndicator indicator) {
         this.hybrisProjectDescriptor.setRootDirectoryAndScanForModules(
-            this.rootProjectDirectory,
             new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),
             new DirectoriesScannerErrorsProcessor()
         );

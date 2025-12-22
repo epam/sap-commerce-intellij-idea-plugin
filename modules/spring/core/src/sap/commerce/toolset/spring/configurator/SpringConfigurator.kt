@@ -58,7 +58,9 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = hybrisProjectDescriptor.moduleDescriptorsToImport
+        val moduleDescriptors = hybrisProjectDescriptor
+            .chosenModuleDescriptors
+            .associateBy { it.name }
 
         for (moduleDescriptor in moduleDescriptors.values) {
             try {
@@ -89,7 +91,9 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     ) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = hybrisProjectDescriptor.moduleDescriptorsToImport
+        val moduleDescriptors = hybrisProjectDescriptor
+            .chosenModuleDescriptors
+            .associateBy { it.name }
         val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 

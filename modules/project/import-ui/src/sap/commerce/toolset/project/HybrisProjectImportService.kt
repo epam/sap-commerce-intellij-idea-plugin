@@ -21,6 +21,10 @@ package sap.commerce.toolset.project
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
 import kotlin.io.path.name
 
@@ -59,6 +63,20 @@ class HybrisProjectImportService {
 
     fun isDirectoryExcluded(path: Path): Boolean = excludedDirectories.contains(path.name)
         || path.endsWith(ProjectConstants.Directory.PATH_PLATFORM_BOOTSTRAP)
+
+    fun initMandatoryModules(hybrisProjectDescriptor: HybrisProjectDescriptor, moduleDescriptors: Collection<ModuleDescriptor>) {
+        moduleDescriptors.forEach { module: ModuleDescriptor ->
+            if (module is ConfigModuleDescriptor && module.isMainConfig) {
+                hybrisProjectDescriptor.configHybrisModuleDescriptor = module
+            }
+            if (module is PlatformModuleDescriptor) {
+                hybrisProjectDescriptor.platformHybrisModuleDescriptor = module
+            }
+            if (ProjectConstants.Extension.KOTLIN_NATURE == module.name) {
+                hybrisProjectDescriptor.kotlinNatureModuleDescriptor = module
+            }
+        }
+    }
 
     companion object {
         @JvmStatic

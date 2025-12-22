@@ -25,23 +25,24 @@ import java.io.File
 interface HybrisProjectDescriptor {
 
     fun setHybrisProject(project: Project?)
+
+    // TODO: review this method
     fun clear()
+
     fun setRootDirectoryAndScanForModules(
-        rootDirectory: File,
         progressListenerProcessor: TaskProgressProcessor<File>?,
         errorsProcessor: TaskProgressProcessor<MutableList<File>>?
     )
-    fun initMandatoryModules(moduleDescriptors: Collection<ModuleDescriptor>)
 
     val importContext: ProjectImportSettings
-    var project: Project?
-    var refresh: Boolean
+    val project: Project?
+    val refresh: Boolean
     val foundModules: MutableList<ModuleDescriptor>
-    var chosenModuleDescriptors: MutableList<ModuleDescriptor>
+    val chosenModuleDescriptors: MutableList<ModuleDescriptor>
 
-    val configHybrisModuleDescriptor: ConfigModuleDescriptor?
-    val platformHybrisModuleDescriptor: PlatformModuleDescriptor
-    val kotlinNatureModuleDescriptor: ModuleDescriptor?
+    var configHybrisModuleDescriptor: ConfigModuleDescriptor?
+    var platformHybrisModuleDescriptor: PlatformModuleDescriptor
+    var kotlinNatureModuleDescriptor: ModuleDescriptor?
 
     val rootDirectory: File?
     var modulesFilesDirectory: File?
@@ -50,31 +51,17 @@ interface HybrisProjectDescriptor {
     var projectIconFile: File?
     var openProjectSettingsAfterImport: Boolean
 
-    //    var isImportOotbModulesInReadOnlyMode: Boolean
     var hybrisDistributionDirectory: File?
     var externalExtensionsDirectory: File?
     var externalConfigDirectory: File?
     var externalDbDriversDirectory: File?
 
-    //    var isIgnoreNonExistingSourceDirectories: Boolean
-//    var isUseFakeOutputPathForCustomExtensions: Boolean
     var javadocUrl: String?
 
-    //    var isFollowSymlink: Boolean
-//    var isExcludeTestSources: Boolean
-//    var isImportCustomAntBuildFiles: Boolean
-//    var isScanThroughExternalModule: Boolean
     var hybrisVersion: String?
     val detectedVcs: MutableSet<File>
 
-    //    var isWithStandardProvidedSources: Boolean
-//    var isWithExternalLibrarySources: Boolean
-//    var isWithExternalLibraryJavadocs: Boolean
     var excludedFromScanning: Set<String>
-    val excludedFromScanningDirectories: MutableSet<File>?
-
-    val yModuleDescriptorsToImport: Map<String, YModuleDescriptor>
-    val moduleDescriptorsToImport: Map<String, ModuleDescriptor>
 
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null

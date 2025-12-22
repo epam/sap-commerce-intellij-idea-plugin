@@ -47,8 +47,6 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -60,8 +58,6 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
 
-    protected final Lock lock = new ReentrantLock();
-
     @Nullable
     private HybrisProjectDescriptor _hybrisProjectDescriptor;
     private List<ModuleDescriptor> moduleList;
@@ -70,7 +66,7 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
     @Override
     @Nullable
     public Project createProject(@NotNull final String name, @NotNull final String path) {
-        final Project project = super.createProject(name, path);
+        final var project = super.createProject(name, path);
         getHybrisProjectDescriptor().setHybrisProject(project);
         return project;
     }
@@ -79,49 +75,32 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
     public void setRootProjectDirectory(@NotNull final File directory) {
         LOG.info("setting RootProjectDirectory to " + directory.getAbsolutePath());
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
-            directory, this.getHybrisProjectDescriptor()
+            getHybrisProjectDescriptor()
         ));
-
-        this.setFileToImport(directory.getAbsolutePath());
     }
 
     @Override
     public void cleanup() {
         super.cleanup();
 
-        try {
-            this.lock.lock();
-            this._hybrisProjectDescriptor = null;
-        } finally {
-            this.lock.unlock();
-        }
+        this._hybrisProjectDescriptor = null;
     }
 
     @NotNull
-    public HybrisProjectDescriptor createHybrisProjectDescriptor(final @NotNull ProjectImportSettings importContext) {
-        try {
-            this.lock.lock();
+    public HybrisProjectDescriptor createHybrisProjectDescriptor(final @NotNull ProjectImportSettings importSettings) {
+        final var fileToImport = new File(getFileToImport());
 
-            this._hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor(importContext);
-            this._hybrisProjectDescriptor.setRefresh(isUpdate());
-            this._hybrisProjectDescriptor.setProject(getCurrentProject());
+        this._hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor(
+            fileToImport, importSettings, isUpdate(), getCurrentProject()
+        );
 
-            return this._hybrisProjectDescriptor;
-        } finally {
-            this.lock.unlock();
-        }
+        return this._hybrisProjectDescriptor;
     }
 
     @NotNull
     @Override
     public HybrisProjectDescriptor getHybrisProjectDescriptor() {
-        try {
-            this.lock.lock();
-
-            return this._hybrisProjectDescriptor;
-        } finally {
-            this.lock.unlock();
-        }
+        return this._hybrisProjectDescriptor;
     }
 
     @Override
@@ -314,7 +293,7 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
             : Collections.<ModuleDescriptor>emptySet();
         chosenForImport.removeAll(alreadyOpenedModules);
 
-        hybrisProjectDescriptor.setChosenModuleDescriptors(chosenForImport);
+        ProjectImportModulesLookupService.Companion.getInstance().setChosenModuleDescriptors(hybrisProjectDescriptor, chosenForImport);
     }
 
     @Override

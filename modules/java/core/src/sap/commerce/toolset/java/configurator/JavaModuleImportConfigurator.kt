@@ -28,6 +28,7 @@ import sap.commerce.toolset.java.configurator.ex.*
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 
 class JavaModuleImportConfigurator : ModuleImportConfigurator {
@@ -56,12 +57,15 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
 
         modifiableRootModel.inheritSdk();
 
-        val yModuleDescriptorsToImport = hybrisProjectDescriptor.yModuleDescriptorsToImport
+        val yModuleDescriptorsToImport = hybrisProjectDescriptor.chosenModuleDescriptors
+            .filterIsInstance<YModuleDescriptor>()
+            .distinct()
+            .associateBy { it.name }
 
         JavadocSettingsConfiguratorEx.configure(modifiableRootModel, moduleDescriptor)
         LibRootsConfiguratorEx.configure(yModuleDescriptorsToImport, modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
         ContentRootConfiguratorEx.configure(modifiableRootModel, moduleDescriptor);
-        CompilerOutputPathsConfiguratorEx.configure( modifiableRootModel, moduleDescriptor);
+        CompilerOutputPathsConfiguratorEx.configure(modifiableRootModel, moduleDescriptor);
 
         return javaModule
     }

@@ -72,8 +72,8 @@ class ProjectImportWizardRootStep(wizardContext: WizardContext) : ProjectImportW
         _ui.apply()
 
         val importBuilder = importBuilder()
-        val importContext = context.settings.immutable()
-        val hybrisProjectDescriptor = importBuilder.createHybrisProjectDescriptor(importContext)
+        val importSettings = context.settings.immutable()
+        val hybrisProjectDescriptor = importBuilder.createHybrisProjectDescriptor(importSettings)
 
         wizardContext.projectName = context.projectName.get()
 

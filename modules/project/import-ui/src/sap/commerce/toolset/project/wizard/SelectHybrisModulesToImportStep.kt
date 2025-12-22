@@ -24,6 +24,7 @@ import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.table.JBTable
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.project.HybrisProjectImportService
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.refresh.ProjectRefreshContext
@@ -124,7 +125,8 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
             val filteredModuleToImport = context.getBestMatchingExtensionsToImport(refreshContext.projectSettings)
             context.list = filteredModuleToImport
             // ensure that mandatory modules are set in the context, even if existing modules are not removed
-            context.getHybrisProjectDescriptor().initMandatoryModules(filteredModuleToImport)
+            val hybrisProjectDescriptor = context.getHybrisProjectDescriptor()
+            HybrisProjectImportService.getInstance().initMandatoryModules(hybrisProjectDescriptor, filteredModuleToImport)
         } catch (e: ConfigurationException) {
             // no-op already validated
         }
