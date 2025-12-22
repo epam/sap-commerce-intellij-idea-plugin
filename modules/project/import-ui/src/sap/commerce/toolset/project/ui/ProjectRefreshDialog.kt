@@ -40,7 +40,7 @@ class ProjectRefreshDialog(
     override fun getStyle(): DialogStyle = DialogStyle.COMPACT
 
     override fun createNorthPanel() = banner(
-        text = "Refresh settings for \"${project.name}\" project.",
+        text = "Project \"${project.name}\" specific refresh settings.",
     )
 
     override fun createCenterPanel() = panel {
@@ -83,24 +83,6 @@ class ProjectRefreshDialog(
             }
         }
 
-        group("Project Structure") {
-            row {
-                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                    .bindSelected(refreshContext.importContext.useFakeOutputPathForCustomExtensions)
-                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(refreshContext.importContext.excludeTestSources)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                    .bindSelected(refreshContext.importContext.ignoreNonExistingSourceDirectories)
-            }
-        }
-
         group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
             row {
                 checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
@@ -118,6 +100,24 @@ class ProjectRefreshDialog(
                 checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
                     .bindSelected(refreshContext.importContext.withExternalLibraryJavadocs)
                 contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
+            }
+        }
+
+        group("Project Structure") {
+            row {
+                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
+                    .bindSelected(refreshContext.importContext.useFakeOutputPathForCustomExtensions)
+                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.excludeTestSources"))
+                    .bindSelected(refreshContext.importContext.excludeTestSources)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
+                    .bindSelected(refreshContext.importContext.ignoreNonExistingSourceDirectories)
             }
         }
     }.apply {

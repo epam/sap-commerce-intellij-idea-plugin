@@ -182,29 +182,6 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                     .align(AlignX.FILL)
             }
         }
-        group(i18n("hybris.project.import.projectStructure.title")) {
-            row {
-                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                    .bindSelected(context.settings.useFakeOutputPathForCustomExtensions)
-                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(context.settings.excludeTestSources)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                    .bindSelected(context.settings.ignoreNonExistingSourceDirectories)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
-                    .bindSelected(context.settings.hideEmptyMiddleFolders)
-            }
-        }
 
         group(i18n("hybris.project.import.sourcesAndLibraries.title")) {
             row {
@@ -226,6 +203,30 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                     .bindSelected(context.settings.withExternalLibraryJavadocs)
                 contextHelp(i18n("hybris.project.import.withExternalLibraryJavadocs.tooltip"))
                     .customize(rightGaps)
+            }
+        }
+
+        group(i18n("hybris.project.import.projectStructure.title")) {
+            row {
+                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
+                    .bindSelected(context.settings.useFakeOutputPathForCustomExtensions)
+                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.excludeTestSources"))
+                    .bindSelected(context.settings.excludeTestSources)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
+                    .bindSelected(context.settings.ignoreNonExistingSourceDirectories)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
+                    .bindSelected(context.settings.hideEmptyMiddleFolders)
             }
         }
 
