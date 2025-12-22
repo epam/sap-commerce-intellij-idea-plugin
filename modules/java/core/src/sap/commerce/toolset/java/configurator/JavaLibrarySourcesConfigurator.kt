@@ -153,7 +153,6 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
             )
                 .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
                 .system(true)
-                .hideAfter(10)
                 .notify(project)
         }
     }

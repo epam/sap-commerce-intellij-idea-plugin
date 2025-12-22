@@ -35,7 +35,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 @State(
     name = "[y] CCv2 Project Settings",
     category = SettingsCategory.PLUGINS,
-    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.LOCAL)]
+    storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.PER_OS)]
 )
 @Service
 class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2ApplicationSettingsState>(CCv2ApplicationSettingsState()), ModificationTracker {

@@ -27,7 +27,10 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.bindIntText
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
@@ -110,14 +113,10 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                 row {
                     label("Read timeout:")
                     timeoutTextField = intTextField(10..Int.MAX_VALUE)
-                        .comment(
-                            """
-                                            Indicates read timeout in seconds when invoking Cloud Portal API.
-                                        """.trimIndent()
-                        )
+                        .comment("Indicates read timeout in seconds when invoking Cloud Portal API.")
                         .bindIntText(mutable::readTimeout)
                         .enabledIf(editable)
-                        .gap(RightGap.SMALL)
+                        .commentRight("(seconds)")
                         .onIsModified { originalTimeout != mutable.readTimeout }
                         .component
                 }.layout(RowLayout.PARENT_GRID)

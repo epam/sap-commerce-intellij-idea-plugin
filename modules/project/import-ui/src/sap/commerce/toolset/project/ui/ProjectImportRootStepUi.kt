@@ -165,24 +165,6 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
             }
 
             row {
-                checkBox(i18n("hybris.project.import.isExcludedFromScanning"))
-                    .bindSelected(context.isExcludedFromScanning)
-                contextHelp(i18n("hybris.project.import.isExcludedFromScanning.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                cell(excludedFromScanningList)
-                    .bind(
-                        { listPanel -> listPanel.data },
-                        { _, values -> context.excludedFromScanningDirectories.set(values) },
-                        context.excludedFromScanningDirectories
-                    )
-                    .visibleIf(context.isExcludedFromScanning)
-                    .align(AlignX.FILL)
-            }
-
-            row {
                 checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
                     .bindSelected(context.settings.withStandardProvidedSources)
                 contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
@@ -200,6 +182,24 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
 
                 contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
                     .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.isExcludedFromScanning"))
+                    .bindSelected(context.isExcludedFromScanning)
+                contextHelp(i18n("hybris.project.import.isExcludedFromScanning.tooltip"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                cell(excludedFromScanningList)
+                    .bind(
+                        { listPanel -> listPanel.data },
+                        { _, values -> context.excludedFromScanningDirectories.set(values) },
+                        context.excludedFromScanningDirectories
+                    )
+                    .visibleIf(context.isExcludedFromScanning)
+                    .align(AlignX.FILL)
             }
         }
 
