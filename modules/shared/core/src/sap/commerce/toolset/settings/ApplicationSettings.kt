@@ -84,6 +84,16 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(importCustomAntBuildFiles = value) }
         }
+    var decompiledOotbSourcesConsentAsked: Boolean
+        get() = state.decompiledOotbSourcesConsentAsked
+        set(value) {
+            updateState { it.copy(decompiledOotbSourcesConsentAsked = value) }
+        }
+    var withDecompiledOotbSources: Boolean
+        get() = state.withDecompiledOotbSources
+        set(value) {
+            updateState { it.copy(withDecompiledOotbSources = value) }
+        }
     var groupHybris: String
         get() = state.groupHybris
         set(value) {

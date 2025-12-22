@@ -28,6 +28,7 @@
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.LicenseProjectLibraryConfigurator"/>
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.DecompiledOotbSourcesConfigurator"/>
         <project.postImportLegacyConfigurator implementation="sap.commerce.toolset.java.configurator.JavadocsProjectImportConfigurator"/>
         <project.whenSmartConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
 

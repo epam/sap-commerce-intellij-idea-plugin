@@ -49,6 +49,7 @@ dependencies {
 
         bundledPlugins(
             "com.intellij.java",
+            "org.jetbrains.java.decompiler",
         )
     }
 }

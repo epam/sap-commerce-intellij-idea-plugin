@@ -110,6 +110,12 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
                     contextHelp(i18n("hybris.project.import.withExternalLibrarySources.help.description"))
                 }
+
+                row {
+                    checkBox(i18n("hybris.project.import.withDecompiledOotbSources"))
+                        .bindSelected(applicationSettings::withDecompiledOotbSources)
+                    contextHelp(i18n("hybris.project.import.withDecompiledOotbSources.help.description"))
+                }
             }
 
             group(i18n("hybris.project.import.projectStructure.title")) {
