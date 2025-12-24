@@ -30,6 +30,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
 import sap.commerce.toolset.java.descriptor.getLibraryDescriptors
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
@@ -42,13 +43,14 @@ import java.io.File
 internal object LibRootsConfiguratorEx {
 
     fun configure(
+        importContext: ProjectImportContext,
         allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
     ) {
-        val sourceCodeRoot = getSourceCodeRoot(moduleDescriptor)
-        for (javaLibraryDescriptor in getLibraryDescriptors(moduleDescriptor, allYModules)) {
+        val sourceCodeRoot = getSourceCodeRoot(importContext, moduleDescriptor)
+        for (javaLibraryDescriptor in getLibraryDescriptors(importContext, moduleDescriptor, allYModules)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
                 continue
             }
@@ -86,7 +88,7 @@ internal object LibRootsConfiguratorEx {
         }
     }
 
-    private fun getSourceCodeRoot(moduleDescriptor: ModuleDescriptor) = moduleDescriptor.importContext.sourceCodeFile
+    private fun getSourceCodeRoot(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = importContext.sourceCodeFile
         ?.let { VfsUtil.findFileByIoFile(it, true) }
         ?.let { vf ->
             if (vf.isDirectory) vf

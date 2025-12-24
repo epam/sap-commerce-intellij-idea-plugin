@@ -48,7 +48,7 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
         get() = "Database - Data Sources"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)

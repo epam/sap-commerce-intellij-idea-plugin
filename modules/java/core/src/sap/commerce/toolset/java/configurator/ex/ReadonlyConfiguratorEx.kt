@@ -18,14 +18,15 @@
 
 package sap.commerce.toolset.java.configurator.ex
 
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
 internal object ReadonlyConfiguratorEx {
 
-    fun configure(moduleDescriptor: ModuleDescriptor) {
+    fun configure(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) {
         val descriptorType = moduleDescriptor.descriptorType
-        val hasReadOnlySettings = moduleDescriptor.importContext.settings.importOOTBModulesInReadOnlyMode
+        val hasReadOnlySettings = importContext.settings.importOOTBModulesInReadOnlyMode
         val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
             || descriptorType === ModuleDescriptorType.PLATFORM
             || descriptorType === ModuleDescriptorType.EXT

@@ -22,17 +22,15 @@ import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import java.io.File
 
 abstract class YRegularModuleDescriptorImpl protected constructor(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     extensionInfo: ExtensionInfo,
 ) : AbstractYModuleDescriptor(
-    importContext, moduleRootDirectory,
+    moduleRootDirectory,
     extensionInfo.extension.name, extensionInfo = extensionInfo
 ), YRegularModuleDescriptor {
 

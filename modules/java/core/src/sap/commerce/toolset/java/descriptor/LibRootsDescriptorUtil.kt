@@ -25,25 +25,26 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiab
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.io.File
 
-internal fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> = when (descriptor) {
-    is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
-    is YWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor)
-    is YCommonWebSubModuleDescriptor -> getCommonWebSubModuleDescriptor(descriptor)
-    is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(descriptor)
-    is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor, allYModules)
-    is YHacSubModuleDescriptor -> getLibraryDescriptors(descriptor)
-    is YHmcSubModuleDescriptor -> getLibraryDescriptors(descriptor)
-    is PlatformModuleDescriptor -> getLibraryDescriptors(descriptor)
-    is ConfigModuleDescriptor -> getLibraryDescriptors(descriptor)
-    is ExternalModuleDescriptor -> emptyList()
-    else -> emptyList()
-}
+internal fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> =
+    when (descriptor) {
+        is YRegularModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
+        is YWebSubModuleDescriptor -> getWebLibraryDescriptors(importContext, descriptor)
+        is YCommonWebSubModuleDescriptor -> getCommonWebSubModuleDescriptor(importContext, descriptor)
+        is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
+        is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor, allYModules)
+        is YHacSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
+        is YHmcSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
+        is PlatformModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
+        is ConfigModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
+        is ExternalModuleDescriptor -> emptyList()
+        else -> emptyList()
+    }
 
 internal fun addBackofficeRootProjectLibrary(
     modifiableModelsProvider: IdeModifiableModelsProvider,
@@ -69,10 +70,11 @@ internal fun addBackofficeRootProjectLibrary(
         }
     }
 }
-private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<JavaLibraryDescriptor> {
+
+private fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: YRegularModuleDescriptor): List<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+    addLibrariesToNonCustomModule(importContext, descriptor, descriptor.descriptorType, libs)
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
@@ -80,7 +82,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
         descriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
-                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.importContext.settings.importOOTBModulesInReadOnlyMode
+                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !importContext.settings.importOOTBModulesInReadOnlyMode
                 val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }
                     .filter { it.isDirectory }
@@ -129,6 +131,7 @@ private fun addBackofficeLibs(
 }
 
 private fun addHmcLibs(
+    importContext: ProjectImportContext,
     descriptor: YHmcSubModuleDescriptor,
     libs: MutableList<JavaLibraryDescriptor>
 ) {
@@ -140,7 +143,7 @@ private fun addHmcLibs(
         )
     )
 
-    descriptor.importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+    importContext.chosenHybrisModuleDescriptors
         .firstOrNull { it.name == ProjectConstants.Extension.HMC }
         ?.let {
             libs.add(
@@ -154,11 +157,12 @@ private fun addHmcLibs(
 }
 
 private fun addLibrariesToNonCustomModule(
+    importContext: ProjectImportContext,
     descriptor: YModuleDescriptor,
     descriptorType: ModuleDescriptorType?,
     libs: MutableList<JavaLibraryDescriptor>
 ) {
-    if (!descriptor.importContext.settings.importOOTBModulesInReadOnlyMode) return
+    if (!importContext.settings.importOOTBModulesInReadOnlyMode) return
     if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
     val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
@@ -217,10 +221,10 @@ private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaL
     }
 }
 
-private fun getLibraryDescriptors(descriptor: YBackofficeSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+private fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: YBackofficeSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+    addLibrariesToNonCustomModule(importContext, descriptor, descriptor.descriptorType, libs)
     addServerLibs(descriptor, libs)
     addBackofficeLibs(descriptor, libs)
     addRootLib(descriptor, libs)
@@ -234,17 +238,17 @@ private fun getLibraryDescriptors(descriptor: YBackofficeSubModuleDescriptor): M
  * "hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes" from "hac" extension is not registered
  * as a dependency for HAC addons.
  */
-private fun getLibraryDescriptors(descriptor: YHacSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+private fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: YHacSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+    addLibrariesToNonCustomModule(importContext, descriptor, descriptor.descriptorType, libs)
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - HAC Web Classes",
-            libraryFile = File(descriptor.importContext.platformDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
+            libraryFile = File(importContext.platformDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
             directoryWithClasses = true
         )
     )
@@ -252,25 +256,29 @@ private fun getLibraryDescriptors(descriptor: YHacSubModuleDescriptor): MutableL
     return libs
 }
 
-private fun getLibraryDescriptors(descriptor: YHmcSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+private fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: YHmcSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
-    addHmcLibs(descriptor, libs)
+    addLibrariesToNonCustomModule(importContext, descriptor, descriptor.descriptorType, libs)
+    addHmcLibs(importContext, descriptor, libs)
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
     return libs
 }
 
-private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): MutableList<JavaLibraryDescriptor> {
+private fun getLibraryDescriptors(
+    importContext: ProjectImportContext,
+    descriptor: YAcceleratorAddonSubModuleDescriptor,
+    allYModules: Map<String, YModuleDescriptor>
+): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+    addLibrariesToNonCustomModule(importContext, descriptor, descriptor.descriptorType, libs)
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
-    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.importContext.settings.importOOTBModulesInReadOnlyMode
+    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !importContext.settings.importOOTBModulesInReadOnlyMode
     allYModules.values
         .filter { it.getDirectDependencies().contains(descriptor.owner) }
         .filter { it != descriptor }
@@ -301,12 +309,13 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
 }
 
 private fun getWebLibraryDescriptors(
+    importContext: ProjectImportContext,
     descriptor: YSubModuleDescriptor,
     libName: String = "Web"
 ): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+    addLibrariesToNonCustomModule(importContext, descriptor, descriptor.descriptorType, libs)
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
@@ -373,10 +382,11 @@ private fun getWebLibraryDescriptors(
 }
 
 private fun getCommonWebSubModuleDescriptor(
+    importContext: ProjectImportContext,
     descriptor: YCommonWebSubModuleDescriptor,
     libName: String = "Common Web"
 ): MutableList<JavaLibraryDescriptor> {
-    val libs = getWebLibraryDescriptors(descriptor, libName)
+    val libs = getWebLibraryDescriptors(importContext, descriptor, libName)
 
     descriptor
         .dependantWebExtensions
@@ -397,7 +407,7 @@ private fun getCommonWebSubModuleDescriptor(
     return libs
 }
 
-private fun getLibraryDescriptors(descriptor: ConfigModuleDescriptor) = listOf(
+private fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: ConfigModuleDescriptor) = listOf(
     JavaLibraryDescriptor(
         name = "Config License",
         libraryFile = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.LICENCE),
@@ -405,15 +415,15 @@ private fun getLibraryDescriptors(descriptor: ConfigModuleDescriptor) = listOf(
     )
 )
 
-private fun getLibraryDescriptors(descriptor: PlatformModuleDescriptor) = listOf(
+private fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: PlatformModuleDescriptor) = listOf(
     JavaLibraryDescriptor(
         name = HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY,
-        libraryFile = getDbDriversDirectory(descriptor),
+        libraryFile = getDbDriversDirectory(importContext, descriptor),
         exported = true,
     )
 )
 
-private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.importContext.externalDbDriversDirectory
+private fun getDbDriversDirectory(importContext: ProjectImportContext, descriptor: PlatformModuleDescriptor) = importContext.externalDbDriversDirectory
     ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
 
 private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettings.getInstance().withStandardProvidedSources) {

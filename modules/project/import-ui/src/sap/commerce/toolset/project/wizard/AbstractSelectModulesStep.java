@@ -32,6 +32,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
 
     protected boolean isInConflict(@NotNull final ModuleDescriptor item) {
         return (this.fileChooser.getMarkedElements().contains(item) || getAdditionalFixedElements().contains(item))
-               && this.calculateSelectedModuleDuplicates().contains(item);
+            && this.calculateSelectedModuleDuplicates().contains(item);
     }
 
     protected List<ModuleDescriptor> getAdditionalFixedElements() {
@@ -88,7 +89,9 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
 
     @Override
     protected String getElementText(final ModuleDescriptor item) {
-        return getModuleNameAndPath(item);
+        final var importContext = getContext().getImportContext();
+        if (importContext == null) return item.getName();
+        return getModuleNameAndPath(importContext.getRootDirectory(), item);
     }
 
     @Override
@@ -127,11 +130,15 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
     }
 
     protected boolean validateCommon() throws ConfigurationException {
+        final var importContext = getContext().getImportContext();
+        if (importContext == null) return false;
+        final var rootDirectory = importContext.getRootDirectory();
+
         final Set<ModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
         final Collection<String> moduleDuplicateNames = new HashSet<>(moduleDuplicates.size());
 
         for (ModuleDescriptor moduleDuplicate : moduleDuplicates) {
-            moduleDuplicateNames.add(this.getModuleNameAndPath(moduleDuplicate));
+            moduleDuplicateNames.add(this.getModuleNameAndPath(rootDirectory, moduleDuplicate));
         }
 
         if (!moduleDuplicates.isEmpty()) {
@@ -151,7 +158,7 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
      * Aligned text to COLUMN_WIDTH. It is not precise by space pixel width (4pixels)
      */
     @NotNull
-    protected String getModuleNameAndPath(@NotNull final ModuleDescriptor moduleDescriptor) {
+    protected String getModuleNameAndPath(final @NotNull File rootDirectory, @NotNull final ModuleDescriptor moduleDescriptor) {
         final StringBuilder builder = new StringBuilder();
         builder.append(moduleDescriptor.getName());
 
@@ -166,7 +173,7 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
         return builder
             .append(" ".repeat(Math.max(0, spaceCount)))
             .append(" (")
-            .append(moduleDescriptor.getRelativePath())
+            .append(moduleDescriptor.getRelativePath(rootDirectory))
             .append(')')
             .toString();
     }

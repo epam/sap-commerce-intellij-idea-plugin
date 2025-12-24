@@ -22,7 +22,6 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
@@ -38,14 +37,14 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
     ) {
         val allModules = modifiableModelsProvider.modules
             .associateBy { it.name }
-        val extModules = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val extModules = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YPlatformExtModuleDescriptor>()
             .toSet()
 
         val platformIdeaModuleName = importContext.platformModuleDescriptor.ideaModuleName()
         val platformModule = allModules[platformIdeaModuleName] ?: return
 
-        importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS).forEach { moduleDescriptor ->
+        importContext.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
             allModules[moduleDescriptor.ideaModuleName()]
                 ?.let { module ->
                     val rootModel = modifiableModelsProvider.getModifiableRootModel(module)

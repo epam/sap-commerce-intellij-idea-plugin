@@ -34,6 +34,7 @@ import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.ProjectConstants;
+import sap.commerce.toolset.project.context.ProjectImportContext;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
@@ -60,7 +61,7 @@ public final class ContentRootConfiguratorEx {
     }
 
     public static void configure(
-        @NotNull final ModifiableRootModel modifiableRootModel,
+        final @NotNull ProjectImportContext importContext, @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         final var applicationSettings = ApplicationSettings.getInstance();
@@ -73,12 +74,12 @@ public final class ContentRootConfiguratorEx {
             .map(relPath -> new File(moduleDescriptor.getModuleRootDirectory(), relPath))
             .collect(Collectors.toList());
 
-        configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore, applicationSettings);
+        configureCommonRoots(importContext, moduleDescriptor, contentEntry, dirsToIgnore, applicationSettings);
 
         switch (moduleDescriptor) {
-            case final YWebSubModuleDescriptor descriptor -> configureWebRoots(descriptor, contentEntry, applicationSettings);
-            case final YCommonWebSubModuleDescriptor descriptor -> configureWebModuleRoots(descriptor, contentEntry);
-            case final YAcceleratorAddonSubModuleDescriptor descriptor -> configureWebModuleRoots(descriptor, contentEntry);
+            case final YWebSubModuleDescriptor descriptor -> configureWebRoots(importContext, descriptor, contentEntry, applicationSettings);
+            case final YCommonWebSubModuleDescriptor descriptor -> configureWebModuleRoots(importContext, descriptor, contentEntry);
+            case final YAcceleratorAddonSubModuleDescriptor descriptor -> configureWebModuleRoots(importContext, descriptor, contentEntry);
             case final PlatformModuleDescriptor descriptor -> configurePlatformRoots(descriptor, contentEntry, dirsToIgnore, applicationSettings);
 
             default -> {
@@ -87,12 +88,11 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void configureCommonRoots(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore,
         @NotNull final ApplicationSettings applicationSettings
     ) {
-        final var importContext = moduleDescriptor.getImportContext();
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
         if (customModuleDescriptor
             || !importContext.getSettings().getImportOOTBModulesInReadOnlyMode()
@@ -117,7 +117,7 @@ public final class ContentRootConfiguratorEx {
             configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore, applicationSettings);
         }
 
-        excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
+        excludeCommonNeedlessDirs(importContext, contentEntry, moduleDescriptor);
     }
 
     private static void configureResourceDirectory(
@@ -145,7 +145,7 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void excludeCommonNeedlessDirs(
-        final ContentEntry contentEntry,
+        final @NotNull ProjectImportContext importContext, final ContentEntry contentEntry,
         final ModuleDescriptor moduleDescriptor
     ) {
         excludeSubDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), List.of(
@@ -160,7 +160,7 @@ public final class ContentRootConfiguratorEx {
         ));
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || !moduleDescriptor.getImportContext().getSettings().getImportOOTBModulesInReadOnlyMode()) {
+            || !importContext.getSettings().getImportOOTBModulesInReadOnlyMode()) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directory.CLASSES));
         }
     }
@@ -180,13 +180,11 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void configureWebRoots(
-        @NotNull final YWebSubModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final YWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final ApplicationSettings applicationSettings
     ) {
-        configureWebModuleRoots(moduleDescriptor, contentEntry);
-
-        final var importContext = moduleDescriptor.getImportContext();
+        configureWebModuleRoots(importContext, moduleDescriptor, contentEntry);
 
         if (isCustomModuleDescriptor(moduleDescriptor) || !importContext.getSettings().getImportOOTBModulesInReadOnlyMode()) {
             configureExternalModuleRoot(moduleDescriptor, contentEntry, applicationSettings, ProjectConstants.Directory.COMMON_WEB_SRC, JavaSourceRootType.SOURCE);
@@ -259,7 +257,7 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void configureWebModuleRoots(
-        @NotNull final YSubModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final YSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry
     ) {
         excludeSubDirectories(
@@ -267,7 +265,7 @@ public final class ContentRootConfiguratorEx {
             moduleDescriptor.getModuleRootDirectory(),
             List.of(ProjectConstants.Directory.TEST_CLASSES)
         );
-        configureWebInf(contentEntry, moduleDescriptor);
+        configureWebInf(importContext, contentEntry, moduleDescriptor);
     }
 
     private static void addSourceRoots(
@@ -314,13 +312,14 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void configureWebInf(
+        final @NotNull ProjectImportContext importContext,
         final ContentEntry contentEntry,
         final YSubModuleDescriptor moduleDescriptor
     ) {
         final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || (!moduleDescriptor.getImportContext().getSettings().getImportOOTBModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
+            || (!importContext.getSettings().getImportOOTBModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEBROOT_WEBINF_CLASSES_PATH));
         }

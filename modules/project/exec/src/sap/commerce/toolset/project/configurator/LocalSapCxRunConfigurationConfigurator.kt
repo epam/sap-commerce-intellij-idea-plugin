@@ -30,7 +30,7 @@ class LocalSapCxRunConfigurationConfigurator : ProjectPostImportConfigurator {
         get() = "Run Configurations - Local SAP CX"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val runManager = RunManager.getInstance(project)
 
         createRunConfiguration(

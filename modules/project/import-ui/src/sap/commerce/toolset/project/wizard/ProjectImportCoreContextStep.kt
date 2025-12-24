@@ -311,7 +311,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
     private fun getPlatformJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, hybrisApiVersion)
     else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
-    private fun searchModuleRoots(importContext: ProjectImportContext) {
+    private fun searchModuleRoots(importContext: ProjectImportContext.Mutable) {
         thisLogger().info("Setting RootProjectDirectory to ${importContext.rootDirectory}")
         val task = SearchModulesRootsTaskModal(importContext)
 

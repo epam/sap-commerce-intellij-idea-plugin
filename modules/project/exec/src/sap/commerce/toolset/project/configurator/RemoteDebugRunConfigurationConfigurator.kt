@@ -38,7 +38,7 @@ class RemoteDebugRunConfigurationConfigurator : ProjectPostImportConfigurator {
         get() = "Run Configurations - Debug"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val runManager = RunManager.getInstance(project)
         val configurationName = i18n("hybris.project.run.configuration.remote.debug")
 

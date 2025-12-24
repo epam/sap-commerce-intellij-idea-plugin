@@ -27,14 +27,13 @@ import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
 open class YPlatformExtModuleDescriptor(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     extensionInfo: ExtensionInfo,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT,
-) : YRegularModuleDescriptorImpl(importContext, moduleRootDirectory, extensionInfo) {
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, extensionInfo) {
 
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.CORE)
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
-    override fun groupName() = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
 }

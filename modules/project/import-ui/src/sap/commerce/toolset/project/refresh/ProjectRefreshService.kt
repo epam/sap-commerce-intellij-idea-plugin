@@ -73,7 +73,7 @@ class ProjectRefreshService(private val project: Project) {
         wizard.projectBuilder.cleanup()
     }
 
-    fun openModuleDescriptors(importContext: ProjectImportContext): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
+    fun openModuleDescriptors(importContext: ProjectImportContext.Mutable): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
         .filter { module -> YFacet.getState(module)?.subModuleType == null }
         .mapNotNull { module ->
             ModuleRootManager.getInstance(module).contentRoots

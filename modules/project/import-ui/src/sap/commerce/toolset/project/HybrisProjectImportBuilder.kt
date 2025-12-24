@@ -45,7 +45,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     private var _openProjectSettingsAfterImport = false
     private var _selectableModuleDescriptors: MutableList<ModuleDescriptor> = mutableListOf()
 
-    var importContext: ProjectImportContext? = null
+    var importContext: ProjectImportContext.Mutable? = null
 
     override val isOpenProjectSettingsAfter
         get() = _openProjectSettingsAfterImport
@@ -67,8 +67,10 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         modulesProvider: ModulesProvider?,
         artifactModel: ModifiableArtifactModel?
     ): List<Module> {
-        val context = importContext ?: return emptyList()
-        val chosenModuleDescriptors = context.chosenModuleDescriptors
+        val context = importContext
+            ?.immutable(project)
+            ?: return emptyList()
+        val chosenModuleDescriptors = context.allChosenModuleDescriptors
             .takeIf { it.isNotEmpty() } ?: return emptyList()
 
         performProjectsCleanup(context, chosenModuleDescriptors)
@@ -102,7 +104,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         }
     }
 
-    fun initContext(importSettings: ProjectImportSettings) = ProjectImportContext(
+    fun initContext(importSettings: ProjectImportSettings) = ProjectImportContext.Mutable(
         rootDirectory = File(fileToImport),
         settings = importSettings,
         refresh = isUpdate,
@@ -116,7 +118,9 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         val alreadyExistingModuleFiles = importContext.modulesFilesDirectory
             ?.takeIf { it.isDirectory && it.exists() }
             ?.let { getAllImlFiles(it) }
-            ?: getModulesChosenForImportFiles(chosenModuleDescriptors)
+            ?: chosenModuleDescriptors
+                .map { it.ideaModuleFile(importContext) }
+                .filter { it.exists() }
 
         try {
             getInstance().removeAllFiles(alreadyExistingModuleFiles)
@@ -138,7 +142,4 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         ?.toList()
         ?: emptyList()
 
-    private fun getModulesChosenForImportFiles(chosenModuleDescriptors: Iterable<ModuleDescriptor>) = chosenModuleDescriptors
-        .map { it.ideaModuleFile() }
-        .filter { it.exists() }
 }

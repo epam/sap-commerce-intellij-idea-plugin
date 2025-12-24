@@ -39,7 +39,6 @@ import sap.commerce.toolset.ant.AntConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -70,12 +69,12 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
     }
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val platformDescriptor = importContext.platformModuleDescriptor
         val extHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
         val customHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
 
-        importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS).forEach {
+        importContext.chosenHybrisModuleDescriptors.forEach {
             when (it) {
                 is YPlatformExtModuleDescriptor -> extHybrisModuleDescriptors.add(it)
                 is YCustomRegularModuleDescriptor -> customHybrisModuleDescriptors.add(it)

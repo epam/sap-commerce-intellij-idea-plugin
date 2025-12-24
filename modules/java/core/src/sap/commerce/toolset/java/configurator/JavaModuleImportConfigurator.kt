@@ -26,7 +26,6 @@ import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage
 import sap.commerce.toolset.java.configurator.ex.*
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -46,11 +45,11 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
         rootProjectModifiableModel: ModifiableModuleModel
     ): Module {
         val javaModule = rootProjectModifiableModel.newModule(
-            moduleDescriptor.ideaModuleFile().absolutePath,
+            moduleDescriptor.ideaModuleFile(importContext).absolutePath,
             StdModuleTypes.JAVA.id
         )
 
-        ReadonlyConfiguratorEx.configure(moduleDescriptor)
+        ReadonlyConfiguratorEx.configure(importContext, moduleDescriptor)
 
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
 
@@ -58,15 +57,15 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
 
         modifiableRootModel.inheritSdk();
 
-        val yModuleDescriptorsToImport = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val yModuleDescriptorsToImport = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YModuleDescriptor>()
             .distinct()
             .associateBy { it.name }
 
-        JavadocSettingsConfiguratorEx.configure(modifiableRootModel, moduleDescriptor)
-        LibRootsConfiguratorEx.configure(yModuleDescriptorsToImport, modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
-        ContentRootConfiguratorEx.configure(modifiableRootModel, moduleDescriptor);
-        CompilerOutputPathsConfiguratorEx.configure(modifiableRootModel, moduleDescriptor);
+        JavadocSettingsConfiguratorEx.configure(importContext, modifiableRootModel, moduleDescriptor)
+        LibRootsConfiguratorEx.configure(importContext, yModuleDescriptorsToImport, modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
+        ContentRootConfiguratorEx.configure(importContext, modifiableRootModel, moduleDescriptor);
+        CompilerOutputPathsConfiguratorEx.configure(importContext, modifiableRootModel, moduleDescriptor);
 
         return javaModule
     }

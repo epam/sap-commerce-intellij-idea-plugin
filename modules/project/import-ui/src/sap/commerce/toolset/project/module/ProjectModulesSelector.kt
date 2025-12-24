@@ -30,7 +30,7 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 @Service
 class ProjectModulesSelector {
 
-    fun getSelectableHybrisModules(importContext: ProjectImportContext, settings: ProjectSettings): List<ModuleDescriptor> {
+    fun getSelectableHybrisModules(importContext: ProjectImportContext.Mutable, settings: ProjectSettings): List<ModuleDescriptor> {
         val moduleToImport = mutableListOf<ModuleDescriptor>()
         val moduleToCheck = mutableSetOf<ModuleDescriptor>()
 
@@ -54,7 +54,7 @@ class ProjectModulesSelector {
         resolveDependencies(moduleToImport, moduleToCheck, ModuleDescriptorImportStatus.UNUSED)
 
         return moduleToImport
-            .filterNot { settings.modulesOnBlackList.contains(it.getRelativePath()) }
+            .filterNot { settings.modulesOnBlackList.contains(it.getRelativePath(importContext.rootDirectory)) }
     }
 
     private fun resolveDependencies(

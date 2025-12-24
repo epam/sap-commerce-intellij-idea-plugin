@@ -42,7 +42,6 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 
 class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
@@ -54,8 +53,8 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = importContext.project ?: return
-        val hasKotlinnatureExtension = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val project = importContext.project
+        val hasKotlinnatureExtension = importContext.chosenHybrisModuleDescriptors
             .any { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
@@ -66,8 +65,8 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     }
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
-        importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val project = importContext.project
+        importContext.chosenHybrisModuleDescriptors
             .find { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 

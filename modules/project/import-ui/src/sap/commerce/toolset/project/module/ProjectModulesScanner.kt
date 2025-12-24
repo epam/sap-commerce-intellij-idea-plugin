@@ -45,7 +45,7 @@ class ProjectModulesScanner {
 
     @Throws(InterruptedException::class, IOException::class)
     fun findModuleRoots(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
         acceptOnlyHybrisModules: Boolean,
@@ -138,7 +138,7 @@ class ProjectModulesScanner {
 
     @Throws(InterruptedException::class, IOException::class)
     fun processDirectoriesByTypePriority(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         rootDirectory: File,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
@@ -177,7 +177,7 @@ class ProjectModulesScanner {
 
     @Throws(IOException::class, InterruptedException::class)
     private fun scanForSubdirectories(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
         acceptOnlyHybrisModules: Boolean,
@@ -199,7 +199,7 @@ class ProjectModulesScanner {
 
     @Throws(InterruptedException::class, IOException::class)
     private fun scanSubdirectories(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
         acceptOnlyHybrisModules: Boolean,
@@ -230,7 +230,7 @@ class ProjectModulesScanner {
 
     @Throws(InterruptedException::class, IOException::class)
     private fun scanSubdirectoriesWSL(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
         acceptOnlyHybrisModules: Boolean,
@@ -253,7 +253,7 @@ class ProjectModulesScanner {
     }
 
     private fun addIfNotExists(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         rootDirectory: File,
         moduleRootDirectories: MutableMap<String, File>,
         file: File

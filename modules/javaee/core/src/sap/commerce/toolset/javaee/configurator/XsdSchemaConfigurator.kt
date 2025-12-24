@@ -23,7 +23,6 @@ import com.intellij.openapi.application.readAction
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -34,9 +33,9 @@ class XsdSchemaConfigurator : ProjectPostImportConfigurator {
         get() = "XSD Schema"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val cockpitJarToFile = readAction {
-            importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+            importContext.chosenHybrisModuleDescriptors
                 .firstOrNull { it.name == ProjectConstants.Extension.BACK_OFFICE }
                 ?.moduleRootDirectory
                 ?.toPath()

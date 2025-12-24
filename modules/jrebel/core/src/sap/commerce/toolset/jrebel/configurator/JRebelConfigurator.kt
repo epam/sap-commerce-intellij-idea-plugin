@@ -37,7 +37,6 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
@@ -54,9 +53,9 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
         get() = "JRebel"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
 
-        val moduleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
             .filter { it is YCustomRegularModuleDescriptor || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor) }
         val modules = readAction {
             moduleDescriptors

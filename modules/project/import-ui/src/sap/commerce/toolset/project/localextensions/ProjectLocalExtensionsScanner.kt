@@ -27,7 +27,7 @@ import kotlin.math.max
 class ProjectLocalExtensionsScanner {
 
     fun processHybrisConfig(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         configModuleDescriptor: ConfigModuleDescriptor
     ): Set<String> = ApplicationManager.getApplication().runReadAction(Computable {
         val hybrisConfig = unmarshalLocalExtensions(configModuleDescriptor)
@@ -36,14 +36,14 @@ class ProjectLocalExtensionsScanner {
         val explicitlyDefinedModules = TreeSet(String.CASE_INSENSITIVE_ORDER)
 
         processHybrisConfigExtensions(hybrisConfig, explicitlyDefinedModules)
-        processHybrisConfigAutoloadPaths(hybrisConfig, explicitlyDefinedModules, importContext)
+        processHybrisConfigAutoloadPaths(importContext, hybrisConfig, explicitlyDefinedModules)
         explicitlyDefinedModules
     })
 
     private fun processHybrisConfigAutoloadPaths(
+        importContext: ProjectImportContext.Mutable,
         hybrisConfig: Hybrisconfig,
-        explicitlyDefinedModules: TreeSet<String>,
-        importContext: ProjectImportContext
+        explicitlyDefinedModules: TreeSet<String>
     ) {
         if (importContext.platformDirectory == null) return
 
@@ -78,7 +78,7 @@ class ProjectLocalExtensionsScanner {
                     val value = it.value.replace("\${platformhome}", platform)
                     it.setValue(Paths.get(value).normalize().toString())
                 }
-                properties.put("platformhome", platform)
+                properties["platformhome"] = platform
 
                 val normalizedPaths = autoloadPaths.entries
                     .associate { entry ->

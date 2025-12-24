@@ -41,7 +41,7 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
         rootProjectModifiableModel: ModifiableModuleModel
     ): Module {
         return rootProjectModifiableModel.newModule(
-            moduleDescriptor.ideaModuleFile().absolutePath,
+            moduleDescriptor.ideaModuleFile(importContext).absolutePath,
             ModuleTypeId("Angular").name
         )
             .apply {

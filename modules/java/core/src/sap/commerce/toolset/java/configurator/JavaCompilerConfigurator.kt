@@ -35,7 +35,7 @@ class JavaCompilerConfigurator : ProjectPostImportConfigurator {
         get() = "Java Compiler"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val compilerConfiguration = CompilerConfiguration.getInstance(project)
             .asSafely<CompilerConfigurationImpl>() ?: return
         val compilerVersion = smartReadAction(project) {

@@ -18,16 +18,14 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
 class ConfigModuleDescriptorImpl(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name
-) : AbstractModuleDescriptor(importContext, moduleRootDirectory, name), ConfigModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootDirectory, name), ConfigModuleDescriptor {
 
     private var preselected = false
     override var isMainConfig = false

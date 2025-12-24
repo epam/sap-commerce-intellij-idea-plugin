@@ -23,10 +23,9 @@ import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
 open class ExternalModuleDescriptor(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     name: String,
-) : AbstractModuleDescriptor(importContext, moduleRootDirectory, name) {
+) : AbstractModuleDescriptor(moduleRootDirectory, name) {
 
-    override fun groupName(): Array<String>? = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext): Array<String>? = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
 }

@@ -40,7 +40,7 @@ class SearchScopeConfigurator : ProjectPostImportConfigurator {
         get() = "Search Scope"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris

@@ -27,7 +27,7 @@ class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
         get() = "Project Dictionaries"
 
     override fun preConfigure(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val moduleNames = importContext.foundModules
             .map { it.name.lowercase() }
             .toSet()

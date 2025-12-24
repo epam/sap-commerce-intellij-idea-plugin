@@ -23,18 +23,16 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 open class GradleModuleDescriptor(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     val gradleFile: File = File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD),
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.GRADLE
-) : ExternalModuleDescriptor(importContext, moduleRootDirectory, moduleRootDirectory.name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name) {
 
     class Provider : ModuleDescriptorProvider {
 
@@ -48,10 +46,7 @@ open class GradleModuleDescriptor(
                 || (project != null && ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID).getLinkedProjectSettings(moduleRootDirectory.path) != null)
         }
 
-        override fun create(
-            importContext: ProjectImportContext,
-            moduleRootDirectory: File
-        ) = GradleModuleDescriptor(importContext, moduleRootDirectory)
+        override fun create(moduleRootDirectory: File) = GradleModuleDescriptor(moduleRootDirectory)
     }
 
 }

@@ -35,7 +35,6 @@ import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 
@@ -48,13 +47,12 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         PropertiesComponent.getInstance(project)
             .setValue("show.inlinked.gradle.project.popup", false)
 
         try {
-            importContext
-                .chosenModuleDescriptors(ModuleGroup.OTHER)
+            importContext.chosenOtherModuleDescriptors
                 .filterIsInstance<GradleModuleDescriptor>()
                 .mapNotNull { it.gradleFile.path }
                 .forEach { externalProjectPath ->
@@ -69,7 +67,7 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
         if (!importContext.refresh) return
-        val project = importContext.project ?: return
+        val project = importContext.project
 
         edtWriteAction {
             project.triggerAction("ExternalSystem.RefreshAllProjects") {

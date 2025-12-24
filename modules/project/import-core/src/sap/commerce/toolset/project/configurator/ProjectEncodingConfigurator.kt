@@ -35,7 +35,7 @@ class ProjectEncodingConfigurator : ProjectImportConfigurator {
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = importContext.project ?: return
+        val project = importContext.project
 
         EncodingProjectManager.getInstance(project)
             .setDefaultCharsetForPropertiesFiles(null, StandardCharsets.UTF_8)

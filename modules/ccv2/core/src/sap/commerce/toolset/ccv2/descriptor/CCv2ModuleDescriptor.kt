@@ -26,16 +26,15 @@ import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
 abstract class CCv2ModuleDescriptor(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name,
-) : ExternalModuleDescriptor(importContext, moduleRootDirectory, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, name) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY
     }
 
     override fun isPreselected() = true
-    override fun groupName() = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()
 
 }

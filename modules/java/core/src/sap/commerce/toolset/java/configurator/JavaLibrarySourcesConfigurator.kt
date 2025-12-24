@@ -64,7 +64,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
             .takeIf { it.isNotEmpty() }
             ?: return
 
-        val project = importContext.project ?: return
+        val project = importContext.project
         val librarySourceDir = getLibrarySourceDir() ?: return
         val lookupService = LibraryRootLookupService.getService()
         val lookupRepositories = lookupService.getLookupRepositories(project)

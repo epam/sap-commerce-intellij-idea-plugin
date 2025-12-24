@@ -34,7 +34,7 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)
         val detectedRoots = HashSet(rootDetector.detect())

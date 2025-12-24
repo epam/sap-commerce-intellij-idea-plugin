@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import java.io.File
 
@@ -26,11 +25,9 @@ abstract class AbstractYSubModuleDescriptor(
     override val owner: YRegularModuleDescriptor,
     override val moduleRootDirectory: File,
     override val name: String = owner.name + "." + moduleRootDirectory.name,
-    override val importContext: ProjectImportContext = owner.importContext,
     override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
     override val descriptorType: ModuleDescriptorType = owner.descriptorType,
 ) : AbstractYModuleDescriptor(
-    importContext = importContext,
     moduleRootDirectory = moduleRootDirectory,
     name = name,
     extensionInfo = owner.extensionInfo

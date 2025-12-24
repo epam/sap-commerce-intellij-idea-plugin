@@ -42,7 +42,7 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
         rootProjectModifiableModel: ModifiableModuleModel
     ): Module {
         val javaModule = rootProjectModifiableModel.newModule(
-            moduleDescriptor.ideaModuleFile().absolutePath,
+            moduleDescriptor.ideaModuleFile(importContext).absolutePath,
             ModuleTypeId("CCv2").name
         )
         modifiableModelsProvider.getModifiableRootModel(javaModule)

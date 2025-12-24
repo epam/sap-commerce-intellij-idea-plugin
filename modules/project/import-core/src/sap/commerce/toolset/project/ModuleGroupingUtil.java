@@ -23,6 +23,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.project.context.ProjectImportContext;
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
@@ -48,7 +49,7 @@ public final class ModuleGroupingUtil {
 
     @Nullable
     public static String[] getGroupName(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final ModuleDescriptor moduleDescriptor,
         final Collection<ModuleDescriptor> requiredYModuleDescriptorList
     ) {
         if (!(moduleDescriptor instanceof ConfigModuleDescriptor)) {
@@ -58,24 +59,21 @@ public final class ModuleGroupingUtil {
             }
         }
 
-        final String[] groupPathOverride = getGlobalGroupPathOverride(moduleDescriptor);
+        final String[] groupPathOverride = getGlobalGroupPathOverride(importContext, moduleDescriptor);
         if (groupPathOverride != null) {
             return groupPathOverride.clone();
         }
 
-        final String[] groupPath = getGroupPath(moduleDescriptor, requiredYModuleDescriptorList);
+        final String[] groupPath = getGroupPath(importContext, moduleDescriptor, requiredYModuleDescriptorList);
         if (groupPath == null) {
             return null;
         }
         return groupPath.clone();
     }
 
-    private static String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
-        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getImportContext().getConfigModuleDescriptor();
-        if (configDescriptor == null) {
-            return null;
-        }
-        final File groupFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+    private static String[] getGlobalGroupPathOverride(final @NotNull ProjectImportContext importContext, final ModuleDescriptor moduleDescriptor) {
+        final var configDescriptor = importContext.getConfigModuleDescriptor();
+        final var groupFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         if (!groupFile.exists()) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
         }
@@ -127,21 +125,22 @@ public final class ModuleGroupingUtil {
     }
 
     public static String[] getGroupPath(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext,
+        final @NotNull ModuleDescriptor moduleDescriptor,
         final Collection<ModuleDescriptor> requiredYModuleDescriptorList
     ) {
-        final var groupName = moduleDescriptor.groupName();
+        final var groupName = moduleDescriptor.groupName(importContext);
         if (groupName != null) return groupName;
 
         if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
-            return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList);
+            return getGroupPath(importContext, ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList);
         }
 
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
-            File customDirectory = moduleDescriptor.getImportContext().getExternalExtensionsDirectory();
+            File customDirectory = importContext.getExternalExtensionsDirectory();
 
             if (null == customDirectory) {
-                customDirectory = new File(moduleDescriptor.getImportContext().getPlatformDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
+                customDirectory = new File(importContext.getPlatformDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
             }
             if (!customDirectory.exists()) {
                 return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
@@ -173,10 +172,7 @@ public final class ModuleGroupingUtil {
         }
 
         if (requiredYModuleDescriptorList.contains(moduleDescriptor)) {
-            final File hybrisBinDirectory = new File(
-                moduleDescriptor.getImportContext().getPlatformDirectory(),
-                ProjectConstants.Directory.BIN
-            );
+            final var hybrisBinDirectory = new File(importContext.getPlatformDirectory(), ProjectConstants.Directory.BIN);
 
             final List<String> path;
             try {

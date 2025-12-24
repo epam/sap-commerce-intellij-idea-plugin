@@ -31,17 +31,17 @@ import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 class ProjectLocalExtensionsProcessor {
 
     @Throws(InterruptedException::class)
-    fun process(importContext: ProjectImportContext, configModuleDescriptor: ConfigModuleDescriptor) {
+    fun process(importContext: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
         val explicitlyDefinedModules = ProjectLocalExtensionsScanner.getInstance()
             .processHybrisConfig(importContext, configModuleDescriptor)
 
-        preselectModules(configModuleDescriptor, explicitlyDefinedModules, importContext)
+        preselectModules(importContext, configModuleDescriptor, explicitlyDefinedModules)
     }
 
     private fun preselectModules(
+        importContext: ProjectImportContext.Mutable,
         configModuleDescriptor: ConfigModuleDescriptor,
-        explicitlyDefinedModules: Set<String>,
-        importContext: ProjectImportContext
+        explicitlyDefinedModules: Set<String>
     ) {
         importContext.foundModules
             .filter { explicitlyDefinedModules.contains(it.name) }

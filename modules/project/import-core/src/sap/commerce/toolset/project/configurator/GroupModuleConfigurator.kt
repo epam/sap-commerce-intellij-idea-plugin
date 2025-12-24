@@ -32,7 +32,7 @@ class GroupModuleConfigurator : ProjectPreImportConfigurator {
     override fun preConfigure(importContext: ProjectImportContext) {
         if (!ApplicationSettings.getInstance().groupModules) return
 
-        val moduleDescriptorsToImport = importContext.chosenModuleDescriptors
+        val moduleDescriptorsToImport = importContext.allChosenModuleDescriptors
         val requiredYModuleDescriptorList = buildSet {
             moduleDescriptorsToImport
                 .filterIsInstance<YModuleDescriptor>()
@@ -44,7 +44,7 @@ class GroupModuleConfigurator : ProjectPreImportConfigurator {
         }
 
         moduleDescriptorsToImport.forEach { moduleDescriptor ->
-            ModuleGroupingUtil.getGroupName(moduleDescriptor, requiredYModuleDescriptorList)
+            ModuleGroupingUtil.getGroupName(importContext, moduleDescriptor, requiredYModuleDescriptorList)
                 ?.asSafely<Array<String>>()
                 ?.let { moduleDescriptor.groupNames = it }
         }

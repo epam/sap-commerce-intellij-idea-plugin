@@ -29,7 +29,7 @@ class JavaSdkConfigurator : ProjectPreImportConfigurator {
         get() = "Java Sdk"
 
     override fun preConfigure(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val projectRootManager = ProjectRootManager.getInstance(project)
 
         val projectSdk = projectRootManager.projectSdk ?: return

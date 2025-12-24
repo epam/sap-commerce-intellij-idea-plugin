@@ -25,7 +25,6 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -45,7 +44,7 @@ class KotlinFacetConfigurator : ModuleFacetConfigurator {
     ) {
         if (moduleDescriptor !is YModuleDescriptor) return
 
-        importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        importContext.chosenHybrisModuleDescriptors
             .firstOrNull { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 

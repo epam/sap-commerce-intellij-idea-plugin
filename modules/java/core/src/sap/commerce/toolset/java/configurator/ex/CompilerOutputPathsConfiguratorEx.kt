@@ -21,6 +21,7 @@ import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
@@ -28,10 +29,10 @@ import java.io.File
 internal object CompilerOutputPathsConfiguratorEx {
 
     fun configure(
+        importContext: ProjectImportContext,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor
     ) {
-        val importContext = moduleDescriptor.importContext
         val fakeOutputPath = importContext.settings.useFakeOutputPathForCustomExtensions
         val ootbReadonlyMode = importContext.settings.importOOTBModulesInReadOnlyMode
 

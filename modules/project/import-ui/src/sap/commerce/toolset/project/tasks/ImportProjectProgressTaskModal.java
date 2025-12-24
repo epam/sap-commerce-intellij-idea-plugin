@@ -73,7 +73,7 @@ public class ImportProjectProgressTaskModal extends Task.Modal {
         indicator.setIndeterminate(false);
         indicator.setFraction(0d);
 
-        final var chosenModuleDescriptors = importContext.getChosenModuleDescriptors();
+        final var chosenModuleDescriptors = importContext.getAllChosenModuleDescriptors();
         final var moduleImportConfigurators = ModuleImportConfigurator.Companion.getEP().getExtensionList();
         final var moduleFacetConfigurators = ModuleFacetConfigurator.Companion.getEP().getExtensionList();
 

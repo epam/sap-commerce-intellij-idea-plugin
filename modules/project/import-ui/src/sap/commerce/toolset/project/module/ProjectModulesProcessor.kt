@@ -49,7 +49,7 @@ class ProjectModulesProcessor {
 
     @Throws(InterruptedException::class, IOException::class)
     fun process(
-        importContext: ProjectImportContext,
+        importContext: ProjectImportContext.Mutable,
         progressListenerProcessor: TaskProgressProcessor<File>,
         errorsProcessor: TaskProgressProcessor<MutableList<File>>
     ): Collection<ModuleDescriptor> {
@@ -58,7 +58,6 @@ class ProjectModulesProcessor {
         val moduleFilesContext = ModuleFilesContext()
         val rootDirectory = importContext.rootDirectory
         val excludedFromScanning = getExcludedFromScanningDirectories(importContext)
-
         val modulesScanner = ProjectModulesScanner.getInstance()
 
         thisLogger().info("Scanning for modules")
@@ -86,7 +85,7 @@ class ProjectModulesProcessor {
         val pathsFailedToImport = mutableListOf<File>()
 
         if (!ApplicationSettings.getInstance().groupModules) {
-            val rootModule = addRootModule(importContext, rootDirectory)
+            val rootModule = addRootModule(rootDirectory)
             if (rootModule != null) moduleDescriptors.add(rootModule)
             else pathsFailedToImport.add(rootDirectory)
         }
@@ -129,8 +128,8 @@ class ProjectModulesProcessor {
         return moduleDescriptors
     }
 
-    private fun addRootModule(importContext: ProjectImportContext, moduleRootDirectory: File): ExternalModuleDescriptor? = try {
-        ModuleDescriptorFactory.createRootDescriptor(importContext, moduleRootDirectory, moduleRootDirectory.getName())
+    private fun addRootModule(moduleRootDirectory: File): ExternalModuleDescriptor? = try {
+        ModuleDescriptorFactory.createRootDescriptor(moduleRootDirectory, moduleRootDirectory.getName())
     } catch (e: HybrisConfigurationException) {
         thisLogger().error("Can not import a module using path: $moduleRootDirectory", e)
         null
@@ -221,7 +220,7 @@ class ProjectModulesProcessor {
         moduleDescriptors.removeAll(hmcSubModuleDescriptors)
     }
 
-    private fun getExcludedFromScanningDirectories(importContext: ProjectImportContext) = importContext.excludedFromScanning
+    private fun getExcludedFromScanningDirectories(importContext: ProjectImportContext.Mutable) = importContext.excludedFromScanning
         .map { File(importContext.rootDirectory, it) }
         .filter { it.exists() }
         .filter { it.isDirectory() }

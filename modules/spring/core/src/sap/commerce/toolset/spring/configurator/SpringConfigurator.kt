@@ -36,7 +36,6 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -53,13 +52,15 @@ import kotlin.io.path.exists
 
 class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurator, ProjectStartupConfigurator {
 
+    private val patternSplitByComma = Pattern.compile(" ,")
+
     override val name: String
         get() = "Spring"
 
     override fun preConfigure(importContext: ProjectImportContext) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
             .associateBy { it.name }
 
         for (moduleDescriptor in moduleDescriptors.values) {
@@ -92,7 +93,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     ) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
             .associateBy { it.name }
         val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
@@ -239,7 +240,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     ) {
         val webModuleDir = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT)
 
-        SPLIT_PATTERN.split(contextConfigLocation)
+        patternSplitByComma.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }
             .map { File(webModuleDir, it) }
             .filter { it.exists() }
@@ -368,7 +369,4 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
         ?: false
 
-    companion object {
-        private val SPLIT_PATTERN = Pattern.compile(" ,")
-    }
 }

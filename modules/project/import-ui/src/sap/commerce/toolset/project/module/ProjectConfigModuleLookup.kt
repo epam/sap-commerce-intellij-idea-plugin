@@ -44,7 +44,7 @@ import kotlin.io.path.isDirectory
 class ProjectConfigModuleLookup {
 
     @Throws(HybrisConfigurationException::class)
-    fun getConfigModuleDescriptor(importContext: ProjectImportContext) = find(importContext)
+    fun getConfigModuleDescriptor(importContext: ProjectImportContext.Mutable) = find(importContext)
         ?: throw HybrisConfigurationException(
             """
                 The ‘config’ module hasn’t been detected, which will affect the following functionality:
@@ -55,7 +55,7 @@ class ProjectConfigModuleLookup {
                  """.trimIndent()
         )
 
-    private fun find(importContext: ProjectImportContext): ConfigModuleDescriptor? {
+    private fun find(importContext: ProjectImportContext.Mutable): ConfigModuleDescriptor? {
         val foundConfigModules = mutableListOf<ConfigModuleDescriptor>()
         var platformHybrisModuleDescriptor: PlatformModuleDescriptor? = null
         importContext.foundModules.forEach { moduleDescriptor ->
@@ -89,7 +89,7 @@ class ProjectConfigModuleLookup {
 
         return try {
             val configHybrisModuleDescriptor = ModuleDescriptorFactory.createConfigDescriptor(
-                platformHybrisModuleDescriptor.importContext, configDir, configDir.getName()
+                configDir, configDir.getName()
             )
             thisLogger().info("Creating Overridden Config module in local.properties for ${configDir.absolutePath}")
 

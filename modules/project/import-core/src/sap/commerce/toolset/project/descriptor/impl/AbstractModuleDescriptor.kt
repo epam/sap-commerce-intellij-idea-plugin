@@ -31,7 +31,6 @@ import java.io.File
 import java.util.*
 
 abstract class AbstractModuleDescriptor(
-    override val importContext: ProjectImportContext,
     override val moduleRootDirectory: File,
     override val name: String,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
@@ -84,22 +83,17 @@ abstract class AbstractModuleDescriptor(
     override fun extensionDescriptor() = myExtensionDescriptor
     override fun isPreselected() = false
 
-    override fun ideaModuleFile(): File {
+    override fun ideaModuleFile(importContext: ProjectImportContext): File {
         val futureModuleName = ideaModuleName()
         return importContext.modulesFilesDirectory
             ?.let { File(importContext.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
             ?: File(moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
-    override fun getRelativePath(): String {
-        val projectRootDir: File = importContext.rootDirectory
-            ?: return moduleRootDirectory.path
-        val virtualFileSystemService = VirtualFileSystemService.getInstance()
-
-        return if (virtualFileSystemService.fileContainsAnother(projectRootDir, moduleRootDirectory)) {
-            virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDirectory)
-        } else moduleRootDirectory.path
-    }
+    override fun getRelativePath(rootDirectory: File): String = VirtualFileSystemService.getInstance()
+        .takeIf { it.fileContainsAnother(rootDirectory, moduleRootDirectory) }
+        ?.getRelativePath(rootDirectory, moduleRootDirectory)
+        ?: moduleRootDirectory.path
 
     override fun getAllDependencies() = dependencies
 
@@ -107,6 +101,7 @@ abstract class AbstractModuleDescriptor(
     override fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>) = extensions
         .map { it.name }
         .let { requiredExtensionNames.addAll(it) }
+
     override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
         requiredExtensionNames = initDependencies(moduleDescriptors).toMutableSet()
     }

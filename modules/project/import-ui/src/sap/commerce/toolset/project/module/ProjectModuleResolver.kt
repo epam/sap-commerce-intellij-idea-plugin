@@ -61,10 +61,10 @@ class ProjectModuleResolver {
 
     fun isHybrisModule(file: File): Boolean = ProjectUtil.isHybrisModuleRoot(file)
 
-    fun isOutOfTheBoxModule(file: File, importContext: ProjectImportContext): Boolean {
+    fun isOutOfTheBoxModule(importContext: ProjectImportContext.Mutable, file: File): Boolean {
         val extDir = importContext.externalExtensionsDirectory
         if (extDir != null) {
-            if (VirtualFileSystemService.Companion.getInstance().fileContainsAnother(extDir, file)) {
+            if (VirtualFileSystemService.getInstance().fileContainsAnother(extDir, file)) {
                 // this will override bin/ext-* naming convention.
                 return false
             }

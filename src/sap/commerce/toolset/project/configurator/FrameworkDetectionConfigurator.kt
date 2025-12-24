@@ -34,7 +34,7 @@ class FrameworkDetectionConfigurator : ProjectPreImportConfigurator {
         get() = "Framework Detection"
 
     override fun preConfigure(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
 
         Plugin.SPRING.ifActive { excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID) }
         Plugin.JAVAEE.ifActive { excludeFrameworkDetection(project, JavaeeApplicationFacet.ID) }

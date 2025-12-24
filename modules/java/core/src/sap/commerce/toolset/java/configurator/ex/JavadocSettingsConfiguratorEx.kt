@@ -20,17 +20,18 @@ package sap.commerce.toolset.java.configurator.ex
 
 import com.intellij.openapi.roots.JavaModuleExternalPaths
 import com.intellij.openapi.roots.ModifiableRootModel
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 
 internal object JavadocSettingsConfiguratorEx {
 
-    fun configure(modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {
+    fun configure(importContext: ProjectImportContext, modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {
         val javadocRefList = mutableListOf<String>()
         val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
-        moduleDescriptor.importContext.javadocUrl
+        importContext.javadocUrl
             ?.takeUnless { moduleDescriptor is YCustomRegularModuleDescriptor }
             ?.takeUnless { moduleDescriptor is ConfigModuleDescriptor }
             ?.let { javadocRefList.add(it) }

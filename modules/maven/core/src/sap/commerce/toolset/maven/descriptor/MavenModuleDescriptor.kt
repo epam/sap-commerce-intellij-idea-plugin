@@ -22,17 +22,15 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.idea.maven.model.MavenConstants
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 class MavenModuleDescriptor(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.MAVEN
-) : ExternalModuleDescriptor(importContext, moduleRootDirectory, moduleRootDirectory.name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name) {
 
     class Provider : ModuleDescriptorProvider {
         override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
@@ -42,9 +40,6 @@ class MavenModuleDescriptor(
             return File(moduleRootDirectory, MavenConstants.POM_XML).isFile()
         }
 
-        override fun create(
-            importContext: ProjectImportContext,
-            moduleRootDirectory: File
-        ) = MavenModuleDescriptor(importContext, moduleRootDirectory)
+        override fun create(moduleRootDirectory: File) = MavenModuleDescriptor(moduleRootDirectory)
     }
 }

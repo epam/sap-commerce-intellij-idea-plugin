@@ -25,7 +25,6 @@ import com.intellij.openapi.vfs.VfsUtil
 import org.angular2.cli.Angular2ProjectConfigurator
 import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 
 class AngularConfigurator : ProjectPostImportConfigurator {
@@ -38,7 +37,7 @@ class AngularConfigurator : ProjectPostImportConfigurator {
             ?.takeUnless { it.isDisposed }
             ?: return
 
-        val angularModuleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.OTHER)
+        val angularModuleDescriptors = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<AngularModuleDescriptor>()
             .takeIf { it.isNotEmpty() }
             ?: return

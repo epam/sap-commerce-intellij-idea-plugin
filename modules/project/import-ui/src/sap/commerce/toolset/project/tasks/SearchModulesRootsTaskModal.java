@@ -40,10 +40,10 @@ import static sap.commerce.toolset.HybrisI18nBundle.message;
 public class SearchModulesRootsTaskModal extends Task.Modal {
 
     private static final Logger LOG = Logger.getInstance(SearchModulesRootsTaskModal.class);
-    protected final ProjectImportContext importContext;
+    protected final ProjectImportContext.Mutable importContext;
 
     public SearchModulesRootsTaskModal(
-        @NotNull final ProjectImportContext importContext
+        @NotNull final ProjectImportContext.Mutable importContext
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),

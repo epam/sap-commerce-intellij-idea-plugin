@@ -31,11 +31,10 @@ import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 class AngularModuleDescriptor(
-    importContext: ProjectImportContext,
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
-) : ExternalModuleDescriptor(importContext, moduleRootDirectory, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, name) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY
@@ -49,11 +48,11 @@ class AngularModuleDescriptor(
         .take(1)
         .toSet()
 
-    override fun groupName(): Array<String> {
+    override fun groupName(importContext: ProjectImportContext): Array<String> {
         // assumption that there can be only 1 parent
         val parent = getDirectDependencies().firstOrNull()
             ?: return emptyArray()
-        val parentPath = ModuleGroupingUtil.getGroupPath(parent, listOf())
+        val parentPath = ModuleGroupingUtil.getGroupPath(importContext, parent, listOf())
         return parentPath + parent.name
     }
 
@@ -62,8 +61,7 @@ class AngularModuleDescriptor(
             && File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
 
         override fun create(
-            importContext: ProjectImportContext,
             moduleRootDirectory: File
-        ) = AngularModuleDescriptor(importContext, moduleRootDirectory)
+        ) = AngularModuleDescriptor(moduleRootDirectory)
     }
 }

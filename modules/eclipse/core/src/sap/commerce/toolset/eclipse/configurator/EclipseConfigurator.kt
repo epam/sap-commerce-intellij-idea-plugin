@@ -23,7 +23,6 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.descriptor.EclipseModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 
 class EclipseConfigurator : ProjectImportConfigurator {
@@ -35,8 +34,8 @@ class EclipseConfigurator : ProjectImportConfigurator {
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = importContext.project ?: return
-        val projectList = importContext.chosenModuleDescriptors(ModuleGroup.OTHER)
+        val project = importContext.project
+        val eclipseProjectPaths = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
             .map { it.moduleRootDirectory }
             .map { it.path }
@@ -46,7 +45,7 @@ class EclipseConfigurator : ProjectImportConfigurator {
             eclipseImportBuilder.parameters.converterOptions.commonModulesDirectory = it.path
         }
 
-        eclipseImportBuilder.list = projectList
+        eclipseImportBuilder.list = eclipseProjectPaths
 
         ApplicationManager.getApplication().invokeAndWait {
             // TODO: java.lang.Throwable: Slow operations are prohibited on EDT. See SlowOperations.assertSlowOperationsAreAllowed javadoc.

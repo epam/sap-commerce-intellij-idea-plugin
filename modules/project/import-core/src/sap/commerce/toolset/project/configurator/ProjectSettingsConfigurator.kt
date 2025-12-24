@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.openapi.util.io.FileUtil
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.directory
-import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
@@ -36,7 +35,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         get() = "Project Settings"
 
     override fun preConfigure(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val workspaceSettings = WorkspaceSettings.getInstance(project)
         val projectSettings = ProjectSettings.getInstance(project)
         workspaceSettings.hybrisProject = true
@@ -86,7 +85,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     }
 
     private fun saveCustomDirectoryLocation(importContext: ProjectImportContext) {
-        val project = importContext.project ?: return
+        val project = importContext.project
         val projectDir = project.directory?.let { Path(it) } ?: return
         val projectSettings = project.ySettings
         val hybrisPath = importContext.platformDirectory
@@ -117,7 +116,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
             ?.let { FileUtil.toSystemIndependentName(it.path) }
 
     private fun createModulesOnBlackList(importContext: ProjectImportContext): Set<String> {
-        val chosenHybrisModuleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+        val chosenHybrisModuleDescriptors = importContext.chosenHybrisModuleDescriptors
         val toBeImportedNames = chosenHybrisModuleDescriptors
             .map { it.name }
             .toSet()
@@ -125,7 +124,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         return importContext.foundModules
             .filterNot { chosenHybrisModuleDescriptors.contains(it) }
             .filter { toBeImportedNames.contains(it.name) }
-            .map { it.getRelativePath() }
+            .map { it.getRelativePath(importContext.rootDirectory) }
             .toSet()
     }
 }
