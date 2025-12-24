@@ -100,11 +100,6 @@ class ProjectModuleResolver {
     }
         ?: false
 
-    // TODO: move it somewhere
-    fun hasVCS(rootProjectDirectory: File?) = File(rootProjectDirectory, ".git").isDirectory()
-        || File(rootProjectDirectory, ".svn").isDirectory()
-        || File(rootProjectDirectory, ".hg").isDirectory()
-
     fun isGradleKtsModule(file: File) = Plugin.GRADLE.ifActive {
         if (file.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return@ifActive false

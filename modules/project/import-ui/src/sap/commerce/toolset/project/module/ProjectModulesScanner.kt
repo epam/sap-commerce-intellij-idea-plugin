@@ -66,12 +66,12 @@ class ProjectModulesScanner {
             return
         }
 
-        val projectModuleResolver = ProjectModuleResolver.getInstance()
-
-        if (projectModuleResolver.hasVCS(moduleDirectory)) {
+        if (hasVCS(moduleDirectory)) {
             thisLogger().info("Detected version control service ${moduleDirectory.absolutePath}")
             importContext.addVcs(moduleDirectory.getCanonicalFile())
         }
+
+        val projectModuleResolver = ProjectModuleResolver.getInstance()
 
         if (projectModuleResolver.isHybrisModule(moduleDirectory)) {
             thisLogger().info("Detected hybris module ${moduleDirectory.absolutePath}")
@@ -174,6 +174,10 @@ class ProjectModulesScanner {
 
         return moduleRootDirectories.values
     }
+
+    private fun hasVCS(moduleDirectory: File?) = File(moduleDirectory, ".git").isDirectory()
+        || File(moduleDirectory, ".svn").isDirectory()
+        || File(moduleDirectory, ".hg").isDirectory()
 
     @Throws(IOException::class, InterruptedException::class)
     private fun scanForSubdirectories(
