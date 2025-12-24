@@ -18,16 +18,16 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
 class ConfigModuleDescriptorImpl(
+    importContext: ProjectImportContext,
     moduleRootDirectory: File,
-    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name
-) : AbstractModuleDescriptor(moduleRootDirectory, projectDescriptor, name), ConfigModuleDescriptor {
+) : AbstractModuleDescriptor(importContext, moduleRootDirectory, name), ConfigModuleDescriptor {
 
     private var preselected = false
     override var isMainConfig = false

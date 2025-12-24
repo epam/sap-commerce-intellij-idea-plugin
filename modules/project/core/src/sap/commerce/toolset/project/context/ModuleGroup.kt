@@ -16,12 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.module
+package sap.commerce.toolset.project.context
 
-import java.io.File
-
-data class ModulesContext(
-    val hybrisModules: MutableSet<File> = mutableSetOf(),
-    val nonHybrisModules: MutableSet<File> = mutableSetOf(),
-    val ccv2Modules: MutableSet<File> = mutableSetOf(),
-)
+enum class ModuleGroup {
+    HYBRIS, OTHER
+}

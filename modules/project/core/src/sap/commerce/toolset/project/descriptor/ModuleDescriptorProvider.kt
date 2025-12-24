@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.io.File
 
 interface ModuleDescriptorProvider {
@@ -27,8 +28,8 @@ interface ModuleDescriptorProvider {
     fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean
 
     fun create(
+        importContext: ProjectImportContext,
         moduleRootDirectory: File,
-        projectDescriptor: HybrisProjectDescriptor,
     ): ModuleDescriptor
 
     companion object {

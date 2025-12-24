@@ -35,7 +35,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.HybrisProjectImportProvider
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacet
@@ -73,7 +73,7 @@ class ProjectRefreshService(private val project: Project) {
         wizard.projectBuilder.cleanup()
     }
 
-    fun openModuleDescriptors(projectDescriptor: HybrisProjectDescriptor): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
+    fun openModuleDescriptors(importContext: ProjectImportContext): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
         .filter { module -> YFacet.getState(module)?.subModuleType == null }
         .mapNotNull { module ->
             ModuleRootManager.getInstance(module).contentRoots
@@ -81,7 +81,7 @@ class ProjectRefreshService(private val project: Project) {
                 ?.let { VfsUtil.virtualToIoFile(it) }
                 ?.let {
                     try {
-                        ModuleDescriptorFactory.createDescriptor(it, projectDescriptor)
+                        ModuleDescriptorFactory.createDescriptor(it, importContext)
                     } catch (e: HybrisConfigurationException) {
                         thisLogger().error(e)
                         return@let null

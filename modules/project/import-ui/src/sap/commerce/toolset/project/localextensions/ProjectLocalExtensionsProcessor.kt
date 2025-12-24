@@ -21,25 +21,29 @@ package sap.commerce.toolset.project.localextensions
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
-import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 
 @Service
 class ProjectLocalExtensionsProcessor {
 
     @Throws(InterruptedException::class)
-    fun process(projectDescriptor: HybrisProjectDescriptor, configModuleDescriptor: ConfigModuleDescriptor) {
+    fun process(importContext: ProjectImportContext, configModuleDescriptor: ConfigModuleDescriptor) {
         val explicitlyDefinedModules = ProjectLocalExtensionsScanner.getInstance()
-            .processHybrisConfig(projectDescriptor, configModuleDescriptor)
+            .processHybrisConfig(importContext, configModuleDescriptor)
 
-        preselectModules(configModuleDescriptor, explicitlyDefinedModules, projectDescriptor)
+        preselectModules(configModuleDescriptor, explicitlyDefinedModules, importContext)
     }
 
     private fun preselectModules(
         configModuleDescriptor: ConfigModuleDescriptor,
         explicitlyDefinedModules: Set<String>,
-        projectDescriptor: HybrisProjectDescriptor
+        importContext: ProjectImportContext
     ) {
-        projectDescriptor.foundModules
+        importContext.foundModules
             .filter { explicitlyDefinedModules.contains(it.name) }
             .filterIsInstance<YRegularModuleDescriptor>()
             .forEach { moduleDescriptor ->
@@ -49,7 +53,7 @@ class ProjectLocalExtensionsProcessor {
                     .forEach { it.isNeededDependency = true }
             }
 
-        preselectConfigModules(configModuleDescriptor, projectDescriptor.foundModules)
+        preselectConfigModules(configModuleDescriptor, importContext.foundModules)
     }
 
     private fun preselectConfigModules(

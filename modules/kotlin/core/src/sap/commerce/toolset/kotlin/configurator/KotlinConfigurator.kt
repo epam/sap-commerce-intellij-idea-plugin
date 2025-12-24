@@ -42,7 +42,8 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
 
@@ -50,12 +51,12 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         get() = "Kotlin"
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = hybrisProjectDescriptor.project ?: return
-        val hasKotlinnatureExtension = hybrisProjectDescriptor.chosenModuleDescriptors.stream()
-            .anyMatch { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+        val project = importContext.project ?: return
+        val hasKotlinnatureExtension = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+            .any { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
         application.runReadAction {
@@ -64,9 +65,9 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
-        hybrisProjectDescriptor.chosenModuleDescriptors
+    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+        val project = importContext.project ?: return
+        importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
             .find { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 

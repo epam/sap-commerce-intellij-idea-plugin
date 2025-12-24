@@ -19,7 +19,7 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.charset.StandardCharsets
 
 /**
@@ -31,8 +31,11 @@ class ProjectEncodingConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Project Encoding"
 
-    override fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor, modifiableModelsProvider: IdeModifiableModelsProvider) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override fun configure(
+        importContext: ProjectImportContext,
+        modifiableModelsProvider: IdeModifiableModelsProvider
+    ) {
+        val project = importContext.project ?: return
 
         EncodingProjectManager.getInstance(project)
             .setDefaultCharsetForPropertiesFiles(null, StandardCharsets.UTF_8)

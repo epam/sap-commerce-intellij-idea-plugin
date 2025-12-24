@@ -20,17 +20,22 @@ package sap.commerce.toolset.angular.descriptor
 
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ModuleGroupingUtil
-import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 class AngularModuleDescriptor(
+    importContext: ProjectImportContext,
     moduleRootDirectory: File,
-    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
-) : ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
+) : ExternalModuleDescriptor(importContext, moduleRootDirectory, name) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY
@@ -53,11 +58,12 @@ class AngularModuleDescriptor(
     }
 
     class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(project: Project?, moduleRootDirectory: File) = File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
+        override fun isApplicable(project: Project?, moduleRootDirectory: File) = Plugin.ANGULAR.isActive()
+            && File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
 
         override fun create(
-            moduleRootDirectory: File,
-            projectDescriptor: HybrisProjectDescriptor
-        ) = AngularModuleDescriptor(moduleRootDirectory, projectDescriptor)
+            importContext: ProjectImportContext,
+            moduleRootDirectory: File
+        ) = AngularModuleDescriptor(importContext, moduleRootDirectory)
     }
 }

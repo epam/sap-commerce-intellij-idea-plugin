@@ -24,14 +24,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
 import java.io.File
 import java.util.*
 
 abstract class AbstractModuleDescriptor(
+    override val importContext: ProjectImportContext,
     override val moduleRootDirectory: File,
-    override val projectDescriptor: HybrisProjectDescriptor,
     override val name: String,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
     override var groupNames: Array<String> = emptyArray(),
@@ -85,13 +86,13 @@ abstract class AbstractModuleDescriptor(
 
     override fun ideaModuleFile(): File {
         val futureModuleName = ideaModuleName()
-        return projectDescriptor.modulesFilesDirectory
-            ?.let { File(projectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+        return importContext.modulesFilesDirectory
+            ?.let { File(importContext.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
             ?: File(moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
     override fun getRelativePath(): String {
-        val projectRootDir: File = projectDescriptor.rootDirectory
+        val projectRootDir: File = importContext.rootDirectory
             ?: return moduleRootDirectory.path
         val virtualFileSystemService = VirtualFileSystemService.getInstance()
 
@@ -125,6 +126,7 @@ abstract class AbstractModuleDescriptor(
 
         if (dependencies.isEmpty()) return dependenciesSet
 
+        // TODO: what if there is circular module dependency
         dependencies
             .filterNot { dependenciesSet.contains(it) }
             .forEach {

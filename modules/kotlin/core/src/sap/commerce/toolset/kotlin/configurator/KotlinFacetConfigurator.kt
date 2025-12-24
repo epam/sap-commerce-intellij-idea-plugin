@@ -25,7 +25,8 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import java.io.File
@@ -36,13 +37,17 @@ class KotlinFacetConfigurator : ModuleFacetConfigurator {
         get() = "Kotlin Facet"
 
     override fun configureModuleFacet(
+        importContext: ProjectImportContext,
         module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        modifiableRootModel: ModifiableRootModel,
+        modifiableFacetModel: ModifiableFacetModel
     ) {
         if (moduleDescriptor !is YModuleDescriptor) return
+
+        importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
+            .firstOrNull { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+            ?: return
 
         val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
 
@@ -53,7 +58,6 @@ class KotlinFacetConfigurator : ModuleFacetConfigurator {
                 ?.let { modifiableFacetModel.removeFacet(it) }
 
             if (!hasKotlinDirectories) return@runAndWait
-            if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return@runAndWait
 
             val facet = KotlinFacet.get(module)
                 ?: createFacet(module)

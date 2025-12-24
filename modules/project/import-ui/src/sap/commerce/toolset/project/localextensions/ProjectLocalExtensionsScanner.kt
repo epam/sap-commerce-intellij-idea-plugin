@@ -13,8 +13,8 @@ import jakarta.xml.bind.JAXBException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
 import sap.commerce.toolset.localextensions.jaxb.ObjectFactory
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -27,7 +27,7 @@ import kotlin.math.max
 class ProjectLocalExtensionsScanner {
 
     fun processHybrisConfig(
-        projectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         configModuleDescriptor: ConfigModuleDescriptor
     ): Set<String> = ApplicationManager.getApplication().runReadAction(Computable {
         val hybrisConfig = unmarshalLocalExtensions(configModuleDescriptor)
@@ -36,16 +36,16 @@ class ProjectLocalExtensionsScanner {
         val explicitlyDefinedModules = TreeSet(String.CASE_INSENSITIVE_ORDER)
 
         processHybrisConfigExtensions(hybrisConfig, explicitlyDefinedModules)
-        processHybrisConfigAutoloadPaths(hybrisConfig, explicitlyDefinedModules, projectDescriptor)
+        processHybrisConfigAutoloadPaths(hybrisConfig, explicitlyDefinedModules, importContext)
         explicitlyDefinedModules
     })
 
     private fun processHybrisConfigAutoloadPaths(
         hybrisConfig: Hybrisconfig,
         explicitlyDefinedModules: TreeSet<String>,
-        projectDescriptor: HybrisProjectDescriptor
+        importContext: ProjectImportContext
     ) {
-        if (projectDescriptor.hybrisDistributionDirectory == null) return
+        if (importContext.platformDirectory == null) return
 
         val autoloadPaths = HashMap<String, Int>()
 
@@ -67,7 +67,7 @@ class ProjectLocalExtensionsScanner {
 
         if (autoloadPaths.isEmpty()) return
 
-        val platform = Paths.get(projectDescriptor.hybrisDistributionDirectory!!.getPath(), HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
+        val platform = Paths.get(importContext.platformDirectory!!.getPath(), HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
         val path = Paths.get(platform, "env.properties")
 
         try {
@@ -91,7 +91,7 @@ class ProjectLocalExtensionsScanner {
                         normalizedKey to entry.value
                     }
 
-                projectDescriptor.foundModules.forEach {
+                importContext.foundModules.forEach {
                     for (entry in normalizedPaths.entries) {
                         val moduleDir = it.moduleRootDirectory.path
                         if (moduleDir.startsWith(entry.key)

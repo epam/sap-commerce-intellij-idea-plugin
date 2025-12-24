@@ -60,12 +60,6 @@ class ProjectRefreshDialog(
 
         group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
-                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                    .bindSelected(refreshContext.importContext.importOOTBModulesInReadOnlyMode)
-                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-            }
-
-            row {
                 checkBox(i18n("hybris.project.import.scanExternalModules"))
                     .bindSelected(refreshContext.importContext.scanThroughExternalModule)
                 contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
@@ -74,6 +68,12 @@ class ProjectRefreshDialog(
             row {
                 checkBox(i18n("hybris.project.import.followSymlink"))
                     .bindSelected(refreshContext.importContext.followSymlink)
+            }
+
+            row {
+                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                    .bindSelected(refreshContext.importContext.importOOTBModulesInReadOnlyMode)
+                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
             }
 
             row {

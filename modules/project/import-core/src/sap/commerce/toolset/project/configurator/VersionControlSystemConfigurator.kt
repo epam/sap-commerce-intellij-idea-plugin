@@ -23,7 +23,7 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 class VersionControlSystemConfigurator : ProjectImportConfigurator {
 
@@ -31,15 +31,15 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
         get() = "Version Control System"
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = hybrisProjectDescriptor.project ?: return
+        val project = importContext.project ?: return
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)
         val detectedRoots = HashSet(rootDetector.detect())
 
-        val roots = hybrisProjectDescriptor.detectedVcs
+        val roots = importContext.detectedVcs
             .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
             .flatMap { rootDetector.detect(it) }
         detectedRoots.addAll(roots)

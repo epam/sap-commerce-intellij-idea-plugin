@@ -28,8 +28,8 @@ import org.apache.commons.io.FilenameUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.factories.ModuleDescriptorFactory
 import java.io.File
@@ -44,7 +44,7 @@ import kotlin.io.path.isDirectory
 class ProjectConfigModuleLookup {
 
     @Throws(HybrisConfigurationException::class)
-    fun getConfigModuleDescriptor(projectDescriptor: HybrisProjectDescriptor) = find(projectDescriptor)
+    fun getConfigModuleDescriptor(importContext: ProjectImportContext) = find(importContext)
         ?: throw HybrisConfigurationException(
             """
                 The ‘config’ module hasn’t been detected, which will affect the following functionality:
@@ -55,10 +55,10 @@ class ProjectConfigModuleLookup {
                  """.trimIndent()
         )
 
-    private fun find(projectDescriptor: HybrisProjectDescriptor): ConfigModuleDescriptor? {
+    private fun find(importContext: ProjectImportContext): ConfigModuleDescriptor? {
         val foundConfigModules = mutableListOf<ConfigModuleDescriptor>()
         var platformHybrisModuleDescriptor: PlatformModuleDescriptor? = null
-        projectDescriptor.foundModules.forEach { moduleDescriptor ->
+        importContext.foundModules.forEach { moduleDescriptor ->
             when (moduleDescriptor) {
                 is ConfigModuleDescriptor -> foundConfigModules.add(moduleDescriptor)
                 is PlatformModuleDescriptor -> platformHybrisModuleDescriptor = moduleDescriptor
@@ -70,7 +70,7 @@ class ProjectConfigModuleLookup {
             return null
         }
         val configDir: File?
-        val externalConfigDirectory = projectDescriptor.externalConfigDirectory
+        val externalConfigDirectory = importContext.externalConfigDirectory
         if (externalConfigDirectory != null) {
             configDir = externalConfigDirectory
             if (!configDir.isDirectory()) return null
@@ -85,18 +85,15 @@ class ProjectConfigModuleLookup {
             .firstOrNull { FileUtil.filesEqual(it.moduleRootDirectory, configDir) }
         if (configHybrisModuleDescriptor != null) return configHybrisModuleDescriptor
 
-        if (!ProjectModuleDetector.getInstance().isConfigModule(configDir)) return null
+        if (!ProjectModuleResolver.getInstance().isConfigModule(configDir)) return null
 
         return try {
             val configHybrisModuleDescriptor = ModuleDescriptorFactory.createConfigDescriptor(
-                configDir, platformHybrisModuleDescriptor.projectDescriptor, configDir.getName()
+                platformHybrisModuleDescriptor.importContext, configDir, configDir.getName()
             )
             thisLogger().info("Creating Overridden Config module in local.properties for ${configDir.absolutePath}")
 
-            projectDescriptor.foundModules = buildList {
-                addAll(projectDescriptor.foundModules)
-                add(configHybrisModuleDescriptor)
-            }
+            importContext.addFoundModule(configHybrisModuleDescriptor)
 
             configHybrisModuleDescriptor
         } catch (e: HybrisConfigurationException) {

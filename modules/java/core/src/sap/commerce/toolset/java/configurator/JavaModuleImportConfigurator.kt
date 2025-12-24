@@ -26,7 +26,8 @@ import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage
 import sap.commerce.toolset.java.configurator.ex.*
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
@@ -39,7 +40,7 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
     override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         rootProjectModifiableModel: ModifiableModuleModel
@@ -57,7 +58,7 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
 
         modifiableRootModel.inheritSdk();
 
-        val yModuleDescriptorsToImport = hybrisProjectDescriptor.chosenModuleDescriptors
+        val yModuleDescriptorsToImport = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
             .filterIsInstance<YModuleDescriptor>()
             .distinct()
             .associateBy { it.name }

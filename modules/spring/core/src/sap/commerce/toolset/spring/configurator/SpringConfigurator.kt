@@ -36,7 +36,8 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
@@ -55,11 +56,10 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     override val name: String
         get() = "Spring"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override fun preConfigure(importContext: ProjectImportContext) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = hybrisProjectDescriptor
-            .chosenModuleDescriptors
+        val moduleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
             .associateBy { it.name }
 
         for (moduleDescriptor in moduleDescriptors.values) {
@@ -76,23 +76,23 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptors.values
             .firstOrNull { it is YCoreExtModuleDescriptor }
             ?.let { moduleDescriptor ->
-                val advancedProperties = File(hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
+                val advancedProperties = File(importContext.platformModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
                 moduleDescriptor.addSpringFile(advancedProperties.absolutePath)
 
-                hybrisProjectDescriptor.configHybrisModuleDescriptor
-                    ?.let { File(it.moduleRootDirectory, ProjectConstants.File.LOCAL_PROPERTIES) }
+                val configModuleDescriptor = importContext.configModuleDescriptor
+                File(configModuleDescriptor.moduleRootDirectory, ProjectConstants.File.LOCAL_PROPERTIES)
+                    .takeIf { it.exists() }
                     ?.let { moduleDescriptor.addSpringFile(it.absolutePath) }
             }
     }
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = hybrisProjectDescriptor
-            .chosenModuleDescriptors
+        val moduleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
             .associateBy { it.name }
         val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }

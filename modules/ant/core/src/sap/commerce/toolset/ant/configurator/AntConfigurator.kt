@@ -39,8 +39,9 @@ import sap.commerce.toolset.ant.AntConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
@@ -68,16 +69,16 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
         }
     }
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
-        val platformDescriptor = hybrisProjectDescriptor.platformHybrisModuleDescriptor
+    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+        val project = importContext.project ?: return
+        val platformDescriptor = importContext.platformModuleDescriptor
         val extHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
         val customHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
 
-        for (descriptor in hybrisProjectDescriptor.chosenModuleDescriptors) {
-            when (descriptor) {
-                is YPlatformExtModuleDescriptor -> extHybrisModuleDescriptors.add(descriptor)
-                is YCustomRegularModuleDescriptor -> customHybrisModuleDescriptors.add(descriptor)
+        importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS).forEach {
+            when (it) {
+                is YPlatformExtModuleDescriptor -> extHybrisModuleDescriptors.add(it)
+                is YCustomRegularModuleDescriptor -> customHybrisModuleDescriptors.add(it)
             }
         }
 
@@ -90,7 +91,7 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
         }
 
         val platformAntBuildVirtualFile = getBuildVirtualFile(platformDescriptor)
-        val customAntBuildVirtualFiles = if (hybrisProjectDescriptor.importContext.importCustomAntBuildFiles) customHybrisModuleDescriptors
+        val customAntBuildVirtualFiles = if (importContext.settings.importCustomAntBuildFiles) customHybrisModuleDescriptors
             .mapNotNull { getBuildVirtualFile(it) }
         else emptyList()
 
@@ -112,7 +113,7 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
 
         val editPropertyContainers = antBuildFiles
             .map { (antBuildFile, desirableTargets) ->
-                registerAntInstallation(hybrisProjectDescriptor, antInstallation, classPaths, antBuildFile)
+                registerAntInstallation(importContext, antInstallation, classPaths, antBuildFile)
                 val allOptions = antBuildFile.allOptions
 
                 EditPropertyContainer(allOptions).apply {
@@ -135,14 +136,14 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
     }
 
     private fun registerAntInstallation(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         antInstallation: AntInstallation,
         classPaths: List<AntClasspathEntry>,
         antBuildFile: AntBuildFileBase
     ) {
-        val platformDir = hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory
-        val externalConfigDirectory = hybrisProjectDescriptor.externalConfigDirectory
-        val configDescriptor = hybrisProjectDescriptor.configHybrisModuleDescriptor
+        val platformDir = importContext.platformModuleDescriptor.moduleRootDirectory
+        val externalConfigDirectory = importContext.externalConfigDirectory
+        val configDescriptor = importContext.configModuleDescriptor
         val allOptions = antBuildFile.allOptions
 
         with(EditPropertyContainer(allOptions)) {

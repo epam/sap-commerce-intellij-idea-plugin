@@ -20,18 +20,18 @@ package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
 open class YPlatformExtModuleDescriptor(
+    importContext: ProjectImportContext,
     moduleRootDirectory: File,
-    projectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, projectDescriptor, extensionInfo) {
+) : YRegularModuleDescriptorImpl(importContext, moduleRootDirectory, extensionInfo) {
 
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.CORE)

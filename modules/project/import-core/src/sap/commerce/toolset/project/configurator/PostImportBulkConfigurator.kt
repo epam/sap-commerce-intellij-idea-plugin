@@ -26,16 +26,16 @@ import com.intellij.platform.util.progress.reportProgressScope
 import kotlinx.coroutines.*
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 @Service(Service.Level.PROJECT)
 class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    fun configure(importContext: ProjectImportContext) {
         val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
 
         // mostly background operations
-        postImportConfigurators.forEach { it.postImport(hybrisProjectDescriptor) }
+        postImportConfigurators.forEach { it.postImport(importContext) }
 
         coroutineScope.launch {
             if (project.isDisposed) return@launch
@@ -47,7 +47,7 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                         async {
                             progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
                                 try {
-                                    it.asyncPostImport(hybrisProjectDescriptor)
+                                    it.asyncPostImport(importContext)
                                 } catch (e: Exception) {
                                     println(e)
                                     // ignore
@@ -59,8 +59,7 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                 }
             }
 
-            hybrisProjectDescriptor.clear()
-            notifyImportFinished(project, hybrisProjectDescriptor.refresh)
+            notifyImportFinished(project, importContext.refresh)
         }
     }
 

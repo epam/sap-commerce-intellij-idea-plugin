@@ -25,21 +25,23 @@ import com.intellij.openapi.vfs.VfsUtil
 import org.angular2.cli.Angular2ProjectConfigurator
 import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 class AngularConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Angular"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project
+    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+        val project = importContext.project
             ?.takeUnless { it.isDisposed }
             ?: return
 
-        val angularModuleDescriptors = (hybrisProjectDescriptor.chosenModuleDescriptors.filterIsInstance<AngularModuleDescriptor>()
+        val angularModuleDescriptors = importContext.chosenModuleDescriptors(ModuleGroup.OTHER)
+            .filterIsInstance<AngularModuleDescriptor>()
             .takeIf { it.isNotEmpty() }
-            ?: return)
+            ?: return
 
         val modulesToCreate = readAction {
             angularModuleDescriptors.mapNotNull {

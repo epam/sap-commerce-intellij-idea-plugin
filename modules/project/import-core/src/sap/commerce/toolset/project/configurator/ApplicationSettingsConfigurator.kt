@@ -18,7 +18,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.util.io.FileUtil
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.io.File
 
@@ -27,13 +27,14 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Application Settings"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        if (hybrisProjectDescriptor.refresh) return
+    override fun preConfigure(importContext: ProjectImportContext) {
+        if (importContext.refresh) return
 
-        val importSettings = hybrisProjectDescriptor.importContext
+        val importSettings = importContext.settings
 
         with(ApplicationSettings.getInstance()) {
-            this.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
+            this.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.directorySystemIndependentName
+
             this.defaultPlatformInReadOnly = importSettings.importOOTBModulesInReadOnlyMode
             this.followSymlink = importSettings.followSymlink
             this.scanThroughExternalModule = importSettings.scanThroughExternalModule

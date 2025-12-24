@@ -35,15 +35,15 @@ class HybrisProjectImportProvider : ProjectImportProvider() {
         .findExtensionOrFail(HybrisProjectOpenProcessor::class.java)
         .canOpenProject(file)
 
-    override fun doGetBuilder(): DefaultHybrisProjectImportBuilder = ProjectImportBuilder.EXTENSIONS_POINT_NAME
-        .findExtensionOrFail(DefaultHybrisProjectImportBuilder::class.java)
+    override fun doGetBuilder(): HybrisProjectImportBuilder = ProjectImportBuilder.EXTENSIONS_POINT_NAME
+        .findExtensionOrFail(HybrisProjectImportBuilder::class.java)
 
     override fun createSteps(context: WizardContext) = arrayOf(
-        CheckRequiredPluginsWizardStep(context),
+        CheckRequiredPluginsStep(context),
         InformationStep(context),
-        ProjectImportWizardRootStep(context),
-        SelectHybrisModulesToImportStep(context),
-        SelectOtherModulesToImportStep(context),
+        ProjectImportCoreContextStep(context),
+        SelectHybrisModulesStep(context),
+        SelectOtherModulesStep(context),
         ProjectWizardStepFactory.getInstance().createProjectJdkStep(context),
     )
 }

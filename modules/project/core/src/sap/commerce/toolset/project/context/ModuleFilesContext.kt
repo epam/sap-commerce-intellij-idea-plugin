@@ -16,18 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.dsl.builder
+package sap.commerce.toolset.project.context
 
-import com.intellij.ui.dsl.builder.MutableProperty
-import kotlinx.collections.immutable.toImmutableList
+import java.io.File
 
-class MutableListProperty : MutableProperty<List<String>> {
-    private var _value = mutableListOf<String>()
+data class ModuleFilesContext(
+    private val _hybrisModules: MutableSet<File> = mutableSetOf(),
+    private val _otherModules: MutableSet<File> = mutableSetOf(),
+) {
+    val hybrisModules get() = _hybrisModules.toSet()
+    val nonHybrisModules get() = _otherModules.toSet()
 
-    override fun get() = _value.toImmutableList()
-
-    override fun set(value: List<String>) {
-        _value.clear()
-        _value.addAll(value)
+    fun addModule(group: ModuleGroup, moduleDirectory: File) = when (group) {
+        ModuleGroup.HYBRIS -> _hybrisModules.add(moduleDirectory)
+        ModuleGroup.OTHER -> _otherModules.add(moduleDirectory)
     }
 }

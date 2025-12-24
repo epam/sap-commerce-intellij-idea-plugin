@@ -30,7 +30,7 @@ internal object JavadocSettingsConfiguratorEx {
         val javadocRefList = mutableListOf<String>()
         val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
-        moduleDescriptor.projectDescriptor.javadocUrl
+        moduleDescriptor.importContext.javadocUrl
             ?.takeUnless { moduleDescriptor is YCustomRegularModuleDescriptor }
             ?.takeUnless { moduleDescriptor is ConfigModuleDescriptor }
             ?.let { javadocRefList.add(it) }

@@ -26,10 +26,10 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.ProjectImportRootContext
+import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.ui.CRUDListPanel
 
-internal fun ui(context: ProjectImportRootContext): DialogPanel {
+internal fun ui(context: ProjectImportCoreContext): DialogPanel {
     val rightGaps = UnscaledGaps(0, 0, 0, 16)
 
     return panel {
@@ -139,34 +139,34 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
         group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
                 checkBox(i18n("hybris.project.import.scanExternalModules"))
-                    .bindSelected(context.settings.scanThroughExternalModule)
+                    .bindSelected(context.importSettings.scanThroughExternalModule)
                 contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
                     .customize(rightGaps)
             }
 
             row {
                 checkBox(i18n("hybris.project.import.followSymlink"))
-                    .bindSelected(context.settings.followSymlink)
+                    .bindSelected(context.importSettings.followSymlink)
                     .component
             }
 
             row {
                 checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                    .bindSelected(context.settings.importOOTBModulesInReadOnlyMode)
+                    .bindSelected(context.importSettings.importOOTBModulesInReadOnlyMode)
                 contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
                     .customize(rightGaps)
             }
 
             row {
                 checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                    .bindSelected(context.settings.importCustomAntBuildFiles)
+                    .bindSelected(context.importSettings.importCustomAntBuildFiles)
                 contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
                     .customize(rightGaps)
             }
 
             row {
                 checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .bindSelected(context.settings.withStandardProvidedSources)
+                    .bindSelected(context.importSettings.withStandardProvidedSources)
                 contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
                     .customize(rightGaps)
             }
@@ -175,10 +175,10 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
                 label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
-                    .bindSelected(context.settings.withExternalLibrarySources)
+                    .bindSelected(context.importSettings.withExternalLibrarySources)
 
                 checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
-                    .bindSelected(context.settings.withExternalLibraryJavadocs)
+                    .bindSelected(context.importSettings.withExternalLibraryJavadocs)
 
                 contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
                     .customize(rightGaps)
@@ -206,24 +206,24 @@ internal fun ui(context: ProjectImportRootContext): DialogPanel {
         group(i18n("hybris.project.import.projectStructure.title")) {
             row {
                 checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                    .bindSelected(context.settings.useFakeOutputPathForCustomExtensions)
+                    .bindSelected(context.importSettings.useFakeOutputPathForCustomExtensions)
                 contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
                     .customize(rightGaps)
             }
 
             row {
                 checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(context.settings.excludeTestSources)
+                    .bindSelected(context.importSettings.excludeTestSources)
             }
 
             row {
                 checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                    .bindSelected(context.settings.ignoreNonExistingSourceDirectories)
+                    .bindSelected(context.importSettings.ignoreNonExistingSourceDirectories)
             }
 
             row {
                 checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
-                    .bindSelected(context.settings.hideEmptyMiddleFolders)
+                    .bindSelected(context.importSettings.hideEmptyMiddleFolders)
             }
         }
 

@@ -34,7 +34,7 @@ data class ApplicationSettingsState(
     @JvmField @OptionTag val withStandardProvidedSources: Boolean = true,
     @JvmField @OptionTag val withExternalLibrarySources: Boolean = true,
     @JvmField @OptionTag val withExternalLibraryJavadocs: Boolean = false,
-    @JvmField @OptionTag val scanThroughExternalModule: Boolean = true,
+    @JvmField @OptionTag val scanThroughExternalModule: Boolean = false,
     @JvmField @OptionTag val useFakeOutputPathForCustomExtensions: Boolean = true,
     @JvmField @OptionTag val excludeTestSources: Boolean = true,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,

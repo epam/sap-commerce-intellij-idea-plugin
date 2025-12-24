@@ -34,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisConstants
 
-class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
+class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportBuilder>() {
 
     override suspend fun openProjectAsync(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {
         val jdkTable = ProjectJdkTable.getInstance()
@@ -92,6 +92,7 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
         HybrisConstants.EXTENSIONS_XML
     )
 
-    override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(OpenHybrisProjectImportBuilder::class.java)
+    override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME
+        .findExtensionOrFail(HybrisProjectImportBuilder::class.java)
 
 }

@@ -25,16 +25,19 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.HybrisProjectImportService
+import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
+import sap.commerce.toolset.project.module.ProjectModulesSelector
 import sap.commerce.toolset.project.refresh.ProjectRefreshContext
+import sap.commerce.toolset.project.refresh.ProjectRefreshService
 
-class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectModulesToImportStep(wizard), RefreshSupport {
+class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.HYBRIS), RefreshSupport {
 
     private var selectionMode = ModuleDescriptorImportStatus.MANDATORY
 
-    override fun init() {
+    // TODO: restore previous manual selection
+    init {
         fileChooser.addElementsMarkListener(ElementsChooser.ElementsMarkListener { element, isMarked ->
             if (element is YModuleDescriptor) {
                 if (isMarked) {
@@ -58,7 +61,9 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
     }
 
     override fun updateStep() {
-        context.setCoreStepModuleList()
+        val importContext = context.importContext ?: return
+        context.list = importContext.foundModules
+            .filterNot { it is ExternalModuleDescriptor }
 
         super.updateStep()
 
@@ -77,7 +82,7 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
         val duplicateModules = mutableSetOf<String>()
         val uniqueModules = mutableSetOf<String>()
 
-        context.list?.forEach {
+        context.list.forEach {
             if (uniqueModules.contains(it.name)) duplicateModules.add(it.name)
             else uniqueModules.add(it.name)
         }
@@ -114,18 +119,22 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
             ?.changeSelection(0, 0, false, false)
     }
 
-    override fun setList(allElements: MutableList<ModuleDescriptor>) {
-        context.hybrisModulesToImport = allElements
-    }
-
     override fun refresh(refreshContext: ProjectRefreshContext) {
+        val importContext = context.importContext
+            ?: return
+        val settings = refreshContext.projectSettings
+
         try {
-            val filteredModuleToImport = context.getBestMatchingExtensionsToImport(refreshContext.projectSettings)
-            context.list = filteredModuleToImport
-            // ensure that mandatory modules are set in the context, even if existing modules are not removed
-            val hybrisProjectDescriptor = context.getHybrisProjectDescriptor()
-            HybrisProjectImportService.getInstance().initMandatoryModules(hybrisProjectDescriptor, filteredModuleToImport)
-        } catch (e: ConfigurationException) {
+            val chosenHybrisModuleDescriptors = buildList {
+                val moduleDescriptors = ProjectModulesSelector.getInstance().getSelectableHybrisModules(importContext, settings)
+                val openModuleDescriptors = ProjectRefreshService.getInstance(refreshContext.project).openModuleDescriptors(importContext)
+
+                addAll(moduleDescriptors)
+                removeAll(openModuleDescriptors)
+            }
+
+            importContext.chooseModuleDescriptors(ModuleGroup.HYBRIS, chosenHybrisModuleDescriptors)
+        } catch (_: ConfigurationException) {
             // no-op already validated
         }
     }

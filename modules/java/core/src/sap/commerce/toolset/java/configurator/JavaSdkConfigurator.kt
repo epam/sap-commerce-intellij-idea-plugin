@@ -21,15 +21,15 @@ import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.LanguageLevelProjectExtension
 import com.intellij.openapi.roots.ProjectRootManager
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 class JavaSdkConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
         get() = "Java Sdk"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override fun preConfigure(importContext: ProjectImportContext) {
+        val project = importContext.project ?: return
         val projectRootManager = ProjectRootManager.getInstance(project)
 
         val projectSdk = projectRootManager.projectSdk ?: return

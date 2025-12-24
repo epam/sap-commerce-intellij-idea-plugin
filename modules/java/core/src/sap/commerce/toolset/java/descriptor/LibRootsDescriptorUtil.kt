@@ -25,6 +25,7 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiab
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -79,7 +80,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
         descriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
-                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.projectDescriptor.importContext.importOOTBModulesInReadOnlyMode
+                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.importContext.settings.importOOTBModulesInReadOnlyMode
                 val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }
                     .filter { it.isDirectory }
@@ -139,7 +140,7 @@ private fun addHmcLibs(
         )
     )
 
-    descriptor.projectDescriptor.chosenModuleDescriptors
+    descriptor.importContext.chosenModuleDescriptors(ModuleGroup.HYBRIS)
         .firstOrNull { it.name == ProjectConstants.Extension.HMC }
         ?.let {
             libs.add(
@@ -157,7 +158,7 @@ private fun addLibrariesToNonCustomModule(
     descriptorType: ModuleDescriptorType?,
     libs: MutableList<JavaLibraryDescriptor>
 ) {
-    if (!descriptor.projectDescriptor.importContext.importOOTBModulesInReadOnlyMode) return
+    if (!descriptor.importContext.settings.importOOTBModulesInReadOnlyMode) return
     if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
     val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
@@ -243,7 +244,7 @@ private fun getLibraryDescriptors(descriptor: YHacSubModuleDescriptor): MutableL
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - HAC Web Classes",
-            libraryFile = File(descriptor.projectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
+            libraryFile = File(descriptor.importContext.platformDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
             directoryWithClasses = true
         )
     )
@@ -269,7 +270,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
-    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.projectDescriptor.importContext.importOOTBModulesInReadOnlyMode
+    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.importContext.settings.importOOTBModulesInReadOnlyMode
     allYModules.values
         .filter { it.getDirectDependencies().contains(descriptor.owner) }
         .filter { it != descriptor }
@@ -412,7 +413,7 @@ private fun getLibraryDescriptors(descriptor: PlatformModuleDescriptor) = listOf
     )
 )
 
-private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.projectDescriptor.externalDbDriversDirectory
+private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.importContext.externalDbDriversDirectory
     ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
 
 private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettings.getInstance().withStandardProvidedSources) {

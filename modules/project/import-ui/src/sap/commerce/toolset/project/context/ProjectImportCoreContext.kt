@@ -16,14 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project
+package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
-import sap.commerce.toolset.project.descriptor.ProjectImportSettings
-import sap.commerce.toolset.ui.dsl.builder.MutableListProperty
+import sap.commerce.toolset.project.dsl.builder.MutableListProperty
 
-data class ProjectImportRootContext(
+data class ProjectImportCoreContext(
     val projectName: AtomicProperty<String> = AtomicProperty(""),
 
     val projectIcon: AtomicBooleanProperty = AtomicBooleanProperty(false),
@@ -54,5 +53,5 @@ data class ProjectImportRootContext(
 
     val ccv2Token: AtomicProperty<String> = AtomicProperty(""),
 
-    val settings: ProjectImportSettings.Mutable,
+    val importSettings: ProjectImportSettings.Mutable,
 )

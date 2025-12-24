@@ -25,7 +25,8 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager
 import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
 import sap.commerce.toolset.maven.descriptor.MavenModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.io.File
 
 class MavenConfigurator : ProjectPostImportConfigurator {
@@ -33,9 +34,9 @@ class MavenConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Maven"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
-        val mavenModules = hybrisProjectDescriptor.chosenModuleDescriptors
+    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+        val project = importContext.project ?: return
+        val mavenModules = importContext.chosenModuleDescriptors(ModuleGroup.OTHER)
             .filterIsInstance<MavenModuleDescriptor>()
             .takeIf { it.isNotEmpty() }
             ?: return

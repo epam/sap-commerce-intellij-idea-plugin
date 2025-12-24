@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.ccv2.descriptor
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -26,10 +26,10 @@ import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
 abstract class CCv2ModuleDescriptor(
+    importContext: ProjectImportContext,
     moduleRootDirectory: File,
-    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
-) : ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
+) : ExternalModuleDescriptor(importContext, moduleRootDirectory, name) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY

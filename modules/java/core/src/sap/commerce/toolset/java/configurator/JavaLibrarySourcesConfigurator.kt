@@ -47,7 +47,7 @@ import sap.commerce.toolset.java.jarFinder.LibraryRootLookup
 import sap.commerce.toolset.java.jarFinder.LibraryRootLookupService
 import sap.commerce.toolset.java.jarFinder.LibraryRootType
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.io.File
 import java.io.IOException
 
@@ -56,15 +56,15 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     override val name
         get() = "Libraries Sources"
 
-    override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override fun postImport(importContext: ProjectImportContext) {
         val libraryRootTypes = buildSet {
-            if (hybrisProjectDescriptor.importContext.withExternalLibrarySources) add(LibraryRootType.SOURCES)
-            if (hybrisProjectDescriptor.importContext.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
+            if (importContext.settings.withExternalLibrarySources) add(LibraryRootType.SOURCES)
+            if (importContext.settings.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
         }
             .takeIf { it.isNotEmpty() }
             ?: return
 
-        val project = hybrisProjectDescriptor.project ?: return
+        val project = importContext.project ?: return
         val librarySourceDir = getLibrarySourceDir() ?: return
         val lookupService = LibraryRootLookupService.getService()
         val lookupRepositories = lookupService.getLookupRepositories(project)

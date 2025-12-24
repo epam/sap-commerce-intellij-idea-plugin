@@ -28,7 +28,8 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ModuleFilesContext
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -48,37 +49,36 @@ class ProjectModulesProcessor {
 
     @Throws(InterruptedException::class, IOException::class)
     fun process(
-        projectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         progressListenerProcessor: TaskProgressProcessor<File>,
         errorsProcessor: TaskProgressProcessor<MutableList<File>>
     ): Collection<ModuleDescriptor> {
-        val externalExtensionsDirectory = projectDescriptor.externalExtensionsDirectory
-        val hybrisDistributionDirectory = projectDescriptor.hybrisDistributionDirectory
-        val modulesContext = ModulesContext()
-        val rootDirectory = projectDescriptor.rootDirectory
-        val excludedFromScanning = getExcludedFromScanningDirectories(projectDescriptor)
+        val externalExtensionsDirectory = importContext.externalExtensionsDirectory
+        val hybrisDistributionDirectory = importContext.platformDirectory
+        val moduleFilesContext = ModuleFilesContext()
+        val rootDirectory = importContext.rootDirectory
+        val excludedFromScanning = getExcludedFromScanningDirectories(importContext)
 
         val modulesScanner = ProjectModulesScanner.getInstance()
 
         thisLogger().info("Scanning for modules")
-        modulesScanner.findModuleRoots(projectDescriptor, modulesContext, excludedFromScanning, false, rootDirectory, progressListenerProcessor)
+        modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, false, rootDirectory, progressListenerProcessor)
 
         if (externalExtensionsDirectory != null && !FileUtils.isFileUnder(externalExtensionsDirectory, rootDirectory)) {
             thisLogger().info("Scanning for external modules")
-            modulesScanner.findModuleRoots(projectDescriptor, modulesContext, excludedFromScanning, false, externalExtensionsDirectory, progressListenerProcessor)
+            modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, false, externalExtensionsDirectory, progressListenerProcessor)
         }
 
         if (hybrisDistributionDirectory != null && !FileUtils.isFileUnder(hybrisDistributionDirectory, rootDirectory)) {
             thisLogger().info("Scanning for hybris modules out of the project")
-            modulesScanner.findModuleRoots(projectDescriptor, modulesContext, excludedFromScanning, false, hybrisDistributionDirectory, progressListenerProcessor)
+            modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, false, hybrisDistributionDirectory, progressListenerProcessor)
         }
 
         val moduleRootDirectories = modulesScanner.processDirectoriesByTypePriority(
-            projectDescriptor,
+            importContext,
             rootDirectory,
-            modulesContext,
+            moduleFilesContext,
             excludedFromScanning,
-            projectDescriptor.importContext.scanThroughExternalModule,
             progressListenerProcessor
         )
 
@@ -86,14 +86,14 @@ class ProjectModulesProcessor {
         val pathsFailedToImport = mutableListOf<File>()
 
         if (!ApplicationSettings.getInstance().groupModules) {
-            val rootModule = addRootModule(projectDescriptor, rootDirectory)
+            val rootModule = addRootModule(importContext, rootDirectory)
             if (rootModule != null) moduleDescriptors.add(rootModule)
             else pathsFailedToImport.add(rootDirectory)
         }
 
         moduleRootDirectories.forEach { moduleRootDirectory ->
             try {
-                val moduleDescriptor = ModuleDescriptorFactory.createDescriptor(moduleRootDirectory, projectDescriptor)
+                val moduleDescriptor = ModuleDescriptorFactory.createDescriptor(moduleRootDirectory, importContext)
                 moduleDescriptors.add(moduleDescriptor)
 
                 moduleDescriptor.asSafely<YModuleDescriptor>()
@@ -129,8 +129,8 @@ class ProjectModulesProcessor {
         return moduleDescriptors
     }
 
-    private fun addRootModule(projectDescriptor: HybrisProjectDescriptor, moduleRootDirectory: File): ExternalModuleDescriptor? = try {
-        ModuleDescriptorFactory.createRootDescriptor(moduleRootDirectory, projectDescriptor, moduleRootDirectory.getName())
+    private fun addRootModule(importContext: ProjectImportContext, moduleRootDirectory: File): ExternalModuleDescriptor? = try {
+        ModuleDescriptorFactory.createRootDescriptor(importContext, moduleRootDirectory, moduleRootDirectory.getName())
     } catch (e: HybrisConfigurationException) {
         thisLogger().error("Can not import a module using path: $moduleRootDirectory", e)
         null
@@ -221,8 +221,8 @@ class ProjectModulesProcessor {
         moduleDescriptors.removeAll(hmcSubModuleDescriptors)
     }
 
-    private fun getExcludedFromScanningDirectories(projectDescriptor: HybrisProjectDescriptor) = projectDescriptor.excludedFromScanning
-        .map { File(projectDescriptor.rootDirectory, it) }
+    private fun getExcludedFromScanningDirectories(importContext: ProjectImportContext) = importContext.excludedFromScanning
+        .map { File(importContext.rootDirectory, it) }
         .filter { it.exists() }
         .filter { it.isDirectory() }
         .toSet()

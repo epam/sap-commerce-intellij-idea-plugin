@@ -27,24 +27,23 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.exceptions.HybrisConfigurationException;
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.context.ProjectImportContext;
 import sap.commerce.toolset.project.localextensions.ProjectLocalExtensionsProcessor;
 import sap.commerce.toolset.project.module.ProjectConfigModuleLookup;
 import sap.commerce.toolset.project.module.ProjectModulesProcessor;
 
 import java.io.IOException;
-import java.util.List;
 
 import static sap.commerce.toolset.HybrisI18nBundle.message;
 
 // TODO: change to coroutine and modal progress
-public class SearchModulesRootsTaskModalWindow extends Task.Modal {
+public class SearchModulesRootsTaskModal extends Task.Modal {
 
-    private static final Logger LOG = Logger.getInstance(SearchModulesRootsTaskModalWindow.class);
-    protected final HybrisProjectDescriptor hybrisProjectDescriptor;
+    private static final Logger LOG = Logger.getInstance(SearchModulesRootsTaskModal.class);
+    protected final ProjectImportContext importContext;
 
-    public SearchModulesRootsTaskModalWindow(
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor
+    public SearchModulesRootsTaskModal(
+        @NotNull final ProjectImportContext importContext
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),
@@ -52,28 +51,28 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
             true
         );
 
-        this.hybrisProjectDescriptor = hybrisProjectDescriptor;
+        this.importContext = importContext;
     }
 
     @Override
     public void run(@NotNull final ProgressIndicator indicator) {
         try {
-            final var moduleDescriptors = ProjectModulesProcessor.Companion.getInstance().process(
-                hybrisProjectDescriptor,
-                new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),
-                new DirectoriesScannerErrorsProcessor()
-            );
-
-            hybrisProjectDescriptor.setFoundModules(moduleDescriptors);
+            ProjectModulesProcessor.Companion.getInstance()
+                .process(
+                    importContext,
+                    new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),
+                    new DirectoriesScannerErrorsProcessor()
+                )
+                .forEach(importContext::addFoundModule);
 
             final var configModuleDescriptor = ProjectConfigModuleLookup.Companion.getInstance()
-                .getConfigModuleDescriptor(hybrisProjectDescriptor);
+                .getConfigModuleDescriptor(importContext);
 
             ProjectLocalExtensionsProcessor.Companion.getInstance()
-                .process(hybrisProjectDescriptor, configModuleDescriptor);
+                .process(importContext, configModuleDescriptor);
         } catch (final InterruptedException | IOException e) {
             LOG.warn(e);
-            hybrisProjectDescriptor.setFoundModules(List.of());
+            importContext.clear();
         } catch (final HybrisConfigurationException e) {
             LOG.warn(e);
             ApplicationManager.getApplication().invokeLater(() -> {
@@ -84,6 +83,6 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
     @Override
     public void onCancel() {
-        this.hybrisProjectDescriptor.clear();
+        this.importContext.clear();
     }
 }

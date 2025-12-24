@@ -26,7 +26,8 @@ import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.ImageUtil;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder;
+import sap.commerce.toolset.project.HybrisProjectImportBuilder;
+import sap.commerce.toolset.project.context.ModuleGroup;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 
 import java.awt.*;
@@ -38,21 +39,20 @@ import static sap.commerce.toolset.HybrisI18nBundle.message;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.MANDATORY;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.UNUSED;
 
-public abstract class AbstractSelectModulesToImportStep extends SelectImportedProjectsStep<ModuleDescriptor> {
+// TODO: -> kotlin
+public abstract class AbstractSelectModulesStep extends SelectImportedProjectsStep<ModuleDescriptor> {
 
     final static int COLUMN_WIDTH = 300;
+    private final ModuleGroup moduleGroup;
 
-    public AbstractSelectModulesToImportStep(final WizardContext context) {
+    public AbstractSelectModulesStep(final WizardContext context, final ModuleGroup moduleGroup) {
         super(context);
-        init();
-    }
-
-    protected void init() {
+        this.moduleGroup = moduleGroup;
     }
 
     @Override
-    public DefaultHybrisProjectImportBuilder getContext() {
-        return (DefaultHybrisProjectImportBuilder) this.getBuilder();
+    public HybrisProjectImportBuilder getContext() {
+        return (HybrisProjectImportBuilder) this.getBuilder();
     }
 
     protected boolean isInConflict(@NotNull final ModuleDescriptor item) {
@@ -108,11 +108,11 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
     @Override
     public void onStepLeaving() {
         super.onStepLeaving();
-        final List<ModuleDescriptor> markedElements = new ArrayList<>(this.fileChooser.getMarkedElements());
-        final List<ModuleDescriptor> allElements = new ArrayList<>(markedElements);
+        final var markedElements = new ArrayList<>(fileChooser.getMarkedElements());
+        final var allElements = new ArrayList<>(markedElements);
 
-        for (int index = 0; index < this.fileChooser.getElementCount(); index++) {
-            final ModuleDescriptor element = fileChooser.getElementAt(index);
+        for (int index = 0; index < fileChooser.getElementCount(); index++) {
+            final var element = fileChooser.getElementAt(index);
             if (markedElements.contains(element)) {
                 if (element.getImportStatus() != MANDATORY) {
                     element.setImportStatus(UNUSED);
@@ -120,11 +120,11 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
             }
         }
 
-        setList(allElements);
-
+        final var importContext = getContext().getImportContext();
+        if (importContext != null) {
+            importContext.chooseModuleDescriptors(moduleGroup, allElements);
+        }
     }
-
-    protected abstract void setList(final List<ModuleDescriptor> allElements);
 
     protected boolean validateCommon() throws ConfigurationException {
         final Set<ModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();

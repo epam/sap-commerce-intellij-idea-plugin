@@ -36,7 +36,7 @@ import java.io.Serial
 import javax.swing.JList
 import javax.swing.ListModel
 
-class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWizardStep(context) {
+class CheckRequiredPluginsStep(context: WizardContext) : ProjectImportWizardStep(context) {
 
     private val declaredPluginDependencies = Plugin.entries
         .filterNot { it == Plugin.HYBRIS }

@@ -31,28 +31,28 @@ import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator;
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator;
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator;
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator;
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.context.ProjectImportContext;
 
 import java.util.List;
 import java.util.Optional;
 
 import static sap.commerce.toolset.HybrisI18nBundle.message;
 
-// TODO: add logs and move to Kotlin
-public class ImportProjectProgressModalWindow extends Task.Modal {
+// TODO: change to coroutine and modal progress
+public class ImportProjectProgressTaskModal extends Task.Modal {
 
     private final Project project;
-    private final HybrisProjectDescriptor hybrisProjectDescriptor;
+    private final ProjectImportContext importContext;
     private final List<Module> modules;
 
-    public ImportProjectProgressModalWindow(
+    public ImportProjectProgressTaskModal(
         final Project project,
-        final HybrisProjectDescriptor hybrisProjectDescriptor,
+        final ProjectImportContext importContext,
         final List<Module> modules
     ) {
         super(project, message("hybris.project.import.commit"), false);
         this.project = project;
-        this.hybrisProjectDescriptor = hybrisProjectDescriptor;
+        this.importContext = importContext;
         this.modules = modules;
     }
 
@@ -66,14 +66,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
-                configurator.preConfigure(hybrisProjectDescriptor);
+                configurator.preConfigure(importContext);
             }
         );
 
         indicator.setIndeterminate(false);
         indicator.setFraction(0d);
 
-        final var chosenModuleDescriptors = hybrisProjectDescriptor.getChosenModuleDescriptors();
+        final var chosenModuleDescriptors = importContext.getChosenModuleDescriptors();
         final var moduleImportConfigurators = ModuleImportConfigurator.Companion.getEP().getExtensionList();
         final var moduleFacetConfigurators = ModuleFacetConfigurator.Companion.getEP().getExtensionList();
 
@@ -86,14 +86,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                             indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
                             indicator.setText2("Configuring module: %s".formatted(moduleDescriptor.getName()));
 
-                            final var module = configurator.configure(hybrisProjectDescriptor, moduleDescriptor, modifiableModelsProvider, rootProjectModifiableModel);
+                            final var module = configurator.configure(importContext, moduleDescriptor, modifiableModelsProvider, rootProjectModifiableModel);
 
                             indicator.setText2("Configuring facets for module: %s".formatted(moduleDescriptor.getName()));
                             final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
                             final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
 
                             moduleFacetConfigurators.forEach(facetConfigurator ->
-                                facetConfigurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
+                                facetConfigurator.configureModuleFacet(importContext, module, moduleDescriptor, modifiableRootModel, modifiableFacetModel)
                             );
                             return module;
                         }
@@ -109,7 +109,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
                 indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
-                configurator.configure(hybrisProjectDescriptor, modifiableModelsProvider);
+                configurator.configure(importContext, modifiableModelsProvider);
             }
         );
 

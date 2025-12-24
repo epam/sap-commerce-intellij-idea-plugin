@@ -23,7 +23,7 @@ import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacetConstants
 
@@ -33,11 +33,11 @@ class YFacetConfigurator : ModuleFacetConfigurator {
         get() = "SAP CX Facet"
 
     override fun configureModuleFacet(
+        importContext: ProjectImportContext,
         module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        modifiableRootModel: ModifiableRootModel,
+        modifiableFacetModel: ModifiableFacetModel
     ) {
         WriteAction.runAndWait<RuntimeException> {
             modifiableFacetModel.getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)

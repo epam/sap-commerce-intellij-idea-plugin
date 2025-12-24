@@ -23,13 +23,22 @@ import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.IdeBorderFactory
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import javax.swing.Icon
 
-class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectModulesToImportStep(context) {
+class SelectOtherModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.OTHER) {
 
+    override fun getName() = "Other"
+
+    // TODO: restore previous selections
     override fun updateStep() {
+        val importContext = context.importContext ?: return
+        val selectableModules = importContext.foundModules
+            .filterIsInstance<ExternalModuleDescriptor>()
+        context.list = selectableModules
+
         super.updateStep()
         fileChooser.setBorder(IdeBorderFactory.createTitledBorder(JavaUiBundle.message("project.import.select.title", name), false))
 
@@ -49,27 +58,12 @@ class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectMod
         else null
     }
 
-    override fun setList(otherElements: List<ModuleDescriptor>) {
-        val allModules = context.hybrisModulesToImport + otherElements
-        try {
-            this.context.list = allModules
-        } catch (e: ConfigurationException) {
-            // no-op already validated
-        }
-    }
-
-    override fun getAdditionalFixedElements(): MutableList<ModuleDescriptor> = context.hybrisModulesToImport
-
     @Throws(ConfigurationException::class)
     override fun validate() = validateCommon()
 
-    override fun isStepVisible() = with(context) {
-        setExternalStepModuleList()
-
-        list
-            ?.isNotEmpty()
-            ?: false
-    }
-
-    override fun getName() = "Other"
+    override fun isStepVisible() = context.importContext
+        ?.foundModules
+        ?.filterIsInstance<ExternalModuleDescriptor>()
+        ?.isNotEmpty()
+        ?: false
 }

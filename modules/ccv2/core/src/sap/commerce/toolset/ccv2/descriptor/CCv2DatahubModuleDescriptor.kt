@@ -20,17 +20,17 @@ package sap.commerce.toolset.ccv2.descriptor
 
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
 class CCv2DatahubModuleDescriptor(
+    importContext: ProjectImportContext,
     moduleRootDirectory: File,
-    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2_DATAHUB
-) : CCv2ModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
+) : CCv2ModuleDescriptor(importContext, moduleRootDirectory, name) {
 
     class Provider : ModuleDescriptorProvider {
         override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
@@ -41,8 +41,8 @@ class CCv2DatahubModuleDescriptor(
         }
 
         override fun create(
-            moduleRootDirectory: File,
-            projectDescriptor: HybrisProjectDescriptor
-        ) = CCv2DatahubModuleDescriptor(moduleRootDirectory, projectDescriptor)
+            importContext: ProjectImportContext,
+            moduleRootDirectory: File
+        ) = CCv2DatahubModuleDescriptor(importContext, moduleRootDirectory)
     }
 }

@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,25 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project
 
-import com.intellij.openapi.module.ModifiableModuleModel
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider
-import com.intellij.packaging.artifacts.ModifiableArtifactModel
+package sap.commerce.toolset.project.dsl.builder
 
-class OpenHybrisProjectImportBuilder : DefaultHybrisProjectImportBuilder() {
+import com.intellij.ui.dsl.builder.MutableProperty
 
-    override fun commit(
-        project: Project,
-        model: ModifiableModuleModel?,
-        modulesProvider: ModulesProvider?,
-        artifactModel: ModifiableArtifactModel?
-    ): MutableList<Module>? {
-        getHybrisProjectDescriptor().setHybrisProject(project)
+class MutableListProperty : MutableProperty<List<String>> {
+    private var _value = mutableListOf<String>()
 
-        return super.commit(project, model, modulesProvider, artifactModel)
+    override fun get() = _value.toList()
+
+    override fun set(value: List<String>) {
+        _value.clear()
+        _value.addAll(value)
     }
-
 }

@@ -39,7 +39,7 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val generateCodeTimeoutSeconds: Int = 60,
     @JvmField @OptionTag val importOotbModulesInReadOnlyMode: Boolean = true,
     @JvmField @OptionTag val followSymlink: Boolean = false,
-    @JvmField @OptionTag val scanThroughExternalModule: Boolean = true,
+    @JvmField @OptionTag val scanThroughExternalModule: Boolean = false,
     @JvmField @OptionTag val excludeTestSources: Boolean = false,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
     @JvmField @OptionTag val showFullModuleName: Boolean = false,

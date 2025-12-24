@@ -27,6 +27,7 @@ import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.*
 import java.io.File
 
+// TODO: move to core
 object SubModuleDescriptorFactory {
 
     fun buildAll(owner: YRegularModuleDescriptor): Set<YSubModuleDescriptor> {

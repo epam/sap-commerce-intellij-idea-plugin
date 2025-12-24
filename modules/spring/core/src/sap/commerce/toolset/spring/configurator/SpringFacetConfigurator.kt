@@ -28,7 +28,7 @@ import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -42,11 +42,11 @@ class SpringFacetConfigurator : ModuleFacetConfigurator {
         get() = "Spring Facet"
 
     override fun configureModuleFacet(
+        importContext: ProjectImportContext,
         module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        modifiableRootModel: ModifiableRootModel,
+        modifiableFacetModel: ModifiableFacetModel
     ) {
         if (Plugin.SPRING.isDisabled()) return
 

@@ -21,17 +21,17 @@ import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface ModuleFacetConfigurator : Configurator {
 
     fun configureModuleFacet(
+        importContext: ProjectImportContext,
         module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        modifiableRootModel: ModifiableRootModel,
+        modifiableFacetModel: ModifiableFacetModel
     )
 
     companion object {

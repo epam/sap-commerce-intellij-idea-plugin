@@ -31,14 +31,15 @@ import java.io.File;
 
 import static sap.commerce.toolset.HybrisI18nBundle.message;
 
-public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal {
+// TODO: change to coroutine and modal progress
+public class SearchHybrisDistributionDirectoryTaskModal extends Task.Modal {
 
-    private static final Logger LOG = Logger.getInstance(SearchHybrisDistributionDirectoryTaskModalWindow.class);
+    private static final Logger LOG = Logger.getInstance(SearchHybrisDistributionDirectoryTaskModal.class);
 
     protected final File rootProjectDirectory;
     protected final Processor<String> resultProcessor;
 
-    public SearchHybrisDistributionDirectoryTaskModalWindow(
+    public SearchHybrisDistributionDirectoryTaskModal(
         @NotNull final File rootProjectDirectory,
         @NotNull final Processor<String> resultProcessor
     ) {

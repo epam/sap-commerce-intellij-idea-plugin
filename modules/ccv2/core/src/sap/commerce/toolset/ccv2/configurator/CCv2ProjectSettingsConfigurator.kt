@@ -22,7 +22,7 @@ import com.intellij.ide.passwordSafe.PasswordSafe
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ySettings
 
@@ -31,11 +31,11 @@ class CCv2ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "CCv2 Project Settings"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override fun preConfigure(importContext: ProjectImportContext) {
+        val project = importContext.project ?: return
 
         val credentialAttributes = CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
-        PasswordSafe.instance.setPassword(credentialAttributes, hybrisProjectDescriptor.ccv2Token)
+        PasswordSafe.instance.setPassword(credentialAttributes, importContext.ccv2Token)
 
         with(project.ySettings) {
             availableExtensions = buildMap {

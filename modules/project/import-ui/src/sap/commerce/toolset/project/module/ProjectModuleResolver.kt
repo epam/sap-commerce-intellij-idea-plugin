@@ -22,16 +22,17 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectUtil
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
 import java.io.File
 import kotlin.io.path.exists
 
 @Service
-class ProjectModuleDetector {
+class ProjectModuleResolver {
 
     fun isConfigModule(file: File) = with(file.toPath()) {
         resolve("licence").exists() && resolve("tomcat").resolve("tomcat_context.tpl").exists()
@@ -44,7 +45,8 @@ class ProjectModuleDetector {
             )
             && File(file, CCv2Constants.MANIFEST_NAME).isFile()
 
-    fun isAngularModule(file: File) = File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile()
+    fun isAngularModule(file: File) = Plugin.ANGULAR.ifActive { File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile() }
+        ?: false
 
     fun isPlatformModule(file: File) = file.getName() == ProjectConstants.Extension.PLATFORM
         && File(file, HybrisConstants.EXTENSIONS_XML).isFile()
@@ -59,8 +61,8 @@ class ProjectModuleDetector {
 
     fun isHybrisModule(file: File): Boolean = ProjectUtil.isHybrisModuleRoot(file)
 
-    fun isOutOfTheBoxModule(file: File, projectDescriptor: HybrisProjectDescriptor): Boolean {
-        val extDir = projectDescriptor.externalExtensionsDirectory
+    fun isOutOfTheBoxModule(file: File, importContext: ProjectImportContext): Boolean {
+        val extDir = importContext.externalExtensionsDirectory
         if (extDir != null) {
             if (VirtualFileSystemService.Companion.getInstance().fileContainsAnother(extDir, file)) {
                 // this will override bin/ext-* naming convention.
@@ -73,41 +75,46 @@ class ProjectModuleDetector {
             && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
     }
 
-    fun isMavenModule(rootProjectDirectory: File): Boolean {
+    fun isMavenModule(rootProjectDirectory: File) = Plugin.MAVEN.ifActive {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
-            return false
+            return@ifActive false
         }
-        return File(rootProjectDirectory, HybrisConstants.MAVEN_POM_XML).isFile()
+        return@ifActive File(rootProjectDirectory, HybrisConstants.MAVEN_POM_XML).isFile()
     }
+        ?: false
 
-    fun isEclipseModule(rootProjectDirectory: File): Boolean {
+    fun isEclipseModule(rootProjectDirectory: File) = Plugin.ECLIPSE.ifActive {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
-            return false
+            return@ifActive false
         }
-        return File(rootProjectDirectory, HybrisConstants.DOT_PROJECT).isFile()
+        return@ifActive File(rootProjectDirectory, HybrisConstants.DOT_PROJECT).isFile()
     }
+        ?: false
 
-    fun isGradleModule(file: File): Boolean {
+    fun isGradleModule(file: File) = Plugin.GRADLE.ifActive {
         if (file.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
-            return false
+            return@ifActive false
         }
-        return File(file, HybrisConstants.GRADLE_SETTINGS).isFile()
+        return@ifActive File(file, HybrisConstants.GRADLE_SETTINGS).isFile()
             || File(file, HybrisConstants.GRADLE_BUILD).isFile()
     }
+        ?: false
 
-    fun isGradleKtsModule(file: File): Boolean {
-        if (file.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
-            return false
-        }
-        return File(file, HybrisConstants.GRADLE_SETTINGS_KTS).isFile()
-            || File(file, HybrisConstants.GRADLE_BUILD_KTS).isFile()
-    }
-
+    // TODO: move it somewhere
     fun hasVCS(rootProjectDirectory: File?) = File(rootProjectDirectory, ".git").isDirectory()
         || File(rootProjectDirectory, ".svn").isDirectory()
         || File(rootProjectDirectory, ".hg").isDirectory()
 
+    fun isGradleKtsModule(file: File) = Plugin.GRADLE.ifActive {
+        if (file.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+            return@ifActive false
+        }
+        return@ifActive File(file, HybrisConstants.GRADLE_SETTINGS_KTS).isFile()
+            || File(file, HybrisConstants.GRADLE_BUILD_KTS).isFile()
+    }
+        ?: false
+
     companion object {
-        fun getInstance(): ProjectModuleDetector = application.service()
+        fun getInstance(): ProjectModuleResolver = application.service()
     }
 }

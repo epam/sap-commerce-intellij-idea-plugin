@@ -38,9 +38,13 @@ import java.util.Properties;
 import static sap.commerce.toolset.HybrisConstants.*;
 import static sap.commerce.toolset.project.utils.FileUtils.toFile;
 
+// TODO: -> kotlin
 public final class ModuleGroupingUtil {
 
     private static final Logger LOG = Logger.getInstance(ModuleGroupingUtil.class);
+
+    private ModuleGroupingUtil() {
+    }
 
     @Nullable
     public static String[] getGroupName(
@@ -67,7 +71,7 @@ public final class ModuleGroupingUtil {
     }
 
     private static String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
-        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getProjectDescriptor().getConfigHybrisModuleDescriptor();
+        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getImportContext().getConfigModuleDescriptor();
         if (configDescriptor == null) {
             return null;
         }
@@ -134,10 +138,10 @@ public final class ModuleGroupingUtil {
         }
 
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
-            File customDirectory = moduleDescriptor.getProjectDescriptor().getExternalExtensionsDirectory();
+            File customDirectory = moduleDescriptor.getImportContext().getExternalExtensionsDirectory();
 
             if (null == customDirectory) {
-                customDirectory = new File(moduleDescriptor.getProjectDescriptor().getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
+                customDirectory = new File(moduleDescriptor.getImportContext().getPlatformDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
             }
             if (!customDirectory.exists()) {
                 return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
@@ -170,7 +174,7 @@ public final class ModuleGroupingUtil {
 
         if (requiredYModuleDescriptorList.contains(moduleDescriptor)) {
             final File hybrisBinDirectory = new File(
-                moduleDescriptor.getProjectDescriptor().getHybrisDistributionDirectory(),
+                moduleDescriptor.getImportContext().getPlatformDirectory(),
                 ProjectConstants.Directory.BIN
             );
 

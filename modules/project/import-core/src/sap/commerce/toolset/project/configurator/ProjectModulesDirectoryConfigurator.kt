@@ -17,15 +17,15 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
         get() = "Modules Directory"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        hybrisProjectDescriptor.modulesFilesDirectory
+    override fun preConfigure(importContext: ProjectImportContext) {
+        importContext.modulesFilesDirectory
             ?.takeIf { it.exists() }
             ?.takeIf { it.isDirectory }
             ?.mkdirs()

@@ -19,13 +19,14 @@
 package sap.commerce.toolset.project.descriptor
 
 import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.io.File
 
 interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
     var groupNames: Array<String>
     val moduleRootDirectory: File
-    val projectDescriptor: HybrisProjectDescriptor
+    val importContext: ProjectImportContext
     var importStatus: ModuleDescriptorImportStatus
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
