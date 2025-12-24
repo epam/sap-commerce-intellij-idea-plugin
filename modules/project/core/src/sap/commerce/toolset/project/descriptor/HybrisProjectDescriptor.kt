@@ -19,9 +19,9 @@
 package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import java.io.File
 
+// TODO: convert to data class
 interface HybrisProjectDescriptor {
 
     fun setHybrisProject(project: Project?)
@@ -29,22 +29,17 @@ interface HybrisProjectDescriptor {
     // TODO: review this method
     fun clear()
 
-    fun setRootDirectoryAndScanForModules(
-        progressListenerProcessor: TaskProgressProcessor<File>?,
-        errorsProcessor: TaskProgressProcessor<MutableList<File>>?
-    )
-
     val importContext: ProjectImportSettings
     val project: Project?
     val refresh: Boolean
-    val foundModules: MutableList<ModuleDescriptor>
+    var foundModules: Collection<ModuleDescriptor>
     val chosenModuleDescriptors: MutableList<ModuleDescriptor>
 
     var configHybrisModuleDescriptor: ConfigModuleDescriptor?
     var platformHybrisModuleDescriptor: PlatformModuleDescriptor
     var kotlinNatureModuleDescriptor: ModuleDescriptor?
 
-    val rootDirectory: File?
+    val rootDirectory: File
     var modulesFilesDirectory: File?
     var ccv2Token: String?
     var sourceCodeFile: File?

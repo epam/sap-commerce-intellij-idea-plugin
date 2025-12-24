@@ -29,9 +29,9 @@ import java.io.File
 
 class MavenModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.MAVEN
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, moduleRootDirectory.name) {
 
     class Provider : ModuleDescriptorProvider {
         override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
@@ -42,7 +42,7 @@ class MavenModuleDescriptor(
 
         override fun create(
             moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = MavenModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+            projectDescriptor: HybrisProjectDescriptor
+        ) = MavenModuleDescriptor(moduleRootDirectory, projectDescriptor)
     }
 }

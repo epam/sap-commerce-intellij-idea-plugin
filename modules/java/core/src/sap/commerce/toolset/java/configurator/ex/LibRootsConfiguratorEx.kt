@@ -86,7 +86,7 @@ internal object LibRootsConfiguratorEx {
         }
     }
 
-    private fun getSourceCodeRoot(moduleDescriptor: ModuleDescriptor) = moduleDescriptor.rootProjectDescriptor.sourceCodeFile
+    private fun getSourceCodeRoot(moduleDescriptor: ModuleDescriptor) = moduleDescriptor.projectDescriptor.sourceCodeFile
         ?.let { VfsUtil.findFileByIoFile(it, true) }
         ?.let { vf ->
             if (vf.isDirectory) vf

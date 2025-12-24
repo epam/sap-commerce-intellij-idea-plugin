@@ -28,10 +28,10 @@ import java.io.File
 
 open class YPlatformExtModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, projectDescriptor, extensionInfo) {
 
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.CORE)

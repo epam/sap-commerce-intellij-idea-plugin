@@ -25,7 +25,7 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
     var groupNames: Array<String>
     val moduleRootDirectory: File
-    val rootProjectDescriptor: HybrisProjectDescriptor
+    val projectDescriptor: HybrisProjectDescriptor
     var importStatus: ModuleDescriptorImportStatus
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
@@ -37,7 +37,7 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun ideaModuleFile(): File
     fun getRelativePath(): String
     fun getRequiredExtensionNames(): Set<String>
-    fun addRequiredExtensionNames(extensions: Set<YModuleDescriptor>): Boolean
+    fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean
     fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
     fun getSpringFiles(): Set<String>
     fun addSpringFile(file: String): Boolean

@@ -22,6 +22,7 @@ import com.intellij.ide.util.ElementsChooser
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.table.JBTable
+import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.HybrisProjectImportService
@@ -73,17 +74,13 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
 
         selectionMode = ModuleDescriptorImportStatus.UNUSED
 
-        val duplicateModules: MutableSet<String> = HashSet()
-        val uniqueModules: MutableSet<String> = HashSet()
+        val duplicateModules = mutableSetOf<String>()
+        val uniqueModules = mutableSetOf<String>()
 
-        context.list
-            ?.forEach {
-                if (uniqueModules.contains(it.name)) {
-                    duplicateModules.add(it.name)
-                } else {
-                    uniqueModules.add(it.name)
-                }
-            }
+        context.list?.forEach {
+            if (uniqueModules.contains(it.name)) duplicateModules.add(it.name)
+            else uniqueModules.add(it.name)
+        }
 
         // TODO: improve sorting
         fileChooser.sort { o1: ModuleDescriptor, o2: ModuleDescriptor ->
@@ -112,7 +109,8 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
             o1.compareTo(o2)
         }
         //scroll to top
-        (fileChooser.component as? JBTable)
+        fileChooser.component
+            ?.asSafely<JBTable>()
             ?.changeSelection(0, 0, false, false)
     }
 

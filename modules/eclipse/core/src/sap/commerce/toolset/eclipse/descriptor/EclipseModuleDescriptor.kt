@@ -29,10 +29,10 @@ import java.io.File
 
 class EclipseModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ECLIPSE
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
 
     class Provider : ModuleDescriptorProvider {
         override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
@@ -43,8 +43,8 @@ class EclipseModuleDescriptor(
 
         override fun create(
             moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = EclipseModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, getEclipseModuleDescriptorName(moduleRootDirectory))
+            projectDescriptor: HybrisProjectDescriptor
+        ) = EclipseModuleDescriptor(moduleRootDirectory, projectDescriptor, getEclipseModuleDescriptorName(moduleRootDirectory))
 
         private fun getEclipseModuleDescriptorName(moduleRootDirectory: File) = EclipseProjectFinder.findProjectName(moduleRootDirectory.absolutePath)
             ?.trim { it <= ' ' }

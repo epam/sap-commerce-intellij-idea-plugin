@@ -24,9 +24,9 @@ import java.io.File
 
 open class ExternalModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String,
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : AbstractModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
 
     override fun groupName(): Array<String>? = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
 }

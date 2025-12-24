@@ -17,21 +17,19 @@
  */
 package sap.commerce.toolset.project.factories
 
-import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.util.application
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
-import sap.commerce.toolset.project.HybrisProjectService
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.impl.*
+import sap.commerce.toolset.project.module.ProjectModuleDetector
 import java.io.File
 import java.io.IOException
 
@@ -40,8 +38,8 @@ object ModuleDescriptorFactory {
     private val LOG = Logger.getInstance(ModuleDescriptorFactory::class.java)
 
     @Throws(HybrisConfigurationException::class)
-    fun createDescriptor(file: File, rootProjectDescriptor: HybrisProjectDescriptor): ModuleDescriptor {
-        val hybrisProjectService: HybrisProjectService = application.service()
+    fun createDescriptor(file: File, projectDescriptor: HybrisProjectDescriptor): ModuleDescriptor {
+        val moduleDescriptorProvider = ProjectModuleDetector.getInstance()
         val resolvedFile = try {
             file.canonicalFile
         } catch (e: IOException) {
@@ -58,42 +56,42 @@ object ModuleDescriptorFactory {
         }
 
         return when {
-            hybrisProjectService.isConfigModule(resolvedFile) -> {
+            moduleDescriptorProvider.isConfigModule(resolvedFile) -> {
                 LOG.info("Creating Config module for $path")
-                ConfigModuleDescriptorImpl(resolvedFile, rootProjectDescriptor)
+                ConfigModuleDescriptorImpl(resolvedFile, projectDescriptor)
             }
 
-            hybrisProjectService.isPlatformModule(resolvedFile) -> {
+            moduleDescriptorProvider.isPlatformModule(resolvedFile) -> {
                 LOG.info("Creating Platform module for $path")
-                PlatformModuleDescriptorImpl(resolvedFile, rootProjectDescriptor)
+                PlatformModuleDescriptorImpl(resolvedFile, projectDescriptor)
             }
 
-            hybrisProjectService.isCoreExtModule(resolvedFile) -> {
+            moduleDescriptorProvider.isCoreExtModule(resolvedFile) -> {
                 LOG.info("Creating Core EXT module for $path")
-                YCoreExtModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))
+                YCoreExtModuleDescriptor(resolvedFile, projectDescriptor, getExtensionInfo(resolvedFile))
             }
 
-            hybrisProjectService.isPlatformExtModule(resolvedFile) -> {
+            moduleDescriptorProvider.isPlatformExtModule(resolvedFile) -> {
                 LOG.info("Creating Platform EXT module for $path")
-                with(YPlatformExtModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
+                with(YPlatformExtModuleDescriptor(resolvedFile, projectDescriptor, getExtensionInfo(resolvedFile))) {
                     SubModuleDescriptorFactory.buildAll(this)
                         .forEach { this.addSubModule(it) }
                     this
                 }
             }
 
-            hybrisProjectService.isOutOfTheBoxModule(resolvedFile, rootProjectDescriptor) -> {
+            moduleDescriptorProvider.isOutOfTheBoxModule(resolvedFile, projectDescriptor) -> {
                 LOG.info("Creating OOTB module for $path")
-                with(YOotbRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
+                with(YOotbRegularModuleDescriptor(resolvedFile, projectDescriptor, getExtensionInfo(resolvedFile))) {
                     SubModuleDescriptorFactory.buildAll(this)
                         .forEach { this.addSubModule(it) }
                     this
                 }
             }
 
-            hybrisProjectService.isHybrisModule(resolvedFile) -> {
+            moduleDescriptorProvider.isHybrisModule(resolvedFile) -> {
                 LOG.info("Creating Custom hybris module for $path")
-                with(YCustomRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
+                with(YCustomRegularModuleDescriptor(resolvedFile, projectDescriptor, getExtensionInfo(resolvedFile))) {
                     SubModuleDescriptorFactory.buildAll(this)
                         .forEach { this.addSubModule(it) }
                     this
@@ -103,8 +101,8 @@ object ModuleDescriptorFactory {
 
             else -> {
                 ModuleDescriptorProvider.EP.extensionList
-                    .firstOrNull { it.isApplicable(rootProjectDescriptor.project, resolvedFile) }
-                    ?.create(resolvedFile, rootProjectDescriptor)
+                    .firstOrNull { it.isApplicable(projectDescriptor.project, resolvedFile) }
+                    ?.create(resolvedFile, projectDescriptor)
                     ?: throw HybrisConfigurationException("Could not find suitable module descriptor provider for $path")
             }
         }
@@ -113,25 +111,25 @@ object ModuleDescriptorFactory {
     @Throws(HybrisConfigurationException::class)
     fun createRootDescriptor(
         moduleRootDirectory: File,
-        rootProjectDescriptor: HybrisProjectDescriptor,
+        projectDescriptor: HybrisProjectDescriptor,
         name: String
     ): ExternalModuleDescriptor {
         validateModuleDirectory(moduleRootDirectory)
 
-        return ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+        return ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, name)
     }
 
     @Throws(HybrisConfigurationException::class)
     fun createConfigDescriptor(
         moduleRootDirectory: File,
-        rootProjectDescriptor: HybrisProjectDescriptor,
+        projectDescriptor: HybrisProjectDescriptor,
         name: String
     ): ConfigModuleDescriptor {
         validateModuleDirectory(moduleRootDirectory)
 
         return ConfigModuleDescriptorImpl(
             moduleRootDirectory,
-            rootProjectDescriptor, name
+            projectDescriptor, name
         )
     }
 

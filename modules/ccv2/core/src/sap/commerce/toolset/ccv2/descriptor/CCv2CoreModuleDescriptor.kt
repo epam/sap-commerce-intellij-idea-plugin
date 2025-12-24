@@ -27,10 +27,10 @@ import java.io.File
 
 class CCv2CoreModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2_CORE
-) : CCv2ModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : CCv2ModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
 
     class Provider : ModuleDescriptorProvider {
         override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
@@ -42,7 +42,7 @@ class CCv2CoreModuleDescriptor(
 
         override fun create(
             moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = CCv2CoreModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+            projectDescriptor: HybrisProjectDescriptor
+        ) = CCv2CoreModuleDescriptor(moduleRootDirectory, projectDescriptor)
     }
 }

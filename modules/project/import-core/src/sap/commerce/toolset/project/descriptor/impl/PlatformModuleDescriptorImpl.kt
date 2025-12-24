@@ -36,10 +36,10 @@ import java.io.FileFilter
 
 class PlatformModuleDescriptorImpl(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String = ProjectConstants.Extension.PLATFORM,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), PlatformModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootDirectory, projectDescriptor, name), PlatformModuleDescriptor {
 
     override fun isPreselected() = true
 

@@ -48,18 +48,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static sap.commerce.toolset.HybrisI18nBundle.message;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.MANDATORY;
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.UNUSED;
 
+// TODO: review this class
 public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<ModuleDescriptor> implements HybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
 
     @Nullable
     private HybrisProjectDescriptor _hybrisProjectDescriptor;
+    // TODO: review it, mby it is not required as is
     private List<ModuleDescriptor> moduleList;
     private List<ModuleDescriptor> _hybrisModulesToImport;
 
@@ -161,7 +162,6 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
         } else {
             alreadyExistingModuleFiles = getModulesChosenForImportFiles(modulesChosenForImport);
         }
-        Collections.sort(alreadyExistingModuleFiles);
 
         try {
             VirtualFileSystemService.getInstance().removeAllFiles(alreadyExistingModuleFiles);
@@ -171,10 +171,12 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
     }
 
     private List<File> getAllImlFiles(final File dir) {
-        final List<File> imlFiles = Arrays.stream(dir.listFiles(
+        final File[] files = dir.listFiles(
             e -> e.getName().endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
-        )).collect(Collectors.toList());
-        return imlFiles;
+        );
+        return files != null
+            ? Arrays.stream(files).toList()
+            : List.of();
     }
 
     private List<File> getModulesChosenForImportFiles(final Iterable<ModuleDescriptor> modulesChosenForImport) {
@@ -200,14 +202,14 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
     @Override
     public void setAllModuleList() {
-        moduleList = this.getHybrisProjectDescriptor().getFoundModules();
+        moduleList = this.getHybrisProjectDescriptor().getFoundModules().stream().toList();
     }
 
     @Override
     public List<ModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable ProjectSettings settings) {
-        final List<ModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
-        final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
-        final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();
+        final var allModules = this.getHybrisProjectDescriptor().getFoundModules();
+        final var moduleToImport = new ArrayList<ModuleDescriptor>();
+        final var moduleToCheck = new HashSet<ModuleDescriptor>();
         for (final var moduleDescriptor : allModules) {
             if (moduleDescriptor.isPreselected()) {
                 moduleToImport.add(moduleDescriptor);
@@ -236,8 +238,7 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
 
         return moduleToImport.stream()
             .filter(e -> !modulesOnBlackList.contains(e.getRelativePath()))
-            .sorted(Comparator.nullsLast(Comparator.comparing(ModuleDescriptor::getName)))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override
@@ -246,7 +247,7 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
             .getFoundModules()
             .stream()
             .filter(Predicate.not(ExternalModuleDescriptor.class::isInstance))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override
@@ -255,7 +256,7 @@ public class DefaultHybrisProjectImportBuilder extends ProjectImportBuilder<Modu
             .getFoundModules()
             .stream()
             .filter(ExternalModuleDescriptor.class::isInstance)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

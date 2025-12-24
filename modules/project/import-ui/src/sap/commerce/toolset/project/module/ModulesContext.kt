@@ -18,14 +18,10 @@
 
 package sap.commerce.toolset.project.module
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
+import java.io.File
 
-@Service
-class ProjectImportModulesProcessor {
-
-    companion object {
-        fun getInstance(): ProjectImportModulesProcessor = application.service()
-    }
-}
+data class ModulesContext(
+    val hybrisModules: MutableSet<File> = mutableSetOf(),
+    val nonHybrisModules: MutableSet<File> = mutableSetOf(),
+    val ccv2Modules: MutableSet<File> = mutableSetOf(),
+)

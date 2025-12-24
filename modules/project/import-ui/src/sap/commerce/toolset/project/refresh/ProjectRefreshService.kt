@@ -73,7 +73,7 @@ class ProjectRefreshService(private val project: Project) {
         wizard.projectBuilder.cleanup()
     }
 
-    fun openModuleDescriptors(rootProjectDescriptor: HybrisProjectDescriptor): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
+    fun openModuleDescriptors(projectDescriptor: HybrisProjectDescriptor): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
         .filter { module -> YFacet.getState(module)?.subModuleType == null }
         .mapNotNull { module ->
             ModuleRootManager.getInstance(module).contentRoots
@@ -81,7 +81,7 @@ class ProjectRefreshService(private val project: Project) {
                 ?.let { VfsUtil.virtualToIoFile(it) }
                 ?.let {
                     try {
-                        ModuleDescriptorFactory.createDescriptor(it, rootProjectDescriptor)
+                        ModuleDescriptorFactory.createDescriptor(it, projectDescriptor)
                     } catch (e: HybrisConfigurationException) {
                         thisLogger().error(e)
                         return@let null

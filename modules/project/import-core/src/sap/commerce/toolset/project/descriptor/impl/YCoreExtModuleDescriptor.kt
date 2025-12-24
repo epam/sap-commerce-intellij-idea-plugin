@@ -24,9 +24,9 @@ import java.io.File
 
 class YCoreExtModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
-) : YPlatformExtModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+) : YPlatformExtModuleDescriptor(moduleRootDirectory, projectDescriptor, extensionInfo) {
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = emptySet<String>()
 }

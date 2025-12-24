@@ -25,12 +25,12 @@ abstract class AbstractYSubModuleDescriptor(
     override val owner: YRegularModuleDescriptor,
     override val moduleRootDirectory: File,
     override val name: String = owner.name + "." + moduleRootDirectory.name,
-    override val rootProjectDescriptor: HybrisProjectDescriptor = owner.rootProjectDescriptor,
+    override val projectDescriptor: HybrisProjectDescriptor = owner.projectDescriptor,
     override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
     override val descriptorType: ModuleDescriptorType = owner.descriptorType,
 ) : AbstractYModuleDescriptor(
     moduleRootDirectory = moduleRootDirectory,
-    rootProjectDescriptor = rootProjectDescriptor,
+    projectDescriptor = projectDescriptor,
     name = name,
     extensionInfo = owner.extensionInfo
 ), YSubModuleDescriptor {

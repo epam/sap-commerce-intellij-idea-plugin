@@ -26,10 +26,10 @@ import java.io.File
 
 class GradleKtsModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
 ) : GradleModuleDescriptor(
     moduleRootDirectory,
-    rootProjectDescriptor,
+    projectDescriptor,
     File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS)
 ) {
 
@@ -44,8 +44,8 @@ class GradleKtsModuleDescriptor(
 
         override fun create(
             moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = GradleKtsModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+            projectDescriptor: HybrisProjectDescriptor
+        ) = GradleKtsModuleDescriptor(moduleRootDirectory, projectDescriptor)
 
     }
 

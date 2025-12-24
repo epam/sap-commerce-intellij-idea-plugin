@@ -79,7 +79,7 @@ private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<Ja
         descriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
-                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importContext.importOOTBModulesInReadOnlyMode
+                val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.projectDescriptor.importContext.importOOTBModulesInReadOnlyMode
                 val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }
                     .filter { it.isDirectory }
@@ -139,7 +139,7 @@ private fun addHmcLibs(
         )
     )
 
-    descriptor.rootProjectDescriptor.chosenModuleDescriptors
+    descriptor.projectDescriptor.chosenModuleDescriptors
         .firstOrNull { it.name == ProjectConstants.Extension.HMC }
         ?.let {
             libs.add(
@@ -157,7 +157,7 @@ private fun addLibrariesToNonCustomModule(
     descriptorType: ModuleDescriptorType?,
     libs: MutableList<JavaLibraryDescriptor>
 ) {
-    if (!descriptor.rootProjectDescriptor.importContext.importOOTBModulesInReadOnlyMode) return
+    if (!descriptor.projectDescriptor.importContext.importOOTBModulesInReadOnlyMode) return
     if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
     val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
@@ -243,7 +243,7 @@ private fun getLibraryDescriptors(descriptor: YHacSubModuleDescriptor): MutableL
     libs.add(
         JavaLibraryDescriptor(
             name = "${descriptor.name} - HAC Web Classes",
-            libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
+            libraryFile = File(descriptor.projectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
             directoryWithClasses = true
         )
     )
@@ -269,7 +269,7 @@ private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescript
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
-    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.importContext.importOOTBModulesInReadOnlyMode
+    val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.projectDescriptor.importContext.importOOTBModulesInReadOnlyMode
     allYModules.values
         .filter { it.getDirectDependencies().contains(descriptor.owner) }
         .filter { it != descriptor }
@@ -412,7 +412,7 @@ private fun getLibraryDescriptors(descriptor: PlatformModuleDescriptor) = listOf
     )
 )
 
-private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
+private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.projectDescriptor.externalDbDriversDirectory
     ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
 
 private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettings.getInstance().withStandardProvidedSources) {

@@ -24,10 +24,10 @@ import java.io.File
 
 class YCustomRegularModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CUSTOM
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, projectDescriptor, extensionInfo) {
 
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
 }

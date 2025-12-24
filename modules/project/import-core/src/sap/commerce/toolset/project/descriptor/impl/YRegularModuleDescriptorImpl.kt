@@ -29,10 +29,10 @@ import java.io.File
 
 abstract class YRegularModuleDescriptorImpl protected constructor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
 ) : AbstractYModuleDescriptor(
-    moduleRootDirectory, rootProjectDescriptor,
+    moduleRootDirectory, projectDescriptor,
     extensionInfo.extension.name, extensionInfo = extensionInfo
 ), YRegularModuleDescriptor {
 
@@ -74,7 +74,7 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
         if (hasHmcModule) {
             requiredExtensionNames.add(ProjectConstants.Extension.HMC)
         }
-        if (hasBackofficeModule) {
+        if (hasBackofficeModule) { // TODO: why `backoffice.web` and not `backoffice` ?
             requiredExtensionNames.add(ProjectConstants.Extension.BACK_OFFICE + "." + ProjectConstants.Extension.WEB)
         }
         return requiredExtensionNames.toImmutableSet()

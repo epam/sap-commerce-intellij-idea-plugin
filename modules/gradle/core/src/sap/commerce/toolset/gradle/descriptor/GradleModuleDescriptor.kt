@@ -30,10 +30,10 @@ import java.io.File
 
 open class GradleModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     val gradleFile: File = File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD),
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.GRADLE
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, moduleRootDirectory.name) {
 
     class Provider : ModuleDescriptorProvider {
 
@@ -48,8 +48,8 @@ open class GradleModuleDescriptor(
 
         override fun create(
             moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = GradleModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+            projectDescriptor: HybrisProjectDescriptor
+        ) = GradleModuleDescriptor(moduleRootDirectory, projectDescriptor)
     }
 
 }

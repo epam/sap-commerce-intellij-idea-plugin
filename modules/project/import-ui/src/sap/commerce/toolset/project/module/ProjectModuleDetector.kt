@@ -16,22 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project
+package sap.commerce.toolset.project.module
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
-import org.jetbrains.idea.maven.model.MavenConstants
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.project.ProjectUtil.isHybrisModuleRoot
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.ProjectUtil
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
 import java.io.File
 import kotlin.io.path.exists
 
 @Service
-class HybrisProjectService {
+class ProjectModuleDetector {
 
     fun isConfigModule(file: File) = with(file.toPath()) {
         resolve("licence").exists() && resolve("tomcat").resolve("tomcat_context.tpl").exists()
@@ -57,12 +57,12 @@ class HybrisProjectService {
         && file.getName() == ProjectConstants.Extension.CORE
         && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
 
-    fun isHybrisModule(file: File): Boolean = isHybrisModuleRoot(file)
+    fun isHybrisModule(file: File): Boolean = ProjectUtil.isHybrisModuleRoot(file)
 
-    fun isOutOfTheBoxModule(file: File, rootProjectDescriptor: HybrisProjectDescriptor): Boolean {
-        val extDir = rootProjectDescriptor.externalExtensionsDirectory
+    fun isOutOfTheBoxModule(file: File, projectDescriptor: HybrisProjectDescriptor): Boolean {
+        val extDir = projectDescriptor.externalExtensionsDirectory
         if (extDir != null) {
-            if (VirtualFileSystemService.getInstance().fileContainsAnother(extDir, file)) {
+            if (VirtualFileSystemService.Companion.getInstance().fileContainsAnother(extDir, file)) {
                 // this will override bin/ext-* naming convention.
                 return false
             }
@@ -77,7 +77,7 @@ class HybrisProjectService {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false
         }
-        return File(rootProjectDirectory, MavenConstants.POM_XML).isFile()
+        return File(rootProjectDirectory, HybrisConstants.MAVEN_POM_XML).isFile()
     }
 
     fun isEclipseModule(rootProjectDirectory: File): Boolean {
@@ -108,6 +108,6 @@ class HybrisProjectService {
         || File(rootProjectDirectory, ".hg").isDirectory()
 
     companion object {
-        fun getInstance(): HybrisProjectService = application.service()
+        fun getInstance(): ProjectModuleDetector = application.service()
     }
 }

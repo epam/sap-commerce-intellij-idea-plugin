@@ -28,7 +28,7 @@ interface ModuleDescriptorProvider {
 
     fun create(
         moduleRootDirectory: File,
-        rootProjectDescriptor: HybrisProjectDescriptor,
+        projectDescriptor: HybrisProjectDescriptor,
     ): ModuleDescriptor
 
     companion object {

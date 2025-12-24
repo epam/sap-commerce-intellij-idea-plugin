@@ -18,69 +18,50 @@
 
 package sap.commerce.toolset.project.localextensions
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.ui.Messages
 import com.intellij.util.application
 import sap.commerce.toolset.project.descriptor.*
 
 @Service
-class ProjectImportLocalExtensionsProcessor {
+class ProjectLocalExtensionsProcessor {
 
     @Throws(InterruptedException::class)
-    fun processLocalExtensions(projectDescriptor: HybrisProjectDescriptor) {
-        val localExtensionsScanner = ProjectImportLocalExtensionsScanner.getInstance()
-        val configHybrisModuleDescriptor = localExtensionsScanner.findConfigDir(projectDescriptor)
+    fun process(projectDescriptor: HybrisProjectDescriptor, configModuleDescriptor: ConfigModuleDescriptor) {
+        val explicitlyDefinedModules = ProjectLocalExtensionsScanner.getInstance()
+            .processHybrisConfig(projectDescriptor, configModuleDescriptor)
 
-        if (configHybrisModuleDescriptor == null) {
-            ApplicationManager.getApplication().invokeLater {
-                Messages.showErrorDialog(
-                    """
-                    The ‘config’ module hasn’t been detected, which will affect the following functionality:
-                    
-                     · module auto-selection
-                     · building modules in IDE
-                     · resolving properties
-                    
-                    """.trimIndent(),
-                    "Project Configuration Incomplete"
-                )
-            }
-            return
-        }
-        val explicitlyDefinedModules = localExtensionsScanner.processHybrisConfig(projectDescriptor, configHybrisModuleDescriptor)
-        preselectModules(configHybrisModuleDescriptor, explicitlyDefinedModules, projectDescriptor)
+        preselectModules(configModuleDescriptor, explicitlyDefinedModules, projectDescriptor)
     }
 
     private fun preselectModules(
-        configHybrisModuleDescriptor: ConfigModuleDescriptor,
+        configModuleDescriptor: ConfigModuleDescriptor,
         explicitlyDefinedModules: Set<String>,
         projectDescriptor: HybrisProjectDescriptor
     ) {
         projectDescriptor.foundModules
             .filter { explicitlyDefinedModules.contains(it.name) }
             .filterIsInstance<YRegularModuleDescriptor>()
-            .forEach {
-                it.isInLocalExtensions = true
-                it.getDirectDependencies()
+            .forEach { moduleDescriptor ->
+                moduleDescriptor.isInLocalExtensions = true
+                moduleDescriptor.getDirectDependencies()
                     .filterIsInstance<YRegularModuleDescriptor>()
                     .forEach { it.isNeededDependency = true }
             }
 
-        preselectConfigModules(configHybrisModuleDescriptor, projectDescriptor.foundModules)
+        preselectConfigModules(configModuleDescriptor, projectDescriptor.foundModules)
     }
 
     private fun preselectConfigModules(
-        configHybrisModuleDescriptor: ConfigModuleDescriptor,
+        configModuleDescriptor: ConfigModuleDescriptor,
         foundModules: Collection<ModuleDescriptor>
     ) {
-        configHybrisModuleDescriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
-        configHybrisModuleDescriptor.isMainConfig = true
-        configHybrisModuleDescriptor.setPreselected(true)
+        configModuleDescriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
+        configModuleDescriptor.isMainConfig = true
+        configModuleDescriptor.setPreselected(true)
 
         val preselectedNames = mutableSetOf<String>().also {
-            it.add(configHybrisModuleDescriptor.name)
+            it.add(configModuleDescriptor.name)
         }
 
         foundModules
@@ -93,6 +74,6 @@ class ProjectImportLocalExtensionsProcessor {
     }
 
     companion object {
-        fun getInstance(): ProjectImportLocalExtensionsProcessor = application.service()
+        fun getInstance(): ProjectLocalExtensionsProcessor = application.service()
     }
 }

@@ -29,12 +29,12 @@ import java.io.File
 
 abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String,
     override val extensionInfo: ExtensionInfo,
     private val metas: Map<String, String> = extensionInfo.extension.meta
         .associate { it.key to it.value }
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), YModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootDirectory, projectDescriptor, name), YModuleDescriptor {
 
     private val myExtensionDescriptor by lazy {
         ExtensionDescriptor(

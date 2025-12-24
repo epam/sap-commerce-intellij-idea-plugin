@@ -24,7 +24,7 @@ import java.io.File
 
 class YOotbRegularModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.OOTB
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, rootProjectDescriptor, extensionInfo)
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, projectDescriptor, extensionInfo)

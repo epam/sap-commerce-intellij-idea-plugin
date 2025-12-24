@@ -95,17 +95,17 @@ public final class ContentRootConfiguratorEx {
         @NotNull final List<File> dirsToIgnore,
         @NotNull final ApplicationSettings appSettings
     ) {
-        final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
+        final var projectDescriptor = moduleDescriptor.getProjectDescriptor();
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
         if (customModuleDescriptor
-            || !rootProjectDescriptor.getImportContext().getImportOOTBModulesInReadOnlyMode()
+            || !projectDescriptor.getImportContext().getImportOOTBModulesInReadOnlyMode()
             || ProjectConstants.Extension.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
         ) {
             final var moduleRootDirectory = moduleDescriptor.getModuleRootDirectory();
 
             addSourceRoots(contentEntry, moduleRootDirectory, dirsToIgnore, appSettings, ProjectConstants.Directory.SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
 
-            if (customModuleDescriptor || !rootProjectDescriptor.getImportContext().getExcludeTestSources()) {
+            if (customModuleDescriptor || !projectDescriptor.getImportContext().getExcludeTestSources()) {
                 addSourceRoots(contentEntry, moduleRootDirectory, dirsToIgnore, appSettings, ProjectConstants.Directory.TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
             }
 
@@ -163,7 +163,7 @@ public final class ContentRootConfiguratorEx {
         ));
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || !moduleDescriptor.getRootProjectDescriptor().getImportContext().getImportOOTBModulesInReadOnlyMode()) {
+            || !moduleDescriptor.getProjectDescriptor().getImportContext().getImportOOTBModulesInReadOnlyMode()) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directory.CLASSES));
         }
     }
@@ -189,9 +189,9 @@ public final class ContentRootConfiguratorEx {
     ) {
         configureWebModuleRoots(moduleDescriptor, contentEntry);
 
-        final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
+        final var projectDescriptor = moduleDescriptor.getProjectDescriptor();
 
-        if (isCustomModuleDescriptor(moduleDescriptor) || !rootProjectDescriptor.getImportContext().getImportOOTBModulesInReadOnlyMode()) {
+        if (isCustomModuleDescriptor(moduleDescriptor) || !projectDescriptor.getImportContext().getImportOOTBModulesInReadOnlyMode()) {
             configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directory.COMMON_WEB_SRC, JavaSourceRootType.SOURCE);
             configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directory.ADDON_SRC, JavaSourceRootType.SOURCE);
         }
@@ -323,7 +323,7 @@ public final class ContentRootConfiguratorEx {
         final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || (!moduleDescriptor.getRootProjectDescriptor().getImportContext().getImportOOTBModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
+            || (!moduleDescriptor.getProjectDescriptor().getImportContext().getImportOOTBModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEBROOT_WEBINF_CLASSES_PATH));
         }

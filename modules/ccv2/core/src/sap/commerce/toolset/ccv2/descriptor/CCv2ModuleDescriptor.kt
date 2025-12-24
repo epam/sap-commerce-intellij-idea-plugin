@@ -27,9 +27,9 @@ import java.io.File
 
 abstract class CCv2ModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY

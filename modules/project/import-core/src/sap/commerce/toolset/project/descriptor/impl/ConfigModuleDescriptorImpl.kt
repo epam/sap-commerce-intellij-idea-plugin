@@ -25,9 +25,9 @@ import java.io.File
 
 class ConfigModuleDescriptorImpl(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), ConfigModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootDirectory, projectDescriptor, name), ConfigModuleDescriptor {
 
     private var preselected = false
     override var isMainConfig = false

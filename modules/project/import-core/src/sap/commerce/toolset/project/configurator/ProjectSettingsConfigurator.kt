@@ -17,10 +17,9 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
@@ -28,6 +27,7 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 import java.io.File
+import kotlin.io.path.Path
 
 class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
 
@@ -38,7 +38,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         val project = hybrisProjectDescriptor.project ?: return
         val workspaceSettings = WorkspaceSettings.getInstance(project)
         val projectSettings = ProjectSettings.getInstance(project)
-        WorkspaceSettings.getInstance(project).hybrisProject = true
+        workspaceSettings.hybrisProject = true
 
         Plugin.HYBRIS.pluginDescriptor
             ?.let { workspaceSettings.importedByVersion = it.version }
@@ -88,13 +88,12 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
 
     private fun saveCustomDirectoryLocation(hybrisProjectDescriptor: HybrisProjectDescriptor) {
         val project = hybrisProjectDescriptor.project ?: return
-        val projectDir = project.guessProjectDir() ?: return
+        val projectDir = project.directory?.let { Path(it) } ?: return
         val projectSettings = project.ySettings
         val hybrisPath = hybrisProjectDescriptor.hybrisDistributionDirectory
             ?.toPath() ?: return
 
-        projectSettings.hybrisDirectory = VfsUtilCore.virtualToIoFile(projectDir)
-            .toPath()
+        projectSettings.hybrisDirectory = projectDir
             .relativize(hybrisPath)
             .toString()
 

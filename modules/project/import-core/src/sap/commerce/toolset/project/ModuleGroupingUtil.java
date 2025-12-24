@@ -67,7 +67,7 @@ public final class ModuleGroupingUtil {
     }
 
     private static String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
-        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
+        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getProjectDescriptor().getConfigHybrisModuleDescriptor();
         if (configDescriptor == null) {
             return null;
         }
@@ -134,10 +134,10 @@ public final class ModuleGroupingUtil {
         }
 
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
-            File customDirectory = moduleDescriptor.getRootProjectDescriptor().getExternalExtensionsDirectory();
+            File customDirectory = moduleDescriptor.getProjectDescriptor().getExternalExtensionsDirectory();
 
             if (null == customDirectory) {
-                customDirectory = new File(moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
+                customDirectory = new File(moduleDescriptor.getProjectDescriptor().getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
             }
             if (!customDirectory.exists()) {
                 return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
@@ -170,7 +170,7 @@ public final class ModuleGroupingUtil {
 
         if (requiredYModuleDescriptorList.contains(moduleDescriptor)) {
             final File hybrisBinDirectory = new File(
-                moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(),
+                moduleDescriptor.getProjectDescriptor().getHybrisDistributionDirectory(),
                 ProjectConstants.Directory.BIN
             );
 

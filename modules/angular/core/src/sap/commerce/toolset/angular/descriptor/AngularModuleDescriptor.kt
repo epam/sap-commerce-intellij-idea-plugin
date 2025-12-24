@@ -27,10 +27,10 @@ import java.io.File
 
 class AngularModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    projectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, projectDescriptor, name) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY
@@ -57,7 +57,7 @@ class AngularModuleDescriptor(
 
         override fun create(
             moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = AngularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+            projectDescriptor: HybrisProjectDescriptor
+        ) = AngularModuleDescriptor(moduleRootDirectory, projectDescriptor)
     }
 }

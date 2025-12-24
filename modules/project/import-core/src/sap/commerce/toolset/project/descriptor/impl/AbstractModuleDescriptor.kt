@@ -31,7 +31,7 @@ import java.util.*
 
 abstract class AbstractModuleDescriptor(
     override val moduleRootDirectory: File,
-    override val rootProjectDescriptor: HybrisProjectDescriptor,
+    override val projectDescriptor: HybrisProjectDescriptor,
     override val name: String,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
     override var groupNames: Array<String> = emptyArray(),
@@ -85,13 +85,13 @@ abstract class AbstractModuleDescriptor(
 
     override fun ideaModuleFile(): File {
         val futureModuleName = ideaModuleName()
-        return rootProjectDescriptor.modulesFilesDirectory
-            ?.let { File(rootProjectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+        return projectDescriptor.modulesFilesDirectory
+            ?.let { File(projectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
             ?: File(moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
     override fun getRelativePath(): String {
-        val projectRootDir: File = rootProjectDescriptor.rootDirectory
+        val projectRootDir: File = projectDescriptor.rootDirectory
             ?: return moduleRootDirectory.path
         val virtualFileSystemService = VirtualFileSystemService.getInstance()
 
@@ -103,7 +103,7 @@ abstract class AbstractModuleDescriptor(
     override fun getAllDependencies() = dependencies
 
     override fun getRequiredExtensionNames() = requiredExtensionNames
-    override fun addRequiredExtensionNames(extensions: Set<YModuleDescriptor>) = extensions
+    override fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>) = extensions
         .map { it.name }
         .let { requiredExtensionNames.addAll(it) }
     override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
