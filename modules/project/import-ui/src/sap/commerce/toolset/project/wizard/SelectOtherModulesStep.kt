@@ -35,9 +35,13 @@ class SelectOtherModulesStep(context: WizardContext) : AbstractSelectModulesStep
     // TODO: restore previous selections
     override fun updateStep() {
         val importContext = context.importContext ?: return
-        val selectableModules = importContext.foundModules
+
+        context.list = importContext.foundModules
             .filterIsInstance<ExternalModuleDescriptor>()
-        context.list = selectableModules
+            .sortedWith(
+                compareBy<ExternalModuleDescriptor> { it.descriptorType }
+                    .thenComparing { it.moduleRootDirectory }
+            )
 
         super.updateStep()
         fileChooser.setBorder(IdeBorderFactory.createTitledBorder(JavaUiBundle.message("project.import.select.title", name), false))
@@ -51,12 +55,8 @@ class SelectOtherModulesStep(context: WizardContext) : AbstractSelectModulesStep
         }
     }
 
-    override fun getElementIcon(module: ModuleDescriptor): Icon? {
-        if (isInConflict(module)) return HybrisIcons.Module.CONFLICT
-
-        return if (module is ExternalModuleDescriptor) module.descriptorType.icon
-        else null
-    }
+    override fun getElementIcon(module: ModuleDescriptor): Icon = if (isInConflict(module)) HybrisIcons.Module.CONFLICT
+    else module.descriptorType.icon
 
     @Throws(ConfigurationException::class)
     override fun validate() = validateCommon()
