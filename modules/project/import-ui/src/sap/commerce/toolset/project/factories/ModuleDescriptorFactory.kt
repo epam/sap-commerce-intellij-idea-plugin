@@ -23,6 +23,7 @@ import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ConfigModuleDescriptorImpl
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
@@ -69,7 +70,8 @@ object ModuleDescriptorFactory {
     ): ExternalModuleDescriptor {
         validateModuleDirectory(moduleRootDirectory)
 
-        return ExternalModuleDescriptor(moduleRootDirectory, name)
+        // TODO: introduce new RootModuleDescriptor
+        return ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.NONE)
     }
 
     @Throws(HybrisConfigurationException::class)

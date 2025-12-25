@@ -34,7 +34,13 @@ import sap.commerce.toolset.project.module.ProjectModulesSelector
 
 class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.HYBRIS), RefreshSupport {
 
-    private var selectionMode = ModuleDescriptorImportStatus.MANDATORY
+    private val orderByType = mapOf(
+        ModuleDescriptorType.CONFIG to 0,
+        ModuleDescriptorType.CUSTOM to 1,
+        ModuleDescriptorType.OOTB to 2,
+        ModuleDescriptorType.PLATFORM to 3,
+        ModuleDescriptorType.EXT to 4,
+    )
 
     // TODO: restore previous manual selection
     init {
@@ -46,9 +52,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
                         .filterNot { BooleanUtils.isNotFalse(elementMarkStates[it]) }
                         .forEach {
                             fileChooser.setElementMarked(it, true)
-                            if (selectionMode === ModuleDescriptorImportStatus.MANDATORY) {
-                                it.importStatus = ModuleDescriptorImportStatus.MANDATORY
-                            }
+                            it.importStatus = ModuleDescriptorImportStatus.MANDATORY
                         }
                 }
 
@@ -64,55 +68,26 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         val importContext = context.importContext ?: return
         context.list = importContext.foundModules
             .filterNot { it is ExternalModuleDescriptor }
+            .sortedWith(
+                compareBy<ModuleDescriptor> { orderByType[it.descriptorType] ?: Integer.MAX_VALUE }
+                    .thenComparing { !it.isPreselected() }
+                    .thenComparing { it.name }
+            )
 
+        // init the tree
         super.updateStep()
 
-        selectionMode = ModuleDescriptorImportStatus.MANDATORY
-
-        for (index in 0 until fileChooser.elementCount) {
-            val yModuleDescriptor = fileChooser.getElementAt(index)
-            if (yModuleDescriptor.isPreselected()) {
-                fileChooser.setElementMarked(yModuleDescriptor, true)
-                yModuleDescriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
+        context.list
+            .filter {
+                when (it) {
+                    is PlatformModuleDescriptor -> true
+                    is YPlatformExtModuleDescriptor -> true
+                    is ConfigModuleDescriptor if it.isPreselected() && it.isMainConfig -> true
+                    else -> false
+                }
             }
-        }
+            .forEach { fileChooser.disableElement(it) }
 
-        selectionMode = ModuleDescriptorImportStatus.UNUSED
-
-        val duplicateModules = mutableSetOf<String>()
-        val uniqueModules = mutableSetOf<String>()
-
-        context.list.forEach {
-            if (uniqueModules.contains(it.name)) duplicateModules.add(it.name)
-            else uniqueModules.add(it.name)
-        }
-
-        // TODO: improve sorting
-        fileChooser.sort { o1: ModuleDescriptor, o2: ModuleDescriptor ->
-            val o1dup = duplicateModules.contains(o1.name)
-            val o2dup = duplicateModules.contains(o2.name)
-            if (o1dup xor o2dup) {
-                return@sort if (o1dup) -1 else 1
-            }
-            val o1custom = isCustomDescriptor(o1)
-            val o2custom = isCustomDescriptor(o2)
-            if (o1custom xor o2custom) {
-                return@sort if (o1custom) -1 else 1
-            }
-
-            // de-boost mandatory Platform extensions
-            val o1ext = isPlatformExtDescriptor(o1)
-            val o2ext = isPlatformExtDescriptor(o2)
-            if (o1ext xor o2ext) {
-                return@sort if (o2ext) -1 else 1
-            }
-            val o1selected = isMandatoryOrPreselected(o1)
-            val o2selected = isMandatoryOrPreselected(o2)
-            if (o1selected xor o2selected) {
-                return@sort if (o1selected) -1 else 1
-            }
-            o1.compareTo(o2)
-        }
         //scroll to top
         fileChooser.component
             ?.asSafely<JBTable>()
@@ -139,12 +114,12 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         }
     }
 
-    override fun isElementEnabled(element: ModuleDescriptor?) = when (element) {
-        is PlatformModuleDescriptor -> false
-        is YPlatformExtModuleDescriptor -> false
-        is ConfigModuleDescriptor if element.isPreselected() && element.isMainConfig -> false
-        else -> super.isElementEnabled(element)
-    }
+//    override fun isElementEnabled(element: ModuleDescriptor?) = when (element) {
+//        is PlatformModuleDescriptor -> false
+//        is YPlatformExtModuleDescriptor -> false
+//        is ConfigModuleDescriptor if element.isPreselected() && element.isMainConfig -> false
+//        else -> true
+//    }
 
     override fun getElementIcon(item: ModuleDescriptor?) = when {
         item == null -> HybrisIcons.Y.LOGO_BLUE

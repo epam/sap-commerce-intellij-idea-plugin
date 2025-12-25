@@ -52,7 +52,6 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
 
     override fun getName() = i18n("hybris.project.name")
     override fun getIcon() = HybrisIcons.Y.LOGO_BLUE
-    override fun isMarked(element: ModuleDescriptor?) = false
     override fun setOpenProjectSettingsAfter(on: Boolean) {
         _openProjectSettingsAfterImport = on
     }
@@ -60,6 +59,10 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     override fun createProject(name: String, path: String) = super.createProject(name, path).also {
         importContext?.project = it
     }
+
+    override fun isMarked(element: ModuleDescriptor?): Boolean = element
+        ?.isPreselected()
+        ?: false
 
     override fun commit(
         project: Project,

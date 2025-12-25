@@ -35,11 +35,13 @@ class YWebSubModuleDescriptor(
 
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>): Boolean {
         dependencies
+            .asSequence()
             .filterIsInstance<YModuleDescriptor>()
             .flatMap { it.getAllDependencies() }
             .filterIsInstance<YCustomRegularModuleDescriptor>()
             .flatMap { it.getSubModules() }
             .filterIsInstance<YCommonWebSubModuleDescriptor>()
+            .toList()
             .forEach { it.addDependantWebExtension(this) }
         return super.addDirectDependencies(dependencies)
     }

@@ -24,7 +24,4 @@ import java.io.File
 
 class MavenModuleDescriptor(
     moduleRootDirectory: File,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.MAVEN
-) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name) {
-
-}
+) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name, ModuleDescriptorType.MAVEN)

@@ -48,7 +48,7 @@ class ProjectLocalExtensionsProcessor {
             .filterIsInstance<YRegularModuleDescriptor>()
             .forEach { moduleDescriptor ->
                 moduleDescriptor.isInLocalExtensions = true
-                moduleDescriptor.getDirectDependencies()
+                moduleDescriptor.getAllDependencies()
                     .filterIsInstance<YRegularModuleDescriptor>()
                     .forEach { it.isNeededDependency = true }
             }

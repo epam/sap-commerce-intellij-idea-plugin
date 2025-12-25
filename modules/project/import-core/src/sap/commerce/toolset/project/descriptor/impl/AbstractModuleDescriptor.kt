@@ -33,7 +33,7 @@ import java.util.*
 abstract class AbstractModuleDescriptor(
     override val moduleRootDirectory: File,
     override val name: String,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    override val descriptorType: ModuleDescriptorType,
     override var groupNames: Array<String> = emptyArray(),
     override var readonly: Boolean = false,
 ) : ModuleDescriptor {

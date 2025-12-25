@@ -24,8 +24,7 @@ import java.io.File
 class YCustomRegularModuleDescriptor(
     moduleRootDirectory: File,
     extensionInfo: ExtensionInfo,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CUSTOM
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, extensionInfo) {
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.CUSTOM, extensionInfo) {
 
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
 }

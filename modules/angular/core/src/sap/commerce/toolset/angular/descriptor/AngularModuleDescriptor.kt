@@ -29,8 +29,7 @@ import java.io.File
 class AngularModuleDescriptor(
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
-) : ExternalModuleDescriptor(moduleRootDirectory, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ANGULAR) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY

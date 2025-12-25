@@ -41,6 +41,7 @@ import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStat
 import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.UNUSED;
 
 // TODO: -> kotlin
+// TODO: use own implementation, do not use "select all" and "unselect all"
 public abstract class AbstractSelectModulesStep extends SelectImportedProjectsStep<ModuleDescriptor> {
 
     final static int COLUMN_WIDTH = 300;

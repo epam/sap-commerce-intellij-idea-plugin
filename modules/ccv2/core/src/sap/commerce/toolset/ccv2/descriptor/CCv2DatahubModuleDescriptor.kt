@@ -24,7 +24,4 @@ import java.io.File
 class CCv2DatahubModuleDescriptor(
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2_DATAHUB
-) : CCv2ModuleDescriptor(moduleRootDirectory, name) {
-
-}
+) : CCv2ModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CCV2_DATAHUB)

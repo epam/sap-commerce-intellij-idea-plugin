@@ -24,7 +24,4 @@ import java.io.File
 class CCv2CoreModuleDescriptor(
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2_CORE
-) : CCv2ModuleDescriptor(moduleRootDirectory, name) {
-
-}
+) : CCv2ModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CCV2_CORE)

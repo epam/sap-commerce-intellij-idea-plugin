@@ -20,6 +20,7 @@ package sap.commerce.toolset.ccv2.descriptor
 
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
@@ -28,7 +29,8 @@ import java.io.File
 abstract class CCv2ModuleDescriptor(
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name,
-) : ExternalModuleDescriptor(moduleRootDirectory, name) {
+    descriptorType: ModuleDescriptorType,
+) : ExternalModuleDescriptor(moduleRootDirectory, name, descriptorType) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY

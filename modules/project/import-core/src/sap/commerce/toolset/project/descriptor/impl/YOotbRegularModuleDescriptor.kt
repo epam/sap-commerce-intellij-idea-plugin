@@ -24,5 +24,4 @@ import java.io.File
 class YOotbRegularModuleDescriptor(
     moduleRootDirectory: File,
     extensionInfo: ExtensionInfo,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.OOTB
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, extensionInfo)
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.OOTB, extensionInfo)

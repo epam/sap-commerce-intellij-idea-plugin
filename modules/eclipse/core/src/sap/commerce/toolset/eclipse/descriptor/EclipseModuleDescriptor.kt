@@ -25,7 +25,4 @@ import java.io.File
 class EclipseModuleDescriptor(
     moduleRootDirectory: File,
     name: String,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ECLIPSE
-) : ExternalModuleDescriptor(moduleRootDirectory, name) {
-
-}
+) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ECLIPSE)

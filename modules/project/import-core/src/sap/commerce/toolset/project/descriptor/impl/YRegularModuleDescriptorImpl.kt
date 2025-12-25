@@ -23,15 +23,19 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import java.io.File
 
 abstract class YRegularModuleDescriptorImpl protected constructor(
     moduleRootDirectory: File,
+    descriptorType: ModuleDescriptorType,
     extensionInfo: ExtensionInfo,
 ) : AbstractYModuleDescriptor(
     moduleRootDirectory,
-    extensionInfo.extension.name, extensionInfo = extensionInfo
+    extensionInfo.extension.name,
+    descriptorType,
+    extensionInfo = extensionInfo
 ), YRegularModuleDescriptor {
 
     override var isInLocalExtensions = false

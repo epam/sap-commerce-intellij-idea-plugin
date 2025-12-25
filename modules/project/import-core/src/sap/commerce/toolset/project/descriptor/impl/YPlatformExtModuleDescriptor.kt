@@ -29,8 +29,7 @@ import java.io.File
 open class YPlatformExtModuleDescriptor(
     moduleRootDirectory: File,
     extensionInfo: ExtensionInfo,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, extensionInfo) {
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.EXT, extensionInfo) {
 
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.CORE)

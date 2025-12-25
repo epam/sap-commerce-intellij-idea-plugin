@@ -22,6 +22,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import java.io.File
@@ -29,10 +30,11 @@ import java.io.File
 abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
     name: String,
+    descriptorType: ModuleDescriptorType,
     override val extensionInfo: ExtensionInfo,
     private val metas: Map<String, String> = extensionInfo.extension.meta
         .associate { it.key to it.value }
-) : AbstractModuleDescriptor(moduleRootDirectory, name), YModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType), YModuleDescriptor {
 
     private val myExtensionDescriptor by lazy {
         ExtensionDescriptor(

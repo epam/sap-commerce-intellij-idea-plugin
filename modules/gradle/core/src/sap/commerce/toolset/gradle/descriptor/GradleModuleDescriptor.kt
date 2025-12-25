@@ -26,7 +26,5 @@ import java.io.File
 open class GradleModuleDescriptor(
     moduleRootDirectory: File,
     val gradleFile: File = File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD),
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.GRADLE
-) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name, ModuleDescriptorType.GRADLE)
 
-}

@@ -36,8 +36,7 @@ import java.io.FileFilter
 class PlatformModuleDescriptorImpl(
     moduleRootDirectory: File,
     name: String = ProjectConstants.Extension.PLATFORM,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
-) : AbstractModuleDescriptor(moduleRootDirectory, name), PlatformModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.PLATFORM), PlatformModuleDescriptor {
 
     override fun isPreselected() = true
 

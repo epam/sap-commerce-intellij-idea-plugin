@@ -25,7 +25,7 @@ import java.io.File
 class ConfigModuleDescriptorImpl(
     moduleRootDirectory: File,
     name: String = moduleRootDirectory.name
-) : AbstractModuleDescriptor(moduleRootDirectory, name), ConfigModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CONFIG), ConfigModuleDescriptor {
 
     private var preselected = false
     override var isMainConfig = false
@@ -35,7 +35,7 @@ class ConfigModuleDescriptorImpl(
     }
     override fun isPreselected() = preselected
 
-    override val descriptorType: ModuleDescriptorType
-        get() = if (isMainConfig) ModuleDescriptorType.CONFIG
-        else ModuleDescriptorType.NONE
+//    override val descriptorType: ModuleDescriptorType
+//        get() = if (isMainConfig) ModuleDescriptorType.CONFIG
+//        else ModuleDescriptorType.NONE
 }
