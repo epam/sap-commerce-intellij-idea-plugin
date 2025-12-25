@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.bundles.commons)
     implementation(project(":shared-core"))
     implementation(project(":project-extensioninfo"))
+    implementation(project(":project-localextensions"))
     implementation(project(":project-core"))
 
     intellijPlatform {
