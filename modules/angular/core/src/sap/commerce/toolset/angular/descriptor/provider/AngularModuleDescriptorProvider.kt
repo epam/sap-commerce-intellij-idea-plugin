@@ -16,19 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.descriptor
+package sap.commerce.toolset.angular.descriptor.provider
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
+import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 import java.io.File
 
-interface ModuleDescriptorProvider {
+class AngularModuleDescriptorProvider : ModuleDescriptorProvider {
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = Plugin.ANGULAR.isActive()
+        && File(context.moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
 
-    fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean
-
-    fun create(moduleRootDirectory: File): ModuleDescriptor
-
-    companion object {
-        val EP = ExtensionPointName.create<ModuleDescriptorProvider>("sap.commerce.toolset.project.module.descriptorProvider")
-    }
+    override fun create(moduleRootDirectory: File) = AngularModuleDescriptor(moduleRootDirectory)
 }

@@ -16,16 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.gradle.descriptor
+package sap.commerce.toolset.project.context
 
-import sap.commerce.toolset.HybrisConstants
+import com.intellij.openapi.project.Project
 import java.io.File
 
-class GradleKtsModuleDescriptor(
-    moduleRootDirectory: File,
-) : GradleModuleDescriptor(
-    moduleRootDirectory,
-    File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS)
-) {
-
-}
+data class ModuleDescriptorProviderContext(
+    val moduleRootDirectory: File,
+    val project: Project?,
+    val externalExtensionsDirectory: File?,
+)

@@ -24,11 +24,12 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
+import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.impl.*
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 import sap.commerce.toolset.project.module.ProjectModuleResolver
 import java.io.File
 import java.io.IOException
@@ -55,6 +56,12 @@ object ModuleDescriptorFactory {
         } else {
             originalPath
         }
+
+        val context = ModuleDescriptorProviderContext(
+            moduleRootDirectory = resolvedFile,
+            project = importContext.project,
+            externalExtensionsDirectory = importContext.externalExtensionsDirectory,
+        )
 
         return when {
             moduleDescriptorProvider.isConfigModule(resolvedFile) -> {
@@ -102,7 +109,7 @@ object ModuleDescriptorFactory {
 
             else -> {
                 ModuleDescriptorProvider.EP.extensionList
-                    .firstOrNull { it.isApplicable(importContext.project, resolvedFile) }
+                    .firstOrNull { it.isApplicable(context) }
                     ?.create(resolvedFile)
                     ?: throw HybrisConfigurationException("Could not find suitable module descriptor provider for $path")
             }

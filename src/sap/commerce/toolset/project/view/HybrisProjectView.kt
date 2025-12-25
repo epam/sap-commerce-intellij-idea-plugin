@@ -34,9 +34,11 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
+import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
 import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
 import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
@@ -47,14 +49,14 @@ import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
 
-    private val hybrisApplicationSettings = ApplicationSettings.getInstance()
-    private val commerceGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupHybris)
+    private val applicationSettings = ApplicationSettings.getInstance()
+    private val commerceGroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupHybris)
         ?.firstOrNull()
-    private val platformGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupPlatform)
+    private val platformGroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupPlatform)
         ?.firstOrNull()
-    private val ccv2GroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
+    private val ccv2GroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupCCv2)
         ?.firstOrNull()
-    private val customGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupCustom)
+    private val customGroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupCustom)
         ?.firstOrNull()
     private val groupToIcon = mapOf(
         customGroupName to HybrisIcons.Module.CUSTOM_GROUP,
@@ -113,12 +115,13 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         children: Collection<AbstractTreeNode<*>>,
         settings: ViewSettings?
     ): Collection<AbstractTreeNode<*>> {
-        if (!hybrisApplicationSettings.groupExternalModules || isExternalModuleParent(parent)) return children
+        if (!applicationSettings.groupExternalModules || isExternalModuleParent(parent)) return children
 
         val otherNodes = mutableListOf<AbstractTreeNode<*>>()
         val treeNodes = mutableListOf<AbstractTreeNode<*>>()
-
         val projectRootManager = ProjectRootManager.getInstance(project)
+        val externalExtensionsDirectory = project.ySettings.externalExtensionsDirectory?.let { File(it) }
+
         for (child in children) {
             if (child is PsiDirectoryNode) {
                 val virtualFile = child.virtualFile
@@ -128,7 +131,13 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                 val yFacet = projectRootManager.fileIndex.getModuleForFile(virtualFile)
                     ?.let { YFacet.get(it) }
 
-                if (yFacet == null && ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(project, file) }) {
+                val context = ModuleDescriptorProviderContext(
+                    moduleRootDirectory = file,
+                    project = project,
+                    externalExtensionsDirectory = externalExtensionsDirectory
+                )
+
+                if (yFacet == null && ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(context) }) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)
@@ -203,7 +212,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?: true
     }
 
-    private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = hybrisApplicationSettings.hideEmptyMiddleFolders
+    private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = applicationSettings.hideEmptyMiddleFolders
         && settings.isHideEmptyMiddlePackages
 
     private fun modifyExternalLibrariesNodes(

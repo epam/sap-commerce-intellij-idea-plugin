@@ -40,7 +40,7 @@
                         interface="sap.commerce.toolset.project.configurator.ModuleFacetConfigurator"
                         dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.descriptorProvider"
-                        interface="sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider"
+                        interface="sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider"
                         dynamic="true"/>
     </extensionPoints>
 

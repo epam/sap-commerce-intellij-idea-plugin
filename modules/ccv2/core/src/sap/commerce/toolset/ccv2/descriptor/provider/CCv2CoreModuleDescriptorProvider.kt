@@ -16,16 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.gradle.descriptor
+package sap.commerce.toolset.ccv2.descriptor.provider
 
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.ccv2.descriptor.CCv2CoreModuleDescriptor
+import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 import java.io.File
 
-class GradleKtsModuleDescriptor(
-    moduleRootDirectory: File,
-) : GradleModuleDescriptor(
-    moduleRootDirectory,
-    File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS)
-) {
+class CCv2CoreModuleDescriptorProvider : ModuleDescriptorProvider {
+    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
+        val moduleRootDirectory = context.moduleRootDirectory
+        val absolutePath = moduleRootDirectory.absolutePath
 
+        return absolutePath.contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
+            && File(moduleRootDirectory, CCv2Constants.MANIFEST_NAME).isFile()
+    }
+
+    override fun create(moduleRootDirectory: File) = CCv2CoreModuleDescriptor(moduleRootDirectory)
 }

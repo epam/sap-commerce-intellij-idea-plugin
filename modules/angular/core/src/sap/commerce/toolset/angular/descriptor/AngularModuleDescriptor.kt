@@ -18,14 +18,10 @@
 
 package sap.commerce.toolset.angular.descriptor
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ModuleGroupingUtil
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
@@ -56,12 +52,4 @@ class AngularModuleDescriptor(
         return parentPath + parent.name
     }
 
-    class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(project: Project?, moduleRootDirectory: File) = Plugin.ANGULAR.isActive()
-            && File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
-
-        override fun create(
-            moduleRootDirectory: File
-        ) = AngularModuleDescriptor(moduleRootDirectory)
-    }
 }

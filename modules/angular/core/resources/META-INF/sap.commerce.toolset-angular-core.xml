@@ -21,6 +21,6 @@
         <project.postImportConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularConfigurator"/>
 
         <project.module.importConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularModuleImportConfigurator"/>
-        <project.module.descriptorProvider implementation="sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor$Provider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.angular.descriptor.provider.AngularModuleDescriptorProvider"/>
     </extensions>
 </idea-plugin>
