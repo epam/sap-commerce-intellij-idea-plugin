@@ -15,38 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.project.descriptor.provider
 
-fun properties(key: String) = providers.gradleProperty(key)
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.impl.PlatformModuleDescriptorImpl
+import java.io.File
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+class PlatformModuleDescriptorProvider : ModuleDescriptorProvider {
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
+    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
+        val moduleRootDirectory = context.moduleRootDirectory
+
+        return moduleRootDirectory.getName() == ProjectConstants.Extension.PLATFORM
+            && File(moduleRootDirectory, HybrisConstants.EXTENSIONS_XML).isFile()
     }
-    test {
-        java.srcDirs("tests")
-    }
-}
 
-dependencies {
-    implementation(libs.bundles.jaxb)
-    implementation(libs.bundles.commons)
-    implementation(project(":shared-core"))
-    implementation(project(":project-extensioninfo"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+    override fun create(moduleRootDirectory: File) = PlatformModuleDescriptorImpl(moduleRootDirectory)
 }

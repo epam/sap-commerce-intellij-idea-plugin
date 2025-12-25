@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.factories
+package sap.commerce.toolset.project.descriptor.provider
 
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
@@ -27,8 +27,7 @@ import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.*
 import java.io.File
 
-// TODO: move to core
-object SubModuleDescriptorFactory {
+internal object SubModuleDescriptorFactory {
 
     fun buildAll(owner: YRegularModuleDescriptor): Set<YSubModuleDescriptor> {
         val subModules = mutableSetOf<YSubModuleDescriptor>()

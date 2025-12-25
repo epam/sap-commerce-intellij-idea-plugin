@@ -26,7 +26,6 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectUtil
-import sap.commerce.toolset.project.vfs.VirtualFileSystemService
 import java.io.File
 import kotlin.io.path.exists
 
@@ -60,19 +59,6 @@ class ProjectModuleResolver {
         && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
 
     fun isHybrisModule(file: File): Boolean = ProjectUtil.isHybrisModuleRoot(file)
-
-    fun isOutOfTheBoxModule(file: File, externalExtensionsDirectory: File?): Boolean {
-        if (externalExtensionsDirectory != null) {
-            if (VirtualFileSystemService.getInstance().fileContainsAnother(externalExtensionsDirectory, file)) {
-                // this will override bin/ext-* naming convention.
-                return false
-            }
-        }
-        return (file.absolutePath.contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX) ||
-            file.absolutePath.contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX_2019)
-            )
-            && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
-    }
 
     fun isMavenModule(rootProjectDirectory: File) = Plugin.MAVEN.ifActive {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {

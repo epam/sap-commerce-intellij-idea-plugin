@@ -23,6 +23,7 @@ import java.nio.file.Paths
 import java.util.*
 import kotlin.math.max
 
+// TODO: move to core
 @Service
 class ProjectLocalExtensionsScanner {
 
