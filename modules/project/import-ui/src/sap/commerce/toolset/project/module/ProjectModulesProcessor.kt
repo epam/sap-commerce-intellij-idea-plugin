@@ -61,24 +61,22 @@ class ProjectModulesProcessor {
         val modulesScanner = ProjectModulesScanner.getInstance()
 
         thisLogger().info("Scanning for modules")
-        modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, false, rootDirectory, progressListenerProcessor)
+        modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, rootDirectory, progressListenerProcessor)
 
         if (externalExtensionsDirectory != null && !FileUtils.isFileUnder(externalExtensionsDirectory, rootDirectory)) {
             thisLogger().info("Scanning for external modules")
-            modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, false, externalExtensionsDirectory, progressListenerProcessor)
+            modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, externalExtensionsDirectory, progressListenerProcessor)
         }
 
         if (hybrisDistributionDirectory != null && !FileUtils.isFileUnder(hybrisDistributionDirectory, rootDirectory)) {
             thisLogger().info("Scanning for hybris modules out of the project")
-            modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, false, hybrisDistributionDirectory, progressListenerProcessor)
+            modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, hybrisDistributionDirectory, progressListenerProcessor)
         }
 
         val moduleRootDirectories = modulesScanner.processDirectoriesByTypePriority(
             importContext,
             rootDirectory,
-            moduleFilesContext,
-            excludedFromScanning,
-            progressListenerProcessor
+            moduleFilesContext
         )
 
         val moduleDescriptors = mutableListOf<ModuleDescriptor>()

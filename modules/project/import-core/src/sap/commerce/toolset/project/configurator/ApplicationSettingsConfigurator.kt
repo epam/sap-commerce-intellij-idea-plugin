@@ -37,7 +37,6 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
 
             this.defaultPlatformInReadOnly = importSettings.importOOTBModulesInReadOnlyMode
             this.followSymlink = importSettings.followSymlink
-            this.scanThroughExternalModule = importSettings.scanThroughExternalModule
             this.excludeTestSources = importSettings.excludeTestSources
             this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
             this.ignoreNonExistingSourceDirectories = importSettings.ignoreNonExistingSourceDirectories

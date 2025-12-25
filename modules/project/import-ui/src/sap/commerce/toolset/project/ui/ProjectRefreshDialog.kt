@@ -60,12 +60,6 @@ class ProjectRefreshDialog(
 
         group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
-                checkBox(i18n("hybris.project.import.scanExternalModules"))
-                    .bindSelected(refreshContext.importContext.scanThroughExternalModule)
-                contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
-            }
-
-            row {
                 checkBox(i18n("hybris.project.import.followSymlink"))
                     .bindSelected(refreshContext.importContext.followSymlink)
             }

@@ -138,13 +138,6 @@ internal fun ui(context: ProjectImportCoreContext): DialogPanel {
 
         group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
-                checkBox(i18n("hybris.project.import.scanExternalModules"))
-                    .bindSelected(context.importSettings.scanThroughExternalModule)
-                contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
                 checkBox(i18n("hybris.project.import.followSymlink"))
                     .bindSelected(context.importSettings.followSymlink)
                     .component

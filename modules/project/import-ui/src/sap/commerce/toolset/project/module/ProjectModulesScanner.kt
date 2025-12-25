@@ -48,7 +48,6 @@ class ProjectModulesScanner {
         importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
-        acceptOnlyHybrisModules: Boolean,
         moduleDirectory: File,
         progressListenerProcessor: TaskProgressProcessor<File>
     ) {
@@ -83,91 +82,67 @@ class ProjectModulesScanner {
             return
         }
 
-        if (!acceptOnlyHybrisModules) {
-            if (!moduleDirectory.absolutePath.endsWith(HybrisConstants.PLATFORM_MODULE)
-                && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-                && (ProjectModuleResolver.isGradleModule(moduleDirectory) || ProjectModuleResolver.isGradleKtsModule(moduleDirectory))
-                && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
-            ) {
-                thisLogger().info("Detected gradle module ${moduleDirectory.absolutePath}")
+        if (!moduleDirectory.absolutePath.endsWith(HybrisConstants.PLATFORM_MODULE)
+            && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
+            && (ProjectModuleResolver.isGradleModule(moduleDirectory) || ProjectModuleResolver.isGradleKtsModule(moduleDirectory))
+            && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
+        ) {
+            thisLogger().info("Detected gradle module ${moduleDirectory.absolutePath}")
 
-                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
-            }
+            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+        }
 
-            if (ProjectModuleResolver.isMavenModule(moduleDirectory)
-                && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-                && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
-            ) {
-                thisLogger().info("Detected maven module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
-            }
+        if (ProjectModuleResolver.isMavenModule(moduleDirectory)
+            && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
+            && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
+        ) {
+            thisLogger().info("Detected maven module ${moduleDirectory.absolutePath}")
+            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+        }
 
-            if (ProjectModuleResolver.isPlatformModule(moduleDirectory)) {
-                thisLogger().info("Detected platform module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
-            } else if (ProjectModuleResolver.isEclipseModule(moduleDirectory)
-                && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-            ) {
-                thisLogger().info("Detected eclipse module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
-            }
+        if (ProjectModuleResolver.isPlatformModule(moduleDirectory)) {
+            thisLogger().info("Detected platform module ${moduleDirectory.absolutePath}")
+            moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
+        } else if (ProjectModuleResolver.isEclipseModule(moduleDirectory)
+            && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
+        ) {
+            thisLogger().info("Detected eclipse module ${moduleDirectory.absolutePath}")
+            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+        }
 
-            if (ProjectModuleResolver.isCCv2Module(moduleDirectory)) {
-                thisLogger().info("Detected CCv2 module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
-                val name = moduleDirectory.getName()
-                if (name.endsWith(CCv2Constants.DATAHUB_NAME)) {
-                    // faster import: no need to process sub-folders of the CCv2 datahub directory
-                    return
-                }
-            }
-
-            if (ProjectModuleResolver.isAngularModule(moduleDirectory)) {
-                thisLogger().info("Detected Angular module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
-                // do not go deeper
+        if (ProjectModuleResolver.isCCv2Module(moduleDirectory)) {
+            thisLogger().info("Detected CCv2 module ${moduleDirectory.absolutePath}")
+            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+            val name = moduleDirectory.getName()
+            if (name.endsWith(CCv2Constants.DATAHUB_NAME)) {
+                // faster import: no need to process sub-folders of the CCv2 datahub directory
                 return
             }
         }
 
-        scanForSubdirectories(importContext, moduleFilesContext, excludedFromScanning, acceptOnlyHybrisModules, moduleDirectory.toPath(), progressListenerProcessor)
+        if (ProjectModuleResolver.isAngularModule(moduleDirectory)) {
+            thisLogger().info("Detected Angular module ${moduleDirectory.absolutePath}")
+            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+            // do not go deeper
+            return
+        }
+
+        scanForSubdirectories(importContext, moduleFilesContext, excludedFromScanning, moduleDirectory.toPath(), progressListenerProcessor)
     }
 
     @Throws(InterruptedException::class, IOException::class)
     fun processDirectoriesByTypePriority(
         importContext: ProjectImportContext.Mutable,
         rootDirectory: File,
-        moduleFilesContext: ModuleFilesContext,
-        excludedFromScanning: Set<File>,
-        progressListenerProcessor: TaskProgressProcessor<File>
+        moduleFilesContext: ModuleFilesContext
     ): Collection<File> {
         val moduleRootDirectories = mutableMapOf<String, File>()
 
         moduleFilesContext.hybrisModules
             .forEach { file -> addIfNotExists(importContext, rootDirectory, moduleRootDirectories, file) }
 
-        if (importContext.settings.scanThroughExternalModule) {
-            thisLogger().info("Scanning for higher priority modules")
-
-            moduleFilesContext.nonHybrisModules
-                .forEach { nonHybrisModulePath ->
-                    val nonHybrisModuleFilesContext = ModuleFilesContext()
-                    scanForSubdirectories(importContext, nonHybrisModuleFilesContext, excludedFromScanning, true, nonHybrisModulePath.toPath(), progressListenerProcessor)
-
-                    val hybrisModuleDescriptors = nonHybrisModuleFilesContext.hybrisModules
-                    if (hybrisModuleDescriptors.isEmpty()) {
-                        thisLogger().info("Confirmed module: $nonHybrisModulePath")
-                        addIfNotExists(importContext, rootDirectory, moduleRootDirectories, nonHybrisModulePath)
-                    } else {
-                        thisLogger().info("Replaced module: $nonHybrisModulePath")
-                        hybrisModuleDescriptors
-                            .forEach { file -> addIfNotExists(importContext, rootDirectory, moduleRootDirectories, file) }
-                    }
-                }
-        } else {
-            moduleFilesContext.nonHybrisModules
-                .forEach { file -> addIfNotExists(importContext, rootDirectory, moduleRootDirectories, file) }
-        }
+        moduleFilesContext.nonHybrisModules
+            .forEach { file -> addIfNotExists(importContext, rootDirectory, moduleRootDirectories, file) }
 
         return moduleRootDirectories.values
     }
@@ -181,16 +156,15 @@ class ProjectModulesScanner {
         importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
-        acceptOnlyHybrisModules: Boolean,
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
     ) {
         if (!modulePath.isDirectory()) return
 
         if (isPathInWSLDistribution(modulePath)) {
-            scanSubdirectoriesWSL(importContext, moduleFilesContext, excludedFromScanning, acceptOnlyHybrisModules, modulePath, progressListenerProcessor)
+            scanSubdirectoriesWSL(importContext, moduleFilesContext, excludedFromScanning, modulePath, progressListenerProcessor)
         } else {
-            scanSubdirectories(importContext, moduleFilesContext, excludedFromScanning, acceptOnlyHybrisModules, modulePath, progressListenerProcessor)
+            scanSubdirectories(importContext, moduleFilesContext, excludedFromScanning, modulePath, progressListenerProcessor)
         }
     }
 
@@ -203,7 +177,6 @@ class ProjectModulesScanner {
         importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
-        acceptOnlyHybrisModules: Boolean,
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
     ) {
@@ -221,7 +194,6 @@ class ProjectModulesScanner {
                 importContext,
                 moduleFilesContext,
                 excludedFromScanning,
-                acceptOnlyHybrisModules,
                 file.toFile(),
                 progressListenerProcessor
             )
@@ -234,7 +206,6 @@ class ProjectModulesScanner {
         importContext: ProjectImportContext.Mutable,
         moduleFilesContext: ModuleFilesContext,
         excludedFromScanning: Set<File>,
-        acceptOnlyHybrisModules: Boolean,
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
     ) {
@@ -248,7 +219,7 @@ class ProjectModulesScanner {
                 .filter { !Files.isSymbolicLink(it) || followSymlink }
                 .map { it.toFile() }
                 .forEach { moduleRoot ->
-                    findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, acceptOnlyHybrisModules, moduleRoot, progressListenerProcessor)
+                    findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, moduleRoot, progressListenerProcessor)
                 }
         }
     }

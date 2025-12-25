@@ -78,11 +78,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(withExternalLibraryJavadocs = value) }
         }
-    var scanThroughExternalModule: Boolean
-        get() = state.scanThroughExternalModule
-        set(value) {
-            updateState { it.copy(scanThroughExternalModule = value) }
-        }
     var useFakeOutputPathForCustomExtensions: Boolean
         get() = state.useFakeOutputPathForCustomExtensions
         set(value) {

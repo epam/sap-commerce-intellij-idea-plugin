@@ -52,12 +52,11 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     }
 
     private fun applySettings(importContext: ProjectImportContext) {
-        val projectSettings = importContext.project?.ySettings ?: return
+        val projectSettings = importContext.project.ySettings
         val importSettings = importContext.settings
 
         projectSettings.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
         projectSettings.followSymlink = importSettings.followSymlink
-        projectSettings.scanThroughExternalModule = importSettings.scanThroughExternalModule
         projectSettings.excludeTestSources = importSettings.excludeTestSources
         projectSettings.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
         projectSettings.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions

@@ -94,11 +94,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(followSymlink = value) }
         }
-    var scanThroughExternalModule
-        get() = state.scanThroughExternalModule
-        set(value) {
-            updateState { it.copy(scanThroughExternalModule = value) }
-        }
     var excludeTestSources
         get() = state.excludeTestSources
         set(value) {

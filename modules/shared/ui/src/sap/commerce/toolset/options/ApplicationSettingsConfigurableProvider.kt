@@ -62,12 +62,6 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
         override fun createPanel() = panel {
             group(i18n("hybris.project.import.projectImportSettings.title")) {
                 row {
-                    checkBox(i18n("hybris.project.import.scanExternalModules"))
-                        .bindSelected(applicationSettings::scanThroughExternalModule)
-                    contextHelp(i18n("hybris.project.import.scanExternalModules.tooltip"))
-                }
-
-                row {
                     checkBox(i18n("hybris.project.import.followSymlink"))
                         .bindSelected(applicationSettings::followSymlink)
                 }

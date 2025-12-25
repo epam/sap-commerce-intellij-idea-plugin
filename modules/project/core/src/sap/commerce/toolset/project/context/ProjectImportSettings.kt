@@ -25,7 +25,6 @@ import sap.commerce.toolset.settings.ApplicationSettings
 data class ProjectImportSettings(
     val importOOTBModulesInReadOnlyMode: Boolean,
     val followSymlink: Boolean,
-    val scanThroughExternalModule: Boolean,
     val excludeTestSources: Boolean,
     val importCustomAntBuildFiles: Boolean,
     val ignoreNonExistingSourceDirectories: Boolean,
@@ -39,7 +38,6 @@ data class ProjectImportSettings(
     fun mutable() = Mutable(
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
         followSymlink = AtomicBooleanProperty(followSymlink),
-        scanThroughExternalModule = AtomicBooleanProperty(scanThroughExternalModule),
         excludeTestSources = AtomicBooleanProperty(excludeTestSources),
         importCustomAntBuildFiles = AtomicBooleanProperty(importCustomAntBuildFiles),
         ignoreNonExistingSourceDirectories = AtomicBooleanProperty(ignoreNonExistingSourceDirectories),
@@ -53,7 +51,6 @@ data class ProjectImportSettings(
     data class Mutable(
         val importOOTBModulesInReadOnlyMode: AtomicBooleanProperty,
         val followSymlink: AtomicBooleanProperty,
-        val scanThroughExternalModule: AtomicBooleanProperty,
         val excludeTestSources: AtomicBooleanProperty,
         val importCustomAntBuildFiles: AtomicBooleanProperty,
         val ignoreNonExistingSourceDirectories: AtomicBooleanProperty,
@@ -66,7 +63,6 @@ data class ProjectImportSettings(
         fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
             followSymlink = followSymlink.get(),
-            scanThroughExternalModule = scanThroughExternalModule.get(),
             excludeTestSources = excludeTestSources.get(),
             importCustomAntBuildFiles = importCustomAntBuildFiles.get(),
             ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.get(),
@@ -82,7 +78,6 @@ data class ProjectImportSettings(
         fun of(applicationSettings: ApplicationSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = applicationSettings.defaultPlatformInReadOnly,
             followSymlink = applicationSettings.followSymlink,
-            scanThroughExternalModule = applicationSettings.scanThroughExternalModule,
             excludeTestSources = applicationSettings.excludeTestSources,
             importCustomAntBuildFiles = applicationSettings.importCustomAntBuildFiles,
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
@@ -97,7 +92,6 @@ data class ProjectImportSettings(
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
             followSymlink = projectSettings.followSymlink,
-            scanThroughExternalModule = projectSettings.scanThroughExternalModule,
             excludeTestSources = projectSettings.excludeTestSources,
             importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles,
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
