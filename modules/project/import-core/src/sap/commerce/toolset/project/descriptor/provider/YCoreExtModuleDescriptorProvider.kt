@@ -28,8 +28,9 @@ class YCoreExtModuleDescriptorProvider : YModuleDescriptorProvider() {
     override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
         val moduleRootDirectory = context.moduleRootDirectory
 
-        return moduleRootDirectory.getName() == ProjectConstants.Extension.PLATFORM
-            && File(moduleRootDirectory, HybrisConstants.EXTENSIONS_XML).isFile()
+        return moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
+            && moduleRootDirectory.getName() == ProjectConstants.Extension.CORE
+            && File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile()
     }
 
     override fun create(moduleRootDirectory: File) = YCoreExtModuleDescriptor(
