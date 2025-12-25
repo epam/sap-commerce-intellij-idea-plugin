@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import sap.commerce.toolset.project.refresh.ProjectRefreshContext
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 
 interface ProjectRefreshConfigurator : Configurator {
 

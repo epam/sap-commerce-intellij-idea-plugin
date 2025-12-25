@@ -81,7 +81,7 @@ object ModuleDescriptorFactory {
                 }
             }
 
-            moduleDescriptorProvider.isOutOfTheBoxModule(importContext, resolvedFile) -> {
+            moduleDescriptorProvider.isOutOfTheBoxModule(resolvedFile, importContext.externalExtensionsDirectory) -> {
                 LOG.info("Creating OOTB module for $path")
                 with(YOotbRegularModuleDescriptor(resolvedFile, getExtensionInfo(resolvedFile))) {
                     SubModuleDescriptorFactory.buildAll(this)

@@ -24,8 +24,8 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.roots.LibraryOrderEntry
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.refresh.ProjectRefreshContext
 
 class CleanupProjectRefreshConfigurator : ProjectRefreshConfigurator {
 

@@ -68,8 +68,7 @@ public class SearchModulesRootsTaskModal extends Task.Modal {
             final var configModuleDescriptor = ProjectConfigModuleLookup.Companion.getInstance()
                 .getConfigModuleDescriptor(importContext);
 
-            ProjectLocalExtensionsProcessor.Companion.getInstance()
-                .process(importContext, configModuleDescriptor);
+            ProjectLocalExtensionsProcessor.Companion.getInstance().process(importContext, configModuleDescriptor);
         } catch (final InterruptedException | IOException e) {
             LOG.warn(e);
             importContext.clear();

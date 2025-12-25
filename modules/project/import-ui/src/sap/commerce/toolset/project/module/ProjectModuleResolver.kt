@@ -26,11 +26,11 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectUtil
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
 import java.io.File
 import kotlin.io.path.exists
 
+// TODO: convert to EP
 @Service
 class ProjectModuleResolver {
 
@@ -61,10 +61,9 @@ class ProjectModuleResolver {
 
     fun isHybrisModule(file: File): Boolean = ProjectUtil.isHybrisModuleRoot(file)
 
-    fun isOutOfTheBoxModule(importContext: ProjectImportContext.Mutable, file: File): Boolean {
-        val extDir = importContext.externalExtensionsDirectory
-        if (extDir != null) {
-            if (VirtualFileSystemService.getInstance().fileContainsAnother(extDir, file)) {
+    fun isOutOfTheBoxModule(file: File, externalExtensionsDirectory: File?): Boolean {
+        if (externalExtensionsDirectory != null) {
+            if (VirtualFileSystemService.getInstance().fileContainsAnother(externalExtensionsDirectory, file)) {
                 // this will override bin/ext-* naming convention.
                 return false
             }

@@ -103,6 +103,7 @@ data class ProjectImportContext(
 
         fun clear() {
             _foundModules.clear()
+            _detectedVcs.clear()
             _chosenModuleDescriptors.clear()
         }
 

@@ -16,11 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.refresh
+package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.nio.file.Path
 

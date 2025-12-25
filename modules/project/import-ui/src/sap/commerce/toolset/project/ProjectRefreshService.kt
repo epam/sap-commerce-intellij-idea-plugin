@@ -16,14 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.refresh
+package sap.commerce.toolset.project
 
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.CompilerProjectExtension
 import com.intellij.openapi.roots.ModuleRootManager
@@ -33,9 +32,9 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.projectImport.ProjectImportProvider
 import com.intellij.util.asSafely
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.project.HybrisProjectImportProvider
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacet
@@ -46,7 +45,7 @@ import kotlin.io.path.absolutePathString
 @Service(Service.Level.PROJECT)
 class ProjectRefreshService(private val project: Project) {
 
-    @Throws(ConfigurationException::class)
+    @Throws(HybrisConfigurationException::class)
     fun refresh(refreshContext: ProjectRefreshContext) {
         val project = refreshContext.project
         val projectDirectory = refreshContext.projectPath.absolutePathString()

@@ -34,7 +34,7 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
-import sap.commerce.toolset.project.refresh.ProjectRefreshContext
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModal
 import sap.commerce.toolset.project.tasks.SearchModulesRootsTaskModal
 import sap.commerce.toolset.project.ui.ui

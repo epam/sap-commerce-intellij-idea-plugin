@@ -27,9 +27,9 @@ import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.path
+import sap.commerce.toolset.project.ProjectRefreshService
 import sap.commerce.toolset.project.context.ProjectImportSettings
-import sap.commerce.toolset.project.refresh.ProjectRefreshContext
-import sap.commerce.toolset.project.refresh.ProjectRefreshService
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.ui.ProjectRefreshDialog
 import sap.commerce.toolset.settings.ApplicationSettings

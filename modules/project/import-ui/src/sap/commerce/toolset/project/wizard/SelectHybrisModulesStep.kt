@@ -25,12 +25,12 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.project.ProjectRefreshService
 import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.module.ProjectModulesSelector
-import sap.commerce.toolset.project.refresh.ProjectRefreshContext
-import sap.commerce.toolset.project.refresh.ProjectRefreshService
 
 class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.HYBRIS), RefreshSupport {
 

@@ -24,7 +24,7 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.refresh.ProjectRefreshContext
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.ui.banner
 
 class ProjectRefreshDialog(

@@ -56,19 +56,14 @@ class ProjectConfigModuleLookup {
         )
 
     private fun find(importContext: ProjectImportContext.Mutable): ConfigModuleDescriptor? {
-        val foundConfigModules = mutableListOf<ConfigModuleDescriptor>()
-        var platformHybrisModuleDescriptor: PlatformModuleDescriptor? = null
-        importContext.foundModules.forEach { moduleDescriptor ->
-            when (moduleDescriptor) {
-                is ConfigModuleDescriptor -> foundConfigModules.add(moduleDescriptor)
-                is PlatformModuleDescriptor -> platformHybrisModuleDescriptor = moduleDescriptor
-            }
-        }
-        if (platformHybrisModuleDescriptor == null) {
-            if (foundConfigModules.size == 1) return foundConfigModules[0]
+        val foundConfigModules = importContext.foundModules
+            .filterIsInstance<ConfigModuleDescriptor>()
+        val platformHybrisModuleDescriptor = importContext.foundModules
+            .filterIsInstance<PlatformModuleDescriptor>()
+            .firstOrNull() ?: return null
 
-            return null
-        }
+        if (foundConfigModules.size == 1) return foundConfigModules[0]
+
         val configDir: File?
         val externalConfigDirectory = importContext.externalConfigDirectory
         if (externalConfigDirectory != null) {

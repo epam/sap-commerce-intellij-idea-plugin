@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.gradle.descriptor
 
+import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.project.Project
+import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
@@ -39,6 +41,8 @@ class GradleKtsModuleDescriptor(
 
             return File(moduleRootDirectory, HybrisConstants.GRADLE_SETTINGS_KTS).isFile
                 || File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS).isFile
+                // project refresh case
+                || (project != null && ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID).getLinkedProjectSettings(moduleRootDirectory.path) != null)
         }
 
         override fun create(moduleRootDirectory: File) = GradleKtsModuleDescriptor(moduleRootDirectory)
