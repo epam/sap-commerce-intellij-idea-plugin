@@ -80,7 +80,7 @@ class ProjectConfigModuleLookup {
             .firstOrNull { FileUtil.filesEqual(it.moduleRootDirectory, configDir) }
         if (configHybrisModuleDescriptor != null) return configHybrisModuleDescriptor
 
-        if (!ProjectModuleResolver.getInstance().isConfigModule(configDir)) return null
+        if (!ProjectModuleResolver.isConfigModule(configDir)) return null
 
         return try {
             val configHybrisModuleDescriptor = ModuleDescriptorFactory.createConfigDescriptor(

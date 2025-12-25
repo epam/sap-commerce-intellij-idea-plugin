@@ -71,53 +71,50 @@ class ProjectModulesScanner {
             importContext.addVcs(moduleDirectory.getCanonicalFile())
         }
 
-        val projectModuleResolver = ProjectModuleResolver.getInstance()
-
-        if (projectModuleResolver.isHybrisModule(moduleDirectory)) {
+        if (ProjectModuleResolver.isHybrisModule(moduleDirectory)) {
             thisLogger().info("Detected hybris module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.addModule(ModuleGroup.HYBRIS, moduleDirectory)
+            moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
             return
         }
 
-        if (projectModuleResolver.isConfigModule(moduleDirectory)) {
+        if (ProjectModuleResolver.isConfigModule(moduleDirectory)) {
             thisLogger().info("Detected config module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.addModule(ModuleGroup.HYBRIS, moduleDirectory)
+            moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
             return
         }
 
         if (!acceptOnlyHybrisModules) {
-            // TODO: review this logic
             if (!moduleDirectory.absolutePath.endsWith(HybrisConstants.PLATFORM_MODULE)
                 && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-                && (projectModuleResolver.isGradleModule(moduleDirectory) || projectModuleResolver.isGradleKtsModule(moduleDirectory))
-                && !projectModuleResolver.isCCv2Module(moduleDirectory)
+                && (ProjectModuleResolver.isGradleModule(moduleDirectory) || ProjectModuleResolver.isGradleKtsModule(moduleDirectory))
+                && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
             ) {
                 thisLogger().info("Detected gradle module ${moduleDirectory.absolutePath}")
 
-                moduleFilesContext.addModule(ModuleGroup.OTHER, moduleDirectory)
+                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
             }
 
-            if (projectModuleResolver.isMavenModule(moduleDirectory)
+            if (ProjectModuleResolver.isMavenModule(moduleDirectory)
                 && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-                && !projectModuleResolver.isCCv2Module(moduleDirectory)
+                && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
             ) {
                 thisLogger().info("Detected maven module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.addModule(ModuleGroup.OTHER, moduleDirectory)
+                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
             }
 
-            if (projectModuleResolver.isPlatformModule(moduleDirectory)) {
+            if (ProjectModuleResolver.isPlatformModule(moduleDirectory)) {
                 thisLogger().info("Detected platform module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.addModule(ModuleGroup.HYBRIS, moduleDirectory)
-            } else if (projectModuleResolver.isEclipseModule(moduleDirectory)
+                moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
+            } else if (ProjectModuleResolver.isEclipseModule(moduleDirectory)
                 && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
             ) {
                 thisLogger().info("Detected eclipse module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.addModule(ModuleGroup.OTHER, moduleDirectory)
+                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
             }
 
-            if (projectModuleResolver.isCCv2Module(moduleDirectory)) {
+            if (ProjectModuleResolver.isCCv2Module(moduleDirectory)) {
                 thisLogger().info("Detected CCv2 module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.addModule(ModuleGroup.OTHER, moduleDirectory)
+                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
                 val name = moduleDirectory.getName()
                 if (name.endsWith(CCv2Constants.DATAHUB_NAME)) {
                     // faster import: no need to process sub-folders of the CCv2 datahub directory
@@ -125,9 +122,9 @@ class ProjectModulesScanner {
                 }
             }
 
-            if (projectModuleResolver.isAngularModule(moduleDirectory)) {
+            if (ProjectModuleResolver.isAngularModule(moduleDirectory)) {
                 thisLogger().info("Detected Angular module ${moduleDirectory.absolutePath}")
-                moduleFilesContext.addModule(ModuleGroup.OTHER, moduleDirectory)
+                moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
                 // do not go deeper
                 return
             }

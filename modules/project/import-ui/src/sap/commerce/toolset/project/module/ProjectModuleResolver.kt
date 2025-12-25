@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.project.module
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2Constants
@@ -29,9 +26,7 @@ import sap.commerce.toolset.project.ProjectUtil
 import java.io.File
 import kotlin.io.path.exists
 
-// TODO: convert to EP
-@Service
-class ProjectModuleResolver {
+object ProjectModuleResolver {
 
     fun isConfigModule(file: File) = with(file.toPath()) {
         resolve("licence").exists() && resolve("tomcat").resolve("tomcat_context.tpl").exists()
@@ -94,7 +89,4 @@ class ProjectModuleResolver {
     }
         ?: false
 
-    companion object {
-        fun getInstance(): ProjectModuleResolver = application.service()
-    }
 }

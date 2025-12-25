@@ -27,7 +27,7 @@ data class ModuleFilesContext(
     val hybrisModules get() = _hybrisModules.toSet()
     val nonHybrisModules get() = _otherModules.toSet()
 
-    fun addModule(group: ModuleGroup, moduleDirectory: File) = when (group) {
+    fun add(group: ModuleGroup, moduleDirectory: File) = when (group) {
         ModuleGroup.HYBRIS -> _hybrisModules.add(moduleDirectory)
         ModuleGroup.OTHER -> _otherModules.add(moduleDirectory)
     }
