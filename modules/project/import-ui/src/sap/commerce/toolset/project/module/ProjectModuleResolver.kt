@@ -22,7 +22,6 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.ProjectUtil
 import java.io.File
 import kotlin.io.path.exists
 
@@ -53,7 +52,7 @@ object ProjectModuleResolver {
         && file.getName() == ProjectConstants.Extension.CORE
         && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
 
-    fun isHybrisModule(file: File): Boolean = ProjectUtil.isHybrisModuleRoot(file)
+    fun isHybrisModule(file: File): Boolean = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile
 
     fun isMavenModule(rootProjectDirectory: File) = Plugin.MAVEN.ifActive {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
