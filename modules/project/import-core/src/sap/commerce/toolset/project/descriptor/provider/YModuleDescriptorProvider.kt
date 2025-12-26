@@ -18,39 +18,13 @@
 
 package sap.commerce.toolset.project.descriptor.provider
 
-import com.intellij.openapi.diagnostic.thisLogger
-import jakarta.xml.bind.JAXBContext
-import jakarta.xml.bind.JAXBException
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
-import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
+import sap.commerce.toolset.extensioninfo.EiUnmarshaller
 import java.io.File
 
 abstract class YModuleDescriptorProvider : ModuleDescriptorProvider {
 
     @Throws(HybrisConfigurationException::class)
-    protected fun getExtensionInfo(moduleRootDirectory: File): ExtensionInfo {
-        val extensionFile = File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML)
-        val extensionInfo = unmarshalExtensionInfo(extensionFile)
-        if (null == extensionInfo.extension || extensionInfo.extension.name.isBlank()) {
-            throw HybrisConfigurationException("Can not find module name using path: $moduleRootDirectory")
-        }
-        return extensionInfo
-    }
+    protected fun getExtensionInfo(moduleRootDirectory: File) = EiUnmarshaller.unmarshall(moduleRootDirectory)
 
-    @Throws(HybrisConfigurationException::class)
-    private fun unmarshalExtensionInfo(extensionFile: File): ExtensionInfo {
-        return try {
-            JAXBContext.newInstance(
-                ObjectFactory::class.java.packageName,
-                ObjectFactory::class.java.classLoader
-            )
-                .createUnmarshaller()
-                .unmarshal(extensionFile) as ExtensionInfo
-        } catch (e: JAXBException) {
-            thisLogger().error("Can not unmarshal ${extensionFile.absolutePath}", e)
-            throw HybrisConfigurationException("Can not unmarshal $extensionFile")
-        }
-    }
 }

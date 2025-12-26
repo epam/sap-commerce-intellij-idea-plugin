@@ -48,8 +48,7 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = importContext.project
-        PropertiesComponent.getInstance(project)
-            .setValue("show.inlinked.gradle.project.popup", false)
+        PropertiesComponent.getInstance(project).setValue("show.inlinked.gradle.project.popup", false)
 
         try {
             importContext.chosenOtherModuleDescriptors

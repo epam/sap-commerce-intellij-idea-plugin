@@ -38,11 +38,11 @@ class CCv2ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         PasswordSafe.instance.setPassword(credentialAttributes, importContext.ccv2Token)
 
         with(project.ySettings) {
-            availableExtensions = buildMap {
-                putAll(availableExtensions)
+            extensionDescriptors = buildList {
+                addAll(extensionDescriptors)
                 CCv2Constants.CLOUD_EXTENSIONS
                     .map { ExtensionDescriptor(name = it, type = ModuleDescriptorType.CCV2_EXTERNAL) }
-                    .forEach { put(it.name, it) }
+                    .forEach { add(it) }
             }
         }
     }

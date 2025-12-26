@@ -49,7 +49,8 @@ abstract class ExtensionLineMarkerProvider : HybrisLineMarkerProvider<XmlAttribu
             .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN }
             ?: return emptyList()
         if (PsiTreeUtil.getParentOfType(psi, XmlTag::class.java)?.localName != getParentTagName()) return emptyList()
-        val descriptor = ProjectSettings.getInstance(psi.project).availableExtensions[psi.value]
+        val descriptor = ProjectSettings.getInstance(psi.project).extensionDescriptors
+            .find { it.name == psi.value }
             ?: return emptyList()
         val extensionInfoName = psi.project.modules
             .find { it.yExtensionName() == psi.value }

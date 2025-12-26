@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
+import com.intellij.openapi.util.io.FileUtil
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.ProjectConstants
@@ -38,26 +38,11 @@ abstract class AbstractYModuleDescriptor(
 
     private val myExtensionDescriptor by lazy {
         ExtensionDescriptor(
+            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
             name = name,
-            description = extensionInfo.extension.description,
             readonly = readonly,
-            useMaven = "true".equals(extensionInfo.extension.usemaven, true),
             type = descriptorType,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
-            webModule = extensionInfo.extension.webmodule != null,
-            coreModule = extensionInfo.extension.coremodule != null,
-            hmcModule = extensionInfo.extension.hmcmodule != null,
-            backofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE),
-            hacModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
-            deprecated = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
-            extGenTemplateExtension = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
-            jaloLogicFree = extensionInfo.extension.isJaloLogicFree,
-            classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
-            moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
-            packageRoot = extensionInfo.extension.coremodule?.packageroot,
-            webRoot = extensionInfo.extension.webmodule?.webroot,
-            version = extensionInfo.extension.version,
-            requiredByAll = extensionInfo.extension.isRequiredbyall,
             addon = getRequiredExtensionNames().contains(ProjectConstants.Extension.ADDON_SUPPORT)
         )
     }

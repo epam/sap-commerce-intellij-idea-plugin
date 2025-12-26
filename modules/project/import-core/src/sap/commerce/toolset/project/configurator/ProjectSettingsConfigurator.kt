@@ -74,13 +74,12 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         projectSettings.sourceCodeFile = importContext.sourceCodeFile
             ?.takeIf { it.exists() }
             ?.fileSystemIndependentName
-        projectSettings.availableExtensions = importContext.foundModules
+        projectSettings.extensionDescriptors = importContext.foundModules
             .asSequence()
             .filterNot { it is YSubModuleDescriptor }
             .filterIsInstance<YModuleDescriptor>()
             .toSet()
             .map { it.extensionDescriptor() }
-            .associateBy { it.name }
     }
 
     private fun saveCustomDirectoryLocation(importContext: ProjectImportContext) {

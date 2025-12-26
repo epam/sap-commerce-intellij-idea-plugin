@@ -33,18 +33,15 @@ class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider
         if (file !is XmlFile) return emptyList()
 
         val currentNames = DomManager.getDomManager(project)
-                .getFileElement(file, ExtensionInfo::class.java)
-                ?.rootElement
-                ?.extension
-                ?.requiresExtensions
-                ?.mapNotNull { it.name.stringValue }
-                ?.filter { it.isNotBlank() }
-                ?.map { it.lowercase() } ?: emptyList()
+            .getFileElement(file, ExtensionInfo::class.java)
+            ?.rootElement
+            ?.extension
+            ?.requiresExtensions
+            ?.mapNotNull { it.name.stringValue }
+            ?.filter { it.isNotBlank() }
+            ?.map { it.lowercase() } ?: emptyList()
 
-        return ProjectSettings.getInstance(project)
-                .availableExtensions
-                .entries
-                .filterNot { currentNames.contains(it.key) }
-                .map { it.value }
+        return ProjectSettings.getInstance(project).extensionDescriptors
+            .filterNot { currentNames.contains(it.name) }
     }
 }

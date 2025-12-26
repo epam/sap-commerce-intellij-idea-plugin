@@ -18,12 +18,11 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
+import com.intellij.openapi.util.io.FileUtil
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.*
 import java.io.File
 
 class YAcceleratorAddonSubModuleDescriptor(
@@ -36,12 +35,17 @@ class YAcceleratorAddonSubModuleDescriptor(
 
     private val yTargetModules = mutableSetOf<YModuleDescriptor>()
     private val myExtensionDescriptor by lazy {
-        with(super.extensionDescriptor()) {
+        ExtensionDescriptor(
+            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
+            name = name,
+            readonly = readonly,
+            type = descriptorType,
+            subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
+            addon = getRequiredExtensionNames().contains(ProjectConstants.Extension.ADDON_SUPPORT),
             installedIntoExtensions = yTargetModules
                 .map { it.name }
                 .toSet()
-            this
-        }
+        )
     }
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {

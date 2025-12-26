@@ -91,28 +91,4 @@ object ModuleDescriptorFactory {
         }
     }
 
-//    @Throws(HybrisConfigurationException::class)
-//    private fun getExtensionInfo(moduleRootDirectory: File): ExtensionInfo {
-//        val hybrisProjectFile = File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML)
-//        val extensionInfo = unmarshalExtensionInfo(hybrisProjectFile)
-//        if (null == extensionInfo.extension || extensionInfo.extension.name.isBlank()) {
-//            throw HybrisConfigurationException("Can not find module name using path: $moduleRootDirectory")
-//        }
-//        return extensionInfo
-//    }
-
-//    @Throws(HybrisConfigurationException::class)
-//    private fun unmarshalExtensionInfo(hybrisProjectFile: File): ExtensionInfo {
-//        return try {
-//            JAXBContext.newInstance(
-//                ObjectFactory::class.java.packageName,
-//                ObjectFactory::class.java.classLoader
-//            )
-//                .createUnmarshaller()
-//                .unmarshal(hybrisProjectFile) as ExtensionInfo
-//        } catch (e: JAXBException) {
-//            LOG.error("Can not unmarshal " + hybrisProjectFile.absolutePath, e)
-//            throw HybrisConfigurationException("Can not unmarshal $hybrisProjectFile")
-//        }
-//    }
 }

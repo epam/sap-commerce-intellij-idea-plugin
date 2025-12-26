@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.asSafely
 import kotlinx.collections.immutable.toImmutableSet
 import org.apache.commons.lang3.builder.EqualsBuilder
@@ -48,8 +49,10 @@ abstract class AbstractModuleDescriptor(
     }
     private val myExtensionDescriptor by lazy {
         ExtensionDescriptor(
+            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
             name = name,
-            type = descriptorType
+            type = descriptorType,
+            subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
         )
     }
 

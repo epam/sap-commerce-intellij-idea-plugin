@@ -22,7 +22,6 @@ import com.intellij.facet.FacetTypeRegistry
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacetConstants
@@ -32,7 +31,7 @@ class YFacetConfigurator : ModuleImportConfigurator {
     override val name: String
         get() = "SAP CX Facet"
 
-    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+    override fun isApplicable(moduleTypeId: String) = true
 
     override fun configure(
         importContext: ProjectImportContext,

@@ -135,10 +135,10 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
 
-    var availableExtensions: Map<String, ExtensionDescriptor>
-        get() = state.availableExtensions
+    var extensionDescriptors: Collection<ExtensionDescriptor>
+        get() = state.extensionDescriptors
         set(value) {
-            updateState { it.copy(availableExtensions = value) }
+            updateState { it.copy(extensionDescriptors = value) }
         }
 
     var generateCodeOnRebuild
