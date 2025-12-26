@@ -20,7 +20,7 @@ package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
-import sap.commerce.toolset.project.dsl.builder.MutableListProperty
+import sap.commerce.toolset.ui.dsl.builder.MutableListProperty
 
 data class ProjectImportCoreContext(
     val projectName: AtomicProperty<String> = AtomicProperty(""),

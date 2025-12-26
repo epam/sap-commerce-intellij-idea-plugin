@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.dsl.builder
+package sap.commerce.toolset.ui.dsl.builder
 
 import com.intellij.ui.dsl.builder.MutableProperty
 
