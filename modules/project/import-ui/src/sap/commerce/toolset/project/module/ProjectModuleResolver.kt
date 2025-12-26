@@ -44,15 +44,7 @@ object ProjectModuleResolver {
     fun isPlatformModule(file: File) = file.getName() == ProjectConstants.Extension.PLATFORM
         && File(file, HybrisConstants.EXTENSIONS_XML).isFile()
 
-    fun isPlatformExtModule(file: File) = file.absolutePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
-        && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
-        && !isCoreExtModule(file)
-
-    fun isCoreExtModule(file: File) = file.absolutePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
-        && file.getName() == ProjectConstants.Extension.CORE
-        && File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
-
-    fun isHybrisModule(file: File): Boolean = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile
+    fun isHybrisExtension(file: File): Boolean = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile
 
     fun isMavenModule(rootProjectDirectory: File) = Plugin.MAVEN.ifActive {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {

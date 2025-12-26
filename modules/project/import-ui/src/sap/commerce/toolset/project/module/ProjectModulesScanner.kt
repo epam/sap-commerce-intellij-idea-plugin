@@ -70,7 +70,7 @@ class ProjectModulesScanner {
             importContext.addVcs(moduleDirectory.getCanonicalFile())
         }
 
-        if (ProjectModuleResolver.isHybrisModule(moduleDirectory)) {
+        if (ProjectModuleResolver.isHybrisExtension(moduleDirectory)) {
             thisLogger().info("Detected hybris module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
             return
