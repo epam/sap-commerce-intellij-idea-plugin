@@ -15,23 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.ccv2.configurator
+
+package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.vfs.VfsUtil
-import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
-class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
+class JavaModuleReadonlyConfigurator : ModuleImportConfigurator {
 
     override val name: String
-        get() = "CCv2 Modules"
+        get() = "Readonly"
 
-    override fun isApplicable(moduleTypeId: String) = CCv2Constants.MODULE_TYPE_ID == moduleTypeId
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
     override fun configure(
         importContext: ProjectImportContext,
@@ -39,8 +39,13 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
         module: Module,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        modifiableModelsProvider.getModifiableRootModel(module)
-            .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath))
-            .addExcludePattern(ProjectConstants.Directory.HYBRIS)
+        val descriptorType = moduleDescriptor.descriptorType
+        val hasReadOnlySettings = importContext.settings.importOOTBModulesInReadOnlyMode
+        val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
+            || descriptorType === ModuleDescriptorType.PLATFORM
+            || descriptorType === ModuleDescriptorType.EXT
+        val readOnly = hasReadOnlySettings && isReadOnlyType
+
+        moduleDescriptor.extensionDescriptor().readonly = readOnly
     }
 }

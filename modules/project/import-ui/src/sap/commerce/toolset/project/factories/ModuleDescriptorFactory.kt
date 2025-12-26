@@ -74,6 +74,7 @@ object ModuleDescriptorFactory {
         return ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.NONE)
     }
 
+    // TODO: why not via provider?
     @Throws(HybrisConfigurationException::class)
     fun createConfigDescriptor(
         moduleRootDirectory: File,

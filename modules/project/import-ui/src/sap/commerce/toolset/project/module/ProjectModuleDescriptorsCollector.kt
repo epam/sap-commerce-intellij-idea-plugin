@@ -45,10 +45,10 @@ import java.io.File
 import java.io.IOException
 
 @Service
-class ProjectModulesProcessor {
+class ProjectModuleDescriptorsCollector {
 
     @Throws(InterruptedException::class, IOException::class)
-    fun process(
+    fun collect(
         importContext: ProjectImportContext.Mutable,
         progressListenerProcessor: TaskProgressProcessor<File>,
         errorsProcessor: TaskProgressProcessor<MutableList<File>>
@@ -225,6 +225,6 @@ class ProjectModulesProcessor {
         .toSet()
 
     companion object {
-        fun getInstance(): ProjectModulesProcessor = application.service()
+        fun getInstance(): ProjectModuleDescriptorsCollector = application.service()
     }
 }

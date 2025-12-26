@@ -19,26 +19,29 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModifiableRootModel
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacetConstants
 
-class YFacetConfigurator : ModuleFacetConfigurator {
+class YFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "SAP CX Facet"
 
-    override fun configureModuleFacet(
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override fun configure(
         importContext: ProjectImportContext,
-        module: Module,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel,
-        modifiableFacetModel: ModifiableFacetModel
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
+
         WriteAction.runAndWait<RuntimeException> {
             modifiableFacetModel.getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
                 ?.let { modifiableFacetModel.removeFacet(it) }

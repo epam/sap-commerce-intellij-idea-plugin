@@ -29,6 +29,7 @@
         <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.provider.CCv2StorefrontModuleDescriptorProvider"/>
         <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.provider.CCv2DatahubModuleDescriptorProvider"/>
 
+        <project.module.provider implementation="sap.commerce.toolset.ccv2.configurator.CCv2ModuleProvider"/>
         <project.module.importConfigurator implementation="sap.commerce.toolset.ccv2.configurator.CCv2ModuleImportConfigurator"/>
     </extensions>
 

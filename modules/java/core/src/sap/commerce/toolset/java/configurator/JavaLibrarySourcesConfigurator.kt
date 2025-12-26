@@ -169,8 +169,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
         return reporter.itemStep("Fetching sources for library '${library.name}'...") {
             library.roots
-                .map { libraryRoot -> processLibraryRoot(project, lookupService, librarySourceDir, libraryRootTypes, libraryRoot) }
-                .flatten()
+                .flatMap { libraryRoot -> processLibraryRoot(project, lookupService, librarySourceDir, libraryRootTypes, libraryRoot) }
         }
     }
 

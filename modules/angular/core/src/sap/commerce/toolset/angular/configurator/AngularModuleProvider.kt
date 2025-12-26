@@ -15,27 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.angular.configurator
 
-package sap.commerce.toolset.project.configurator
-
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.angular.AngularConstants
+import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
+import sap.commerce.toolset.project.configurator.ModuleProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-interface ModuleImportConfigurator : Configurator {
+class AngularModuleProvider : ModuleProvider {
 
-    fun isApplicable(moduleTypeId: String): Boolean
+    override val name: String
+        get() = "Angular"
+    override val moduleTypeId: String
+        get() = AngularConstants.MODULE_TYPE_ID
 
-    fun configure(
-        importContext: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-    )
-
-    companion object {
-        val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")
-    }
+    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is AngularModuleDescriptor
 }

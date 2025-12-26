@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.java.configurator.ex
+
+package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.LibraryOrderEntry
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -27,11 +29,12 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
 import sap.commerce.toolset.java.descriptor.getLibraryDescriptors
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -40,15 +43,25 @@ import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-internal object LibRootsConfiguratorEx {
+class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
-    fun configure(
+    override val name: String
+        get() = "Library Roots"
+
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override fun configure(
         importContext: ProjectImportContext,
-        allYModules: Map<String, YModuleDescriptor>,
-        modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
+
+        val allYModules = importContext.chosenHybrisModuleDescriptors
+            .filterIsInstance<YModuleDescriptor>()
+            .distinct()
+            .associateBy { it.name }
         val sourceCodeRoot = getSourceCodeRoot(importContext, moduleDescriptor)
         for (javaLibraryDescriptor in getLibraryDescriptors(importContext, moduleDescriptor, allYModules)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {

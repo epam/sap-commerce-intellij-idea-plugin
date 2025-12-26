@@ -17,30 +17,30 @@
  */
 package sap.commerce.toolset.kotlin.configurator
 
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import java.io.File
 
-class KotlinFacetConfigurator : ModuleFacetConfigurator {
+class KotlinFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "Kotlin Facet"
 
-    override fun configureModuleFacet(
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override fun configure(
         importContext: ProjectImportContext,
-        module: Module,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel,
-        modifiableFacetModel: ModifiableFacetModel
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         if (moduleDescriptor !is YModuleDescriptor) return
 
@@ -49,6 +49,7 @@ class KotlinFacetConfigurator : ModuleFacetConfigurator {
             ?: return
 
         val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
 
         WriteAction.runAndWait<RuntimeException> {
             // Remove previously registered Kotlin Facet for extensions with removed kotlin sources

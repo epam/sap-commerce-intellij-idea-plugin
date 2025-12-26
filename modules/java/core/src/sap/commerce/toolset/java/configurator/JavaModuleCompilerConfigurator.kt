@@ -15,24 +15,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.java.configurator.ex
 
+package sap.commerce.toolset.java.configurator
+
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.CompilerModuleExtension
-import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
-internal object CompilerOutputPathsConfiguratorEx {
+class JavaModuleCompilerConfigurator : ModuleImportConfigurator {
 
-    fun configure(
+    override val name: String
+        get() = "Compiler"
+
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override fun configure(
         importContext: ProjectImportContext,
-        modifiableRootModel: ModifiableRootModel,
-        moduleDescriptor: ModuleDescriptor
+        moduleDescriptor: ModuleDescriptor,
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module)
+
         val fakeOutputPath = importContext.settings.useFakeOutputPathForCustomExtensions
         val ootbReadonlyMode = importContext.settings.importOOTBModulesInReadOnlyMode
 

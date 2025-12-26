@@ -30,7 +30,7 @@ import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
-import sap.commerce.toolset.project.module.ProjectModulesSelector
+import sap.commerce.toolset.project.module.ModuleDescriptorsSelectionService
 
 class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.HYBRIS), RefreshSupport {
 
@@ -57,7 +57,8 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
                 }
 
                 // Re-mark sub-modules accordingly
-                markSubmodules(element, isMarked)
+                element.getSubModules()
+                    .forEach { fileChooser.setElementMarked(it, isMarked) }
             }
 
             fileChooser.repaint()
@@ -83,6 +84,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
                     is PlatformModuleDescriptor -> true
                     is YPlatformExtModuleDescriptor -> true
                     is ConfigModuleDescriptor if it.isPreselected() && it.isMainConfig -> true
+                    is YSubModuleDescriptor if it.owner is YPlatformExtModuleDescriptor -> true
                     else -> false
                 }
             }
@@ -101,7 +103,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
 
         try {
             val chosenHybrisModuleDescriptors = buildList {
-                val moduleDescriptors = ProjectModulesSelector.getInstance().getSelectableHybrisModules(importContext, settings)
+                val moduleDescriptors = ModuleDescriptorsSelectionService.getInstance().getSelectableHybrisModules(importContext, settings)
                 val openModuleDescriptors = ProjectRefreshService.getInstance(refreshContext.project).openModuleDescriptors(importContext)
 
                 addAll(moduleDescriptors)
@@ -113,13 +115,6 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
             // no-op already validated
         }
     }
-
-//    override fun isElementEnabled(element: ModuleDescriptor?) = when (element) {
-//        is PlatformModuleDescriptor -> false
-//        is YPlatformExtModuleDescriptor -> false
-//        is ConfigModuleDescriptor if element.isPreselected() && element.isMainConfig -> false
-//        else -> true
-//    }
 
     override fun getElementIcon(item: ModuleDescriptor?) = when {
         item == null -> HybrisIcons.Y.LOGO_BLUE
@@ -140,20 +135,5 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
             || item is YHmcSubModuleDescriptor -> item.subModuleDescriptorType.icon
 
         else -> HybrisIcons.Y.LOGO_BLUE
-    }
-
-    private fun isMandatoryOrPreselected(descriptor: ModuleDescriptor) = descriptor.importStatus === ModuleDescriptorImportStatus.MANDATORY
-        || descriptor.isPreselected()
-
-    private fun isPlatformExtDescriptor(descriptor: ModuleDescriptor) = descriptor is YPlatformExtModuleDescriptor
-        || descriptor is PlatformModuleDescriptor
-
-    private fun isCustomDescriptor(descriptor: ModuleDescriptor) = descriptor is YCustomRegularModuleDescriptor
-        || descriptor is ConfigModuleDescriptor
-        || (descriptor is YSubModuleDescriptor && descriptor.owner is YCustomRegularModuleDescriptor)
-
-    private fun markSubmodules(yModuleDescriptor: YModuleDescriptor, marked: Boolean) {
-        yModuleDescriptor.getSubModules()
-            .forEach { fileChooser.setElementMarked(it, marked) }
     }
 }

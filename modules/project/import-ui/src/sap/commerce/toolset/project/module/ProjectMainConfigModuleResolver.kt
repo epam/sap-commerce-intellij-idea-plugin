@@ -30,6 +30,7 @@ import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.factories.ModuleDescriptorFactory
 import java.io.File
@@ -41,10 +42,14 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
 @Service
-class ProjectConfigModuleLookup {
+class ProjectMainConfigModuleResolver {
 
     @Throws(HybrisConfigurationException::class)
-    fun getConfigModuleDescriptor(importContext: ProjectImportContext.Mutable) = find(importContext)
+    fun resolve(importContext: ProjectImportContext.Mutable) = find(importContext)
+        ?.apply {
+            importStatus = ModuleDescriptorImportStatus.MANDATORY
+            isMainConfig = true
+        }
         ?: throw HybrisConfigurationException(
             """
                 The ‘config’ module hasn’t been detected, which will affect the following functionality:
@@ -131,7 +136,7 @@ class ProjectConfigModuleLookup {
     }
 
     companion object {
-        fun getInstance(): ProjectConfigModuleLookup = application.service()
+        fun getInstance(): ProjectMainConfigModuleResolver = application.service()
     }
 
 }

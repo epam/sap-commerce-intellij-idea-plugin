@@ -61,7 +61,8 @@ public final class ContentRootConfiguratorEx {
     }
 
     public static void configure(
-        final @NotNull ProjectImportContext importContext, @NotNull final ModifiableRootModel modifiableRootModel,
+        final @NotNull ProjectImportContext importContext,
+        @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         final var applicationSettings = ApplicationSettings.getInstance();

@@ -27,8 +27,8 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator;
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator;
+import sap.commerce.toolset.project.configurator.ModuleProvider;
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator;
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator;
 import sap.commerce.toolset.project.context.ProjectImportContext;
@@ -62,10 +62,9 @@ public class ImportProjectProgressTaskModal extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
-        final var rootProjectModifiableModel = modifiableModelsProvider.getModifiableModuleModel();
 
         ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator -> {
-                indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
+                indicator.setText("Pre-configuring project using '%s' Configurator...".formatted(configurator.getName()));
                 configurator.preConfigure(importContext);
             }
         );
@@ -74,27 +73,29 @@ public class ImportProjectProgressTaskModal extends Task.Modal {
         indicator.setFraction(0d);
 
         final var chosenModuleDescriptors = importContext.getAllChosenModuleDescriptors();
+        final var moduleProviders = ModuleProvider.Companion.getEP().getExtensionList();
         final var moduleImportConfigurators = ModuleImportConfigurator.Companion.getEP().getExtensionList();
-        final var moduleFacetConfigurators = ModuleFacetConfigurator.Companion.getEP().getExtensionList();
 
         chosenModuleDescriptors.stream()
             .map(moduleDescriptor ->
-                moduleImportConfigurators.stream()
-                    .filter(configurator -> configurator.isApplicable(moduleDescriptor))
+                moduleProviders.stream()
+                    .filter(provider -> provider.isApplicable(moduleDescriptor))
                     .findFirst()
-                    .map(configurator -> {
-                            indicator.setText("Configuring project using '%s' Configurator...".formatted(configurator.getName()));
+                    .map(provider -> {
+                            indicator.setText("Configuring '%s' module...".formatted(provider.getName()));
                             indicator.setText2("Configuring module: %s".formatted(moduleDescriptor.getName()));
 
-                            final var module = configurator.configure(importContext, moduleDescriptor, modifiableModelsProvider, rootProjectModifiableModel);
+                            final var moduleTypeId = provider.getModuleTypeId();
+                            final var module = provider.create(importContext, moduleDescriptor, modifiableModelsProvider);
 
-                            indicator.setText2("Configuring facets for module: %s".formatted(moduleDescriptor.getName()));
-                            final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
-                            final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
+                            moduleImportConfigurators.stream()
+                                .filter(configurator -> configurator.isApplicable(moduleTypeId))
+                                .forEach(configurator -> {
+                                    indicator.setText2("Configuring module using '%s'".formatted(configurator.getName()));
 
-                            moduleFacetConfigurators.forEach(facetConfigurator ->
-                                facetConfigurator.configureModuleFacet(importContext, module, moduleDescriptor, modifiableRootModel, modifiableFacetModel)
-                            );
+                                    configurator.configure(importContext, moduleDescriptor, module, modifiableModelsProvider);
+                                });
+
                             return module;
                         }
                     )

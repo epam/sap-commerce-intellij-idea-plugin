@@ -37,7 +37,7 @@
 
         <project.refreshConfigurator order="first" implementation="sap.commerce.toolset.project.configurator.CleanupProjectRefreshConfigurator"/>
 
-        <project.module.facetConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
+        <project.module.importConfigurator id="yFacetConfigurator" implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
 
         <project.module.descriptorProvider order="first" id="configModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.ConfigModuleDescriptorProvider"/>

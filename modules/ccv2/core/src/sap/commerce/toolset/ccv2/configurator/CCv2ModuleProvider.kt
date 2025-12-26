@@ -15,26 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurator
+package sap.commerce.toolset.ccv2.configurator
 
-import com.intellij.facet.ModifiableFacetModel
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
+import sap.commerce.toolset.project.configurator.ModuleProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-interface ModuleFacetConfigurator : Configurator {
+class CCv2ModuleProvider : ModuleProvider {
 
-    fun configureModuleFacet(
-        importContext: ProjectImportContext,
-        module: Module,
-        moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel,
-        modifiableFacetModel: ModifiableFacetModel
-    )
+    override val name: String
+        get() = "CCv2"
+    override val moduleTypeId: String
+        get() = CCv2Constants.MODULE_TYPE_ID
 
-    companion object {
-        val EP = ExtensionPointName.create<ModuleFacetConfigurator>("sap.commerce.toolset.project.module.facetConfigurator")
-    }
+    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
 }

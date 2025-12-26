@@ -21,14 +21,31 @@ package sap.commerce.toolset.project.module
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import sap.commerce.toolset.project.collector.ExplicitRequiredExtensionsCollector
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 @Service
-class ProjectModulesSelector {
+class ModuleDescriptorsSelectionService {
+
+    fun preselect(importContext: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
+        val extensionsInLocalExtensions = ExplicitRequiredExtensionsCollector.getInstance().collect(importContext, configModuleDescriptor)
+
+        importContext.foundModules
+            .filter { extensionsInLocalExtensions.contains(it.name) }
+            .filterIsInstance<YRegularModuleDescriptor>()
+            .forEach { moduleDescriptor ->
+                moduleDescriptor.isInLocalExtensions = true
+                moduleDescriptor.getAllDependencies()
+                    .filterIsInstance<YRegularModuleDescriptor>()
+                    .forEach { it.isNeededDependency = true }
+            }
+
+        importContext.foundModules
+            .filterIsInstance<ConfigModuleDescriptor>()
+            .forEach { it.setPreselected(true) }
+    }
 
     fun getSelectableHybrisModules(importContext: ProjectImportContext.Mutable, settings: ProjectSettings): List<ModuleDescriptor> {
         val moduleToImport = mutableListOf<ModuleDescriptor>()
@@ -78,6 +95,6 @@ class ProjectModulesSelector {
     }
 
     companion object {
-        fun getInstance(): ProjectModulesSelector = application.service()
+        fun getInstance(): ModuleDescriptorsSelectionService = application.service()
     }
 }

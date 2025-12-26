@@ -16,24 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.localextensions
+package sap.commerce.toolset.project.collector
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.PropertiesUtil
 import com.intellij.util.application
-import com.intellij.util.asSafely
-import jakarta.xml.bind.JAXBContext
-import jakarta.xml.bind.JAXBException
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.localextensions.LeUnmarshaller
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
-import sap.commerce.toolset.localextensions.jaxb.ObjectFactory
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -42,29 +37,26 @@ import java.util.*
 import kotlin.math.max
 
 @Service
-class ProjectLocalExtensionsScanner {
+class ExplicitRequiredExtensionsCollector {
 
-    fun processHybrisConfig(
+    fun collect(
         importContext: ProjectImportContext.Mutable,
         configModuleDescriptor: ConfigModuleDescriptor
     ): Set<String> = ApplicationManager.getApplication().runReadAction(Computable {
-        val hybrisConfig = unmarshalLocalExtensions(configModuleDescriptor)
+        val hybrisConfig = LeUnmarshaller.unmarshal(configModuleDescriptor.moduleRootDirectory)
             ?: return@Computable setOf()
 
-        val explicitlyDefinedModules = TreeSet(String.CASE_INSENSITIVE_ORDER)
-
-        processHybrisConfigExtensions(hybrisConfig, explicitlyDefinedModules)
-        processHybrisConfigAutoloadPaths(importContext, hybrisConfig, explicitlyDefinedModules)
-        explicitlyDefinedModules
+        TreeSet(String.CASE_INSENSITIVE_ORDER).apply {
+            addAll(processExtensions(hybrisConfig))
+            addAll(processAutoloadPaths(importContext, hybrisConfig))
+        }
     })
 
-    private fun processHybrisConfigAutoloadPaths(
-        importContext: ProjectImportContext.Mutable,
-        hybrisConfig: Hybrisconfig,
-        explicitlyDefinedModules: TreeSet<String>
-    ) {
-        if (importContext.platformDirectory == null) return
+    private fun processAutoloadPaths(importContext: ProjectImportContext.Mutable, hybrisConfig: Hybrisconfig): Collection<String> {
+        val platformDirectory = importContext.platformDirectory
+        if (platformDirectory == null) return emptySet()
 
+        val extensionNames = mutableSetOf<String>()
         val autoloadPaths = HashMap<String, Int>()
 
         hybrisConfig.getExtensions().getPath()
@@ -83,9 +75,9 @@ class ProjectLocalExtensionsScanner {
                 }
             }
 
-        if (autoloadPaths.isEmpty()) return
+        if (autoloadPaths.isEmpty()) return emptySet()
 
-        val platform = Paths.get(importContext.platformDirectory!!.getPath(), HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
+        val platform = Paths.get(platformDirectory.path, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
         val path = Paths.get(platform, "env.properties")
 
         try {
@@ -115,7 +107,7 @@ class ProjectLocalExtensionsScanner {
                         if (moduleDir.startsWith(entry.key)
                             && Paths.get(moduleDir.substring(entry.key.length)).nameCount <= entry.value
                         ) {
-                            explicitlyDefinedModules.add(it.name)
+                            extensionNames.add(it.name)
                             break
                         }
                     }
@@ -124,16 +116,15 @@ class ProjectLocalExtensionsScanner {
         } catch (_: IOException) {
             // NOP
         }
+
+        return extensionNames;
     }
 
-    private fun processHybrisConfigExtensions(
-        hybrisConfig: Hybrisconfig,
-        explicitlyDefinedModules: TreeSet<String>
-    ) {
+    private fun processExtensions(hybrisConfig: Hybrisconfig) = buildList {
         for (extensionType in hybrisConfig.getExtensions().getExtension()) {
             val name = extensionType.getName()
             if (name != null) {
-                explicitlyDefinedModules.add(name)
+                add(name)
                 continue
             }
             val dir = extensionType.getDir()
@@ -144,33 +135,14 @@ class ProjectLocalExtensionsScanner {
             val indexBack = dir.lastIndexOf('\\')
             val index = max(indexSlash, indexBack)
             if (index == -1) {
-                explicitlyDefinedModules.add(dir)
+                add(dir)
             } else {
-                explicitlyDefinedModules.add(dir.substring(index + 1))
+                add(dir.substring(index + 1))
             }
         }
     }
 
-    private fun unmarshalLocalExtensions(configModuleDescriptor: ConfigModuleDescriptor): Hybrisconfig? {
-        val file = File(configModuleDescriptor.moduleRootDirectory, HybrisConstants.LOCAL_EXTENSIONS_XML)
-        if (!file.exists()) return null
-
-        try {
-            return JAXBContext.newInstance(
-                ObjectFactory::class.java.getPackageName(),
-                ObjectFactory::class.java.getClassLoader()
-            )
-                .createUnmarshaller()
-                .unmarshal(file)
-                .asSafely<Hybrisconfig>()
-        } catch (e: JAXBException) {
-            thisLogger().error("Can not unmarshal ${file.absolutePath}", e)
-        }
-
-        return null
-    }
-
     companion object {
-        fun getInstance(): ProjectLocalExtensionsScanner = application.service()
+        fun getInstance(): ExplicitRequiredExtensionsCollector = application.service()
     }
 }

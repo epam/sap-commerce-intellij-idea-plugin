@@ -16,18 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.ex
+package sap.commerce.toolset.java.configurator
 
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.JavaModuleExternalPaths
-import com.intellij.openapi.roots.ModifiableRootModel
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 
-internal object JavadocSettingsConfiguratorEx {
+class JavaModuleJavadocsConfigurator : ModuleImportConfigurator {
 
-    fun configure(importContext: ProjectImportContext, modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {
+    override val name: String
+        get() = "Javadocs"
+
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override fun configure(
+        importContext: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor,
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
+    ) {
+        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
         val javadocRefList = mutableListOf<String>()
         val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 

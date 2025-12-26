@@ -28,9 +28,9 @@ import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.exceptions.HybrisConfigurationException;
 import sap.commerce.toolset.project.context.ProjectImportContext;
-import sap.commerce.toolset.project.localextensions.ProjectLocalExtensionsProcessor;
-import sap.commerce.toolset.project.module.ProjectConfigModuleLookup;
-import sap.commerce.toolset.project.module.ProjectModulesProcessor;
+import sap.commerce.toolset.project.module.ModuleDescriptorsSelectionService;
+import sap.commerce.toolset.project.module.ProjectMainConfigModuleResolver;
+import sap.commerce.toolset.project.module.ProjectModuleDescriptorsCollector;
 
 import java.io.IOException;
 
@@ -57,18 +57,18 @@ public class SearchModulesRootsTaskModal extends Task.Modal {
     @Override
     public void run(@NotNull final ProgressIndicator indicator) {
         try {
-            ProjectModulesProcessor.Companion.getInstance()
-                .process(
+            ProjectModuleDescriptorsCollector.Companion.getInstance()
+                .collect(
                     importContext,
                     new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),
                     new DirectoriesScannerErrorsProcessor()
                 )
                 .forEach(importContext::addFoundModule);
 
-            final var configModuleDescriptor = ProjectConfigModuleLookup.Companion.getInstance()
-                .getConfigModuleDescriptor(importContext);
+            final var mainConfigModuleDescriptor = ProjectMainConfigModuleResolver.Companion.getInstance()
+                .resolve(importContext);
 
-            ProjectLocalExtensionsProcessor.Companion.getInstance().process(importContext, configModuleDescriptor);
+            ModuleDescriptorsSelectionService.Companion.getInstance().preselect(importContext, mainConfigModuleDescriptor);
         } catch (final InterruptedException | IOException e) {
             LOG.warn(e);
             importContext.clear();

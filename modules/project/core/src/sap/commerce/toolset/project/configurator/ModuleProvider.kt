@@ -16,22 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.ex
+package sap.commerce.toolset.project.configurator
 
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
-internal object ReadonlyConfiguratorEx {
+interface ModuleProvider {
 
-    fun configure(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) {
-        val descriptorType = moduleDescriptor.descriptorType
-        val hasReadOnlySettings = importContext.settings.importOOTBModulesInReadOnlyMode
-        val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
-            || descriptorType === ModuleDescriptorType.PLATFORM
-            || descriptorType === ModuleDescriptorType.EXT
-        val readOnly = hasReadOnlySettings && isReadOnlyType
+    val name: String
+    val moduleTypeId: String
 
-        moduleDescriptor.extensionDescriptor().readonly = readOnly
+    fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
+
+    fun create(
+        importContext: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor,
+        modifiableModelsProvider: IdeModifiableModelsProviderImpl,
+    ) = modifiableModelsProvider.getModifiableModuleModel().newModule(
+        moduleDescriptor.ideaModuleFile(importContext).absolutePath,
+        moduleTypeId
+    )
+
+    companion object {
+        val EP = ExtensionPointName.create<ModuleProvider>("sap.commerce.toolset.project.module.provider")
     }
 }

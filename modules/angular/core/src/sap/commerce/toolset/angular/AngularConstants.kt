@@ -16,19 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.descriptor
+package sap.commerce.toolset.angular
 
-import com.intellij.openapi.roots.DependencyScope
-import java.io.File
+object AngularConstants {
 
-data class JavaLibraryDescriptor(
-    var name: String? = null,
-    var libraryFile: File,
-    var jarFiles: Set<File> = emptySet(),
-    var sourceFiles: List<File> = emptyList(),
-    var sourceJarDirectories: List<File> = emptyList(),
-    var exported: Boolean = false,
-    var directoryWithClasses: Boolean = false,
-    var descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
-    var scope: DependencyScope = DependencyScope.COMPILE
-)
+    const val MODULE_TYPE_ID = "Angular"
+}

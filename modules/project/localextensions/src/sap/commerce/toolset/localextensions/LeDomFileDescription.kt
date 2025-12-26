@@ -27,7 +27,7 @@ import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.localextensions.model.Hybrisconfig
 import javax.swing.Icon
 
-class LeSDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::class.java, "hybrisconfig") {
+class LeDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::class.java, "hybrisconfig") {
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.LocalExtensions.FILE
 

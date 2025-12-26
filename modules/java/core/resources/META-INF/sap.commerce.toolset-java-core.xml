@@ -22,7 +22,19 @@
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
 
-        <project.module.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaModuleImportConfigurator"/>
+        <project.module.provider implementation="sap.commerce.toolset.java.configurator.JavaModuleProvider"/>
+        <project.module.importConfigurator order="first" id="javaModuleReadonlyConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleReadonlyConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleReadonlyConfigurator" id="javaModuleSdkConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleSdkConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleSdkConfigurator" id="javaModuleJavadocsConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleJavadocsConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleJavadocsConfigurator" id="javaModuleLibrariesConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleLibrariesConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleLibrariesConfigurator" id="javaModuleContentRootsConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleContentRootsConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleContentRootsConfigurator" id="javaModuleCompilerConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleCompilerConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

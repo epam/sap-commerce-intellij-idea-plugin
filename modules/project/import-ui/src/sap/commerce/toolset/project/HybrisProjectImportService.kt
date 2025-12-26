@@ -24,6 +24,7 @@ import com.intellij.util.application
 import java.nio.file.Path
 import kotlin.io.path.name
 
+// TODO: rename / move to something like ProjectScanning
 @Service
 class HybrisProjectImportService {
 

@@ -15,27 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.java.configurator
 
-package sap.commerce.toolset.project.configurator
-
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 
-interface ModuleImportConfigurator : Configurator {
+class JavaModuleProvider : ModuleProvider {
 
-    fun isApplicable(moduleTypeId: String): Boolean
+    override val name: String
+        get() = "Java"
+    override val moduleTypeId: String
+        get() = ProjectConstants.Y_MODULE_TYPE_ID
 
-    fun configure(
-        importContext: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-    )
-
-    companion object {
-        val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")
-    }
+    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
 }

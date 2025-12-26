@@ -16,26 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurator
+package sap.commerce.toolset.java.descriptor
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import com.intellij.openapi.roots.DependencyScope
+import sap.commerce.toolset.project.descriptor.LibraryDescriptorType
+import java.io.File
 
-interface ModuleImportConfigurator : Configurator {
-
-    fun isApplicable(moduleTypeId: String): Boolean
-
-    fun configure(
-        importContext: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-    )
-
-    companion object {
-        val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")
-    }
-}
+data class JavaLibraryDescriptor(
+    var name: String? = null,
+    var libraryFile: File,
+    var jarFiles: Set<File> = emptySet(),
+    var sourceFiles: List<File> = emptyList(),
+    var sourceJarDirectories: List<File> = emptyList(),
+    var exported: Boolean = false,
+    var directoryWithClasses: Boolean = false,
+    var descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
+    var scope: DependencyScope = DependencyScope.COMPILE
+)
