@@ -74,13 +74,10 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
             ?.immutable(project)
             ?: return emptyList()
 
-        importContext?.clear()
-        importContext = null
-
         val chosenModuleDescriptors = context.allChosenModuleDescriptors
             .takeIf { it.isNotEmpty() } ?: return emptyList()
 
-        performProjectsCleanup(context, chosenModuleDescriptors)
+        performProjectsCleanup(context, chosenModuleDescriptors) // TODO: why not removed modules
 
         val modules = mutableListOf<Module>()
         ImportProjectProgressTaskModal(project, context, modules)

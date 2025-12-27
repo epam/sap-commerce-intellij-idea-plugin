@@ -82,8 +82,7 @@ public class ImportProjectProgressTaskModal extends Task.Modal {
                     .filter(provider -> provider.isApplicable(moduleDescriptor))
                     .findFirst()
                     .map(provider -> {
-                            indicator.setText("Configuring '%s' module...".formatted(provider.getName()));
-                            indicator.setText2("Configuring module: %s".formatted(moduleDescriptor.getName()));
+                            indicator.setText("Configuring '%s' (%s) module...".formatted(moduleDescriptor.getName(), provider.getName()));
 
                             final var moduleTypeId = provider.getModuleTypeId();
                             final var module = provider.create(importContext, moduleDescriptor, modifiableModelsProvider);
