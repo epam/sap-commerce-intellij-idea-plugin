@@ -16,8 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.module
+package sap.commerce.toolset.project.descriptor
 
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2Constants
@@ -25,7 +28,8 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import java.io.File
 import kotlin.io.path.exists
 
-object ProjectModuleResolver {
+@Service
+class ModuleDescriptorResolver {
 
     fun isConfigModule(file: File) = with(file.toPath()) {
         resolve("licence").exists() && resolve("tomcat").resolve("tomcat_context.tpl").exists()
@@ -80,4 +84,7 @@ object ProjectModuleResolver {
     }
         ?: false
 
+    companion object {
+        fun getInstance(): ModuleDescriptorResolver = application.service()
+    }
 }

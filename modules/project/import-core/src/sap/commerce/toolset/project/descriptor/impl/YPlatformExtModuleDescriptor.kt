@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -29,7 +29,7 @@ import java.io.File
 
 open class YPlatformExtModuleDescriptor(
     moduleRootDirectory: File,
-    extensionInfo: Info,
+    extensionInfo: ExtensionInfoContext,
 ) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.EXT, extensionInfo) {
 
     override var importStatus = ModuleDescriptorImportStatus.MANDATORY

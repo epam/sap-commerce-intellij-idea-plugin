@@ -18,7 +18,10 @@
 
 package sap.commerce.toolset.localextensions
 
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.util.application
 import com.intellij.util.asSafely
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBException
@@ -27,10 +30,12 @@ import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
 import sap.commerce.toolset.localextensions.jaxb.ObjectFactory
 import java.io.File
 
-object LeUnmarshaller {
+@Service
+internal class LeUnmarshaller {
 
     fun unmarshal(configDirectory: File): Hybrisconfig? {
         val file = File(configDirectory, HybrisConstants.LOCAL_EXTENSIONS_XML)
+        thisLogger().warn("Cannot find localextensions.xml file: $file")
         if (!file.exists()) return null
 
         try {
@@ -46,5 +51,9 @@ object LeUnmarshaller {
         }
 
         return null
+    }
+
+    companion object {
+        fun getInstance(): LeUnmarshaller = application.service()
     }
 }

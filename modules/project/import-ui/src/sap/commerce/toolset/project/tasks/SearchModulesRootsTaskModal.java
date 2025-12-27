@@ -28,9 +28,9 @@ import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.exceptions.HybrisConfigurationException;
 import sap.commerce.toolset.project.context.ProjectImportContext;
-import sap.commerce.toolset.project.module.ModuleDescriptorsSelectionService;
-import sap.commerce.toolset.project.module.ProjectMainConfigModuleResolver;
-import sap.commerce.toolset.project.module.ProjectModuleDescriptorsCollector;
+import sap.commerce.toolset.project.descriptor.MainConfigModuleDescriptorResolver;
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorsCollector;
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorsSelector;
 
 import java.io.IOException;
 
@@ -57,18 +57,17 @@ public class SearchModulesRootsTaskModal extends Task.Modal {
     @Override
     public void run(@NotNull final ProgressIndicator indicator) {
         try {
-            ProjectModuleDescriptorsCollector.Companion.getInstance()
-                .collect(
+            ModuleDescriptorsCollector.Companion.getInstance().collect(
                     importContext,
                     new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),
                     new DirectoriesScannerErrorsProcessor()
                 )
                 .forEach(importContext::addFoundModule);
 
-            final var mainConfigModuleDescriptor = ProjectMainConfigModuleResolver.Companion.getInstance()
+            final var mainConfigModuleDescriptor = MainConfigModuleDescriptorResolver.Companion.getInstance()
                 .resolve(importContext);
 
-            ModuleDescriptorsSelectionService.Companion.getInstance().preselect(importContext, mainConfigModuleDescriptor);
+            ModuleDescriptorsSelector.Companion.getInstance().preselect(importContext, mainConfigModuleDescriptor);
         } catch (final InterruptedException | IOException e) {
             LOG.warn(e);
             importContext.clear();

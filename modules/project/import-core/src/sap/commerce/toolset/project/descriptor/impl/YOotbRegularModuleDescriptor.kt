@@ -17,11 +17,11 @@
  */
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
 class YOotbRegularModuleDescriptor(
     moduleRootDirectory: File,
-    extensionInfo: Info,
+    extensionInfo: ExtensionInfoContext,
 ) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.OOTB, extensionInfo)

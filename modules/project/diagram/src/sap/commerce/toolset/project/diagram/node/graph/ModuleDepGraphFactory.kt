@@ -25,27 +25,27 @@ import sap.commerce.toolset.project.yExtensionName
 object ModuleDepGraphFactory {
 
     fun buildNode(module: Module) = with(YFacetConstants.getModuleSettings(module)) {
-        val info = getInfo()
+        val eiContext = getContext()
         val properties = buildList {
-            info?.description?.let { add(ModuleDepGraphFieldDescription(it)) }
-            info?.version?.let { add(ModuleDepGraphFieldParameter("Version", it)) }
+            eiContext?.description?.let { add(ModuleDepGraphFieldDescription(it)) }
+            eiContext?.version?.let { add(ModuleDepGraphFieldParameter("Version", it)) }
 
-            if (info?.deprecated ?: false) add(ModuleDepGraphFieldParameter("Deprecated"))
-            if (info?.useMaven ?: false) add(ModuleDepGraphFieldParameter("Maven Enabled"))
-            if (info?.jaloLogicFree ?: false) add(ModuleDepGraphFieldParameter("Jalo Logic Free"))
-            if (info?.extGenTemplateExtension ?: false) add(ModuleDepGraphFieldParameter("Template Extension"))
-            if (info?.requiredByAll ?: false) add(ModuleDepGraphFieldParameter("Required by All"))
+            if (eiContext?.deprecated ?: false) add(ModuleDepGraphFieldParameter("Deprecated"))
+            if (eiContext?.useMaven ?: false) add(ModuleDepGraphFieldParameter("Maven Enabled"))
+            if (eiContext?.jaloLogicFree ?: false) add(ModuleDepGraphFieldParameter("Jalo Logic Free"))
+            if (eiContext?.extGenTemplateExtension ?: false) add(ModuleDepGraphFieldParameter("Template Extension"))
+            if (eiContext?.requiredByAll ?: false) add(ModuleDepGraphFieldParameter("Required by All"))
 
             subModuleType?.let { add(ModuleDepGraphFieldParameter("Sub-module Type", it.name)) }
-            if (info?.moduleGenName != null) add(ModuleDepGraphFieldParameter("Module Generation Name", info.moduleGenName))
-            if (info?.classPathGen != null) add(ModuleDepGraphFieldParameter("Classpath Generation", info.classPathGen))
+            if (eiContext?.moduleGenName != null) add(ModuleDepGraphFieldParameter("Module Generation Name", eiContext.moduleGenName))
+            if (eiContext?.classPathGen != null) add(ModuleDepGraphFieldParameter("Classpath Generation", eiContext.classPathGen))
 
-            if (info?.coreModule ?: false) add(ModuleDepGraphFieldParameter("Core module", info.packageRoot))
-            if (info?.webModule ?: false) add(ModuleDepGraphFieldParameter("Web module", info.webRoot))
+            if (eiContext?.coreModule ?: false) add(ModuleDepGraphFieldParameter("Core module", eiContext.packageRoot))
+            if (eiContext?.webModule ?: false) add(ModuleDepGraphFieldParameter("Web module", eiContext.webRoot))
 
-            if (info?.backofficeModule ?: false) add(ModuleDepGraphFieldParameter("Backoffice module"))
-            if (info?.hacModule ?: false) add(ModuleDepGraphFieldParameter("HAC module"))
-            if (info?.hmcModule ?: false) add(ModuleDepGraphFieldParameter("HMC module"))
+            if (eiContext?.backofficeModule ?: false) add(ModuleDepGraphFieldParameter("Backoffice module"))
+            if (eiContext?.hacModule ?: false) add(ModuleDepGraphFieldParameter("HAC module"))
+            if (eiContext?.hmcModule ?: false) add(ModuleDepGraphFieldParameter("HMC module"))
             if (addon) add(ModuleDepGraphFieldParameter("Addon"))
         }
 

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.module
+package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -29,10 +29,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import sap.commerce.toolset.project.factories.ModuleDescriptorFactory
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
@@ -42,7 +39,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
 @Service
-class ProjectMainConfigModuleResolver {
+class MainConfigModuleDescriptorResolver {
 
     @Throws(HybrisConfigurationException::class)
     fun resolve(importContext: ProjectImportContext.Mutable) = find(importContext)
@@ -85,10 +82,10 @@ class ProjectMainConfigModuleResolver {
             .firstOrNull { FileUtil.filesEqual(it.moduleRootDirectory, configDir) }
         if (configHybrisModuleDescriptor != null) return configHybrisModuleDescriptor
 
-        if (!ProjectModuleResolver.isConfigModule(configDir)) return null
+        if (!ModuleDescriptorResolver.getInstance().isConfigModule(configDir)) return null
 
         return try {
-            val configHybrisModuleDescriptor = ModuleDescriptorFactory.createConfigDescriptor(
+            val configHybrisModuleDescriptor = ModuleDescriptorFactory.getInstance().createConfigDescriptor(
                 configDir, configDir.getName()
             )
             thisLogger().info("Creating Overridden Config module in local.properties for ${configDir.absolutePath}")
@@ -136,7 +133,7 @@ class ProjectMainConfigModuleResolver {
     }
 
     companion object {
-        fun getInstance(): ProjectMainConfigModuleResolver = application.service()
+        fun getInstance(): MainConfigModuleDescriptorResolver = application.service()
     }
 
 }

@@ -15,9 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.factories
 
+package sap.commerce.toolset.project.descriptor.provider
+
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.util.application
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -26,12 +30,11 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ConfigModuleDescriptorImpl
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
-import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 import java.io.File
 import java.io.IOException
 
-// TODO: move to core
-object ModuleDescriptorFactory {
+@Service
+class ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
     fun createDescriptor(file: File, importContext: ProjectImportContext.Mutable): ModuleDescriptor {
@@ -91,4 +94,7 @@ object ModuleDescriptorFactory {
         }
     }
 
+    companion object {
+        fun getInstance(): ModuleDescriptorFactory = application.service()
+    }
 }

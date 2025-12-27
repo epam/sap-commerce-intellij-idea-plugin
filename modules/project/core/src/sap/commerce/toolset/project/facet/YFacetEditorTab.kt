@@ -27,7 +27,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.dsl.builder.text
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
@@ -36,7 +36,7 @@ import java.util.*
 class YFacetEditorTab(
     private val extensionDescriptor: ExtensionDescriptor,
     private val editorContext: FacetEditorContext,
-    private val info: Info? = extensionDescriptor.getInfo()
+    private val context: ExtensionInfoContext? = extensionDescriptor.getContext()
 ) : FacetEditorTab() {
 
     override fun getDisplayName() = "[y] SAP Commerce Facet"
@@ -104,14 +104,14 @@ class YFacetEditorTab(
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.deprecated ?: false)
+                        .selected(context?.deprecated ?: false)
                     label("Deprecated")
                 }.layout(RowLayout.PARENT_GRID)
 
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.useMaven ?: false)
+                        .selected(context?.useMaven ?: false)
                     label("External dependencies")
                         .comment(
                             """Represents <strong>usemaven</strong> flag of the <strong>extensioninfo.xml</strong> file.</br>
@@ -123,14 +123,14 @@ class YFacetEditorTab(
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.extGenTemplateExtension ?: false)
+                        .selected(context?.extGenTemplateExtension ?: false)
                     label("Template extension")
                 }.layout(RowLayout.PARENT_GRID)
 
                 row {
                     label("ModuleGen name:")
                     textField()
-                        .text(info?.moduleGenName ?: "")
+                        .text(context?.moduleGenName ?: "")
                         .enabled(false)
                 }
             }
@@ -138,7 +138,7 @@ class YFacetEditorTab(
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.coreModule ?: false)
+                        .selected(context?.coreModule ?: false)
                     label("Core module")
                         .comment(
                             """
@@ -152,7 +152,7 @@ class YFacetEditorTab(
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.backofficeModule ?: false)
+                        .selected(context?.backofficeModule ?: false)
                     label("Backoffice module")
                         .comment(
                             "If <strong>extensioninfo.xml</strong> has enabled meta <strong>backoffice-module</strong> " +
@@ -163,7 +163,7 @@ class YFacetEditorTab(
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.webModule ?: false)
+                        .selected(context?.webModule ?: false)
                     label("Web module")
                         .comment("Configures a web module for the extension. Required directory: <code>/web</code>.")
                 }.layout(RowLayout.PARENT_GRID)
@@ -171,14 +171,14 @@ class YFacetEditorTab(
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.hacModule ?: false)
+                        .selected(context?.hacModule ?: false)
                     label("HAC module")
                 }.layout(RowLayout.PARENT_GRID)
 
                 row {
                     checkBox("")
                         .enabled(false)
-                        .selected(info?.hmcModule ?: false)
+                        .selected(context?.hmcModule ?: false)
                     label("HMC module")
                         .comment("Configures an hMC module for the extension. Required directory: <code>/hmc</code>.")
                 }.layout(RowLayout.PARENT_GRID)

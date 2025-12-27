@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -28,7 +28,7 @@ import java.io.File
 abstract class YRegularModuleDescriptorImpl protected constructor(
     moduleRootDirectory: File,
     descriptorType: ModuleDescriptorType,
-    extensionInfo: Info,
+    extensionInfo: ExtensionInfoContext,
 ) : AbstractYModuleDescriptor(moduleRootDirectory, extensionInfo.name, descriptorType, extensionInfo), YRegularModuleDescriptor {
 
     override var isInLocalExtensions = false

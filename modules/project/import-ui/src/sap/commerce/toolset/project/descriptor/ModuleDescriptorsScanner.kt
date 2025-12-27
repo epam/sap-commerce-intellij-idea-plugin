@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.module
+package sap.commerce.toolset.project.descriptor
 
 import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.openapi.components.Service
@@ -41,7 +41,7 @@ import kotlin.io.path.isDirectory
 
 // TODO: extract WSL scanner
 @Service
-class ProjectModulesScanner {
+class ModuleDescriptorsScanner {
 
     @Throws(InterruptedException::class, IOException::class)
     fun findModuleRoots(
@@ -70,13 +70,15 @@ class ProjectModulesScanner {
             importContext.addVcs(moduleDirectory.getCanonicalFile())
         }
 
-        if (ProjectModuleResolver.isHybrisExtension(moduleDirectory)) {
+        val moduleDescriptorResolver = ModuleDescriptorResolver.getInstance()
+
+        if (moduleDescriptorResolver.isHybrisExtension(moduleDirectory)) {
             thisLogger().info("Detected hybris module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
             return
         }
 
-        if (ProjectModuleResolver.isConfigModule(moduleDirectory)) {
+        if (moduleDescriptorResolver.isConfigModule(moduleDirectory)) {
             thisLogger().info("Detected config module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
             return
@@ -84,33 +86,33 @@ class ProjectModulesScanner {
 
         if (!moduleDirectory.absolutePath.endsWith(HybrisConstants.PLATFORM_MODULE)
             && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-            && (ProjectModuleResolver.isGradleModule(moduleDirectory) || ProjectModuleResolver.isGradleKtsModule(moduleDirectory))
-            && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
+            && (moduleDescriptorResolver.isGradleModule(moduleDirectory) || moduleDescriptorResolver.isGradleKtsModule(moduleDirectory))
+            && !moduleDescriptorResolver.isCCv2Module(moduleDirectory)
         ) {
             thisLogger().info("Detected gradle module ${moduleDirectory.absolutePath}")
 
             moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
         }
 
-        if (ProjectModuleResolver.isMavenModule(moduleDirectory)
+        if (moduleDescriptorResolver.isMavenModule(moduleDirectory)
             && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-            && !ProjectModuleResolver.isCCv2Module(moduleDirectory)
+            && !moduleDescriptorResolver.isCCv2Module(moduleDirectory)
         ) {
             thisLogger().info("Detected maven module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
         }
 
-        if (ProjectModuleResolver.isPlatformModule(moduleDirectory)) {
+        if (moduleDescriptorResolver.isPlatformModule(moduleDirectory)) {
             thisLogger().info("Detected platform module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
-        } else if (ProjectModuleResolver.isEclipseModule(moduleDirectory)
+        } else if (moduleDescriptorResolver.isEclipseModule(moduleDirectory)
             && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
         ) {
             thisLogger().info("Detected eclipse module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
         }
 
-        if (ProjectModuleResolver.isCCv2Module(moduleDirectory)) {
+        if (moduleDescriptorResolver.isCCv2Module(moduleDirectory)) {
             thisLogger().info("Detected CCv2 module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
             val name = moduleDirectory.getName()
@@ -120,7 +122,7 @@ class ProjectModulesScanner {
             }
         }
 
-        if (ProjectModuleResolver.isAngularModule(moduleDirectory)) {
+        if (moduleDescriptorResolver.isAngularModule(moduleDirectory)) {
             thisLogger().info("Detected Angular module ${moduleDirectory.absolutePath}")
             moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
             // do not go deeper
@@ -263,6 +265,6 @@ class ProjectModulesScanner {
     }
 
     companion object {
-        fun getInstance(): ProjectModulesScanner = application.service()
+        fun getInstance(): ModuleDescriptorsScanner = application.service()
     }
 }

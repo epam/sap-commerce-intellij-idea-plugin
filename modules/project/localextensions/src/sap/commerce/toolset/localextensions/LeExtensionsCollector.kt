@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.collector
+package sap.commerce.toolset.localextensions
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -25,9 +25,7 @@ import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.PropertiesUtil
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.localextensions.LeUnmarshaller
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
-import sap.commerce.toolset.project.context.ProjectImportContext
 import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -37,23 +35,24 @@ import java.util.*
 import kotlin.math.max
 
 @Service
-class ExplicitRequiredExtensionsCollector {
+class LeExtensionsCollector {
 
     fun collect(
-        importContext: ProjectImportContext.Mutable,
-        configDirectory: File
+        foundExtensions: Collection<LeExtension>,
+        configDirectory: File,
+        platformDirectory: File?
     ): Set<String> = ApplicationManager.getApplication().runReadAction(Computable {
-        val hybrisConfig = LeUnmarshaller.unmarshal(configDirectory)
+        val hybrisConfig = LeUnmarshaller.getInstance().unmarshal(configDirectory)
             ?: return@Computable setOf()
 
         TreeSet(String.CASE_INSENSITIVE_ORDER).apply {
             addAll(processExtensions(hybrisConfig))
-            addAll(processAutoloadPaths(importContext, hybrisConfig))
+            addAll(processAutoloadPaths(foundExtensions, hybrisConfig, platformDirectory))
         }
     })
 
-    private fun processAutoloadPaths(importContext: ProjectImportContext.Mutable, hybrisConfig: Hybrisconfig): Collection<String> {
-        val platformDirectory = importContext.platformDirectory ?: return emptySet()
+    private fun processAutoloadPaths(foundExtensions: Collection<LeExtension>, hybrisConfig: Hybrisconfig, platformDirectory: File?): Collection<String> {
+        platformDirectory ?: return emptySet()
         val extensionNames = mutableSetOf<String>()
         val autoloadPaths = HashMap<String, Int>()
 
@@ -99,9 +98,9 @@ class ExplicitRequiredExtensionsCollector {
                         normalizedKey to entry.value
                     }
 
-                importContext.foundModules.forEach {
+                foundExtensions.forEach {
                     for (entry in normalizedPaths.entries) {
-                        val moduleDir = it.moduleRootDirectory.path
+                        val moduleDir = it.directory.path
                         if (moduleDir.startsWith(entry.key)
                             && Paths.get(moduleDir.substring(entry.key.length)).nameCount <= entry.value
                         ) {
@@ -141,6 +140,6 @@ class ExplicitRequiredExtensionsCollector {
     }
 
     companion object {
-        fun getInstance(): ExplicitRequiredExtensionsCollector = application.service()
+        fun getInstance(): LeExtensionsCollector = application.service()
     }
 }

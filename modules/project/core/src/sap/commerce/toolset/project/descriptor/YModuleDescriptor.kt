@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.project.descriptor
 
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 
 interface YModuleDescriptor : ModuleDescriptor {
 
-    val extensionInfo: Info
+    val extensionInfo: ExtensionInfoContext
     fun getSubModules(): Set<YSubModuleDescriptor>
     fun addSubModule(subModule: YSubModuleDescriptor): Boolean
     fun removeSubModule(subModule: YSubModuleDescriptor): Boolean

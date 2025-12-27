@@ -16,18 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.manifest.codeInsight.completion.provider
+package sap.commerce.toolset.extensioninfo.context
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.codeInsight.completion.provider.ExtensionNameCompletionProvider
-import sap.commerce.toolset.project.settings.ProjectSettings
-
-class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
-
-    override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = ProjectSettings.getInstance(project)
-        .extensionDescriptors
-        .filter { it.getContext()?.extGenTemplateExtension ?: false }
-        .toList()
-
-}
+data class ExtensionInfoContext(
+    val name: String,
+    var description: String? = null,
+    var classPathGen: String? = null,
+    var moduleGenName: String? = null,
+    var packageRoot: String? = null,
+    var webRoot: String? = null,
+    var version: String? = null,
+    var backofficeModule: Boolean = false,
+    var useMaven: Boolean = false,
+    var hacModule: Boolean = false,
+    var webModule: Boolean = false,
+    var hmcModule: Boolean = false,
+    var coreModule: Boolean = false,
+    var deprecated: Boolean = false,
+    var extGenTemplateExtension: Boolean = false,
+    var jaloLogicFree: Boolean = false,
+    var requiredByAll: Boolean = false,
+    var requiredExtensions: List<Dependency> = emptyList(),
+)

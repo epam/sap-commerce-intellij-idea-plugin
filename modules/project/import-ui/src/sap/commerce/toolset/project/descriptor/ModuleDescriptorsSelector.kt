@@ -16,21 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.module
+package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
-import sap.commerce.toolset.project.collector.ExplicitRequiredExtensionsCollector
+import sap.commerce.toolset.localextensions.LeExtension
+import sap.commerce.toolset.localextensions.LeExtensionsCollector
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 @Service
-class ModuleDescriptorsSelectionService {
+class ModuleDescriptorsSelector {
 
     fun preselect(importContext: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
-        val extensionsInLocalExtensions = ExplicitRequiredExtensionsCollector.getInstance().collect(importContext, configModuleDescriptor.moduleRootDirectory)
+        val foundExtensions = importContext.foundModules
+            .map { LeExtension(it.name, it.moduleRootDirectory) }
+        val extensionsInLocalExtensions = LeExtensionsCollector.getInstance().collect(
+            foundExtensions,
+            configModuleDescriptor.moduleRootDirectory,
+            importContext.platformDirectory
+        )
 
         importContext.foundModules
             .filter { extensionsInLocalExtensions.contains(it.name) }
@@ -53,46 +59,6 @@ class ModuleDescriptorsSelectionService {
             .filterIsInstance<ConfigModuleDescriptor>()
             .forEach { it.setPreselected(true) }
     }
-
-    /*
-
-    public List<ModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable ProjectSettings settings) {
-        final List<ModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
-        final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
-        final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();
-        for (final var moduleDescriptor : allModules) {
-            if (moduleDescriptor.isPreselected()) {
-                moduleToImport.add(moduleDescriptor);
-                moduleDescriptor.setImportStatus(MANDATORY);
-                moduleToCheck.add(moduleDescriptor);
-            }
-        }
-        resolveDependency(moduleToImport, moduleToCheck, MANDATORY);
-
-        final Set<String> unusedExtensionNameSet = settings != null
-            ? settings.getUnusedExtensions()
-            : Collections.emptySet();
-
-        allModules.stream()
-            .filter(e -> unusedExtensionNameSet.contains(e.getName()))
-            .forEach(e -> {
-                moduleToImport.add(e);
-                e.setImportStatus(UNUSED);
-                moduleToCheck.add(e);
-            });
-        resolveDependency(moduleToImport, moduleToCheck, UNUSED);
-
-        final Set<String> modulesOnBlackList = settings != null
-            ? settings.getModulesOnBlackList()
-            : Collections.emptySet();
-
-        return moduleToImport.stream()
-            .filter(e -> !modulesOnBlackList.contains(e.getRelativePath()))
-            .sorted(Comparator.nullsLast(Comparator.comparing(ModuleDescriptor::getName)))
-            .collect(Collectors.toList());
-    }
-
-     */
 
     fun getSelectableHybrisModules(importContext: ProjectImportContext.Mutable, settings: ProjectSettings): List<ModuleDescriptor> {
         val moduleToImport = mutableListOf<ModuleDescriptor>()
@@ -121,30 +87,6 @@ class ModuleDescriptorsSelectionService {
             .filterNot { settings.modulesOnBlackList.contains(it.getRelativePath(importContext.rootDirectory)) }
     }
 
-    /*
-
-    private void resolveDependency(
-        final List<ModuleDescriptor> moduleToImport,
-        final Set<ModuleDescriptor> moduleToCheck,
-        final ModuleDescriptorImportStatus selectionMode
-    ) {
-        while (!moduleToCheck.isEmpty()) {
-            final ModuleDescriptor currentModule = moduleToCheck.iterator().next();
-            if (currentModule instanceof final YModuleDescriptor yModuleDescriptor) {
-                for (final ModuleDescriptor moduleDescriptor : yModuleDescriptor.getAllDependencies()) {
-                    if (!moduleToImport.contains(moduleDescriptor)) {
-                        moduleToImport.add(moduleDescriptor);
-                        moduleDescriptor.setImportStatus(selectionMode);
-                        moduleToCheck.add(moduleDescriptor);
-                    }
-                }
-            }
-            moduleToCheck.remove(currentModule);
-        }
-    }
-
-     */
-
     private fun resolveDependencies(
         moduleToImport: MutableList<ModuleDescriptor>,
         moduleToCheck: MutableSet<ModuleDescriptor>,
@@ -166,6 +108,6 @@ class ModuleDescriptorsSelectionService {
     }
 
     companion object {
-        fun getInstance(): ModuleDescriptorsSelectionService = application.service()
+        fun getInstance(): ModuleDescriptorsSelector = application.service()
     }
 }

@@ -20,7 +20,7 @@ package sap.commerce.toolset.project.descriptor.impl
 
 import com.intellij.openapi.util.io.FileUtil
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -31,7 +31,7 @@ abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
     name: String,
     descriptorType: ModuleDescriptorType,
-    override val extensionInfo: Info,
+    override val extensionInfo: ExtensionInfoContext,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType), YModuleDescriptor {
 
     override val extensionDescriptor by lazy {

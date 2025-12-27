@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.module
+package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -30,14 +30,11 @@ import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ModuleFilesContext
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
-import sap.commerce.toolset.project.factories.ModuleDescriptorFactory
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -45,7 +42,7 @@ import java.io.File
 import java.io.IOException
 
 @Service
-class ProjectModuleDescriptorsCollector {
+class ModuleDescriptorsCollector {
 
     @Throws(InterruptedException::class, IOException::class)
     fun collect(
@@ -58,7 +55,7 @@ class ProjectModuleDescriptorsCollector {
         val moduleFilesContext = ModuleFilesContext()
         val rootDirectory = importContext.rootDirectory
         val excludedFromScanning = getExcludedFromScanningDirectories(importContext)
-        val modulesScanner = ProjectModulesScanner.getInstance()
+        val modulesScanner = ModuleDescriptorsScanner.getInstance()
 
         thisLogger().info("Scanning for modules")
         modulesScanner.findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, rootDirectory, progressListenerProcessor)
@@ -90,7 +87,7 @@ class ProjectModuleDescriptorsCollector {
 
         moduleRootDirectories.forEach { moduleRootDirectory ->
             try {
-                val moduleDescriptor = ModuleDescriptorFactory.createDescriptor(moduleRootDirectory, importContext)
+                val moduleDescriptor = ModuleDescriptorFactory.getInstance().createDescriptor(moduleRootDirectory, importContext)
                 moduleDescriptors.add(moduleDescriptor)
 
                 moduleDescriptor.asSafely<YModuleDescriptor>()
@@ -127,7 +124,7 @@ class ProjectModuleDescriptorsCollector {
     }
 
     private fun addRootModule(moduleRootDirectory: File): ExternalModuleDescriptor? = try {
-        ModuleDescriptorFactory.createRootDescriptor(moduleRootDirectory, moduleRootDirectory.getName())
+        ModuleDescriptorFactory.getInstance().createRootDescriptor(moduleRootDirectory, moduleRootDirectory.getName())
     } catch (e: HybrisConfigurationException) {
         thisLogger().error("Can not import a module using path: $moduleRootDirectory", e)
         null
@@ -225,6 +222,6 @@ class ProjectModuleDescriptorsCollector {
         .toSet()
 
     companion object {
-        fun getInstance(): ProjectModuleDescriptorsCollector = application.service()
+        fun getInstance(): ModuleDescriptorsCollector = application.service()
     }
 }

@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.ui
 
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.bindSelected
@@ -49,6 +50,7 @@ class ProjectRefreshDialog(
                 checkBox("Remove old project data")
                     .comment("Experimental feature! Modules with respective .iml files will not be removed on refresh.")
                     .bindSelected(refreshContext.removeOldProjectData)
+                icon(AllIcons.General.Warning)
             }
 
             row {

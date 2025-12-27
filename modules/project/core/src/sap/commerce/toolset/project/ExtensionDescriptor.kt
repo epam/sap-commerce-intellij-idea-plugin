@@ -24,7 +24,7 @@ import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.extensioninfo.EiModelAccess
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import java.io.File
@@ -40,12 +40,12 @@ data class ExtensionDescriptor(
     @OptionTag val installedIntoExtensions: Set<String> = emptySet(),
 ) : UserDataHolderBase(), Comparable<ExtensionDescriptor> {
 
-    fun getInfo() = getOrCreateUserDataUnsafe(KEY_INFO) {
+    fun getContext() = getOrCreateUserDataUnsafe(KEY_INFO) {
         if (path.isEmpty() || subModuleType != null) return null
 
         val moduleRootDirectory = File(FileUtil.toSystemDependentName(path))
 
-        return EiModelAccess.getInfo(moduleRootDirectory)
+        return EiModelAccess.getInstance().getContext(moduleRootDirectory)
     }
 
     override fun compareTo(other: ExtensionDescriptor) = name.compareTo(other.name)
@@ -53,6 +53,6 @@ data class ExtensionDescriptor(
     companion object {
         @Serial
         private const val serialVersionUID: Long = -4281602487713822529L
-        private val KEY_INFO = Key<Info?>("sap.commerce.toolset.extensioninfo")
+        private val KEY_INFO = Key<ExtensionInfoContext?>("sap.commerce.toolset.extensioninfo")
     }
 }

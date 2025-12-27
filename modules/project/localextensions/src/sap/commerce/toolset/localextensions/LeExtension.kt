@@ -16,25 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.extensioninfo.context
+package sap.commerce.toolset.localextensions
 
-data class Info(
+import java.io.File
+
+data class LeExtension(
     val name: String,
-    var description: String? = null,
-    var classPathGen: String? = null,
-    var moduleGenName: String? = null,
-    var packageRoot: String? = null,
-    var webRoot: String? = null,
-    var version: String? = null,
-    var backofficeModule: Boolean = false,
-    var useMaven: Boolean = false,
-    var hacModule: Boolean = false,
-    var webModule: Boolean = false,
-    var hmcModule: Boolean = false,
-    var coreModule: Boolean = false,
-    var deprecated: Boolean = false,
-    var extGenTemplateExtension: Boolean = false,
-    var jaloLogicFree: Boolean = false,
-    var requiredByAll: Boolean = false,
-    var requiredExtensions: List<Dependency> = emptyList(),
+    val directory: File,
 )

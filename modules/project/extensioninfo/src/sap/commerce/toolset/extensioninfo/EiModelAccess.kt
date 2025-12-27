@@ -18,23 +18,27 @@
 
 package sap.commerce.toolset.extensioninfo
 
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.findFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
+import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.context.Dependency
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionType
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
 import java.io.File
 
-object EiModelAccess {
+@Service
+class EiModelAccess {
 
     fun getExtensionInfo(module: Module) = ModuleRootManager.getInstance(module).contentRoots
         .firstNotNullOfOrNull { it.findFile(HybrisConstants.EXTENSION_INFO_XML) }
@@ -44,12 +48,12 @@ object EiModelAccess {
         ?.rootElement
         ?.extension
 
-    fun getInfo(moduleRootDirectory: File): Info? = unmarshallExtensionInfo(moduleRootDirectory)
+    fun getContext(moduleRootDirectory: File): ExtensionInfoContext? = unmarshallExtensionInfo(moduleRootDirectory)
         ?.let { extension ->
             val metas = extension.meta
                 .associate { it.key to it.value }
 
-            Info(
+            ExtensionInfoContext(
                 name = extension.name,
                 description = extension.description,
                 useMaven = "true".equals(extension.usemaven, ignoreCase = true),
@@ -86,4 +90,8 @@ object EiModelAccess {
     private fun isMetaKeySetToTrue(metas: Map<String, String>, metaKeyName: String) = metas[metaKeyName]
         ?.let { "true".equals(it, true) }
         ?: false
+
+    companion object {
+        fun getInstance(): EiModelAccess = application.service()
+    }
 }

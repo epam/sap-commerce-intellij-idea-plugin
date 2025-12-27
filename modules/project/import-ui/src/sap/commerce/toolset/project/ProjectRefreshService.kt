@@ -37,8 +37,8 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.factories.ModuleDescriptorFactory
 import sap.commerce.toolset.project.wizard.RefreshSupport
 import kotlin.io.path.absolutePathString
 
@@ -80,7 +80,7 @@ class ProjectRefreshService(private val project: Project) {
                 ?.let { VfsUtil.virtualToIoFile(it) }
                 ?.let {
                     try {
-                        ModuleDescriptorFactory.createDescriptor(it, importContext)
+                        ModuleDescriptorFactory.getInstance().createDescriptor(it, importContext)
                     } catch (e: HybrisConfigurationException) {
                         thisLogger().error(e)
                         return@let null

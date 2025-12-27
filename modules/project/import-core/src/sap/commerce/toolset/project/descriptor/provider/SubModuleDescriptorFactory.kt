@@ -18,6 +18,9 @@
 
 package sap.commerce.toolset.project.descriptor.provider
 
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.util.application
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
@@ -27,7 +30,8 @@ import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.*
 import java.io.File
 
-internal object SubModuleDescriptorFactory {
+@Service
+internal class SubModuleDescriptorFactory {
 
     fun buildAll(owner: YRegularModuleDescriptor): Set<YSubModuleDescriptor> {
         val subModules = mutableSetOf<YSubModuleDescriptor>()
@@ -64,4 +68,8 @@ internal object SubModuleDescriptorFactory {
         .takeIf { it.exists() }
         ?.let { builder.invoke(it) }
         ?.let { subModules.add(it) }
+
+    companion object {
+        fun getInstance(): SubModuleDescriptorFactory = application.service()
+    }
 }

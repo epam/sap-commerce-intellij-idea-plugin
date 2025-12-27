@@ -43,7 +43,7 @@ object ExtensionLookupElementFactory {
         }
 
     private fun tail(extensionDescriptor: ExtensionDescriptor): String? {
-        val info = extensionDescriptor.getInfo()
+        val info = extensionDescriptor.getContext()
         val tail = listOfNotNull(
             if (extensionDescriptor.addon) "addon" else null,
             if (info?.deprecated ?: false) "deprecated" else null,

@@ -30,7 +30,6 @@ import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
-import sap.commerce.toolset.project.module.ModuleDescriptorsSelectionService
 import sap.commerce.toolset.project.settings.ySettings
 
 class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.HYBRIS), RefreshSupport {
@@ -77,16 +76,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         super.updateStep()
 
         context.list
-            .filter {
-                it.importStatus == ModuleDescriptorImportStatus.MANDATORY
-//                when (it) {
-//                    is PlatformModuleDescriptor -> true
-//                    is YPlatformExtModuleDescriptor -> true
-//                    is ConfigModuleDescriptor if it.isPreselected() && it.isMainConfig -> true
-//                    is YSubModuleDescriptor if it.owner is YPlatformExtModuleDescriptor -> true
-//                    else -> false
-//                }
-            }
+            .filter { it.importStatus == ModuleDescriptorImportStatus.MANDATORY }
             .forEach { fileChooser.disableElement(it) }
 
         //scroll to top
@@ -102,7 +92,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
 
         try {
             val chosenHybrisModuleDescriptors = buildList {
-                val moduleDescriptors = ModuleDescriptorsSelectionService.getInstance().getSelectableHybrisModules(importContext, projectSettings)
+                val moduleDescriptors = ModuleDescriptorsSelector.getInstance().getSelectableHybrisModules(importContext, projectSettings)
                 val openModuleDescriptors = ProjectRefreshService.getInstance(refreshContext.project).openModuleDescriptors(importContext)
 
                 addAll(moduleDescriptors)

@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import java.io.File
 
 class YCoreExtModuleDescriptor(
     moduleRootDirectory: File,
-    extensionInfo: Info,
+    extensionInfo: ExtensionInfoContext,
 ) : YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo) {
 
     override var importStatus = ModuleDescriptorImportStatus.MANDATORY
