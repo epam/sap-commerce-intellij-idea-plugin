@@ -64,7 +64,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
         importContext.chosenHybrisModuleDescriptors
             .find { EiConstants.Extension.KOTLIN_NATURE == it.name }

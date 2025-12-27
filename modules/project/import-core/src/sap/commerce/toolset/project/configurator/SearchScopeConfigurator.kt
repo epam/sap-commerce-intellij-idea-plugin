@@ -39,7 +39,7 @@ class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Search Scope"
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom

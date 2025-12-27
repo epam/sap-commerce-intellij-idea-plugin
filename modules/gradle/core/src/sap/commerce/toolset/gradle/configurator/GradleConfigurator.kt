@@ -64,7 +64,7 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         }
     }
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         if (!importContext.refresh) return
         val project = importContext.project
 

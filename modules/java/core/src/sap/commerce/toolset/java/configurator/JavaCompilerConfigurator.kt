@@ -34,7 +34,7 @@ class JavaCompilerConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Java Compiler"
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
         val compilerConfiguration = CompilerConfiguration.getInstance(project)
             .asSafely<CompilerConfigurationImpl>() ?: return

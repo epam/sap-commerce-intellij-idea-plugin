@@ -47,7 +47,7 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                         async {
                             progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
                                 try {
-                                    it.asyncPostImport(importContext)
+                                    it.postImport(importContext)
                                 } catch (e: Exception) {
                                     println(e)
                                     // ignore

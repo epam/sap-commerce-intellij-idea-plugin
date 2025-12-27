@@ -33,7 +33,7 @@ class MavenConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Maven"
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
         val mavenModules = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<MavenModuleDescriptor>()

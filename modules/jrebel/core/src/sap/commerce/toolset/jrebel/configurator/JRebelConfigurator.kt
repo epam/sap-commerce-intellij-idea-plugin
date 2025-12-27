@@ -52,7 +52,7 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator, ProjectStartupCon
     override val name: String
         get() = "JRebel"
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
 
         val moduleDescriptors = importContext.chosenHybrisModuleDescriptors

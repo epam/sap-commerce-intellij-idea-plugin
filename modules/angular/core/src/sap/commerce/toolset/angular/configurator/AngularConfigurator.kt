@@ -32,7 +32,7 @@ class AngularConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Angular"
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
             ?.takeUnless { it.isDisposed }
             ?: return

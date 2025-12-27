@@ -27,7 +27,7 @@ class ExtensionDescriptorsConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Extension Descriptors"
 
-    override suspend fun asyncPostImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val projectSettings = importContext.project.ySettings
 
         projectSettings.extensionDescriptors = importContext.foundModules
