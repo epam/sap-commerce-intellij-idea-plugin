@@ -18,7 +18,7 @@
 package sap.commerce.toolset.project.descriptor.provider
 
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.descriptor.impl.PlatformModuleDescriptorImpl
 import java.io.File
@@ -28,7 +28,7 @@ class PlatformModuleDescriptorProvider : ModuleDescriptorProvider {
     override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
         val moduleRootDirectory = context.moduleRootDirectory
 
-        return moduleRootDirectory.getName() == ProjectConstants.Extension.PLATFORM
+        return moduleRootDirectory.getName() == EiConstants.Extension.PLATFORM
             && File(moduleRootDirectory, HybrisConstants.EXTENSIONS_XML).isFile()
     }
 

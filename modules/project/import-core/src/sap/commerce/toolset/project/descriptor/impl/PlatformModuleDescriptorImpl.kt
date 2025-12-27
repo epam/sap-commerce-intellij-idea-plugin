@@ -26,6 +26,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.io.filefilter.DirectoryFileFilter
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -35,7 +36,7 @@ import java.io.FileFilter
 
 class PlatformModuleDescriptorImpl(
     moduleRootDirectory: File,
-    name: String = ProjectConstants.Extension.PLATFORM,
+    name: String = EiConstants.Extension.PLATFORM,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.PLATFORM), PlatformModuleDescriptor {
 
     override fun isPreselected() = true

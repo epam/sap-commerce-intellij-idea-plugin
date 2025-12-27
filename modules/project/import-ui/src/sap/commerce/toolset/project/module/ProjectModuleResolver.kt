@@ -21,7 +21,7 @@ package sap.commerce.toolset.project.module
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import java.io.File
 import kotlin.io.path.exists
 
@@ -41,7 +41,7 @@ object ProjectModuleResolver {
     fun isAngularModule(file: File) = Plugin.ANGULAR.ifActive { File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile() }
         ?: false
 
-    fun isPlatformModule(file: File) = file.getName() == ProjectConstants.Extension.PLATFORM
+    fun isPlatformModule(file: File) = file.getName() == EiConstants.Extension.PLATFORM
         && File(file, HybrisConstants.EXTENSIONS_XML).isFile()
 
     fun isHybrisExtension(file: File): Boolean = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile

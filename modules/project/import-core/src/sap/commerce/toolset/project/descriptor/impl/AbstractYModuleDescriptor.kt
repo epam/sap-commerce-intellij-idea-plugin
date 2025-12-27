@@ -19,9 +19,9 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import com.intellij.openapi.util.io.FileUtil
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.extensioninfo.context.Info
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
@@ -31,9 +31,7 @@ abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
     name: String,
     descriptorType: ModuleDescriptorType,
-    override val extensionInfo: ExtensionInfo,
-    private val metas: Map<String, String> = extensionInfo.extension.meta
-        .associate { it.key to it.value }
+    override val extensionInfo: Info,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType), YModuleDescriptor {
 
     private val myExtensionDescriptor by lazy {
@@ -43,7 +41,7 @@ abstract class AbstractYModuleDescriptor(
             readonly = readonly,
             type = descriptorType,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
-            addon = getRequiredExtensionNames().contains(ProjectConstants.Extension.ADDON_SUPPORT)
+            addon = getRequiredExtensionNames().contains(EiConstants.Extension.ADDON_SUPPORT)
         )
     }
     private var ySubModules = mutableSetOf<YSubModuleDescriptor>()
@@ -55,7 +53,4 @@ abstract class AbstractYModuleDescriptor(
     // Must be called at the end of the module import
     override fun extensionDescriptor() = myExtensionDescriptor
 
-    fun isMetaKeySetToTrue(metaKeyName: String) = metas[metaKeyName]
-        ?.let { "true".equals(it, true) }
-        ?: false
 }

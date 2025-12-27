@@ -18,6 +18,8 @@
 package sap.commerce.toolset.project.descriptor.provider
 
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
+import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
 import java.io.File
@@ -31,11 +33,13 @@ class YPlatformExtModuleDescriptorProvider : YModuleDescriptorProvider() {
             && File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile()
     }
 
-    override fun create(moduleRootDirectory: File) = YPlatformExtModuleDescriptor(
-        moduleRootDirectory,
-        getExtensionInfo(moduleRootDirectory)
-    ).apply {
-        SubModuleDescriptorFactory.buildAll(this)
-            .forEach { this.addSubModule(it) }
+    override fun create(moduleRootDirectory: File): YPlatformExtModuleDescriptor {
+        val extensionInfo = EiModelAccess.getInfo(moduleRootDirectory)
+            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $moduleRootDirectory")
+
+        return YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo).apply {
+            SubModuleDescriptorFactory.buildAll(this)
+                .forEach { this.addSubModule(it) }
+        }
     }
 }

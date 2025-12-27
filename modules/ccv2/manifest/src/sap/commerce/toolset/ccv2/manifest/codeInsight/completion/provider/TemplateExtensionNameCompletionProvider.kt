@@ -27,7 +27,7 @@ class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider(
 
     override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = ProjectSettings.getInstance(project)
         .extensionDescriptors
-        .filter { it.info.extGenTemplateExtension }
+        .filter { it.getInfo()?.extGenTemplateExtension ?: false }
         .toList()
 
 }

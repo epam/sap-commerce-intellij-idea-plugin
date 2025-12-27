@@ -27,7 +27,7 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ModuleFilesContext
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -204,7 +204,7 @@ class ProjectModuleDescriptorsCollector {
 
     private fun removeHmcSubModules(moduleDescriptors: MutableList<ModuleDescriptor>) {
         val hmcModulePresent = moduleDescriptors
-            .any { it.name == ProjectConstants.Extension.HMC }
+            .any { it.name == EiConstants.Extension.HMC }
         if (hmcModulePresent) return
 
         val hmcSubModuleDescriptors = moduleDescriptors

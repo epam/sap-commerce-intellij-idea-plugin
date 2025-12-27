@@ -26,12 +26,12 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.*
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.extensioninfo.model.Extension
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.localextensions.model.Extensions
 import sap.commerce.toolset.localextensions.model.Hybrisconfig
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
@@ -43,7 +43,7 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
         if (element !is XmlToken || element.tokenType != XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN) return null
         val xmlAttributeValue = PsiTreeUtil.getParentOfType(element, XmlAttributeValue::class.java) ?: return null
         val xmlFile = element.containingFile as? XmlFile ?: return null
-        if (xmlAttributeValue.value == ProjectConstants.Extension.PLATFORM) return null
+        if (xmlAttributeValue.value == EiConstants.Extension.PLATFORM) return null
         val descriptor = ProjectSettings.getInstance(xmlFile.project).extensionDescriptors
             .find { it.name == xmlAttributeValue.value }
             ?: return null

@@ -42,6 +42,7 @@ idea {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":project-core"))
+    implementation(project(":project-extensioninfo"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

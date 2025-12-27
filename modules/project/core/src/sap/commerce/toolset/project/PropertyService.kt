@@ -42,6 +42,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -268,11 +269,11 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CONFIG }
+        .firstOrNull { it.yExtensionName() == EiConstants.Extension.CONFIG }
 
     private fun obtainPlatformModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.PLATFORM }
+        .firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {

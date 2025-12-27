@@ -24,6 +24,7 @@ import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
@@ -78,7 +79,7 @@ private fun getLibraryDescriptors(importContext: ProjectImportContext, descripto
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
-    if (descriptor.hasBackofficeModule) {
+    if (descriptor.extensionInfo.backofficeModule) {
         descriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?.let { yModule ->
@@ -144,7 +145,7 @@ private fun addHmcLibs(
     )
 
     importContext.chosenHybrisModuleDescriptors
-        .firstOrNull { it.name == ProjectConstants.Extension.HMC }
+        .firstOrNull { it.name == EiConstants.Extension.HMC }
         ?.let {
             libs.add(
                 JavaLibraryDescriptor(
@@ -169,7 +170,7 @@ private fun addLibrariesToNonCustomModule(
         .map { File(descriptor.moduleRootDirectory, it) }
         .filter { it.isDirectory }
 
-    if (ProjectConstants.Extension.PLATFORM_SERVICES != descriptor.name) {
+    if (EiConstants.Extension.PLATFORM_SERVICES != descriptor.name) {
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - compiler output",
@@ -341,7 +342,7 @@ private fun getWebLibraryDescriptors(
         .flatten()
         .forEach { sourceFiles.add(it) }
 
-    if (descriptor.owner.name != ProjectConstants.Extension.BACK_OFFICE) {
+    if (descriptor.owner.name != EiConstants.Extension.BACK_OFFICE) {
         if (descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor is YWebSubModuleDescriptor) {
             libs.add(
                 JavaLibraryDescriptor(

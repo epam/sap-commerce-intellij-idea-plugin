@@ -21,7 +21,7 @@ import com.intellij.javaee.ExternalResourceManagerEx
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import sap.commerce.toolset.cockpitNG.CngConstants
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Path
@@ -36,7 +36,7 @@ class XsdSchemaConfigurator : ProjectPostImportConfigurator {
         val project = importContext.project
         val cockpitJarToFile = readAction {
             importContext.chosenHybrisModuleDescriptors
-                .firstOrNull { it.name == ProjectConstants.Extension.BACK_OFFICE }
+                .firstOrNull { it.name == EiConstants.Extension.BACK_OFFICE }
                 ?.moduleRootDirectory
                 ?.toPath()
                 ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))

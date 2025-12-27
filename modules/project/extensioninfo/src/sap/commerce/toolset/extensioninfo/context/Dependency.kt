@@ -15,16 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.extensioninfo.context.Info
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import java.io.File
+package sap.commerce.toolset.extensioninfo.context
 
-class YCoreExtModuleDescriptor(
-    moduleRootDirectory: File,
-    extensionInfo: Info,
-) : YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo) {
-
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = emptySet<String>()
-}
+data class Dependency(val name: String, val version: String?)

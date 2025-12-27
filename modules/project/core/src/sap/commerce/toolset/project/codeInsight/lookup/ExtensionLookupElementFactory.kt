@@ -43,13 +43,13 @@ object ExtensionLookupElementFactory {
         }
 
     private fun tail(extensionDescriptor: ExtensionDescriptor): String? {
-        val info = extensionDescriptor.info
+        val info = extensionDescriptor.getInfo()
         val tail = listOfNotNull(
             if (extensionDescriptor.addon) "addon" else null,
-            if (info.deprecated ?: false) "deprecated" else null,
-            if (info.extGenTemplateExtension ?: false) "template" else null,
-            if (info.hacModule ?: false) "hac" else null,
-            if (info.backofficeModule ?: false) "backoffice" else null,
+            if (info?.deprecated ?: false) "deprecated" else null,
+            if (info?.extGenTemplateExtension ?: false) "template" else null,
+            if (info?.hacModule ?: false) "hac" else null,
+            if (info?.backofficeModule ?: false) "backoffice" else null,
         ).joinToString(", ")
         return if (tail.isBlank()) null
         else " ($tail)"

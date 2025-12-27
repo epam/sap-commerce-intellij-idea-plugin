@@ -37,8 +37,8 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.kotlin.KotlinConstants
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
@@ -55,7 +55,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     ) {
         val project = importContext.project
         val hasKotlinnatureExtension = importContext.chosenHybrisModuleDescriptors
-            .any { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+            .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
         application.runReadAction {
@@ -67,7 +67,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
         val project = importContext.project
         importContext.chosenHybrisModuleDescriptors
-            .find { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+            .find { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
         smartReadAction(project) {

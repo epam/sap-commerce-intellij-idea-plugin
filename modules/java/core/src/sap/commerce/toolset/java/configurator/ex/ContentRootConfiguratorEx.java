@@ -33,6 +33,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.extensioninfo.EiConstants;
 import sap.commerce.toolset.project.ProjectConstants;
 import sap.commerce.toolset.project.context.ProjectImportContext;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
@@ -97,7 +98,7 @@ public final class ContentRootConfiguratorEx {
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
         if (customModuleDescriptor
             || !importContext.getSettings().getImportOOTBModulesInReadOnlyMode()
-            || ProjectConstants.Extension.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
+            || EiConstants.Extension.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
         ) {
             final var moduleRootDirectory = moduleDescriptor.getModuleRootDirectory();
 

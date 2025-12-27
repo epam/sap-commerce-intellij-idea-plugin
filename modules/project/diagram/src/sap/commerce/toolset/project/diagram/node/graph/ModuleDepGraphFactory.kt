@@ -25,27 +25,27 @@ import sap.commerce.toolset.project.yExtensionName
 object ModuleDepGraphFactory {
 
     fun buildNode(module: Module) = with(YFacetConstants.getModuleSettings(module)) {
-        val info = info
+        val info = getInfo()
         val properties = buildList {
-            info.description?.let { add(ModuleDepGraphFieldDescription(it)) }
-            info.version?.let { add(ModuleDepGraphFieldParameter("Version", it)) }
+            info?.description?.let { add(ModuleDepGraphFieldDescription(it)) }
+            info?.version?.let { add(ModuleDepGraphFieldParameter("Version", it)) }
 
-            if (info.deprecated) add(ModuleDepGraphFieldParameter("Deprecated"))
-            if (info.useMaven) add(ModuleDepGraphFieldParameter("Maven Enabled"))
-            if (info.jaloLogicFree) add(ModuleDepGraphFieldParameter("Jalo Logic Free"))
-            if (info.extGenTemplateExtension) add(ModuleDepGraphFieldParameter("Template Extension"))
-            if (info.requiredByAll) add(ModuleDepGraphFieldParameter("Required by All"))
+            if (info?.deprecated ?: false) add(ModuleDepGraphFieldParameter("Deprecated"))
+            if (info?.useMaven ?: false) add(ModuleDepGraphFieldParameter("Maven Enabled"))
+            if (info?.jaloLogicFree ?: false) add(ModuleDepGraphFieldParameter("Jalo Logic Free"))
+            if (info?.extGenTemplateExtension ?: false) add(ModuleDepGraphFieldParameter("Template Extension"))
+            if (info?.requiredByAll ?: false) add(ModuleDepGraphFieldParameter("Required by All"))
 
             subModuleType?.let { add(ModuleDepGraphFieldParameter("Sub-module Type", it.name)) }
-            if (info.moduleGenName != null) add(ModuleDepGraphFieldParameter("Module Generation Name", info.moduleGenName))
-            if (info.classPathGen != null) add(ModuleDepGraphFieldParameter("Classpath Generation", info.classPathGen))
+            if (info?.moduleGenName != null) add(ModuleDepGraphFieldParameter("Module Generation Name", info.moduleGenName))
+            if (info?.classPathGen != null) add(ModuleDepGraphFieldParameter("Classpath Generation", info.classPathGen))
 
-            if (info.coreModule) add(ModuleDepGraphFieldParameter("Core module", info.packageRoot))
-            if (info.webModule) add(ModuleDepGraphFieldParameter("Web module", info.webRoot))
+            if (info?.coreModule ?: false) add(ModuleDepGraphFieldParameter("Core module", info.packageRoot))
+            if (info?.webModule ?: false) add(ModuleDepGraphFieldParameter("Web module", info.webRoot))
 
-            if (info.backofficeModule) add(ModuleDepGraphFieldParameter("Backoffice module"))
-            if (info.hacModule) add(ModuleDepGraphFieldParameter("HAC module"))
-            if (info.hmcModule) add(ModuleDepGraphFieldParameter("HMC module"))
+            if (info?.backofficeModule ?: false) add(ModuleDepGraphFieldParameter("Backoffice module"))
+            if (info?.hacModule ?: false) add(ModuleDepGraphFieldParameter("HAC module"))
+            if (info?.hmcModule ?: false) add(ModuleDepGraphFieldParameter("HMC module"))
             if (addon) add(ModuleDepGraphFieldParameter("Addon"))
         }
 

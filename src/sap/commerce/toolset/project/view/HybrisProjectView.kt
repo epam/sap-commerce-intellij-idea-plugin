@@ -32,6 +32,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
@@ -199,7 +200,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         // hide `platform/ext` node
         if (ProjectConstants.Directory.EXT == vf.name
-            && ProjectConstants.Extension.PLATFORM == module.yExtensionName()
+            && EiConstants.Extension.PLATFORM == module.yExtensionName()
         ) return false
 
         return YFacet.getState(module)

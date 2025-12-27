@@ -29,6 +29,7 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
 import sap.commerce.toolset.java.descriptor.getLibraryDescriptors
@@ -78,19 +79,19 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             is PlatformModuleDescriptor -> moduleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider)
             is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
             is YOotbRegularModuleDescriptor -> {
-                if (moduleDescriptor.hasBackofficeModule) {
+                if (moduleDescriptor.extensionInfo.backofficeModule) {
                     val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_PATH)
                     if (backofficeJarDirectory.exists()) {
                         addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
                     }
                 }
-                if (moduleDescriptor.name == ProjectConstants.Extension.BACK_OFFICE) {
+                if (moduleDescriptor.name == EiConstants.Extension.BACK_OFFICE) {
                     addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true)
                 }
             }
 
             is YWebSubModuleDescriptor -> {
-                if (moduleDescriptor.owner.name == ProjectConstants.Extension.BACK_OFFICE) {
+                if (moduleDescriptor.owner.name == EiConstants.Extension.BACK_OFFICE) {
                     val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
                     val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
                     val sources = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_PARENT_JAR_PATH)

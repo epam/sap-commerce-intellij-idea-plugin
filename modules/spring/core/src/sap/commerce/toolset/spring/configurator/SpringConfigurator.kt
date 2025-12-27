@@ -198,7 +198,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
                     }
             }
 
-        if (moduleDescriptor.hasBackofficeModule) {
+        if (moduleDescriptor.extensionInfo.backofficeModule) {
             File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.RESOURCES)
                 .listFiles { _, name: String -> name.endsWith("-backoffice-spring.xml") }
                 ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }

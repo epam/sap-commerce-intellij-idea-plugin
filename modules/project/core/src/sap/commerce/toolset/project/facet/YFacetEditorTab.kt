@@ -27,6 +27,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.dsl.builder.text
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.extensioninfo.context.Info
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
@@ -35,7 +36,7 @@ import java.util.*
 class YFacetEditorTab(
     private val extensionDescriptor: ExtensionDescriptor,
     private val editorContext: FacetEditorContext,
-    private val info: ExtensionDescriptor.Info? = extensionDescriptor.info
+    private val info: Info? = extensionDescriptor.getInfo()
 ) : FacetEditorTab() {
 
     override fun getDisplayName() = "[y] SAP Commerce Facet"

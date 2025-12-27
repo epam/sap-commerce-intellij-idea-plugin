@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.descriptor.impl
 
 import com.intellij.openapi.util.io.FileUtil
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.*
@@ -29,7 +30,7 @@ class YAcceleratorAddonSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
     val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
-    override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB,
+    override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + EiConstants.Extension.WEB,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 
@@ -41,7 +42,7 @@ class YAcceleratorAddonSubModuleDescriptor(
             readonly = readonly,
             type = descriptorType,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
-            addon = getRequiredExtensionNames().contains(ProjectConstants.Extension.ADDON_SUPPORT),
+            addon = getRequiredExtensionNames().contains(EiConstants.Extension.ADDON_SUPPORT),
             installedIntoExtensions = yTargetModules
                 .map { it.name }
                 .toSet()
@@ -50,10 +51,10 @@ class YAcceleratorAddonSubModuleDescriptor(
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.Extension.WEB }
+            .map { it + "." + EiConstants.Extension.WEB }
         // Strange, but acceleratoraddon may rely on another acceleratoraddon
         val acceleratorWebNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB }
+            .map { it + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + EiConstants.Extension.WEB }
         return setOf(owner.name) + webNames + acceleratorWebNames
     }
 

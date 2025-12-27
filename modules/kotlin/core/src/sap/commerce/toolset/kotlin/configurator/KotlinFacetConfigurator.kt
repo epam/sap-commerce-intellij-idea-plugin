@@ -22,6 +22,7 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.module.Module
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -45,7 +46,7 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
         if (moduleDescriptor !is YModuleDescriptor) return
 
         importContext.chosenHybrisModuleDescriptors
-            .firstOrNull { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+            .firstOrNull { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
         val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)

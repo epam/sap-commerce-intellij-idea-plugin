@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.extensioninfo
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.findFile
@@ -26,7 +27,12 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
+import sap.commerce.toolset.extensioninfo.context.Dependency
+import sap.commerce.toolset.extensioninfo.context.Info
+import sap.commerce.toolset.extensioninfo.jaxb.ExtensionType
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
+import java.io.File
 
 object EiModelAccess {
 
@@ -38,4 +44,46 @@ object EiModelAccess {
         ?.rootElement
         ?.extension
 
+    fun getInfo(moduleRootDirectory: File): Info? = unmarshallExtensionInfo(moduleRootDirectory)
+        ?.let { extension ->
+            val metas = extension.meta
+                .associate { it.key to it.value }
+
+            Info(
+                name = extension.name,
+                description = extension.description,
+                useMaven = "true".equals(extension.usemaven, ignoreCase = true),
+                webModule = extension.webmodule != null
+                    && File(moduleRootDirectory, EiConstants.Extension.WEB).exists(),
+                hmcModule = extension.hmcmodule != null,
+                coreModule = extension.coremodule != null,
+                jaloLogicFree = extension.isJaloLogicFree,
+                packageRoot = extension.coremodule?.packageroot,
+                webRoot = extension.webmodule?.webroot,
+                version = extension.version,
+                requiredByAll = extension.isRequiredbyall,
+                classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
+                moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
+                deprecated = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
+                hacModule = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
+                backofficeModule = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
+                    && File(moduleRootDirectory, EiConstants.Extension.BACK_OFFICE).exists(),
+                extGenTemplateExtension = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
+                requiredExtensions = extension.requiresExtension
+                    .filter { it.name.isNotBlank() }
+                    .map { Dependency(it.name, it.version) }
+            )
+        }
+
+    private fun unmarshallExtensionInfo(moduleRootDirectory: File): ExtensionType? = try {
+        EiUnmarshaller.unmarshall(moduleRootDirectory).extension
+            .takeUnless { it.name.isNullOrBlank() }
+    } catch (e: HybrisConfigurationException) {
+        thisLogger().warn(e)
+        null
+    }
+
+    private fun isMetaKeySetToTrue(metas: Map<String, String>, metaKeyName: String) = metas[metaKeyName]
+        ?.let { "true".equals(it, true) }
+        ?: false
 }

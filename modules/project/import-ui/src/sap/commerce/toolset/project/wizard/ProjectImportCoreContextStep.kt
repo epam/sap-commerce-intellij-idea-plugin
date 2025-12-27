@@ -28,6 +28,7 @@ import com.intellij.ui.scale.JBUIScale
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.HybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
@@ -152,7 +153,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         if (importCoreContext.configDirectory.get().isBlank()) {
             importCoreContext.configDirectory.set(
                 platformPath
-                    .resolve(ProjectConstants.Extension.CONFIG)
+                    .resolve(EiConstants.Extension.CONFIG)
                     .absolutePathString()
             )
         }
