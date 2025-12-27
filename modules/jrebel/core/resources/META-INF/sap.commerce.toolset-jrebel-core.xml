@@ -19,7 +19,7 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset.project">
         <startupConfigurator implementation="sap.commerce.toolset.jrebel.configurator.JRebelConfigurator"/>
-        <postImportConfigurator implementation="sap.commerce.toolset.jrebel.configurator.JRebelConfigurator"/>
+        <postImportAsyncConfigurator implementation="sap.commerce.toolset.jrebel.configurator.JRebelConfigurator"/>
     </extensions>
 
 </idea-plugin>

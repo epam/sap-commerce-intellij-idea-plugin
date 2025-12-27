@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.postImportConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularConfigurator"/>
 
         <project.module.provider implementation="sap.commerce.toolset.angular.configurator.AngularModuleProvider"/>
         <project.module.importConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularModuleImportConfigurator"/>

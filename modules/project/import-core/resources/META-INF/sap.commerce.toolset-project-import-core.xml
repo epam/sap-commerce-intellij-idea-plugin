@@ -33,8 +33,8 @@
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.LoadedModulesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectEncodingConfigurator"/>
 
-        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
-        <project.postImportConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
+        <project.postImportAsyncConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
 
         <project.refreshConfigurator order="first" implementation="sap.commerce.toolset.project.configurator.CleanupProjectRefreshConfigurator"/>
 

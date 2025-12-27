@@ -19,7 +19,7 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.gradle.configurator.GradleConfigurator"/>
-        <project.postImportConfigurator implementation="sap.commerce.toolset.gradle.configurator.GradleConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.gradle.configurator.GradleConfigurator"/>
         <project.refreshConfigurator implementation="sap.commerce.toolset.gradle.configurator.GradleConfigurator"/>
 
         <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.descriptor.provider.GradleModuleDescriptorProvider"/>
