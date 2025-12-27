@@ -31,6 +31,7 @@ import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.module.ModuleDescriptorsSelectionService
+import sap.commerce.toolset.project.settings.ySettings
 
 class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.HYBRIS), RefreshSupport {
 
@@ -99,11 +100,11 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
     override fun refresh(refreshContext: ProjectRefreshContext) {
         val importContext = context.importContext
             ?: return
-        val settings = refreshContext.projectSettings
+        val projectSettings = refreshContext.project.ySettings
 
         try {
             val chosenHybrisModuleDescriptors = buildList {
-                val moduleDescriptors = ModuleDescriptorsSelectionService.getInstance().getSelectableHybrisModules(importContext, settings)
+                val moduleDescriptors = ModuleDescriptorsSelectionService.getInstance().getSelectableHybrisModules(importContext, projectSettings)
                 val openModuleDescriptors = ProjectRefreshService.getInstance(refreshContext.project).openModuleDescriptors(importContext)
 
                 addAll(moduleDescriptors)

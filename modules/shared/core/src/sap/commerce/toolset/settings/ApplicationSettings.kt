@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.settings
 
+import com.intellij.openapi.application.Application
 import com.intellij.openapi.components.*
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.application
@@ -169,6 +170,10 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         }
     }
 }
+
+val Application.ySettings
+    get() = ApplicationSettings.getInstance()
+
 
 fun String.toIdeaGroup(): Array<String>? {
     if (this.trim { it <= ' ' }.isEmpty()) {

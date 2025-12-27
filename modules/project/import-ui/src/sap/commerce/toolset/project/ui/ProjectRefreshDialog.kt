@@ -28,7 +28,7 @@ import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.ui.banner
 
 class ProjectRefreshDialog(
-    private val project: Project,
+    project: Project,
     private val refreshContext: ProjectRefreshContext.Mutable,
 ) : DialogWrapper(project) {
 
@@ -61,24 +61,24 @@ class ProjectRefreshDialog(
         group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
                 checkBox(i18n("hybris.project.import.followSymlink"))
-                    .bindSelected(refreshContext.importContext.followSymlink)
+                    .bindSelected(refreshContext.importSettings.followSymlink)
             }
 
             row {
                 checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                    .bindSelected(refreshContext.importContext.importOOTBModulesInReadOnlyMode)
+                    .bindSelected(refreshContext.importSettings.importOOTBModulesInReadOnlyMode)
                 contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
             }
 
             row {
                 checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                    .bindSelected(refreshContext.importContext.importCustomAntBuildFiles)
+                    .bindSelected(refreshContext.importSettings.importCustomAntBuildFiles)
                 contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
             }
 
             row {
                 checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .bindSelected(refreshContext.importContext.withStandardProvidedSources)
+                    .bindSelected(refreshContext.importSettings.withStandardProvidedSources)
                 contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
             }
 
@@ -86,10 +86,10 @@ class ProjectRefreshDialog(
                 label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
-                    .bindSelected(refreshContext.importContext.withExternalLibrarySources)
+                    .bindSelected(refreshContext.importSettings.withExternalLibrarySources)
 
                 checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
-                    .bindSelected(refreshContext.importContext.withExternalLibraryJavadocs)
+                    .bindSelected(refreshContext.importSettings.withExternalLibraryJavadocs)
 
                 contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
             }
@@ -98,18 +98,18 @@ class ProjectRefreshDialog(
         group("Project Structure") {
             row {
                 checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                    .bindSelected(refreshContext.importContext.useFakeOutputPathForCustomExtensions)
+                    .bindSelected(refreshContext.importSettings.useFakeOutputPathForCustomExtensions)
                 contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
             }
 
             row {
                 checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(refreshContext.importContext.excludeTestSources)
+                    .bindSelected(refreshContext.importSettings.excludeTestSources)
             }
 
             row {
                 checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                    .bindSelected(refreshContext.importContext.ignoreNonExistingSourceDirectories)
+                    .bindSelected(refreshContext.importSettings.ignoreNonExistingSourceDirectories)
             }
         }
     }.apply {

@@ -36,7 +36,10 @@
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
         <project.postImportAsyncConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
 
-        <project.refreshConfigurator order="first" implementation="sap.commerce.toolset.project.configurator.CleanupProjectRefreshConfigurator"/>
+        <project.refreshConfigurator order="first" id="cleanupProjectRefreshConfigurator"
+                                     implementation="sap.commerce.toolset.project.configurator.CleanupProjectRefreshConfigurator"/>
+        <project.refreshConfigurator order="after cleanupProjectRefreshConfigurator" id="projectSettingsRefreshConfigurator"
+                                     implementation="sap.commerce.toolset.project.configurator.ProjectSettingsRefreshConfigurator"/>
 
         <project.module.importConfigurator order="last" id="yFacetConfigurator"
                                            implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>

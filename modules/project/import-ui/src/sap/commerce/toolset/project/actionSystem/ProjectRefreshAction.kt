@@ -29,7 +29,7 @@ import sap.commerce.toolset.path
 import sap.commerce.toolset.project.ProjectRefreshService
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.context.ProjectRefreshContext
-import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.ui.ProjectRefreshDialog
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
@@ -45,11 +45,10 @@ class ProjectRefreshAction : DumbAwareAction(
         val project = e.project ?: return
         val projectPath = project.path ?: return
         val applicationSettings = ApplicationSettings.getInstance()
-        val projectSettings = ProjectSettings.getInstance(project)
+        val projectSettings = project.ySettings
         val refreshContext = ProjectRefreshContext(
             project = project,
             projectPath = projectPath,
-            projectSettings = projectSettings,
             importSettings = ProjectImportSettings.of(applicationSettings, projectSettings),
             removeOldProjectData = projectSettings.removeOldProjectData,
             removeExternalModules = projectSettings.removeExternalModulesOnRefresh,
@@ -60,9 +59,6 @@ class ProjectRefreshAction : DumbAwareAction(
             ?: return
 
         try {
-            projectSettings.removeOldProjectData = refreshContext.removeOldProjectData
-            projectSettings.removeExternalModulesOnRefresh = refreshContext.removeExternalModules
-
             ProjectRefreshService.getInstance(project).refresh(refreshContext)
         } catch (ex: Exception) {
             Messages.showErrorDialog(
