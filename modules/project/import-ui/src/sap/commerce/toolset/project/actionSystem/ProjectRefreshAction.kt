@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil.SHOW_TEXT_IN_TOOLBAR
-import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisI18nBundle.message
@@ -65,10 +64,10 @@ class ProjectRefreshAction : DumbAwareAction(
             projectSettings.removeExternalModulesOnRefresh = refreshContext.removeExternalModules
 
             ProjectRefreshService.getInstance(project).refresh(refreshContext)
-        } catch (ex: ConfigurationException) {
+        } catch (ex: Exception) {
             Messages.showErrorDialog(
                 project,
-                ex.getMessageHtml().toString(),
+                ex.message,
                 message("hybris.project.import.error.unable.to.proceed")
             )
         }
