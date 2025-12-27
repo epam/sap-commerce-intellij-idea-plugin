@@ -73,6 +73,10 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         val context = importContext
             ?.immutable(project)
             ?: return emptyList()
+
+        importContext?.clear()
+        importContext = null
+
         val chosenModuleDescriptors = context.allChosenModuleDescriptors
             .takeIf { it.isNotEmpty() } ?: return emptyList()
 

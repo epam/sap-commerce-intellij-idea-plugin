@@ -32,18 +32,18 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun configure(importContext: ProjectImportContext) {
-        val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
+        val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList
 
         // mostly background operations
-        postImportConfigurators.forEach { it.postImport(importContext) }
+        ProjectPostImportConfigurator.EP.extensionList.forEach { it.postImport(importContext) }
 
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
             // async operations
             supervisorScope {
-                reportProgressScope(postImportConfigurators.size) { progressReporter ->
-                    postImportConfigurators.map {
+                reportProgressScope(postImportAsyncConfigurators.size) { progressReporter ->
+                    postImportAsyncConfigurators.map {
                         async {
                             progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
                                 try {

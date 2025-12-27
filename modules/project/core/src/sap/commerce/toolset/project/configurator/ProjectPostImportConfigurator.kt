@@ -24,7 +24,6 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 interface ProjectPostImportConfigurator : Configurator {
 
     fun postImport(importContext: ProjectImportContext) = Unit
-    suspend fun asyncPostImport(importContext: ProjectImportContext) = Unit
 
     companion object {
         val EP = ExtensionPointName.create<ProjectPostImportConfigurator>("sap.commerce.toolset.project.postImportConfigurator")

@@ -30,7 +30,7 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
 
-    fun extensionDescriptor(): ExtensionDescriptor
+    val extensionDescriptor: ExtensionDescriptor
     fun ideaModuleName(): String = (if (groupNames.isEmpty()) "" else groupNames.joinToString(separator = ".", postfix = ".")) + name
     fun groupName(importContext: ProjectImportContext): Array<String>? = null
     fun isPreselected(): Boolean

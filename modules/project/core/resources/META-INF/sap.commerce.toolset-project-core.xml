@@ -27,6 +27,9 @@
         <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator"
                         dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportAsyncConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator"
+                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.startupConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectStartupConfigurator"
                         dynamic="true"/>

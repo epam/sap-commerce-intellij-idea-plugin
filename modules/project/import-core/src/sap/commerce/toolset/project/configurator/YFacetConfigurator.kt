@@ -52,7 +52,7 @@ class YFacetConfigurator : ModuleImportConfigurator {
                 facetType.createDefaultConfiguration(),
                 null
             )
-            facet.configuration.loadState(moduleDescriptor.extensionDescriptor())
+            facet.configuration.loadState(moduleDescriptor.extensionDescriptor)
 
             modifiableFacetModel.addFacet(facet)
         }

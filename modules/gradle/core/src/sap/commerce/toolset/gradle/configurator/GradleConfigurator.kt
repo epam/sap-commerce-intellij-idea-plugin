@@ -33,12 +33,12 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator, ProjectRefreshConfigurator {
+class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator, ProjectRefreshConfigurator {
 
     override val name: String
         get() = "Gradle"

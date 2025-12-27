@@ -39,10 +39,10 @@ import com.intellij.util.ui.classpath.SingleRootClasspathElement
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class DataSourceConfigurator : ProjectPostImportConfigurator {
+class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Database - Data Sources"

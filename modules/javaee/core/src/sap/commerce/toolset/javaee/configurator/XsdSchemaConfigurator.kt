@@ -22,12 +22,12 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-class XsdSchemaConfigurator : ProjectPostImportConfigurator {
+class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "XSD Schema"

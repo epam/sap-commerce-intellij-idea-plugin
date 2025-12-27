@@ -34,7 +34,7 @@ abstract class AbstractYModuleDescriptor(
     override val extensionInfo: Info,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType), YModuleDescriptor {
 
-    private val myExtensionDescriptor by lazy {
+    override val extensionDescriptor by lazy {
         ExtensionDescriptor(
             path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
             name = name,
@@ -49,8 +49,4 @@ abstract class AbstractYModuleDescriptor(
     override fun getSubModules(): Set<YSubModuleDescriptor> = ySubModules
     override fun addSubModule(subModule: YSubModuleDescriptor) = ySubModules.add(subModule)
     override fun removeSubModule(subModule: YSubModuleDescriptor) = ySubModules.remove(subModule)
-
-    // Must be called at the end of the module import
-    override fun extensionDescriptor() = myExtensionDescriptor
-
 }

@@ -26,10 +26,10 @@ import com.intellij.util.asSafely
 import org.jetbrains.jps.model.java.compiler.JavaCompilers
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class JavaCompilerConfigurator : ProjectPostImportConfigurator {
+class JavaCompilerConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Java Compiler"

@@ -35,7 +35,8 @@ class YAcceleratorAddonSubModuleDescriptor(
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 
     private val yTargetModules = mutableSetOf<YModuleDescriptor>()
-    private val myExtensionDescriptor by lazy {
+
+    override val extensionDescriptor by lazy {
         ExtensionDescriptor(
             path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
             name = name,
@@ -61,5 +62,4 @@ class YAcceleratorAddonSubModuleDescriptor(
     fun getTargetModules(): Set<YModuleDescriptor> = yTargetModules.toImmutableSet()
     fun addTargetModule(module: YModuleDescriptor) = yTargetModules.add(module)
 
-    override fun extensionDescriptor() = myExtensionDescriptor
 }

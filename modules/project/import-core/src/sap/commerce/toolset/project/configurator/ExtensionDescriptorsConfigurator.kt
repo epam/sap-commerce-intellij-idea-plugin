@@ -15,28 +15,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.execution.RunManager
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
-import sap.commerce.toolset.project.runConfigurations.createRunConfiguration
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
+import sap.commerce.toolset.project.settings.ySettings
 
-class LocalSapCxRunConfigurationConfigurator : ProjectPostImportAsyncConfigurator {
+class ExtensionDescriptorsConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
-        get() = "Run Configurations - Local SAP CX"
+        get() = "Extension Descriptors"
 
     override suspend fun asyncPostImport(importContext: ProjectImportContext) {
-        val project = importContext.project
-        val runManager = RunManager.getInstance(project)
+        val projectSettings = importContext.project.ySettings
 
-        createRunConfiguration(
-            runManager,
-            LocalSapCXConfigurationType::class.java,
-            i18n("hybris.project.run.configuration.localserver")
-        )
+        projectSettings.extensionDescriptors = importContext.foundModules
+            .asSequence()
+            .filterNot { it is YSubModuleDescriptor }
+            .filterIsInstance<YModuleDescriptor>()
+            .toSet()
+            .map { it.extensionDescriptor }
     }
 }

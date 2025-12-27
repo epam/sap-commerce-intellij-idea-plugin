@@ -47,10 +47,12 @@ abstract class AbstractModuleDescriptor(
         recursivelyCollectDependenciesPlainSet(this, TreeSet())
             .toImmutableSet()
     }
-    private val myExtensionDescriptor by lazy {
+
+    override val extensionDescriptor by lazy {
         ExtensionDescriptor(
             path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
             name = name,
+            readonly = readonly,
             type = descriptorType,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
         )
@@ -83,7 +85,6 @@ abstract class AbstractModuleDescriptor(
             ?: false
     }
 
-    override fun extensionDescriptor() = myExtensionDescriptor
     override fun isPreselected() = false
 
     override fun ideaModuleFile(importContext: ProjectImportContext): File {

@@ -41,10 +41,10 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.kotlin.KotlinConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
+class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Kotlin"

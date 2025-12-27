@@ -29,7 +29,7 @@ import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.runConfigurations.createRunConfiguration
 
-class RemoteDebugRunConfigurationConfigurator : ProjectPostImportConfigurator {
+class RemoteDebugRunConfigurationConfigurator : ProjectPostImportAsyncConfigurator {
     private val regexSpace = " ".toRegex()
     private val regexComma = ",".toRegex()
     private val regexEquals = "=".toRegex()

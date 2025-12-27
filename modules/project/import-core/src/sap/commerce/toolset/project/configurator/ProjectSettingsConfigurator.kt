@@ -21,8 +21,6 @@ import com.intellij.openapi.util.io.FileUtil
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.settings.WorkspaceSettings
@@ -74,12 +72,6 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         projectSettings.sourceCodeFile = importContext.sourceCodeFile
             ?.takeIf { it.exists() }
             ?.fileSystemIndependentName
-        projectSettings.extensionDescriptors = importContext.foundModules
-            .asSequence()
-            .filterNot { it is YSubModuleDescriptor }
-            .filterIsInstance<YModuleDescriptor>()
-            .toSet()
-            .map { it.extensionDescriptor() }
     }
 
     private fun saveCustomDirectoryLocation(importContext: ProjectImportContext) {

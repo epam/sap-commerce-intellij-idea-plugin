@@ -46,6 +46,6 @@ class JavaModuleReadonlyConfigurator : ModuleImportConfigurator {
             || descriptorType === ModuleDescriptorType.EXT
         val readOnly = hasReadOnlySettings && isReadOnlyType
 
-        moduleDescriptor.extensionDescriptor().readonly = readOnly
+        moduleDescriptor.readonly = readOnly
     }
 }

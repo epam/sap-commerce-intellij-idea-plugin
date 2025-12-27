@@ -37,7 +37,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ant.AntConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectRefreshContext
@@ -54,7 +54,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
-class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurator {
+class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfigurator {
 
     override val name: String
         get() = "Ant"
