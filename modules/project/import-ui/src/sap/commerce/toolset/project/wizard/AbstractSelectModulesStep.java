@@ -37,15 +37,13 @@ import java.util.*;
 import java.util.List;
 
 import static sap.commerce.toolset.HybrisI18nBundle.message;
-import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.MANDATORY;
-import static sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus.UNUSED;
 
 // TODO: -> kotlin
 // TODO: use own implementation, do not use "select all" and "unselect all"
 public abstract class AbstractSelectModulesStep extends SelectImportedProjectsStep<ModuleDescriptor> {
 
     final static int COLUMN_WIDTH = 300;
-    private final ModuleGroup moduleGroup;
+    protected final ModuleGroup moduleGroup;
 
     public AbstractSelectModulesStep(final WizardContext context, final ModuleGroup moduleGroup) {
         super(context);
@@ -113,20 +111,10 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
     public void onStepLeaving() {
         super.onStepLeaving();
         final var markedElements = new ArrayList<>(fileChooser.getMarkedElements());
-        final var allElements = new ArrayList<>(markedElements);
-
-        for (int index = 0; index < fileChooser.getElementCount(); index++) {
-            final var element = fileChooser.getElementAt(index);
-            if (markedElements.contains(element)) {
-                if (element.getImportStatus() != MANDATORY) {
-                    element.setImportStatus(UNUSED);
-                }
-            }
-        }
-
         final var importContext = getContext().getImportContext();
+
         if (importContext != null) {
-            importContext.chooseModuleDescriptors(moduleGroup, allElements);
+            importContext.chooseModuleDescriptors(moduleGroup, markedElements);
         }
     }
 

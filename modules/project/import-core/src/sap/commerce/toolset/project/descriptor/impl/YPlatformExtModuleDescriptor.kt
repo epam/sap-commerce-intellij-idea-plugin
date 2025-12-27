@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.descriptor.impl
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.extensioninfo.context.Info
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
@@ -31,6 +32,7 @@ open class YPlatformExtModuleDescriptor(
     extensionInfo: Info,
 ) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.EXT, extensionInfo) {
 
+    override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(EiConstants.Extension.CORE)
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()

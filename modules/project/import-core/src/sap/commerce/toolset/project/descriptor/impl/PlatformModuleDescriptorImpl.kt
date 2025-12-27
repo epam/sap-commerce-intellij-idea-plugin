@@ -29,6 +29,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.io.File
@@ -39,6 +40,7 @@ class PlatformModuleDescriptorImpl(
     name: String = EiConstants.Extension.PLATFORM,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.PLATFORM), PlatformModuleDescriptor {
 
+    override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun isPreselected() = true
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values

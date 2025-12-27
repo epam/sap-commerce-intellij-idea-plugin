@@ -28,7 +28,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.localextensions.LeUnmarshaller
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
+import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -41,9 +41,9 @@ class ExplicitRequiredExtensionsCollector {
 
     fun collect(
         importContext: ProjectImportContext.Mutable,
-        configModuleDescriptor: ConfigModuleDescriptor
+        configDirectory: File
     ): Set<String> = ApplicationManager.getApplication().runReadAction(Computable {
-        val hybrisConfig = LeUnmarshaller.unmarshal(configModuleDescriptor.moduleRootDirectory)
+        val hybrisConfig = LeUnmarshaller.unmarshal(configDirectory)
             ?: return@Computable setOf()
 
         TreeSet(String.CASE_INSENSITIVE_ORDER).apply {
@@ -53,9 +53,7 @@ class ExplicitRequiredExtensionsCollector {
     })
 
     private fun processAutoloadPaths(importContext: ProjectImportContext.Mutable, hybrisConfig: Hybrisconfig): Collection<String> {
-        val platformDirectory = importContext.platformDirectory
-        if (platformDirectory == null) return emptySet()
-
+        val platformDirectory = importContext.platformDirectory ?: return emptySet()
         val extensionNames = mutableSetOf<String>()
         val autoloadPaths = HashMap<String, Int>()
 

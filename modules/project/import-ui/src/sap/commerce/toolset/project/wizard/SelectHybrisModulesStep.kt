@@ -51,10 +51,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
                     val elementMarkStates = fileChooser.elementMarkStates
                     element.getAllDependencies()
                         .filterNot { BooleanUtils.isNotFalse(elementMarkStates[it]) }
-                        .forEach {
-                            fileChooser.setElementMarked(it, true)
-                            it.importStatus = ModuleDescriptorImportStatus.MANDATORY
-                        }
+                        .forEach { fileChooser.setElementMarked(it, true) }
                 }
 
                 // Re-mark sub-modules accordingly
@@ -81,13 +78,14 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
 
         context.list
             .filter {
-                when (it) {
-                    is PlatformModuleDescriptor -> true
-                    is YPlatformExtModuleDescriptor -> true
-                    is ConfigModuleDescriptor if it.isPreselected() && it.isMainConfig -> true
-                    is YSubModuleDescriptor if it.owner is YPlatformExtModuleDescriptor -> true
-                    else -> false
-                }
+                it.importStatus == ModuleDescriptorImportStatus.MANDATORY
+//                when (it) {
+//                    is PlatformModuleDescriptor -> true
+//                    is YPlatformExtModuleDescriptor -> true
+//                    is ConfigModuleDescriptor if it.isPreselected() && it.isMainConfig -> true
+//                    is YSubModuleDescriptor if it.owner is YPlatformExtModuleDescriptor -> true
+//                    else -> false
+//                }
             }
             .forEach { fileChooser.disableElement(it) }
 
@@ -111,7 +109,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
                 removeAll(openModuleDescriptors)
             }
 
-            importContext.chooseModuleDescriptors(ModuleGroup.HYBRIS, chosenHybrisModuleDescriptors)
+            importContext.chooseModuleDescriptors(moduleGroup, chosenHybrisModuleDescriptors)
         } catch (_: ConfigurationException) {
             // no-op already validated
         }

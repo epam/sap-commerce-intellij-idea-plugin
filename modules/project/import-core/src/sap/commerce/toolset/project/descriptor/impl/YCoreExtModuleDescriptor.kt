@@ -19,6 +19,7 @@ package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.extensioninfo.context.Info
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import java.io.File
 
 class YCoreExtModuleDescriptor(
@@ -26,5 +27,6 @@ class YCoreExtModuleDescriptor(
     extensionInfo: Info,
 ) : YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo) {
 
+    override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = emptySet<String>()
 }
