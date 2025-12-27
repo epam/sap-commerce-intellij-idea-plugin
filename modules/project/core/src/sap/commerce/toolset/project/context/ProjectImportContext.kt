@@ -133,13 +133,13 @@ data class ProjectImportContext(
             detectedVcs = _detectedVcs.toImmutableSet(),
             excludedFromScanning = _excludedFromScanning.toImmutableList(),
 
-            configModuleDescriptor = _chosenModuleDescriptors[ModuleGroup.HYBRIS]
-                ?.filterIsInstance<ConfigModuleDescriptor>()
-                ?.firstOrNull { it.isMainConfig }
+            configModuleDescriptor = _foundModules
+                .filterIsInstance<ConfigModuleDescriptor>()
+                .firstOrNull { it.isMainConfig }
                 ?: throw HybrisConfigurationException("Unable to find main config module descriptor"),
-            platformModuleDescriptor = _chosenModuleDescriptors[ModuleGroup.HYBRIS]
-                ?.filterIsInstance<PlatformModuleDescriptor>()
-                ?.firstOrNull()
+            platformModuleDescriptor = _foundModules
+                .filterIsInstance<PlatformModuleDescriptor>()
+                .firstOrNull()
                 ?: throw HybrisConfigurationException("Unable to find platform module descriptor"),
         )
     }
