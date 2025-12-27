@@ -71,13 +71,13 @@ public final class FileUtils {
         return toFile(path, false);
     }
 
-    public static @Nullable File toFile(String path, final boolean checkExists) {
+    public static @Nullable File toFile(final String path, final boolean checkExists) {
         if (path == null) {
             return null;
         }
         // this does not expand symlinks
-        path = FileUtil.toCanonicalPath(path);
-        final File file = new File(path);
+        final String canonicalPath = FileUtil.toCanonicalPath(path);
+        final File file = new File(canonicalPath);
         if (checkExists && !file.exists()) {
             return null;
         }

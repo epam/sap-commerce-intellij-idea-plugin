@@ -18,9 +18,10 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
@@ -28,13 +29,12 @@ import java.io.File
 
 open class YPlatformExtModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    extensionInfo: ExtensionInfo,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+    extensionInfo: ExtensionInfoContext,
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.EXT, extensionInfo) {
 
+    override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun isPreselected() = true
-    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.CORE)
+    override fun getDefaultRequiredExtensionNames() = setOf(EiConstants.Extension.CORE)
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
-    override fun groupName() = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
 }

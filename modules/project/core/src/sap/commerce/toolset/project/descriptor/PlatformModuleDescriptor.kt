@@ -20,12 +20,13 @@ package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.vfs.VirtualFile
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
 
 interface PlatformModuleDescriptor : ModuleDescriptor {
 
     fun createBootstrapLib(sourceCodeRoot: VirtualFile?, modifiableModelsProvider: IdeModifiableModelsProvider)
-    override fun groupName() = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
 
 }

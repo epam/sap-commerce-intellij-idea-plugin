@@ -18,15 +18,18 @@
 
 package sap.commerce.toolset.project
 
+import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.util.Key
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Path
 import kotlin.io.path.Path
 
 object ProjectConstants {
 
     @JvmStatic
-    val KEY_FINALIZE_PROJECT_IMPORT: Key<HybrisProjectDescriptor> = Key.create("hybrisProjectImportFinalize")
+    val KEY_FINALIZE_PROJECT_IMPORT: Key<ProjectImportContext> = Key.create("hybrisProjectImportFinalize")
+    val Y_MODULE_TYPE_ID = JavaModuleType.getModuleType().id
 
     object Directory {
         const val BOOTSTRAP = "bootstrap"
@@ -83,46 +86,21 @@ object ProjectConstants {
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 
-        val PATH_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
+        val PATH_PLATFORM_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
+        val PATH_BIN_PLATFORM: Path = Path(BIN, "platform")
+        val PATH_BIN_PLATFORM_BUILD_NUMBER: Path = PATH_BIN_PLATFORM.resolve("build.number")
+        val PATH_BIN_CUSTOM = Path(BIN, "custom")
+        val PATH_LIB_DB_DRIVER: Path = Path("lib", "dbdriver")
+        val PATH_IDEA_MODULES: Path = Path(".idea", "idea-modules")
 
         @JvmField
         val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
         @JvmField
-        val ALL_SRC_DIR_NAMES = listOf(TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
+        val ALL_SRC_DIR_NAMES = listOf(GEN_SRC, TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
         @JvmField
         val TEST_SRC_DIR_NAMES = listOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
-    }
-
-    object Extension {
-        const val BACK_OFFICE = "backoffice"
-        const val CORE = "core"
-        const val CONFIG = "config"
-        const val HMC = "hmc"
-        const val HAC = "hac"
-        const val PLATFORM = "platform"
-        const val PLATFORM_SERVICES = "platformservices"
-        const val ADDON_SUPPORT = "addonsupport"
-        const val KOTLIN_NATURE = "kotlinnature"
-        const val COMMON_WEB = "commonweb"
-        const val WEB = "web"
-        const val ADVANCED_SAVED_QUERY = "advancedsavedquery"
-        const val CATALOG = "catalog"
-        const val COMMENTS = "comments"
-        const val COMMONS = "commons"
-        const val DELIVERY_ZONE = "deliveryzone"
-        const val EUROPE1 = "europe1"
-        const val IMPEX = "impex"
-        const val MAINTENANCE_WEB = "maintenanceweb"
-        const val MEDIA_WEB = "mediaweb"
-        const val OAUTH2 = "oauth2"
-        const val PAYMENT_STANDARD = "paymentstandard"
-        const val PROCESSING = "processing"
-        const val SCRIPTING = "scripting"
-        const val TEST_WEB = "testweb"
-        const val VALIDATION = "validation"
-        const val WORKFLOW = "workflow"
     }
 
     object File {
@@ -134,25 +112,25 @@ object ProjectConstants {
     }
 
     val PLATFORM_EXTENSION_NAMES = setOf(
-        Extension.ADVANCED_SAVED_QUERY,
-        Extension.CATALOG,
-        Extension.COMMENTS,
-        Extension.COMMONS,
-        Extension.CORE,
-        Extension.DELIVERY_ZONE,
-        Extension.EUROPE1,
-        Extension.HAC,
-        Extension.IMPEX,
-        Extension.MAINTENANCE_WEB,
-        Extension.MEDIA_WEB,
-        Extension.OAUTH2,
-        Extension.PAYMENT_STANDARD,
-        Extension.PLATFORM_SERVICES,
-        Extension.PROCESSING,
-        Extension.SCRIPTING,
-        Extension.TEST_WEB,
-        Extension.VALIDATION,
-        Extension.WORKFLOW,
+        EiConstants.Extension.ADVANCED_SAVED_QUERY,
+        EiConstants.Extension.CATALOG,
+        EiConstants.Extension.COMMENTS,
+        EiConstants.Extension.COMMONS,
+        EiConstants.Extension.CORE,
+        EiConstants.Extension.DELIVERY_ZONE,
+        EiConstants.Extension.EUROPE1,
+        EiConstants.Extension.HAC,
+        EiConstants.Extension.IMPEX,
+        EiConstants.Extension.MAINTENANCE_WEB,
+        EiConstants.Extension.MEDIA_WEB,
+        EiConstants.Extension.OAUTH2,
+        EiConstants.Extension.PAYMENT_STANDARD,
+        EiConstants.Extension.PLATFORM_SERVICES,
+        EiConstants.Extension.PROCESSING,
+        EiConstants.Extension.SCRIPTING,
+        EiConstants.Extension.TEST_WEB,
+        EiConstants.Extension.VALIDATION,
+        EiConstants.Extension.WORKFLOW,
     )
 
 }

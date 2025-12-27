@@ -18,19 +18,18 @@
 
 package sap.commerce.toolset.angular.descriptor
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ModuleGroupingUtil
-import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 class AngularModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ANGULAR) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY
@@ -44,20 +43,12 @@ class AngularModuleDescriptor(
         .take(1)
         .toSet()
 
-    override fun groupName(): Array<String> {
+    override fun groupName(importContext: ProjectImportContext): Array<String> {
         // assumption that there can be only 1 parent
         val parent = getDirectDependencies().firstOrNull()
             ?: return emptyArray()
-        val parentPath = ModuleGroupingUtil.getGroupPath(parent, listOf())
+        val parentPath = ModuleGroupingUtil.getGroupPath(importContext, parent, listOf())
         return parentPath + parent.name
     }
 
-    class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(project: Project?, moduleRootDirectory: File) = File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
-
-        override fun create(
-            moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = AngularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
-    }
 }

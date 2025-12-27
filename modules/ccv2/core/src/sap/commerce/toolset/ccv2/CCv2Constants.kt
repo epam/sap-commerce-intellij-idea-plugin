@@ -21,6 +21,9 @@ package sap.commerce.toolset.ccv2
 import java.time.format.DateTimeFormatter
 
 object CCv2Constants {
+
+    const val MODULE_TYPE_ID = "CCv2"
+
     const val DOMAIN = "portal.commerce.ondemand.com"
 
     const val MANIFEST_NAME = "manifest.json"

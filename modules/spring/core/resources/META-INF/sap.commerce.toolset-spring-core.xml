@@ -32,7 +32,7 @@
         <project.preImportConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringConfigurator"/>
 
-        <project.module.facetConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringFacetConfigurator"/>
+        <project.module.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringFacetConfigurator"/>
 
         <shared.springService implementation="sap.commerce.toolset.spring.AdvancedSpringService"/>
     </extensions>

@@ -19,36 +19,39 @@ package sap.commerce.toolset.javaee.web.configurator
 
 import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
-import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-class WebFacetConfigurator : ModuleFacetConfigurator {
+class WebFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "Web Facets"
 
-    override fun configureModuleFacet(
-        module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override fun configure(
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module)
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
         val webRoot = when (moduleDescriptor) {
             is YWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
             is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath

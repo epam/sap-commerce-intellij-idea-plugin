@@ -27,6 +27,9 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.annotations.PropertyKey
 import sap.commerce.toolset.settings.WorkspaceSettings
 import java.nio.charset.StandardCharsets
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.isDirectory
 
 val PsiElement.isHybrisProject: Boolean
     get() = project.isHybrisProject
@@ -36,6 +39,11 @@ val PsiElement.isNotHybrisProject: Boolean
 
 val Project.directory: String?
     get() = PathMacroManager.getInstance(this).expandPath($$"$PROJECT_DIR$")
+
+val Project.path: Path?
+    get() = directory
+        ?.let { Path(it) }
+        ?.takeIf { it.isDirectory() }
 
 val Project.isHybrisProject: Boolean
     get() = WorkspaceSettings.getInstance(this).hybrisProject

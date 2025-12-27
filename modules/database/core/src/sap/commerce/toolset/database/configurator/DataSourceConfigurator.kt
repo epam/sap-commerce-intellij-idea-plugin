@@ -37,18 +37,18 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 
-class DataSourceConfigurator : ProjectPostImportConfigurator {
+class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Database - Data Sources"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        val project = importContext.project
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
@@ -95,7 +95,7 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
 
         // let's try to pick up a suitable driver located in the Database Drivers library
         ModuleManager.getInstance(project).modules
-            .firstOrNull { it.name.endsWith(ProjectConstants.Extension.PLATFORM) }
+            .firstOrNull { it.name.endsWith(EiConstants.Extension.PLATFORM) }
             ?.let { LibraryUtil.findLibrary(it, HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY) }
             ?.let { library ->
                 library.rootProvider.getFiles(OrderRootType.CLASSES)

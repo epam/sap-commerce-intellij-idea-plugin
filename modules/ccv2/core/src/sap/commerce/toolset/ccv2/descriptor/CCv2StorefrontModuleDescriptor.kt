@@ -18,31 +18,10 @@
 
 package sap.commerce.toolset.ccv2.descriptor
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
 class CCv2StorefrontModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2_STOREFRONT
-) : CCv2ModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
-
-    class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
-            val absolutePath = moduleRootDirectory.absolutePath
-
-            return absolutePath.contains(CCv2Constants.JS_STOREFRONT_NAME)
-                && File(moduleRootDirectory, CCv2Constants.MANIFEST_NAME).isFile()
-        }
-
-        override fun create(
-            moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = CCv2StorefrontModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
-    }
-}
+) : CCv2ModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CCV2_STOREFRONT)

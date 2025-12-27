@@ -36,7 +36,7 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
@@ -52,13 +52,16 @@ import kotlin.io.path.exists
 
 class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurator, ProjectStartupConfigurator {
 
+    private val patternSplitByComma = Pattern.compile(" ,")
+
     override val name: String
         get() = "Spring"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override fun preConfigure(importContext: ProjectImportContext) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = hybrisProjectDescriptor.moduleDescriptorsToImport
+        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
+            .associateBy { it.name }
 
         for (moduleDescriptor in moduleDescriptors.values) {
             try {
@@ -74,22 +77,24 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptors.values
             .firstOrNull { it is YCoreExtModuleDescriptor }
             ?.let { moduleDescriptor ->
-                val advancedProperties = File(hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
+                val advancedProperties = File(importContext.platformModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
                 moduleDescriptor.addSpringFile(advancedProperties.absolutePath)
 
-                hybrisProjectDescriptor.configHybrisModuleDescriptor
-                    ?.let { File(it.moduleRootDirectory, ProjectConstants.File.LOCAL_PROPERTIES) }
+                val configModuleDescriptor = importContext.configModuleDescriptor
+                File(configModuleDescriptor.moduleRootDirectory, ProjectConstants.File.LOCAL_PROPERTIES)
+                    .takeIf { it.exists() }
                     ?.let { moduleDescriptor.addSpringFile(it.absolutePath) }
             }
     }
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = hybrisProjectDescriptor.moduleDescriptorsToImport
+        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
+            .associateBy { it.name }
         val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 
@@ -193,7 +198,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
                     }
             }
 
-        if (moduleDescriptor.hasBackofficeModule) {
+        if (moduleDescriptor.extensionInfo.backofficeModule) {
             File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.RESOURCES)
                 .listFiles { _, name: String -> name.endsWith("-backoffice-spring.xml") }
                 ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
@@ -235,7 +240,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     ) {
         val webModuleDir = File(moduleDescriptor.moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT)
 
-        SPLIT_PATTERN.split(contextConfigLocation)
+        patternSplitByComma.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }
             .map { File(webModuleDir, it) }
             .filter { it.exists() }
@@ -364,7 +369,4 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
         ?: false
 
-    companion object {
-        private val SPLIT_PATTERN = Pattern.compile(" ,")
-    }
 }

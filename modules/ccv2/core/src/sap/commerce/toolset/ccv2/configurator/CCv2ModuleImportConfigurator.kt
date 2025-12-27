@@ -18,14 +18,12 @@
 package sap.commerce.toolset.ccv2.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.workspace.jps.entities.ModuleTypeId
-import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
+import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
@@ -33,22 +31,16 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
     override val name: String
         get() = "CCv2 Modules"
 
-    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
+    override fun isApplicable(moduleTypeId: String) = CCv2Constants.MODULE_TYPE_ID == moduleTypeId
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        rootProjectModifiableModel: ModifiableModuleModel
-    ): Module {
-        val javaModule = rootProjectModifiableModel.newModule(
-            moduleDescriptor.ideaModuleFile().absolutePath,
-            ModuleTypeId("CCv2").name
-        )
-        modifiableModelsProvider.getModifiableRootModel(javaModule)
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
+    ) {
+        modifiableModelsProvider.getModifiableRootModel(module)
             .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath))
             .addExcludePattern(ProjectConstants.Directory.HYBRIS)
-
-        return javaModule
     }
 }

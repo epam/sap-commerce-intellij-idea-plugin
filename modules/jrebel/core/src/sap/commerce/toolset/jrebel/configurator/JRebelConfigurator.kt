@@ -35,9 +35,9 @@ import org.apache.commons.io.IOUtils
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.directory
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -47,15 +47,15 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigurator {
+class JRebelConfigurator : ProjectPostImportAsyncConfigurator, ProjectStartupConfigurator {
 
     override val name: String
         get() = "JRebel"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        val project = importContext.project
 
-        val moduleDescriptors = hybrisProjectDescriptor.chosenModuleDescriptors
+        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
             .filter { it is YCustomRegularModuleDescriptor || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor) }
         val modules = readAction {
             moduleDescriptors

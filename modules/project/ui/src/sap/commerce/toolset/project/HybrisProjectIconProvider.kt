@@ -26,6 +26,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.extensioninfo.EiConstants
 import javax.swing.Icon
 
 class HybrisProjectIconProvider : IconProvider() {
@@ -52,8 +53,8 @@ class HybrisProjectIconProvider : IconProvider() {
     private fun getIcon(directory: PsiDirectory): Icon? {
         val parentName = directory.parentDirectory?.name
         return when (directory.name) {
-            "tomcat" if (parentName == ProjectConstants.Extension.CONFIG || parentName == ProjectConstants.Extension.PLATFORM) -> HybrisIcons.Tools.TOMCAT
-            "solr" if parentName == ProjectConstants.Extension.CONFIG -> HybrisIcons.Tools.SOLR
+            "tomcat" if (parentName == EiConstants.Extension.CONFIG || parentName == EiConstants.Extension.PLATFORM) -> HybrisIcons.Tools.TOMCAT
+            "solr" if parentName == EiConstants.Extension.CONFIG -> HybrisIcons.Tools.SOLR
             "lib" if (directory.parentDirectory?.childrenOfType<XmlFile>()?.any { it.name == HybrisConstants.EXTENSION_INFO_XML } ?: false) -> HybrisIcons.Module.LIB
             else -> null
         }

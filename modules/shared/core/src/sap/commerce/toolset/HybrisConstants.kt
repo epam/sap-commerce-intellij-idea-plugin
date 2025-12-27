@@ -44,6 +44,7 @@ object HybrisConstants {
     const val GRADLE_SETTINGS_KTS = "settings.gradle.kts"
     const val GRADLE_BUILD = "build.gradle"
     const val GRADLE_BUILD_KTS = "build.gradle.kts"
+    const val MAVEN_POM_XML = "pom.xml"
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val BUILD_CALLBACKS_XML = "buildcallbacks.xml"
     const val FILE_ANGULAR_JSON = "angular.json"

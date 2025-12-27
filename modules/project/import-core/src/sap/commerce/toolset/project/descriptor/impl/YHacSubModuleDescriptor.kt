@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -32,7 +32,7 @@ class YHacSubModuleDescriptor(
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
         owner.name,
-        ProjectConstants.Extension.HAC + "." + ProjectConstants.Extension.WEB
+        EiConstants.Extension.HAC + "." + EiConstants.Extension.WEB
     )
 
 }

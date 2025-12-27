@@ -19,26 +19,28 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacetConstants
 
-class YFacetConfigurator : ModuleFacetConfigurator {
+class YFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "SAP CX Facet"
 
-    override fun configureModuleFacet(
-        module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+    override fun isApplicable(moduleTypeId: String) = true
+
+    override fun configure(
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
+
         WriteAction.runAndWait<RuntimeException> {
             modifiableFacetModel.getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
                 ?.let { modifiableFacetModel.removeFacet(it) }
@@ -50,7 +52,7 @@ class YFacetConfigurator : ModuleFacetConfigurator {
                 facetType.createDefaultConfiguration(),
                 null
             )
-            facet.configuration.loadState(moduleDescriptor.extensionDescriptor())
+            facet.configuration.loadState(moduleDescriptor.extensionDescriptor)
 
             modifiableFacetModel.addFacet(facet)
         }

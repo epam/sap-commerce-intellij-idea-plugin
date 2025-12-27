@@ -37,25 +37,25 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.kotlin.KotlinConstants
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 
-class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
+class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Kotlin"
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = hybrisProjectDescriptor.project ?: return
-        val hasKotlinnatureExtension = hybrisProjectDescriptor.chosenModuleDescriptors.stream()
-            .anyMatch { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+        val project = importContext.project
+        val hasKotlinnatureExtension = importContext.chosenHybrisModuleDescriptors
+            .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
         application.runReadAction {
@@ -64,10 +64,10 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
-        hybrisProjectDescriptor.chosenModuleDescriptors
-            .find { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        val project = importContext.project
+        importContext.chosenHybrisModuleDescriptors
+            .find { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
         smartReadAction(project) {

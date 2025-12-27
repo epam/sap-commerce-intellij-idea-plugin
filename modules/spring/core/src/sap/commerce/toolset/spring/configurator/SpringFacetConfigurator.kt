@@ -19,16 +19,17 @@ package sap.commerce.toolset.spring.configurator
 
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
-import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -36,19 +37,21 @@ import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescript
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-class SpringFacetConfigurator : ModuleFacetConfigurator {
+class SpringFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "Spring Facet"
 
-    override fun configureModuleFacet(
-        module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override fun configure(
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         if (Plugin.SPRING.isDisabled()) return
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
 
         when (moduleDescriptor) {
             is YBackofficeSubModuleDescriptor -> return

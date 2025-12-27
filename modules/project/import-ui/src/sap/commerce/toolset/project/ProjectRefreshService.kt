@@ -19,34 +19,40 @@
 package sap.commerce.toolset.project
 
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.CompilerProjectExtension
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.projectImport.ProjectImportProvider
-import sap.commerce.toolset.directory
+import com.intellij.util.asSafely
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.wizard.RefreshSupport
+import kotlin.io.path.absolutePathString
 
 @Service(Service.Level.PROJECT)
 class ProjectRefreshService(private val project: Project) {
 
-    @Throws(ConfigurationException::class)
-    fun refresh() {
-        val projectDirectory = project.directory ?: return
+    @Throws(HybrisConfigurationException::class)
+    fun refresh(refreshContext: ProjectRefreshContext) {
+        val project = refreshContext.project
+        val projectDirectory = refreshContext.projectPath.absolutePathString()
         val provider = getHybrisProjectImportProvider() ?: return
         val compilerProjectExtension = CompilerProjectExtension.getInstance(project) ?: return
-        val projectSettings = ProjectSettings.getInstance(project)
 
-        removeOldProjectData()
+        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(refreshContext) }
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {
             override fun init() = Unit
@@ -58,33 +64,38 @@ class ProjectRefreshService(private val project: Project) {
             it.compilerOutputDirectory = compilerProjectExtension.compilerOutputUrl
         }
 
-        wizard.sequence.getAllSteps()
+        wizard.sequence.allSteps
             .filterIsInstance<RefreshSupport>()
-            .forEach { step -> step.refresh(projectSettings) }
+            .forEach { step -> step.refresh(refreshContext) }
 
-        wizard.projectBuilder
-            .commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
+        wizard.projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER)
+        wizard.projectBuilder.cleanup()
     }
 
-    private fun removeOldProjectData() {
-        val projectSettings = ProjectSettings.getInstance(project)
-        val moduleModel = ModuleManager.getInstance(project).getModifiableModel()
-        val libraryModel = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-        val removeExternalModulesOnRefresh = projectSettings.removeExternalModulesOnRefresh
-
-        moduleModel.modules
-            .filter { removeExternalModulesOnRefresh || YFacet.get(it) != null }
-            .forEach { moduleModel.disposeModule(it) }
-
-        libraryModel.libraries.forEach { libraryModel.removeLibrary(it) }
-
-        ApplicationManager.getApplication().runWriteAction {
-            moduleModel.commit()
-            libraryModel.commit()
+    fun openModuleDescriptors(importContext: ProjectImportContext.Mutable): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
+        .filter { module -> YFacet.getState(module)?.subModuleType == null }
+        .mapNotNull { module ->
+            ModuleRootManager.getInstance(module).contentRoots
+                .firstOrNull()
+                ?.let { VfsUtil.virtualToIoFile(it) }
+                ?.let {
+                    try {
+                        ModuleDescriptorFactory.getInstance().createDescriptor(it, importContext)
+                    } catch (e: HybrisConfigurationException) {
+                        thisLogger().error(e)
+                        return@let null
+                    }
+                }
         }
-
-        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(project) }
-    }
+        .flatMap { moduleDescriptor ->
+            buildList {
+                add(moduleDescriptor)
+                moduleDescriptor.asSafely<YModuleDescriptor>()
+                    ?.let {
+                        addAll(it.getSubModules())
+                    }
+            }
+        }
 
     private fun getHybrisProjectImportProvider() = ProjectImportProvider.PROJECT_IMPORT_PROVIDER.extensionsIfPointIsRegistered
         .filterIsInstance<HybrisProjectImportProvider>()

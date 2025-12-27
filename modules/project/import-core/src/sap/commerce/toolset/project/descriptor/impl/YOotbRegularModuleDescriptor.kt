@@ -17,14 +17,11 @@
  */
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
 class YOotbRegularModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    extensionInfo: ExtensionInfo,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.OOTB
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, rootProjectDescriptor, extensionInfo)
+    extensionInfo: ExtensionInfoContext,
+) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.OOTB, extensionInfo)

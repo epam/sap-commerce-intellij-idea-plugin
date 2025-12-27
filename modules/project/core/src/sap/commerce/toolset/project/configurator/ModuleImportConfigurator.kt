@@ -20,21 +20,20 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface ModuleImportConfigurator : Configurator {
 
-    fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
+    fun isApplicable(moduleTypeId: String): Boolean
 
     fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
+        module: Module,
         modifiableModelsProvider: IdeModifiableModelsProvider,
-        rootProjectModifiableModel: ModifiableModuleModel,
-    ): Module
+    )
 
     companion object {
         val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")

@@ -17,16 +17,16 @@
  */
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import java.io.File
 
 class YCoreExtModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    extensionInfo: ExtensionInfo,
-) : YPlatformExtModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+    extensionInfo: ExtensionInfoContext,
+) : YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo) {
 
+    override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = emptySet<String>()
 }

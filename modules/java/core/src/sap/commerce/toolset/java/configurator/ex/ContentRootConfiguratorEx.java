@@ -33,7 +33,9 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.extensioninfo.EiConstants;
 import sap.commerce.toolset.project.ProjectConstants;
+import sap.commerce.toolset.project.context.ProjectImportContext;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
@@ -60,10 +62,11 @@ public final class ContentRootConfiguratorEx {
     }
 
     public static void configure(
+        final @NotNull ProjectImportContext importContext,
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final ModuleDescriptor moduleDescriptor
     ) {
-        final var appSettings = ApplicationSettings.getInstance();
+        final var applicationSettings = ApplicationSettings.getInstance();
 
         final var contentEntry = modifiableRootModel.addContentEntry(VfsUtil.pathToUrl(
             moduleDescriptor.getModuleRootDirectory().getAbsolutePath()
@@ -73,59 +76,57 @@ public final class ContentRootConfiguratorEx {
             .map(relPath -> new File(moduleDescriptor.getModuleRootDirectory(), relPath))
             .collect(Collectors.toList());
 
-        configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore, appSettings);
+        configureCommonRoots(importContext, moduleDescriptor, contentEntry, dirsToIgnore, applicationSettings);
 
-        if (moduleDescriptor instanceof final YWebSubModuleDescriptor ySubModuleDescriptor) {
-            configureWebRoots(ySubModuleDescriptor, contentEntry, appSettings);
-        }
-        if (moduleDescriptor instanceof final YCommonWebSubModuleDescriptor ySubModuleDescriptor) {
-            configureWebModuleRoots(ySubModuleDescriptor, contentEntry);
-        }
-        if (moduleDescriptor instanceof final YAcceleratorAddonSubModuleDescriptor ySubModuleDescriptor) {
-            configureWebModuleRoots(ySubModuleDescriptor, contentEntry);
-        }
-        if (moduleDescriptor instanceof final PlatformModuleDescriptor platformModuleDescriptor) {
-            configurePlatformRoots(platformModuleDescriptor, contentEntry, dirsToIgnore, appSettings);
+        switch (moduleDescriptor) {
+            case final YWebSubModuleDescriptor descriptor -> configureWebRoots(importContext, descriptor, contentEntry, applicationSettings);
+            case final YCommonWebSubModuleDescriptor descriptor -> configureWebModuleRoots(importContext, descriptor, contentEntry);
+            case final YAcceleratorAddonSubModuleDescriptor descriptor -> configureWebModuleRoots(importContext, descriptor, contentEntry);
+            case final PlatformModuleDescriptor descriptor -> configurePlatformRoots(descriptor, contentEntry, dirsToIgnore, applicationSettings);
+
+            default -> {
+            }
         }
     }
 
     private static void configureCommonRoots(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final ApplicationSettings appSettings
+        @NotNull final ApplicationSettings applicationSettings
     ) {
-        final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
         if (customModuleDescriptor
-            || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()
-            || ProjectConstants.Extension.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
+            || !importContext.getSettings().getImportOOTBModulesInReadOnlyMode()
+            || EiConstants.Extension.PLATFORM_SERVICES.equals(moduleDescriptor.getName())
         ) {
-            addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directory.SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
+            final var moduleRootDirectory = moduleDescriptor.getModuleRootDirectory();
 
-            if (customModuleDescriptor || !rootProjectDescriptor.isExcludeTestSources()) {
-                addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, ProjectConstants.Directory.TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
+            addSourceRoots(contentEntry, moduleRootDirectory, dirsToIgnore, applicationSettings, ProjectConstants.Directory.SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
+
+            if (customModuleDescriptor || !importContext.getSettings().getExcludeTestSources()) {
+                addSourceRoots(contentEntry, moduleRootDirectory, dirsToIgnore, applicationSettings, ProjectConstants.Directory.TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
             }
 
             addSourceFolderIfNotIgnored(
                 contentEntry,
-                new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directory.GEN_SRC),
+                new File(moduleRootDirectory, ProjectConstants.Directory.GEN_SRC),
                 JavaSourceRootType.SOURCE,
                 JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
-                dirsToIgnore, appSettings
+                dirsToIgnore, applicationSettings
             );
 
-            configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore, appSettings);
+            configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore, applicationSettings);
         }
 
-        excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
+        excludeCommonNeedlessDirs(importContext, contentEntry, moduleDescriptor);
     }
 
     private static void configureResourceDirectory(
         @NotNull final ContentEntry contentEntry,
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final ApplicationSettings appSettings
+        @NotNull final ApplicationSettings applicationSettings
     ) {
         final var resourcesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directory.RESOURCES);
 
@@ -134,9 +135,9 @@ public final class ContentRootConfiguratorEx {
             ? JpsJavaExtensionService.getInstance().createResourceRootProperties("cockpitng", false)
             : rootType.createDefaultProperties();
 
-        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, rootType, properties, dirsToIgnore, appSettings);
+        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, rootType, properties, dirsToIgnore, applicationSettings);
 
-        final var extensionsResourcesToExcludeList = appSettings.getExtensionsResourcesToExclude();
+        final var extensionsResourcesToExcludeList = applicationSettings.getExtensionsResourcesToExclude();
         final var shouldExcludeResourcesDir = CollectionUtils.isNotEmpty(extensionsResourcesToExcludeList)
             && extensionsResourcesToExcludeList.contains(moduleDescriptor.getName());
 
@@ -146,7 +147,7 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void excludeCommonNeedlessDirs(
-        final ContentEntry contentEntry,
+        final @NotNull ProjectImportContext importContext, final ContentEntry contentEntry,
         final ModuleDescriptor moduleDescriptor
     ) {
         excludeSubDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), List.of(
@@ -161,7 +162,7 @@ public final class ContentRootConfiguratorEx {
         ));
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+            || !importContext.getSettings().getImportOOTBModulesInReadOnlyMode()) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), ProjectConstants.Directory.CLASSES));
         }
     }
@@ -181,24 +182,22 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void configureWebRoots(
-        @NotNull final YWebSubModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final YWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
-        @NotNull final ApplicationSettings appSettings
+        @NotNull final ApplicationSettings applicationSettings
     ) {
-        configureWebModuleRoots(moduleDescriptor, contentEntry);
+        configureWebModuleRoots(importContext, moduleDescriptor, contentEntry);
 
-        final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
-
-        if (isCustomModuleDescriptor(moduleDescriptor) || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()) {
-            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directory.COMMON_WEB_SRC, JavaSourceRootType.SOURCE);
-            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ProjectConstants.Directory.ADDON_SRC, JavaSourceRootType.SOURCE);
+        if (isCustomModuleDescriptor(moduleDescriptor) || !importContext.getSettings().getImportOOTBModulesInReadOnlyMode()) {
+            configureExternalModuleRoot(moduleDescriptor, contentEntry, applicationSettings, ProjectConstants.Directory.COMMON_WEB_SRC, JavaSourceRootType.SOURCE);
+            configureExternalModuleRoot(moduleDescriptor, contentEntry, applicationSettings, ProjectConstants.Directory.ADDON_SRC, JavaSourceRootType.SOURCE);
         }
     }
 
     private static void configureExternalModuleRoot(
         final @NotNull YWebSubModuleDescriptor moduleDescriptor,
         final @NotNull ContentEntry contentEntry,
-        final @NotNull ApplicationSettings appSettings,
+        final @NotNull ApplicationSettings applicationSettings,
         final String sourceRoot,
         final JavaSourceRootType type
     ) {
@@ -222,7 +221,7 @@ public final class ContentRootConfiguratorEx {
                     directory,
                     type,
                     JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
-                    Collections.emptyList(), appSettings
+                    Collections.emptyList(), applicationSettings
                 );
             });
     }
@@ -231,7 +230,7 @@ public final class ContentRootConfiguratorEx {
         @NotNull final PlatformModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         final List<File> dirsToIgnore,
-        final ApplicationSettings appSettings
+        final ApplicationSettings applicationSettings
     ) {
         final var rootDirectory = moduleDescriptor.getModuleRootDirectory();
         final var platformBootstrapDirectory = new File(rootDirectory, ProjectConstants.Directory.BOOTSTRAP);
@@ -244,7 +243,7 @@ public final class ContentRootConfiguratorEx {
             gensrcDirectory,
             JavaSourceRootType.SOURCE,
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
-            dirsToIgnore, appSettings
+            dirsToIgnore, applicationSettings
         );
 
         excludeDirectory(contentEntry, gensrcDirectory);
@@ -260,7 +259,7 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void configureWebModuleRoots(
-        @NotNull final YSubModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final YSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry
     ) {
         excludeSubDirectories(
@@ -268,14 +267,14 @@ public final class ContentRootConfiguratorEx {
             moduleDescriptor.getModuleRootDirectory(),
             List.of(ProjectConstants.Directory.TEST_CLASSES)
         );
-        configureWebInf(contentEntry, moduleDescriptor);
+        configureWebInf(importContext, contentEntry, moduleDescriptor);
     }
 
     private static void addSourceRoots(
         @NotNull final ContentEntry contentEntry,
         @NotNull final File dir,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final ApplicationSettings appSettings,
+        @NotNull final ApplicationSettings applicationSettings,
         final List<String> directories,
         final JavaSourceRootType scope
     ) {
@@ -284,25 +283,10 @@ public final class ContentRootConfiguratorEx {
                 contentEntry,
                 new File(dir, directory),
                 scope,
-                dirsToIgnore, appSettings
+                scope.createDefaultProperties(),
+                dirsToIgnore, applicationSettings
             );
         }
-    }
-
-    private static <P extends JpsElement> void addSourceFolderIfNotIgnored(
-        @NotNull final ContentEntry contentEntry,
-        @NotNull final File testSrcDir,
-        @NotNull final JpsModuleSourceRootType<P> rootType,
-        @NotNull final List<File> dirsToIgnore,
-        @NotNull final ApplicationSettings appSettings
-    ) {
-        addSourceFolderIfNotIgnored(
-            contentEntry,
-            testSrcDir,
-            rootType,
-            rootType.createDefaultProperties(),
-            dirsToIgnore, appSettings
-        );
     }
 
     // /Users/Evgenii/work/upwork/test-projects/pawel-hybris/bin/ext-accelerator/acceleratorstorefrontcommons/testsrc
@@ -330,13 +314,14 @@ public final class ContentRootConfiguratorEx {
     }
 
     private static void configureWebInf(
+        final @NotNull ProjectImportContext importContext,
         final ContentEntry contentEntry,
         final YSubModuleDescriptor moduleDescriptor
     ) {
         final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
 
         if (isCustomModuleDescriptor(moduleDescriptor)
-            || (!moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
+            || (!importContext.getSettings().getImportOOTBModulesInReadOnlyMode() && testSrcDirectoriesExists(rootDirectory))
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEBROOT_WEBINF_CLASSES_PATH));
         }

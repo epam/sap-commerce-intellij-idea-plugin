@@ -18,13 +18,11 @@
 package sap.commerce.toolset.angular.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.workspace.jps.entities.ModuleTypeId
-import sap.commerce.toolset.angular.descriptor.AngularModuleDescriptor
+import sap.commerce.toolset.angular.AngularConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class AngularModuleImportConfigurator : ModuleImportConfigurator {
@@ -32,21 +30,15 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
     override val name: String
         get() = "Angular Modules"
 
-    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is AngularModuleDescriptor
+    override fun isApplicable(moduleTypeId: String) = AngularConstants.MODULE_TYPE_ID == moduleTypeId
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        rootProjectModifiableModel: ModifiableModuleModel
-    ): Module {
-        return rootProjectModifiableModel.newModule(
-            moduleDescriptor.ideaModuleFile().absolutePath,
-            ModuleTypeId("Angular").name
-        )
-            .apply {
-                modifiableModelsProvider.getModifiableRootModel(this)
-                    .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath));
-            }
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
+    ) {
+        modifiableModelsProvider.getModifiableRootModel(module)
+            .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath));
     }
 }

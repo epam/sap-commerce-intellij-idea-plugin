@@ -18,47 +18,30 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
+import com.intellij.openapi.util.io.FileUtil
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import java.io.File
 
 abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
     name: String,
-    override val extensionInfo: ExtensionInfo,
-    private val metas: Map<String, String> = extensionInfo.extension.meta
-        .associate { it.key to it.value }
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), YModuleDescriptor {
+    descriptorType: ModuleDescriptorType,
+    override val extensionInfo: ExtensionInfoContext,
+) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType), YModuleDescriptor {
 
-    private val myExtensionDescriptor by lazy {
+    override val extensionDescriptor by lazy {
         ExtensionDescriptor(
+            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
             name = name,
-            description = extensionInfo.extension.description,
             readonly = readonly,
-            useMaven = "true".equals(extensionInfo.extension.usemaven, true),
             type = descriptorType,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
-            webModule = extensionInfo.extension.webmodule != null,
-            coreModule = extensionInfo.extension.coremodule != null,
-            hmcModule = extensionInfo.extension.hmcmodule != null,
-            backofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE),
-            hacModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
-            deprecated = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
-            extGenTemplateExtension = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
-            jaloLogicFree = extensionInfo.extension.isJaloLogicFree,
-            classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
-            moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
-            packageRoot = extensionInfo.extension.coremodule?.packageroot,
-            webRoot = extensionInfo.extension.webmodule?.webroot,
-            version = extensionInfo.extension.version,
-            requiredByAll = extensionInfo.extension.isRequiredbyall,
-            addon = getRequiredExtensionNames().contains(ProjectConstants.Extension.ADDON_SUPPORT)
+            addon = getRequiredExtensionNames().contains(EiConstants.Extension.ADDON_SUPPORT)
         )
     }
     private var ySubModules = mutableSetOf<YSubModuleDescriptor>()
@@ -66,11 +49,4 @@ abstract class AbstractYModuleDescriptor(
     override fun getSubModules(): Set<YSubModuleDescriptor> = ySubModules
     override fun addSubModule(subModule: YSubModuleDescriptor) = ySubModules.add(subModule)
     override fun removeSubModule(subModule: YSubModuleDescriptor) = ySubModules.remove(subModule)
-
-    // Must be called at the end of the module import
-    override fun extensionDescriptor() = myExtensionDescriptor
-
-    fun isMetaKeySetToTrue(metaKeyName: String) = metas[metaKeyName]
-        ?.let { "true".equals(it, true) }
-        ?: false
 }

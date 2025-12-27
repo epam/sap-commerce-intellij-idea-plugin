@@ -18,8 +18,9 @@
 
 package sap.commerce.toolset.ccv2.descriptor
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
@@ -27,15 +28,15 @@ import java.io.File
 
 abstract class CCv2ModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+    descriptorType: ModuleDescriptorType,
+) : ExternalModuleDescriptor(moduleRootDirectory, name, descriptorType) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY
     }
 
     override fun isPreselected() = true
-    override fun groupName() = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()
 
 }

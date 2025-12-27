@@ -54,12 +54,13 @@ fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.ge
     ?.contentRoots
     ?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }
 
-fun isHybrisModule(psi: PsiElement): Boolean {
-    val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return false
-    val descriptorType = YFacetConstants.getModuleSettings(module).type
-    return descriptorType == ModuleDescriptorType.PLATFORM
-        || descriptorType == ModuleDescriptorType.EXT
-}
+val PsiElement.isHybrisModule: Boolean
+    get() {
+        val module = ModuleUtilCore.findModuleForPsiElement(this) ?: return false
+        val descriptorType = YFacetConstants.getModuleSettings(module).type
+        return descriptorType == ModuleDescriptorType.PLATFORM
+            || descriptorType == ModuleDescriptorType.EXT
+    }
 
 val PsiFile.module
     get() = this.virtualFile

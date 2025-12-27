@@ -26,16 +26,16 @@ import com.intellij.util.asSafely
 import org.jetbrains.jps.model.java.compiler.JavaCompilers
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 
-class JavaCompilerConfigurator : ProjectPostImportConfigurator {
+class JavaCompilerConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Java Compiler"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        val project = importContext.project
         val compilerConfiguration = CompilerConfiguration.getInstance(project)
             .asSafely<CompilerConfigurationImpl>() ?: return
         val compilerVersion = smartReadAction(project) {

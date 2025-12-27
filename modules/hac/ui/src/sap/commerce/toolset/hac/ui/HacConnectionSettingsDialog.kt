@@ -152,8 +152,8 @@ class HacConnectionSettingsDialog(
                 .label("Connection timeout:")
                 .bindIntValue(mutable::timeout)
                 .gap(RightGap.SMALL)
+                .commentRight("(ms)")
                 .component
-            label("(ms)")
         }.layout(RowLayout.PARENT_GRID)
 
         collapsibleGroup("Full URL Preview", false) {

@@ -94,11 +94,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(followSymlink = value) }
         }
-    var scanThroughExternalModule
-        get() = state.scanThroughExternalModule
-        set(value) {
-            updateState { it.copy(scanThroughExternalModule = value) }
-        }
     var excludeTestSources
         get() = state.excludeTestSources
         set(value) {
@@ -108,6 +103,11 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         get() = state.importCustomAntBuildFiles
         set(value) {
             updateState { it.copy(importCustomAntBuildFiles = value) }
+        }
+    var removeOldProjectData
+        get() = state.removeOldProjectData
+        set(value) {
+            updateState { it.copy(removeOldProjectData = value) }
         }
     var removeExternalModulesOnRefresh
         get() = state.removeExternalModulesOnRefresh
@@ -135,10 +135,10 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
 
-    var availableExtensions: Map<String, ExtensionDescriptor>
-        get() = state.availableExtensions
+    var extensionDescriptors: Collection<ExtensionDescriptor>
+        get() = state.extensionDescriptors
         set(value) {
-            updateState { it.copy(availableExtensions = value) }
+            updateState { it.copy(extensionDescriptors = value) }
         }
 
     var generateCodeOnRebuild

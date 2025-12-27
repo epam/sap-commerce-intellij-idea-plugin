@@ -24,7 +24,6 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.observation.launchTracked
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,27 +33,25 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator, ProjectRefreshConfigurator {
+class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator, ProjectRefreshConfigurator {
 
     override val name: String
         get() = "Gradle"
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val project = hybrisProjectDescriptor.project ?: return
-        PropertiesComponent.getInstance(project)
-            .setValue("show.inlinked.gradle.project.popup", false)
+        val project = importContext.project
+        PropertiesComponent.getInstance(project).setValue("show.inlinked.gradle.project.popup", false)
 
         try {
-            hybrisProjectDescriptor
-                .chosenModuleDescriptors
+            importContext.chosenOtherModuleDescriptors
                 .filterIsInstance<GradleModuleDescriptor>()
                 .mapNotNull { it.gradleFile.path }
                 .forEach { externalProjectPath ->
@@ -67,9 +64,9 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         }
     }
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        if (!hybrisProjectDescriptor.refresh) return
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        if (!importContext.refresh) return
+        val project = importContext.project
 
         edtWriteAction {
             project.triggerAction("ExternalSystem.RefreshAllProjects") {
@@ -81,8 +78,10 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         }
     }
 
-    override fun beforeRefresh(project: Project) {
-        if (!ProjectSettings.getInstance(project).removeExternalModulesOnRefresh) return
+    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+        if (!refreshContext.removeExternalModules) return
+
+        val project = refreshContext.project
 
         GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
     }

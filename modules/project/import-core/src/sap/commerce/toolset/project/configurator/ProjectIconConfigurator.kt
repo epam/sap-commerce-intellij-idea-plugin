@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -31,10 +31,10 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
         get() = "Project Icon"
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val rootDirectory = hybrisProjectDescriptor.rootDirectory ?: return
+        val rootDirectory = importContext.rootDirectory ?: return
 
         val target = Paths.get(rootDirectory.path, ".idea", "icon.svg")
         val targetDark = Paths.get(rootDirectory.path, ".idea", "icon_dark.svg")
@@ -42,7 +42,7 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
         // do not override existing Icon
         if (Files.exists(target)) return
 
-        val projectIconFile = hybrisProjectDescriptor.projectIconFile
+        val projectIconFile = importContext.projectIconFile
         if (projectIconFile == null) {
             this::class.java.getResourceAsStream("/icons/hybrisIcon.svg")
                 ?.use { input ->

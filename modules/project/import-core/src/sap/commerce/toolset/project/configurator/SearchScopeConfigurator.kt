@@ -30,17 +30,17 @@ import com.intellij.util.ArrayUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.settings.ApplicationSettings
 import javax.swing.Icon
 
-class SearchScopeConfigurator : ProjectPostImportConfigurator {
+class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Search Scope"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        val project = importContext.project
         val applicationSettings = ApplicationSettings.getInstance()
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris

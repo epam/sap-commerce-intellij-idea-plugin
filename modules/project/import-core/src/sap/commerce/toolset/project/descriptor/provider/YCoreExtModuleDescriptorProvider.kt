@@ -1,0 +1,44 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package sap.commerce.toolset.project.descriptor.provider
+
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.extensioninfo.EiModelAccess
+import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
+import java.io.File
+
+class YCoreExtModuleDescriptorProvider : YModuleDescriptorProvider() {
+
+    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
+        val moduleRootDirectory = context.moduleRootDirectory
+
+        return moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
+            && moduleRootDirectory.getName() == EiConstants.Extension.CORE
+            && File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile()
+    }
+
+    override fun create(moduleRootDirectory: File): YCoreExtModuleDescriptor {
+        val extensionInfo = EiModelAccess.getInstance().getContext(moduleRootDirectory)
+            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $moduleRootDirectory")
+
+        return YCoreExtModuleDescriptor(moduleRootDirectory, extensionInfo)
+    }
+}

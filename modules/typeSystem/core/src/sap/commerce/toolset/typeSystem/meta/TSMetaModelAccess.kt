@@ -24,7 +24,7 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.root
 import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.typeSystem.meta.impl.TSMetaModelNameProvider
@@ -53,7 +53,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
     private val myReservedTypeCodes by lazy {
         ModuleManager.getInstance(project)
             .modules
-            .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CORE }
+            .firstOrNull { it.yExtensionName() == EiConstants.Extension.CORE }
             ?.root()
             ?.resolve(HybrisConstants.RESERVED_TYPE_CODES_FILE)
             ?.takeIf { it.exists() }

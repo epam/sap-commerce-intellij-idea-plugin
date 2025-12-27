@@ -22,10 +22,6 @@ interface YRegularModuleDescriptor : YModuleDescriptor {
 
     var isInLocalExtensions: Boolean
     var isNeededDependency: Boolean
-    val hasHmcModule: Boolean
-    val isHacAddon: Boolean
-    val hasBackofficeModule: Boolean
-    val hasWebModule: Boolean
 
     fun getDefaultRequiredExtensionNames(): Set<String>
     fun getAdditionalRequiredExtensionNames(): Set<String>

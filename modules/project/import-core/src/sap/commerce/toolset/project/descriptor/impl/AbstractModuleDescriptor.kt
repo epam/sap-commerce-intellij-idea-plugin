@@ -18,12 +18,14 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.asSafely
 import kotlinx.collections.immutable.toImmutableSet
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
 import java.io.File
@@ -31,9 +33,8 @@ import java.util.*
 
 abstract class AbstractModuleDescriptor(
     override val moduleRootDirectory: File,
-    override val rootProjectDescriptor: HybrisProjectDescriptor,
     override val name: String,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    override val descriptorType: ModuleDescriptorType,
     override var groupNames: Array<String> = emptyArray(),
     override var readonly: Boolean = false,
 ) : ModuleDescriptor {
@@ -46,10 +47,14 @@ abstract class AbstractModuleDescriptor(
         recursivelyCollectDependenciesPlainSet(this, TreeSet())
             .toImmutableSet()
     }
-    private val myExtensionDescriptor by lazy {
+
+    override val extensionDescriptor by lazy {
         ExtensionDescriptor(
+            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
             name = name,
-            type = descriptorType
+            readonly = readonly,
+            type = descriptorType,
+            subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
         )
     }
 
@@ -80,32 +85,27 @@ abstract class AbstractModuleDescriptor(
             ?: false
     }
 
-    override fun extensionDescriptor() = myExtensionDescriptor
     override fun isPreselected() = false
 
-    override fun ideaModuleFile(): File {
+    override fun ideaModuleFile(importContext: ProjectImportContext): File {
         val futureModuleName = ideaModuleName()
-        return rootProjectDescriptor.modulesFilesDirectory
-            ?.let { File(rootProjectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+        return importContext.modulesFilesDirectory
+            ?.let { File(importContext.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
             ?: File(moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
-    override fun getRelativePath(): String {
-        val projectRootDir: File = rootProjectDescriptor.rootDirectory
-            ?: return moduleRootDirectory.path
-        val virtualFileSystemService = VirtualFileSystemService.getInstance()
-
-        return if (virtualFileSystemService.fileContainsAnother(projectRootDir, moduleRootDirectory)) {
-            virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDirectory)
-        } else moduleRootDirectory.path
-    }
+    override fun getRelativePath(rootDirectory: File): String = VirtualFileSystemService.getInstance()
+        .takeIf { it.fileContainsAnother(rootDirectory, moduleRootDirectory) }
+        ?.getRelativePath(rootDirectory, moduleRootDirectory)
+        ?: moduleRootDirectory.path
 
     override fun getAllDependencies() = dependencies
 
     override fun getRequiredExtensionNames() = requiredExtensionNames
-    override fun addRequiredExtensionNames(extensions: Set<YModuleDescriptor>) = extensions
+    override fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>) = extensions
         .map { it.name }
         .let { requiredExtensionNames.addAll(it) }
+
     override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
         requiredExtensionNames = initDependencies(moduleDescriptors).toMutableSet()
     }
@@ -125,6 +125,7 @@ abstract class AbstractModuleDescriptor(
 
         if (dependencies.isEmpty()) return dependenciesSet
 
+        // TODO: what if there is circular module dependency
         dependencies
             .filterNot { dependenciesSet.contains(it) }
             .forEach {

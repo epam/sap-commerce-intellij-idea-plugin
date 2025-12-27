@@ -18,37 +18,11 @@
 
 package sap.commerce.toolset.eclipse.descriptor
 
-import com.intellij.openapi.project.Project
-import org.jetbrains.idea.eclipse.EclipseProjectFinder
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 class EclipseModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
     name: String,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ECLIPSE
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
-
-    class Provider : ModuleDescriptorProvider {
-        override fun isApplicable(project: Project?, moduleRootDirectory: File): Boolean {
-            if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX))  return false
-
-            return File(moduleRootDirectory, HybrisConstants.DOT_PROJECT).isFile()
-        }
-
-        override fun create(
-            moduleRootDirectory: File,
-            rootProjectDescriptor: HybrisProjectDescriptor
-        ) = EclipseModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, getEclipseModuleDescriptorName(moduleRootDirectory))
-
-        private fun getEclipseModuleDescriptorName(moduleRootDirectory: File) = EclipseProjectFinder.findProjectName(moduleRootDirectory.absolutePath)
-            ?.trim { it <= ' ' }
-            ?.takeIf { it.isNotBlank() }
-            ?: moduleRootDirectory.name
-    }
-}
+) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ECLIPSE)
