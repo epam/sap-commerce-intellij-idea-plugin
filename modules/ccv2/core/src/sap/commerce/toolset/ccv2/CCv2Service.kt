@@ -154,13 +154,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                     checkCanceled()
                                     val ccv2Token = getCCv2Token(subscription) ?: return@async (subscription to emptyList())
                                     try {
-                                        val cachedEnvironments =
-                                            fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
+                                        val cachedEnvironments = fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
 
                                         cachedEnvironments
                                             .filter { it.accessible }
-                                            .map { environment ->
-
+                                            .flatMap { environment ->
                                                 listOfNotNull(
                                                     if (requestServices) {
                                                         async {
@@ -177,7 +175,6 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                                     } else null,
                                                 )
                                             }
-                                            .flatten()
                                             .awaitAll()
 
                                         return@async subscription to cachedEnvironments

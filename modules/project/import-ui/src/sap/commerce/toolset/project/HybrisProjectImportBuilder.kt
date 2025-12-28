@@ -35,7 +35,7 @@ import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.tasks.ImportProjectProgressTaskModal
+import sap.commerce.toolset.project.tasks.ProjectImporter
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService.Companion.getInstance
 import java.io.File
 import java.io.IOException
@@ -75,13 +75,12 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
             ?: return emptyList()
 
         val chosenModuleDescriptors = context.allChosenModuleDescriptors
-            .takeIf { it.isNotEmpty() } ?: return emptyList()
+            .takeIf { it.isNotEmpty() }
+            ?: return emptyList()
 
         performProjectsCleanup(context, chosenModuleDescriptors)
 
-        val modules = mutableListOf<Module>()
-        ImportProjectProgressTaskModal(project, context, modules)
-            .queue()
+        ProjectImporter.getInstance(project).import(context)
 
         if (context.refresh) {
             PostImportBulkConfigurator.getInstance(project).configure(context)
@@ -91,7 +90,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
 
         notifyImportNotFinishedYet(project)
 
-        return modules
+        return emptyList()
     }
 
     override fun cleanup() = super.cleanup().also {

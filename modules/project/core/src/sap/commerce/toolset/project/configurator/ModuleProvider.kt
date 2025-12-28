@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
@@ -33,8 +33,8 @@ interface ModuleProvider {
     fun create(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProviderImpl,
-    ) = modifiableModelsProvider.getModifiableModuleModel().newModule(
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+    ) = modifiableModelsProvider.modifiableModuleModel.newModule(
         moduleDescriptor.ideaModuleFile(importContext).absolutePath,
         moduleTypeId
     )

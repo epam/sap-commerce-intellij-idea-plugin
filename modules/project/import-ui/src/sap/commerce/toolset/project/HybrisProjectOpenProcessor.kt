@@ -88,7 +88,6 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
             {
                 jdkTable.allJdks.forEach { sdk ->
                     sdk.homeDirectory
-
                     sdk.sdkType.asSafely<SdkType>()
                         ?.let { sdkType ->
                             orderRootTypes
