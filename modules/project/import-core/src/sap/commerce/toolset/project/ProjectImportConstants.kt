@@ -18,17 +18,9 @@
 
 package sap.commerce.toolset.project
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import java.nio.file.Path
-import kotlin.io.path.name
+object ProjectImportConstants {
 
-// TODO: rename / move to something like ProjectScanning
-@Service
-class HybrisProjectImportService {
-
-    private val excludedDirectories = buildSet {
+    val excludedDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)
         add(ProjectConstants.Directory.GRADLE)
         add(ProjectConstants.Directory.ECLIPSE_BIN)
@@ -56,13 +48,5 @@ class HybrisProjectImportService {
 
         addAll(ProjectConstants.Directory.SRC_DIR_NAMES)
         addAll(ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-    }
-
-    fun isDirectoryExcluded(path: Path): Boolean = excludedDirectories.contains(path.name)
-        || path.endsWith(ProjectConstants.Directory.PATH_PLATFORM_BOOTSTRAP)
-
-    companion object {
-        @JvmStatic
-        fun getInstance(): HybrisProjectImportService = application.service()
     }
 }

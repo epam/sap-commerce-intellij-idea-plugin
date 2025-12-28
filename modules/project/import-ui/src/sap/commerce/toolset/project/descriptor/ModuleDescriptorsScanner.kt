@@ -26,7 +26,8 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.project.HybrisProjectImportService
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.ModuleFilesContext
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -38,6 +39,7 @@ import java.nio.file.DirectoryStream
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
+import kotlin.io.path.name
 
 // TODO: extract WSL scanner
 @Service
@@ -182,12 +184,10 @@ class ModuleDescriptorsScanner {
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
     ) {
-        val importService = HybrisProjectImportService.getInstance()
-
         val files = Files.newDirectoryStream(modulePath, DirectoryStream.Filter { file: Path? ->
             if (file == null
                 || !Files.isDirectory(file)
-                || importService.isDirectoryExcluded(file)
+                || isDirectoryExcluded(file)
             ) return@Filter false
             !Files.isSymbolicLink(file) || importContext.settings.followSymlink
         })
@@ -211,13 +211,12 @@ class ModuleDescriptorsScanner {
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
     ) {
-        val importService = HybrisProjectImportService.getInstance()
         val followSymlink = importContext.settings.followSymlink
 
         Files.list(modulePath).use { stream ->
             stream
                 .filter { Files.isDirectory(it) }
-                .filter { !importService.isDirectoryExcluded(it) }
+                .filter { !isDirectoryExcluded(it) }
                 .filter { !Files.isSymbolicLink(it) || followSymlink }
                 .map { it.toFile() }
                 .forEach { moduleRoot ->
@@ -263,6 +262,9 @@ class ModuleDescriptorsScanner {
             thisLogger().error("Unable to locate ${file.absolutePath}", e)
         }
     }
+
+    private fun isDirectoryExcluded(path: Path): Boolean = ProjectImportConstants.excludedDirectories.contains(path.name)
+        || path.endsWith(ProjectConstants.Directory.PATH_PLATFORM_BOOTSTRAP)
 
     companion object {
         fun getInstance(): ModuleDescriptorsScanner = application.service()
