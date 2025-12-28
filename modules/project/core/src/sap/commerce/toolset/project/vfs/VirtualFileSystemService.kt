@@ -26,10 +26,14 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.application
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ensureActive
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import java.io.File
 import java.io.IOException
 
+// TODO: review / remove / refactor
 @Service
 class VirtualFileSystemService {
 
@@ -89,6 +93,28 @@ class VirtualFileSystemService {
             throw InterruptedException("Modules scanning has been interrupted.")
         }
         return result.get()
+    }
+
+    fun findFileByNameRecursively(
+        root: File,
+        targetName: String,
+        coroutineScope: CoroutineScope,
+        ignoredDirNames: Collection<String>
+    ): File? = try {
+        root.walkTopDown()
+            .onEnter {
+                coroutineScope.coroutineContext.ensureActive()
+
+                !ignoredDirNames.contains(it.name)
+            }
+            .forEach { file ->
+                coroutineScope.coroutineContext.ensureActive()
+
+                if (file.absolutePath.endsWith(targetName)) return file
+            }
+        null
+    } catch (_: CancellationException) {
+        null
     }
 
     fun fileContainsAnother(parent: File, child: File) = pathContainsAnother(parent.absolutePath, child.absolutePath)

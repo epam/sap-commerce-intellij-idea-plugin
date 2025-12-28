@@ -263,7 +263,7 @@ class ModuleDescriptorsScanner {
         }
     }
 
-    private fun isDirectoryExcluded(path: Path): Boolean = ProjectImportConstants.excludedDirectories.contains(path.name)
+    private fun isDirectoryExcluded(path: Path): Boolean = ProjectImportConstants.excludedFromScanningDirectories.contains(path.name)
         || path.endsWith(ProjectConstants.Directory.PATH_PLATFORM_BOOTSTRAP)
 
     companion object {

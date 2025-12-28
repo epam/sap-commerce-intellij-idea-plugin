@@ -20,10 +20,9 @@ package sap.commerce.toolset.project
 
 object ProjectImportConstants {
 
-    val excludedDirectories = buildSet {
+    val excludedFromScanningDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)
         add(ProjectConstants.Directory.GRADLE)
-        add(ProjectConstants.Directory.ECLIPSE_BIN)
         add(ProjectConstants.Directory.GIT)
         add(ProjectConstants.Directory.HG)
         add(ProjectConstants.Directory.SVN)
@@ -42,8 +41,14 @@ object ProjectImportConstants {
         add(ProjectConstants.Directory.TEMP)
         add(ProjectConstants.Directory.TMP)
         add(ProjectConstants.Directory.ANT)
+        add(ProjectConstants.Directory.BUILD_TOOLS)
+        add(ProjectConstants.Directory.LICENSES)
+
+        add(ProjectConstants.Directory.ECLIPSE_BIN)
         add(ProjectConstants.Directory.CLASSES)
         add(ProjectConstants.Directory.TEST_CLASSES)
+        add(ProjectConstants.Directory.MODEL_CLASSES)
+
         add(ProjectConstants.Directory.NODE_MODULES)
 
         addAll(ProjectConstants.Directory.SRC_DIR_NAMES)

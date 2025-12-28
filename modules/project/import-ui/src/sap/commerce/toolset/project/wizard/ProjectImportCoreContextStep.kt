@@ -37,7 +37,7 @@ import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.settings.ySettings
-import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModal
+import sap.commerce.toolset.project.tasks.PlatformDirectoryLookupTask
 import sap.commerce.toolset.project.tasks.SearchModulesRootsTaskModal
 import sap.commerce.toolset.project.ui.ui
 import sap.commerce.toolset.project.utils.FileUtils
@@ -126,10 +126,9 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
         if (importCoreContext.platformDirectory.get().isBlank()) {
             val rootProjectDirectory = File(builder.fileToImport)
-            val task = SearchHybrisDistributionDirectoryTaskModal(rootProjectDirectory) {
-                importCoreContext.platformDirectory.set(it)
-            }
-            ProgressManager.getInstance().run(task)
+
+            PlatformDirectoryLookupTask.getInstance().find(rootProjectDirectory)
+                ?.let { importCoreContext.platformDirectory.set(it) }
         }
 
         val platformPath = importCoreContext.platformDirectory.get()
@@ -226,11 +225,8 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             if (hybrisDirectory == null) {
                 val rootProjectDirectory = FileUtils.toFile(builder.fileToImport)!!
                 // refreshing a project which was never imported by this plugin
-                val task = SearchHybrisDistributionDirectoryTaskModal(rootProjectDirectory) {
-                    this.platformDirectory = FileUtils.toFile(it)
-                }
-
-                ProgressManager.getInstance().run(task)
+                PlatformDirectoryLookupTask.getInstance().find(rootProjectDirectory)
+                    ?.let { this.platformDirectory = FileUtils.toFile(it) }
             }
 
             thisLogger().info("Refreshing a project with the following settings: $this")

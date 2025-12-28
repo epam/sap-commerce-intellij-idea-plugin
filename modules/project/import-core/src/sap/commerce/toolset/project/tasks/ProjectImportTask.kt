@@ -40,7 +40,7 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 @Service(Service.Level.PROJECT)
-class ProjectImporter(private val project: Project) {
+class ProjectImportTask(private val project: Project) {
 
     fun import(importContext: ProjectImportContext) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
@@ -135,6 +135,6 @@ class ProjectImporter(private val project: Project) {
     }
 
     companion object {
-        fun getInstance(project: Project): ProjectImporter = project.service()
+        fun getInstance(project: Project): ProjectImportTask = project.service()
     }
 }

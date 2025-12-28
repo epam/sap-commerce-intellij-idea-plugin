@@ -52,8 +52,8 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
         ProjectConstants.Directory.LOG,
         ProjectConstants.Directory.DATA,
 
-        ProjectConstants.Directory.CLASSES,
         ProjectConstants.Directory.ECLIPSE_BIN,
+        ProjectConstants.Directory.CLASSES,
         ProjectConstants.Directory.TEST_CLASSES,
         ProjectConstants.Directory.MODEL_CLASSES,
 
@@ -70,10 +70,11 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
 
         ProjectConstants.Directory.RESOURCES,
 
-        "installer",
-        "build-tools",
-        "licenses",
+        ProjectConstants.Directory.BUILD_TOOLS,
+        ProjectConstants.Directory.LICENSES,
         ProjectConstants.Directory.JS_STOREFRONT,
+
+        "installer",
     )
 
     override suspend fun openProjectAsync(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {

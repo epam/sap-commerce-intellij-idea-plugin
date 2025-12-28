@@ -77,6 +77,8 @@ object ProjectConstants {
         const val NODE_MODULES = "node_modules"
         const val JS_STOREFRONT = "js-storefront"
 
+        const val BUILD_TOOLS = "build-tools"
+        const val LICENSES = "licenses"
         const val LICENCE = "licence"
         const val BOWER_COMPONENTS = "bower_components"
         const val JS_TARGET = "jsTarget"
