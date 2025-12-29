@@ -26,8 +26,9 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.project.Project
-import org.apache.commons.lang3.SystemUtils
+import com.intellij.openapi.util.SystemInfo
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisConstants.DEBUG_HOST
 import sap.commerce.toolset.HybrisConstants.DEBUG_PORT
@@ -46,7 +47,9 @@ class LocalSapCXRunProfileState(
         val projectDirectory = project.directory ?: ""
         val settings = ProjectSettings.getInstance(project)
         val hybrisDirectory = settings.hybrisDirectory ?: ""
-        val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
+
+        val script = if (SystemInfo.isWindows && !WslPath.isWslUncPath(projectDirectory)) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME
+        else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
 
         return Paths.get(projectDirectory, hybrisDirectory, script).toString()
     }

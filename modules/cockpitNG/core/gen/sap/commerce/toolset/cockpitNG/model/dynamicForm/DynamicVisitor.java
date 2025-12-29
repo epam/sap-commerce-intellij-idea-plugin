@@ -23,11 +23,10 @@ package sap.commerce.toolset.cockpitNG.model.dynamicForm;
 
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.cockpitNG.CngConstants;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Positioned;
-import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
+import sap.commerce.toolset.xml.converter.SpringBeanReferenceConverter;
 
 /**
  * http://www.hybris.com/cockpitng/component/dynamicForms:dynamicVisitor interface.

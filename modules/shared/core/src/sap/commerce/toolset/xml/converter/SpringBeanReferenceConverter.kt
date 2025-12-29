@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.util.xml
+package sap.commerce.toolset.xml.converter
 
 import com.intellij.psi.PsiDocCommentOwner
 import com.intellij.psi.PsiElement
@@ -26,7 +26,6 @@ import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
 import sap.commerce.toolset.spring.psi.reference.SpringReference
 
-@Deprecated("migrate to spring module")
 class SpringBeanReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
 
     override fun createReferences(

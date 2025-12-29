@@ -24,7 +24,7 @@ package sap.commerce.toolset.cockpitNG.model.widgets;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Mergeable;
-import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
+import sap.commerce.toolset.xml.converter.SpringBeanReferenceConverter;
 
 /**
  * http://www.hybris.com/cockpitng/component/compareview:renderer interface.

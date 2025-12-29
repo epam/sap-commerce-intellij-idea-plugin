@@ -26,7 +26,7 @@ import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.ProjectImportConstants
-import sap.commerce.toolset.project.vfs.VirtualFileSystemService
+import sap.commerce.toolset.util.findRecursively
 import java.io.File
 
 @Service
@@ -36,17 +36,14 @@ class PlatformDirectoryLookupTask {
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.searching.hybris.distribution"),
     ) {
-        VirtualFileSystemService.getInstance().findFileByNameRecursively(
-            rootProjectDirectory,
-            HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME,
-            this@runWithModalProgressBlocking,
+        rootProjectDirectory.findRecursively(
+            coroutineContext,
             ProjectImportConstants.excludedFromScanningDirectories
-        )
-            ?.parentFile
-            ?.parentFile
-            ?.parentFile
+        ) {
+            it.absolutePath.endsWith(HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME)
+        }
+            ?.parentFile?.parentFile?.parentFile
             ?.absolutePath
-            ?: return@runWithModalProgressBlocking null
     }
 
     companion object {
