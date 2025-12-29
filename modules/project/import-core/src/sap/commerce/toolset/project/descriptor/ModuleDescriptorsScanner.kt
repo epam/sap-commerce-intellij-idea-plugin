@@ -25,10 +25,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
-import sap.commerce.toolset.project.context.ModuleFilesContext
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor
@@ -48,7 +46,7 @@ class ModuleDescriptorsScanner {
     @Throws(InterruptedException::class, IOException::class)
     fun findModuleRoots(
         importContext: ProjectImportContext.Mutable,
-        moduleFilesContext: ModuleFilesContext,
+        moduleRootsContext: ModuleRootsContext,
         excludedFromScanning: Set<File>,
         moduleDirectory: File,
         progressListenerProcessor: TaskProgressProcessor<File>
@@ -72,80 +70,80 @@ class ModuleDescriptorsScanner {
             importContext.addVcs(moduleDirectory.getCanonicalFile())
         }
 
-        val moduleDescriptorResolver = ModuleDescriptorResolver.getInstance()
+        val moduleRootResolver = ModuleRootResolver.getInstance()
 
-        if (moduleDescriptorResolver.isHybrisExtension(moduleDirectory)) {
+        if (moduleRootResolver.isHybrisExtensionRoot(moduleDirectory)) {
             thisLogger().info("Detected hybris module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.HYBRIS, moduleDirectory)
             return
         }
 
-        if (moduleDescriptorResolver.isConfigModule(moduleDirectory)) {
+        if (moduleRootResolver.isConfigModuleRoot(moduleDirectory)) {
             thisLogger().info("Detected config module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.HYBRIS, moduleDirectory)
             return
         }
 
         if (!moduleDirectory.absolutePath.endsWith(HybrisConstants.PLATFORM_MODULE)
             && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-            && (moduleDescriptorResolver.isGradleModule(moduleDirectory) || moduleDescriptorResolver.isGradleKtsModule(moduleDirectory))
-            && !moduleDescriptorResolver.isCCv2Module(moduleDirectory)
+            && (moduleRootResolver.isGradleModuleRoot(moduleDirectory) || moduleRootResolver.isGradleKtsModuleRoot(moduleDirectory))
+            && !moduleRootResolver.isCCv2ModuleRoot(moduleDirectory)
         ) {
             thisLogger().info("Detected gradle module ${moduleDirectory.absolutePath}")
 
-            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.OTHER, moduleDirectory)
         }
 
-        if (moduleDescriptorResolver.isMavenModule(moduleDirectory)
+        if (moduleRootResolver.isMavenModuleRoot(moduleDirectory)
             && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
-            && !moduleDescriptorResolver.isCCv2Module(moduleDirectory)
+            && !moduleRootResolver.isCCv2ModuleRoot(moduleDirectory)
         ) {
             thisLogger().info("Detected maven module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.OTHER, moduleDirectory)
         }
 
-        if (moduleDescriptorResolver.isPlatformModule(moduleDirectory)) {
+        if (moduleRootResolver.isPlatformModuleRoot(moduleDirectory)) {
             thisLogger().info("Detected platform module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.add(ModuleGroup.HYBRIS, moduleDirectory)
-        } else if (moduleDescriptorResolver.isEclipseModule(moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.HYBRIS, moduleDirectory)
+        } else if (moduleRootResolver.isEclipseModuleRoot(moduleDirectory)
             && !FileUtil.filesEqual(moduleDirectory, importContext.rootDirectory)
         ) {
             thisLogger().info("Detected eclipse module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.OTHER, moduleDirectory)
         }
 
-        if (moduleDescriptorResolver.isCCv2Module(moduleDirectory)) {
+        if (moduleRootResolver.isCCv2ModuleRoot(moduleDirectory)) {
             thisLogger().info("Detected CCv2 module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.OTHER, moduleDirectory)
             val name = moduleDirectory.getName()
-            if (name.endsWith(CCv2Constants.DATAHUB_NAME)) {
+            if (name.endsWith(ProjectImportConstants.CCV2_DATAHUB_NAME)) {
                 // faster import: no need to process sub-folders of the CCv2 datahub directory
                 return
             }
         }
 
-        if (moduleDescriptorResolver.isAngularModule(moduleDirectory)) {
+        if (moduleRootResolver.isAngularModuleRoot(moduleDirectory)) {
             thisLogger().info("Detected Angular module ${moduleDirectory.absolutePath}")
-            moduleFilesContext.add(ModuleGroup.OTHER, moduleDirectory)
+            moduleRootsContext.add(ModuleGroup.OTHER, moduleDirectory)
             // do not go deeper
             return
         }
 
-        scanForSubdirectories(importContext, moduleFilesContext, excludedFromScanning, moduleDirectory.toPath(), progressListenerProcessor)
+        scanForSubdirectories(importContext, moduleRootsContext, excludedFromScanning, moduleDirectory.toPath(), progressListenerProcessor)
     }
 
     @Throws(InterruptedException::class, IOException::class)
     fun processDirectoriesByTypePriority(
         importContext: ProjectImportContext.Mutable,
         rootDirectory: File,
-        moduleFilesContext: ModuleFilesContext
+        moduleRootsContext: ModuleRootsContext
     ): Collection<File> {
         val moduleRootDirectories = mutableMapOf<String, File>()
 
-        moduleFilesContext.hybrisModules
+        moduleRootsContext.hybrisModules
             .forEach { file -> addIfNotExists(importContext, rootDirectory, moduleRootDirectories, file) }
 
-        moduleFilesContext.nonHybrisModules
+        moduleRootsContext.nonHybrisModules
             .forEach { file -> addIfNotExists(importContext, rootDirectory, moduleRootDirectories, file) }
 
         return moduleRootDirectories.values
@@ -158,7 +156,7 @@ class ModuleDescriptorsScanner {
     @Throws(IOException::class, InterruptedException::class)
     private fun scanForSubdirectories(
         importContext: ProjectImportContext.Mutable,
-        moduleFilesContext: ModuleFilesContext,
+        moduleRootsContext: ModuleRootsContext,
         excludedFromScanning: Set<File>,
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
@@ -166,9 +164,9 @@ class ModuleDescriptorsScanner {
         if (!modulePath.isDirectory()) return
 
         if (isPathInWSLDistribution(modulePath)) {
-            scanSubdirectoriesWSL(importContext, moduleFilesContext, excludedFromScanning, modulePath, progressListenerProcessor)
+            scanSubdirectoriesWSL(importContext, moduleRootsContext, excludedFromScanning, modulePath, progressListenerProcessor)
         } else {
-            scanSubdirectories(importContext, moduleFilesContext, excludedFromScanning, modulePath, progressListenerProcessor)
+            scanSubdirectories(importContext, moduleRootsContext, excludedFromScanning, modulePath, progressListenerProcessor)
         }
     }
 
@@ -179,7 +177,7 @@ class ModuleDescriptorsScanner {
     @Throws(InterruptedException::class, IOException::class)
     private fun scanSubdirectories(
         importContext: ProjectImportContext.Mutable,
-        moduleFilesContext: ModuleFilesContext,
+        moduleRootsContext: ModuleRootsContext,
         excludedFromScanning: Set<File>,
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
@@ -194,7 +192,7 @@ class ModuleDescriptorsScanner {
         for (file in files) {
             findModuleRoots(
                 importContext,
-                moduleFilesContext,
+                moduleRootsContext,
                 excludedFromScanning,
                 file.toFile(),
                 progressListenerProcessor
@@ -206,7 +204,7 @@ class ModuleDescriptorsScanner {
     @Throws(InterruptedException::class, IOException::class)
     private fun scanSubdirectoriesWSL(
         importContext: ProjectImportContext.Mutable,
-        moduleFilesContext: ModuleFilesContext,
+        moduleRootsContext: ModuleRootsContext,
         excludedFromScanning: Set<File>,
         modulePath: Path,
         progressListenerProcessor: TaskProgressProcessor<File>
@@ -220,7 +218,7 @@ class ModuleDescriptorsScanner {
                 .filter { !Files.isSymbolicLink(it) || followSymlink }
                 .map { it.toFile() }
                 .forEach { moduleRoot ->
-                    findModuleRoots(importContext, moduleFilesContext, excludedFromScanning, moduleRoot, progressListenerProcessor)
+                    findModuleRoots(importContext, moduleRootsContext, excludedFromScanning, moduleRoot, progressListenerProcessor)
                 }
         }
     }

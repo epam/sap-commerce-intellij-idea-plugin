@@ -23,34 +23,34 @@ import com.intellij.openapi.components.service
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.ProjectImportConstants
 import java.io.File
 import kotlin.io.path.exists
 
 @Service
-class ModuleDescriptorResolver {
+class ModuleRootResolver {
 
-    fun isConfigModule(file: File) = with(file.toPath()) {
+    fun isConfigModuleRoot(file: File) = with(file.toPath()) {
         resolve("licence").exists() && resolve("tomcat").resolve("tomcat_context.tpl").exists()
     }
 
-    fun isCCv2Module(file: File) =
-        (file.absolutePath.contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
-            || file.absolutePath.contains(CCv2Constants.DATAHUB_NAME)
-            || file.absolutePath.contains(CCv2Constants.JS_STOREFRONT_NAME)
+    fun isCCv2ModuleRoot(file: File) =
+        (file.absolutePath.contains(ProjectImportConstants.CCV2_CORE_CUSTOMIZE_NAME)
+            || file.absolutePath.contains(ProjectImportConstants.CCV2_DATAHUB_NAME)
+            || file.absolutePath.contains(ProjectImportConstants.CCV2_JS_STOREFRONT_NAME)
             )
-            && File(file, CCv2Constants.MANIFEST_NAME).isFile()
+            && File(file, ProjectImportConstants.CCV2_MANIFEST_NAME).isFile()
 
-    fun isAngularModule(file: File) = Plugin.ANGULAR.ifActive { File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile() }
+    fun isAngularModuleRoot(file: File) = Plugin.ANGULAR.ifActive { File(file, HybrisConstants.FILE_ANGULAR_JSON).isFile() }
         ?: false
 
-    fun isPlatformModule(file: File) = file.getName() == EiConstants.Extension.PLATFORM
+    fun isPlatformModuleRoot(file: File) = file.getName() == EiConstants.Extension.PLATFORM
         && File(file, HybrisConstants.EXTENSIONS_XML).isFile()
 
-    fun isHybrisExtension(file: File): Boolean = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile
+    fun isHybrisExtensionRoot(file: File): Boolean = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile
 
-    fun isMavenModule(rootProjectDirectory: File) = Plugin.MAVEN.ifActive {
+    fun isMavenModuleRoot(rootProjectDirectory: File) = Plugin.MAVEN.ifActive {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return@ifActive false
         }
@@ -58,7 +58,7 @@ class ModuleDescriptorResolver {
     }
         ?: false
 
-    fun isEclipseModule(rootProjectDirectory: File) = Plugin.ECLIPSE.ifActive {
+    fun isEclipseModuleRoot(rootProjectDirectory: File) = Plugin.ECLIPSE.ifActive {
         if (rootProjectDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return@ifActive false
         }
@@ -66,7 +66,7 @@ class ModuleDescriptorResolver {
     }
         ?: false
 
-    fun isGradleModule(file: File) = Plugin.GRADLE.ifActive {
+    fun isGradleModuleRoot(file: File) = Plugin.GRADLE.ifActive {
         if (file.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return@ifActive false
         }
@@ -75,7 +75,7 @@ class ModuleDescriptorResolver {
     }
         ?: false
 
-    fun isGradleKtsModule(file: File) = Plugin.GRADLE.ifActive {
+    fun isGradleKtsModuleRoot(file: File) = Plugin.GRADLE.ifActive {
         if (file.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return@ifActive false
         }
@@ -85,6 +85,6 @@ class ModuleDescriptorResolver {
         ?: false
 
     companion object {
-        fun getInstance(): ModuleDescriptorResolver = application.service()
+        fun getInstance(): ModuleRootResolver = application.service()
     }
 }

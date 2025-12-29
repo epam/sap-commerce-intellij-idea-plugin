@@ -20,6 +20,11 @@ package sap.commerce.toolset.project
 
 object ProjectImportConstants {
 
+    const val CCV2_MANIFEST_NAME = "manifest.json"
+    const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
+    const val CCV2_DATAHUB_NAME = "datahub"
+    const val CCV2_JS_STOREFRONT_NAME = "js-storefront"
+
     val excludedFromScanningDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)
         add(ProjectConstants.Directory.GRADLE)
@@ -51,6 +56,7 @@ object ProjectImportConstants {
 
         add(ProjectConstants.Directory.NODE_MODULES)
 
+        add(ProjectConstants.Directory.GEN_SRC)
         addAll(ProjectConstants.Directory.SRC_DIR_NAMES)
         addAll(ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
     }

@@ -18,28 +18,83 @@
 
 package sap.commerce.toolset.util
 
-import kotlinx.coroutines.CancellationException
+import com.intellij.platform.util.progress.reportSequentialProgress
+import com.intellij.util.progress.sleepCancellable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.coroutines.CoroutineContext
+import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 
-fun File.findRecursively(
-    coroutineContext: CoroutineContext,
+suspend fun File.findRecursively(
     ignoredDirNames: Collection<String>,
     filter: (File) -> Boolean
-): File? = try {
-    walkTopDown()
-        .onEnter {
+): File? = reportSequentialProgress { reporter ->
+    withContext(Dispatchers.IO) {
+        walkTopDown()
+            .onEnter {
+                ensureActive()
+
+                if (it.isDirectory) {
+                    reporter.indeterminateStep("Scanning directory: ${it.absolutePath}")
+                    sleepCancellable(250)
+                }
+                !ignoredDirNames.contains(it.name)
+            }
+            .forEach { file ->
+                ensureActive()
+
+                if (filter(file)) return@withContext file
+            }
+        null
+    }
+}
+
+/*
+This function will process files in the directory before going deeper
+ */
+suspend fun File.findRecursivelyOptimized(
+    ignoredDirNames: Collection<String>,
+    filter: (File) -> Boolean
+): File? = reportSequentialProgress { reporter ->
+    withContext(Dispatchers.IO) {
+        val queue = ArrayDeque<File>()
+        queue.add(this@findRecursivelyOptimized)
+
+        while (queue.isNotEmpty()) {
             coroutineContext.ensureActive()
 
-            !ignoredDirNames.contains(it.name)
-        }
-        .forEach { file ->
-            coroutineContext.ensureActive()
+            val currentDir = queue.removeFirst()
 
-            if (filter(file)) return file
+            if (currentDir.isDirectory) {
+                reporter.indeterminateStep("Scanning directory: ${currentDir.absolutePath}")
+
+                val files = mutableListOf<File>()
+                val dirs = mutableListOf<File>()
+
+                currentDir.toPath().listDirectoryEntries().forEach { path ->
+                    coroutineContext.ensureActive()
+                    if (path.isDirectory()) {
+                        if (!ignoredDirNames.contains(path.name)) {
+                            dirs.add(path.toFile())
+                        }
+                    } else {
+                        files.add(path.toFile())
+                    }
+                }
+
+                for (file in files) {
+                    coroutineContext.ensureActive()
+                    if (filter(file)) return@withContext file
+                }
+
+                queue.addAll(dirs)
+            } else {
+                if (filter(currentDir)) return@withContext currentDir
+            }
         }
-    null
-} catch (_: CancellationException) {
-    null
+        null
+    }
 }

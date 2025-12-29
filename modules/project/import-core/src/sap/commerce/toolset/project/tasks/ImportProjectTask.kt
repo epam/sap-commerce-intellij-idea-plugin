@@ -40,7 +40,7 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 @Service(Service.Level.PROJECT)
-class ProjectImportTask(private val project: Project) {
+class ImportProjectTask(private val project: Project) {
 
     fun import(importContext: ProjectImportContext) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
@@ -50,7 +50,7 @@ class ProjectImportTask(private val project: Project) {
 
         reportSequentialProgress { spr ->
             spr.nextStep(5) { preConfigureProject(importContext) }
-            spr.nextStep(90) { importModules(importContext, modifiableModelsProvider) }
+            spr.nextStep(95) { importModules(importContext, modifiableModelsProvider) }
             spr.nextStep(100) { configureProject(importContext, modifiableModelsProvider) }
 
             spr.indeterminateStep(i18n("hybris.project.import.saving.project"))
@@ -135,6 +135,6 @@ class ProjectImportTask(private val project: Project) {
     }
 
     companion object {
-        fun getInstance(project: Project): ProjectImportTask = project.service()
+        fun getInstance(project: Project): ImportProjectTask = project.service()
     }
 }

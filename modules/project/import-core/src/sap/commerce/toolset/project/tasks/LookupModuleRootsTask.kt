@@ -19,34 +19,24 @@
 package sap.commerce.toolset.project.tasks
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.util.application
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.ProjectImportConstants
-import sap.commerce.toolset.util.findRecursively
-import java.io.File
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 @Service
-class PlatformDirectoryLookupTask {
+class LookupModuleRootsTask() {
 
-    fun find(rootProjectDirectory: File) = runWithModalProgressBlocking(
-        owner = ModalTaskOwner.guess(),
-        title = i18n("hybris.project.import.searching.hybris.distribution"),
-    ) {
-        rootProjectDirectory.findRecursively(
-            coroutineContext,
-            ProjectImportConstants.excludedFromScanningDirectories
+    fun x(importContext: ProjectImportContext.Mutable) {
+        runWithModalProgressBlocking(
+            owner = ModalTaskOwner.guess(),
+            title = i18n("hybris.project.import.scanning"),
         ) {
-            it.absolutePath.endsWith(HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME)
-        }
-            ?.parentFile?.parentFile?.parentFile
-            ?.absolutePath
-    }
 
-    companion object {
-        fun getInstance(): PlatformDirectoryLookupTask = application.service()
+//            ModuleDescriptorsCollector.getInstance().collect(
+//                importContext,
+//            )
+
+        }
     }
 }

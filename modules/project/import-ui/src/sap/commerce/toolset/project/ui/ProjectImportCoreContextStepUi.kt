@@ -29,7 +29,7 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.ui.CRUDListPanel
 
-internal fun ui(context: ProjectImportCoreContext): DialogPanel {
+internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
     val rightGaps = UnscaledGaps(0, 0, 0, 16)
 
     return panel {

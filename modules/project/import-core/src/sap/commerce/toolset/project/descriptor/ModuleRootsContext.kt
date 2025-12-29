@@ -16,11 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.context
+package sap.commerce.toolset.project.descriptor
 
+import sap.commerce.toolset.project.context.ModuleGroup
 import java.io.File
 
-data class ModuleFilesContext(
+data class ModuleRootsContext(
     private val _hybrisModules: MutableSet<File> = mutableSetOf(),
     private val _otherModules: MutableSet<File> = mutableSetOf(),
 ) {

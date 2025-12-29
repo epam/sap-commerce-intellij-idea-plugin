@@ -26,6 +26,7 @@ import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.scale.JBUIScale
 import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.coroutines.CancellationException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.extensioninfo.EiConstants
@@ -37,9 +38,9 @@ import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.settings.ySettings
-import sap.commerce.toolset.project.tasks.PlatformDirectoryLookupTask
+import sap.commerce.toolset.project.tasks.LookupPlatformDirectoryTask
 import sap.commerce.toolset.project.tasks.SearchModulesRootsTaskModal
-import sap.commerce.toolset.project.ui.ui
+import sap.commerce.toolset.project.ui.uiCoreStep
 import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.awt.Dimension
@@ -61,7 +62,8 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             importSettings = ProjectImportSettings.of(ApplicationSettings.getInstance()).mutable()
         )
     }
-    private val _ui by lazy { ui(importCoreContext) }
+
+    private val _ui by lazy { uiCoreStep(importCoreContext) }
 
     override fun getComponent() = JBScrollPane(_ui).apply {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
@@ -125,10 +127,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         }
 
         if (importCoreContext.platformDirectory.get().isBlank()) {
-            val rootProjectDirectory = File(builder.fileToImport)
-
-            PlatformDirectoryLookupTask.getInstance().find(rootProjectDirectory)
-                ?.let { importCoreContext.platformDirectory.set(it) }
+            findPlatformDirectory()?.let { importCoreContext.platformDirectory.set(it) }
         }
 
         val platformPath = importCoreContext.platformDirectory.get()
@@ -208,29 +207,16 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 )
 
             this.ccv2Token = CCv2ProjectSettings.getInstance().getCCv2Token()
-
-            val hybrisDirectory = projectSettings.hybrisDirectory
-            if (hybrisDirectory != null) {
-                this.platformDirectory = FileUtils.toFile(
-                    builder.fileToImport,
-                    projectSettings.hybrisDirectory
-                )
-            }
-
             this.excludedFromScanning = projectSettings.excludedFromScanning
 
-            // TODO: order of scans may be incorrect
-            searchModuleRoots(importContext)
-
-            if (hybrisDirectory == null) {
-                val rootProjectDirectory = FileUtils.toFile(builder.fileToImport)!!
+            this.platformDirectory = projectSettings.hybrisDirectory
+                ?.let { FileUtils.toFile(builder.fileToImport, it) }
                 // refreshing a project which was never imported by this plugin
-                PlatformDirectoryLookupTask.getInstance().find(rootProjectDirectory)
-                    ?.let { this.platformDirectory = FileUtils.toFile(it) }
-            }
-
-            thisLogger().info("Refreshing a project with the following settings: $this")
+                ?: findPlatformDirectory()?.let { FileUtils.toFile(it) }
         }
+
+        thisLogger().info("Refreshing a project with the following settings: $importContext")
+        searchModuleRoots(importContext)
     }
 
     override fun validate(): Boolean {
@@ -314,6 +300,19 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         val task = SearchModulesRootsTaskModal(importContext)
 
         ProgressManager.getInstance().run(task)
+    }
+
+    private fun findPlatformDirectory(): String? {
+        try {
+            val rootProjectDirectory = File(builder.fileToImport)
+
+            return LookupPlatformDirectoryTask.getInstance().find(rootProjectDirectory)
+        } catch (_: CancellationException) {
+            // noop
+        } catch (e: Exception) {
+            thisLogger().error(e)
+        }
+        return null
     }
 
     private fun importBuilder() = builder as HybrisProjectImportBuilder

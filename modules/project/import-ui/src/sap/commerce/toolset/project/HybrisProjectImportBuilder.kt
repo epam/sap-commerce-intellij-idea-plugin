@@ -35,7 +35,7 @@ import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.tasks.ProjectImportTask
+import sap.commerce.toolset.project.tasks.ImportProjectTask
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService.Companion.getInstance
 import java.io.File
 import java.io.IOException
@@ -80,7 +80,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
 
         performProjectsCleanup(context, chosenModuleDescriptors)
 
-        ProjectImportTask.getInstance(project).import(context)
+        ImportProjectTask.getInstance(project).import(context)
 
         if (context.refresh) {
             PostImportBulkConfigurator.getInstance(project).configure(context)
