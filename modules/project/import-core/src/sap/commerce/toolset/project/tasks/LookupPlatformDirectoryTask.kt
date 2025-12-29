@@ -32,7 +32,7 @@ import java.io.File
 @Service
 class LookupPlatformDirectoryTask {
 
-    fun find(rootProjectDirectory: File) = runWithModalProgressBlocking(
+    fun execute(rootProjectDirectory: File) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.searching.hybris.distribution"),
     ) {

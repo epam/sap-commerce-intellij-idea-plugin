@@ -18,18 +18,11 @@
 
 package sap.commerce.toolset.project.descriptor
 
-import sap.commerce.toolset.project.context.ModuleGroup
 import java.io.File
 
 data class ModuleRootsContext(
     private val _hybrisModules: MutableSet<File> = mutableSetOf(),
     private val _otherModules: MutableSet<File> = mutableSetOf(),
 ) {
-    val hybrisModules get() = _hybrisModules.toSet()
-    val nonHybrisModules get() = _otherModules.toSet()
 
-    fun add(group: ModuleGroup, moduleDirectory: File) = when (group) {
-        ModuleGroup.HYBRIS -> _hybrisModules.add(moduleDirectory)
-        ModuleGroup.OTHER -> _otherModules.add(moduleDirectory)
-    }
 }

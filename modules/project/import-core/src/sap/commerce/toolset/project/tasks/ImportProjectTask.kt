@@ -42,7 +42,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 @Service(Service.Level.PROJECT)
 class ImportProjectTask(private val project: Project) {
 
-    fun import(importContext: ProjectImportContext) = runWithModalProgressBlocking(
+    fun execute(importContext: ProjectImportContext) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.commit"),
     ) {

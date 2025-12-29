@@ -306,7 +306,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         try {
             val rootProjectDirectory = File(builder.fileToImport)
 
-            return LookupPlatformDirectoryTask.getInstance().find(rootProjectDirectory)
+            return LookupPlatformDirectoryTask.getInstance().execute(rootProjectDirectory)
         } catch (_: CancellationException) {
             // noop
         } catch (e: Exception) {

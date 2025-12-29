@@ -27,11 +27,14 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 @Service
 class LookupModuleRootsTask() {
 
-    fun x(importContext: ProjectImportContext.Mutable) {
+    fun execute(importContext: ProjectImportContext.Mutable) {
         runWithModalProgressBlocking(
             owner = ModalTaskOwner.guess(),
             title = i18n("hybris.project.import.scanning"),
         ) {
+
+
+
 
 //            ModuleDescriptorsCollector.getInstance().collect(
 //                importContext,

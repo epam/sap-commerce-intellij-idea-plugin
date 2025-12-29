@@ -62,7 +62,7 @@ public class SearchModulesRootsTaskModal extends Task.Modal {
                     new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),
                     new DirectoriesScannerErrorsProcessor()
                 )
-                .forEach(importContext::addFoundModule);
+                .forEach(importContext::addModule);
 
             final var mainConfigModuleDescriptor = MainConfigModuleDescriptorResolver.Companion.getInstance()
                 .resolve(importContext);

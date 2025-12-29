@@ -80,7 +80,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
 
         performProjectsCleanup(context, chosenModuleDescriptors)
 
-        ImportProjectTask.getInstance(project).import(context)
+        ImportProjectTask.getInstance(project).execute(context)
 
         if (context.refresh) {
             PostImportBulkConfigurator.getInstance(project).configure(context)

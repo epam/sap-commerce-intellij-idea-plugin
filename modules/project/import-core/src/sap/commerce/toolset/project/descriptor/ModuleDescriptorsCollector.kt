@@ -54,31 +54,29 @@ class ModuleDescriptorsCollector {
         val rootDirectory = importContext.rootDirectory
         val excludedFromScanning = getExcludedFromScanningDirectories(importContext)
         val modulesScanner = ModuleDescriptorsScanner.getInstance()
-        val moduleRootsContext = ModuleRootsContext()
 
         thisLogger().info("Scanning for modules")
-        modulesScanner.findModuleRoots(importContext, moduleRootsContext, excludedFromScanning, rootDirectory, progressListenerProcessor)
+        modulesScanner.findModuleRoots(importContext, excludedFromScanning, rootDirectory, progressListenerProcessor)
 
         if (externalExtensionsDirectory != null && !FileUtils.isFileUnder(externalExtensionsDirectory, rootDirectory)) {
-            thisLogger().info("Scanning for external modules")
-            modulesScanner.findModuleRoots(importContext, moduleRootsContext, excludedFromScanning, externalExtensionsDirectory, progressListenerProcessor)
+            thisLogger().info("Scanning for external extensions modules: ${externalExtensionsDirectory.absolutePath}")
+            modulesScanner.findModuleRoots(importContext, excludedFromScanning, externalExtensionsDirectory, progressListenerProcessor)
         }
 
         if (hybrisDistributionDirectory != null && !FileUtils.isFileUnder(hybrisDistributionDirectory, rootDirectory)) {
-            thisLogger().info("Scanning for hybris modules out of the project")
-            modulesScanner.findModuleRoots(importContext, moduleRootsContext, excludedFromScanning, hybrisDistributionDirectory, progressListenerProcessor)
+            thisLogger().info("Scanning for hybris modules out of the project: ${hybrisDistributionDirectory.absolutePath}")
+            modulesScanner.findModuleRoots(importContext, excludedFromScanning, hybrisDistributionDirectory, progressListenerProcessor)
         }
 
         val moduleRootDirectories = modulesScanner.processDirectoriesByTypePriority(
             importContext,
-            rootDirectory,
-            moduleRootsContext
+            rootDirectory
         )
 
         val moduleDescriptors = mutableListOf<ModuleDescriptor>()
         val pathsFailedToImport = mutableListOf<File>()
 
-        if (!ApplicationSettings.Companion.getInstance().groupModules) {
+        if (!ApplicationSettings.getInstance().groupModules) {
             val rootModule = addRootModule(rootDirectory)
             if (rootModule != null) moduleDescriptors.add(rootModule)
             else pathsFailedToImport.add(rootDirectory)
@@ -86,7 +84,7 @@ class ModuleDescriptorsCollector {
 
         moduleRootDirectories.forEach { moduleRootDirectory ->
             try {
-                val moduleDescriptor = ModuleDescriptorFactory.Companion.getInstance().createDescriptor(moduleRootDirectory, importContext)
+                val moduleDescriptor = ModuleDescriptorFactory.getInstance().createDescriptor(moduleRootDirectory, importContext)
                 moduleDescriptors.add(moduleDescriptor)
 
                 moduleDescriptor.asSafely<YModuleDescriptor>()
@@ -123,7 +121,7 @@ class ModuleDescriptorsCollector {
     }
 
     private fun addRootModule(moduleRootDirectory: File): ExternalModuleDescriptor? = try {
-        ModuleDescriptorFactory.Companion.getInstance().createRootDescriptor(moduleRootDirectory, moduleRootDirectory.getName())
+        ModuleDescriptorFactory.getInstance().createRootDescriptor(moduleRootDirectory, moduleRootDirectory.getName())
     } catch (e: HybrisConfigurationException) {
         thisLogger().error("Can not import a module using path: $moduleRootDirectory", e)
         null

@@ -90,7 +90,7 @@ class MainConfigModuleDescriptorResolver {
             )
             thisLogger().info("Creating Overridden Config module in local.properties for ${configDir.absolutePath}")
 
-            importContext.addFoundModule(configHybrisModuleDescriptor)
+            importContext.addModule(configHybrisModuleDescriptor)
 
             configHybrisModuleDescriptor
         } catch (e: HybrisConfigurationException) {
