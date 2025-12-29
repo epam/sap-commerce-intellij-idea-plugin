@@ -20,13 +20,11 @@ package sap.commerce.toolset.project.vfs
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.application
-import sap.commerce.toolset.project.tasks.TaskProgressProcessor
 import java.io.File
 import java.io.IOException
 
@@ -63,33 +61,6 @@ class VirtualFileSystemService {
                     }
                 }
             }
-    }
-
-    @Throws(InterruptedException::class)
-    fun findFileByNameInDirectory(
-        directory: File,
-        fileName: String,
-        progressListenerProcessor: TaskProgressProcessor<File>,
-    ): File? {
-        val result = Ref.create<File>()
-        val interrupted = Ref.create(false)
-
-        FileUtil.processFilesRecursively(directory) { file ->
-            if (!progressListenerProcessor.shouldContinue(directory)) {
-                interrupted.set(true)
-                return@processFilesRecursively false
-            }
-            if (file.absolutePath.endsWith(fileName)) {
-                result.set(file)
-                return@processFilesRecursively false
-            }
-            true
-        }
-
-        if (interrupted.get()) {
-            throw InterruptedException("Modules scanning has been interrupted.")
-        }
-        return result.get()
     }
 
     fun fileContainsAnother(parent: File, child: File) = pathContainsAnother(parent.absolutePath, child.absolutePath)
