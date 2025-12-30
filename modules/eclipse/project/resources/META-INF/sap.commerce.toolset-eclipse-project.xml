@@ -17,6 +17,8 @@
   -->
 <idea-plugin>
 
+    <depends>org.jetbrains.idea.eclipse</depends>
+
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.eclipse.project.configurator.EclipseConfigurator"/>
 

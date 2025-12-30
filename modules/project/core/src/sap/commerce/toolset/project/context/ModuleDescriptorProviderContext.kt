@@ -25,4 +25,5 @@ data class ModuleDescriptorProviderContext(
     val moduleRootDirectory: File,
     val project: Project?,
     val externalExtensionsDirectory: File?,
+    val moduleRoot: ModuleRoot,
 )

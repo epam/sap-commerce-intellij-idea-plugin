@@ -54,9 +54,9 @@ class ModuleDescriptorFactory {
             moduleRootDirectory = resolvedFile,
             project = importContext.project,
             externalExtensionsDirectory = importContext.externalExtensionsDirectory,
+            moduleRoot = moduleRoot,
         )
 
-        // TODO: no need in "isApplicable" anymore
         return ModuleDescriptorProvider.EP.extensionList
             .firstOrNull { it.isApplicable(context) }
             ?.let { provider ->
