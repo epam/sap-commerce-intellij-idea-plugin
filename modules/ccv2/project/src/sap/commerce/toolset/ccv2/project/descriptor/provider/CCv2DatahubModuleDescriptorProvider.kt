@@ -18,20 +18,13 @@
 
 package sap.commerce.toolset.ccv2.project.descriptor.provider
 
-import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.project.descriptor.CCv2DatahubModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
-import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
-import java.io.File
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
-class CCv2DatahubModuleDescriptorProvider : ModuleDescriptorProvider {
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
-        val absolutePath = moduleRootDirectory.absolutePath
+class CCv2DatahubModuleDescriptorProvider : CCv2ModuleDescriptorProvider(
+    ModuleDescriptorType.CCV2_DATAHUB
+) {
 
-        return absolutePath.contains(CCv2Constants.DATAHUB_NAME)
-            && File(moduleRootDirectory, CCv2Constants.MANIFEST_NAME).isFile()
-    }
-
-    override fun create(moduleRootDirectory: File) = CCv2DatahubModuleDescriptor(moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = CCv2DatahubModuleDescriptor(context.moduleRootDirectory)
 }

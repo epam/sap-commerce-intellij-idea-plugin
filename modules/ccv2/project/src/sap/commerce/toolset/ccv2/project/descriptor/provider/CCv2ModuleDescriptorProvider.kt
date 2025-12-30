@@ -16,15 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.descriptor.provider
+package sap.commerce.toolset.ccv2.project.descriptor.provider
 
-import sap.commerce.toolset.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.extensioninfo.EiUnmarshaller
-import java.io.File
+import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 
-abstract class YModuleDescriptorProvider : ModuleDescriptorProvider {
+abstract class CCv2ModuleDescriptorProvider(
+    private val type: ModuleDescriptorType
+) : ModuleDescriptorProvider {
 
-    @Throws(HybrisConfigurationException::class)
-    protected fun getExtensionInfo(moduleRootDirectory: File) = EiUnmarshaller.unmarshall(moduleRootDirectory)
-
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == type
 }

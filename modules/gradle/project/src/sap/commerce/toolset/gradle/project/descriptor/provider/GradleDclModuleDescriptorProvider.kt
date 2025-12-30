@@ -18,29 +18,13 @@
 
 package sap.commerce.toolset.gradle.project.descriptor.provider
 
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import org.jetbrains.plugins.gradle.util.GradleConstants
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.gradle.project.descriptor.GradleDclModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
-import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
-import java.io.File
 
-class GradleDclModuleDescriptorProvider : ModuleDescriptorProvider {
+class GradleDclModuleDescriptorProvider : GradleModuleDescriptorProvider(
+    GradleConstants.DECLARATIVE_SCRIPT_NAME
+) {
 
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
-        val project = context.project
-
-        if (Plugin.GRADLE.isDisabled()) return false
-        if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
-
-        return File(moduleRootDirectory, GradleConstants.DECLARATIVE_EXTENSION).isFile
-            || File(moduleRootDirectory, GradleConstants.DECLARATIVE_SCRIPT_NAME).isFile
-            // project refresh case
-            || (project != null && ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID).getLinkedProjectSettings(moduleRootDirectory.path) != null)
-    }
-
-    override fun create(moduleRootDirectory: File) = GradleDclModuleDescriptor(moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = GradleDclModuleDescriptor(context.moduleRootDirectory)
 }

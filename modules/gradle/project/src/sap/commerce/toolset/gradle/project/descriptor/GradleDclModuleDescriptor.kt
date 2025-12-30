@@ -26,6 +26,4 @@ class GradleDclModuleDescriptor(
 ) : GradleModuleDescriptor(
     moduleRootDirectory,
     File(moduleRootDirectory, GradleConstants.DECLARATIVE_SCRIPT_NAME)
-) {
-
-}
+)

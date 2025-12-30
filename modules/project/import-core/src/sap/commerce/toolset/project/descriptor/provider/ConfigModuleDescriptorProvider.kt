@@ -18,18 +18,12 @@
 package sap.commerce.toolset.project.descriptor.provider
 
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ConfigModuleDescriptorImpl
-import java.io.File
-import kotlin.io.path.exists
 
 class ConfigModuleDescriptorProvider : ModuleDescriptorProvider {
 
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory.toPath()
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.CONFIG
 
-        return moduleRootDirectory.resolve("licence").exists()
-            && moduleRootDirectory.resolve("tomcat").resolve("tomcat_context.tpl").exists()
-    }
-
-    override fun create(moduleRootDirectory: File) = ConfigModuleDescriptorImpl(moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = ConfigModuleDescriptorImpl(context.moduleRootDirectory)
 }

@@ -20,27 +20,26 @@ package sap.commerce.toolset.gradle.project.descriptor.provider
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import org.jetbrains.plugins.gradle.util.GradleConstants
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.gradle.project.descriptor.GradleModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
-import java.io.File
+import sap.commerce.toolset.util.fileExists
+import kotlin.io.path.pathString
 
-class GradleModuleDescriptorProvider : ModuleDescriptorProvider {
+abstract class GradleModuleDescriptorProvider(
+    private val scriptName: String,
+) : ModuleDescriptorProvider {
 
     override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
         val project = context.project
+        val moduleRootPath = context.moduleRoot.path
 
         if (Plugin.GRADLE.isDisabled()) return false
-        if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
+        if (context.moduleRoot.type != ModuleDescriptorType.GRADLE) return false
 
-        return File(moduleRootDirectory, GradleConstants.SETTINGS_FILE_NAME).isFile
-            || File(moduleRootDirectory, GradleConstants.DEFAULT_SCRIPT_NAME).isFile
+        return moduleRootPath.resolve(scriptName).fileExists
             // project refresh case
-            || (project != null && ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID).getLinkedProjectSettings(moduleRootDirectory.path) != null)
+            || (project != null && ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID).getLinkedProjectSettings(moduleRootPath.normalize().pathString) != null)
     }
-
-    override fun create(moduleRootDirectory: File) = GradleModuleDescriptor(moduleRootDirectory)
 }

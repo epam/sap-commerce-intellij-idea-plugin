@@ -18,16 +18,13 @@
 
 package sap.commerce.toolset.angular.project.descriptor.provider
 
-import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.angular.AngularConstants
 import sap.commerce.toolset.angular.project.descriptor.AngularModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
-import java.io.File
 
 class AngularModuleDescriptorProvider : ModuleDescriptorProvider {
-    override fun isApplicable(context: ModuleDescriptorProviderContext) = Plugin.ANGULAR.isActive()
-        && File(context.moduleRootDirectory, AngularConstants.ANGULAR_JSON).isFile()
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.ANGULAR
 
-    override fun create(moduleRootDirectory: File) = AngularModuleDescriptor(moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = AngularModuleDescriptor(context.moduleRootDirectory)
 }

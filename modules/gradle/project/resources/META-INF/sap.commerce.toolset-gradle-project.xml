@@ -22,7 +22,7 @@
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
         <project.refreshConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
 
-        <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.project.descriptor.provider.GradleModuleDescriptorProvider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.project.descriptor.provider.GradleDefaultModuleDescriptorProvider"/>
         <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.project.descriptor.provider.GradleKtsModuleDescriptorProvider"/>
         <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.project.descriptor.provider.GradleDclModuleDescriptorProvider"/>
 

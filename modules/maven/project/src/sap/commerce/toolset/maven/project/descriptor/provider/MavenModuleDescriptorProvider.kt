@@ -18,22 +18,13 @@
 
 package sap.commerce.toolset.maven.project.descriptor.provider
 
-import org.jetbrains.idea.maven.model.MavenConstants
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.maven.project.descriptor.MavenModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
-import java.io.File
 
 class MavenModuleDescriptorProvider : ModuleDescriptorProvider {
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
-        if (Plugin.MAVEN.isDisabled()) return false
-        if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.MAVEN
 
-        return File(moduleRootDirectory, MavenConstants.POM_XML).isFile()
-    }
-
-    override fun create(moduleRootDirectory: File) = MavenModuleDescriptor(moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = MavenModuleDescriptor(context.moduleRootDirectory)
 }

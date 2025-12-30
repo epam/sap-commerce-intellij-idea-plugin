@@ -18,20 +18,12 @@
 
 package sap.commerce.toolset.ccv2.project.descriptor.provider
 
-import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.project.descriptor.CCv2StorefrontModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
-import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
-import java.io.File
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
-class CCv2StorefrontModuleDescriptorProvider : ModuleDescriptorProvider {
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
-        val absolutePath = moduleRootDirectory.absolutePath
-
-        return absolutePath.contains(CCv2Constants.JS_STOREFRONT_NAME)
-            && File(moduleRootDirectory, CCv2Constants.MANIFEST_NAME).isFile()
-    }
-
-    override fun create(moduleRootDirectory: File) = CCv2StorefrontModuleDescriptor(moduleRootDirectory)
+class CCv2StorefrontModuleDescriptorProvider : CCv2ModuleDescriptorProvider(
+    ModuleDescriptorType.CCV2_STOREFRONT
+) {
+    override fun create(context: ModuleDescriptorProviderContext) = CCv2StorefrontModuleDescriptor(context.moduleRootDirectory)
 }

@@ -23,6 +23,7 @@ import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.util.normalizedContains
 import java.nio.file.FileVisitResult
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -34,8 +35,10 @@ class YOOTBModuleRootResolver : ModuleRootResolver {
 
     override fun isApplicable(path: Path): Boolean = with(path) {
         resolve(HybrisConstants.EXTENSION_INFO_XML).fileExists
-            && (parent.contains(resolve(hybrisBin.resolve("modules")))
-            || (parent.contains(resolve(hybrisBin)) && parent.name.startsWith("ext-")))
+            && (
+            parent.normalizedContains(hybrisBin.resolve("modules"))
+                || (parent.normalizedContains(hybrisBin) && parent.name.startsWith("ext-"))
+            )
     }
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(

@@ -19,26 +19,18 @@
 package sap.commerce.toolset.eclipse.project.descriptor.provider
 
 import org.jetbrains.idea.eclipse.EclipseProjectFinder
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.eclipse.EclipseConstants
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 import java.io.File
 
 class EclipseModuleDescriptorProvider : ModuleDescriptorProvider {
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
-        if (Plugin.ECLIPSE.isDisabled()) return false
-        if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.ECLIPSE
 
-        return File(moduleRootDirectory, EclipseConstants.DOT_PROJECT).isFile()
-    }
-
-    override fun create(moduleRootDirectory: File) = EclipseModuleDescriptor(
-        moduleRootDirectory,
-        getEclipseModuleDescriptorName(moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = EclipseModuleDescriptor(
+        context.moduleRootDirectory,
+        getEclipseModuleDescriptorName(context.moduleRootDirectory)
     )
 
     private fun getEclipseModuleDescriptorName(moduleRootDirectory: File) = EclipseProjectFinder.findProjectName(moduleRootDirectory.absolutePath)

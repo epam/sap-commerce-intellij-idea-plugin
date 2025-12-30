@@ -26,6 +26,4 @@ class GradleKtsModuleDescriptor(
 ) : GradleModuleDescriptor(
     moduleRootDirectory,
     File(moduleRootDirectory, GradleConstants.KOTLIN_DSL_SCRIPT_NAME)
-) {
-
-}
+)

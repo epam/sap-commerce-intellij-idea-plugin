@@ -17,26 +17,22 @@
  */
 package sap.commerce.toolset.project.descriptor.provider
 
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
-import java.io.File
 
-class YCustomRegularModuleDescriptorProvider : YModuleDescriptorProvider() {
+class YCustomRegularModuleDescriptorProvider : ModuleDescriptorProvider {
 
-    override fun isApplicable(context: ModuleDescriptorProviderContext) = File(
-        context.moduleRootDirectory,
-        HybrisConstants.EXTENSION_INFO_XML
-    ).isFile
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.CUSTOM
 
     @Throws(HybrisConfigurationException::class)
-    override fun create(moduleRootDirectory: File): YCustomRegularModuleDescriptor {
-        val extensionInfo = EiModelAccess.getInstance().getContext(moduleRootDirectory)
-            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $moduleRootDirectory")
+    override fun create(context: ModuleDescriptorProviderContext): YCustomRegularModuleDescriptor {
+        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootDirectory)
+            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
 
-        return YCustomRegularModuleDescriptor(moduleRootDirectory, extensionInfo).apply {
+        return YCustomRegularModuleDescriptor(context.moduleRootDirectory, extensionInfo).apply {
             SubModuleDescriptorFactory.getInstance().buildAll(this)
                 .forEach { this.addSubModule(it) }
         }

@@ -17,20 +17,13 @@
  */
 package sap.commerce.toolset.project.descriptor.provider
 
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.PlatformModuleDescriptorImpl
-import java.io.File
 
 class PlatformModuleDescriptorProvider : ModuleDescriptorProvider {
 
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.PLATFORM
 
-        return moduleRootDirectory.getName() == EiConstants.Extension.PLATFORM
-            && File(moduleRootDirectory, HybrisConstants.EXTENSIONS_XML).isFile()
-    }
-
-    override fun create(moduleRootDirectory: File) = PlatformModuleDescriptorImpl(moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = PlatformModuleDescriptorImpl(context.moduleRootDirectory)
 }

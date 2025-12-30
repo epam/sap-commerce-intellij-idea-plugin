@@ -33,7 +33,7 @@ class YExtModuleRootResolver : ModuleRootResolver {
 
     override fun isApplicable(path: Path) = with(path) {
         resolve(HybrisConstants.EXTENSION_INFO_XML).fileExists
-            && parent.endsWith(resolve(platformExt))
+            && parent.endsWith(platformExt)
     }
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(

@@ -16,15 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.project.descriptor.provider
+package sap.commerce.toolset.gradle.project.descriptor.provider
 
-import sap.commerce.toolset.ccv2.project.descriptor.CCv2CoreModuleDescriptor
+import org.jetbrains.plugins.gradle.util.GradleConstants
+import sap.commerce.toolset.gradle.project.descriptor.GradleModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
-class CCv2CoreModuleDescriptorProvider : CCv2ModuleDescriptorProvider(
-    ModuleDescriptorType.CCV2_CORE
+class GradleDefaultModuleDescriptorProvider : GradleModuleDescriptorProvider(
+    GradleConstants.DEFAULT_SCRIPT_NAME,
 ) {
 
-    override fun create(context: ModuleDescriptorProviderContext) = CCv2CoreModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = GradleModuleDescriptor(context.moduleRootDirectory)
 }

@@ -21,13 +21,12 @@ package sap.commerce.toolset.project.descriptor.provider
 import com.intellij.openapi.extensions.ExtensionPointName
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import java.io.File
 
 interface ModuleDescriptorProvider {
 
     fun isApplicable(context: ModuleDescriptorProviderContext): Boolean
 
-    fun create(moduleRootDirectory: File): ModuleDescriptor
+    fun create(context: ModuleDescriptorProviderContext): ModuleDescriptor
 
     companion object {
         val EP = ExtensionPointName.create<ModuleDescriptorProvider>("sap.commerce.toolset.project.module.descriptorProvider")

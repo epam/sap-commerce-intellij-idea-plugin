@@ -17,36 +17,21 @@
  */
 package sap.commerce.toolset.project.descriptor.provider
 
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
-import sap.commerce.toolset.project.vfs.VirtualFileSystemService
-import java.io.File
 
-class YOotbRegularModuleDescriptorProvider : YModuleDescriptorProvider() {
+class YOotbRegularModuleDescriptorProvider : ModuleDescriptorProvider {
 
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
-        val externalExtensionsDirectory = context.externalExtensionsDirectory
-        if (externalExtensionsDirectory != null) {
-            if (VirtualFileSystemService.getInstance().fileContainsAnother(externalExtensionsDirectory, moduleRootDirectory)) {
-                // this will override bin/ext-* naming convention.
-                return false
-            }
-        }
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.OOTB
 
-        return (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX)
-            || moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX_2019))
-            && File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile()
-    }
+    override fun create(context: ModuleDescriptorProviderContext): YOotbRegularModuleDescriptor {
+        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootDirectory)
+            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
 
-    override fun create(moduleRootDirectory: File): YOotbRegularModuleDescriptor {
-        val extensionInfo = EiModelAccess.getInstance().getContext(moduleRootDirectory)
-            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $moduleRootDirectory")
-
-        return YOotbRegularModuleDescriptor(moduleRootDirectory, extensionInfo).apply {
+        return YOotbRegularModuleDescriptor(context.moduleRootDirectory, extensionInfo).apply {
             SubModuleDescriptorFactory.getInstance().buildAll(this)
                 .forEach { this.addSubModule(it) }
         }

@@ -17,27 +17,24 @@
  */
 package sap.commerce.toolset.project.descriptor.provider
 
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
-import java.io.File
+import kotlin.io.path.name
 
-class YPlatformExtModuleDescriptorProvider : YModuleDescriptorProvider() {
+class YPlatformExtModuleDescriptorProvider : ModuleDescriptorProvider {
 
-    override fun isApplicable(context: ModuleDescriptorProviderContext): Boolean {
-        val moduleRootDirectory = context.moduleRootDirectory
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.EXT
+        && context.moduleRoot.path.name != EiConstants.Extension.CORE
 
-        return moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
-            && File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile()
-    }
+    override fun create(context: ModuleDescriptorProviderContext): YPlatformExtModuleDescriptor {
+        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootDirectory)
+            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
 
-    override fun create(moduleRootDirectory: File): YPlatformExtModuleDescriptor {
-        val extensionInfo = EiModelAccess.getInstance().getContext(moduleRootDirectory)
-            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $moduleRootDirectory")
-
-        return YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo).apply {
+        return YPlatformExtModuleDescriptor(context.moduleRootDirectory, extensionInfo).apply {
             SubModuleDescriptorFactory.getInstance().buildAll(this)
                 .forEach { this.addSubModule(it) }
         }

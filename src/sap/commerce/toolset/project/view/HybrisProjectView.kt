@@ -35,11 +35,9 @@ import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.project.module.ModuleRootResolver
 import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
 import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
 import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
@@ -121,7 +119,6 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         val otherNodes = mutableListOf<AbstractTreeNode<*>>()
         val treeNodes = mutableListOf<AbstractTreeNode<*>>()
         val projectRootManager = ProjectRootManager.getInstance(project)
-        val externalExtensionsDirectory = project.ySettings.externalExtensionsDirectory?.let { File(it) }
 
         for (child in children) {
             if (child is PsiDirectoryNode) {
@@ -129,16 +126,19 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                     ?: continue
 
                 val file = VfsUtil.virtualToIoFile(virtualFile)
-                val yFacet = projectRootManager.fileIndex.getModuleForFile(virtualFile)
-                    ?.let { YFacet.get(it) }
+                val moduleDescriptorType = projectRootManager.fileIndex.getModuleForFile(virtualFile)
+                    ?.let { YFacet.getState(it) }
+                    ?.type
+                    ?: ModuleRootResolver.EP.extensionList
+                        .firstOrNull { it.isApplicable(file.toPath()) }
+                        ?.resolve(file.toPath())
+                        ?.moduleRoot
+                        ?.type
 
-                val context = ModuleDescriptorProviderContext(
-                    moduleRootDirectory = file,
-                    project = project,
-                    externalExtensionsDirectory = externalExtensionsDirectory
-                )
-
-                if (yFacet == null && ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(context) }) {
+                if (moduleDescriptorType == ModuleDescriptorType.ECLIPSE
+                    || moduleDescriptorType == ModuleDescriptorType.GRADLE
+                    || moduleDescriptorType == ModuleDescriptorType.MAVEN
+                ) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)
