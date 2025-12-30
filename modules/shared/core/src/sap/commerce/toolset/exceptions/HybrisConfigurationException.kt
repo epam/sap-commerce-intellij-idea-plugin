@@ -16,16 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.exceptions
 
-package sap.commerce.toolset.exceptions;
+import java.io.Serial
 
-public class HybrisConfigurationException extends Exception {
+class HybrisConfigurationException : Exception {
 
-    public HybrisConfigurationException(final String message) {
-        super(message);
-    }
+    constructor(message: String) : super(message)
+    constructor(cause: Throwable) : super(cause)
 
-    public HybrisConfigurationException(final Throwable cause) {
-        super(cause);
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -8040215912329837669L
     }
 }

@@ -74,7 +74,7 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
         ProjectConstants.Directory.LICENSES,
         ProjectConstants.Directory.JS_STOREFRONT,
 
-        "installer",
+        ProjectConstants.Directory.INSTALLER,
     )
 
     override suspend fun openProjectAsync(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {

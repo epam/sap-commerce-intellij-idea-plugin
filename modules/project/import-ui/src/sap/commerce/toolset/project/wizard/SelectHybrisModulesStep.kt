@@ -68,7 +68,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
             .filterNot { it is ExternalModuleDescriptor }
             .sortedWith(
                 compareBy<ModuleDescriptor> { orderByType[it.descriptorType] ?: Integer.MAX_VALUE }
-                    .thenComparing { !it.isPreselected() }
+//                    .thenComparing { !it.isPreselected() }
                     .thenComparing { it.name }
             )
 

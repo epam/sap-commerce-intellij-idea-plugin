@@ -191,8 +191,9 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?: return true
 
         // hide `core-customize/hybris` node
-        if (ProjectConstants.Directory.HYBRIS == vf.name
-            && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name
+        if (
+            (ProjectConstants.Directory.HYBRIS == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name)
+            || ProjectConstants.Directory.INSTALLER == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name
         ) return false
 
         val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf)

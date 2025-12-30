@@ -56,6 +56,17 @@
                                            implementation="sap.commerce.toolset.project.descriptor.provider.YOotbRegularModuleDescriptorProvider"/>
         <project.module.descriptorProvider order="after yOotbRegularModuleDescriptorProvider" id="yCustomRegularModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.YCustomRegularModuleDescriptorProvider"/>
+
+        <project.module.rootResolver order="first" id="yExtModuleRootResolver"
+                                     implementation="sap.commerce.toolset.project.module.YExtModuleRootResolver"/>
+        <project.module.rootResolver order="after yExtModuleRootResolver" id="yOOTBModuleRootResolver"
+                                     implementation="sap.commerce.toolset.project.module.YOOTBModuleRootResolver"/>
+        <project.module.rootResolver order="after yOOTBModuleRootResolver" id="yPlatformModuleRootResolver"
+                                     implementation="sap.commerce.toolset.project.module.YPlatformModuleRootResolver"/>
+        <project.module.rootResolver order="after yPlatformModuleRootResolver" id="yConfigModuleRootResolver"
+                                     implementation="sap.commerce.toolset.project.module.YConfigModuleRootResolver"/>
+        <project.module.rootResolver order="after yConfigModuleRootResolver" id="yCustomModuleRootResolver"
+                                     implementation="sap.commerce.toolset.project.module.YCustomModuleRootResolver"/>
     </extensions>
 
 </idea-plugin>

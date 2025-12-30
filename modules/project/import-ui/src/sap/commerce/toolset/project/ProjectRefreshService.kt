@@ -33,6 +33,8 @@ import com.intellij.projectImport.ProjectImportProvider
 import com.intellij.util.asSafely
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -73,11 +75,15 @@ class ProjectRefreshService(private val project: Project) {
     }
 
     fun openModuleDescriptors(importContext: ProjectImportContext.Mutable): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
-        .filter { module -> YFacet.getState(module)?.subModuleType == null }
         .mapNotNull { module ->
+            val extensionDescriptor = YFacet.getState(module)
+                ?.takeIf { it.subModuleType == null }
+                ?: return@mapNotNull null
+
             ModuleRootManager.getInstance(module).contentRoots
                 .firstOrNull()
                 ?.let { VfsUtil.virtualToIoFile(it) }
+                ?.let { ModuleRoot(ModuleGroup.HYBRIS, extensionDescriptor.type, it.toPath()) }
                 ?.let {
                     try {
                         ModuleDescriptorFactory.getInstance().createDescriptor(it, importContext)

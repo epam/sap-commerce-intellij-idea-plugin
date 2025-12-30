@@ -85,6 +85,7 @@ object ProjectConstants {
 
         const val EXT = "ext"
         const val HYBRIS = "hybris"
+        const val INSTALLER = "installer"
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 

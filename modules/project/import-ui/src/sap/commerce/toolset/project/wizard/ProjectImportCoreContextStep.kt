@@ -21,7 +21,7 @@ package sap.commerce.toolset.project.wizard
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ConfigurationException
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.ui.Messages
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.scale.JBUIScale
@@ -38,8 +38,8 @@ import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.project.tasks.LookupModuleDescriptorsTask
 import sap.commerce.toolset.project.tasks.LookupPlatformDirectoryTask
-import sap.commerce.toolset.project.tasks.SearchModulesRootsTaskModal
 import sap.commerce.toolset.project.ui.uiCoreStep
 import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -296,10 +296,19 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
     else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
     private fun searchModuleRoots(importContext: ProjectImportContext.Mutable) {
-        thisLogger().info("Setting RootProjectDirectory to ${importContext.rootDirectory}")
-        val task = SearchModulesRootsTaskModal(importContext)
+        try {
+            thisLogger().info("Setting RootProjectDirectory to ${importContext.rootDirectory}")
 
-        ProgressManager.getInstance().run(task)
+            LookupModuleDescriptorsTask.getInstance().execute(importContext)
+        } catch (e: Exception) {
+            importContext.clear()
+            thisLogger().error(e.message, e)
+
+            Messages.showErrorDialog(
+                e.message,
+                "Project Import"
+            )
+        }
     }
 
     private fun findPlatformDirectory(): String? {

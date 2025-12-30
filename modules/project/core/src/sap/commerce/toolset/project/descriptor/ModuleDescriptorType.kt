@@ -36,4 +36,5 @@ enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE, val ti
     CCV2_CORE(HybrisIcons.Module.CCV2, "CCv2 Core"),
     CCV2_DATAHUB(HybrisIcons.Module.CCV2, "CCv2 DataHub"),
     ANGULAR(HybrisIcons.Module.ANGULAR, "Angular"),
+    ROOT(HybrisIcons.Module.ROOT, "Root"),
 }

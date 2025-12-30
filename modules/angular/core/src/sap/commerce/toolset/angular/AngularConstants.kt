@@ -20,5 +20,6 @@ package sap.commerce.toolset.angular
 
 object AngularConstants {
 
+    const val ANGULAR_JSON = "angular.json"
     const val MODULE_TYPE_ID = "Angular"
 }

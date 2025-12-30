@@ -41,7 +41,12 @@ data class ExtensionDescriptor(
 ) : UserDataHolderBase(), Comparable<ExtensionDescriptor> {
 
     fun getContext() = getOrCreateUserDataUnsafe(KEY_INFO) {
-        if (path.isEmpty() || subModuleType != null) return null
+        if (path.isEmpty()
+            || subModuleType != null
+            || (type != ModuleDescriptorType.EXT
+                && type != ModuleDescriptorType.OOTB
+                && type != ModuleDescriptorType.CUSTOM)
+        ) return null
 
         val moduleRootDirectory = File(FileUtil.toSystemDependentName(path))
 

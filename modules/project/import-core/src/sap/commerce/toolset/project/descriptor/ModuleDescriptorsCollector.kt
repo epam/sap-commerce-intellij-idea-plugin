@@ -18,99 +18,96 @@
 
 package sap.commerce.toolset.project.descriptor
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.ui.Messages
+import com.intellij.platform.util.progress.withProgressText
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18nBundle
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
-import sap.commerce.toolset.project.tasks.TaskProgressProcessor
-import sap.commerce.toolset.project.utils.FileUtils
+import sap.commerce.toolset.project.module.ModuleRootsScanner
 import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.util.isDescendantOf
 import java.io.File
-import java.io.IOException
+import java.nio.file.Path
+import kotlin.io.path.name
 
 @Service
 class ModuleDescriptorsCollector {
 
-    @Throws(InterruptedException::class, IOException::class)
-    fun collect(
-        importContext: ProjectImportContext.Mutable,
-        progressListenerProcessor: TaskProgressProcessor<File>,
-        errorsProcessor: TaskProgressProcessor<MutableList<File>>
-    ): Collection<ModuleDescriptor> {
-        val externalExtensionsDirectory = importContext.externalExtensionsDirectory
-        val hybrisDistributionDirectory = importContext.platformDirectory
-        val rootDirectory = importContext.rootDirectory
+    @Throws(HybrisConfigurationException::class)
+    suspend fun collect(importContext: ProjectImportContext.Mutable): Collection<ModuleDescriptor> {
+        val rootDirectory = importContext.rootDirectory.toPath()
         val excludedFromScanning = getExcludedFromScanningDirectories(importContext)
-        val modulesScanner = ModuleDescriptorsScanner.getInstance()
+        val moduleRootsScanner = ModuleRootsScanner.getInstance()
+        val skipDirectories = excludedFromScanning.map { it.toPath() }
+        val foundModuleRoots = mutableListOf<ModuleRoot>()
 
-        thisLogger().info("Scanning for modules")
-        modulesScanner.findModuleRoots(importContext, excludedFromScanning, rootDirectory, progressListenerProcessor)
-
-        if (externalExtensionsDirectory != null && !FileUtils.isFileUnder(externalExtensionsDirectory, rootDirectory)) {
-            thisLogger().info("Scanning for external extensions modules: ${externalExtensionsDirectory.absolutePath}")
-            modulesScanner.findModuleRoots(importContext, excludedFromScanning, externalExtensionsDirectory, progressListenerProcessor)
+        withProgressText("Scanning for modules & vcs...") {
+            thisLogger().info("Scanning for modules & vcs: $rootDirectory")
+            moduleRootsScanner.execute(importContext, rootDirectory, skipDirectories)
+                .apply { foundModuleRoots.addAll(this) }
         }
 
-        if (hybrisDistributionDirectory != null && !FileUtils.isFileUnder(hybrisDistributionDirectory, rootDirectory)) {
-            thisLogger().info("Scanning for hybris modules out of the project: ${hybrisDistributionDirectory.absolutePath}")
-            modulesScanner.findModuleRoots(importContext, excludedFromScanning, hybrisDistributionDirectory, progressListenerProcessor)
-        }
+        importContext.externalExtensionsDirectory?.toPath()
+            ?.takeUnless { it.isDescendantOf(rootDirectory) }
+            ?.let {
+                withProgressText("Scanning for modules & vcs in: ${it.name}") {
+                    thisLogger().info("Scanning external extensions directory: $it")
+                    moduleRootsScanner.execute(importContext, it, skipDirectories)
+                }
+            }
+            ?.apply { foundModuleRoots.addAll(this) }
 
-        val moduleRootDirectories = modulesScanner.processDirectoriesByTypePriority(
-            importContext,
-            rootDirectory
+        importContext.platformDirectory?.toPath()
+            ?.takeUnless { it.isDescendantOf(rootDirectory) }
+            ?.let {
+                withProgressText("Scanning for modules & vcs in: ${it.name}") {
+                    thisLogger().info("Scanning for hybris modules out of the project: $it")
+                    moduleRootsScanner.execute(importContext, it, skipDirectories)
+                }
+            }
+            ?.apply { foundModuleRoots.addAll(this) }
+
+        val moduleRoots = moduleRootsScanner.processModuleRootsByTypePriority(
+            importContext, rootDirectory, foundModuleRoots
         )
-
         val moduleDescriptors = mutableListOf<ModuleDescriptor>()
-        val pathsFailedToImport = mutableListOf<File>()
+        val moduleRootsFailedToImport = mutableListOf<ModuleRoot>()
 
-        if (!ApplicationSettings.getInstance().groupModules) {
-            val rootModule = addRootModule(rootDirectory)
-            if (rootModule != null) moduleDescriptors.add(rootModule)
-            else pathsFailedToImport.add(rootDirectory)
-        }
+        addRootModuleDescriptor(rootDirectory, moduleDescriptors, moduleRootsFailedToImport)
 
-        moduleRootDirectories.forEach { moduleRootDirectory ->
+        moduleRoots.forEach { moduleRoot ->
             try {
-                val moduleDescriptor = ModuleDescriptorFactory.getInstance().createDescriptor(moduleRootDirectory, importContext)
+                val moduleDescriptor = ModuleDescriptorFactory.getInstance().createDescriptor(moduleRoot, importContext)
                 moduleDescriptors.add(moduleDescriptor)
 
                 moduleDescriptor.asSafely<YModuleDescriptor>()
                     ?.let { moduleDescriptors.addAll(it.getSubModules()) }
             } catch (e: HybrisConfigurationException) {
-                thisLogger().error("Can not import a module using path: $moduleRootDirectory", e)
-                pathsFailedToImport.add(rootDirectory)
+                thisLogger().error("Can not import a module using path: $moduleRoot", e)
+                moduleRootsFailedToImport.add(moduleRoot)
             }
         }
 
         if (moduleDescriptors.none { it is PlatformModuleDescriptor }) {
-            ApplicationManager.getApplication().invokeLater {
-                Messages.showErrorDialog(
-                    HybrisI18nBundle.message("hybris.project.import.scan.platform.not.found"),
-                    HybrisI18nBundle.message("hybris.project.error")
-                )
-            }
-
-            throw InterruptedException("Unable to find Platform module.")
+            throw HybrisConfigurationException(i18n("hybris.project.import.scan.platform.not.found"))
         }
 
-        if (errorsProcessor.shouldContinue(pathsFailedToImport)) {
-            throw InterruptedException("Modules scanning has been interrupted.")
+        if (moduleRootsFailedToImport.isNotEmpty()) {
+            val paths = moduleRootsFailedToImport
+                .map { it.path }
+            throw HybrisConfigurationException(i18n("hybris.project.import.scan.failed", paths))
         }
-
-        moduleDescriptors.sort()
 
         buildDependencies(moduleDescriptors)
         val addons = processAddons(moduleDescriptors)
@@ -120,12 +117,33 @@ class ModuleDescriptorsCollector {
         return moduleDescriptors
     }
 
-    private fun addRootModule(moduleRootDirectory: File): ExternalModuleDescriptor? = try {
-        ModuleDescriptorFactory.getInstance().createRootDescriptor(moduleRootDirectory, moduleRootDirectory.getName())
-    } catch (e: HybrisConfigurationException) {
-        thisLogger().error("Can not import a module using path: $moduleRootDirectory", e)
-        null
+    private fun addRootModuleDescriptor(
+        rootDirectory: Path,
+        moduleDescriptors: MutableList<ModuleDescriptor>,
+        moduleRootsFailedToImport: MutableList<ModuleRoot>
+    ) {
+        if (ApplicationSettings.getInstance().groupModules) return
+
+        val moduleRoot = ModuleRoot(
+            moduleGroup = ModuleGroup.HYBRIS,
+            type = ModuleDescriptorType.ROOT,
+            path = rootDirectory,
+        )
+
+        try {
+            ModuleDescriptorFactory.getInstance().createRootDescriptor(moduleRoot)
+                .let { moduleDescriptors.add(it) }
+        } catch (e: HybrisConfigurationException) {
+            thisLogger().error("Can not import a module using path: $moduleRoot", e)
+            moduleRootsFailedToImport.add(moduleRoot)
+        }
     }
+
+    private fun getExcludedFromScanningDirectories(importContext: ProjectImportContext.Mutable) = importContext.excludedFromScanning
+        .map { File(importContext.rootDirectory, it) }
+        .filter { it.exists() }
+        .filter { it.isDirectory() }
+        .toSet()
 
     private fun buildDependencies(moduleDescriptors: MutableCollection<ModuleDescriptor>) {
         val moduleDescriptorsMap = moduleDescriptors
@@ -211,12 +229,6 @@ class ModuleDescriptorsCollector {
 
         moduleDescriptors.removeAll(hmcSubModuleDescriptors)
     }
-
-    private fun getExcludedFromScanningDirectories(importContext: ProjectImportContext.Mutable) = importContext.excludedFromScanning
-        .map { File(importContext.rootDirectory, it) }
-        .filter { it.exists() }
-        .filter { it.isDirectory() }
-        .toSet()
 
     companion object {
         fun getInstance(): ModuleDescriptorsCollector = application.service()

@@ -126,7 +126,6 @@ dependencies {
     implementation(libs.bundles.openapi)
     implementation(project(":shared-core"))
     implementation(project(":project-core"))
-    implementation(project(":project-import-core"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

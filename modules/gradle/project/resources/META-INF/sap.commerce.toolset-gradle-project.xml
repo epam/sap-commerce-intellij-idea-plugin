@@ -1,0 +1,33 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<idea-plugin>
+
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.importConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
+        <project.refreshConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
+
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.project.descriptor.provider.GradleModuleDescriptorProvider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.project.descriptor.provider.GradleKtsModuleDescriptorProvider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.gradle.project.descriptor.provider.GradleDclModuleDescriptorProvider"/>
+
+        <project.module.rootResolver order="after yCustomModuleRootResolver" id="gradleModuleRootResolver"
+                                     implementation="sap.commerce.toolset.gradle.project.module.GradleModuleRootResolver"/>
+    </extensions>
+
+</idea-plugin>

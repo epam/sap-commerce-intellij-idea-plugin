@@ -26,6 +26,7 @@ import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.io.File
+import java.nio.file.Path
 
 data class ProjectImportContext(
     var project: Project,
@@ -81,16 +82,16 @@ data class ProjectImportContext(
         var javadocUrl: String? = null,
         var platformVersion: String? = null,
 
-        private val _moduleRoots: MutableMap<ModuleGroup, MutableList<File>> = mutableMapOf(),
+//        private val _moduleRoots: MutableList<ModuleRoot> = mutableListOf(),
         private val _foundModules: MutableCollection<ModuleDescriptor> = mutableListOf(),
         private val _chosenModuleDescriptors: MutableMap<ModuleGroup, Collection<ModuleDescriptor>> = mutableMapOf(),
-        private val _detectedVcs: MutableCollection<File> = mutableSetOf(),
+        private val _detectedVcs: MutableCollection<Path> = mutableSetOf(),
         private val _excludedFromScanning: MutableCollection<String> = mutableSetOf()
     ) {
-        val hybrisModuleRoots
-            get() = _moduleRoots[ModuleGroup.HYBRIS]?.toImmutableList() ?: emptyList()
-        val otherModuleRoots
-            get() = _moduleRoots[ModuleGroup.OTHER]?.toImmutableList() ?: emptyList()
+//        val hybrisModuleRoots
+//            get() = _moduleRoots.filter { it.moduleGroup == ModuleGroup.HYBRIS }
+//        val otherModuleRoots
+//            get() = _moduleRoots.filter { it.moduleGroup == ModuleGroup.OTHER }
         val foundModules: Collection<ModuleDescriptor>
             get() = _foundModules.toImmutableList()
         var excludedFromScanning: Collection<String>
@@ -103,14 +104,13 @@ data class ProjectImportContext(
             _chosenModuleDescriptors[moduleGroup] = moduleDescriptors.toMutableList()
         }
 
-        fun addModuleRoot(moduleGroup: ModuleGroup, root: File) = _moduleRoots.computeIfAbsent(moduleGroup) { mutableListOf() }
-            .add(root)
+//        fun addModuleRoot(root: ModuleRoot) = _moduleRoots.add(root)
 
         fun addModule(moduleDescriptor: ModuleDescriptor) = _foundModules.add(moduleDescriptor)
-        fun addVcs(file: File) = _detectedVcs.add(file)
+        fun addVcs(file: Path) = _detectedVcs.add(file)
 
         fun clear() {
-            _moduleRoots.clear()
+//            _moduleRoots.clear()
             _foundModules.clear()
             _detectedVcs.clear()
             _chosenModuleDescriptors.clear()
@@ -139,7 +139,9 @@ data class ProjectImportContext(
             chosenOtherModuleDescriptors = _chosenModuleDescriptors[ModuleGroup.OTHER]
                 ?: emptyList(),
 
-            detectedVcs = _detectedVcs.toImmutableSet(),
+            detectedVcs = _detectedVcs
+                .map { it.normalize().toFile() }
+                .toImmutableSet(),
             excludedFromScanning = _excludedFromScanning.toImmutableList(),
 
             configModuleDescriptor = _foundModules

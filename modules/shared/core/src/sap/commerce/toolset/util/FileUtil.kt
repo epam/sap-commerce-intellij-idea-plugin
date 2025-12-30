@@ -18,15 +18,15 @@
 
 package sap.commerce.toolset.util
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.util.progress.reportSequentialProgress
-import com.intellij.util.progress.sleepCancellable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.io.path.isDirectory
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.name
+import java.io.IOException
+import java.nio.file.Path
+import kotlin.io.path.*
 
 suspend fun File.findRecursively(
     ignoredDirNames: Collection<String>,
@@ -39,7 +39,6 @@ suspend fun File.findRecursively(
 
                 if (it.isDirectory) {
                     reporter.indeterminateStep("Scanning directory: ${it.absolutePath}")
-                    sleepCancellable(250)
                 }
                 !ignoredDirNames.contains(it.name)
             }
@@ -98,3 +97,19 @@ suspend fun File.findRecursivelyOptimized(
         null
     }
 }
+
+val Path.directoryExists
+    get() = this.exists() && this.isDirectory()
+
+val Path.fileExists
+    get() = this.exists() && this.isRegularFile()
+
+fun Path?.isDescendantOf(parent: Path): Boolean =
+    try {
+        val realParent = parent.toRealPath()
+        val realChild = this?.toRealPath()
+        realChild?.startsWith(realParent) ?: false
+    } catch (e: IOException) {
+        this?.thisLogger()?.warn("Can't find $parent in $this", e)
+        false
+    }

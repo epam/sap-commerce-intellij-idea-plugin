@@ -24,12 +24,10 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.util.application
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
+import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptor.impl.ConfigModuleDescriptorImpl
-import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.RootModuleDescriptor
 import java.io.File
 import java.io.IOException
 
@@ -37,7 +35,8 @@ import java.io.IOException
 class ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
-    fun createDescriptor(file: File, importContext: ProjectImportContext.Mutable): ModuleDescriptor {
+    fun createDescriptor(moduleRoot: ModuleRoot, importContext: ProjectImportContext.Mutable): ModuleDescriptor {
+        val file = moduleRoot.path.toFile()
         val resolvedFile = try {
             file.canonicalFile
         } catch (e: IOException) {
@@ -57,6 +56,7 @@ class ModuleDescriptorFactory {
             externalExtensionsDirectory = importContext.externalExtensionsDirectory,
         )
 
+        // TODO: no need in "isApplicable" anymore
         return ModuleDescriptorProvider.EP.extensionList
             .firstOrNull { it.isApplicable(context) }
             ?.let { provider ->
@@ -67,25 +67,10 @@ class ModuleDescriptorFactory {
     }
 
     @Throws(HybrisConfigurationException::class)
-    fun createRootDescriptor(
-        moduleRootDirectory: File,
-        name: String
-    ): ExternalModuleDescriptor {
-        validateModuleDirectory(moduleRootDirectory)
+    fun createRootDescriptor(moduleRoot: ModuleRoot): RootModuleDescriptor {
+        validateModuleDirectory(moduleRoot.path.toFile())
 
-        // TODO: introduce new RootModuleDescriptor
-        return ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.NONE)
-    }
-
-    // TODO: why not via provider?
-    @Throws(HybrisConfigurationException::class)
-    fun createConfigDescriptor(
-        moduleRootDirectory: File,
-        name: String
-    ): ConfigModuleDescriptor {
-        validateModuleDirectory(moduleRootDirectory)
-
-        return ConfigModuleDescriptorImpl(moduleRootDirectory, name)
+        return RootModuleDescriptor(moduleRoot)
     }
 
     private fun validateModuleDirectory(moduleRootDirectory: File) {
