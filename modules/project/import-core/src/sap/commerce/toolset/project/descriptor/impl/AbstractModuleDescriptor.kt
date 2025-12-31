@@ -124,7 +124,6 @@ abstract class AbstractModuleDescriptor(
 
         if (dependencies.isEmpty()) return dependenciesSet
 
-        // TODO: what if there is circular module dependency
         dependencies
             .filterNot { dependenciesSet.contains(it) }
             .forEach {

@@ -36,6 +36,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
 
     private val orderByType = mapOf(
         ModuleDescriptorType.CONFIG to 0,
+        ModuleDescriptorType.NONE to 0,
         ModuleDescriptorType.CUSTOM to 1,
         ModuleDescriptorType.OOTB to 2,
         ModuleDescriptorType.PLATFORM to 3,

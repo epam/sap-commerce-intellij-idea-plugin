@@ -36,7 +36,7 @@ class ConfigModuleDescriptorImpl(
     }
     override fun isPreselected() = preselected
 
-//    override val descriptorType: ModuleDescriptorType
-//        get() = if (isMainConfig) ModuleDescriptorType.CONFIG
-//        else ModuleDescriptorType.NONE
+    override val type: ModuleDescriptorType
+        get() = if (isMainConfig) ModuleDescriptorType.CONFIG
+        else ModuleDescriptorType.NONE
 }
