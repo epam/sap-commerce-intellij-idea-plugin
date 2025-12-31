@@ -124,7 +124,6 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     // TODO: review it
     protected fun performProjectsCleanup(importContext: ProjectImportContext, chosenModuleDescriptors: Iterable<ModuleDescriptor>) {
         val alreadyExistingModuleFiles = importContext.modulesFilesDirectory
-            ?.takeIf { it.directoryExists }
             ?.let { getAllImlFiles(it) }
             ?: chosenModuleDescriptors
                 .map { it.ideaModuleFile(importContext) }
@@ -145,7 +144,10 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     )
         .notify(project)
 
-    private fun getAllImlFiles(dir: Path) = dir.listDirectoryEntries()
-        .filter { it.name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+    private fun getAllImlFiles(dir: Path) = dir
+        .takeIf { it.directoryExists }
+        ?.listDirectoryEntries()
+        ?.filter { it.name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+        ?: emptyList()
 
 }

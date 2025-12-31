@@ -195,13 +195,12 @@ private fun addLibrariesToNonCustomModule(
 }
 
 private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
-    val binDir = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.BIN)
-        .takeIf { it.directoryExists }
-        ?: return
     // TODO: server jar may not present, example -> apparelstore, electronicsstore,
-    val serverJars = binDir.listDirectoryEntries()
-        .filter { it.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
-        .takeIf { it.isNotEmpty() }
+    val serverJars = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.BIN)
+        .takeIf { it.directoryExists }
+        ?.listDirectoryEntries()
+        ?.filter { it.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
+        ?.takeIf { it.isNotEmpty() }
         ?: return
 
     val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
@@ -325,7 +324,6 @@ private fun getWebLibraryDescriptors(
     addServerLibs(descriptor, libs)
     addRootLib(descriptor, libs)
 
-    val libFolder = descriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
     val sourceFiles = ProjectConstants.Directory.ALL_SRC_DIR_NAMES
         .map { descriptor.moduleRootPath.resolve(it) }
         .filter { it.directoryExists }
@@ -346,43 +344,46 @@ private fun getWebLibraryDescriptors(
         }
         .forEach { sourceFiles.add(it) }
 
-    if (descriptor.owner.name != EiConstants.Extension.BACK_OFFICE) {
-        if (descriptor.type != ModuleDescriptorType.CUSTOM && descriptor is YWebSubModuleDescriptor) {
-            libs.add(
-                JavaLibraryDescriptor(
-                    name = "${descriptor.name} - $libName Classes",
-                    libraryFile = descriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES),
-                    sourceFiles = sourceFiles,
-                    exported = true,
-                    directoryWithClasses = true
-                )
-            )
-            libs.add(
-                JavaLibraryDescriptor(
-                    name = "${descriptor.name} - Test Classes",
-                    libraryFile = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
-                    sourceFiles = testSourceFiles,
-                    exported = true,
-                    directoryWithClasses = true,
-                    scope = DependencyScope.TEST
-                )
-            )
-        }
+    if (descriptor.owner.name == EiConstants.Extension.BACK_OFFICE) return libs
 
+    if (descriptor.type != ModuleDescriptorType.CUSTOM && descriptor is YWebSubModuleDescriptor) {
         libs.add(
             JavaLibraryDescriptor(
-                name = "${descriptor.name} - $libName Library",
-                libraryFile = libFolder,
-                jarFiles = libFolder.listDirectoryEntries()
-                    .filter { it.name.endsWith(".jar") }
-                    .toSet(),
-                sourceJarDirectories = getStandardSourceJarDirectory(descriptor),
+                name = "${descriptor.name} - $libName Classes",
+                libraryFile = descriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES),
+                sourceFiles = sourceFiles,
                 exported = true,
-                descriptorType = LibraryDescriptorType.WEB_INF_LIB
+                directoryWithClasses = true
+            )
+        )
+        libs.add(
+            JavaLibraryDescriptor(
+                name = "${descriptor.name} - Test Classes",
+                libraryFile = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
+                sourceFiles = testSourceFiles,
+                exported = true,
+                directoryWithClasses = true,
+                scope = DependencyScope.TEST
             )
         )
     }
 
+    descriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+        .takeIf { it.directoryExists }
+        ?.let { libFolder ->
+            libs.add(
+                JavaLibraryDescriptor(
+                    name = "${descriptor.name} - $libName Library",
+                    libraryFile = libFolder,
+                    jarFiles = libFolder.listDirectoryEntries()
+                        .filter { it.name.endsWith(".jar") }
+                        .toSet(),
+                    sourceJarDirectories = getStandardSourceJarDirectory(descriptor),
+                    exported = true,
+                    descriptorType = LibraryDescriptorType.WEB_INF_LIB
+                )
+            )
+        }
     return libs
 }
 

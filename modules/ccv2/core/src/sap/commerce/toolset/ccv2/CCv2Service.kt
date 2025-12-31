@@ -49,6 +49,7 @@ import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.util.directoryExists
 import java.io.Serial
 import java.net.SocketTimeoutException
 import java.nio.file.Files
@@ -609,13 +610,16 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
                     buildLogsPath.deleteIfExists()
 
-                    val logFiles = tempDirectory.listDirectoryEntries()
-                        .map {
+                    val logFiles = tempDirectory
+                        .takeIf { it.directoryExists }
+                        ?.listDirectoryEntries()
+                        ?.map {
                             // rename <logFile>.txt to <logFile>.log
                             Files.move(it, it.resolveSibling(it.nameWithoutExtension + ".log"))
                         }
-                        .onEach { it.toFile().deleteOnExit() }
-                        .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.pathString) }
+                        ?.onEach { it.toFile().deleteOnExit() }
+                        ?.mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.pathString) }
+                        ?: emptyList()
 
                     onCompleteCallback.invoke(logFiles)
                 } catch (e: SocketTimeoutException) {

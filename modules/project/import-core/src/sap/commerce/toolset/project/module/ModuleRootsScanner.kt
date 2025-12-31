@@ -96,7 +96,7 @@ class ModuleRootsScanner {
                                         ?.resolve(path)
                                         ?.also {
                                             it.moduleRoot?.let { moduleRoot ->
-                                                thisLogger().info("Detected hybris ${moduleRoot.type} module: ${moduleRoot.path}")
+                                                thisLogger().info("Detected ${moduleRoot.type} module: ${moduleRoot.path}")
                                                 moduleRoots.add(moduleRoot)
                                             }
                                         }

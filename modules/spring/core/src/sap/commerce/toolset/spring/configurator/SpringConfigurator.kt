@@ -42,8 +42,8 @@ import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.nio.file.Path
 import java.util.*
@@ -143,17 +143,16 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     ) {
         val projectProperties = Properties()
         val propFile = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.File.PROJECT_PROPERTIES)
+            .takeIf { it.fileExists } ?: return
         moduleDescriptor.addSpringFile(propFile.pathString)
         try {
             projectProperties.load(propFile.inputStream())
-        } catch (_: FileNotFoundException) {
-            return
         } catch (e: IOException) {
             thisLogger().error("", e)
             return
         }
 
-        // specifci case for OCC like extensions, usually, they have web-spring.xml files in the corresponding resources folder
+        // specific case for OCC like extensions, usually, they have web-spring.xml files in the corresponding resources folder
         projectProperties.getProperty("ext.${moduleDescriptor.name}.extension.webmodule.webroot")
             ?.let { if (it.startsWith("/")) it.removePrefix("/") else it }
             ?.let {
@@ -201,9 +200,11 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
             }
 
         if (moduleDescriptor.extensionInfo.backofficeModule) {
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES).listDirectoryEntries()
-                .filter { it.name.endsWith("-backoffice-spring.xml") }
-                .forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
+            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
+                .takeIf { it.directoryExists }
+                ?.listDirectoryEntries()
+                ?.filter { it.name.endsWith("-backoffice-spring.xml") }
+                ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
         }
     }
 

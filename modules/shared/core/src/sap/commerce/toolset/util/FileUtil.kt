@@ -68,7 +68,7 @@ suspend fun Path.findRecursivelyOptimized(
 
             val currentDir = queue.removeFirst()
 
-            if (currentDir.isDirectory()) {
+            if (currentDir.directoryExists) {
                 reporter.indeterminateStep("Scanning directory: ${currentDir.pathString}")
 
                 val files = mutableListOf<Path>()
@@ -76,7 +76,7 @@ suspend fun Path.findRecursivelyOptimized(
 
                 currentDir.listDirectoryEntries().forEach { path ->
                     coroutineContext.ensureActive()
-                    if (path.isDirectory()) {
+                    if (path.directoryExists) {
                         if (!ignoredDirNames.contains(path.name)) {
                             dirs.add(path)
                         }
