@@ -38,7 +38,7 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)
         val roots = importContext.detectedVcs
-            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+            .mapNotNull { VfsUtil.findFile(it, true) }
             .flatMap { rootDetector.detect(it) }
         val detectedRoots = buildSet {
             addAll(rootDetector.detect())

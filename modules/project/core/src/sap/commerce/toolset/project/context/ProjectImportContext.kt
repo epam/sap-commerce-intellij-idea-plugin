@@ -50,7 +50,7 @@ data class ProjectImportContext(
 
     val foundModules: Collection<ModuleDescriptor>,
 
-    val detectedVcs: Collection<File>,
+    val detectedVcs: Collection<Path>,
     val excludedFromScanning: Collection<String>,
 
     val configModuleDescriptor: ConfigModuleDescriptor,
@@ -82,16 +82,11 @@ data class ProjectImportContext(
         var javadocUrl: String? = null,
         var platformVersion: String? = null,
 
-//        private val _moduleRoots: MutableList<ModuleRoot> = mutableListOf(),
         private val _foundModules: MutableCollection<ModuleDescriptor> = mutableListOf(),
         private val _chosenModuleDescriptors: MutableMap<ModuleGroup, Collection<ModuleDescriptor>> = mutableMapOf(),
         private val _detectedVcs: MutableCollection<Path> = mutableSetOf(),
         private val _excludedFromScanning: MutableCollection<String> = mutableSetOf()
     ) {
-//        val hybrisModuleRoots
-//            get() = _moduleRoots.filter { it.moduleGroup == ModuleGroup.HYBRIS }
-//        val otherModuleRoots
-//            get() = _moduleRoots.filter { it.moduleGroup == ModuleGroup.OTHER }
         val foundModules: Collection<ModuleDescriptor>
             get() = _foundModules.toImmutableList()
         var excludedFromScanning: Collection<String>
@@ -104,13 +99,10 @@ data class ProjectImportContext(
             _chosenModuleDescriptors[moduleGroup] = moduleDescriptors.toMutableList()
         }
 
-//        fun addModuleRoot(root: ModuleRoot) = _moduleRoots.add(root)
-
         fun addModule(moduleDescriptor: ModuleDescriptor) = _foundModules.add(moduleDescriptor)
         fun addVcs(file: Path) = _detectedVcs.add(file)
 
         fun clear() {
-//            _moduleRoots.clear()
             _foundModules.clear()
             _detectedVcs.clear()
             _chosenModuleDescriptors.clear()
@@ -139,9 +131,7 @@ data class ProjectImportContext(
             chosenOtherModuleDescriptors = _chosenModuleDescriptors[ModuleGroup.OTHER]
                 ?: emptyList(),
 
-            detectedVcs = _detectedVcs
-                .map { it.normalize().toFile() }
-                .toImmutableSet(),
+            detectedVcs = _detectedVcs.toImmutableSet(),
             excludedFromScanning = _excludedFromScanning.toImmutableList(),
 
             configModuleDescriptor = _foundModules

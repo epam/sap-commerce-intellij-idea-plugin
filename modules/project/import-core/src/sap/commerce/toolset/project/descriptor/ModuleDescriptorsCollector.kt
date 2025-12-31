@@ -132,7 +132,7 @@ class ModuleDescriptorsCollector {
         )
 
         try {
-            ModuleDescriptorFactory.getInstance().createRootDescriptor(importContext, moduleRoot)
+            ModuleDescriptorFactory.getInstance().createRootDescriptor(moduleRoot)
                 .let { moduleDescriptors.add(it) }
         } catch (e: HybrisConfigurationException) {
             thisLogger().error("Can not import a module using path: $moduleRoot", e)

@@ -28,21 +28,15 @@ import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.RootModuleDescriptor
-import kotlin.io.path.pathString
 
 @Service
 class ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
     fun createDescriptor(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): ModuleDescriptor {
-        val realPath = moduleRoot.path
-        val originalPath = moduleRoot.path.pathString
-        val newPath = realPath.pathString
-        val path = if (originalPath != newPath) "$originalPath($newPath)"
-        else originalPath
-
+        val path = moduleRoot.path
         val context = ModuleDescriptorProviderContext(
-            moduleRootDirectory = realPath.toFile(),
+            moduleRootDirectory = path.toFile(),
             project = importContext.project,
             externalExtensionsDirectory = importContext.externalExtensionsDirectory,
             moduleRoot = moduleRoot,
@@ -57,22 +51,7 @@ class ModuleDescriptorFactory {
             ?: throw HybrisConfigurationException("Could not find suitable module descriptor provider for $path")
     }
 
-    @Throws(HybrisConfigurationException::class)
-    fun createRootDescriptor(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): RootModuleDescriptor {
-//        resolvePath(importContext, moduleRoot)
-
-        return RootModuleDescriptor(moduleRoot)
-    }
-
-    // TODO: resolution of the Symliks and normalization of the Path MAY be done during ModuleRoots scanning
-//    private fun resolvePath(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): Path = try {
-//        if (importContext.settings.followSymlink) moduleRoot.path.toRealPath()
-//        else moduleRoot.path.toRealPath(LinkOption.NOFOLLOW_LINKS)
-//    } catch (e: IOException) {
-//        throw HybrisConfigurationException(e)
-//    }
-//        .takeIf { it.directoryExists }
-//        ?: throw HybrisConfigurationException("Can not find module directory using path: ${moduleRoot.path}")
+    fun createRootDescriptor(moduleRoot: ModuleRoot) = RootModuleDescriptor(moduleRoot)
 
     companion object {
         fun getInstance(): ModuleDescriptorFactory = application.service()
