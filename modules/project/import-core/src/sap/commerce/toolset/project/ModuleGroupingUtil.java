@@ -143,10 +143,10 @@ public final class ModuleGroupingUtil {
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
             var customDirectory = importContext.getExternalExtensionsDirectory();
 
-            if (null == customDirectory && platformDirectory != null) {
+            if (customDirectory == null) {
                 customDirectory = platformDirectory.resolve(ProjectConstants.Paths.INSTANCE.getBIN_CUSTOM());
             }
-            if (customDirectory == null || !FileUtilKt.getDirectoryExists(customDirectory)) {
+            if (!FileUtilKt.getDirectoryExists(customDirectory) || !FileUtilKt.getDirectoryExists(customDirectory)) {
                 return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
             }
 
@@ -174,8 +174,8 @@ public final class ModuleGroupingUtil {
             );
         }
 
-        if (requiredYModuleDescriptorList.contains(moduleDescriptor) && platformDirectory != null) {
-            final var hybrisBinDirectory = platformDirectory.resolve( ProjectConstants.Directory.BIN);
+        if (requiredYModuleDescriptorList.contains(moduleDescriptor) && FileUtilKt.getDirectoryExists(platformDirectory)) {
+            final var hybrisBinDirectory = platformDirectory.resolve(ProjectConstants.Directory.BIN);
 
             final List<String> path;
             try {
