@@ -21,7 +21,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.coroutineScope
-import sap.commerce.toolset.project.isCustomExtensionFile
+import sap.commerce.toolset.meta.util.isCustomExtensionFile
 
 abstract class MetaModelProcessor<D : DomElement, M>(private val project: Project) {
 

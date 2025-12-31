@@ -84,11 +84,11 @@ class ModuleDescriptorsCollector {
         val moduleDescriptors = mutableListOf<ModuleDescriptor>()
         val moduleRootsFailedToImport = mutableListOf<ModuleRoot>()
 
-        addRootModuleDescriptor(rootDirectory, moduleDescriptors, moduleRootsFailedToImport)
+        addRootModuleDescriptor(importContext, rootDirectory, moduleDescriptors, moduleRootsFailedToImport)
 
         moduleRoots.forEach { moduleRoot ->
             try {
-                val moduleDescriptor = ModuleDescriptorFactory.getInstance().createDescriptor(moduleRoot, importContext)
+                val moduleDescriptor = ModuleDescriptorFactory.getInstance().createDescriptor(importContext, moduleRoot)
                 moduleDescriptors.add(moduleDescriptor)
 
                 moduleDescriptor.asSafely<YModuleDescriptor>()
@@ -118,6 +118,7 @@ class ModuleDescriptorsCollector {
     }
 
     private fun addRootModuleDescriptor(
+        importContext: ProjectImportContext.Mutable,
         rootDirectory: Path,
         moduleDescriptors: MutableList<ModuleDescriptor>,
         moduleRootsFailedToImport: MutableList<ModuleRoot>
@@ -131,7 +132,7 @@ class ModuleDescriptorsCollector {
         )
 
         try {
-            ModuleDescriptorFactory.getInstance().createRootDescriptor(moduleRoot)
+            ModuleDescriptorFactory.getInstance().createRootDescriptor(importContext, moduleRoot)
                 .let { moduleDescriptors.add(it) }
         } catch (e: HybrisConfigurationException) {
             thisLogger().error("Can not import a module using path: $moduleRoot", e)

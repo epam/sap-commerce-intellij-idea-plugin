@@ -23,22 +23,19 @@ import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.util.fileExists
-import sap.commerce.toolset.util.normalizedContains
 import java.nio.file.FileVisitResult
 import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.io.path.name
+import kotlin.io.path.pathString
 
-class YOOTBModuleRootResolver : ModuleRootResolver {
+class YOotbModuleRootResolver : ModuleRootResolver {
 
-    private val hybrisBin by lazy { Path("hybris").resolve("bin") }
+    override fun isApplicable(path: Path): Boolean {
+        if (!path.resolve(HybrisConstants.EXTENSION_INFO_XML).fileExists) return false
 
-    override fun isApplicable(path: Path): Boolean = with(path) {
-        resolve(HybrisConstants.EXTENSION_INFO_XML).fileExists
-            && (
-            parent.normalizedContains(hybrisBin.resolve("modules"))
-                || (parent.normalizedContains(hybrisBin) && parent.name.startsWith("ext-"))
-            )
+        val parentPathString = path.parent.normalize().pathString
+
+        return parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019)
+            || (parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))
     }
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(

@@ -59,9 +59,9 @@
 
         <project.module.rootResolver order="first" id="yExtModuleRootResolver"
                                      implementation="sap.commerce.toolset.project.module.YExtModuleRootResolver"/>
-        <project.module.rootResolver order="after yExtModuleRootResolver" id="yOOTBModuleRootResolver"
-                                     implementation="sap.commerce.toolset.project.module.YOOTBModuleRootResolver"/>
-        <project.module.rootResolver order="after yOOTBModuleRootResolver" id="yPlatformModuleRootResolver"
+        <project.module.rootResolver order="after yExtModuleRootResolver" id="yOotbModuleRootResolver"
+                                     implementation="sap.commerce.toolset.project.module.YOotbModuleRootResolver"/>
+        <project.module.rootResolver order="after yOotbModuleRootResolver" id="yPlatformModuleRootResolver"
                                      implementation="sap.commerce.toolset.project.module.YPlatformModuleRootResolver"/>
         <project.module.rootResolver order="after yPlatformModuleRootResolver" id="yConfigModuleRootResolver"
                                      implementation="sap.commerce.toolset.project.module.YConfigModuleRootResolver"/>

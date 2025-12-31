@@ -28,30 +28,21 @@ import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.RootModuleDescriptor
-import java.io.File
-import java.io.IOException
+import kotlin.io.path.pathString
 
 @Service
 class ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
-    fun createDescriptor(moduleRoot: ModuleRoot, importContext: ProjectImportContext.Mutable): ModuleDescriptor {
-        val file = moduleRoot.path.toFile()
-        val resolvedFile = try {
-            file.canonicalFile
-        } catch (e: IOException) {
-            throw HybrisConfigurationException(e)
-        }
-
-        validateModuleDirectory(resolvedFile)
-
-        val originalPath = file.absolutePath
-        val newPath = resolvedFile.absolutePath
+    fun createDescriptor(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): ModuleDescriptor {
+        val realPath = moduleRoot.path
+        val originalPath = moduleRoot.path.pathString
+        val newPath = realPath.pathString
         val path = if (originalPath != newPath) "$originalPath($newPath)"
         else originalPath
 
         val context = ModuleDescriptorProviderContext(
-            moduleRootDirectory = resolvedFile,
+            moduleRootDirectory = realPath.toFile(),
             project = importContext.project,
             externalExtensionsDirectory = importContext.externalExtensionsDirectory,
             moduleRoot = moduleRoot,
@@ -67,17 +58,21 @@ class ModuleDescriptorFactory {
     }
 
     @Throws(HybrisConfigurationException::class)
-    fun createRootDescriptor(moduleRoot: ModuleRoot): RootModuleDescriptor {
-        validateModuleDirectory(moduleRoot.path.toFile())
+    fun createRootDescriptor(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): RootModuleDescriptor {
+//        resolvePath(importContext, moduleRoot)
 
         return RootModuleDescriptor(moduleRoot)
     }
 
-    private fun validateModuleDirectory(moduleRootDirectory: File) {
-        if (!moduleRootDirectory.isDirectory) {
-            throw HybrisConfigurationException("Can not find module directory using path: $moduleRootDirectory")
-        }
-    }
+    // TODO: resolution of the Symliks and normalization of the Path MAY be done during ModuleRoots scanning
+//    private fun resolvePath(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): Path = try {
+//        if (importContext.settings.followSymlink) moduleRoot.path.toRealPath()
+//        else moduleRoot.path.toRealPath(LinkOption.NOFOLLOW_LINKS)
+//    } catch (e: IOException) {
+//        throw HybrisConfigurationException(e)
+//    }
+//        .takeIf { it.directoryExists }
+//        ?: throw HybrisConfigurationException("Can not find module directory using path: ${moduleRoot.path}")
 
     companion object {
         fun getInstance(): ModuleDescriptorFactory = application.service()

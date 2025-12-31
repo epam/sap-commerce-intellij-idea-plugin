@@ -28,7 +28,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.isCustomExtensionFile
+import sap.commerce.toolset.meta.util.isCustomExtensionFile
 import sap.commerce.toolset.typeSystem.model.Items
 
 object TSUtils {

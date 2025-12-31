@@ -86,7 +86,7 @@ class ProjectRefreshService(private val project: Project) {
                 ?.let { ModuleRoot(ModuleGroup.HYBRIS, extensionDescriptor.type, it.toPath()) }
                 ?.let {
                     try {
-                        ModuleDescriptorFactory.getInstance().createDescriptor(it, importContext)
+                        ModuleDescriptorFactory.getInstance().createDescriptor(importContext, it)
                     } catch (e: HybrisConfigurationException) {
                         thisLogger().error(e)
                         return@let null

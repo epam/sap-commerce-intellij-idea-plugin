@@ -50,7 +50,7 @@ class ModuleRootsScanner {
     ): Collection<ModuleRoot> {
         // prevent infinity loops in case of cycle symlinks
         val visited = mutableSetOf<Path>()
-        val scanOptions = if (importContext.settings.followSymlink) setOf(FileVisitOption.FOLLOW_LINKS)
+        val options = if (importContext.settings.followSymlink) setOf(FileVisitOption.FOLLOW_LINKS)
         else emptySet()
 
         val moduleRootResolvers = ModuleRootResolver.EP.extensionList
@@ -60,7 +60,7 @@ class ModuleRootsScanner {
             withContext(Dispatchers.IO) {
                 Files.walkFileTree(
                     rootDirectory,
-                    scanOptions,
+                    options,
                     Int.MAX_VALUE,
                     object : SimpleFileVisitor<Path>() {
                         override fun preVisitDirectory(path: Path, attrs: BasicFileAttributes): FileVisitResult {

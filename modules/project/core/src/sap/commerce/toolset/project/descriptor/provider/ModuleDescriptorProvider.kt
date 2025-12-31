@@ -25,7 +25,6 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 interface ModuleDescriptorProvider {
 
     fun isApplicable(context: ModuleDescriptorProviderContext): Boolean
-
     fun create(context: ModuleDescriptorProviderContext): ModuleDescriptor
 
     companion object {

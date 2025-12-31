@@ -329,22 +329,11 @@ object HybrisConstants {
     val PLATFORM_MODULE_PREFIX = FileUtilRt.toSystemDependentName("/bin/platform/")
 
     @JvmField
-    val PLATFORM_EXT_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/platform/ext/")
-
-    @JvmField
-    val PLATFORM_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/ext-")
-
-    @JvmField
-    val PLATFORM_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("bin/modules/")
-
-    @JvmField
     val PLATFORM_DB_DRIVER = FileUtilRt.toSystemDependentName("lib/dbdriver")
 
-    @JvmField
-    val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/bin/ext-")
-
-    @JvmField
-    val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/bin/modules/")
+    const val PLATFORM_EXT_MODULE_PREFIX = "bin/platform/ext/"
+    const val HYBRIS_OOTB_MODULE_PREFIX = "hybris/bin/ext-"
+    const val HYBRIS_OOTB_MODULE_PREFIX_2019 = "hybris/bin/modules/"
 
     @JvmField
     val CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("bin/custom")

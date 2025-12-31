@@ -116,7 +116,7 @@ fun Path?.isDescendantOf(parent: Path): Boolean =
 
 fun Path.normalizedContains(partialPath: Path): Boolean =
     try {
-        toRealPath().pathString.contains(partialPath.normalize().pathString)
+        normalize().pathString.contains(partialPath.normalize().pathString)
     } catch (e: IOException) {
         this.thisLogger().warn("Can't find $pathString in $this", e)
         false
