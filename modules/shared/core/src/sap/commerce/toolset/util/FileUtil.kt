@@ -24,33 +24,9 @@ import com.intellij.platform.util.progress.reportSequentialProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.*
-
-suspend fun File.findRecursively(
-    ignoredDirNames: Collection<String>,
-    filter: (File) -> Boolean
-): File? = reportSequentialProgress { reporter ->
-    withContext(Dispatchers.IO) {
-        walkTopDown()
-            .onEnter {
-                ensureActive()
-
-                if (it.isDirectory) {
-                    reporter.indeterminateStep("Scanning directory: ${it.absolutePath}")
-                }
-                !ignoredDirNames.contains(it.name)
-            }
-            .forEach { file ->
-                ensureActive()
-
-                if (filter(file)) return@withContext file
-            }
-        null
-    }
-}
 
 /*
 This function will process files in the directory before going deeper
@@ -107,8 +83,8 @@ val Path.fileExists
 
 fun Path?.isDescendantOf(parent: Path): Boolean =
     try {
-        val realParent = parent.normalize()
-        val realChild = this?.normalize()
+        val realParent = parent.toRealPath().normalize()
+        val realChild = this?.toRealPath()?.normalize()
         realChild?.startsWith(realParent) ?: false
     } catch (e: IOException) {
         this?.thisLogger()?.warn("Can't find $parent in $this", e)

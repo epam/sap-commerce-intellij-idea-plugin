@@ -37,7 +37,6 @@ import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.Path
 import kotlin.io.path.inputStream
-import kotlin.io.path.isDirectory
 import kotlin.io.path.pathString
 
 @Service
@@ -66,16 +65,14 @@ class MainConfigModuleDescriptorResolver {
             .filterIsInstance<PlatformModuleDescriptor>()
             .firstOrNull() ?: return null
 
-        if (foundConfigModules.size == 1) return foundConfigModules[0]
-
         val configDir: Path?
         val externalConfigDirectory = importContext.externalConfigDirectory
         if (externalConfigDirectory != null) {
             configDir = externalConfigDirectory
-            if (!configDir.isDirectory()) return null
+            if (!configDir.directoryExists) return null
         } else {
             configDir = getExpectedConfigDir(platformHybrisModuleDescriptor)
-            if (configDir == null || !configDir.isDirectory()) {
+            if (configDir == null || !configDir.directoryExists) {
                 return if (foundConfigModules.size == 1) foundConfigModules[0]
                 else null
             }

@@ -36,8 +36,6 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun isPreselected(): Boolean
     fun ideaModuleFile(importContext: ProjectImportContext): Path
     fun getRelativePath(rootDirectory: Path): String
-
-    // TODO: all below methods are YModuleDescriptor specific
     fun getRequiredExtensionNames(): Set<String>
     fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean
     fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
