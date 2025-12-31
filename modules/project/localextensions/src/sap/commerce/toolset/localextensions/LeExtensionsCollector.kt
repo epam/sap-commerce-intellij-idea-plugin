@@ -26,12 +26,13 @@ import com.intellij.openapi.util.PropertiesUtil
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
-import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import kotlin.io.path.pathString
 import kotlin.math.max
 
 @Service
@@ -39,8 +40,8 @@ class LeExtensionsCollector {
 
     fun collect(
         foundExtensions: Collection<LeExtension>,
-        configDirectory: File,
-        platformDirectory: File?
+        configDirectory: Path,
+        platformDirectory: Path?
     ): Set<String> = ApplicationManager.getApplication().runReadAction(Computable {
         val hybrisConfig = LeUnmarshaller.getInstance().unmarshal(configDirectory)
             ?: return@Computable setOf()
@@ -51,7 +52,7 @@ class LeExtensionsCollector {
         }
     })
 
-    private fun processAutoloadPaths(foundExtensions: Collection<LeExtension>, hybrisConfig: Hybrisconfig, platformDirectory: File?): Collection<String> {
+    private fun processAutoloadPaths(foundExtensions: Collection<LeExtension>, hybrisConfig: Hybrisconfig, platformDirectory: Path?): Collection<String> {
         platformDirectory ?: return emptySet()
         val extensionNames = mutableSetOf<String>()
         val autoloadPaths = HashMap<String, Int>()
@@ -74,18 +75,18 @@ class LeExtensionsCollector {
 
         if (autoloadPaths.isEmpty()) return emptySet()
 
-        val platform = Paths.get(platformDirectory.path, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
-        val path = Paths.get(platform, "env.properties")
+        val platform = platformDirectory.resolve( "bin").resolve("platform")
+        val path = platform.resolve("env.properties")
 
         try {
             Files.newBufferedReader(path, StandardCharsets.ISO_8859_1).use { fis ->
                 val properties = PropertiesUtil.loadProperties(fis)
 
                 properties.entries.forEach {
-                    val value = it.value.replace("\${platformhome}", platform)
+                    val value = it.value.replace("\${platformhome}", platform.pathString)
                     it.setValue(Paths.get(value).normalize().toString())
                 }
-                properties["platformhome"] = platform
+                properties["platformhome"] = platform.pathString
 
                 val normalizedPaths = autoloadPaths.entries
                     .associate { entry ->
@@ -100,7 +101,7 @@ class LeExtensionsCollector {
 
                 foundExtensions.forEach {
                     for (entry in normalizedPaths.entries) {
-                        val moduleDir = it.directory.path
+                        val moduleDir = it.directory.pathString
                         if (moduleDir.startsWith(entry.key)
                             && Paths.get(moduleDir.substring(entry.key.length)).nameCount <= entry.value
                         ) {

@@ -24,7 +24,6 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiab
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
-import org.apache.commons.io.filefilter.DirectoryFileFilter
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
@@ -32,11 +31,12 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import java.io.File
-import java.io.FileFilter
+import sap.commerce.toolset.util.directoryExists
+import java.nio.file.Path
+import kotlin.io.path.listDirectoryEntries
 
 class PlatformModuleDescriptorImpl(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String = EiConstants.Extension.PLATFORM,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.PLATFORM), PlatformModuleDescriptor {
 
@@ -53,7 +53,7 @@ class PlatformModuleDescriptorImpl(
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val libraryDirectories = getLibraryDirectories()
-        val bootStrapSrc = File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)
+        val bootStrapSrc = moduleRootDirectory.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC)
         val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
         val library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP)
             ?: libraryTableModifiableModel.createLibrary(HybrisConstants.PLATFORM_LIBRARY_GROUP)
@@ -84,30 +84,21 @@ class PlatformModuleDescriptorImpl(
         }
     }
 
-    private fun getLibraryDirectories(): Collection<File> {
-        val libraryDirectories = mutableListOf<File>()
-        File(moduleRootDirectory, ProjectConstants.Directory.RESOURCES)
-            .takeIf { it.exists() }
-            ?.listFiles(DirectoryFileFilter.DIRECTORY as FileFilter)
-            ?.let { resourcesInnerDirectories ->
-                for (resourcesInnerDirectory in resourcesInnerDirectories) {
-                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directory.LIB))
-                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, ProjectConstants.Directory.BIN))
-                }
+    private fun getLibraryDirectories(): Collection<Path> = buildList<Path> {
+        moduleRootDirectory.resolve(ProjectConstants.Directory.RESOURCES)
+            .takeIf { it.directoryExists }
+            ?.listDirectoryEntries()
+            ?.filter { it.directoryExists }
+            ?.forEach { resourcesInnerDirectory ->
+                add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.LIB))
+                add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.BIN))
             }
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_LIB_PATH))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_BIN_PATH))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_BIN_PATH))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_LIB_PATH))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_LIB_PATH))
 
-        return libraryDirectories
+        add(moduleRootDirectory.resolve(ProjectConstants.Paths.BOOTSTRAP_BIN))
+        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_BIN))
+        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_6_BIN))
+        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_LIB))
+        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_6_LIB))
     }
-
-    private fun addLibraryDirectories(libraryDirectories: MutableList<File>, file: File) {
-        if (file.exists()) {
-            libraryDirectories.add(file)
-        }
-    }
-
+        .filter { it.directoryExists }
 }

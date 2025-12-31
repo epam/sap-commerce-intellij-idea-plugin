@@ -24,6 +24,7 @@ import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import kotlin.io.path.pathString
 
 class EclipseConfigurator : ProjectImportConfigurator {
 
@@ -37,12 +38,11 @@ class EclipseConfigurator : ProjectImportConfigurator {
         val project = importContext.project
         val eclipseProjectPaths = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
-            .map { it.moduleRootDirectory }
-            .map { it.path }
+            .map { it.moduleRootDirectory.pathString }
 
         val eclipseImportBuilder = EclipseImportBuilder()
         importContext.modulesFilesDirectory?.let {
-            eclipseImportBuilder.parameters.converterOptions.commonModulesDirectory = it.path
+            eclipseImportBuilder.parameters.converterOptions.commonModulesDirectory = it.pathString
         }
 
         eclipseImportBuilder.list = eclipseProjectPaths

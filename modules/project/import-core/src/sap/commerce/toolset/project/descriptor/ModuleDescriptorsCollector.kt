@@ -36,8 +36,8 @@ import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.module.ModuleRootsScanner
 import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.isDescendantOf
-import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.name
 
@@ -46,10 +46,9 @@ class ModuleDescriptorsCollector {
 
     @Throws(HybrisConfigurationException::class)
     suspend fun collect(importContext: ProjectImportContext.Mutable): Collection<ModuleDescriptor> {
-        val rootDirectory = importContext.rootDirectory.toPath()
-        val excludedFromScanning = getExcludedFromScanningDirectories(importContext)
+        val rootDirectory = importContext.rootDirectory
+        val skipDirectories = getExcludedFromScanningDirectories(importContext)
         val moduleRootsScanner = ModuleRootsScanner.getInstance()
-        val skipDirectories = excludedFromScanning.map { it.toPath() }
         val foundModuleRoots = mutableListOf<ModuleRoot>()
 
         withProgressText("Scanning for modules & vcs...") {
@@ -58,7 +57,7 @@ class ModuleDescriptorsCollector {
                 .apply { foundModuleRoots.addAll(this) }
         }
 
-        importContext.externalExtensionsDirectory?.toPath()
+        importContext.externalExtensionsDirectory
             ?.takeUnless { it.isDescendantOf(rootDirectory) }
             ?.let {
                 withProgressText("Scanning for modules & vcs in: ${it.name}") {
@@ -68,7 +67,7 @@ class ModuleDescriptorsCollector {
             }
             ?.apply { foundModuleRoots.addAll(this) }
 
-        importContext.platformDirectory?.toPath()
+        importContext.platformDirectory
             ?.takeUnless { it.isDescendantOf(rootDirectory) }
             ?.let {
                 withProgressText("Scanning for modules & vcs in: ${it.name}") {
@@ -141,9 +140,8 @@ class ModuleDescriptorsCollector {
     }
 
     private fun getExcludedFromScanningDirectories(importContext: ProjectImportContext.Mutable) = importContext.excludedFromScanning
-        .map { File(importContext.rootDirectory, it) }
-        .filter { it.exists() }
-        .filter { it.isDirectory() }
+        .map { importContext.rootDirectory.resolve(it) }
+        .filter { it.directoryExists }
         .toSet()
 
     private fun buildDependencies(moduleDescriptors: MutableCollection<ModuleDescriptor>) {

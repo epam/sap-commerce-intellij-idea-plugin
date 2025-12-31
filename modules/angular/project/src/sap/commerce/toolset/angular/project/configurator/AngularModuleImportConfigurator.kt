@@ -24,6 +24,7 @@ import sap.commerce.toolset.angular.AngularConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import kotlin.io.path.pathString
 
 class AngularModuleImportConfigurator : ModuleImportConfigurator {
 
@@ -39,6 +40,6 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         modifiableModelsProvider.getModifiableRootModel(module)
-            .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath));
+            .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.pathString));
     }
 }

@@ -24,10 +24,11 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 class AngularModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String = moduleRootDirectory.name,
 ) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ANGULAR) {
 

@@ -35,7 +35,7 @@ interface ModuleProvider {
         moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
     ) = modifiableModelsProvider.modifiableModuleModel.newModule(
-        moduleDescriptor.ideaModuleFile(importContext).absolutePath,
+        moduleDescriptor.ideaModuleFile(importContext),
         moduleTypeId
     )
 

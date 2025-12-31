@@ -20,8 +20,9 @@ package sap.commerce.toolset.maven.project.descriptor
 
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 class MavenModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
 ) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name, ModuleDescriptorType.MAVEN)

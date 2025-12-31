@@ -20,6 +20,7 @@ package sap.commerce.toolset.typeSystem.meta
 
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.model.*
 import sap.commerce.toolset.typeSystem.model.*
 import java.lang.Boolean
@@ -30,7 +31,7 @@ import kotlin.plus
 object TSMetaHelper {
 
     private fun escapeType(type: String?) = type
-        ?.replace(HybrisConstants.TS_JAVA_LANG_PREFIX, "")
+        ?.replace(TSConstants.JAVA_LANG_PREFIX, "")
 
     private fun flattenType(type: Type, elementType: String?) = when (type) {
         Type.COLLECTION -> "Collection<${elementType ?: '?'}>"
@@ -56,12 +57,12 @@ object TSMetaHelper {
 
     fun flattenType(plainType: String, allTypes: Map<String, TSTypedClassifier>): String? {
         var type = plainType
-        val localized = type.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
+        val localized = type.startsWith(TSConstants.Attribute.LOCALIZED_PREFIX, true)
         if (localized) {
-            type = type.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
+            type = type.replace(TSConstants.Attribute.LOCALIZED_PREFIX, "")
         }
         var flattenType = allTypes[type]?.flattenType ?: plainType
-        flattenType = if (localized && !flattenType.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX)) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType
+        flattenType = if (localized && !flattenType.startsWith(TSConstants.Attribute.LOCALIZED_PREFIX)) TSConstants.Attribute.LOCALIZED_PREFIX + flattenType
         else flattenType
 
         return escapeType(flattenType)
@@ -82,12 +83,12 @@ object TSMetaHelper {
     fun isDeprecated(dom: AttributeModel, name: String?) = dom.setters
         .any { name == it.name.stringValue && Boolean.TRUE == it.deprecated.value }
 
-    fun isLocalized(type: String?) = type?.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
+    fun isLocalized(type: String?) = type?.startsWith(TSConstants.Attribute.LOCALIZED_PREFIX, true)
         ?: false
 
     fun isDynamic(persistence: TSMetaPersistence) = PersistenceType.DYNAMIC == persistence.type
 
-    fun isCatalogAware(dom: CustomProperties) = getProperty(dom, HybrisConstants.TS_CATALOG_ITEM_TYPE)
+    fun isCatalogAware(dom: CustomProperties) = getProperty(dom, TSConstants.Attribute.CATALOG_ITEM_TYPE)
         ?.let { parseBooleanValue(it) }
         ?: false
 
@@ -125,9 +126,9 @@ object TSMetaHelper {
         return currentMetaRelationEnds + extendsMetaRelationEnds
     }
 
-    fun isItemAttributeMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, HybrisConstants.TS_TYPE_ATTRIBUTE_DESCRIPTOR)
-    fun isItemMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, HybrisConstants.TS_COMPOSED_TYPE)
-    fun isRelationElementMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, HybrisConstants.TS_TYPE_RELATION_DESCRIPTOR)
+    fun isItemAttributeMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, TSConstants.Type.ATTRIBUTE_DESCRIPTOR)
+    fun isItemMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, TSConstants.Type.COMPOSED_TYPE)
+    fun isRelationElementMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, TSConstants.Type.RELATION_DESCRIPTOR)
 
     fun getAttributeHandler(itemTypeDom: ItemType, attributeDom: Attribute, persistence: Persistence): String? {
         if (persistence.type.value != PersistenceType.DYNAMIC) return null

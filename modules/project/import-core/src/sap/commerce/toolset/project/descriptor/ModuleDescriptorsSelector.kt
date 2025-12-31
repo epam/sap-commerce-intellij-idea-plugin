@@ -32,7 +32,7 @@ class ModuleDescriptorsSelector {
     fun preselect(importContext: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
         val foundExtensions = importContext.foundModules
             .map { LeExtension(it.name, it.moduleRootDirectory) }
-        val extensionsInLocalExtensions = LeExtensionsCollector.Companion.getInstance().collect(
+        val extensionsInLocalExtensions = LeExtensionsCollector.getInstance().collect(
             foundExtensions,
             configModuleDescriptor.moduleRootDirectory,
             importContext.platformDirectory

@@ -25,18 +25,20 @@ import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.pathString
 
 abstract class AbstractYModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String,
     descriptorType: ModuleDescriptorType,
     override val extensionInfo: ExtensionInfoContext,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType), YModuleDescriptor {
 
+    private val springFileSet = mutableSetOf<String>()
     override val extensionDescriptor by lazy {
         ExtensionDescriptor(
-            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
+            path = FileUtil.toSystemIndependentName(moduleRootDirectory.pathString),
             name = name,
             readonly = readonly,
             type = descriptorType,
@@ -49,4 +51,6 @@ abstract class AbstractYModuleDescriptor(
     override fun getSubModules(): Set<YSubModuleDescriptor> = ySubModules
     override fun addSubModule(subModule: YSubModuleDescriptor) = ySubModules.add(subModule)
     override fun removeSubModule(subModule: YSubModuleDescriptor) = ySubModules.remove(subModule)
+    override fun getSpringFiles() = springFileSet
+    override fun addSpringFile(file: String) = springFileSet.add(file)
 }

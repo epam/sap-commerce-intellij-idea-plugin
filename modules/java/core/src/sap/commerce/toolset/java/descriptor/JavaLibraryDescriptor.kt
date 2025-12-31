@@ -20,14 +20,14 @@ package sap.commerce.toolset.java.descriptor
 
 import com.intellij.openapi.roots.DependencyScope
 import sap.commerce.toolset.project.descriptor.LibraryDescriptorType
-import java.io.File
+import java.nio.file.Path
 
 data class JavaLibraryDescriptor(
     var name: String? = null,
-    var libraryFile: File,
-    var jarFiles: Set<File> = emptySet(),
-    var sourceFiles: List<File> = emptyList(),
-    var sourceJarDirectories: List<File> = emptyList(),
+    var libraryFile: Path,
+    var jarFiles: Set<Path> = emptySet(),
+    var sourceFiles: List<Path> = emptyList(),
+    var sourceJarDirectories: List<Path> = emptyList(),
     var exported: Boolean = false,
     var directoryWithClasses: Boolean = false,
     var descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,

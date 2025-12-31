@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.localextensions
 
-import java.io.File
+import java.nio.file.Path
 
 data class LeExtension(
     val name: String,
-    val directory: File,
+    val directory: Path,
 )

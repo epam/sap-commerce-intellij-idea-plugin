@@ -22,7 +22,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaHelper
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
@@ -50,7 +50,7 @@ class TSCatalogAwareUniqueKeyAttributeQualifier : TSInspection() {
     ) {
         val meta = TSMetaModelStateService.state(project).getMetaItem(dom.code.stringValue)
             ?: return
-        val domCustomProperty = TSMetaHelper.getProperty(dom.customProperties, HybrisConstants.TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER)
+        val domCustomProperty = TSMetaHelper.getProperty(dom.customProperties, TSConstants.Attribute.UNIQUE_KEY_ATTRIBUTE_QUALIFIER)
             ?: return
         val customPropertyValue = TSMetaHelper.parseCommaSeparatedStringValue(domCustomProperty)
             ?: return

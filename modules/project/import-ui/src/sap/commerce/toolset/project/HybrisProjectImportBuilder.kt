@@ -36,9 +36,14 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.tasks.ImportProjectTask
-import sap.commerce.toolset.project.vfs.VirtualFileSystemService.Companion.getInstance
-import java.io.File
+import sap.commerce.toolset.project.vfs.VirtualFileSystemService
+import sap.commerce.toolset.util.directoryExists
+import sap.commerce.toolset.util.fileExists
 import java.io.IOException
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 
 open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>() {
 
@@ -108,7 +113,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     }
 
     fun initContext(importSettings: ProjectImportSettings) = ProjectImportContext.Mutable(
-        rootDirectory = File(fileToImport),
+        rootDirectory = Path(fileToImport),
         settings = importSettings,
         refresh = isUpdate,
         project = getCurrentProject(),
@@ -119,14 +124,14 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     // TODO: review it
     protected fun performProjectsCleanup(importContext: ProjectImportContext, chosenModuleDescriptors: Iterable<ModuleDescriptor>) {
         val alreadyExistingModuleFiles = importContext.modulesFilesDirectory
-            ?.takeIf { it.isDirectory && it.exists() }
+            ?.takeIf { it.directoryExists }
             ?.let { getAllImlFiles(it) }
             ?: chosenModuleDescriptors
                 .map { it.ideaModuleFile(importContext) }
-                .filter { it.exists() }
+                .filter { it.fileExists }
 
         try {
-            getInstance().removeAllFiles(alreadyExistingModuleFiles)
+            VirtualFileSystemService.getInstance().removeAllFiles(alreadyExistingModuleFiles)
         } catch (e: IOException) {
             thisLogger().error("Can not remove old module files.", e)
         }
@@ -140,9 +145,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     )
         .notify(project)
 
-    private fun getAllImlFiles(dir: File) = dir
-        .listFiles { _, name -> name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
-        ?.toList()
-        ?: emptyList()
+    private fun getAllImlFiles(dir: Path) = dir.listDirectoryEntries()
+        .filter { it.name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
 
 }

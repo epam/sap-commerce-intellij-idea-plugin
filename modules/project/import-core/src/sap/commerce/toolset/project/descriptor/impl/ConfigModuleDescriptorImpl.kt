@@ -20,10 +20,11 @@ package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 class ConfigModuleDescriptorImpl(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String = moduleRootDirectory.name
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CONFIG), ConfigModuleDescriptor {
 

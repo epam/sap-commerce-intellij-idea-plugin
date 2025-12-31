@@ -25,5 +25,5 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 class CCv2StorefrontModuleDescriptorProvider : CCv2ModuleDescriptorProvider(
     ModuleDescriptorType.CCV2_STOREFRONT
 ) {
-    override fun create(context: ModuleDescriptorProviderContext) = CCv2StorefrontModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = CCv2StorefrontModuleDescriptor(context.moduleRootPath)
 }

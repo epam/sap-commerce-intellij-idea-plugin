@@ -21,11 +21,11 @@ package sap.commerce.toolset.externalDependencies.codeInspection
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.codeInspection.AbstractInspection
+import sap.commerce.toolset.externalDependencies.EdConstants
 
 abstract class EdInspection : AbstractInspection<MavenDomProjectModel>(MavenDomProjectModel::class.java) {
 
-    override fun canProcess(project: Project, file: XmlFile) = file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML
+    override fun canProcess(project: Project, file: XmlFile) = file.name == EdConstants.EXTERNAL_DEPENDENCIES_XML
 
 }

@@ -29,10 +29,10 @@ class YCustomRegularModuleDescriptorProvider : ModuleDescriptorProvider {
 
     @Throws(HybrisConfigurationException::class)
     override fun create(context: ModuleDescriptorProviderContext): YCustomRegularModuleDescriptor {
-        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootDirectory)
+        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootPath)
             ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
 
-        return YCustomRegularModuleDescriptor(context.moduleRootDirectory, extensionInfo).apply {
+        return YCustomRegularModuleDescriptor(context.moduleRootPath, extensionInfo).apply {
             SubModuleDescriptorFactory.getInstance().buildAll(this)
                 .forEach { this.addSubModule(it) }
         }

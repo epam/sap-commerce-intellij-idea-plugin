@@ -24,12 +24,12 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import sap.commerce.toolset.psi.getValidResults
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -120,7 +120,7 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
                 }
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)
-            ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
+            ?.let { metaService.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE) }
             ?.let { it.allAttributes[refName] }
             ?.let { arrayOf(AttributeResolveResult(it)) }
 

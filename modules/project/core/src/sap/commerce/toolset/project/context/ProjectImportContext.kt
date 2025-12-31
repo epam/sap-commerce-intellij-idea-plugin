@@ -25,28 +25,27 @@ import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import java.io.File
 import java.nio.file.Path
 
 data class ProjectImportContext(
-    var project: Project,
-    val rootDirectory: File,
+    val project: Project,
+    val rootDirectory: Path,
+    val platformDirectory: Path,
     val refresh: Boolean,
     val settings: ProjectImportSettings,
 
-    var modulesFilesDirectory: File? = null,
-    var ccv2Token: String? = null,
-    var sourceCodeFile: File? = null,
-    var projectIconFile: File? = null,
+    val modulesFilesDirectory: Path? = null,
+    val ccv2Token: String? = null,
+    val sourceCodeFile: Path? = null,
+    val projectIconFile: Path? = null,
 
-    var platformDirectory: File? = null,
-    var externalExtensionsDirectory: File? = null,
-    var externalConfigDirectory: File? = null,
-    var externalDbDriversDirectory: File? = null,
+    val externalExtensionsDirectory: Path? = null,
+    val externalConfigDirectory: Path? = null,
+    val externalDbDriversDirectory: Path? = null,
 
-    var javadocUrl: String? = null,
+    val javadocUrl: String? = null,
 
-    var platformVersion: String? = null,
+    val platformVersion: String? = null,
 
     val foundModules: Collection<ModuleDescriptor>,
 
@@ -66,19 +65,19 @@ data class ProjectImportContext(
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
 
     data class Mutable(
-        val rootDirectory: File,
+        val rootDirectory: Path,
         val refresh: Boolean,
         val settings: ProjectImportSettings,
 
         var project: Project? = null,
-        var modulesFilesDirectory: File? = null,
+        var modulesFilesDirectory: Path? = null,
         var ccv2Token: String? = null,
-        var sourceCodeFile: File? = null,
-        var projectIconFile: File? = null,
-        var platformDirectory: File? = null,
-        var externalExtensionsDirectory: File? = null,
-        var externalConfigDirectory: File? = null,
-        var externalDbDriversDirectory: File? = null,
+        var sourceCodeFile: Path? = null,
+        var projectIconFile: Path? = null,
+        var platformDirectory: Path? = null,
+        var externalExtensionsDirectory: Path? = null,
+        var externalConfigDirectory: Path? = null,
+        var externalDbDriversDirectory: Path? = null,
         var javadocUrl: String? = null,
         var platformVersion: String? = null,
 
@@ -118,7 +117,8 @@ data class ProjectImportContext(
             ccv2Token = ccv2Token,
             sourceCodeFile = sourceCodeFile,
             projectIconFile = projectIconFile,
-            platformDirectory = platformDirectory,
+            platformDirectory = platformDirectory
+                ?: throw HybrisConfigurationException("Unable to find platform directory"),
             externalExtensionsDirectory = externalExtensionsDirectory,
             externalConfigDirectory = externalConfigDirectory,
             externalDbDriversDirectory = externalDbDriversDirectory,

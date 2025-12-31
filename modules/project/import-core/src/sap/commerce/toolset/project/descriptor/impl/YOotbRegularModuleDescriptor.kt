@@ -19,9 +19,9 @@ package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import java.io.File
+import java.nio.file.Path
 
 class YOotbRegularModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     extensionInfo: ExtensionInfoContext,
 ) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.OOTB, extensionInfo)

@@ -23,17 +23,19 @@ import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
+import kotlin.io.path.pathString
 
 class EclipseModuleDescriptorProvider : ModuleDescriptorProvider {
     override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.ECLIPSE
 
     override fun create(context: ModuleDescriptorProviderContext) = EclipseModuleDescriptor(
-        context.moduleRootDirectory,
-        getEclipseModuleDescriptorName(context.moduleRootDirectory)
+        context.moduleRootPath,
+        getEclipseModuleDescriptorName(context.moduleRootPath)
     )
 
-    private fun getEclipseModuleDescriptorName(moduleRootDirectory: File) = EclipseProjectFinder.findProjectName(moduleRootDirectory.absolutePath)
+    private fun getEclipseModuleDescriptorName(moduleRootDirectory: Path) = EclipseProjectFinder.findProjectName(moduleRootDirectory.pathString)
         ?.trim { it <= ' ' }
         ?.takeIf { it.isNotBlank() }
         ?: moduleRootDirectory.name

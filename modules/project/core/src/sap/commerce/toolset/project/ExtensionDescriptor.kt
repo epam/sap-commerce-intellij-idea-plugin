@@ -27,8 +27,8 @@ import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
-import java.io.File
 import java.io.Serial
+import kotlin.io.path.Path
 
 data class ExtensionDescriptor(
     @OptionTag val name: String = "",
@@ -48,7 +48,7 @@ data class ExtensionDescriptor(
                 && type != ModuleDescriptorType.CUSTOM)
         ) return null
 
-        val moduleRootDirectory = File(FileUtil.toSystemDependentName(path))
+        val moduleRootDirectory = Path(FileUtil.toSystemDependentName(path))
 
         return EiModelAccess.getInstance().getContext(moduleRootDirectory)
     }

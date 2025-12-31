@@ -31,10 +31,10 @@ class YPlatformExtModuleDescriptorProvider : ModuleDescriptorProvider {
         && context.moduleRoot.path.name != EiConstants.Extension.CORE
 
     override fun create(context: ModuleDescriptorProviderContext): YPlatformExtModuleDescriptor {
-        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootDirectory)
+        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootPath)
             ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
 
-        return YPlatformExtModuleDescriptor(context.moduleRootDirectory, extensionInfo).apply {
+        return YPlatformExtModuleDescriptor(context.moduleRootPath, extensionInfo).apply {
             SubModuleDescriptorFactory.getInstance().buildAll(this)
                 .forEach { this.addSubModule(it) }
         }

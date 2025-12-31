@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.module
 
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -30,9 +31,10 @@ import kotlin.io.path.pathString
 class YOotbModuleRootResolver : ModuleRootResolver {
 
     override fun isApplicable(path: Path): Boolean {
-        if (!path.resolve(HybrisConstants.EXTENSION_INFO_XML).fileExists) return false
+        if (!path.resolve(EiConstants.EXTENSION_INFO_XML).fileExists) return false
 
         val parentPathString = path.parent.normalize().pathString
+            .replace("\\", "/")
 
         return parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019)
             || (parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))

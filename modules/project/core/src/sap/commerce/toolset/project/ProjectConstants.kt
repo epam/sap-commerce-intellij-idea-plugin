@@ -22,7 +22,6 @@ import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.util.Key
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.nio.file.Path
 import kotlin.io.path.Path
 
 object ProjectConstants {
@@ -89,13 +88,6 @@ object ProjectConstants {
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 
-        val PATH_PLATFORM_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
-        val PATH_BIN_PLATFORM: Path = Path(BIN, "platform")
-        val PATH_BIN_PLATFORM_BUILD_NUMBER: Path = PATH_BIN_PLATFORM.resolve("build.number")
-        val PATH_BIN_CUSTOM = Path(BIN, "custom")
-        val PATH_LIB_DB_DRIVER: Path = Path("lib", "dbdriver")
-        val PATH_IDEA_MODULES: Path = Path(".idea", "idea-modules")
-
         @JvmField
         val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
 
@@ -112,6 +104,53 @@ object ProjectConstants {
         const val PLATFORM_HOME_PROPERTIES = "platformhome.properties"
         const val ENV_PROPERTIES = "env.properties"
         const val ADVANCED_PROPERTIES = "advanced.properties"
+
+        const val EXTENSIONS_XML = "extensions.xml"
+        const val BUILD_CALLBACKS_XML = "buildcallbacks.xml"
+
+        const val HYBRIS_LICENCE_JAR = "hybrislicence.jar"
+        const val SAP_LICENCES = "installedSaplicenses.properties"
+    }
+
+    object Paths {
+        val IDEA_MODULES = Path(".idea", "idea-modules")
+
+        val RELATIVE_DOC_SOURCES = Path("..", "doc", "sources")
+        val RELATIVE_CONFIG = Path("..", "..", "config")
+
+        val PLATFORM_BOOTSTRAP = Path("platform", "bootstrap")
+        val BIN_PLATFORM = Path("bin", "platform")
+        val BIN_PLATFORM_BUILD_NUMBER = Path("bin", "platform", "build.number")
+
+        val BIN_CUSTOM = Path("bin", "custom")
+
+        val LIB_DB_DRIVER = Path("lib", "dbdriver")
+        val ADVANCED_PROPERTIES = Path("resources", "advanced.properties")
+
+        val BOOTSTRAP_BIN = Path("bootstrap", "bin")
+        val BOOTSTRAP_GEN_SRC = Path("bootstrap", "gensrc")
+
+        val TOMCAT_BIN = Path("tomcat", "bin")
+        val TOMCAT_LIB = Path("tomcat", "lib")
+        val TOMCAT_6_BIN = Path("tomcat-6", "bin")
+        val TOMCAT_6_LIB = Path("tomcat-6", "lib")
+
+        val DOC_SOURCES = Path("doc", "sources")
+        val ACCELERATOR_ADDON_WEB = Path("acceleratoraddon", "web")
+
+        val WEBROOT_WEB_INF_LIB = Path("webroot", "WEB-INF", "lib")
+        val WEBROOT_WEB_INF_CLASSES = Path("webroot", "WEB-INF", "classes")
+        val WEBROOT_WEB_INF_WEB_XML = Path("webroot", "WEB-INF", "web.xml")
+
+        val BACKOFFICE_BIN = Path("backoffice", "bin")
+        val BACKOFFICE_JAR = Path("resources", "backoffice")
+
+        val HAC_WEB_INF_CLASSES = Path("bin", "platform", "ext", "hac", "web", "webroot", "WEB-INF", "classes")
+
+        val RESERVED_TYPE_CODES_FILE = Path("resources", "core", "unittest", "reservedTypecodes.txt")
+
+        val HYBRIS_SERVER_SHELL_SCRIPT_NAME = Path("bin", "platform", "hybrisserver.sh")
+        val HYBRIS_SERVER_BASH_SCRIPT_NAME = Path("bin", "platform", "hybrisserver.bat")
     }
 
     val PLATFORM_EXTENSION_NAMES = setOf(
@@ -135,5 +174,4 @@ object ProjectConstants {
         EiConstants.Extension.VALIDATION,
         EiConstants.Extension.WORKFLOW,
     )
-
 }

@@ -26,4 +26,6 @@ interface YModuleDescriptor : ModuleDescriptor {
     fun getSubModules(): Set<YSubModuleDescriptor>
     fun addSubModule(subModule: YSubModuleDescriptor): Boolean
     fun removeSubModule(subModule: YSubModuleDescriptor): Boolean
+    fun getSpringFiles(): Set<String>
+    fun addSpringFile(file: String): Boolean
 }

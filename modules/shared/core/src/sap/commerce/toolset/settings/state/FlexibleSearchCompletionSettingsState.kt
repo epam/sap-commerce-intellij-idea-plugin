@@ -20,7 +20,6 @@ package sap.commerce.toolset.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
-import sap.commerce.toolset.HybrisConstants
 
 @Tag("FlexibleSearchCompletionSettings")
 data class FlexibleSearchCompletionSettingsState(
@@ -28,7 +27,7 @@ data class FlexibleSearchCompletionSettingsState(
     @JvmField @OptionTag val injectTableAliasSeparator: Boolean = true,
     @JvmField @OptionTag val suggestTableAliasNames: Boolean = true,
     @JvmField @OptionTag val injectCommaAfterExpression: Boolean = true,
-    @JvmField @OptionTag val defaultTableAliasSeparator: String = HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT,
+    @JvmField @OptionTag val defaultTableAliasSeparator: String = "",
 ) {
     fun mutable() = Mutable(
         injectSpaceAfterKeywords = injectSpaceAfterKeywords,

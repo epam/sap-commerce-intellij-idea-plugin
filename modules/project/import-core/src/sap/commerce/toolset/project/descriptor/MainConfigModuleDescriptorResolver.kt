@@ -24,20 +24,21 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import org.apache.commons.io.FilenameUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.module.ModuleRootResolver
-import java.io.File
-import java.io.FileReader
+import sap.commerce.toolset.util.directoryExists
+import sap.commerce.toolset.util.fileExists
 import java.io.IOException
+import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.Path
-import kotlin.io.path.exists
+import kotlin.io.path.inputStream
 import kotlin.io.path.isDirectory
+import kotlin.io.path.pathString
 
 @Service
 class MainConfigModuleDescriptorResolver {
@@ -67,7 +68,7 @@ class MainConfigModuleDescriptorResolver {
 
         if (foundConfigModules.size == 1) return foundConfigModules[0]
 
-        val configDir: File?
+        val configDir: Path?
         val externalConfigDirectory = importContext.externalConfigDirectory
         if (externalConfigDirectory != null) {
             configDir = externalConfigDirectory
@@ -80,14 +81,12 @@ class MainConfigModuleDescriptorResolver {
             }
         }
         val configHybrisModuleDescriptor = foundConfigModules
-            .firstOrNull { FileUtil.filesEqual(it.moduleRootDirectory, configDir) }
+            .firstOrNull { FileUtil.pathsEqual(it.moduleRootDirectory.pathString, configDir.pathString) }
         if (configHybrisModuleDescriptor != null) return configHybrisModuleDescriptor
 
-        val configPath = configDir.toPath()
-
         return ModuleRootResolver.EP.extensionList
-            .find { it.isApplicable(configPath) }
-            ?.resolve(configPath)
+            .find { it.isApplicable(configDir) }
+            ?.resolve(configDir)
             ?.moduleRoot
             ?.takeIf { it.type == ModuleDescriptorType.CONFIG }
             ?.let {
@@ -98,37 +97,33 @@ class MainConfigModuleDescriptorResolver {
             ?.also { importContext.addModule(it) }
     }
 
-    private fun getExpectedConfigDir(platformModuleDescriptor: PlatformModuleDescriptor): File? {
-        val expectedConfigDir = Path(platformModuleDescriptor.moduleRootDirectory.absolutePath, HybrisConstants.CONFIG_RELATIVE_PATH)
-        if (!expectedConfigDir.isDirectory()) return null
-
+    private fun getExpectedConfigDir(platformModuleDescriptor: PlatformModuleDescriptor): Path? {
+        val expectedConfigDir = platformModuleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.RELATIVE_CONFIG)
+            .takeIf { it.directoryExists } ?: return null
         val propertiesFile = expectedConfigDir.resolve(ProjectConstants.File.LOCAL_PROPERTIES)
-        if (!propertiesFile.exists()) return expectedConfigDir.toFile()
+            .takeIf { it.fileExists } ?: return expectedConfigDir
 
         val properties = Properties()
         try {
-            FileReader(propertiesFile.toFile()).use { fr ->
-                properties.load(fr)
-            }
+            propertiesFile.inputStream().use { properties.load(it) }
         } catch (e: IOException) {
             thisLogger().warn(e)
-            return expectedConfigDir.toFile()
+            return expectedConfigDir
         }
 
         var hybrisConfig = properties[HybrisConstants.ENV_HYBRIS_CONFIG_DIR]
             ?.asSafely<String>()
-            ?: return expectedConfigDir.toFile()
+            ?: return expectedConfigDir
 
         hybrisConfig = hybrisConfig.replace(
             HybrisConstants.PLATFORM_HOME_PLACEHOLDER,
-            platformModuleDescriptor.moduleRootDirectory.path
+            platformModuleDescriptor.moduleRootDirectory.pathString
         )
-        hybrisConfig = FilenameUtils.separatorsToSystem(hybrisConfig)
+        hybrisConfig = FileUtil.normalize(hybrisConfig)
 
-        val hybrisConfigDir = Path(hybrisConfig)
-        if (hybrisConfigDir.isDirectory()) return hybrisConfigDir.toFile()
-
-        return expectedConfigDir.toFile()
+        return Path(hybrisConfig)
+            .takeIf { it.directoryExists }
+            ?: expectedConfigDir
     }
 
     companion object {

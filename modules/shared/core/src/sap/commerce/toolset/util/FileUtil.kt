@@ -19,6 +19,7 @@
 package sap.commerce.toolset.util
 
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.platform.util.progress.reportSequentialProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
@@ -54,12 +55,12 @@ suspend fun File.findRecursively(
 /*
 This function will process files in the directory before going deeper
  */
-suspend fun File.findRecursivelyOptimized(
+suspend fun Path.findRecursivelyOptimized(
     ignoredDirNames: Collection<String>,
-    filter: (File) -> Boolean
-): File? = reportSequentialProgress { reporter ->
+    filter: (Path) -> Boolean
+): Path? = reportSequentialProgress { reporter ->
     withContext(Dispatchers.IO) {
-        val queue = ArrayDeque<File>()
+        val queue = ArrayDeque<Path>()
         queue.add(this@findRecursivelyOptimized)
 
         while (queue.isNotEmpty()) {
@@ -67,20 +68,20 @@ suspend fun File.findRecursivelyOptimized(
 
             val currentDir = queue.removeFirst()
 
-            if (currentDir.isDirectory) {
-                reporter.indeterminateStep("Scanning directory: ${currentDir.absolutePath}")
+            if (currentDir.isDirectory()) {
+                reporter.indeterminateStep("Scanning directory: ${currentDir.pathString}")
 
-                val files = mutableListOf<File>()
-                val dirs = mutableListOf<File>()
+                val files = mutableListOf<Path>()
+                val dirs = mutableListOf<Path>()
 
-                currentDir.toPath().listDirectoryEntries().forEach { path ->
+                currentDir.listDirectoryEntries().forEach { path ->
                     coroutineContext.ensureActive()
                     if (path.isDirectory()) {
                         if (!ignoredDirNames.contains(path.name)) {
-                            dirs.add(path.toFile())
+                            dirs.add(path)
                         }
                     } else {
-                        files.add(path.toFile())
+                        files.add(path)
                     }
                 }
 
@@ -106,18 +107,13 @@ val Path.fileExists
 
 fun Path?.isDescendantOf(parent: Path): Boolean =
     try {
-        val realParent = parent.toRealPath()
-        val realChild = this?.toRealPath()
+        val realParent = parent.normalize()
+        val realChild = this?.normalize()
         realChild?.startsWith(realParent) ?: false
     } catch (e: IOException) {
         this?.thisLogger()?.warn("Can't find $parent in $this", e)
         false
     }
 
-fun Path.normalizedContains(partialPath: Path): Boolean =
-    try {
-        normalize().pathString.contains(partialPath.normalize().pathString)
-    } catch (e: IOException) {
-        this.thisLogger().warn("Can't find $pathString in $this", e)
-        false
-    }
+val Path.toSystemIndependentName
+    get() = FileUtil.toSystemIndependentName(pathString)

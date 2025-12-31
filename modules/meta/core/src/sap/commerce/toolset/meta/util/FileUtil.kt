@@ -20,14 +20,11 @@ package sap.commerce.toolset.meta.util
 
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacetConstants
-import java.io.File
-import java.io.IOException
 
 fun VirtualFile.isCustomExtensionFile(project: Project): Boolean {
     val descriptorType = ModuleUtilCore.findModuleForFile(this, project)
@@ -43,19 +40,13 @@ fun VirtualFile.isCustomExtensionFile(project: Project): Boolean {
 }
 
 private fun estimateIsCustomExtension(file: VirtualFile): ModuleDescriptorType {
-    val itemsFile = VfsUtilCore.virtualToIoFile(file)
-    val filePath = try {
-        itemsFile.canonicalPath.normalize()
-    } catch (e: IOException) {
-        itemsFile.absolutePath.normalize()
-    }
+    val canonicalPath = file.canonicalPath
+        ?: return ModuleDescriptorType.CUSTOM
 
     return when {
-        filePath.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX) -> ModuleDescriptorType.OOTB
-        filePath.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019) -> ModuleDescriptorType.OOTB
-        filePath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX) -> ModuleDescriptorType.EXT
+        canonicalPath.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX) -> ModuleDescriptorType.OOTB
+        canonicalPath.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019) -> ModuleDescriptorType.OOTB
+        canonicalPath.contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX) -> ModuleDescriptorType.EXT
         else -> ModuleDescriptorType.CUSTOM
     }
 }
-
-private fun String.normalize() = replace(File.separatorChar, '/')

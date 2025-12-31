@@ -25,5 +25,5 @@ class PlatformModuleDescriptorProvider : ModuleDescriptorProvider {
 
     override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.PLATFORM
 
-    override fun create(context: ModuleDescriptorProviderContext) = PlatformModuleDescriptorImpl(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = PlatformModuleDescriptorImpl(context.moduleRootPath)
 }

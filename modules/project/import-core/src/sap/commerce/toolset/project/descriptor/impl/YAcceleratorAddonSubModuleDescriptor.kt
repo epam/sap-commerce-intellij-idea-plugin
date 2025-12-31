@@ -18,18 +18,18 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import com.intellij.openapi.util.io.FileUtil
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.*
-import java.io.File
+import sap.commerce.toolset.util.toSystemIndependentName
+import java.nio.file.Path
 
 class YAcceleratorAddonSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
-    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
+    moduleRootDirectory: Path,
+    val webRoot: Path = moduleRootDirectory.resolve(ProjectConstants.Directory.WEB_ROOT),
     override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + EiConstants.Extension.WEB,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
@@ -38,7 +38,7 @@ class YAcceleratorAddonSubModuleDescriptor(
 
     override val extensionDescriptor by lazy {
         ExtensionDescriptor(
-            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
+            path = moduleRootDirectory.toSystemIndependentName,
             name = name,
             readonly = readonly,
             type = descriptorType,

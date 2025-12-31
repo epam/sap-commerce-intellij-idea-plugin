@@ -38,7 +38,6 @@ class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
             importContext.chosenHybrisModuleDescriptors
                 .firstOrNull { it.name == EiConstants.Extension.BACK_OFFICE }
                 ?.moduleRootDirectory
-                ?.toPath()
                 ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))
                 ?.takeIf { it.exists() }
                 ?.toFile()

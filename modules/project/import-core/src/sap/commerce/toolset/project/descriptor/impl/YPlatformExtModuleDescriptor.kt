@@ -25,10 +25,10 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
-import java.io.File
+import java.nio.file.Path
 
 open class YPlatformExtModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     extensionInfo: ExtensionInfoContext,
 ) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.EXT, extensionInfo) {
 

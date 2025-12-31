@@ -29,26 +29,26 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.context.Dependency
 import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionType
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
-import java.io.File
+import sap.commerce.toolset.util.directoryExists
+import java.nio.file.Path
 
 @Service
 class EiModelAccess {
 
     fun getExtensionInfo(module: Module) = ModuleRootManager.getInstance(module).contentRoots
-        .firstNotNullOfOrNull { it.findFile(HybrisConstants.EXTENSION_INFO_XML) }
+        .firstNotNullOfOrNull { it.findFile(EiConstants.EXTENSION_INFO_XML) }
         ?.let { PsiManager.getInstance(module.project).findFile(it) }
         ?.asSafely<XmlFile>()
         ?.let { DomManager.getDomManager(module.project).getFileElement(it, ExtensionInfo::class.java) }
         ?.rootElement
         ?.extension
 
-    fun getContext(moduleRootDirectory: File): ExtensionInfoContext? = unmarshallExtensionInfo(moduleRootDirectory)
+    fun getContext(moduleRootDirectory: Path): ExtensionInfoContext? = unmarshallExtensionInfo(moduleRootDirectory)
         ?.let { extension ->
             val metas = extension.meta
                 .associate { it.key to it.value }
@@ -58,7 +58,7 @@ class EiModelAccess {
                 description = extension.description,
                 useMaven = "true".equals(extension.usemaven, ignoreCase = true),
                 webModule = extension.webmodule != null
-                    && File(moduleRootDirectory, EiConstants.Extension.WEB).exists(),
+                    && moduleRootDirectory.resolve(EiConstants.Extension.WEB).directoryExists,
                 hmcModule = extension.hmcmodule != null,
                 coreModule = extension.coremodule != null,
                 jaloLogicFree = extension.isJaloLogicFree,
@@ -66,20 +66,20 @@ class EiModelAccess {
                 webRoot = extension.webmodule?.webroot,
                 version = extension.version,
                 requiredByAll = extension.isRequiredbyall,
-                classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
-                moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
-                deprecated = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
-                hacModule = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
-                backofficeModule = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-                    && File(moduleRootDirectory, EiConstants.Extension.BACK_OFFICE).exists(),
-                extGenTemplateExtension = isMetaKeySetToTrue(metas, HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
+                classPathGen = metas[EiConstants.EXTENSION_META_KEY_CLASSPATHGEN],
+                moduleGenName = metas[EiConstants.EXTENSION_META_KEY_MODULE_GEN],
+                deprecated = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_DEPRECATED),
+                hacModule = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_HAC_MODULE),
+                backofficeModule = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
+                    && moduleRootDirectory.resolve(EiConstants.Extension.BACK_OFFICE).directoryExists,
+                extGenTemplateExtension = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_EXT_GEN),
                 requiredExtensions = extension.requiresExtension
                     .filter { it.name.isNotBlank() }
                     .map { Dependency(it.name, it.version) }
             )
         }
 
-    private fun unmarshallExtensionInfo(moduleRootDirectory: File): ExtensionType? = try {
+    private fun unmarshallExtensionInfo(moduleRootDirectory: Path): ExtensionType? = try {
         EiUnmarshaller.unmarshall(moduleRootDirectory).extension
             .takeUnless { it.name.isNullOrBlank() }
     } catch (e: HybrisConfigurationException) {

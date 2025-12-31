@@ -42,7 +42,8 @@ import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
-import java.io.File
+import sap.commerce.toolset.util.directoryExists
+import kotlin.io.path.name
 
 class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
@@ -63,9 +64,9 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             .filterIsInstance<YModuleDescriptor>()
             .distinct()
             .associateBy { it.name }
-        val sourceCodeRoot = getSourceCodeRoot(importContext, moduleDescriptor)
+        val sourceCodeRoot = getSourceCodeRoot(importContext)
         for (javaLibraryDescriptor in getLibraryDescriptors(importContext, moduleDescriptor, allYModules)) {
-            if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
+            if (!javaLibraryDescriptor.libraryFile.directoryExists && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
                 continue
             }
             if (javaLibraryDescriptor.directoryWithClasses) {
@@ -80,8 +81,8 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
             is YOotbRegularModuleDescriptor -> {
                 if (moduleDescriptor.extensionInfo.backofficeModule) {
-                    val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_PATH)
-                    if (backofficeJarDirectory.exists()) {
+                    val backofficeJarDirectory = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.BACKOFFICE_JAR)
+                    if (backofficeJarDirectory.directoryExists) {
                         addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
                     }
                 }
@@ -92,9 +93,9 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
             is YWebSubModuleDescriptor -> {
                 if (moduleDescriptor.owner.name == EiConstants.Extension.BACK_OFFICE) {
-                    val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
-                    val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
-                    val sources = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_PARENT_JAR_PATH)
+                    val classes = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
+                    val library = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+                    val sources = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
                     addBackofficeRootProjectLibrary(modifiableModelsProvider, classes, null, false)
                     addBackofficeRootProjectLibrary(modifiableModelsProvider, library, sources)
                 }
@@ -102,8 +103,8 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         }
     }
 
-    private fun getSourceCodeRoot(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = importContext.sourceCodeFile
-        ?.let { VfsUtil.findFileByIoFile(it, true) }
+    private fun getSourceCodeRoot(importContext: ProjectImportContext) = importContext.sourceCodeFile
+        ?.let { VfsUtil.findFile(it, true) }
         ?.let { vf ->
             if (vf.isDirectory) vf
             else JarFileSystem.getInstance().getJarRootForLocalFile(vf)
@@ -126,7 +127,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
         if (sourceCodeRoot != null
             && !sourceDirAttached
-            && javaLibraryDescriptor.libraryFile.name.endsWith(HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)
+            && javaLibraryDescriptor.libraryFile.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX)
         ) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES)
         }
@@ -194,7 +195,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         javaLibraryDescriptor: JavaLibraryDescriptor,
         libraryModifiableModel: Library.ModifiableModel
     ) = javaLibraryDescriptor.sourceFiles
-        .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+        .mapNotNull { VfsUtil.findFile(it, true) }
         .onEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
 
     private fun attachSourceJarDirectories(
@@ -202,7 +203,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         libraryModifiableModel: Library.ModifiableModel
     ) {
         javaLibraryDescriptor.sourceJarDirectories
-            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+            .mapNotNull { VfsUtil.findFile(it, true) }
             .forEach { libraryModifiableModel.addJarDirectory(it, true, OrderRootType.SOURCES) }
     }
 

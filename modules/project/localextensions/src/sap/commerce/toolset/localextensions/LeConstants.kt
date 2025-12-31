@@ -15,16 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import java.nio.file.Path
+package sap.commerce.toolset.localextensions
 
-class YCustomRegularModuleDescriptor(
-    moduleRootDirectory: Path,
-    extensionInfo: ExtensionInfoContext,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.CUSTOM, extensionInfo) {
-
-    override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
+object LeConstants {
+    const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
 }

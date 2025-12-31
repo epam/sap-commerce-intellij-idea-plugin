@@ -24,14 +24,14 @@ import com.intellij.openapi.ui.popup.Balloon
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.application
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import java.awt.MouseInfo
 
 internal fun String.toTypeCode() = this
     .substringAfterLast('.')
-    .removeSuffix(HybrisConstants.MODEL_SUFFIX)
+    .removeSuffix(TSConstants.MODEL_SUFFIX)
 
 internal fun getMeta(project: Project, classNameFqn: String): TSGlobalMetaItem? {
     val typeCode = classNameFqn.toTypeCode()

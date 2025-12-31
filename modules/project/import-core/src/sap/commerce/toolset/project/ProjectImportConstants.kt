@@ -20,10 +20,8 @@ package sap.commerce.toolset.project
 
 object ProjectImportConstants {
 
-    const val CCV2_MANIFEST_NAME = "manifest.json"
-    const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
-    const val CCV2_DATAHUB_NAME = "datahub"
-    const val CCV2_JS_STOREFRONT_NAME = "js-storefront"
+    const val HYBRIS_API_VERSION_KEY = "version.api"
+    const val HYBRIS_VERSION_KEY = "version"
 
     val excludedFromScanningDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)

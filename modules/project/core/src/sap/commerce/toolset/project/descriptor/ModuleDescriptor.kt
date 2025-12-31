@@ -20,12 +20,12 @@ package sap.commerce.toolset.project.descriptor
 
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.io.File
+import java.nio.file.Path
 
 interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
     var groupNames: Array<String>
-    val moduleRootDirectory: File
+    val moduleRootDirectory: Path
     var importStatus: ModuleDescriptorImportStatus
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
@@ -34,13 +34,11 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun ideaModuleName(): String = (if (groupNames.isEmpty()) "" else groupNames.joinToString(separator = ".", postfix = ".")) + name
     fun groupName(importContext: ProjectImportContext): Array<String>? = null
     fun isPreselected(): Boolean
-    fun ideaModuleFile(importContext: ProjectImportContext): File
-    fun getRelativePath(rootDirectory: File): String
+    fun ideaModuleFile(importContext: ProjectImportContext): Path
+    fun getRelativePath(rootDirectory: Path): String
     fun getRequiredExtensionNames(): Set<String>
     fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean
     fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
-    fun getSpringFiles(): Set<String>
-    fun addSpringFile(file: String): Boolean
     fun getAllDependencies(): Set<ModuleDescriptor>
     fun getDirectDependencies(): Set<ModuleDescriptor>
     fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>): Boolean

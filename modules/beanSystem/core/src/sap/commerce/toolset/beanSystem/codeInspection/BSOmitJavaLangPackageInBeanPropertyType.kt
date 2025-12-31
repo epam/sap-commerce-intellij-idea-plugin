@@ -22,7 +22,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.model.Beans
 import sap.commerce.toolset.beanSystem.model.Property
 import sap.commerce.toolset.codeInspection.fix.XmlUpdateAttributeQuickFix
@@ -50,7 +50,7 @@ class BSOmitJavaLangPackageInBeanPropertyType : BSInspection() {
         val propertyName = dom.name.xmlAttributeValue?.value ?: return
         val propertyType = dom.type.xmlAttributeValue
             ?.value
-            ?.takeIf { it.contains(HybrisConstants.BS_JAVA_LANG_PREFIX) }
+            ?.takeIf { it.contains(BSConstants.JAVA_LANG_PREFIX) }
             ?: return
 
         holder.createProblem(
@@ -59,7 +59,7 @@ class BSOmitJavaLangPackageInBeanPropertyType : BSInspection() {
             i18n("hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.message", propertyName),
             XmlUpdateAttributeQuickFix(
                 Property.TYPE,
-                propertyType.replace(HybrisConstants.BS_JAVA_LANG_PREFIX, "")
+                propertyType.replace(BSConstants.JAVA_LANG_PREFIX, "")
             )
         )
     }

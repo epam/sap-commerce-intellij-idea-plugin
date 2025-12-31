@@ -21,10 +21,11 @@ package sap.commerce.toolset.gradle.project.descriptor
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 open class GradleModuleDescriptor(
-    moduleRootDirectory: File,
-    val gradleFile: File = File(moduleRootDirectory, GradleConstants.DEFAULT_SCRIPT_NAME),
+    moduleRootDirectory: Path,
+    val gradleFile: Path = moduleRootDirectory.resolve(GradleConstants.DEFAULT_SCRIPT_NAME),
 ) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name, ModuleDescriptorType.GRADLE)
 

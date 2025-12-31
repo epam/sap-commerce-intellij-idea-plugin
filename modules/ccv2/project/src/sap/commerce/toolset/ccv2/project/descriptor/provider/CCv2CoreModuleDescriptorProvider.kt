@@ -26,5 +26,5 @@ class CCv2CoreModuleDescriptorProvider : CCv2ModuleDescriptorProvider(
     ModuleDescriptorType.CCV2_CORE
 ) {
 
-    override fun create(context: ModuleDescriptorProviderContext) = CCv2CoreModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = CCv2CoreModuleDescriptor(context.moduleRootPath)
 }

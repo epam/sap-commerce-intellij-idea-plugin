@@ -37,6 +37,8 @@ import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigura
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.util.fileExists
+import kotlin.io.path.pathString
 
 class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator, ProjectRefreshConfigurator {
 
@@ -53,7 +55,8 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         try {
             importContext.chosenOtherModuleDescriptors
                 .filterIsInstance<GradleModuleDescriptor>()
-                .mapNotNull { it.gradleFile.path }
+                .filter { it.gradleFile.fileExists }
+                .map { it.gradleFile.pathString }
                 .forEach { externalProjectPath ->
                     CoroutineScope(Dispatchers.Default).launchTracked {
                         linkAndSyncGradleProject(project, externalProjectPath)

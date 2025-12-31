@@ -28,6 +28,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.psi.getValidResults
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -74,10 +75,10 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
 
             val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
                 is TSGlobalMetaItem -> meta
-                is TSGlobalMetaRelation -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
+                is TSGlobalMetaRelation -> metaModelAccess.findMetaItemByName(TSConstants.Type.LINK)
                     ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
-                is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+                is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE)
                     ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
                 else -> return@ParameterizedCachedValueProvider emptyResult(project)

@@ -18,13 +18,13 @@
 package sap.commerce.toolset.typeSystem.codeInspection
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.model.Deployment
 
 class TSDeploymentTypeCodeReservedForB2BCommerceExtension : TSDeploymentTypeCodeInspection() {
 
     override fun applicable(project: Project, dom: Deployment) = dom.typeCode.stringValue
         ?.toIntOrNull()
-        ?.let { it in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
+        ?.let { it in TSConstants.TYPECODE_RANGE_B2BCOMMERCE }
         ?: false
 }

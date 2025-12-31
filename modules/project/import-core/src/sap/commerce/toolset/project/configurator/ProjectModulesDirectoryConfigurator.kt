@@ -18,6 +18,8 @@
 package sap.commerce.toolset.project.configurator
 
 import sap.commerce.toolset.project.context.ProjectImportContext
+import java.nio.file.Files
+import kotlin.io.path.exists
 
 class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
 
@@ -26,8 +28,7 @@ class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
 
     override fun preConfigure(importContext: ProjectImportContext) {
         importContext.modulesFilesDirectory
-            ?.takeIf { it.exists() }
-            ?.takeIf { it.isDirectory }
-            ?.mkdirs()
+            ?.takeUnless { it.exists() }
+            ?.let { Files.createDirectories(it) }
     }
 }

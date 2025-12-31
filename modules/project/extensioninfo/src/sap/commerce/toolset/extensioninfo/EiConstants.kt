@@ -20,6 +20,25 @@ package sap.commerce.toolset.extensioninfo
 
 object EiConstants {
 
+    const val ROOT_TAG_EXTENSION_INFO_XML = "extensioninfo"
+
+    const val EXTENSION_INFO_XML = "extensioninfo.xml"
+    const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
+    const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
+    const val EXTENSION_META_KEY_CLASSPATHGEN = "classpathgen"
+    const val EXTENSION_META_KEY_DEPRECATED = "deprecated"
+    const val EXTENSION_META_KEY_EXT_GEN = "extgen-template-extension"
+    const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
+
+    val EXTENSION_INFO_META_KEYS = listOf(
+        EXTENSION_META_KEY_BACKOFFICE_MODULE,
+        EXTENSION_META_KEY_HAC_MODULE,
+        EXTENSION_META_KEY_CLASSPATHGEN,
+        EXTENSION_META_KEY_DEPRECATED,
+        EXTENSION_META_KEY_EXT_GEN,
+        EXTENSION_META_KEY_MODULE_GEN
+    )
+
     object Extension {
         const val BACK_OFFICE = "backoffice"
         const val CORE = "core"

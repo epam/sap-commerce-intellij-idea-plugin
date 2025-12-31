@@ -25,9 +25,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpExUserRightsSingleValue
 import sap.commerce.toolset.psi.getValidResults
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -79,19 +79,19 @@ open class ImpExUserRightsTSAttributeReference : TSReferenceBase<PsiElement>, Hi
             val result: Array<ResolveResult> = metaModelAccess.findMetaClassifierByName(type)
                 ?.let { meta ->
                     when (meta) {
-                        is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+                        is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE)
                             ?.let { it.allAttributes[featureName] }
                             ?.let { attr -> AttributeResolveResult(attr) }
 
                         is TSGlobalMetaItem -> resolve(meta, featureName)
 
                         is TSGlobalMetaRelation -> {
-                            if (HybrisConstants.ATTRIBUTE_SOURCE.equals(featureName, ignoreCase = true)) {
+                            if (TSConstants.Attribute.SOURCE.equals(featureName, ignoreCase = true)) {
                                 RelationEndResolveResult(meta.source)
-                            } else if (HybrisConstants.ATTRIBUTE_TARGET.equals(featureName, ignoreCase = true)) {
+                            } else if (TSConstants.Attribute.TARGET.equals(featureName, ignoreCase = true)) {
                                 RelationEndResolveResult(meta.target)
                             } else {
-                                metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
+                                metaModelAccess.findMetaItemByName(TSConstants.Type.LINK)
                                     ?.let { resolve(it, featureName) }
                             }
                         }

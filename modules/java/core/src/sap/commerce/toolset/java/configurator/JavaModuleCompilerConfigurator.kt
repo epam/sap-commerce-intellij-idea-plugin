@@ -27,7 +27,7 @@ import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import java.io.File
+import kotlin.io.path.pathString
 
 class JavaModuleCompilerConfigurator : ModuleImportConfigurator {
 
@@ -55,11 +55,11 @@ class JavaModuleCompilerConfigurator : ModuleImportConfigurator {
             else ProjectConstants.Directory.CLASSES
         }
 
-        val outputDirectory = File(moduleDescriptor.moduleRootDirectory, output)
+        val outputDirectory = moduleDescriptor.moduleRootDirectory.resolve(output)
 
         with(modifiableRootModel.getModuleExtension(CompilerModuleExtension::class.java)) {
-            setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.absolutePath))
-            setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.absolutePath))
+            setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.pathString))
+            setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.pathString))
 
             isExcludeOutput = true
             inheritCompilerOutputPath(false)

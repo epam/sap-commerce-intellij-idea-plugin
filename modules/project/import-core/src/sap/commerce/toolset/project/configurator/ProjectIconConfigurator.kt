@@ -20,9 +20,7 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.io.FileInputStream
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
 class ProjectIconConfigurator : ProjectImportConfigurator {
@@ -36,8 +34,8 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
     ) {
         val rootDirectory = importContext.rootDirectory ?: return
 
-        val target = Paths.get(rootDirectory.path, ".idea", "icon.svg")
-        val targetDark = Paths.get(rootDirectory.path, ".idea", "icon_dark.svg")
+        val target = rootDirectory.resolve(".idea").resolve("icon.svg")
+        val targetDark = rootDirectory.resolve(".idea").resolve("icon_dark.svg")
 
         // do not override existing Icon
         if (Files.exists(target)) return
@@ -45,18 +43,12 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
         val projectIconFile = importContext.projectIconFile
         if (projectIconFile == null) {
             this::class.java.getResourceAsStream("/icons/hybrisIcon.svg")
-                ?.use { input ->
-                Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
-            }
+                ?.use { input -> Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING) }
             // as for now, Dark icon supported only for Plugin's icons
             this::class.java.getResourceAsStream("/icons/hybrisIcon_dark.svg")
-                ?.use { input ->
-                Files.copy(input, targetDark, StandardCopyOption.REPLACE_EXISTING)
-            }
+                ?.use { input -> Files.copy(input, targetDark, StandardCopyOption.REPLACE_EXISTING) }
         } else {
-            FileInputStream(projectIconFile).use { input ->
-                Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
-            }
+            Files.copy(projectIconFile, target, StandardCopyOption.REPLACE_EXISTING)
         }
     }
 }

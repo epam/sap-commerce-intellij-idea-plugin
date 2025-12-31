@@ -27,8 +27,8 @@ import com.intellij.util.xml.DomService
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.structure.DomStructureTreeElement
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.model.*
 
 class TSStructureTreeElement(
@@ -145,12 +145,12 @@ class TSStructureTreeElement(
 
     private fun resolveLocationString(dom: Attribute): String? {
         var value = resolveValue(dom.type) ?: return null
-        if (value.startsWith(TS_ATTRIBUTE_LOCALIZED_PREFIX)) {
-            value = value.substring(TS_ATTRIBUTE_LOCALIZED_PREFIX.length)
+        if (value.startsWith(TSConstants.Attribute.LOCALIZED_PREFIX)) {
+            value = value.substring(TSConstants.Attribute.LOCALIZED_PREFIX.length)
             value += " (localized)"
         }
-        if (value.startsWith(HybrisConstants.TS_JAVA_LANG_PREFIX)) {
-            value = value.substring(HybrisConstants.TS_JAVA_LANG_PREFIX.length)
+        if (value.startsWith(TSConstants.JAVA_LANG_PREFIX)) {
+            value = value.substring(TSConstants.JAVA_LANG_PREFIX.length)
         }
         return value
     }

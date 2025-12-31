@@ -27,7 +27,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.facet.YFacetConstants
@@ -49,7 +48,7 @@ fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.ge
     .firstOrNull { YFacetConstants.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
     ?.let { ModuleRootManager.getInstance(it) }
     ?.contentRoots
-    ?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }
+    ?.firstOrNull { it.findChild(ProjectConstants.File.EXTENSIONS_XML) != null }
 
 val PsiElement.isHybrisModule: Boolean
     get() {

@@ -25,18 +25,18 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBException
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
 import sap.commerce.toolset.localextensions.jaxb.ObjectFactory
-import java.io.File
+import sap.commerce.toolset.util.fileExists
+import java.nio.file.Path
 
 @Service
 internal class LeUnmarshaller {
 
-    fun unmarshal(configDirectory: File): Hybrisconfig? {
-        val file = File(configDirectory, HybrisConstants.LOCAL_EXTENSIONS_XML)
+    fun unmarshal(configDirectory: Path): Hybrisconfig? {
+        val file = configDirectory.resolve(LeConstants.LOCAL_EXTENSIONS_XML)
         thisLogger().warn("Cannot find localextensions.xml file: $file")
-        if (!file.exists()) return null
+        if (!file.fileExists) return null
 
         try {
             return JAXBContext.newInstance(
@@ -44,10 +44,10 @@ internal class LeUnmarshaller {
                 ObjectFactory::class.java.getClassLoader()
             )
                 .createUnmarshaller()
-                .unmarshal(file)
+                .unmarshal(file.toFile())
                 .asSafely<Hybrisconfig>()
         } catch (e: JAXBException) {
-            thisLogger().error("Can not unmarshal ${file.absolutePath}", e)
+            thisLogger().error("Can not unmarshal $file", e)
         }
 
         return null

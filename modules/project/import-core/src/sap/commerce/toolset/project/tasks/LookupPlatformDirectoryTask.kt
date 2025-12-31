@@ -23,26 +23,25 @@ import com.intellij.openapi.components.service
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.application
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.util.findRecursivelyOptimized
-import java.io.File
+import java.nio.file.Path
 
 @Service
 class LookupPlatformDirectoryTask {
 
-    fun execute(rootProjectDirectory: File) = runWithModalProgressBlocking(
+    fun execute(rootProjectDirectory: Path) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.searching.hybris.distribution"),
     ) {
         rootProjectDirectory.findRecursivelyOptimized(
             ProjectImportConstants.excludedFromScanningDirectories
         ) {
-            it.absolutePath.endsWith(HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME)
+            it.normalize().endsWith(ProjectConstants.Paths.HYBRIS_SERVER_SHELL_SCRIPT_NAME)
         }
-            ?.parentFile?.parentFile?.parentFile
-            ?.absolutePath
+            ?.parent?.parent?.parent
     }
 
     companion object {

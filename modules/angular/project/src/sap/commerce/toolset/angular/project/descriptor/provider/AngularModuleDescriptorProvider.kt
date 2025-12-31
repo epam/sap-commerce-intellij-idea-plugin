@@ -26,5 +26,5 @@ import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 class AngularModuleDescriptorProvider : ModuleDescriptorProvider {
     override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.ANGULAR
 
-    override fun create(context: ModuleDescriptorProviderContext) = AngularModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = AngularModuleDescriptor(context.moduleRootPath)
 }

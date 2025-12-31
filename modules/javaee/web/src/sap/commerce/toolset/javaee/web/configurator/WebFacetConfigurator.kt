@@ -25,9 +25,7 @@ import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
-import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtil
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -35,7 +33,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
-import java.io.File
+import sap.commerce.toolset.util.toSystemIndependentName
 
 class WebFacetConfigurator : ModuleImportConfigurator {
 
@@ -53,9 +51,9 @@ class WebFacetConfigurator : ModuleImportConfigurator {
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module)
         val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
         val webRoot = when (moduleDescriptor) {
-            is YWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
-            is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
-            is YAcceleratorAddonSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
+            is YWebSubModuleDescriptor -> moduleDescriptor.webRoot
+            is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot
+            is YAcceleratorAddonSubModuleDescriptor -> moduleDescriptor.webRoot
             else -> return
         }
 
@@ -72,9 +70,9 @@ class WebFacetConfigurator : ModuleImportConfigurator {
                 ?: return@runAndWait
 
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
-            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(webRoot)), "/")
+            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
 
-            VfsUtil.findFileByIoFile(File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_WEB_XML_PATH), true)
+            VfsUtil.findFile(moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
                 ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
         }
     }

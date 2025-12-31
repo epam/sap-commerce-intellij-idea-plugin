@@ -26,7 +26,7 @@ import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
 import sap.commerce.toolset.maven.project.descriptor.MavenModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.io.File
+import sap.commerce.toolset.util.fileExists
 
 class MavenConfigurator : ProjectPostImportAsyncConfigurator {
 
@@ -43,10 +43,9 @@ class MavenConfigurator : ProjectPostImportAsyncConfigurator {
         val modules = readAction {
             mavenModules
                 .asSequence()
-                .map { it.moduleRootDirectory }
-                .map { File(it, MavenConstants.POM_XML) }
-                .filter { it.exists() && it.isFile }
-                .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+                .map { it.moduleRootDirectory.resolve(MavenConstants.POM_XML) }
+                .filter { it.fileExists }
+                .mapNotNull { VfsUtil.findFile(it, true) }
         }
 
         modules.forEach {

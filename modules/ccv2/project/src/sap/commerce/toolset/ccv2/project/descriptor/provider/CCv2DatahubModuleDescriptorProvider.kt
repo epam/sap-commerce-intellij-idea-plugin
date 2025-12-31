@@ -26,5 +26,5 @@ class CCv2DatahubModuleDescriptorProvider : CCv2ModuleDescriptorProvider(
     ModuleDescriptorType.CCV2_DATAHUB
 ) {
 
-    override fun create(context: ModuleDescriptorProviderContext) = CCv2DatahubModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = CCv2DatahubModuleDescriptor(context.moduleRootPath)
 }

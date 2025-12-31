@@ -32,8 +32,8 @@ import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.Beans
@@ -56,7 +56,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : SystemAwareInlayHintsCollect
         val previousSibling = PsiTreeUtil.skipSiblingsBackward(element, PsiComment::class.java, PsiWhiteSpace::class.java)
             ?.text
             ?: ""
-        if (previousSibling == HybrisConstants.BS_SIGN_LESS_THAN || previousSibling == HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED) {
+        if (previousSibling == BSConstants.SIGN_LESS_THAN || previousSibling == BSConstants.SIGN_LESS_THAN_ESCAPED) {
             return true
         }
 
@@ -121,8 +121,8 @@ class BeansXmlInlayHintsCollector(editor: Editor) : SystemAwareInlayHintsCollect
         ?.takeIf { it.isEnum && inBootstrap(it) }
 
     private fun cleanupFqn(classFqn: String) = classFqn
-        .substringBefore(HybrisConstants.BS_SIGN_LESS_THAN)
-        .substringBefore(HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED)
+        .substringBefore(BSConstants.SIGN_LESS_THAN)
+        .substringBefore(BSConstants.SIGN_LESS_THAN_ESCAPED)
         .trim()
 
     private fun inBootstrap(psiClass: PsiClass) = psiClass.containingFile.virtualFile.path.contains("/platform/bootstrap")

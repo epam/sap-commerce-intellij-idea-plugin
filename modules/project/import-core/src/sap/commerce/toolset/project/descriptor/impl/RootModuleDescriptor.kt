@@ -22,7 +22,7 @@ import sap.commerce.toolset.project.context.ModuleRoot
 import kotlin.io.path.name
 
 class RootModuleDescriptor(moduleRoot: ModuleRoot) : AbstractModuleDescriptor(
-    moduleRootDirectory = moduleRoot.path.toFile(),
+    moduleRootDirectory = moduleRoot.path,
     name = moduleRoot.path.name,
     descriptorType = moduleRoot.type,
 )

@@ -174,7 +174,7 @@ class ProjectBeforeCompilerTask : CompileTask {
 
         val commandLine = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkDirectory(platformModuleRoot.toFile())
+            .withWorkingDirectory(platformModuleRoot)
             .withExePath(osSpecificPath(vmExecutablePath))
             .withCharset(StandardCharsets.UTF_8)
             .withParameters(

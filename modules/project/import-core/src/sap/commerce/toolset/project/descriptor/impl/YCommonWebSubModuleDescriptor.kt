@@ -21,7 +21,7 @@ package sap.commerce.toolset.project.descriptor.impl
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import java.nio.file.Path
 
 /**
  * The acceleratorstorefrontcommons AddOn is a special type of AddOn that encapsulates the common web resources for a storefront.
@@ -32,8 +32,8 @@ import java.io.File
  */
 class YCommonWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
-    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
+    moduleRootDirectory: Path,
+    val webRoot: Path = moduleRootDirectory.resolve(ProjectConstants.Directory.WEB_ROOT),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.COMMON_WEB,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 

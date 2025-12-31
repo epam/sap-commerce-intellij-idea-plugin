@@ -21,20 +21,19 @@ package sap.commerce.toolset.extensioninfo
 import com.intellij.openapi.diagnostic.thisLogger
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBException
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
-import java.io.File
+import sap.commerce.toolset.util.fileExists
+import java.nio.file.Path
 
 object EiUnmarshaller {
 
     @Throws(HybrisConfigurationException::class)
-    fun unmarshall(moduleRootDirectory: File): ExtensionInfo {
-        val extensionFile = File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML)
-        if (!extensionFile.isFile || !extensionFile.exists()) {
-            throw HybrisConfigurationException("Can not find extensioninfo using path: $extensionFile")
-        }
+    fun unmarshall(moduleRootDirectory: Path): ExtensionInfo {
+        val extensionFile = moduleRootDirectory.resolve(EiConstants.EXTENSION_INFO_XML)
+            .takeIf { it.fileExists }
+            ?: throw HybrisConfigurationException("Can not find extensioninfo using path: $moduleRootDirectory")
 
         val extensionInfo = unmarshalExtensionInfo(extensionFile)
         if (null == extensionInfo.extension || extensionInfo.extension.name.isBlank()) {
@@ -44,15 +43,15 @@ object EiUnmarshaller {
     }
 
     @Throws(HybrisConfigurationException::class)
-    private fun unmarshalExtensionInfo(extensionFile: File): ExtensionInfo = try {
+    private fun unmarshalExtensionInfo(extensionFile: Path): ExtensionInfo = try {
         JAXBContext.newInstance(
             ObjectFactory::class.java.packageName,
             ObjectFactory::class.java.classLoader
         )
             .createUnmarshaller()
-            .unmarshal(extensionFile) as ExtensionInfo
+            .unmarshal(extensionFile.toFile()) as ExtensionInfo
     } catch (e: JAXBException) {
-        thisLogger().error("Can not unmarshal ${extensionFile.absolutePath}", e)
+        thisLogger().error("Can not unmarshal $extensionFile", e)
         throw HybrisConfigurationException("Can not unmarshal $extensionFile")
     }
 }

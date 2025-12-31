@@ -21,11 +21,12 @@ package sap.commerce.toolset.project.descriptor.impl
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 abstract class AbstractYSubModuleDescriptor(
     override val owner: YRegularModuleDescriptor,
-    override val moduleRootDirectory: File,
+    override val moduleRootDirectory: Path,
     override val name: String = owner.name + "." + moduleRootDirectory.name,
 ) : AbstractYModuleDescriptor(
     moduleRootDirectory = moduleRootDirectory,

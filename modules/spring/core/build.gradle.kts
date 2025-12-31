@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":project-core"))
     implementation(project(":typeSystem-core"))
+    implementation(project(":businessProcess-core"))
     implementation(project(":impex-core"))
     implementation(project(":project-core"))
     implementation(project(":project-extensioninfo"))

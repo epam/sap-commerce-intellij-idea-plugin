@@ -30,7 +30,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
@@ -110,7 +110,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
                             if (editor == null || file == null) return
 
                             (element as? LeafPsiElement)
-                                ?.replaceWithText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
+                                ?.replaceWithText(FlexibleSearchConstants.TABLE_ALIAS_SEPARATOR_DOT)
                         }
                     }
                 )

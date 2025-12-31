@@ -26,5 +26,5 @@ class GradleDclModuleDescriptorProvider : GradleModuleDescriptorProvider(
     GradleConstants.DECLARATIVE_SCRIPT_NAME
 ) {
 
-    override fun create(context: ModuleDescriptorProviderContext) = GradleDclModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = GradleDclModuleDescriptor(context.moduleRootPath)
 }

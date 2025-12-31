@@ -28,7 +28,7 @@ import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import java.io.File
+import sap.commerce.toolset.util.directoryExists
 
 class KotlinFacetConfigurator : ModuleImportConfigurator {
 
@@ -76,7 +76,7 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
         )
     }
 
-    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.KOTLIN_SRC).exists()
-        || File(descriptor.moduleRootDirectory, ProjectConstants.Directory.KOTLIN_TEST_SRC).exists()
+    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootDirectory.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists
+        || descriptor.moduleRootDirectory.resolve(ProjectConstants.Directory.KOTLIN_TEST_SRC).directoryExists
 
 }

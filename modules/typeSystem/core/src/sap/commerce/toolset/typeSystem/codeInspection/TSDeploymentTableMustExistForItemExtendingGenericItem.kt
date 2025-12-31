@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.apache.commons.lang3.StringUtils
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.codeInspection.fix.XmlAddTagQuickFix
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.model.Deployment
@@ -51,7 +51,9 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : TSInspection() {
         severity: HighlightSeverity
     ) {
         // skip non-ComposedType
-        if (HybrisConstants.TS_META_VIEW_TYPE.equals(dom.metaType.stringValue, true) || HybrisConstants.TS_COMPOSED_TYPE.equals(dom.metaType.stringValue, true)) return
+        if (TSConstants.Type.META_VIEW_TYPE.equals(dom.metaType.stringValue, true)
+            || TSConstants.Type.COMPOSED_TYPE.equals(dom.metaType.stringValue, true)
+        ) return
 
         val itemTypeCode = dom.code.stringValue ?: return
 

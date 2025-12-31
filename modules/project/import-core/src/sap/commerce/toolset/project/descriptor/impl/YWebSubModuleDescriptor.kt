@@ -23,13 +23,14 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 class YWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String = owner.name + "." + moduleRootDirectory.name,
-    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
+    val webRoot: Path = moduleRootDirectory.resolve(ProjectConstants.Directory.WEB_ROOT),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.WEB
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory, name) {
 

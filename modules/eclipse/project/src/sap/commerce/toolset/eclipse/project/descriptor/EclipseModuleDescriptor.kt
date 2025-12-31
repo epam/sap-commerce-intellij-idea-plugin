@@ -20,9 +20,9 @@ package sap.commerce.toolset.eclipse.project.descriptor
 
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
-import java.io.File
+import java.nio.file.Path
 
 class EclipseModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String,
 ) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ECLIPSE)

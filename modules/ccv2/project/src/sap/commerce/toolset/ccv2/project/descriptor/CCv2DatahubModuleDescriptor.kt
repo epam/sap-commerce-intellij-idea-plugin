@@ -19,9 +19,10 @@
 package sap.commerce.toolset.ccv2.project.descriptor
 
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 class CCv2DatahubModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String = moduleRootDirectory.name,
 ) : CCv2ModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CCV2_DATAHUB)

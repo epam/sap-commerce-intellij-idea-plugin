@@ -22,7 +22,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.model.Beans
 import sap.commerce.toolset.beanSystem.model.Property
 import sap.commerce.toolset.codeInspection.fix.XmlUpdateAttributeQuickFix
@@ -50,7 +50,7 @@ class BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType : BSInspection() {
         val propertyName = dom.name.xmlAttributeValue?.value ?: return
         val propertyType = dom.type.xmlAttributeValue
             ?.value
-            ?.takeIf { it.contains(HybrisConstants.BS_SIGN_LESS_THAN) }
+            ?.takeIf { it.contains(BSConstants.SIGN_LESS_THAN) }
             ?: return
 
         holder.createProblem(
@@ -60,8 +60,8 @@ class BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType : BSInspection() {
             XmlUpdateAttributeQuickFix(
                 Property.TYPE,
                 propertyType
-                    .replace(HybrisConstants.BS_SIGN_LESS_THAN, HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED)
-                    .replace(HybrisConstants.BS_SIGN_GREATER_THAN, HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED)
+                    .replace(BSConstants.SIGN_LESS_THAN, BSConstants.SIGN_LESS_THAN_ESCAPED)
+                    .replace(BSConstants.SIGN_GREATER_THAN, BSConstants.SIGN_GREATER_THAN_ESCAPED)
             )
         )
     }

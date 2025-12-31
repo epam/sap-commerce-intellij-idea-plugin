@@ -24,6 +24,7 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.settings.WorkspaceSettings
+import sap.commerce.toolset.util.toSystemIndependentName
 import java.io.File
 import kotlin.io.path.Path
 
@@ -59,36 +60,32 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         projectSettings.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
         projectSettings.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
 
-        projectSettings.externalExtensionsDirectory = importContext.externalExtensionsDirectory?.directorySystemIndependentName
-        projectSettings.externalConfigDirectory = importContext.externalConfigDirectory?.directorySystemIndependentName
-        projectSettings.ideModulesFilesDirectory = importContext.modulesFilesDirectory?.directorySystemIndependentName
-        projectSettings.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.directorySystemIndependentName
-        projectSettings.configDirectory = importContext.configModuleDescriptor.moduleRootDirectory.directorySystemIndependentName
+        projectSettings.externalExtensionsDirectory = importContext.externalExtensionsDirectory?.toSystemIndependentName
+        projectSettings.externalConfigDirectory = importContext.externalConfigDirectory?.toSystemIndependentName
+        projectSettings.ideModulesFilesDirectory = importContext.modulesFilesDirectory?.toSystemIndependentName
+        projectSettings.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.toSystemIndependentName
+        projectSettings.configDirectory = importContext.configModuleDescriptor.moduleRootDirectory.toSystemIndependentName
 
         projectSettings.modulesOnBlackList = createModulesOnBlackList(importContext)
         projectSettings.hybrisVersion = importContext.platformVersion
         projectSettings.javadocUrl = importContext.javadocUrl
 
-        projectSettings.sourceCodeFile = importContext.sourceCodeFile
-            ?.takeIf { it.exists() }
-            ?.fileSystemIndependentName
+        projectSettings.sourceCodeFile = importContext.sourceCodeFile?.toSystemIndependentName
     }
 
     private fun saveCustomDirectoryLocation(importContext: ProjectImportContext) {
         val project = importContext.project
         val projectDir = project.directory?.let { Path(it) } ?: return
         val projectSettings = project.ySettings
-        val hybrisPath = importContext.platformDirectory
-            ?.toPath() ?: return
+        val platformPath = importContext.platformDirectory ?: return
 
         projectSettings.hybrisDirectory = projectDir
-            .relativize(hybrisPath)
+            .relativize(platformPath)
             .toString()
 
         importContext.externalExtensionsDirectory
-            ?.toPath()
             ?.let {
-                val relativeCustomPath = hybrisPath.relativize(it)
+                val relativeCustomPath = platformPath.relativize(it)
                 projectSettings.customDirectory = relativeCustomPath.toString()
             }
     }

@@ -24,9 +24,9 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
 import sap.commerce.toolset.psi.getValidResults
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
@@ -77,7 +77,7 @@ class ImpExTSAttributeReference(owner: ImpExAnyHeaderParameterName) : TSReferenc
         ): ResolveResult? = element.headerItemTypeName
             ?.text
             ?.let { metaService.findMetaEnumByName(it) }
-            ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
+            ?.let { metaService.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE) }
             ?.let { it.allAttributes[refName] }
             ?.let { AttributeResolveResult(it) }
 
@@ -105,13 +105,13 @@ class ImpExTSAttributeReference(owner: ImpExAnyHeaderParameterName) : TSReferenc
             ?.text
             ?.let { metaService.findMetaRelationByName(it) }
             ?.let {
-                if (HybrisConstants.ATTRIBUTE_SOURCE.equals(featureName, ignoreCase = true)) {
+                if (TSConstants.Attribute.SOURCE.equals(featureName, ignoreCase = true)) {
                     return@let RelationEndResolveResult(it.source)
-                } else if (HybrisConstants.ATTRIBUTE_TARGET.equals(featureName, ignoreCase = true)) {
+                } else if (TSConstants.Attribute.TARGET.equals(featureName, ignoreCase = true)) {
                     return@let RelationEndResolveResult(it.target)
                 }
 
-                return@let tryResolveForItemType(metaService, featureName, HybrisConstants.TS_TYPE_LINK)
+                return@let tryResolveForItemType(metaService, featureName, TSConstants.Type.LINK)
             }
     }
 }

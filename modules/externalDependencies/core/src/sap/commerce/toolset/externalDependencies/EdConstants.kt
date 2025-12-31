@@ -21,5 +21,7 @@ package sap.commerce.toolset.externalDependencies
 import com.intellij.openapi.util.Key
 
 object EdConstants {
+    const val EXTERNAL_DEPENDENCIES_XML = "external-dependencies.xml"
+    const val UNMANAGED_DEPENDENCIES_TXT = "unmanaged-dependencies.txt"
     val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
 }

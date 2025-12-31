@@ -19,8 +19,8 @@
 package sap.commerce.toolset.impex.psi
 
 import com.intellij.psi.util.childrenOfType
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.typeSystem.ScriptType
+import sap.commerce.toolset.typeSystem.TSConstants
 
 fun getScriptType(impexString: ImpExString): ScriptType? {
     val valueGroup = impexString
@@ -35,7 +35,7 @@ fun getScriptType(impexString: ImpExString): ScriptType? {
         ?.takeIf {
             it.fullHeaderType
                 ?.headerTypeName
-                ?.textMatches(HybrisConstants.TS_TYPE_SCRIPT)
+                ?.textMatches(TSConstants.Type.SCRIPT)
                 ?: false
         }
         ?: return null

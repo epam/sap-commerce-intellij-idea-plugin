@@ -26,5 +26,5 @@ import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorProvider
 class MavenModuleDescriptorProvider : ModuleDescriptorProvider {
     override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.MAVEN
 
-    override fun create(context: ModuleDescriptorProviderContext) = MavenModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = MavenModuleDescriptor(context.moduleRootPath)
 }

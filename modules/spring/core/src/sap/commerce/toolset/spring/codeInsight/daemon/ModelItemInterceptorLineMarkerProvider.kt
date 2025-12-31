@@ -23,11 +23,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
 import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.util.childrenOfType
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.util.TSUtils
 import javax.swing.Icon
 
@@ -40,7 +40,7 @@ class ModelItemInterceptorLineMarkerProvider : HybrisClassLineMarkerProvider<Psi
     override fun getIcon(): Icon = HybrisIcons.TypeSystem.INTERCEPTOR
     override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiField)
-        ?.takeIf { it.name == HybrisConstants.TYPECODE_FIELD_NAME }
+        ?.takeIf { it.name == TSConstants.Attribute.TYPECODE_FIELD_NAME }
 
     override fun collectDeclarations(psi: PsiField) = psi.childrenOfType<PsiLiteralExpression>()
         .firstNotNullOfOrNull {

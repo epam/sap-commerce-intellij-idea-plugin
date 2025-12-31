@@ -24,10 +24,11 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 abstract class CCv2ModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String = moduleRootDirectory.name,
     descriptorType: ModuleDescriptorType,
 ) : ExternalModuleDescriptor(moduleRootDirectory, name, descriptorType) {

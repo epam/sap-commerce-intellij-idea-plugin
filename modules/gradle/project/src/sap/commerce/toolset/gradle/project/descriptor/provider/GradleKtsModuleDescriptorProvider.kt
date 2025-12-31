@@ -26,5 +26,5 @@ class GradleKtsModuleDescriptorProvider : GradleModuleDescriptorProvider(
     GradleConstants.KOTLIN_DSL_SCRIPT_NAME
 ) {
 
-    override fun create(context: ModuleDescriptorProviderContext) = GradleKtsModuleDescriptor(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = GradleKtsModuleDescriptor(context.moduleRootPath)
 }

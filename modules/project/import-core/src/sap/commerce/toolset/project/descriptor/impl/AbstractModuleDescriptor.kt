@@ -28,11 +28,13 @@ import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
-import java.io.File
+import sap.commerce.toolset.util.isDescendantOf
+import java.nio.file.Path
 import java.util.*
+import kotlin.io.path.pathString
 
 abstract class AbstractModuleDescriptor(
-    override val moduleRootDirectory: File,
+    override val moduleRootDirectory: Path,
     override val name: String,
     override val descriptorType: ModuleDescriptorType,
     override var groupNames: Array<String> = emptyArray(),
@@ -41,7 +43,6 @@ abstract class AbstractModuleDescriptor(
 
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
     private lateinit var requiredExtensionNames: MutableSet<String>
-    private val springFileSet = mutableSetOf<String>()
     private val directDependencies = mutableSetOf<ModuleDescriptor>()
     private val dependencies: Set<ModuleDescriptor> by lazy {
         recursivelyCollectDependenciesPlainSet(this, TreeSet())
@@ -50,7 +51,7 @@ abstract class AbstractModuleDescriptor(
 
     override val extensionDescriptor by lazy {
         ExtensionDescriptor(
-            path = FileUtil.toSystemIndependentName(moduleRootDirectory.path),
+            path = FileUtil.toSystemIndependentName(moduleRootDirectory.pathString),
             name = name,
             readonly = readonly,
             type = descriptorType,
@@ -87,17 +88,18 @@ abstract class AbstractModuleDescriptor(
 
     override fun isPreselected() = false
 
-    override fun ideaModuleFile(importContext: ProjectImportContext): File {
+    override fun ideaModuleFile(importContext: ProjectImportContext): Path {
         val futureModuleName = ideaModuleName()
-        return importContext.modulesFilesDirectory
-            ?.let { File(importContext.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
-            ?: File(moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
+        val modulesFilesDirectory = importContext.modulesFilesDirectory
+        return modulesFilesDirectory
+            ?.let { modulesFilesDirectory.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+            ?: moduleRootDirectory.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
-    override fun getRelativePath(rootDirectory: File): String = VirtualFileSystemService.getInstance()
-        .takeIf { it.fileContainsAnother(rootDirectory, moduleRootDirectory) }
+    override fun getRelativePath(rootDirectory: Path): String = VirtualFileSystemService.getInstance()
+        .takeIf { moduleRootDirectory.isDescendantOf(rootDirectory) }
         ?.getRelativePath(rootDirectory, moduleRootDirectory)
-        ?: moduleRootDirectory.path
+        ?: moduleRootDirectory.pathString
 
     override fun getAllDependencies() = dependencies
 
@@ -110,9 +112,6 @@ abstract class AbstractModuleDescriptor(
         requiredExtensionNames = initDependencies(moduleDescriptors).toMutableSet()
     }
 
-    override fun getSpringFiles() = springFileSet
-
-    override fun addSpringFile(file: String) = springFileSet.add(file)
     override fun getDirectDependencies() = directDependencies
 
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>) = this.directDependencies.addAll(dependencies)

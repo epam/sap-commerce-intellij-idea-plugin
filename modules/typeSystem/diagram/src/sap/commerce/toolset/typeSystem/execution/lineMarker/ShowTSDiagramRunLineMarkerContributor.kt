@@ -25,9 +25,9 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.model.Items
 
 class ShowTSDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
@@ -40,7 +40,7 @@ class ShowTSDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
         val prevSibling = element.prevSibling as? XmlToken ?: return null
         if (prevSibling.tokenType != XmlTokenType.XML_START_TAG_START) return null
 
-        if (element.text != HybrisConstants.ROOT_TAG_ITEMS_XML) return null
+        if (element.text != TSConstants.ROOT_TAG_ITEMS_XML) return null
         if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, Items::class.java) == null) return null
 
         val action = ActionManager.getInstance().getAction("ShowTypeSystemDiagram") ?: return null

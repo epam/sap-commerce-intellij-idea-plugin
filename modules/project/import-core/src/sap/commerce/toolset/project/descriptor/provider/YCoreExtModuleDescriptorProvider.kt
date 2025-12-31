@@ -31,9 +31,9 @@ class YCoreExtModuleDescriptorProvider : ModuleDescriptorProvider {
         && context.moduleRoot.path.name == EiConstants.Extension.CORE
 
     override fun create(context: ModuleDescriptorProviderContext): YCoreExtModuleDescriptor {
-        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootDirectory)
+        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootPath)
             ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
 
-        return YCoreExtModuleDescriptor(context.moduleRootDirectory, extensionInfo)
+        return YCoreExtModuleDescriptor(context.moduleRootPath, extensionInfo)
     }
 }

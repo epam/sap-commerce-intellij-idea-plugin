@@ -36,7 +36,6 @@ class ModuleDescriptorFactory {
     fun createDescriptor(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): ModuleDescriptor {
         val path = moduleRoot.path
         val context = ModuleDescriptorProviderContext(
-            moduleRootDirectory = path.toFile(),
             project = importContext.project,
             externalExtensionsDirectory = importContext.externalExtensionsDirectory,
             moduleRoot = moduleRoot,

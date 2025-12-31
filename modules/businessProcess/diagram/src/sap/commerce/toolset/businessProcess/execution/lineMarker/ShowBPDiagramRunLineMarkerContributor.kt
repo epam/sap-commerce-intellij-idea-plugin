@@ -25,8 +25,8 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.businessProcess.BpConstants
 import sap.commerce.toolset.businessProcess.model.Process
 import sap.commerce.toolset.isNotHybrisProject
 
@@ -40,7 +40,7 @@ class ShowBPDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
         val prevSibling = element.prevSibling as? XmlToken ?: return null
         if (prevSibling.tokenType != XmlTokenType.XML_START_TAG_START) return null
 
-        if (element.text != HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML) return null
+        if (element.text != BpConstants.ROOT_TAG_BUSINESS_PROCESS_XML) return null
         if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, Process::class.java) == null) return null
 
         val action = ActionManager.getInstance().getAction("ShowBusinessProcessDiagram") ?: return null

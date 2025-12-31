@@ -20,10 +20,9 @@ package sap.commerce.toolset.flexibleSearch
 
 import com.intellij.database.csv.CsvFormat
 import com.intellij.database.csv.CsvRecordFormat
-import sap.commerce.toolset.HybrisConstants
 
 fun xsvFlexibleSearchFormat(): CsvFormat {
-    val format = CsvRecordFormat("", "", null, emptyList(), CsvRecordFormat.QuotationPolicy.NEVER, HybrisConstants.FXS_TABLE_RESULT_SEPARATOR, "\n", true)
+    val format = CsvRecordFormat("", "", null, emptyList(), CsvRecordFormat.QuotationPolicy.NEVER, FlexibleSearchConstants.TABLE_RESULT_SEPARATOR, "\n", true)
 
     return CsvFormat("FlexibleSearch - Results", format, format, "FlexibleSearch_results", false)
 }

@@ -23,10 +23,10 @@ import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import java.nio.file.Path
 
 abstract class YRegularModuleDescriptorImpl protected constructor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     descriptorType: ModuleDescriptorType,
     extensionInfo: ExtensionInfoContext,
 ) : AbstractYModuleDescriptor(moduleRootDirectory, extensionInfo.name, descriptorType, extensionInfo), YRegularModuleDescriptor {

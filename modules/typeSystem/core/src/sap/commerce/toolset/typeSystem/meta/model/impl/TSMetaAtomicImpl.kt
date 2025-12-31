@@ -20,7 +20,7 @@ package sap.commerce.toolset.typeSystem.meta.model.impl
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaHelper
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaAtomic
@@ -39,7 +39,7 @@ internal class TSMetaAtomicImpl(
     override val domAnchor: DomAnchor<AtomicType> = DomService.getInstance().createAnchor(dom)
     override val isAutoCreate = dom.autoCreate.toBoolean()
     override val isGenerate = dom.generate.toBoolean()
-    override val extends = dom.extends.stringValue ?: HybrisConstants.TS_TYPE_OBJECT
+    override val extends = dom.extends.stringValue ?: TSConstants.Type.OBJECT
 
     override fun toString() = "Atomic(module=$extensionName, name=$name, isCustom=$isCustom)"
 }

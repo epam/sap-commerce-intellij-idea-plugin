@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.module
 
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -32,7 +32,7 @@ class YExtModuleRootResolver : ModuleRootResolver {
     private val platformExt by lazy { Path("platform").resolve("ext") }
 
     override fun isApplicable(path: Path) = with(path) {
-        resolve(HybrisConstants.EXTENSION_INFO_XML).fileExists
+        resolve(EiConstants.EXTENSION_INFO_XML).fileExists
             && parent.endsWith(platformExt)
     }
 

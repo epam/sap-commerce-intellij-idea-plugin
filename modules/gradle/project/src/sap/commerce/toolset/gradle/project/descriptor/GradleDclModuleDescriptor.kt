@@ -19,11 +19,11 @@
 package sap.commerce.toolset.gradle.project.descriptor
 
 import org.jetbrains.plugins.gradle.util.GradleConstants
-import java.io.File
+import java.nio.file.Path
 
 class GradleDclModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
 ) : GradleModuleDescriptor(
     moduleRootDirectory,
-    File(moduleRootDirectory, GradleConstants.DECLARATIVE_SCRIPT_NAME)
+    moduleRootDirectory.resolve(GradleConstants.DECLARATIVE_SCRIPT_NAME)
 )

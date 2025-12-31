@@ -24,6 +24,7 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 
 class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
@@ -42,7 +43,7 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
 
         if (virtualFile.name == ProjectConstants.Directory.CLASSES) {
             return virtualFile.parent
-                ?.let { virtualFile.findChild(HybrisConstants.EXTENSION_INFO_XML) != null }
+                ?.let { virtualFile.findChild(EiConstants.EXTENSION_INFO_XML) != null }
                 ?: false
         }
 

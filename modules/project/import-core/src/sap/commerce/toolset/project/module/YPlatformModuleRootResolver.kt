@@ -18,8 +18,8 @@
 
 package sap.commerce.toolset.project.module
 
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -35,7 +35,7 @@ class YPlatformModuleRootResolver : ModuleRootResolver {
 
     override fun isApplicable(path: Path) = with(path) {
         name == EiConstants.Extension.PLATFORM
-            && resolve(HybrisConstants.EXTENSIONS_XML).fileExists
+            && resolve(ProjectConstants.File.EXTENSIONS_XML).fileExists
             && endsWith(hybrisBinPlatform)
     }
 

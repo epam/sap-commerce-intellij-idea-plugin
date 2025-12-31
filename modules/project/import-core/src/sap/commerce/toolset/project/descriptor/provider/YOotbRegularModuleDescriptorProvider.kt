@@ -28,10 +28,10 @@ class YOotbRegularModuleDescriptorProvider : ModuleDescriptorProvider {
     override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.OOTB
 
     override fun create(context: ModuleDescriptorProviderContext): YOotbRegularModuleDescriptor {
-        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootDirectory)
+        val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootPath)
             ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
 
-        return YOotbRegularModuleDescriptor(context.moduleRootDirectory, extensionInfo).apply {
+        return YOotbRegularModuleDescriptor(context.moduleRootPath, extensionInfo).apply {
             SubModuleDescriptorFactory.getInstance().buildAll(this)
                 .forEach { this.addSubModule(it) }
         }

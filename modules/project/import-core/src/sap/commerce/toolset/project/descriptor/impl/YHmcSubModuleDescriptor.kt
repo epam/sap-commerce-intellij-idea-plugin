@@ -22,11 +22,11 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import java.nio.file.Path
 
 class YHmcSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HMC,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 

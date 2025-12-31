@@ -32,7 +32,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
@@ -147,7 +147,7 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
      * Aligned text to COLUMN_WIDTH. It is not precise by space pixel width (4pixels)
      */
     @NotNull
-    protected String getModuleNameAndPath(final @NotNull File rootDirectory, @NotNull final ModuleDescriptor moduleDescriptor) {
+    protected String getModuleNameAndPath(final @NotNull Path rootDirectory, @NotNull final ModuleDescriptor moduleDescriptor) {
         final StringBuilder builder = new StringBuilder();
         builder.append(moduleDescriptor.getName());
 

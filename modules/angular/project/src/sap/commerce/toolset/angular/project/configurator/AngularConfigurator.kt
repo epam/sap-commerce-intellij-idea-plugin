@@ -44,7 +44,7 @@ class AngularConfigurator : ProjectPostImportAsyncConfigurator {
 
         val modulesToCreate = readAction {
             angularModuleDescriptors.mapNotNull {
-                val vfs = VfsUtil.findFileByIoFile(it.moduleRootDirectory, true)
+                val vfs = VfsUtil.findFile(it.moduleRootDirectory, true)
                     ?: return@mapNotNull null
                 val moduleRef = ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName())
                     ?.let { module -> Ref.create(module) }

@@ -35,6 +35,7 @@ import org.apache.commons.io.IOUtils
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -91,7 +92,8 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator, ProjectStartupCon
     override fun onStartup(project: Project) {
         val projectSettings = ProjectSettings.getInstance(project)
         val projectDirectory = project.directory ?: return
-        val path = projectDirectory + "/" + projectSettings.hybrisDirectory + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
+        val hybrisDirectory = projectSettings.hybrisDirectory ?: return
+        val path = projectDirectory + "/" + hybrisDirectory + ProjectConstants.Paths.BIN_PLATFORM + HybrisConstants.ANT_COMPILING_XML
         val compilingXml = File(FileUtilRt.toSystemDependentName(path))
         if (!compilingXml.isFile) return
 

@@ -25,5 +25,5 @@ class ConfigModuleDescriptorProvider : ModuleDescriptorProvider {
 
     override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.CONFIG
 
-    override fun create(context: ModuleDescriptorProviderContext) = ConfigModuleDescriptorImpl(context.moduleRootDirectory)
+    override fun create(context: ModuleDescriptorProviderContext) = ConfigModuleDescriptorImpl(context.moduleRootPath)
 }

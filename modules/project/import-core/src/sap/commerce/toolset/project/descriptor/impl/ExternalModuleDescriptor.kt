@@ -21,10 +21,10 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
-import java.io.File
+import java.nio.file.Path
 
 open class ExternalModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     name: String,
     descriptorType: ModuleDescriptorType,
 ) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType) {

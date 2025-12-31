@@ -19,11 +19,13 @@
 package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.project.Project
-import java.io.File
+import java.nio.file.Path
 
 data class ModuleDescriptorProviderContext(
-    val moduleRootDirectory: File,
     val project: Project?,
-    val externalExtensionsDirectory: File?,
+    val externalExtensionsDirectory: Path?,
     val moduleRoot: ModuleRoot,
-)
+) {
+    val moduleRootPath
+        get() = moduleRoot.path
+}

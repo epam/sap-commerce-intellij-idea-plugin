@@ -35,7 +35,8 @@ import com.intellij.projectImport.ProjectOpenProcessorBase
 import com.intellij.util.asSafely
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.localextensions.LeConstants
 
 class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportBuilder>() {
 
@@ -127,9 +128,9 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
     else isPotentialHybrisProject(file)
 
     override val supportedExtensions = arrayOf(
-        HybrisConstants.EXTENSION_INFO_XML,
-        HybrisConstants.LOCAL_EXTENSIONS_XML,
-        HybrisConstants.EXTENSIONS_XML
+        EiConstants.EXTENSION_INFO_XML,
+        LeConstants.LOCAL_EXTENSIONS_XML,
+        ProjectConstants.File.EXTENSIONS_XML
     )
 
     override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME
@@ -144,9 +145,9 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
             root,
             { !skipDirs.contains(it.name) },
             { fileOrDir: VirtualFile ->
-                val hybrisFile = fileOrDir.name == HybrisConstants.LOCAL_EXTENSIONS_XML
-                    || fileOrDir.name == HybrisConstants.EXTENSIONS_XML
-                    || fileOrDir.name == HybrisConstants.EXTENSION_INFO_XML
+                val hybrisFile = fileOrDir.name == LeConstants.LOCAL_EXTENSIONS_XML
+                    || fileOrDir.name == ProjectConstants.File.EXTENSIONS_XML
+                    || fileOrDir.name == EiConstants.EXTENSION_INFO_XML
 
                 if (hybrisFile) {
                     root.putUserData(keyHybrisProjectDirectory, true)

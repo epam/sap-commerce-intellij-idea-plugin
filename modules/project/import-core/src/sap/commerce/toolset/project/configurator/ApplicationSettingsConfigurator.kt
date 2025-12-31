@@ -17,10 +17,9 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.util.io.FileUtil
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.settings.ApplicationSettings
-import java.io.File
+import sap.commerce.toolset.util.toSystemIndependentName
 
 class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
 
@@ -33,7 +32,7 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
         val importSettings = importContext.settings
 
         with(ApplicationSettings.getInstance()) {
-            this.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.directorySystemIndependentName
+            this.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.toSystemIndependentName
 
             this.defaultPlatformInReadOnly = importSettings.importOOTBModulesInReadOnlyMode
             this.followSymlink = importSettings.followSymlink
@@ -46,10 +45,4 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
             this.withExternalLibraryJavadocs = importSettings.withExternalLibraryJavadocs
         }
     }
-
-    private val File.directorySystemIndependentName: String?
-        get() = this
-            .takeIf { it.exists() }
-            ?.takeIf { it.isDirectory }
-            ?.let { FileUtil.toSystemIndependentName(it.path) }
 }

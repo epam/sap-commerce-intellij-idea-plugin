@@ -137,8 +137,8 @@ class ModuleRootsScanner {
         moduleRoot: ModuleRoot,
         moduleRoots: MutableMap<String, ModuleRoot>
     ) {
-        val hybrisDistributionDirectory = importContext.platformDirectory?.toPath()
-        val externalExtensionsDirectory = importContext.externalExtensionsDirectory?.toPath()
+        val hybrisDistributionDirectory = importContext.platformDirectory
+        val externalExtensionsDirectory = importContext.externalExtensionsDirectory
         try {
             // this will resolve symlinks
             val moduleRootPath = moduleRoot.path
@@ -181,7 +181,7 @@ class ModuleRootsScanner {
 
     private val Path.isDirectoryExcluded
         get() = ProjectImportConstants.excludedFromScanningDirectories.contains(name)
-            || endsWith(ProjectConstants.Directory.PATH_PLATFORM_BOOTSTRAP)
+            || endsWith(ProjectConstants.Paths.PLATFORM_BOOTSTRAP)
 
     private val Path.isVcs
         get() = resolve(ProjectConstants.Directory.GIT).directoryExists

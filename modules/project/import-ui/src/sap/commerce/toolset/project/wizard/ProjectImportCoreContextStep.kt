@@ -22,6 +22,7 @@ import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.scale.JBUIScale
@@ -33,6 +34,7 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.HybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
@@ -41,8 +43,9 @@ import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.tasks.LookupModuleDescriptorsTask
 import sap.commerce.toolset.project.tasks.LookupPlatformDirectoryTask
 import sap.commerce.toolset.project.ui.uiCoreStep
-import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.util.directoryExists
+import sap.commerce.toolset.util.fileExists
 import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
@@ -50,10 +53,7 @@ import java.io.IOException
 import java.nio.file.Path
 import java.util.*
 import javax.swing.ScrollPaneConstants
-import kotlin.io.path.Path
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.exists
-import kotlin.io.path.isDirectory
+import kotlin.io.path.*
 
 class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizardStep(context), RefreshSupport {
 
@@ -84,25 +84,26 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
         with(importContext) {
             this.platformVersion = importCoreContext.platformVersion.get()
-            this.platformDirectory = FileUtils.toFile(importCoreContext.platformDirectory.get())
+            this.platformDirectory = importCoreContext.platformDirectory.get().toNioPathOrNull()
             this.javadocUrl = importCoreContext.javadocUrl.get()
             this.excludedFromScanning = importCoreContext.excludedFromScanningDirectories.get().toImmutableSet()
 
             this.externalExtensionsDirectory = importCoreContext.customDirectory.takeIf { importCoreContext.customDirectoryOverride.get() }
-                ?.let { FileUtils.toFile(it.get()) }
+                ?.get()?.toNioPathOrNull()
             this.externalConfigDirectory = importCoreContext.configDirectory.takeIf { importCoreContext.configDirectoryOverride.get() }
-                ?.let { FileUtils.toFile(it.get()) }
+                ?.get()?.toNioPathOrNull()
             this.externalDbDriversDirectory = importCoreContext.dbDriverDirectory.takeIf { importCoreContext.dbDriverDirectoryOverride.get() }
-                ?.let { FileUtils.toFile(it.get()) }
+                ?.get()?.toNioPathOrNull()
             this.projectIconFile = importCoreContext.projectIconFile.takeIf { importCoreContext.projectIcon.get() }
-                ?.let { FileUtils.toFile(it.get()) }
+                ?.get()?.toNioPathOrNull()
             this.modulesFilesDirectory = importCoreContext.moduleFilesStorageDirectory.takeIf { importCoreContext.moduleFilesStorage.get() }
-                ?.let { FileUtils.toFile(it.get()) }
+                ?.get()?.toNioPathOrNull()
 
             this.sourceCodeFile = importCoreContext.sourceCodeDirectory.takeIf { importCoreContext.sourceCodeDirectoryOverride.get() }
-                ?.let { FileUtils.toFile(it.get()) }
+                ?.get()
+                ?.toNioPathOrNull()
                 ?.let {
-                    if (it.isDirectory && it.absolutePath == platformDirectory?.absolutePath) null
+                    if (it.directoryExists && it.pathString == platformDirectory?.pathString) null
                     else it
                 }
 
@@ -118,7 +119,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         if (importCoreContext.moduleFilesStorageDirectory.get().isBlank()) {
             importCoreContext.moduleFilesStorageDirectory.set(
                 Path(builder.fileToImport)
-                    .resolve(ProjectConstants.Directory.PATH_IDEA_MODULES)
+                    .resolve(ProjectConstants.Paths.IDEA_MODULES)
                     .absolutePathString()
             )
         }
@@ -127,7 +128,8 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         }
 
         if (importCoreContext.platformDirectory.get().isBlank()) {
-            findPlatformDirectory()?.let { importCoreContext.platformDirectory.set(it) }
+            findPlatformDirectory()
+                ?.let { importCoreContext.platformDirectory.set(it.normalize().pathString) }
         }
 
         val platformPath = importCoreContext.platformDirectory.get()
@@ -144,7 +146,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         if (importCoreContext.customDirectory.get().isBlank()) {
             importCoreContext.customDirectory.set(
                 platformPath
-                    .resolve(ProjectConstants.Directory.PATH_BIN_CUSTOM)
+                    .resolve(ProjectConstants.Paths.BIN_CUSTOM)
                     .absolutePathString()
             )
         }
@@ -159,8 +161,8 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
         if (importCoreContext.dbDriverDirectory.get().isBlank()) {
             val dbDriversDirAbsolutePath = platformPath
-                .resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM)
-                .resolve(ProjectConstants.Directory.PATH_LIB_DB_DRIVER)
+                .resolve(ProjectConstants.Paths.BIN_PLATFORM)
+                .resolve(ProjectConstants.Paths.LIB_DB_DRIVER)
 
             importCoreContext.dbDriverDirectory.set(dbDriversDirAbsolutePath.absolutePathString())
         }
@@ -194,25 +196,21 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 ?.let { getPlatformJavadocUrl(it) }
                 ?.takeIf { it.isNotBlank() }
                 ?: projectSettings.javadocUrl
-            this.sourceCodeFile = FileUtils.toFile(projectSettings.sourceCodeFile, true)
-            this.externalExtensionsDirectory = FileUtils.toFile(projectSettings.externalExtensionsDirectory, true)
-            this.externalConfigDirectory = FileUtils.toFile(projectSettings.externalConfigDirectory, true)
-            this.externalDbDriversDirectory = FileUtils.toFile(projectSettings.externalDbDriversDirectory, true)
+            this.sourceCodeFile = projectSettings.sourceCodeFile?.toNioPathOrNull()
+            this.externalExtensionsDirectory = projectSettings.externalExtensionsDirectory?.toNioPathOrNull()
+            this.externalConfigDirectory = projectSettings.externalConfigDirectory?.toNioPathOrNull()
+            this.externalDbDriversDirectory = projectSettings.externalDbDriversDirectory?.toNioPathOrNull()
 
-            this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory
-                ?.let { File(it) }
-                ?: File(
-                    builder.fileToImport,
-                    HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
-                )
+            this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory?.toNioPathOrNull()
+                ?: builder.fileToImport.toNioPathOrNull()?.resolve(ProjectConstants.Paths.IDEA_MODULES)
 
             this.ccv2Token = CCv2ProjectSettings.getInstance().getCCv2Token()
             this.excludedFromScanning = projectSettings.excludedFromScanning
 
             this.platformDirectory = projectSettings.hybrisDirectory
-                ?.let { FileUtils.toFile(builder.fileToImport, it) }
+                ?.let { builder.fileToImport.toNioPathOrNull()?.resolve(it) }
                 // refreshing a project which was never imported by this plugin
-                ?: findPlatformDirectory()?.let { FileUtils.toFile(it) }
+                ?: findPlatformDirectory()
         }
 
         thisLogger().info("Refreshing a project with the following settings: $importContext")
@@ -223,19 +221,19 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         if (!super.validate()) return false
 
         importCoreContext.projectIconFile.takeIf { importCoreContext.projectIcon.get() }
-            ?.takeUnless { FileUtils.toFile(it.get())?.isFile ?: false }
+            ?.takeUnless { it.get().toNioPathOrNull()?.fileExists ?: false }
             ?.let { throw ConfigurationException("Custom project icon should point to an existing SVG file.") }
 
         importCoreContext.customDirectory.takeIf { importCoreContext.customDirectoryOverride.get() }
-            ?.takeUnless { FileUtils.toFile(it.get())?.isDirectory ?: false }
+            ?.takeUnless { it.get().toNioPathOrNull()?.directoryExists ?: false }
             ?.let { throw ConfigurationException(i18n("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist")) }
 
         importCoreContext.configDirectory.takeIf { importCoreContext.configDirectoryOverride.get() }
-            ?.takeUnless { FileUtils.toFile(it.get())?.isDirectory ?: false }
+            ?.takeUnless { it.get().toNioPathOrNull()?.directoryExists ?: false }
             ?.let { throw ConfigurationException(i18n("hybris.import.wizard.validation.config.directory.does.not.exist")) }
 
         importCoreContext.dbDriverDirectory.takeIf { importCoreContext.dbDriverDirectoryOverride.get() }
-            ?.takeUnless { FileUtils.toFile(it.get())?.isDirectory ?: false }
+            ?.takeUnless { it.get().toNioPathOrNull()?.directoryExists ?: false }
             ?.let { throw ConfigurationException(i18n("hybris.import.wizard.validation.dbdriver.directory.does.not.exist")) }
 
         val platformDirectory = importCoreContext.platformDirectory.get()
@@ -262,7 +260,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
     }
 
     private fun getPlatformVersion(hybrisRootDir: Path, apiOnly: Boolean): String? {
-        val buildInfoFile = hybrisRootDir.resolve(ProjectConstants.Directory.PATH_BIN_PLATFORM_BUILD_NUMBER)
+        val buildInfoFile = hybrisRootDir.resolve(ProjectConstants.Paths.BIN_PLATFORM_BUILD_NUMBER)
             .toFile()
         val buildProperties = Properties()
 
@@ -275,11 +273,11 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         }
 
         if (!apiOnly) {
-            val version = buildProperties.getProperty(HybrisConstants.HYBRIS_VERSION_KEY)
+            val version = buildProperties.getProperty(ProjectImportConstants.HYBRIS_VERSION_KEY)
             if (version != null) return version
         }
 
-        return buildProperties.getProperty(HybrisConstants.HYBRIS_API_VERSION_KEY)
+        return buildProperties.getProperty(ProjectImportConstants.HYBRIS_API_VERSION_KEY)
     }
 
     private fun getPlatformPatchVersion(sourceZip: File, hybrisApiVersion: String): Int {
@@ -311,9 +309,9 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         }
     }
 
-    private fun findPlatformDirectory(): String? {
+    private fun findPlatformDirectory(): Path? {
         try {
-            val rootProjectDirectory = File(builder.fileToImport)
+            val rootProjectDirectory = Path(builder.fileToImport)
 
             return LookupPlatformDirectoryTask.getInstance().execute(rootProjectDirectory)
         } catch (_: CancellationException) {

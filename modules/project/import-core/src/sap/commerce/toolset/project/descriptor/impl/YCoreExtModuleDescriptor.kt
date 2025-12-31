@@ -20,10 +20,10 @@ package sap.commerce.toolset.project.descriptor.impl
 import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
-import java.io.File
+import java.nio.file.Path
 
 class YCoreExtModuleDescriptor(
-    moduleRootDirectory: File,
+    moduleRootDirectory: Path,
     extensionInfo: ExtensionInfoContext,
 ) : YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo) {
 
