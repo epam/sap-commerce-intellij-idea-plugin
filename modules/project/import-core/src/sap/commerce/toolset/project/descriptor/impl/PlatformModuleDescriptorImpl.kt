@@ -36,9 +36,9 @@ import java.nio.file.Path
 import kotlin.io.path.listDirectoryEntries
 
 class PlatformModuleDescriptorImpl(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     name: String = EiConstants.Extension.PLATFORM,
-) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.PLATFORM), PlatformModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootPath, name, ModuleDescriptorType.PLATFORM), PlatformModuleDescriptor {
 
     override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun isPreselected() = true
@@ -53,7 +53,7 @@ class PlatformModuleDescriptorImpl(
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val libraryDirectories = getLibraryDirectories()
-        val bootStrapSrc = moduleRootDirectory.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC)
+        val bootStrapSrc = this@PlatformModuleDescriptorImpl.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC)
         val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
         val library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP)
             ?: libraryTableModifiableModel.createLibrary(HybrisConstants.PLATFORM_LIBRARY_GROUP)
@@ -85,7 +85,7 @@ class PlatformModuleDescriptorImpl(
     }
 
     private fun getLibraryDirectories(): Collection<Path> = buildList<Path> {
-        moduleRootDirectory.resolve(ProjectConstants.Directory.RESOURCES)
+        this@PlatformModuleDescriptorImpl.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
             .takeIf { it.directoryExists }
             ?.listDirectoryEntries()
             ?.filter { it.directoryExists }
@@ -94,11 +94,11 @@ class PlatformModuleDescriptorImpl(
                 add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.BIN))
             }
 
-        add(moduleRootDirectory.resolve(ProjectConstants.Paths.BOOTSTRAP_BIN))
-        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_BIN))
-        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_6_BIN))
-        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_LIB))
-        add(moduleRootDirectory.resolve(ProjectConstants.Paths.TOMCAT_6_LIB))
+        add(this@PlatformModuleDescriptorImpl.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_BIN))
+        add(this@PlatformModuleDescriptorImpl.moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_BIN))
+        add(this@PlatformModuleDescriptorImpl.moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_BIN))
+        add(this@PlatformModuleDescriptorImpl.moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_LIB))
+        add(this@PlatformModuleDescriptorImpl.moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_LIB))
     }
         .filter { it.directoryExists }
 }

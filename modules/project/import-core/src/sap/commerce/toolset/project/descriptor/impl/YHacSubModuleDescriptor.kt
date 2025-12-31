@@ -26,9 +26,9 @@ import java.nio.file.Path
 
 class YHacSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HAC,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
         owner.name,

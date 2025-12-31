@@ -76,7 +76,7 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
         )
     }
 
-    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootDirectory.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists
-        || descriptor.moduleRootDirectory.resolve(ProjectConstants.Directory.KOTLIN_TEST_SRC).directoryExists
+    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists
+        || descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_TEST_SRC).directoryExists
 
 }

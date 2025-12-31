@@ -34,9 +34,9 @@ import java.util.*
 import kotlin.io.path.pathString
 
 abstract class AbstractModuleDescriptor(
-    override val moduleRootDirectory: Path,
+    override val moduleRootPath: Path,
     override val name: String,
-    override val descriptorType: ModuleDescriptorType,
+    override val type: ModuleDescriptorType,
     override var groupNames: Array<String> = emptyArray(),
     override var readonly: Boolean = false,
 ) : ModuleDescriptor {
@@ -51,10 +51,10 @@ abstract class AbstractModuleDescriptor(
 
     override val extensionDescriptor by lazy {
         ExtensionDescriptor(
-            path = FileUtil.toSystemIndependentName(moduleRootDirectory.pathString),
+            path = FileUtil.toSystemIndependentName(moduleRootPath.pathString),
             name = name,
             readonly = readonly,
-            type = descriptorType,
+            type = type,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
         )
     }
@@ -64,7 +64,7 @@ abstract class AbstractModuleDescriptor(
 
     override fun hashCode() = HashCodeBuilder(17, 37)
         .append(this.name)
-        .append(moduleRootDirectory)
+        .append(moduleRootPath)
         .toHashCode()
 
     override fun equals(other: Any?): Boolean {
@@ -80,7 +80,7 @@ abstract class AbstractModuleDescriptor(
             ?.let {
                 EqualsBuilder()
                     .append(this.name, it.name)
-                    .append(moduleRootDirectory, it.moduleRootDirectory)
+                    .append(moduleRootPath, it.moduleRootPath)
                     .isEquals
             }
             ?: false
@@ -93,13 +93,13 @@ abstract class AbstractModuleDescriptor(
         val modulesFilesDirectory = importContext.modulesFilesDirectory
         return modulesFilesDirectory
             ?.let { modulesFilesDirectory.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
-            ?: moduleRootDirectory.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
+            ?: moduleRootPath.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
     override fun getRelativePath(rootDirectory: Path): String = VirtualFileSystemService.getInstance()
-        .takeIf { moduleRootDirectory.isDescendantOf(rootDirectory) }
-        ?.getRelativePath(rootDirectory, moduleRootDirectory)
-        ?: moduleRootDirectory.pathString
+        .takeIf { moduleRootPath.isDescendantOf(rootDirectory) }
+        ?.getRelativePath(rootDirectory, moduleRootPath)
+        ?: moduleRootPath.pathString
 
     override fun getAllDependencies() = dependencies
 
@@ -117,7 +117,7 @@ abstract class AbstractModuleDescriptor(
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>) = this.directDependencies.addAll(dependencies)
     open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
 
-    override fun toString() = "${javaClass.simpleName} {name=$name, moduleRootDirectory=$moduleRootDirectory}"
+    override fun toString() = "${javaClass.simpleName} {name=$name, path=$moduleRootPath}"
 
     private fun recursivelyCollectDependenciesPlainSet(descriptor: ModuleDescriptor, dependenciesSet: MutableSet<ModuleDescriptor>): Set<ModuleDescriptor> {
         val dependencies = descriptor.getDirectDependencies()

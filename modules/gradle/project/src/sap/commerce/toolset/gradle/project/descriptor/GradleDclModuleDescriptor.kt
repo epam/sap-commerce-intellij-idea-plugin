@@ -22,8 +22,8 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.nio.file.Path
 
 class GradleDclModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
 ) : GradleModuleDescriptor(
-    moduleRootDirectory,
-    moduleRootDirectory.resolve(GradleConstants.DECLARATIVE_SCRIPT_NAME)
+    moduleRootPath,
+    moduleRootPath.resolve(GradleConstants.DECLARATIVE_SCRIPT_NAME)
 )

@@ -79,11 +79,11 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptors.values
             .filterIsInstance<YCoreExtModuleDescriptor>()
             .forEach { moduleDescriptor ->
-                val advancedProperties = importContext.platformModuleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.ADVANCED_PROPERTIES)
+                val advancedProperties = importContext.platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ADVANCED_PROPERTIES)
                 moduleDescriptor.addSpringFile(advancedProperties.pathString)
 
                 val configModuleDescriptor = importContext.configModuleDescriptor
-                configModuleDescriptor.moduleRootDirectory.resolve(ProjectConstants.File.LOCAL_PROPERTIES)
+                configModuleDescriptor.moduleRootPath.resolve(ProjectConstants.File.LOCAL_PROPERTIES)
                     .takeIf { it.fileExists }
                     ?.let { moduleDescriptor.addSpringFile(it.pathString) }
             }
@@ -142,7 +142,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptor: YRegularModuleDescriptor
     ) {
         val projectProperties = Properties()
-        val propFile = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.File.PROJECT_PROPERTIES)
+        val propFile = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.File.PROJECT_PROPERTIES)
         moduleDescriptor.addSpringFile(propFile.pathString)
         try {
             projectProperties.load(propFile.inputStream())
@@ -201,7 +201,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
             }
 
         if (moduleDescriptor.extensionInfo.backofficeModule) {
-            moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Directory.RESOURCES).listDirectoryEntries()
+            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES).listDirectoryEntries()
                 .filter { it.name.endsWith("-backoffice-spring.xml") }
                 .forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
         }
@@ -219,7 +219,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptorMap: Map<String, YModuleDescriptor>,
         moduleDescriptor: YWebSubModuleDescriptor
     ) {
-        moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML)
+        moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML)
             .takeIf { it.fileExists }
             ?.let { getDocumentRoot(it) }
             ?.takeUnless { it.isEmpty || it.name != "web-app" }
@@ -240,7 +240,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
         moduleDescriptor: YWebSubModuleDescriptor,
         contextConfigLocation: String
     ) {
-        val webModuleDir = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Directory.WEB_ROOT)
+        val webModuleDir = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.WEB_ROOT)
 
         patternSplitByComma.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }
@@ -249,7 +249,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
             .forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
 
         // In addition to plain xml files also scan jars in the WEB-INF/lib
-        val webInfLibDir = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+        val webInfLibDir = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
         VfsUtil.findFile(webInfLibDir, true)
             ?.children
             ?.filter { it.extension == "jar" }
@@ -357,7 +357,7 @@ class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurat
     else addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, fileName)
 
     private val YModuleDescriptor.resourcesPath
-        get() = moduleRootDirectory.resolve(ProjectConstants.Directory.RESOURCES)
+        get() = moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
 
     private fun addSpringExternalXmlFile(
         moduleDescriptorMap: Map<String, YModuleDescriptor>,

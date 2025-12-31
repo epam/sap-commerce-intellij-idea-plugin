@@ -28,9 +28,9 @@ import sap.commerce.toolset.settings.toIdeaGroup
 import java.nio.file.Path
 
 open class YPlatformExtModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     extensionInfo: ExtensionInfoContext,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.EXT, extensionInfo) {
+) : YRegularModuleDescriptorImpl(moduleRootPath, ModuleDescriptorType.EXT, extensionInfo) {
 
     override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun isPreselected() = true

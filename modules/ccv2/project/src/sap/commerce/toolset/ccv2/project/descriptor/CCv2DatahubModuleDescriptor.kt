@@ -23,6 +23,6 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 class CCv2DatahubModuleDescriptor(
-    moduleRootDirectory: Path,
-    name: String = moduleRootDirectory.name,
-) : CCv2ModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CCV2_DATAHUB)
+    moduleRootPath: Path,
+    name: String = moduleRootPath.name,
+) : CCv2ModuleDescriptor(moduleRootPath, name, ModuleDescriptorType.CCV2_DATAHUB)

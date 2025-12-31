@@ -26,10 +26,10 @@ import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import java.nio.file.Path
 
 abstract class YRegularModuleDescriptorImpl protected constructor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     descriptorType: ModuleDescriptorType,
     extensionInfo: ExtensionInfoContext,
-) : AbstractYModuleDescriptor(moduleRootDirectory, extensionInfo.name, descriptorType, extensionInfo), YRegularModuleDescriptor {
+) : AbstractYModuleDescriptor(moduleRootPath, extensionInfo.name, descriptorType, extensionInfo), YRegularModuleDescriptor {
 
     override var isInLocalExtensions = false
     override var isNeededDependency = false

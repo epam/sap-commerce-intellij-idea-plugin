@@ -48,9 +48,9 @@ data class ExtensionDescriptor(
                 && type != ModuleDescriptorType.CUSTOM)
         ) return null
 
-        val moduleRootDirectory = Path(FileUtil.toSystemDependentName(path))
+        val moduleRootPath = Path(FileUtil.toSystemDependentName(path))
 
-        return EiModelAccess.getInstance().getContext(moduleRootDirectory)
+        return EiModelAccess.getInstance().getContext(moduleRootPath)
     }
 
     override fun compareTo(other: ExtensionDescriptor) = name.compareTo(other.name)

@@ -48,7 +48,7 @@ class EiModelAccess {
         ?.rootElement
         ?.extension
 
-    fun getContext(moduleRootDirectory: Path): ExtensionInfoContext? = unmarshallExtensionInfo(moduleRootDirectory)
+    fun getContext(moduleRootPath: Path): ExtensionInfoContext? = unmarshallExtensionInfo(moduleRootPath)
         ?.let { extension ->
             val metas = extension.meta
                 .associate { it.key to it.value }
@@ -58,7 +58,7 @@ class EiModelAccess {
                 description = extension.description,
                 useMaven = "true".equals(extension.usemaven, ignoreCase = true),
                 webModule = extension.webmodule != null
-                    && moduleRootDirectory.resolve(EiConstants.Extension.WEB).directoryExists,
+                    && moduleRootPath.resolve(EiConstants.Extension.WEB).directoryExists,
                 hmcModule = extension.hmcmodule != null,
                 coreModule = extension.coremodule != null,
                 jaloLogicFree = extension.isJaloLogicFree,
@@ -71,7 +71,7 @@ class EiModelAccess {
                 deprecated = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_DEPRECATED),
                 hacModule = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_HAC_MODULE),
                 backofficeModule = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-                    && moduleRootDirectory.resolve(EiConstants.Extension.BACK_OFFICE).directoryExists,
+                    && moduleRootPath.resolve(EiConstants.Extension.BACK_OFFICE).directoryExists,
                 extGenTemplateExtension = isMetaKeySetToTrue(metas, EiConstants.EXTENSION_META_KEY_EXT_GEN),
                 requiredExtensions = extension.requiresExtension
                     .filter { it.name.isNotBlank() }
@@ -79,8 +79,8 @@ class EiModelAccess {
             )
         }
 
-    private fun unmarshallExtensionInfo(moduleRootDirectory: Path): ExtensionType? = try {
-        EiUnmarshaller.unmarshall(moduleRootDirectory).extension
+    private fun unmarshallExtensionInfo(moduleRootPath: Path): ExtensionType? = try {
+        EiUnmarshaller.unmarshall(moduleRootPath).extension
             .takeUnless { it.name.isNullOrBlank() }
     } catch (e: HybrisConfigurationException) {
         thisLogger().warn(e)

@@ -130,7 +130,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfig
     }
 
     private suspend fun getBuildVirtualFile(descriptor: ModuleDescriptor) = readAction {
-        descriptor.moduleRootDirectory.resolve(HybrisConstants.ANT_BUILD_XML)
+        descriptor.moduleRootPath.resolve(HybrisConstants.ANT_BUILD_XML)
             .takeIf { it.fileExists }
             ?.let { VfsUtil.findFile(it, true) }
     }
@@ -141,7 +141,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfig
         classPaths: List<AntClasspathEntry>,
         antBuildFile: AntBuildFileBase
     ) {
-        val platformDir = importContext.platformModuleDescriptor.moduleRootDirectory
+        val platformDir = importContext.platformModuleDescriptor.moduleRootPath
         val externalConfigDirectory = importContext.externalConfigDirectory
         val configDescriptor = importContext.configModuleDescriptor
         val allOptions = antBuildFile.allOptions
@@ -204,7 +204,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfig
 
     private fun getAntOpts(configDescriptor: ConfigModuleDescriptor?): String {
         if (configDescriptor != null) {
-            val propertiesFile = configDescriptor.moduleRootDirectory.resolve(HybrisConstants.IMPORT_OVERRIDE_FILENAME)
+            val propertiesFile = configDescriptor.moduleRootPath.resolve(HybrisConstants.IMPORT_OVERRIDE_FILENAME)
             if (propertiesFile.fileExists) {
                 try {
                     propertiesFile.inputStream().use { fis ->
@@ -225,11 +225,11 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfig
 
     private fun createAntClassPath(platformDescriptor: PlatformModuleDescriptor, extHybrisModuleDescriptors: List<ModuleDescriptor>): List<AntClasspathEntry> {
         return buildList {
-            add(platformDescriptor.moduleRootDirectory.resolve(ProjectConstants.Directory.LIB))
-            add(platformDescriptor.moduleRootDirectory.resolve(AntConstants.PATH_ANT_LIB))
+            add(platformDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.LIB))
+            add(platformDescriptor.moduleRootPath.resolve(AntConstants.PATH_ANT_LIB))
 
             extHybrisModuleDescriptors
-                .map { it.moduleRootDirectory.resolve(ProjectConstants.Directory.LIB) }
+                .map { it.moduleRootPath.resolve(ProjectConstants.Directory.LIB) }
                 .forEach { add(it) }
         }
             .filter { it.directoryExists }
@@ -249,7 +249,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfig
         try {
             val antFolderUrl = Files
                 .find(
-                    platformDescriptor.moduleRootDirectory,
+                    platformDescriptor.moduleRootPath,
                     1,
                     { path: Path, _ -> Files.isDirectory(path) && AntConstants.PATTERN_APACHE_ANT.matcher(path.toFile().name).matches() })
                 .map { it.toFile() }

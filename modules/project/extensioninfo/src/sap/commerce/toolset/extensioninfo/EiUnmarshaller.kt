@@ -30,10 +30,10 @@ import java.nio.file.Path
 object EiUnmarshaller {
 
     @Throws(HybrisConfigurationException::class)
-    fun unmarshall(moduleRootDirectory: Path): ExtensionInfo {
-        val extensionFile = moduleRootDirectory.resolve(EiConstants.EXTENSION_INFO_XML)
+    fun unmarshall(moduleRootPath: Path): ExtensionInfo {
+        val extensionFile = moduleRootPath.resolve(EiConstants.EXTENSION_INFO_XML)
             .takeIf { it.fileExists }
-            ?: throw HybrisConfigurationException("Can not find extensioninfo using path: $moduleRootDirectory")
+            ?: throw HybrisConfigurationException("Can not find extensioninfo using path: $moduleRootPath")
 
         val extensionInfo = unmarshalExtensionInfo(extensionFile)
         if (null == extensionInfo.extension || extensionInfo.extension.name.isBlank()) {

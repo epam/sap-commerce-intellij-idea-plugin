@@ -24,9 +24,9 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 class ConfigModuleDescriptorImpl(
-    moduleRootDirectory: Path,
-    name: String = moduleRootDirectory.name
-) : AbstractModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.CONFIG), ConfigModuleDescriptor {
+    moduleRootPath: Path,
+    name: String = moduleRootPath.name
+) : AbstractModuleDescriptor(moduleRootPath, name, ModuleDescriptorType.CONFIG), ConfigModuleDescriptor {
 
     private var preselected = false
     override var isMainConfig = false

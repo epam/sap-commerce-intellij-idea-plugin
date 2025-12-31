@@ -67,7 +67,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         context.list = importContext.foundModules
             .filterNot { it is ExternalModuleDescriptor }
             .sortedWith(
-                compareBy<ModuleDescriptor> { orderByType[it.descriptorType] ?: Integer.MAX_VALUE }
+                compareBy<ModuleDescriptor> { orderByType[it.type] ?: Integer.MAX_VALUE }
 //                    .thenComparing { !it.isPreselected() }
                     .thenComparing { it.name }
             )
@@ -114,7 +114,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
             || item is ConfigModuleDescriptor
             || item is PlatformModuleDescriptor
             || item is YPlatformExtModuleDescriptor
-            || item is YOotbRegularModuleDescriptor -> item.descriptorType.icon
+            || item is YOotbRegularModuleDescriptor -> item.type.icon
 
         item is YWebSubModuleDescriptor
             || item is YCommonWebSubModuleDescriptor

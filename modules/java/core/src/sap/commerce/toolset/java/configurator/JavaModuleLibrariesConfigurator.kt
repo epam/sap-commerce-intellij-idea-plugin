@@ -81,7 +81,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
             is YOotbRegularModuleDescriptor -> {
                 if (moduleDescriptor.extensionInfo.backofficeModule) {
-                    val backofficeJarDirectory = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.BACKOFFICE_JAR)
+                    val backofficeJarDirectory = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_JAR)
                     if (backofficeJarDirectory.directoryExists) {
                         addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
                     }
@@ -93,9 +93,9 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
             is YWebSubModuleDescriptor -> {
                 if (moduleDescriptor.owner.name == EiConstants.Extension.BACK_OFFICE) {
-                    val classes = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
-                    val library = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
-                    val sources = moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
+                    val classes = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
+                    val library = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+                    val sources = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
                     addBackofficeRootProjectLibrary(modifiableModelsProvider, classes, null, false)
                     addBackofficeRootProjectLibrary(modifiableModelsProvider, library, sources)
                 }

@@ -67,7 +67,7 @@ internal class SubModuleDescriptorFactory {
         subModuleDirectory: Path,
         subModules: MutableSet<YSubModuleDescriptor>,
         builder: (Path) -> (YSubModuleDescriptor)
-    ) = owner.moduleRootDirectory.resolve(subModuleDirectory)
+    ) = owner.moduleRootPath.resolve(subModuleDirectory)
         .takeIf { it.directoryExists }
         ?.let { builder.invoke(it) }
         ?.let { subModules.add(it) }

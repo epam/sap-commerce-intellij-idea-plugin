@@ -22,8 +22,8 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.nio.file.Path
 
 class GradleKtsModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
 ) : GradleModuleDescriptor(
-    moduleRootDirectory,
-    moduleRootDirectory.resolve(GradleConstants.KOTLIN_DSL_SCRIPT_NAME)
+    moduleRootPath,
+    moduleRootPath.resolve(GradleConstants.KOTLIN_DSL_SCRIPT_NAME)
 )

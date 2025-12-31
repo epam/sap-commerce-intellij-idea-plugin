@@ -47,7 +47,7 @@ class JavaModuleCompilerConfigurator : ModuleImportConfigurator {
         val fakeOutputPath = importContext.settings.useFakeOutputPathForCustomExtensions
         val ootbReadonlyMode = importContext.settings.importOOTBModulesInReadOnlyMode
 
-        val output = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) {
+        val output = if (moduleDescriptor.type == ModuleDescriptorType.CUSTOM) {
             if (fakeOutputPath) ProjectConstants.Directory.ECLIPSE_BIN
             else ProjectConstants.Directory.CLASSES
         } else {
@@ -55,7 +55,7 @@ class JavaModuleCompilerConfigurator : ModuleImportConfigurator {
             else ProjectConstants.Directory.CLASSES
         }
 
-        val outputDirectory = moduleDescriptor.moduleRootDirectory.resolve(output)
+        val outputDirectory = moduleDescriptor.moduleRootPath.resolve(output)
 
         with(modifiableRootModel.getModuleExtension(CompilerModuleExtension::class.java)) {
             setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.pathString))

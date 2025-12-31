@@ -28,10 +28,10 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 abstract class CCv2ModuleDescriptor(
-    moduleRootDirectory: Path,
-    name: String = moduleRootDirectory.name,
+    moduleRootPath: Path,
+    name: String = moduleRootPath.name,
     descriptorType: ModuleDescriptorType,
-) : ExternalModuleDescriptor(moduleRootDirectory, name, descriptorType) {
+) : ExternalModuleDescriptor(moduleRootPath, name, descriptorType) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY

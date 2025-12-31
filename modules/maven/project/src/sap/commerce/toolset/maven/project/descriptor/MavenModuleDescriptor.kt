@@ -24,5 +24,5 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 class MavenModuleDescriptor(
-    moduleRootDirectory: Path,
-) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name, ModuleDescriptorType.MAVEN)
+    moduleRootPath: Path,
+) : ExternalModuleDescriptor(moduleRootPath, moduleRootPath.name, ModuleDescriptorType.MAVEN)

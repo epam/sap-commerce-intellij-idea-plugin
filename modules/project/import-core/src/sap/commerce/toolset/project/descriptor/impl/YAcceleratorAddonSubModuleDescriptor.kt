@@ -28,20 +28,20 @@ import java.nio.file.Path
 
 class YAcceleratorAddonSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: Path,
-    val webRoot: Path = moduleRootDirectory.resolve(ProjectConstants.Directory.WEB_ROOT),
+    moduleRootPath: Path,
+    val webRoot: Path = moduleRootPath.resolve(ProjectConstants.Directory.WEB_ROOT),
     override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + EiConstants.Extension.WEB,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
     private val yTargetModules = mutableSetOf<YModuleDescriptor>()
 
     override val extensionDescriptor by lazy {
         ExtensionDescriptor(
-            path = moduleRootDirectory.toSystemIndependentName,
+            path = moduleRootPath.toSystemIndependentName,
             name = name,
             readonly = readonly,
-            type = descriptorType,
+            type = type,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
             addon = getRequiredExtensionNames().contains(EiConstants.Extension.ADDON_SUPPORT),
             installedIntoExtensions = yTargetModules

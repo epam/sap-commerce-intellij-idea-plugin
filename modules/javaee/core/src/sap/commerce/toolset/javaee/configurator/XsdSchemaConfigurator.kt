@@ -37,7 +37,7 @@ class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
         val cockpitJarToFile = readAction {
             importContext.chosenHybrisModuleDescriptors
                 .firstOrNull { it.name == EiConstants.Extension.BACK_OFFICE }
-                ?.moduleRootDirectory
+                ?.moduleRootPath
                 ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))
                 ?.takeIf { it.exists() }
                 ?.toFile()

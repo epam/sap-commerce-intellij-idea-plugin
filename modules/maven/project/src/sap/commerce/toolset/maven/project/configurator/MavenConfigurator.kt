@@ -43,7 +43,7 @@ class MavenConfigurator : ProjectPostImportAsyncConfigurator {
         val modules = readAction {
             mavenModules
                 .asSequence()
-                .map { it.moduleRootDirectory.resolve(MavenConstants.POM_XML) }
+                .map { it.moduleRootPath.resolve(MavenConstants.POM_XML) }
                 .filter { it.fileExists }
                 .mapNotNull { VfsUtil.findFile(it, true) }
         }

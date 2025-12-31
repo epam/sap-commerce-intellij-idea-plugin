@@ -28,9 +28,9 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 class AngularModuleDescriptor(
-    moduleRootDirectory: Path,
-    name: String = moduleRootDirectory.name,
-) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ANGULAR) {
+    moduleRootPath: Path,
+    name: String = moduleRootPath.name,
+) : ExternalModuleDescriptor(moduleRootPath, name, ModuleDescriptorType.ANGULAR) {
 
     init {
         importStatus = ModuleDescriptorImportStatus.MANDATORY
@@ -38,7 +38,7 @@ class AngularModuleDescriptor(
 
     override fun isPreselected() = true
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values
-        .filter { this.moduleRootDirectory.toString().startsWith(it.moduleRootDirectory.toString()) }
+        .filter { this.moduleRootPath.toString().startsWith(it.moduleRootPath.toString()) }
         .filter { this != it }
         .map { it.name }
         .take(1)

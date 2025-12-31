@@ -29,16 +29,16 @@ import java.nio.file.Path
 import kotlin.io.path.pathString
 
 abstract class AbstractYModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     name: String,
     descriptorType: ModuleDescriptorType,
     override val extensionInfo: ExtensionInfoContext,
-) : AbstractModuleDescriptor(moduleRootDirectory, name, descriptorType), YModuleDescriptor {
+) : AbstractModuleDescriptor(moduleRootPath, name, descriptorType), YModuleDescriptor {
 
     private val springFileSet = mutableSetOf<String>()
     override val extensionDescriptor by lazy {
         ExtensionDescriptor(
-            path = FileUtil.toSystemIndependentName(moduleRootDirectory.pathString),
+            path = FileUtil.toSystemIndependentName(moduleRootPath.pathString),
             name = name,
             readonly = readonly,
             type = descriptorType,

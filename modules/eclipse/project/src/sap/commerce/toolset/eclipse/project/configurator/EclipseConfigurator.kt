@@ -38,7 +38,7 @@ class EclipseConfigurator : ProjectImportConfigurator {
         val project = importContext.project
         val eclipseProjectPaths = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
-            .map { it.moduleRootDirectory.pathString }
+            .map { it.moduleRootPath.pathString }
 
         val eclipseImportBuilder = EclipseImportBuilder()
         importContext.modulesFilesDirectory?.let {

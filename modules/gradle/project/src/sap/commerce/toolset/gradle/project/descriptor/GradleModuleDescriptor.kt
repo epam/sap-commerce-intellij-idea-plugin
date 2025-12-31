@@ -25,7 +25,7 @@ import java.nio.file.Path
 import kotlin.io.path.name
 
 open class GradleModuleDescriptor(
-    moduleRootDirectory: Path,
-    val gradleFile: Path = moduleRootDirectory.resolve(GradleConstants.DEFAULT_SCRIPT_NAME),
-) : ExternalModuleDescriptor(moduleRootDirectory, moduleRootDirectory.name, ModuleDescriptorType.GRADLE)
+    moduleRootPath: Path,
+    val gradleFile: Path = moduleRootPath.resolve(GradleConstants.DEFAULT_SCRIPT_NAME),
+) : ExternalModuleDescriptor(moduleRootPath, moduleRootPath.name, ModuleDescriptorType.GRADLE)
 

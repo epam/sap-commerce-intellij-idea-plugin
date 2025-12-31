@@ -81,7 +81,7 @@ class MainConfigModuleDescriptorResolver {
             }
         }
         val configHybrisModuleDescriptor = foundConfigModules
-            .firstOrNull { FileUtil.pathsEqual(it.moduleRootDirectory.pathString, configDir.pathString) }
+            .firstOrNull { FileUtil.pathsEqual(it.moduleRootPath.pathString, configDir.pathString) }
         if (configHybrisModuleDescriptor != null) return configHybrisModuleDescriptor
 
         return ModuleRootResolver.EP.extensionList
@@ -98,7 +98,7 @@ class MainConfigModuleDescriptorResolver {
     }
 
     private fun getExpectedConfigDir(platformModuleDescriptor: PlatformModuleDescriptor): Path? {
-        val expectedConfigDir = platformModuleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.RELATIVE_CONFIG)
+        val expectedConfigDir = platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_CONFIG)
             .takeIf { it.directoryExists } ?: return null
         val propertiesFile = expectedConfigDir.resolve(ProjectConstants.File.LOCAL_PROPERTIES)
             .takeIf { it.fileExists } ?: return expectedConfigDir
@@ -117,7 +117,7 @@ class MainConfigModuleDescriptorResolver {
 
         hybrisConfig = hybrisConfig.replace(
             HybrisConstants.PLATFORM_HOME_PLACEHOLDER,
-            platformModuleDescriptor.moduleRootDirectory.pathString
+            platformModuleDescriptor.moduleRootPath.pathString
         )
         hybrisConfig = FileUtil.normalize(hybrisConfig)
 

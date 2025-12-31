@@ -22,9 +22,9 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.nio.file.Path
 
 class YCustomRegularModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     extensionInfo: ExtensionInfoContext,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.CUSTOM, extensionInfo) {
+) : YRegularModuleDescriptorImpl(moduleRootPath, ModuleDescriptorType.CUSTOM, extensionInfo) {
 
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
 }

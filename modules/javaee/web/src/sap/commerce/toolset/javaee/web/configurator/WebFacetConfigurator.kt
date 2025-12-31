@@ -72,7 +72,7 @@ class WebFacetConfigurator : ModuleImportConfigurator {
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
             webFacet.addWebRootNoFire(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
 
-            VfsUtil.findFile(moduleDescriptor.moduleRootDirectory.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
+            VfsUtil.findFile(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
                 ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
         }
     }

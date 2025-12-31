@@ -27,11 +27,11 @@ import java.nio.file.Path
 
 class YBackofficeSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.BACKOFFICE,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
-    val hasWebModule = moduleRootDirectory.resolve(EiConstants.Extension.WEB).directoryExists
+    val hasWebModule = moduleRootPath.resolve(EiConstants.Extension.WEB).directoryExists
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()

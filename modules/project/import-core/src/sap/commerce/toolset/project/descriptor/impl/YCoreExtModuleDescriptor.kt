@@ -23,9 +23,9 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import java.nio.file.Path
 
 class YCoreExtModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     extensionInfo: ExtensionInfoContext,
-) : YPlatformExtModuleDescriptor(moduleRootDirectory, extensionInfo) {
+) : YPlatformExtModuleDescriptor(moduleRootPath, extensionInfo) {
 
     override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = emptySet<String>()

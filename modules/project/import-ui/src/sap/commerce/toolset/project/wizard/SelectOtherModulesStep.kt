@@ -39,8 +39,8 @@ class SelectOtherModulesStep(context: WizardContext) : AbstractSelectModulesStep
         context.list = importContext.foundModules
             .filterIsInstance<ExternalModuleDescriptor>()
             .sortedWith(
-                compareBy<ExternalModuleDescriptor> { it.descriptorType }
-                    .thenComparing { it.moduleRootDirectory }
+                compareBy<ExternalModuleDescriptor> { it.type }
+                    .thenComparing { it.moduleRootPath }
             )
 
         super.updateStep()
@@ -56,7 +56,7 @@ class SelectOtherModulesStep(context: WizardContext) : AbstractSelectModulesStep
     }
 
     override fun getElementIcon(module: ModuleDescriptor): Icon = if (isInConflict(module)) HybrisIcons.Module.CONFLICT
-    else module.descriptorType.icon
+    else module.type.icon
 
     @Throws(ConfigurationException::class)
     override fun validate() = validateCommon()

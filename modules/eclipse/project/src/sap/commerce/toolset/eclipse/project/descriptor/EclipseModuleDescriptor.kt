@@ -23,6 +23,6 @@ import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.nio.file.Path
 
 class EclipseModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     name: String,
-) : ExternalModuleDescriptor(moduleRootDirectory, name, ModuleDescriptorType.ECLIPSE)
+) : ExternalModuleDescriptor(moduleRootPath, name, ModuleDescriptorType.ECLIPSE)

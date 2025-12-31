@@ -35,8 +35,8 @@ class EclipseModuleDescriptorProvider : ModuleDescriptorProvider {
         getEclipseModuleDescriptorName(context.moduleRootPath)
     )
 
-    private fun getEclipseModuleDescriptorName(moduleRootDirectory: Path) = EclipseProjectFinder.findProjectName(moduleRootDirectory.pathString)
+    private fun getEclipseModuleDescriptorName(moduleRootPath: Path) = EclipseProjectFinder.findProjectName(moduleRootPath.pathString)
         ?.trim { it <= ' ' }
         ?.takeIf { it.isNotBlank() }
-        ?: moduleRootDirectory.name
+        ?: moduleRootPath.name
 }

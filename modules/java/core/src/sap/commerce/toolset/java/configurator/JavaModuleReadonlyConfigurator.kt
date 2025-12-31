@@ -39,7 +39,7 @@ class JavaModuleReadonlyConfigurator : ModuleImportConfigurator {
         module: Module,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val descriptorType = moduleDescriptor.descriptorType
+        val descriptorType = moduleDescriptor.type
         val hasReadOnlySettings = importContext.settings.importOOTBModulesInReadOnlyMode
         val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
             || descriptorType === ModuleDescriptorType.PLATFORM

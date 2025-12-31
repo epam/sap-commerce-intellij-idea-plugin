@@ -25,9 +25,9 @@ import java.nio.file.Path
 interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
     var groupNames: Array<String>
-    val moduleRootDirectory: Path
+    val moduleRootPath: Path
     var importStatus: ModuleDescriptorImportStatus
-    val descriptorType: ModuleDescriptorType
+    val type: ModuleDescriptorType
     var readonly: Boolean
 
     val extensionDescriptor: ExtensionDescriptor
@@ -36,6 +36,8 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun isPreselected(): Boolean
     fun ideaModuleFile(importContext: ProjectImportContext): Path
     fun getRelativePath(rootDirectory: Path): String
+
+    // TODO: all below methods are YModuleDescriptor specific
     fun getRequiredExtensionNames(): Set<String>
     fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean
     fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)

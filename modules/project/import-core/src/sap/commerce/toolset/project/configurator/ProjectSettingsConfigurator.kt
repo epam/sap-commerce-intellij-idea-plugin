@@ -64,7 +64,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         projectSettings.externalConfigDirectory = importContext.externalConfigDirectory?.toSystemIndependentName
         projectSettings.ideModulesFilesDirectory = importContext.modulesFilesDirectory?.toSystemIndependentName
         projectSettings.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.toSystemIndependentName
-        projectSettings.configDirectory = importContext.configModuleDescriptor.moduleRootDirectory.toSystemIndependentName
+        projectSettings.configDirectory = importContext.configModuleDescriptor.moduleRootPath.toSystemIndependentName
 
         projectSettings.modulesOnBlackList = createModulesOnBlackList(importContext)
         projectSettings.hybrisVersion = importContext.platformVersion

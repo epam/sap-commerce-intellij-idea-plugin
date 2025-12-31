@@ -22,6 +22,6 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.nio.file.Path
 
 class YOotbRegularModuleDescriptor(
-    moduleRootDirectory: Path,
+    moduleRootPath: Path,
     extensionInfo: ExtensionInfoContext,
-) : YRegularModuleDescriptorImpl(moduleRootDirectory, ModuleDescriptorType.OOTB, extensionInfo)
+) : YRegularModuleDescriptorImpl(moduleRootPath, ModuleDescriptorType.OOTB, extensionInfo)

@@ -32,10 +32,10 @@ import java.nio.file.Path
  */
 class YCommonWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: Path,
-    val webRoot: Path = moduleRootDirectory.resolve(ProjectConstants.Directory.WEB_ROOT),
+    moduleRootPath: Path,
+    val webRoot: Path = moduleRootPath.resolve(ProjectConstants.Directory.WEB_ROOT),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.COMMON_WEB,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
     val dependantWebExtensions = mutableSetOf<YWebSubModuleDescriptor>()
 

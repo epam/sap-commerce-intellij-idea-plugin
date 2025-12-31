@@ -26,12 +26,12 @@ import kotlin.io.path.name
 
 abstract class AbstractYSubModuleDescriptor(
     override val owner: YRegularModuleDescriptor,
-    override val moduleRootDirectory: Path,
-    override val name: String = owner.name + "." + moduleRootDirectory.name,
+    override val moduleRootPath: Path,
+    override val name: String = owner.name + "." + moduleRootPath.name,
 ) : AbstractYModuleDescriptor(
-    moduleRootDirectory = moduleRootDirectory,
+    moduleRootPath = moduleRootPath,
     name = name,
-    descriptorType = owner.descriptorType,
+    descriptorType = owner.type,
     extensionInfo = owner.extensionInfo
 ), YSubModuleDescriptor {
 

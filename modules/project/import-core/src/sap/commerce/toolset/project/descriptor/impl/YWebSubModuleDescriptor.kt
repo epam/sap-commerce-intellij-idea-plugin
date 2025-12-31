@@ -28,11 +28,11 @@ import kotlin.io.path.name
 
 class YWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: Path,
-    name: String = owner.name + "." + moduleRootDirectory.name,
-    val webRoot: Path = moduleRootDirectory.resolve(ProjectConstants.Directory.WEB_ROOT),
+    moduleRootPath: Path,
+    name: String = owner.name + "." + moduleRootPath.name,
+    val webRoot: Path = moduleRootPath.resolve(ProjectConstants.Directory.WEB_ROOT),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.WEB
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory, name) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath, name) {
 
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>): Boolean {
         dependencies
