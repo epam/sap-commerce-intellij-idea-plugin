@@ -43,6 +43,7 @@ import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
+import kotlin.io.path.exists
 import kotlin.io.path.name
 
 class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
@@ -66,7 +67,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             .associateBy { it.name }
         val sourceCodeRoot = getSourceCodeRoot(importContext)
         for (javaLibraryDescriptor in getLibraryDescriptors(importContext, moduleDescriptor, allYModules)) {
-            if (!javaLibraryDescriptor.libraryFile.directoryExists && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
+            if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
                 continue
             }
             if (javaLibraryDescriptor.directoryWithClasses) {

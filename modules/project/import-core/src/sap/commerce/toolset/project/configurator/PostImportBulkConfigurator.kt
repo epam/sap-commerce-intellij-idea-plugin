@@ -21,12 +21,14 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.util.progress.reportProgressScope
 import kotlinx.coroutines.*
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportContext
+import kotlin.time.measureTime
 
 @Service(Service.Level.PROJECT)
 class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
@@ -35,7 +37,10 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
         val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList
 
         // mostly background operations
-        ProjectPostImportConfigurator.EP.extensionList.forEach { it.postImport(importContext) }
+        ProjectPostImportConfigurator.EP.extensionList.forEach { configurator ->
+            val duration = measureTime { configurator.postImport(importContext) }
+            thisLogger().info("Post-configured project [${configurator.name} | $duration]")
+        }
 
         coroutineScope.launch {
             if (project.isDisposed) return@launch
@@ -43,14 +48,14 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
             // async operations
             supervisorScope {
                 reportProgressScope(postImportAsyncConfigurators.size) { progressReporter ->
-                    postImportAsyncConfigurators.map {
+                    postImportAsyncConfigurators.map { configurator ->
                         async {
-                            progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
+                            progressReporter.itemStep("Configuring project using '${configurator.name}' Configurator...") {
                                 try {
-                                    it.postImport(importContext)
+                                    val duration = measureTime { configurator.postImport(importContext) }
+                                    thisLogger().info("Post-configured async project [${configurator.name} | $duration]")
                                 } catch (e: Exception) {
-                                    println(e)
-                                    // ignore
+                                    thisLogger().warn("Exception while post-import ${configurator.name}", e)
                                 }
                             }
                         }

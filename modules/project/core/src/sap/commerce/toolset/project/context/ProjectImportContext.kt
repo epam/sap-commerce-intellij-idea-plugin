@@ -36,6 +36,7 @@ data class ProjectImportContext(
 
     val modulesFilesDirectory: Path? = null,
     val ccv2Token: String? = null,
+    // TODO: review this attribute
     val sourceCodeFile: Path? = null,
     val projectIconFile: Path? = null,
 
