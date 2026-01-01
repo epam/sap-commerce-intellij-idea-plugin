@@ -35,20 +35,19 @@ import java.nio.file.Path
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
-internal fun getLibraryDescriptors(importContext: ProjectImportContext, descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> =
-    when (descriptor) {
-        is YRegularModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
-        is YWebSubModuleDescriptor -> getWebLibraryDescriptors(importContext, descriptor)
-        is YCommonWebSubModuleDescriptor -> getCommonWebSubModuleDescriptor(importContext, descriptor)
-        is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
-        is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor, allYModules)
-        is YHacSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
-        is YHmcSubModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
-        is PlatformModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
-        is ConfigModuleDescriptor -> getLibraryDescriptors(importContext, descriptor)
-        is ExternalModuleDescriptor -> emptyList()
-        else -> emptyList()
-    }
+internal fun ModuleDescriptor.getLibraryDescriptors(importContext: ProjectImportContext): List<JavaLibraryDescriptor> = when (this) {
+    is YRegularModuleDescriptor -> getLibraryDescriptors(importContext, this)
+    is YWebSubModuleDescriptor -> getWebLibraryDescriptors(importContext, this)
+    is YCommonWebSubModuleDescriptor -> getCommonWebSubModuleDescriptor(importContext, this)
+    is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(importContext, this)
+    is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(importContext, this)
+    is YHacSubModuleDescriptor -> getLibraryDescriptors(importContext, this)
+    is YHmcSubModuleDescriptor -> getLibraryDescriptors(importContext, this)
+    is PlatformModuleDescriptor -> getLibraryDescriptors(importContext, this)
+    is ConfigModuleDescriptor -> getLibraryDescriptors(importContext, this)
+    is ExternalModuleDescriptor -> emptyList()
+    else -> emptyList()
+}
 
 internal fun addBackofficeRootProjectLibrary(
     modifiableModelsProvider: IdeModifiableModelsProvider,
@@ -274,8 +273,7 @@ private fun getLibraryDescriptors(importContext: ProjectImportContext, descripto
 
 private fun getLibraryDescriptors(
     importContext: ProjectImportContext,
-    descriptor: YAcceleratorAddonSubModuleDescriptor,
-    allYModules: Map<String, YModuleDescriptor>
+    descriptor: YAcceleratorAddonSubModuleDescriptor
 ): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
@@ -284,6 +282,11 @@ private fun getLibraryDescriptors(
     addRootLib(descriptor, libs)
 
     val attachSources = descriptor.type == ModuleDescriptorType.CUSTOM || !importContext.settings.importOOTBModulesInReadOnlyMode
+
+    val allYModules = importContext.chosenHybrisModuleDescriptors
+        .filterIsInstance<YModuleDescriptor>()
+        .distinct()
+        .associateBy { it.name }
     allYModules.values
         .filter { it.getDirectDependencies().contains(descriptor.owner) }
         .filter { it != descriptor }

@@ -38,7 +38,6 @@ import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
@@ -60,13 +59,9 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
-
-        val allYModules = importContext.chosenHybrisModuleDescriptors
-            .filterIsInstance<YModuleDescriptor>()
-            .distinct()
-            .associateBy { it.name }
         val sourceCodeRoot = getSourceCodeRoot(importContext)
-        for (javaLibraryDescriptor in getLibraryDescriptors(importContext, moduleDescriptor, allYModules)) {
+
+        for (javaLibraryDescriptor in moduleDescriptor.getLibraryDescriptors(importContext)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
                 continue
             }
