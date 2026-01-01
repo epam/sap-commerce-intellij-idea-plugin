@@ -22,6 +22,7 @@ import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBScrollPane
@@ -57,13 +58,16 @@ import kotlin.io.path.*
 
 class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizardStep(context), RefreshSupport {
 
+    private val disposable = Disposer.newDisposable()
     private val importCoreContext by lazy {
         ProjectImportCoreContext(
             importSettings = ProjectImportSettings.of(ApplicationSettings.getInstance()).mutable()
         )
     }
-
-    private val _ui by lazy { uiCoreStep(importCoreContext) }
+    private val _ui by lazy {
+        uiCoreStep(importCoreContext)
+            .also { it.registerValidators(disposable) }
+    }
 
     override fun getComponent() = JBScrollPane(_ui).apply {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
@@ -72,6 +76,11 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         CCv2ProjectSettings.getInstance().loadDefaultCCv2Token { ccv2Token ->
             if (ccv2Token != null) importCoreContext.ccv2Token.set(ccv2Token)
         }
+    }
+
+    override fun disposeUIResources() {
+        super.disposeUIResources()
+        disposable.dispose()
     }
 
     override fun updateDataModel() {
@@ -219,6 +228,15 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
     override fun validate(): Boolean {
         if (!super.validate()) return false
+
+        val firstValidationInfo = _ui.validateAll()
+            .filter { it.component?.isVisible ?: false }
+            .onEach { it.okEnabled = true }
+            .firstOrNull()
+
+        if (firstValidationInfo != null) {
+            throw ConfigurationException(firstValidationInfo.message)
+        }
 
         importCoreContext.projectIconFile.takeIf { importCoreContext.projectIcon.get() }
             ?.takeUnless { it.get().toNioPathOrNull()?.fileExists ?: false }

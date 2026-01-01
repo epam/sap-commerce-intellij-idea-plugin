@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.properties.AtomicProperty
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.ApplicationSettings
 
@@ -33,6 +34,16 @@ data class ProjectImportSettings(
     val withStandardProvidedSources: Boolean,
     val withExternalLibrarySources: Boolean,
     val withExternalLibraryJavadocs: Boolean,
+    val groupModules: Boolean,
+    val groupExternalModules: Boolean,
+    val groupHybris: String,
+    val groupOtherHybris: String,
+    val groupCustom: String,
+    val groupNonHybris: String,
+    val groupOtherCustom: String,
+    val groupPlatform: String,
+    val groupCCv2: String,
+    val groupNameExternalModules: String,
 ) {
 
     fun mutable() = Mutable(
@@ -46,6 +57,16 @@ data class ProjectImportSettings(
         withStandardProvidedSources = AtomicBooleanProperty(withStandardProvidedSources),
         withExternalLibrarySources = AtomicBooleanProperty(withExternalLibrarySources),
         withExternalLibraryJavadocs = AtomicBooleanProperty(withExternalLibraryJavadocs),
+        groupModules = AtomicBooleanProperty(groupModules),
+        groupExternalModules = AtomicBooleanProperty(groupExternalModules),
+        groupHybris = AtomicProperty(groupHybris),
+        groupOtherHybris = AtomicProperty(groupOtherHybris),
+        groupCustom = AtomicProperty(groupCustom),
+        groupNonHybris = AtomicProperty(groupNonHybris),
+        groupOtherCustom = AtomicProperty(groupOtherCustom),
+        groupPlatform = AtomicProperty(groupPlatform),
+        groupCCv2 = AtomicProperty(groupCCv2),
+        groupNameExternalModules = AtomicProperty(groupNameExternalModules),
     )
 
     data class Mutable(
@@ -59,6 +80,16 @@ data class ProjectImportSettings(
         val withStandardProvidedSources: AtomicBooleanProperty,
         val withExternalLibrarySources: AtomicBooleanProperty,
         val withExternalLibraryJavadocs: AtomicBooleanProperty,
+        val groupModules: AtomicBooleanProperty,
+        val groupExternalModules: AtomicBooleanProperty,
+        val groupHybris: AtomicProperty<String>,
+        val groupOtherHybris: AtomicProperty<String>,
+        val groupCustom: AtomicProperty<String>,
+        val groupNonHybris: AtomicProperty<String>,
+        val groupOtherCustom: AtomicProperty<String>,
+        val groupPlatform: AtomicProperty<String>,
+        val groupCCv2: AtomicProperty<String>,
+        val groupNameExternalModules: AtomicProperty<String>,
     ) {
         fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
@@ -71,6 +102,16 @@ data class ProjectImportSettings(
             withStandardProvidedSources = withStandardProvidedSources.get(),
             withExternalLibrarySources = withExternalLibrarySources.get(),
             withExternalLibraryJavadocs = withExternalLibraryJavadocs.get(),
+            groupModules = groupModules.get(),
+            groupExternalModules = groupExternalModules.get(),
+            groupHybris = groupHybris.get(),
+            groupOtherHybris = groupOtherHybris.get(),
+            groupCustom = groupCustom.get(),
+            groupNonHybris = groupNonHybris.get(),
+            groupOtherCustom = groupOtherCustom.get(),
+            groupPlatform = groupPlatform.get(),
+            groupCCv2 = groupCCv2.get(),
+            groupNameExternalModules = groupNameExternalModules.get(),
         )
     }
 
@@ -83,10 +124,19 @@ data class ProjectImportSettings(
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
             useFakeOutputPathForCustomExtensions = applicationSettings.useFakeOutputPathForCustomExtensions,
-
             withStandardProvidedSources = applicationSettings.withStandardProvidedSources,
             withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
             withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
+            groupModules = applicationSettings.groupModules,
+            groupExternalModules = applicationSettings.groupExternalModules,
+            groupHybris = applicationSettings.groupHybris,
+            groupOtherHybris = applicationSettings.groupOtherHybris,
+            groupCustom = applicationSettings.groupCustom,
+            groupNonHybris = applicationSettings.groupNonHybris,
+            groupOtherCustom = applicationSettings.groupOtherCustom,
+            groupPlatform = applicationSettings.groupPlatform,
+            groupCCv2 = applicationSettings.groupCCv2,
+            groupNameExternalModules = applicationSettings.groupNameExternalModules,
         )
 
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
@@ -94,13 +144,23 @@ data class ProjectImportSettings(
             followSymlink = projectSettings.followSymlink,
             excludeTestSources = projectSettings.excludeTestSources,
             importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles,
+
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
             useFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions,
-
             withStandardProvidedSources = applicationSettings.withStandardProvidedSources,
             withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
             withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
+            groupModules = applicationSettings.groupModules,
+            groupExternalModules = applicationSettings.groupExternalModules,
+            groupHybris = applicationSettings.groupHybris,
+            groupOtherHybris = applicationSettings.groupOtherHybris,
+            groupCustom = applicationSettings.groupCustom,
+            groupNonHybris = applicationSettings.groupNonHybris,
+            groupOtherCustom = applicationSettings.groupOtherCustom,
+            groupPlatform = applicationSettings.groupPlatform,
+            groupCCv2 = applicationSettings.groupCCv2,
+            groupNameExternalModules = applicationSettings.groupNameExternalModules,
         )
     }
 }

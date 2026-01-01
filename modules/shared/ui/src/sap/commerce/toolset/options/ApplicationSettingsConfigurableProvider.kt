@@ -21,13 +21,16 @@ package sap.commerce.toolset.options
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.ComponentPredicate
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.equalsIgnoreOrder
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.ui.CRUDListPanel
+import javax.swing.Icon
 import javax.swing.JCheckBox
+import kotlin.reflect.KMutableProperty0
 
 class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
@@ -59,49 +62,24 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
             "hybris.import.settings.excludedFromIndex.directory.popup.edit.text",
         )
 
-        override fun createPanel() = panel {
+        private val _ui = panel {
             group(i18n("hybris.project.import.projectImportSettings.title")) {
                 row {
                     checkBox(i18n("hybris.project.import.followSymlink"))
                         .bindSelected(applicationSettings::followSymlink)
+                    contextHelp(i18n("hybris.project.import.followSymlink.help.description"))
                 }
 
                 row {
                     checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
                         .bindSelected(applicationSettings::defaultPlatformInReadOnly)
-                    contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
+                    contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.help.description"))
                 }
 
-                row {
-                    checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                        .bindSelected(applicationSettings::importCustomAntBuildFiles)
-                    contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
-                }
-
-                row {
-                    checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                        .bindSelected(applicationSettings::withStandardProvidedSources)
-                    contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
-                }
-
-                row {
-                    label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
-
-                    checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
-                        .bindSelected(applicationSettings::withExternalLibrarySources)
-
-                    checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
-                        .bindSelected(applicationSettings::withExternalLibraryJavadocs)
-
-                    contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-                }
-            }
-
-            group(i18n("hybris.project.import.projectStructure.title")) {
                 row {
                     checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
                         .bindSelected(applicationSettings::useFakeOutputPathForCustomExtensions)
-                    contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
+                    contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.help.description"))
                 }
 
                 row {
@@ -115,6 +93,32 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
 
                 row {
+                    checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
+                        .bindSelected(applicationSettings::importCustomAntBuildFiles)
+                    contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.help.description"))
+                }
+
+                row {
+                    checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
+                        .bindSelected(applicationSettings::withStandardProvidedSources)
+                    contextHelp(i18n("hybris.project.import.withStandardProvidedSources.help.description"))
+                }
+
+                row {
+                    label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
+
+                    checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
+                        .bindSelected(applicationSettings::withExternalLibrarySources)
+
+                    checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
+                        .bindSelected(applicationSettings::withExternalLibraryJavadocs)
+
+                    contextHelp(i18n("hybris.project.import.withExternalLibrarySources.help.description"))
+                }
+            }
+
+            group(i18n("hybris.project.import.projectStructure.title")) {
+                row {
                     checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
                         .bindSelected(applicationSettings::hideEmptyMiddleFolders)
                 }
@@ -126,41 +130,38 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
 
                 indent {
-                    row {
-                        icon(HybrisIcons.Extension.OOTB)
-                        textField()
-                            .label(i18n("hybris.import.settings.group.hybris"))
-                            .bindText(applicationSettings::groupHybris)
-                        textField()
-                            .label(i18n("hybris.import.settings.group.unused"))
-                            .bindText(applicationSettings::groupOtherHybris)
-                    }.layout(RowLayout.PARENT_GRID)
-
-                    row {
-                        icon(HybrisIcons.Extension.CUSTOM)
-                        textField()
-                            .label(i18n("hybris.import.settings.group.custom"))
-                            .bindText(applicationSettings::groupCustom)
-                        textField()
-                            .label(i18n("hybris.import.settings.group.unused"))
-                            .bindText(applicationSettings::groupOtherCustom)
-                    }.layout(RowLayout.PARENT_GRID)
-
-                    row {
-                        icon(HybrisIcons.Extension.PLATFORM)
-                        textField()
-                            .label(i18n("hybris.import.settings.group.platform"))
-                            .bindText(applicationSettings::groupPlatform)
-                        textField()
-                            .label(i18n("hybris.import.settings.group.nonhybris"))
-                            .bindText(applicationSettings::groupNonHybris)
-                    }.layout(RowLayout.PARENT_GRID)
+                    groupProperties(
+                        HybrisIcons.Extension.CUSTOM,
+                        i18n("hybris.import.settings.group.custom"),
+                        i18n("hybris.import.settings.group.unused"),
+                        applicationSettings::groupCustom,
+                        applicationSettings::groupOtherCustom,
+                        groupModulesCheckBox.selected
+                    )
+                    groupProperties(
+                        HybrisIcons.Extension.OOTB,
+                        i18n("hybris.import.settings.group.hybris"),
+                        i18n("hybris.import.settings.group.unused"),
+                        applicationSettings::groupHybris,
+                        applicationSettings::groupOtherHybris,
+                        groupModulesCheckBox.selected
+                    )
+                    groupProperties(
+                        HybrisIcons.Extension.PLATFORM,
+                        i18n("hybris.import.settings.group.platform"),
+                        i18n("hybris.import.settings.group.nonhybris"),
+                        applicationSettings::groupPlatform,
+                        applicationSettings::groupNonHybris,
+                        groupModulesCheckBox.selected
+                    )
 
                     row {
                         icon(HybrisIcons.Module.CCV2_GROUP)
-                        textField()
-                            .label(i18n("hybris.import.settings.group.ccv2"))
-                            .bindText(applicationSettings::groupCCv2)
+                        groupProperty(
+                            i18n("hybris.import.settings.group.ccv2"),
+                            applicationSettings::groupCCv2,
+                            groupModulesCheckBox.selected
+                        )
                     }.layout(RowLayout.PARENT_GRID)
                 }.visibleIf(groupModulesCheckBox.selected)
 
@@ -168,53 +169,98 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                     externalModulesCheckBox = checkBox("Group external modules")
                         .bindSelected(applicationSettings::groupExternalModules)
                         .component
-                    contextHelp(i18n("hybris.project.view.external.module.tooltip"))
+                    contextHelp(i18n("hybris.project.view.external.module.help.description"))
                 }
 
                 indent {
                     row {
                         icon(HybrisIcons.Module.EXTERNAL_GROUP)
-                        textField()
-                            .label("External modules:")
-                            .bindText(applicationSettings::groupNameExternalModules)
-                            .addValidationRule("Name cannot be blank.") { it.text.isBlank() }
-                            .enabledIf(externalModulesCheckBox.selected)
-                    }
+                        groupProperty(
+                            i18n("hybris.import.settings.group.externalModules"),
+                            applicationSettings::groupNameExternalModules,
+                            externalModulesCheckBox.selected
+                        )
+                    }.layout(RowLayout.PARENT_GRID)
                 }.visibleIf(externalModulesCheckBox.selected)
             }
 
-            group(i18n("hybris.import.settings.junk.directory.name"), false) {
-                row {
-                    cell(junkList)
-                        .align(AlignX.FILL)
-                        .onApply { applicationSettings.junkDirectoryList = junkList.data }
-                        .onReset { junkList.data = applicationSettings.junkDirectoryList }
-                        .onIsModified { junkList.data.equalsIgnoreOrder(applicationSettings.junkDirectoryList).not() }
-                }
-            }
+            crudList(
+                i18n("hybris.import.settings.junk.directory.name"),
+                junkList,
+                applicationSettings::junkDirectoryList,
+                i18n("hybris.import.settings.junk.directory.help")
+            )
 
-            group(i18n("hybris.import.settings.exclude.resources.name"), false) {
-                row {
-                    comment("Use SAP Commerce extension name, not fully qualified IDEA module name.")
-                }
-                row {
-                    cell(excludeResources)
-                        .align(AlignX.FILL)
-                        .onApply { applicationSettings.extensionsResourcesToExclude = excludeResources.data }
-                        .onReset { excludeResources.data = applicationSettings.extensionsResourcesToExclude }
-                        .onIsModified { excludeResources.data.equalsIgnoreOrder(applicationSettings.extensionsResourcesToExclude).not() }
-                }
-            }
+            crudList(
+                i18n("hybris.import.settings.exclude.resources.name"),
+                excludeResources,
+                applicationSettings::extensionsResourcesToExclude,
+                "Use SAP Commerce extension name, not fully qualified IDEA module name."
+            )
 
-            group(i18n("hybris.import.settings.excludedFromIndex.directory.name"), false) {
+            crudList(
+                i18n("hybris.import.settings.excludedFromIndex.directory.name"),
+                excludeFromIndex,
+                applicationSettings::excludedFromIndexList
+            )
+        }
+
+        override fun apply() {
+            if (_ui.validateAll().none { it.component?.isVisible ?: false }) {
+                super.apply()
+            }
+        }
+
+        private fun Panel.crudList(
+            groupTitle: String,
+            listPanel: CRUDListPanel,
+            property: KMutableProperty0<List<String>>,
+            commentText: String? = null,
+        ) {
+            group(groupTitle, false) {
+                if (commentText != null) {
+                    row {
+                        comment(commentText)
+                    }
+                }
                 row {
-                    cell(excludeFromIndex)
+                    cell(listPanel)
                         .align(AlignX.FILL)
-                        .onApply { applicationSettings.excludedFromIndexList = excludeFromIndex.data }
-                        .onReset { excludeFromIndex.data = applicationSettings.excludedFromIndexList }
-                        .onIsModified { excludeFromIndex.data.equalsIgnoreOrder(applicationSettings.excludedFromIndexList).not() }
+                        .onApply { property.set(listPanel.data) }
+                        .onReset { listPanel.data = property.get() }
+                        .onIsModified { listPanel.data.equalsIgnoreOrder(property.get()).not() }
                 }
             }
         }
+
+        private fun Panel.groupProperties(
+            icon: Icon,
+            groupLabel: String,
+            groupOtherLabel: String,
+            groupProperty: KMutableProperty0<String>,
+            groupOtherProperty: KMutableProperty0<String>,
+            enabledIf: ComponentPredicate
+        ) {
+            row {
+                icon(icon)
+                groupProperty(groupLabel, groupProperty, enabledIf)
+                groupProperty(groupOtherLabel, groupOtherProperty, enabledIf)
+            }.layout(RowLayout.PARENT_GRID)
+        }
+
+        private fun Row.groupProperty(
+            groupLabel: String,
+            groupProperty: KMutableProperty0<String>,
+            enabledIf: ComponentPredicate
+        ) {
+            label(groupLabel)
+            textField()
+                .bindText(groupProperty)
+                .addValidationRule(i18n("hybris.settings.validations.notBlank")) { it.text.isBlank() }
+                .enabledIf(enabledIf)
+                .applyIfEnabled()
+        }
+
+        override fun createPanel() = _ui
     }
 }

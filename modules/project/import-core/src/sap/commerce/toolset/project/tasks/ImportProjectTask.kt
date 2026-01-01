@@ -31,6 +31,7 @@ import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportSequentialProgress
+import kotlinx.coroutines.delay
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.configurator.ModuleProvider
@@ -38,6 +39,7 @@ import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import kotlin.time.measureTime
 
 @Service(Service.Level.PROJECT)
 class ImportProjectTask(private val project: Project) {
@@ -55,6 +57,8 @@ class ImportProjectTask(private val project: Project) {
 
             spr.indeterminateStep(i18n("hybris.project.import.saving.project"))
 
+            delay(250)
+
             saveProject(modifiableModelsProvider)
         }
     }
@@ -67,7 +71,8 @@ class ImportProjectTask(private val project: Project) {
                 reporter.itemStep("Configuring project using '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    configurator.preConfigure(importContext)
+                    val duration = measureTime { configurator.preConfigure(importContext) }
+                    thisLogger().info("Pre-configured project [${configurator.name} | $duration]")
                 }
             }
         }
@@ -87,7 +92,8 @@ class ImportProjectTask(private val project: Project) {
                 moduleReporter.itemStep("Importing '${moduleDescriptor.name}' module...") {
                     checkCanceled()
 
-                    importModule(importContext, moduleDescriptor, provider, modifiableModelsProvider)
+                    val duration = measureTime { importModule(importContext, moduleDescriptor, provider, modifiableModelsProvider) }
+                    thisLogger().info("Imported module [${moduleDescriptor.name} | ${duration}].")
                 }
             }
         }
@@ -108,7 +114,8 @@ class ImportProjectTask(private val project: Project) {
                 moduleConfiguratorReporter.itemStep("Applying '${configurator.name} configurator...") {
                     checkCanceled()
 
-                    configurator.configure(importContext, moduleDescriptor, module, modifiableModelsProvider)
+                    val duration = measureTime { configurator.configure(importContext, moduleDescriptor, module, modifiableModelsProvider) }
+                    thisLogger().info("Applied module configurator [${moduleDescriptor.name} | ${configurator.name} | ${duration}].")
                 }
             }
         }
@@ -122,7 +129,9 @@ class ImportProjectTask(private val project: Project) {
                 it.itemStep("Applying '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    configurator.configure(importContext, modifiableModelsProvider)
+                    val duration = measureTime { configurator.configure(importContext, modifiableModelsProvider) }
+
+                    thisLogger().info("Applied project configurator [${configurator.name} | ${duration}].")
                 }
             }
         }

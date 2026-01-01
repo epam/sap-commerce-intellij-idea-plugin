@@ -66,7 +66,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .align(AlignX.FILL)
                         .resizableColumn()
 
-                    contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.tooltip"))
+                    contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.help.description"))
                 }.layout(RowLayout.PARENT_GRID)
 
                 row {
@@ -77,7 +77,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .align(AlignX.FILL)
                         .resizableColumn()
 
-                    contextHelp(i18n("hybris.import.wizard.javadoc.url.tooltip"))
+                    contextHelp(i18n("hybris.import.wizard.javadoc.url.help.description"))
                 }.layout(RowLayout.PARENT_GRID)
             }
 
@@ -118,7 +118,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
 
             group(i18n("hybris.project.import.isExcludedFromScanning"), false) {
                 row {
-                    comment(i18n("hybris.project.import.isExcludedFromScanning.tooltip"))
+                    comment(i18n("hybris.project.import.isExcludedFromScanning.help.description"))
                 }
                 row {
                     cell(excludedFromScanning)

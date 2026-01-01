@@ -40,6 +40,20 @@ coroutineScope.launch {
 }
 ```
 
+### Forms
+
+#### Register form validators for DSL DialogPanel created outside the DialogWrapper
+
+```kotlin
+val _ui = panel {}
+_ui.registerValidators(parentDisposable)
+```
+
+#### Example of the scrollable DialogWrapper with validations
+```kotlin
+ProjectRefreshDialog
+```
+
 ### Resize Kotlin Dsl Dialog on content change
 
 ```kotlin

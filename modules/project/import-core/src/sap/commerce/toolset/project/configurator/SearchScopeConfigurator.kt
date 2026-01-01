@@ -31,7 +31,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.project.context.ProjectImportSettings
 import javax.swing.Icon
 
 class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
@@ -41,7 +41,7 @@ class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
 
     override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
-        val applicationSettings = ApplicationSettings.getInstance()
+        val applicationSettings = importContext.settings
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris
         val nonHybrisGroupName = applicationSettings.groupNonHybris
@@ -111,7 +111,7 @@ class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
         }
     }
 
-    private fun createCustomTsImpexBeansFilesPattern(appSettings: ApplicationSettings) = appSettings.groupCustom.let { customGroupName ->
+    private fun createCustomTsImpexBeansFilesPattern(importSettings: ProjectImportSettings) = importSettings.groupCustom.let { customGroupName ->
         UnionPackageSet.create(
             UnionPackageSet.create(
                 FilePatternPackageSet("$customGroupName*", "*//*${HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING}"),

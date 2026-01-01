@@ -107,7 +107,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                         .enabledIf(editable)
                         .onIsModified { (originalToken ?: "") != String(defaultCCv2TokenTextField.password) }
                         .component
-                    contextHelp(i18n("hybris.settings.application.ccv2Token.comment"))
+                    contextHelp(i18n("hybris.settings.application.ccv2Token.help.description"))
                 }.layout(RowLayout.PARENT_GRID)
 
                 row {

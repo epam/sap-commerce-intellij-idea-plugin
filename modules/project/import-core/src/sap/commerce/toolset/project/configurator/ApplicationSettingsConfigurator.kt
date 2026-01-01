@@ -27,8 +27,6 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
         get() = "Application Settings"
 
     override fun preConfigure(importContext: ProjectImportContext) {
-        if (importContext.refresh) return
-
         val importSettings = importContext.settings
 
         with(ApplicationSettings.getInstance()) {
@@ -43,6 +41,16 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
             this.withStandardProvidedSources = importSettings.withStandardProvidedSources
             this.withExternalLibrarySources = importSettings.withExternalLibrarySources
             this.withExternalLibraryJavadocs = importSettings.withExternalLibraryJavadocs
+            this.groupModules = importSettings.groupModules
+            this.groupExternalModules = importSettings.groupExternalModules
+            this.groupHybris = importSettings.groupHybris
+            this.groupOtherHybris = importSettings.groupOtherHybris
+            this.groupCustom = importSettings.groupCustom
+            this.groupNonHybris = importSettings.groupNonHybris
+            this.groupOtherCustom = importSettings.groupOtherCustom
+            this.groupPlatform = importSettings.groupPlatform
+            this.groupCCv2 = importSettings.groupCCv2
+            this.groupNameExternalModules = importSettings.groupNameExternalModules
         }
     }
 }

@@ -19,15 +19,19 @@
 package sap.commerce.toolset.project.ui
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.ObservableMutableProperty
+import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import org.intellij.images.fileTypes.impl.SvgFileType
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.ui.CRUDListPanel
+import javax.swing.Icon
 
 internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
     val rightGaps = UnscaledGaps(0, 0, 0, 16)
@@ -69,7 +73,7 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 .bindText(context.platformDirectory)
                 .align(AlignX.FILL)
 
-            contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.tooltip"))
+            contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.help.description"))
                 .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
@@ -80,7 +84,7 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 .align(AlignX.FILL)
                 .resizableColumn()
 
-            contextHelp(i18n("hybris.import.wizard.javadoc.url.tooltip"))
+            contextHelp(i18n("hybris.import.wizard.javadoc.url.help.description"))
                 .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
@@ -100,7 +104,7 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 .align(AlignX.FILL)
                 .resizableColumn()
 
-            contextHelp(i18n("hybris.import.label.select.hybris.project.icon.file"))
+            contextHelp(i18n("hybris.import.label.select.hybris.project.icon.file.help.description"))
                 .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
@@ -132,93 +136,9 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 .comment(i18n("hybris.settings.application.ccv2Token.tooltip"))
                 .resizableColumn()
 
-            contextHelp(i18n("hybris.settings.application.ccv2Token.comment"))
+            contextHelp(i18n("hybris.settings.application.ccv2Token.help.description"))
                 .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
-
-        group(i18n("hybris.project.import.projectImportSettings.title")) {
-            row {
-                checkBox(i18n("hybris.project.import.followSymlink"))
-                    .bindSelected(context.importSettings.followSymlink)
-                    .component
-            }
-
-            row {
-                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                    .bindSelected(context.importSettings.importOOTBModulesInReadOnlyMode)
-                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                    .bindSelected(context.importSettings.importCustomAntBuildFiles)
-                contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .bindSelected(context.importSettings.withStandardProvidedSources)
-                contextHelp(i18n("hybris.project.import.withStandardProvidedSources.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
-
-                checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
-                    .bindSelected(context.importSettings.withExternalLibrarySources)
-
-                checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
-                    .bindSelected(context.importSettings.withExternalLibraryJavadocs)
-
-                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.isExcludedFromScanning"))
-                    .bindSelected(context.isExcludedFromScanning)
-                contextHelp(i18n("hybris.project.import.isExcludedFromScanning.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                cell(excludedFromScanningList)
-                    .bind(
-                        { listPanel -> listPanel.data },
-                        { _, values -> context.excludedFromScanningDirectories.set(values) },
-                        context.excludedFromScanningDirectories
-                    )
-                    .visibleIf(context.isExcludedFromScanning)
-                    .align(AlignX.FILL)
-            }
-        }
-
-        group(i18n("hybris.project.import.projectStructure.title")) {
-            row {
-                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
-                    .bindSelected(context.importSettings.useFakeOutputPathForCustomExtensions)
-                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.tooltip"))
-                    .customize(rightGaps)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(context.importSettings.excludeTestSources)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
-                    .bindSelected(context.importSettings.ignoreNonExistingSourceDirectories)
-            }
-
-            row {
-                checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
-                    .bindSelected(context.importSettings.hideEmptyMiddleFolders)
-            }
-        }
 
         group("Override") {
             row {
@@ -301,5 +221,175 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                     .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
         }
+
+        group(i18n("hybris.project.import.projectImportSettings.title")) {
+            row {
+                checkBox(i18n("hybris.project.import.followSymlink"))
+                    .bindSelected(context.importSettings.followSymlink)
+                contextHelp(i18n("hybris.project.import.followSymlink.help.description"))
+            }
+
+            row {
+                checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                    .bindSelected(context.importSettings.importOOTBModulesInReadOnlyMode)
+                contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.help.description"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions"))
+                    .bindSelected(context.importSettings.useFakeOutputPathForCustomExtensions)
+                contextHelp(i18n("hybris.project.import.useFakeOutputPathForCustomExtensions.help.description"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.excludeTestSources"))
+                    .bindSelected(context.importSettings.excludeTestSources)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
+                    .bindSelected(context.importSettings.ignoreNonExistingSourceDirectories)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
+                    .bindSelected(context.importSettings.importCustomAntBuildFiles)
+                contextHelp(i18n("hybris.project.import.importCustomAntBuildFiles.help.description"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
+                    .bindSelected(context.importSettings.withStandardProvidedSources)
+                contextHelp(i18n("hybris.project.import.withStandardProvidedSources.help.description"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
+
+                checkBox(i18n("hybris.project.import.withExternalLibrarySources"))
+                    .bindSelected(context.importSettings.withExternalLibrarySources)
+
+                checkBox(i18n("hybris.project.import.withExternalLibraryJavadocs"))
+                    .bindSelected(context.importSettings.withExternalLibraryJavadocs)
+
+                contextHelp(i18n("hybris.project.import.withExternalLibrarySources.help.description"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                checkBox(i18n("hybris.project.import.isExcludedFromScanning"))
+                    .bindSelected(context.isExcludedFromScanning)
+                contextHelp(i18n("hybris.project.import.isExcludedFromScanning.help.description"))
+                    .customize(rightGaps)
+            }
+
+            row {
+                cell(excludedFromScanningList)
+                    .bind(
+                        { listPanel -> listPanel.data },
+                        { _, values -> context.excludedFromScanningDirectories.set(values) },
+                        context.excludedFromScanningDirectories
+                    )
+                    .visibleIf(context.isExcludedFromScanning)
+                    .align(AlignX.FILL)
+            }
+        }
+
+        group(i18n("hybris.project.import.projectStructure.title")) {
+            row {
+                checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
+                    .bindSelected(context.importSettings.hideEmptyMiddleFolders)
+            }
+
+            row {
+                checkBox(i18n("hybris.import.settings.group.modules"))
+                    .bindSelected(context.importSettings.groupModules)
+            }
+
+            indent {
+                groupProperties(
+                    HybrisIcons.Extension.CUSTOM,
+                    i18n("hybris.import.settings.group.custom"),
+                    i18n("hybris.import.settings.group.unused"),
+                    context.importSettings.groupCustom,
+                    context.importSettings.groupOtherCustom,
+                    context.importSettings.groupModules
+                )
+                groupProperties(
+                    HybrisIcons.Extension.OOTB,
+                    i18n("hybris.import.settings.group.hybris"),
+                    i18n("hybris.import.settings.group.unused"),
+                    context.importSettings.groupHybris,
+                    context.importSettings.groupOtherHybris,
+                    context.importSettings.groupModules
+                )
+                groupProperties(
+                    HybrisIcons.Extension.PLATFORM,
+                    i18n("hybris.import.settings.group.platform"),
+                    i18n("hybris.import.settings.group.nonhybris"),
+                    context.importSettings.groupPlatform,
+                    context.importSettings.groupNonHybris,
+                    context.importSettings.groupModules
+                )
+
+                row {
+                    icon(HybrisIcons.Module.CCV2_GROUP)
+                    groupProperty(
+                        i18n("hybris.import.settings.group.ccv2"),
+                        context.importSettings.groupCCv2,
+                        context.importSettings.groupModules
+                    )
+                }.layout(RowLayout.PARENT_GRID)
+            }.visibleIf(context.importSettings.groupModules)
+
+            row {
+                checkBox("Group external modules")
+                    .bindSelected(context.importSettings.groupExternalModules)
+                contextHelp(i18n("hybris.project.view.external.module.help.description"))
+            }
+
+            indent {
+                row {
+                    icon(HybrisIcons.Module.EXTERNAL_GROUP)
+                    groupProperty(
+                        i18n("hybris.import.settings.group.externalModules"),
+                        context.importSettings.groupNameExternalModules,
+                        context.importSettings.groupExternalModules
+                    )
+                }
+            }.visibleIf(context.importSettings.groupExternalModules)
+        }
     }
+}
+
+private fun Panel.groupProperties(
+    icon: Icon,
+    groupLabel: String,
+    groupOtherLabel: String,
+    groupProperty: ObservableMutableProperty<String>,
+    groupOtherProperty: ObservableMutableProperty<String>,
+    enabledIf: ObservableProperty<Boolean>
+) {
+    row {
+        icon(icon)
+        groupProperty(groupLabel, groupProperty, enabledIf)
+        groupProperty(groupOtherLabel, groupOtherProperty, enabledIf)
+    }.layout(RowLayout.PARENT_GRID)
+}
+
+private fun Row.groupProperty(
+    groupLabel: String,
+    groupProperty: ObservableMutableProperty<String>,
+    enabledIf: ObservableProperty<Boolean>
+) {
+    label(groupLabel)
+    textField()
+        .bindText(groupProperty)
+        .addValidationRule(i18n("hybris.settings.validations.notBlank")) { it.text.isBlank() }
+        .enabledIf(enabledIf)
+        .applyIfEnabled()
 }

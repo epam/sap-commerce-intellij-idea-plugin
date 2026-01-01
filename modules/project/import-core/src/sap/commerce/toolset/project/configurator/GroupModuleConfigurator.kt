@@ -22,7 +22,6 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.project.ModuleGroupingUtil
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.settings.ApplicationSettings
 
 class GroupModuleConfigurator : ProjectPreImportConfigurator {
 
@@ -30,7 +29,7 @@ class GroupModuleConfigurator : ProjectPreImportConfigurator {
         get() = "Modules Grouping"
 
     override fun preConfigure(importContext: ProjectImportContext) {
-        if (!ApplicationSettings.getInstance().groupModules) return
+        if (!importContext.settings.groupModules) return
 
         val moduleDescriptorsToImport = importContext.allChosenModuleDescriptors
         val requiredYModuleDescriptorList = buildSet {
