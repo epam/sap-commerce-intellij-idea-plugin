@@ -44,6 +44,8 @@ import kotlin.time.measureTime
 @Service(Service.Level.PROJECT)
 class ImportProjectTask(private val project: Project) {
 
+    private val logger = thisLogger()
+
     fun execute(importContext: ProjectImportContext) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.commit"),
@@ -72,7 +74,7 @@ class ImportProjectTask(private val project: Project) {
                     checkCanceled()
 
                     val duration = measureTime { configurator.preConfigure(importContext) }
-                    thisLogger().info("Pre-configured project [${configurator.name} | $duration]")
+                    logger.info("Pre-configured project [${configurator.name} | $duration]")
                 }
             }
         }
@@ -86,14 +88,14 @@ class ImportProjectTask(private val project: Project) {
             chosenModuleDescriptors.forEach { moduleDescriptor ->
                 val provider = moduleProviders.find { provider -> provider.isApplicable(moduleDescriptor) }
                     ?: return@forEach moduleReporter.itemStep("Skipping '${moduleDescriptor.name}' module...") {
-                        thisLogger().warn("Unable to find suitable module provider for '${moduleDescriptor}' module...")
+                        logger.warn("Unable to find suitable module provider for '${moduleDescriptor}' module...")
                     }
 
                 moduleReporter.itemStep("Importing '${moduleDescriptor.name}' module...") {
                     checkCanceled()
 
                     val duration = measureTime { importModule(importContext, moduleDescriptor, provider, modifiableModelsProvider) }
-                    thisLogger().info("Imported module [${moduleDescriptor.name} | ${duration}].")
+                    logger.info("Imported module [${moduleDescriptor.name} | ${duration}].")
                 }
             }
         }
@@ -115,7 +117,7 @@ class ImportProjectTask(private val project: Project) {
                     checkCanceled()
 
                     val duration = measureTime { configurator.configure(importContext, moduleDescriptor, module, modifiableModelsProvider) }
-                    thisLogger().info("Applied module configurator [${moduleDescriptor.name} | ${configurator.name} | ${duration}].")
+                    logger.info("Applied module configurator [${moduleDescriptor.name} | ${configurator.name} | ${duration}].")
                 }
             }
         }
@@ -131,7 +133,7 @@ class ImportProjectTask(private val project: Project) {
 
                     val duration = measureTime { configurator.configure(importContext, modifiableModelsProvider) }
 
-                    thisLogger().info("Applied project configurator [${configurator.name} | ${duration}].")
+                    logger.info("Applied project configurator [${configurator.name} | ${duration}].")
                 }
             }
         }

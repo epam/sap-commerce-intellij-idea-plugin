@@ -38,10 +38,14 @@ import java.io.IOException
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.isHidden
+import kotlin.io.path.isSymbolicLink
 import kotlin.io.path.name
+import kotlin.io.path.readSymbolicLink
 
 @Service
 class ModuleRootsScanner {
+
+    private val logger = thisLogger()
 
     suspend fun execute(
         importContext: ProjectImportContext.Mutable,
@@ -72,17 +76,17 @@ class ModuleRootsScanner {
 
                             return when {
                                 path.isHidden() -> {
-                                    thisLogger().debug("Skipping hidden directory: $path")
+                                    logger.debug("Skipping hidden directory: $path")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
 
                                 skipDirectories.contains(path) -> {
-                                    thisLogger().debug("Skipping manually excluded directory: $path")
+                                    logger.debug("Skipping manually excluded directory: $path")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
 
                                 path.isDirectoryExcluded -> {
-                                    thisLogger().debug("Skipping excluded directory: $path")
+                                    logger.debug("Skipping excluded directory: $path")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
 
@@ -96,7 +100,9 @@ class ModuleRootsScanner {
                                         ?.resolve(path)
                                         ?.also {
                                             it.moduleRoot?.let { moduleRoot ->
-                                                thisLogger().info("Detected ${moduleRoot.type} module: ${moduleRoot.path}")
+                                                val pathMessage = if (path.isSymbolicLink()) "$path -> (${path.readSymbolicLink()})"
+                                                else path
+                                                logger.info("Detected module [${moduleRoot.type} | $pathMessage]")
                                                 moduleRoots.add(moduleRoot)
                                             }
                                         }

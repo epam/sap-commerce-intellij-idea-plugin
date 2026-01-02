@@ -35,8 +35,10 @@ internal class LeUnmarshaller {
 
     fun unmarshal(configDirectory: Path): Hybrisconfig? {
         val file = configDirectory.resolve(LeConstants.LOCAL_EXTENSIONS_XML)
-        thisLogger().warn("Cannot find localextensions.xml file: $file")
-        if (!file.fileExists) return null
+        if (!file.fileExists) {
+            thisLogger().warn("Cannot find localextensions.xml file: $file")
+            return null
+        }
 
         try {
             return JAXBContext.newInstance(

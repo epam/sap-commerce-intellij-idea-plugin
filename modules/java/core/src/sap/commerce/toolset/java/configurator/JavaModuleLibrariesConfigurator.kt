@@ -32,7 +32,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
-import sap.commerce.toolset.java.descriptor.getLibraryDescriptors
+import sap.commerce.toolset.java.descriptor.collectLibraryDescriptors
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -61,7 +61,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
         val sourceCodeRoot = getSourceCodeRoot(importContext)
 
-        for (javaLibraryDescriptor in moduleDescriptor.getLibraryDescriptors(importContext)) {
+        for (javaLibraryDescriptor in moduleDescriptor.collectLibraryDescriptors(importContext)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
                 continue
             }
@@ -79,7 +79,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 if (moduleDescriptor.extensionInfo.backofficeModule) {
                     val backofficeJarDirectory = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_JAR)
                     if (backofficeJarDirectory.directoryExists) {
-                        addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
+                        addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, backofficeJarDirectory)
                     }
                 }
                 if (moduleDescriptor.name == EiConstants.Extension.BACK_OFFICE) {
@@ -92,8 +92,8 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                     val classes = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
                     val library = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
                     val sources = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
-                    addBackofficeRootProjectLibrary(modifiableModelsProvider, classes, null, false)
-                    addBackofficeRootProjectLibrary(modifiableModelsProvider, library, sources)
+                    addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, classes, null, false)
+                    addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, library, sources)
                 }
             }
         }

@@ -62,7 +62,7 @@ public final class FileUtils {
         }
 
         final List<String> reversePath = Lists.reverse(path);
-        LOG.info("Relative path for module dir " + file.getAbsolutePath() + " in " + parentDirectory.getAbsolutePath()
+        LOG.debug("Relative path for module dir " + file.getAbsolutePath() + " in " + parentDirectory.getAbsolutePath()
                  + " found as " + StringUtils.join(reversePath, '/'));
         return reversePath;
     }

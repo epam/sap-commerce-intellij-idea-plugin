@@ -24,11 +24,20 @@ import java.nio.file.Path
 
 data class JavaLibraryDescriptor(
     var name: String? = null,
+    @Deprecated(
+        "review it, for server-jars it it preferable to have single library for multiple jars," +
+            "why we need this library File at all?" +
+            "Mby just set libraryPaths and that all!"
+    )
     var libraryFile: Path,
     var jarFiles: Set<Path> = emptySet(),
+    @Deprecated("introduce source paths")
     var sourceFiles: List<Path> = emptyList(),
+    @Deprecated("introduce source paths")
     var sourceJarDirectories: List<Path> = emptyList(),
+    var sourcePaths: List<Path> = emptyList(),
     var exported: Boolean = false,
+    @Deprecated("What is it?")
     var directoryWithClasses: Boolean = false,
     var descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
     var scope: DependencyScope = DependencyScope.COMPILE

@@ -44,6 +44,8 @@ import kotlin.io.path.name
 @Service
 class ModuleDescriptorsCollector {
 
+    private val logger = thisLogger()
+
     @Throws(HybrisConfigurationException::class)
     suspend fun collect(importContext: ProjectImportContext.Mutable): Collection<ModuleDescriptor> {
         val rootDirectory = importContext.rootDirectory
@@ -61,7 +63,7 @@ class ModuleDescriptorsCollector {
             ?.takeUnless { it.isDescendantOf(rootDirectory) }
             ?.let {
                 withProgressText("Scanning for modules & vcs in: ${it.name}") {
-                    thisLogger().info("Scanning external extensions directory: $it")
+                    logger.info("Scanning external extensions directory: $it")
                     moduleRootsScanner.execute(importContext, it, skipDirectories)
                 }
             }
@@ -71,7 +73,7 @@ class ModuleDescriptorsCollector {
             ?.takeUnless { it.isDescendantOf(rootDirectory) }
             ?.let {
                 withProgressText("Scanning for modules & vcs in: ${it.name}") {
-                    thisLogger().info("Scanning for hybris modules out of the project: $it")
+                    logger.info("Scanning for hybris modules out of the project: $it")
                     moduleRootsScanner.execute(importContext, it, skipDirectories)
                 }
             }
@@ -93,7 +95,7 @@ class ModuleDescriptorsCollector {
                 moduleDescriptor.asSafely<YModuleDescriptor>()
                     ?.let { moduleDescriptors.addAll(it.getSubModules()) }
             } catch (e: HybrisConfigurationException) {
-                thisLogger().error("Can not import a module using path: $moduleRoot", e)
+                logger.error("Can not import a module using path: $moduleRoot", e)
                 moduleRootsFailedToImport.add(moduleRoot)
             }
         }
@@ -134,7 +136,7 @@ class ModuleDescriptorsCollector {
             ModuleDescriptorFactory.getInstance().createRootDescriptor(moduleRoot)
                 .let { moduleDescriptors.add(it) }
         } catch (e: HybrisConfigurationException) {
-            thisLogger().error("Can not import a module using path: $moduleRoot", e)
+            logger.error("Can not import a module using path: $moduleRoot", e)
             moduleRootsFailedToImport.add(moduleRoot)
         }
     }
@@ -167,7 +169,7 @@ class ModuleDescriptorsCollector {
             moduleDescriptors[requiresExtensionName]
                 ?: null.also {
                     // TODO: possible case due optional sub-modules, xxx.web | xxx.backoffice | etc.
-                    thisLogger().trace("Module '${moduleDescriptor.name}' contains unsatisfied dependency '$requiresExtensionName'.")
+                    logger.trace("Module '${moduleDescriptor.name}' contains unsatisfied dependency '$requiresExtensionName'.")
                 }
         }
         ?: emptyList()
