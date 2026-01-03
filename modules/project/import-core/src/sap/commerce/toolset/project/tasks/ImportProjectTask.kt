@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.tasks
 
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -137,7 +137,7 @@ class ImportProjectTask(private val project: Project) {
     }
 
     private suspend fun saveProject(modifiableModelsProvider: IdeModifiableModelsProvider) {
-        edtWriteAction { modifiableModelsProvider.commit() }
+        backgroundWriteAction { modifiableModelsProvider.commit() }
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, true)
     }
