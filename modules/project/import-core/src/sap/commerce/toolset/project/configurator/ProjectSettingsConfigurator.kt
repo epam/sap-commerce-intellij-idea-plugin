@@ -33,7 +33,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Project Settings"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         val project = importContext.project
         val workspaceSettings = WorkspaceSettings.getInstance(project)
         val projectSettings = ProjectSettings.getInstance(project)

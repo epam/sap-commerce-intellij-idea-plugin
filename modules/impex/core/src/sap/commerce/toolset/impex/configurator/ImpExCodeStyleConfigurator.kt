@@ -28,7 +28,7 @@ class ImpExCodeStyleConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "ImpEx Code Style"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         CodeStyleSchemes.getInstance().currentScheme
             .codeStyleSettings
             .getCommonSettings(ImpExLanguage)

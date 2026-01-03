@@ -48,7 +48,7 @@ class SpringPreConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Spring"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         if (Plugin.SPRING.isDisabled()) return
 
         val moduleDescriptors = importContext.chosenHybrisModuleDescriptors

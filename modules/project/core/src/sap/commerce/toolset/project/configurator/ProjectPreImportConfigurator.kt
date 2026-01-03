@@ -23,9 +23,7 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 
 interface ProjectPreImportConfigurator : Configurator {
 
-    fun preConfigure(
-        importContext: ProjectImportContext
-    )
+    suspend fun preConfigure(importContext: ProjectImportContext)
 
     companion object {
         val EP = ExtensionPointName.create<ProjectPreImportConfigurator>("sap.commerce.toolset.project.preImportConfigurator")

@@ -31,7 +31,7 @@ class CCv2ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "CCv2 Project Settings"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         val project = importContext.project
         val credentialAttributes = CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
 

@@ -26,7 +26,7 @@ class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Modules Directory"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         importContext.modulesFilesDirectory
             ?.takeUnless { it.exists() }
             ?.let { Files.createDirectories(it) }

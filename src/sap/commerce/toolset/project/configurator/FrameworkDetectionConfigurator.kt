@@ -33,7 +33,7 @@ class FrameworkDetectionConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Framework Detection"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         val project = importContext.project
 
         Plugin.SPRING.ifActive { excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID) }

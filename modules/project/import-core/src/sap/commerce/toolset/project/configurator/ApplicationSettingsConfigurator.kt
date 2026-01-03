@@ -26,7 +26,7 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Application Settings"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         val importSettings = importContext.settings
 
         with(ApplicationSettings.getInstance()) {

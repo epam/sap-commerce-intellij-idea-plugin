@@ -28,7 +28,7 @@ class GroupModuleConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Modules Grouping"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         if (!importContext.settings.groupModules) return
 
         val moduleDescriptorsToImport = importContext.allChosenModuleDescriptors

@@ -26,7 +26,7 @@ class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Project Dictionaries"
 
-    override fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
         val project = importContext.project
         val moduleNames = importContext.foundModules
             .map { it.name.lowercase() }
