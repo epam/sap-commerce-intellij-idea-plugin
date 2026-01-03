@@ -31,7 +31,7 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Modules Dependencies"
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {

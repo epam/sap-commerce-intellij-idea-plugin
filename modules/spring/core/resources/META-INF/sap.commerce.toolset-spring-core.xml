@@ -28,8 +28,8 @@
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <impex.interceptorProvider implementation="sap.commerce.toolset.spring.impex.SpringInterceptorProvider"/>
 
-        <project.startupConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringConfigurator"/>
+        <project.startupConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringStartupConfigurator"/>
+        <project.preImportConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringPreConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringConfigurator"/>
 
         <project.module.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringFacetConfigurator"/>

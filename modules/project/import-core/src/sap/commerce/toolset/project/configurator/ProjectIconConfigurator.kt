@@ -19,7 +19,10 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
@@ -28,27 +31,37 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Project Icon"
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val rootDirectory = importContext.rootDirectory ?: return
+        val ideaDirectory = importContext.rootDirectory.resolve(".idea")
 
-        val target = rootDirectory.resolve(".idea").resolve("icon.svg")
-        val targetDark = rootDirectory.resolve(".idea").resolve("icon_dark.svg")
+        val target = ideaDirectory.resolve("icon.svg")
+        val targetDark = ideaDirectory.resolve("icon_dark.svg")
 
         // do not override existing Icon
-        if (Files.exists(target)) return
+        if (target.fileExists) return
 
         val projectIconFile = importContext.projectIconFile
         if (projectIconFile == null) {
             this::class.java.getResourceAsStream("/icons/hybrisIcon.svg")
-                ?.use { input -> Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING) }
+                ?.use { input ->
+                    withContext(Dispatchers.IO) {
+                        Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
+                    }
+                }
             // as for now, Dark icon supported only for Plugin's icons
             this::class.java.getResourceAsStream("/icons/hybrisIcon_dark.svg")
-                ?.use { input -> Files.copy(input, targetDark, StandardCopyOption.REPLACE_EXISTING) }
+                ?.use { input ->
+                    withContext(Dispatchers.IO) {
+                        Files.copy(input, targetDark, StandardCopyOption.REPLACE_EXISTING)
+                    }
+                }
         } else {
-            Files.copy(projectIconFile, target, StandardCopyOption.REPLACE_EXISTING)
+            withContext(Dispatchers.IO) {
+                Files.copy(projectIconFile, target, StandardCopyOption.REPLACE_EXISTING)
+            }
         }
     }
 }

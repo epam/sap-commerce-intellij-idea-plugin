@@ -20,7 +20,7 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.find.FindSettings
 import com.intellij.ide.projectView.impl.ModuleGroup
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet
 import com.intellij.psi.search.scope.packageSet.NamedScope
@@ -100,7 +100,7 @@ class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
             FilePatternPackageSet(null, "*//*${HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING}")
         )
 
-        edtWriteAction {
+        backgroundWriteAction {
             addOrReplaceScopes(project, newScopes)
 
             val defaultScope = customScope ?: hybrisScope ?: platformScope

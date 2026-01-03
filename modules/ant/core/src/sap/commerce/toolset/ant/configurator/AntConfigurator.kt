@@ -27,7 +27,7 @@ import com.intellij.lang.ant.config.execution.AntRunConfigurationType
 import com.intellij.lang.ant.config.impl.*
 import com.intellij.lang.ant.config.impl.AntBuildFileImpl.*
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
@@ -121,7 +121,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfig
                 }
             }
 
-        edtWriteAction {
+        backgroundWriteAction {
             editPropertyContainers.forEach { it.apply() }
 
             saveAntInstallation(antInstallation)

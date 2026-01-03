@@ -20,7 +20,7 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.diagnostic.thisLogger
@@ -112,6 +112,8 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         return reportProgressScope(libraryEntities.size) { reporter ->
             libraryEntities
                 .map { libraryEntity ->
+                    checkCanceled()
+
                     async {
                         libraryEntity to fetchSources(project, lookupService, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
                     }
@@ -129,7 +131,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     ) {
         checkCanceled()
 
-        edtWriteAction {
+        val librarySourceDirVf = backgroundWriteAction {
             workspaceModel.updateProjectModel("Updating libraries sources") { builder ->
                 libraries.forEach { (libraryEntity, libraryRoots) ->
                     builder.modifyLibraryEntity(libraryEntity) {
@@ -138,23 +140,25 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 }
             }
 
-            val librarySourceDirVf = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(librarySourceDir) ?: return@edtWriteAction
-            val updatedLibraries = libraries.size
-            val updatedSourcesLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.SOURCES.id }
-            val updatedJavadocsLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.JAVADOC.id }
+            LocalFileSystem.getInstance().refreshAndFindFileByIoFile(librarySourceDir)
+        }
+            ?: return
 
-            Notifications.info(
-                "Libraries sources successfully updated",
-                """
+        val updatedLibraries = libraries.size
+        val updatedSourcesLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.SOURCES.id }
+        val updatedJavadocsLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.JAVADOC.id }
+
+        Notifications.info(
+            "Libraries sources successfully updated",
+            """
                     Updated $updatedLibraries libraries with:<br>
                     - $updatedSourcesLibraryRoots sources jars<br>
                     - $updatedJavadocsLibraryRoots javadocs jars<br>
                 """.trimIndent()
-            )
-                .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
-                .system(true)
-                .notify(project)
-        }
+        )
+            .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
+            .system(true)
+            .notify(project)
     }
 
     private suspend fun fetchSources(
@@ -248,12 +252,14 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     ): LibraryRoot? {
         val artifactSourceUrl = libraryRootLookup.url ?: return null
         val targetFile = libraryRootLookup.targetFile
-        val tmp = File.createTempFile("download_${targetFile.nameWithoutExtension}", ".tmp", librarySourceDir)
+        val tmp = withContext(Dispatchers.IO) {
+            File.createTempFile("download_${targetFile.nameWithoutExtension}", ".tmp", librarySourceDir)
+        }
 
         try {
             checkCanceled()
 
-            reportProgressScope() {
+            reportProgressScope {
                 it.itemStep("Downloading ${targetFile.name}") {
                     retryHttp {
                         HttpRequests

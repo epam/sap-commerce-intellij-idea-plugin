@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.util.application
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -29,7 +28,7 @@ class LoadedModulesConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Loaded Modules"
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
@@ -39,8 +38,6 @@ class LoadedModulesConfigurator : ProjectImportConfigurator {
             .map { it.name }
             .toMutableSet()
 
-        application.invokeAndWait {
-            ProjectSettings.getInstance(project).unusedExtensions = unusedModuleNames
-        }
+        ProjectSettings.getInstance(project).unusedExtensions = unusedModuleNames
     }
 }

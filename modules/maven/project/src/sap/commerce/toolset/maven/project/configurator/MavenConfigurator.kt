@@ -40,7 +40,7 @@ class MavenConfigurator : ProjectPostImportAsyncConfigurator {
             .takeIf { it.isNotEmpty() }
             ?: return
 
-        val modules = readAction {
+        val projectFiles = readAction {
             mavenModules
                 .asSequence()
                 .map { it.moduleRootPath.resolve(MavenConstants.POM_XML) }
@@ -48,8 +48,8 @@ class MavenConfigurator : ProjectPostImportAsyncConfigurator {
                 .mapNotNull { VfsUtil.findFile(it, true) }
         }
 
-        modules.forEach {
-            MavenProjectAsyncBuilder().commitSync(project, it, null)
+        projectFiles.forEach { projectFile ->
+            MavenProjectAsyncBuilder().commitSync(project, projectFile, null)
         }
 
         MavenProjectsManager.getInstance(project).scheduleUpdateAllMavenProjects(MavenSyncSpec.full("MavenProjectsManager.importProjects"))

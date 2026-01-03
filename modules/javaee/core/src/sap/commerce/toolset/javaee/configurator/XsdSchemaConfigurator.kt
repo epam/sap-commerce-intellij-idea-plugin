@@ -18,7 +18,7 @@
 package sap.commerce.toolset.javaee.configurator
 
 import com.intellij.javaee.ExternalResourceManagerEx
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
@@ -107,7 +107,7 @@ class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
 
         val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
 
-        edtWriteAction {
+        backgroundWriteAction {
             namespaces.forEach { (namespace, xsdLocation) ->
                 externalResourceManager.addResource(namespace, xsdLocation, project)
             }

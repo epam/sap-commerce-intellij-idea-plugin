@@ -31,7 +31,7 @@ class ProjectEncodingConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Project Encoding"
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {

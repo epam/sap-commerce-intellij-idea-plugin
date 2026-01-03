@@ -23,7 +23,6 @@ import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.scale.JBUIScale
@@ -43,7 +42,6 @@ class ProjectRefreshDialog(
     private val refreshContext: ProjectRefreshContext.Mutable,
 ) : DialogWrapper(project) {
 
-    private val disposable = Disposer.newDisposable()
     private var ui = panel {
         group("Cleanup") {
             row {
@@ -186,11 +184,6 @@ class ProjectRefreshDialog(
     init {
         title = "Refresh the Project"
         super.init()
-    }
-
-    override fun dispose() {
-        super.dispose()
-        disposable.dispose()
     }
 
     override fun createCenterPanel() = panel {

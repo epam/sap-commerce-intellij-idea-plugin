@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
@@ -30,24 +31,27 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Version Control System"
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val project = importContext.project
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)
+
         val roots = importContext.detectedVcs
-            .mapNotNull { VfsUtil.findFile(it, true) }
+            .mapNotNull { readAction { VfsUtil.findFile(it, true) } }
             .flatMap { rootDetector.detect(it) }
-        val detectedRoots = buildSet {
+
+        val directoryMappings = buildSet {
             addAll(rootDetector.detect())
             addAll(roots)
         }
+            .mapNotNull { vcsRoot ->
+                val vcs = vcsRoot.vcs ?: return@mapNotNull null
 
-        val directoryMappings = detectedRoots
-            .filter { it.vcs != null }
-            .map { VcsDirectoryMapping(it.path.path, it.vcs!!.name) }
+                VcsDirectoryMapping(vcsRoot.path.path, vcs.name)
+            }
 
         vcsManager.setDirectoryMappings(directoryMappings)
     }

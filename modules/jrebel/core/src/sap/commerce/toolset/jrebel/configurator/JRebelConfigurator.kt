@@ -19,7 +19,7 @@
 package sap.commerce.toolset.jrebel.configurator
 
 import com.intellij.facet.FacetType
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
@@ -81,7 +81,7 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator, ProjectStartupCon
                     ?.toPath()
             }
 
-            edtWriteAction {
+            backgroundWriteAction {
                 backupDirectory?.let { NioFiles.deleteRecursively(it) }
 
                 ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)

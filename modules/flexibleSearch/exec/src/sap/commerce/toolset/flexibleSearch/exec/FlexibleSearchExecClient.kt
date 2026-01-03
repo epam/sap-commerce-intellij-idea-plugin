@@ -24,6 +24,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.exec.ExecClient
@@ -62,8 +64,9 @@ class FlexibleSearchExecClient(
         )
 
         try {
-            val json = response.entity.content
-                .readAllBytes()
+            val json = withContext(Dispatchers.IO) {
+                response.entity.content.readAllBytes()
+            }
                 .toString(StandardCharsets.UTF_8)
                 .let { Gson().fromJson(it, HashMap::class.java) }
 

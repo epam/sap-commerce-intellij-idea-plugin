@@ -55,11 +55,9 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                         postImportAsyncConfigurators.map { configurator ->
                             async {
                                 progressReporter.itemStep("Applying '${configurator.name}' configurator...") {
-                                    try {
+                                    runCatching {
                                         val duration = measureTime { configurator.postImport(importContext) }
                                         logger.info("Post-configured async project [${configurator.name} | $duration]")
-                                    } catch (e: Exception) {
-                                        logger.warn("Exception while post-import using ${configurator.name}", e)
                                     }
                                 }
                             }
@@ -79,10 +77,9 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
         val notificationTitle = if (refresh) i18n("hybris.notification.project.refresh.title")
         else i18n("hybris.notification.project.import.title")
 
-        with(Notifications.Companion) {
-            create(NotificationType.INFORMATION, notificationTitle, notificationContent).notify(project)
-            showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent)
-        }
+        Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
+            .system(true)
+            .notify(project)
     }
 
     companion object {
