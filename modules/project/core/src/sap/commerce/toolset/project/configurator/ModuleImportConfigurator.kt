@@ -28,7 +28,7 @@ interface ModuleImportConfigurator : Configurator {
 
     fun isApplicable(moduleTypeId: String): Boolean
 
-    fun configure(
+    suspend fun configure(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         module: Module,

@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
-import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -33,7 +33,7 @@ class YFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = true
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         module: Module,
@@ -41,7 +41,7 @@ class YFacetConfigurator : ModuleImportConfigurator {
     ) {
         val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
 
-        WriteAction.runAndWait<RuntimeException> {
+        backgroundWriteAction {
             modifiableFacetModel.getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
                 ?.let { modifiableFacetModel.removeFacet(it) }
 

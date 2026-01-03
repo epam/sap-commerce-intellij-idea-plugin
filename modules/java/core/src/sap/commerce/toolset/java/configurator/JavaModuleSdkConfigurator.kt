@@ -34,7 +34,7 @@ class JavaModuleSdkConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         module: Module,

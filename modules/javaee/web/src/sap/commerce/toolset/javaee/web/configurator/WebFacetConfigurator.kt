@@ -21,7 +21,7 @@ import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
-import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
@@ -42,7 +42,7 @@ class WebFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         module: Module,
@@ -57,7 +57,7 @@ class WebFacetConfigurator : ModuleImportConfigurator {
             else -> return
         }
 
-        WriteAction.runAndWait<RuntimeException> {
+        backgroundWriteAction {
             val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
                 ?.also {
                     it.removeAllWebRoots()
@@ -67,7 +67,7 @@ class WebFacetConfigurator : ModuleImportConfigurator {
                     .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
                     ?.let { FacetManager.getInstance(module).createFacet(it, it.defaultFacetName, null) }
                     ?.also { modifiableFacetModel.addFacet(it) }
-                ?: return@runAndWait
+                ?: return@backgroundWriteAction
 
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
             webFacet.addWebRootNoFire(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")

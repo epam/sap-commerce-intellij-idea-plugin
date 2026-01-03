@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.kotlin.configurator
 
-import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
@@ -37,7 +37,7 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         module: Module,
@@ -52,13 +52,13 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
         val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
         val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
 
-        WriteAction.runAndWait<RuntimeException> {
+        backgroundWriteAction {
             // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
             modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
                 ?.takeUnless { hasKotlinDirectories }
                 ?.let { modifiableFacetModel.removeFacet(it) }
 
-            if (!hasKotlinDirectories) return@runAndWait
+            if (!hasKotlinDirectories) return@backgroundWriteAction
 
             val facet = KotlinFacet.get(module)
                 ?: createFacet(module)

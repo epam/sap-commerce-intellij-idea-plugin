@@ -34,7 +34,7 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = CCv2Constants.MODULE_TYPE_ID == moduleTypeId
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         module: Module,

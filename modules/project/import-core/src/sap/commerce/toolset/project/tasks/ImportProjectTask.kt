@@ -113,8 +113,12 @@ class ImportProjectTask(private val project: Project) {
                 moduleConfiguratorReporter.itemStep("Applying '${configurator.name} configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.configure(importContext, moduleDescriptor, module, modifiableModelsProvider) }
-                    logger.info("Applied module configurator [${moduleDescriptor.name} | ${configurator.name} | ${duration}].")
+                    try {
+                        val duration = measureTime { configurator.configure(importContext, moduleDescriptor, module, modifiableModelsProvider) }
+                        logger.info("Applied module configurator [${moduleDescriptor.name} | ${configurator.name} | ${duration}].")
+                    } catch (e: Exception) {
+                        logger.warn("Failed to apply configurator '${configurator.name}'", e)
+                    }
                 }
             }
         }

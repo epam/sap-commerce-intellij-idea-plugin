@@ -18,7 +18,7 @@
 package sap.commerce.toolset.spring.configurator
 
 import com.intellij.facet.ModifiableFacetModel
-import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
@@ -44,7 +44,7 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         module: Module,
@@ -60,19 +60,19 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
         }
     }
 
-    private fun configure(
+    private suspend fun configure(
         javaModule: Module,
         moduleDescriptor: ModuleDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         additionalFileSet: Set<String>
     ) {
-        WriteAction.runAndWait<RuntimeException> {
+        backgroundWriteAction {
             val springFacet = SpringFacet.getInstance(javaModule)
                 ?.also { it.removeFileSets() }
                 ?: SpringFacet.getSpringFacetType()
                     .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
                     ?.let { it.createFacet(javaModule, it.defaultFacetName, it.createDefaultConfiguration(), null) }
-                ?: return@runAndWait
+                ?: return@backgroundWriteAction
 
             val facetName = moduleDescriptor.name + SpringFacet.FACET_TYPE_ID
             // dirty hack to trick IDEA autodetection of the web Spring context, see https://youtrack.jetbrains.com/issue/IDEA-257819
