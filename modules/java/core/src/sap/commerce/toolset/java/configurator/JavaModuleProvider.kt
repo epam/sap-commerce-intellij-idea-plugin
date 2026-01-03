@@ -29,5 +29,5 @@ class JavaModuleProvider : ModuleProvider {
     override val moduleTypeId: String
         get() = ProjectConstants.Y_MODULE_TYPE_ID
 
-    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
+    override suspend fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
 }

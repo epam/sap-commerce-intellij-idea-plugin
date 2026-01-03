@@ -20,7 +20,7 @@
     <depends>org.jetbrains.idea.eclipse</depends>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.eclipse.project.configurator.EclipseConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.eclipse.project.configurator.EclipseModuleConfigurator"/>
 
         <project.module.descriptorProvider implementation="sap.commerce.toolset.eclipse.project.descriptor.provider.EclipseModuleDescriptorProvider"/>
         <project.module.rootResolver order="after yCustomModuleRootResolver" id="eclipseModuleRootResolver"

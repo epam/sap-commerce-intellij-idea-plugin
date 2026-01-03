@@ -34,7 +34,7 @@ class AngularConfigurator : ProjectPostImportAsyncConfigurator {
 
     override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
-            ?.takeUnless { it.isDisposed }
+            .takeUnless { it.isDisposed }
             ?: return
 
         val angularModuleDescriptors = importContext.chosenOtherModuleDescriptors

@@ -20,4 +20,5 @@ package sap.commerce.toolset.eclipse
 
 object EclipseConstants {
     const val DOT_PROJECT = ".project"
+    const val MODULE_TYPE_ID = "Eclipse"
 }

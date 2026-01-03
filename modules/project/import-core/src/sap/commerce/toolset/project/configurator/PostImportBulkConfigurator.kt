@@ -59,6 +59,8 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                                         val duration = measureTime { configurator.postImport(importContext) }
                                         logger.info("Post-configured async project [${configurator.name} | $duration]")
                                     }
+                                        .exceptionOrNull()
+                                        ?.let { logger.warn("Post-configurator '${configurator.name}' error: ${it.message}", it) }
                                 }
                             }
                         }

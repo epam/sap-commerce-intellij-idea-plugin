@@ -19,31 +19,42 @@
 package sap.commerce.toolset.eclipse.project.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
+import com.intellij.openapi.module.Module
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
+import sap.commerce.toolset.eclipse.EclipseConstants
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ExternalModuleConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.io.path.pathString
 
-class EclipseConfigurator : ProjectPostImportAsyncConfigurator {
+class EclipseModuleConfigurator : ExternalModuleConfigurator() {
 
     override val name: String
         get() = "Eclipse"
+    override val moduleTypeId: String
+        get() = EclipseConstants.MODULE_TYPE_ID
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun import(importContext: ProjectImportContext): Map<ModuleDescriptor, Module> {
         val project = importContext.project
-        val eclipseProjectPaths = importContext.chosenOtherModuleDescriptors
+        val eclipseModules = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
-            .map { it.moduleRootPath.pathString }
 
         val eclipseImportBuilder = EclipseImportBuilder()
         importContext.modulesFilesDirectory?.let {
             eclipseImportBuilder.parameters.converterOptions.commonModulesDirectory = it.pathString
         }
-        eclipseImportBuilder.list = eclipseProjectPaths
+        eclipseImportBuilder.list = eclipseModules.map { it.moduleRootPath.pathString }
 
-        backgroundWriteAction {
+        val modules = backgroundWriteAction {
             eclipseImportBuilder.commit(project)
         }
+        return modules
+            .mapNotNull { module ->
+                val moduleDescriptor = eclipseModules.find { it.name == module.name }
+                    ?: return@mapNotNull null
+                moduleDescriptor to module
+            }
+            .associate { it.first to it.second }
     }
 }

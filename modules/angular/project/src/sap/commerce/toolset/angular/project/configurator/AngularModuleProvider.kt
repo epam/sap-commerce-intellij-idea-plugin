@@ -29,5 +29,5 @@ class AngularModuleProvider : ModuleProvider {
     override val moduleTypeId: String
         get() = AngularConstants.MODULE_TYPE_ID
 
-    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is AngularModuleDescriptor
+    override suspend fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is AngularModuleDescriptor
 }

@@ -18,28 +18,29 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.Module
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-interface ModuleProvider {
+abstract class ExternalModuleConfigurator : ProjectPostImportAsyncConfigurator {
 
-    val name: String
-    val moduleTypeId: String
+    abstract val moduleTypeId: String
 
-    suspend fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
+    abstract suspend fun import(importContext: ProjectImportContext): Map<ModuleDescriptor, Module>
 
-    suspend fun create(
-        importContext: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-    ) = modifiableModelsProvider.modifiableModuleModel.newModule(
-        moduleDescriptor.ideaModuleFile(importContext),
-        moduleTypeId
-    )
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        val descriptorToModule = import(importContext)
+            .takeIf { it.isNotEmpty() }
+            ?: return
 
-    companion object {
-        val EP = ExtensionPointName.create<ModuleProvider>("sap.commerce.toolset.project.module.provider")
+        val configurators = ModuleImportConfigurator.EP.extensionList
+            .filter { it.isApplicable(moduleTypeId) }
+
+        descriptorToModule.forEach { (moduleDescriptor, module) ->
+            configurators.forEach { configurator ->
+                configurator.configure(importContext, moduleDescriptor, module)
+            }
+        }
     }
+
 }

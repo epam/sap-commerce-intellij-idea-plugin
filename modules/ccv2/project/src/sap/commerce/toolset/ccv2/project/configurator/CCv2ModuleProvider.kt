@@ -29,5 +29,5 @@ class CCv2ModuleProvider : ModuleProvider {
     override val moduleTypeId: String
         get() = CCv2Constants.MODULE_TYPE_ID
 
-    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
+    override suspend fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
 }

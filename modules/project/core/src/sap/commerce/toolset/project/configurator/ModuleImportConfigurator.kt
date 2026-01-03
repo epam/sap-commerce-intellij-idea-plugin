@@ -35,6 +35,12 @@ interface ModuleImportConfigurator : Configurator {
         modifiableModelsProvider: IdeModifiableModelsProvider,
     )
 
+    suspend fun configure(
+        importContext: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor,
+        module: Module,
+    ) = Unit
+
     companion object {
         val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")
     }
