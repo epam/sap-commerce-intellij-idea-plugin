@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,23 +18,19 @@
 
 package sap.commerce.toolset.eclipse.project.configurator
 
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.application.backgroundWriteAction
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import kotlin.io.path.pathString
 
-class EclipseConfigurator : ProjectImportConfigurator {
+class EclipseConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Eclipse"
 
-    override fun configure(
-        importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    ) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
         val eclipseProjectPaths = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
@@ -44,11 +40,9 @@ class EclipseConfigurator : ProjectImportConfigurator {
         importContext.modulesFilesDirectory?.let {
             eclipseImportBuilder.parameters.converterOptions.commonModulesDirectory = it.pathString
         }
-
         eclipseImportBuilder.list = eclipseProjectPaths
 
-        ApplicationManager.getApplication().invokeAndWait {
-            // TODO: java.lang.Throwable: Slow operations are prohibited on EDT. See SlowOperations.assertSlowOperationsAreAllowed javadoc.
+        backgroundWriteAction {
             eclipseImportBuilder.commit(project)
         }
     }

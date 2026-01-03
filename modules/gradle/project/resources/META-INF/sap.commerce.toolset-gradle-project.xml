@@ -18,7 +18,6 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.importConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
         <project.refreshConfigurator implementation="sap.commerce.toolset.gradle.project.configurator.GradleConfigurator"/>
 

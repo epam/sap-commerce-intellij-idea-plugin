@@ -31,7 +31,6 @@ import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportSequentialProgress
-import kotlinx.coroutines.delay
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.configurator.ModuleProvider
@@ -58,8 +57,6 @@ class ImportProjectTask(private val project: Project) {
             spr.nextStep(100) { configureProject(importContext, modifiableModelsProvider) }
 
             spr.indeterminateStep(i18n("hybris.project.import.saving.project"))
-
-            delay(250)
 
             saveProject(modifiableModelsProvider)
         }

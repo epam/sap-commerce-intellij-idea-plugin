@@ -23,16 +23,11 @@ import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.platform.backend.observation.launchTracked
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.settings.GradleSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.gradle.project.descriptor.GradleModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -40,15 +35,12 @@ import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.pathString
 
-class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator, ProjectRefreshConfigurator {
+class GradleConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfigurator {
 
     override val name: String
         get() = "Gradle"
 
-    override fun configure(
-        importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    ) {
+    override suspend fun postImport(importContext: ProjectImportContext) {
         val project = importContext.project
         PropertiesComponent.getInstance(project).setValue("show.inlinked.gradle.project.popup", false)
 
@@ -57,19 +49,12 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
                 .filterIsInstance<GradleModuleDescriptor>()
                 .filter { it.gradleFile.fileExists }
                 .map { it.gradleFile.pathString }
-                .forEach { externalProjectPath ->
-                    CoroutineScope(Dispatchers.Default).launchTracked {
-                        linkAndSyncGradleProject(project, externalProjectPath)
-                    }
-                }
+                .forEach { externalProjectPath -> linkAndSyncGradleProject(project, externalProjectPath) }
         } catch (e: Exception) {
             thisLogger().error("Can not import Gradle modules due to an error.", e)
         }
-    }
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
         if (!importContext.refresh) return
-        val project = importContext.project
 
         edtWriteAction {
             project.triggerAction("ExternalSystem.RefreshAllProjects") {
@@ -88,5 +73,4 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
 
         GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
     }
-
 }
