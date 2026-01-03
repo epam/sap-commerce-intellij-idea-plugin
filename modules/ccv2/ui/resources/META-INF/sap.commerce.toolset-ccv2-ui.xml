@@ -25,7 +25,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <webHelpProvider implementation="sap.commerce.toolset.ccv2.help.CCv2WebHelpProvider"/>
 
-        <projectConfigurable id="sap.commerce.toolset.ccv2.exec.settings" parentId="hybris.project.settings"
+        <projectConfigurable id="sap.commerce.toolset.ccv2.exec.settings" parentId="hybris.settings"
                              nonDefaultProject="true" dynamic="true"
                              displayName="CCv2" order="first"
                              provider="sap.commerce.toolset.ccv2.options.CCv2ExecProjectSettingsConfigurableProvider"/>

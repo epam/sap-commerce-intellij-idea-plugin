@@ -20,7 +20,7 @@ package sap.commerce.toolset.project.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider
 import sap.commerce.toolset.psi.tagAttributePattern
 
@@ -29,7 +29,7 @@ class EiCompletionContributor : CompletionContributor() {
     init {
         extend(
             CompletionType.BASIC,
-            tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),
+            tagAttributePattern("requires-extension", "name", EiConstants.EXTENSION_INFO_XML),
             RequiredExtensionsNameCompletionProvider()
         )
     }

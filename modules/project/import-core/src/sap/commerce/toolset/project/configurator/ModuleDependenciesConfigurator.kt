@@ -22,7 +22,7 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
 
@@ -31,20 +31,20 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Modules Dependencies"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+    override suspend fun configure(
+        importContext: ProjectImportContext,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val modulesChosenForImport = hybrisProjectDescriptor.chosenModuleDescriptors
         val allModules = modifiableModelsProvider.modules
             .associateBy { it.name }
-        val extModules = modulesChosenForImport.filterIsInstance<YPlatformExtModuleDescriptor>()
+        val extModules = importContext.chosenHybrisModuleDescriptors
+            .filterIsInstance<YPlatformExtModuleDescriptor>()
             .toSet()
 
-        val platformIdeaModuleName = hybrisProjectDescriptor.platformHybrisModuleDescriptor.ideaModuleName()
+        val platformIdeaModuleName = importContext.platformModuleDescriptor.ideaModuleName()
         val platformModule = allModules[platformIdeaModuleName] ?: return
 
-        modulesChosenForImport.forEach { moduleDescriptor ->
+        importContext.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
             allModules[moduleDescriptor.ideaModuleName()]
                 ?.let { module ->
                     val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
@@ -56,7 +56,7 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
         }
 
         processPlatformModulesDependencies(
-            hybrisProjectDescriptor,
+            importContext,
             platformModule,
             allModules,
             modifiableModelsProvider
@@ -64,15 +64,15 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
     }
 
     private fun processPlatformModulesDependencies(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        importContext: ProjectImportContext,
         platformModule: Module,
         allModules: Map<String, Module>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val platformRootModel = modifiableModelsProvider.getModifiableRootModel(platformModule)
+        val configModuleName = importContext.configModuleDescriptor.ideaModuleName()
 
-        hybrisProjectDescriptor.configHybrisModuleDescriptor
-            ?.let { addModuleDependency(allModules, it.ideaModuleName(), platformRootModel) }
+        addModuleDependency(allModules, configModuleName, platformRootModel)
     }
 
     private fun addModuleDependency(

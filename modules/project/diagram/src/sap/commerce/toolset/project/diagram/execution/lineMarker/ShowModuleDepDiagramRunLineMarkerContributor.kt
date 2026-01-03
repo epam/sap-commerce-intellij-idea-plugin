@@ -25,8 +25,8 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
 import sap.commerce.toolset.isNotHybrisProject
 
@@ -40,7 +40,7 @@ class ShowModuleDepDiagramRunLineMarkerContributor : RunLineMarkerContributor() 
         val prevSibling = element.prevSibling as? XmlToken ?: return null
         if (prevSibling.tokenType != XmlTokenType.XML_START_TAG_START) return null
 
-        if (element.text != HybrisConstants.ROOT_TAG_EXTENSION_INFO_XML) return null
+        if (element.text != EiConstants.ROOT_TAG_EXTENSION_INFO_XML) return null
         if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, ExtensionInfo::class.java) == null) return null
 
         val action = ActionManager.getInstance().getAction("ShowModuleDependencyDiagram") ?: return null

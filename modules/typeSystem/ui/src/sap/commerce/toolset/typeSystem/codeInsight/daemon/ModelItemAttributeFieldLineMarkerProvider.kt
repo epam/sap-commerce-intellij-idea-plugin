@@ -26,9 +26,9 @@ import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.util.childrenOfType
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 
@@ -36,7 +36,7 @@ class ModelItemAttributeFieldLineMarkerProvider : ModelAttributeLineMarkerProvid
 
     override fun getName() = i18n("hybris.editor.gutter.ts.model.item.attribute.field.name")
     override fun tryCast(psi: PsiElement) = (psi as? PsiField)
-        ?.takeIf { it.name != HybrisConstants.TYPECODE_FIELD_NAME }
+        ?.takeIf { it.name != TSConstants.Attribute.TYPECODE_FIELD_NAME }
         ?.takeIf { (it.type as? PsiClassReferenceType)?.name == String::class.java.simpleName }
 
     override fun collect(meta: TSGlobalMetaItem, psi: PsiField) = psi.childrenOfType<PsiLiteralExpression>()

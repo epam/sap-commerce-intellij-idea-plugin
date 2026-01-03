@@ -16,9 +16,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <idea-plugin>
-    <dependencies>
-        <plugin id="JavaScript"/>
-    </dependencies>
+    <depends>JavaScript</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <languageInjector implementation="sap.commerce.toolset.javascript.codeInsight.injection.JavaScriptLanguageInjector"/>

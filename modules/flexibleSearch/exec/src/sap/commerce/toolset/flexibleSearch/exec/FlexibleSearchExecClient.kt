@@ -24,6 +24,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.exec.ExecClient
@@ -32,7 +34,6 @@ import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
 import sap.commerce.toolset.flexibleSearch.exec.context.TableBuilder
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.Serial
-import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
 class FlexibleSearchExecClient(
@@ -62,9 +63,10 @@ class FlexibleSearchExecClient(
         )
 
         try {
-            val json = response.entity.content
-                .readAllBytes()
-                .toString(StandardCharsets.UTF_8)
+            val json = withContext(Dispatchers.IO) {
+                response.entity.content.readAllBytes()
+            }
+                .toString(Charsets.UTF_8)
                 .let { Gson().fromJson(it, HashMap::class.java) }
 
             return json["exception"]

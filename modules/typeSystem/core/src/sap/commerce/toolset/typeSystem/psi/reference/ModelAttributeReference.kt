@@ -25,7 +25,7 @@ import com.intellij.psi.impl.source.xml.XmlAttributeValueImpl
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.util.MethodSignatureUtil
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.psi.TSPsiHelper
 
@@ -46,7 +46,7 @@ class ModelAttributeReference(
         val searchFieldName = (element as XmlAttributeValueImpl).value
         val project = element.project
 
-        return arrayOf(itemName, "$itemName${HybrisConstants.MODEL_SUFFIX}")
+        return arrayOf(itemName, "$itemName${TSConstants.MODEL_SUFFIX}")
             .flatMap { className ->
                 PsiShortNamesCache.getInstance(project)
                     .getClassesByName(className, GlobalSearchScope.allScope(project))
@@ -84,6 +84,6 @@ class ModelAttributeReference(
         .findMetaItemByName(itemName)
         ?.allAttributes
         ?.get(name)
-        ?.let { it.type == HybrisConstants.TS_PRIMITIVE_BOOLEAN }
+        ?.let { it.type == TSConstants.Primitive.BOOLEAN }
         ?: false
 }

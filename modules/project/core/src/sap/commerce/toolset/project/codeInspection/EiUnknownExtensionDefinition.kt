@@ -50,10 +50,10 @@ class EiUnknownExtensionDefinition : EiInspection() {
     ) {
         val extensionName = dom.name.stringValue ?: return
         val hybrisProjectSettings = ProjectSettings.getInstance(project)
-        val found = hybrisProjectSettings.availableExtensions.keys
-            .firstOrNull { extensionName.equals(it, true) }
+        val notFound = hybrisProjectSettings.extensionDescriptors
+            .none { extensionName.equals(it.name, ignoreCase = true) }
 
-        if (found == null) {
+        if (notFound) {
             holder.createProblem(
                 dom.name,
                 severity,

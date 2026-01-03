@@ -17,43 +17,48 @@
  */
 package sap.commerce.toolset.kotlin.configurator
 
-import com.intellij.facet.ModifiableFacetModel
-import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.application.backgroundWriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import java.io.File
+import sap.commerce.toolset.util.directoryExists
 
-class KotlinFacetConfigurator : ModuleFacetConfigurator {
+class KotlinFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "Kotlin Facet"
 
-    override fun configureModuleFacet(
-        module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override suspend fun configure(
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        module: Module,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         if (moduleDescriptor !is YModuleDescriptor) return
 
-        val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
+        importContext.chosenHybrisModuleDescriptors
+            .firstOrNull { EiConstants.Extension.KOTLIN_NATURE == it.name }
+            ?: return
 
-        WriteAction.runAndWait<RuntimeException> {
+        val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
+
+        backgroundWriteAction {
             // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
             modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
                 ?.takeUnless { hasKotlinDirectories }
                 ?.let { modifiableFacetModel.removeFacet(it) }
 
-            if (!hasKotlinDirectories) return@runAndWait
-            if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return@runAndWait
+            if (!hasKotlinDirectories) return@backgroundWriteAction
 
             val facet = KotlinFacet.get(module)
                 ?: createFacet(module)
@@ -71,7 +76,7 @@ class KotlinFacetConfigurator : ModuleFacetConfigurator {
         )
     }
 
-    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.moduleRootDirectory, ProjectConstants.Directory.KOTLIN_SRC).exists()
-        || File(descriptor.moduleRootDirectory, ProjectConstants.Directory.KOTLIN_TEST_SRC).exists()
+    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists
+        || descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_TEST_SRC).directoryExists
 
 }

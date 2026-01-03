@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":project-extensioninfo"))
     implementation(project(":project-localextensions"))
     implementation(project(":project-core"))
+    implementation(project(":externalDependencies-core"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

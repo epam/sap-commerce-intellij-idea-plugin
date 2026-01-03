@@ -25,6 +25,7 @@ import com.intellij.psi.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.spring.SpringHelper
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.Attribute
 import sap.commerce.toolset.typeSystem.model.PersistenceType
@@ -85,7 +86,7 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
         if (searchName == null) {
             return null
         }
-        val idx = searchName.lastIndexOf(HybrisConstants.MODEL_SUFFIX)
+        val idx = searchName.lastIndexOf(TSConstants.MODEL_SUFFIX)
         return if (idx == -1) {
             searchName
         } else searchName.substring(0, idx)

@@ -30,6 +30,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.io.HttpRequests
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.IOException
@@ -160,11 +162,13 @@ class LibraryRootLookupService {
         checkCanceled()
 
         try {
-            return JarFile(VfsUtilCore.virtualToIoFile(libraryJar))
-                .use { jarFile ->
-                    jarFile.manifest?.mainAttributes
-                        ?.let { attributes -> mapper(attributes) }
-                }
+            return withContext(Dispatchers.IO) {
+                JarFile(VfsUtilCore.virtualToIoFile(libraryJar))
+                    .use { jarFile ->
+                        jarFile.manifest?.mainAttributes
+                            ?.let { attributes -> mapper(attributes) }
+                    }
+            }
         } catch (_: IOException) {
             // NOOP
         }
@@ -175,7 +179,9 @@ class LibraryRootLookupService {
         checkCanceled()
 
         try {
-            JarFile(VfsUtilCore.virtualToIoFile(libraryJar)).use { jarFile ->
+            withContext(Dispatchers.IO) {
+                JarFile(VfsUtilCore.virtualToIoFile(libraryJar))
+            }.use { jarFile ->
                 val entries = jarFile.entries()
 
                 while (entries.hasMoreElements()) {

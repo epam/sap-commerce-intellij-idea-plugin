@@ -36,6 +36,7 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":cockpitNG-core"))
+    implementation(project(":typeSystem-core"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

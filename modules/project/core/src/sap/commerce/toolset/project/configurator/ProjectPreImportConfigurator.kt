@@ -19,13 +19,11 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 interface ProjectPreImportConfigurator : Configurator {
 
-    fun preConfigure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor
-    )
+    suspend fun preConfigure(importContext: ProjectImportContext)
 
     companion object {
         val EP = ExtensionPointName.create<ProjectPreImportConfigurator>("sap.commerce.toolset.project.preImportConfigurator")

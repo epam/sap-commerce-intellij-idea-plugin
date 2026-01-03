@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.flexibleSearch.codeInsight.injection
 
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 
 enum class TypeDependantInjection(val typeName: String, val parameterName: String, val targetTypeParameterName: String) {
-    SEARCH_RESTRICTION(HybrisConstants.TS_TYPE_SEARCH_RESTRICTION, "query", "restrictedType"),
-    AFTER_RETENTION_CLEANUP_RULE(HybrisConstants.TS_TYPE_AFTER_RETENTION_CLEANUP_RULE, "itemFilterExpression", "retirementItemType"), ;
+    SEARCH_RESTRICTION(TSConstants.Type.SEARCH_RESTRICTION, "query", "restrictedType"),
+    AFTER_RETENTION_CLEANUP_RULE(TSConstants.Type.AFTER_RETENTION_CLEANUP_RULE, "itemFilterExpression", "retirementItemType"), ;
 
     companion object {
         fun of(typeName: String): TypeDependantInjection? = entries.find { it.typeName == typeName }

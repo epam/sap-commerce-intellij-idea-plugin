@@ -24,6 +24,7 @@ import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
 import sap.commerce.toolset.beanSystem.model.*
 import sap.commerce.toolset.beanSystem.model.Enum
@@ -50,8 +51,8 @@ class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BSFoldingSettingsState, Beans
             }
 
             is XmlToken -> when (it.text) {
-                HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED,
-                HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED -> true
+                BSConstants.SIGN_LESS_THAN_ESCAPED,
+                BSConstants.SIGN_GREATER_THAN_ESCAPED -> true
 
                 else -> false
             }
@@ -126,8 +127,8 @@ class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BSFoldingSettingsState, Beans
         }
 
         is XmlToken -> when (val text = psi.text) {
-            HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED -> HybrisConstants.BS_SIGN_LESS_THAN
-            HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED -> HybrisConstants.BS_SIGN_GREATER_THAN
+            BSConstants.SIGN_LESS_THAN_ESCAPED -> BSConstants.SIGN_LESS_THAN
+            BSConstants.SIGN_GREATER_THAN_ESCAPED -> BSConstants.SIGN_GREATER_THAN
 
             else -> text
         }
@@ -147,8 +148,8 @@ class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BSFoldingSettingsState, Beans
         }
 
         is XmlToken -> when (psi.text) {
-            HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED,
-            HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED -> true
+            BSConstants.SIGN_LESS_THAN_ESCAPED,
+            BSConstants.SIGN_GREATER_THAN_ESCAPED -> true
 
             else -> false
         }

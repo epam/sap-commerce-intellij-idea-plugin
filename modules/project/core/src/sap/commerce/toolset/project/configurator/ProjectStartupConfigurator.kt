@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 
 interface ProjectStartupConfigurator : Configurator {
 
-    fun onStartup(project: Project)
+    suspend fun onStartup(project: Project)
 
     companion object {
         val EP = ExtensionPointName.create<ProjectStartupConfigurator>("sap.commerce.toolset.project.startupConfigurator")

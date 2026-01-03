@@ -18,8 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.RemoteDebugRunConfigurationConfigurator"/>
-        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.LocalSapCxRunConfigurationConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.RemoteDebugRunConfigurationConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.LocalSapCxRunConfigurationConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

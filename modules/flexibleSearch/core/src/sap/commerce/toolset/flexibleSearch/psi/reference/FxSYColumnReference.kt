@@ -25,9 +25,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_SOURCE
-import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_TARGET
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
@@ -38,6 +35,7 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
 import sap.commerce.toolset.psi.PsiTreeUtilExt
 import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.settings.yDeveloperSettings
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -205,17 +203,17 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         private fun tryResolveByRelationType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {
             val meta = metaService.findMetaRelationByName(type) ?: return null
 
-            if (ATTRIBUTE_SOURCE.equals(refName, true)) {
+            if (TSConstants.Attribute.SOURCE.equals(refName, true)) {
                 return arrayOf(RelationEndResolveResult(meta.source))
-            } else if (ATTRIBUTE_TARGET.equals(refName, true)) {
+            } else if (TSConstants.Attribute.TARGET.equals(refName, true)) {
                 return arrayOf(RelationEndResolveResult(meta.target))
             }
 
-            return tryResolveByItemType(HybrisConstants.TS_TYPE_LINK, refName, metaService)
+            return tryResolveByItemType(TSConstants.Type.LINK, refName, metaService)
         }
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)
-            ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
+            ?.let { metaService.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE) }
             ?.let { it.allAttributes[refName] }
             ?.let { arrayOf(AttributeResolveResult(it)) }
 

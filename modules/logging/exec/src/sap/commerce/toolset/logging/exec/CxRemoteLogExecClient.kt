@@ -39,7 +39,6 @@ import sap.commerce.toolset.logging.exec.context.CxRemoteLogExecResult
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.io.IOException
 import java.io.Serial
-import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
 class CxRemoteLogExecClient(project: Project, coroutineScope: CoroutineScope) : ExecClient<CxRemoteLogExecContext, CxRemoteLogExecResult>(project, coroutineScope) {
@@ -66,7 +65,7 @@ class CxRemoteLogExecClient(project: Project, coroutineScope: CoroutineScope) : 
 
         try {
             val loggerModels = Jsoup
-                .parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+                .parse(response.entity.content, Charsets.UTF_8.name(), "")
                 .getElementsByTag("body").text()
                 .let { Json.parseToJsonElement(it) }
                 .jsonObject["loggers"]

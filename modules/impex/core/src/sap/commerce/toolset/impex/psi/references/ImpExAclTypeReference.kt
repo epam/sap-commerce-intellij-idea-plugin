@@ -26,8 +26,8 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.psi.getValidResults
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -73,8 +73,8 @@ class ImpExAclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(own
 
         private fun getAllowedVariants(element: PsiElement): Collection<TSGlobalMetaItem> = with(TSMetaModelAccess.getInstance(element.project)) {
             listOfNotNull(
-                findMetaItemByName(HybrisConstants.TS_TYPE_USER_GROUP),
-                findMetaItemByName(HybrisConstants.TS_TYPE_USER)
+                findMetaItemByName(TSConstants.Type.USER_GROUP),
+                findMetaItemByName(TSConstants.Type.USER)
             )
                 .flatMap { it.hierarchy }
         }

@@ -26,16 +26,18 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.project.Project
-import org.apache.commons.lang3.SystemUtils
-import sap.commerce.toolset.HybrisConstants
+import com.intellij.openapi.util.SystemInfo
 import sap.commerce.toolset.HybrisConstants.DEBUG_HOST
 import sap.commerce.toolset.HybrisConstants.DEBUG_PORT
 import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.IOException
 import java.net.Socket
 import java.nio.file.Paths
+import kotlin.io.path.pathString
 
 class LocalSapCXRunProfileState(
     val executor: Executor,
@@ -46,9 +48,13 @@ class LocalSapCXRunProfileState(
         val projectDirectory = project.directory ?: ""
         val settings = ProjectSettings.getInstance(project)
         val hybrisDirectory = settings.hybrisDirectory ?: ""
-        val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
 
-        return Paths.get(projectDirectory, hybrisDirectory, script).toString()
+        val scriptPath = if (SystemInfo.isWindows && !WslPath.isWslUncPath(projectDirectory)) ProjectConstants.Paths.HYBRIS_SERVER_BASH_SCRIPT_NAME
+        else ProjectConstants.Paths.HYBRIS_SERVER_SHELL_SCRIPT_NAME
+
+        return Paths.get(projectDirectory, hybrisDirectory)
+            .resolve(scriptPath)
+            .toString()
     }
 
     private fun getWorkDirectory(): String {
@@ -56,7 +62,10 @@ class LocalSapCXRunProfileState(
         val settings = ProjectSettings.getInstance(project)
         val hybrisDirectory = settings.hybrisDirectory ?: ""
 
-        return Paths.get(projectDirectory, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
+        return Paths.get(projectDirectory)
+            .resolve(hybrisDirectory)
+            .resolve(ProjectConstants.Paths.BIN_PLATFORM)
+            .pathString
     }
 
     override fun startProcess(): ProcessHandler {

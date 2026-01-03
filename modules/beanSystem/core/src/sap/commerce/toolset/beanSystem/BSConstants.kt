@@ -18,8 +18,17 @@
 
 package sap.commerce.toolset.beanSystem
 
+import sap.commerce.toolset.HybrisConstants
+
 object BSConstants {
 
     const val ATTRIBUTE_VALUE_LEVEL_MAPPING = "levelMapping"
     const val ATTRIBUTE_VALUE_DTO_CLASS = "dtoClass"
+
+    const val TYPE_OBJECT = "java.lang.Object"
+    const val SIGN_LESS_THAN = "<"
+    const val SIGN_GREATER_THAN = ">"
+    const val SIGN_LESS_THAN_ESCAPED = "&lt;"
+    const val SIGN_GREATER_THAN_ESCAPED = "&gt;"
+    const val JAVA_LANG_PREFIX = HybrisConstants.JAVA_LANG_PREFIX
 }

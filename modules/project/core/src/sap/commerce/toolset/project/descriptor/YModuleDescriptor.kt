@@ -18,12 +18,14 @@
 
 package sap.commerce.toolset.project.descriptor
 
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 
 interface YModuleDescriptor : ModuleDescriptor {
 
-    val extensionInfo: ExtensionInfo
+    val extensionInfo: ExtensionInfoContext
     fun getSubModules(): Set<YSubModuleDescriptor>
     fun addSubModule(subModule: YSubModuleDescriptor): Boolean
     fun removeSubModule(subModule: YSubModuleDescriptor): Boolean
+    fun getSpringFiles(): Set<String>
+    fun addSpringFile(file: String): Boolean
 }

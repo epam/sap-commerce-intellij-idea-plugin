@@ -27,7 +27,7 @@ import sap.commerce.toolset.project.isHybrisModule
 
 abstract class HybrisClassLineMarkerProvider<T : PsiElement> : HybrisLineMarkerProvider<T>() {
 
-    override fun canProcess(psi: PsiFile) = isHybrisModule(psi)
+    override fun canProcess(psi: PsiFile) = psi.isHybrisModule
     protected abstract fun canProcess(psi: PsiClass): Boolean
 
     override fun canProcess(elements: MutableList<out PsiElement>): Boolean {

@@ -96,8 +96,8 @@ class SolrConnectionSettingsDialog(
                 .label("Connection timeout:")
                 .bindIntValue(mutable::timeout)
                 .gap(RightGap.SMALL)
+                .commentRight("(ms)")
                 .component
-            label("(ms)")
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -105,8 +105,8 @@ class SolrConnectionSettingsDialog(
                 .label("Socket timeout:")
                 .bindIntValue(mutable::socketTimeout)
                 .gap(RightGap.SMALL)
+                .commentRight("(ms)")
                 .component
-            label("(ms)")
         }.layout(RowLayout.PARENT_GRID)
 
         group("Full URL Preview", false) {

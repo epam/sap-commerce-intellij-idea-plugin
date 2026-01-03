@@ -21,7 +21,6 @@ package sap.commerce.toolset.cockpitNG
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.cockpitNG.model.core.WidgetDefinition
 import sap.commerce.toolset.isHybrisProject
@@ -32,7 +31,7 @@ class CngWidgetDefinitionDomFileDescription : DomFileDescription<WidgetDefinitio
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.CockpitNG.WIDGET_DEFINITION
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.name == HybrisConstants.COCKPIT_NG_DEFINITION_XML
+        && file.name == CngConstants.COCKPIT_NG_DEFINITION_XML
         && file.isHybrisProject
 
 }

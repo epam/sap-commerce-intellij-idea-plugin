@@ -21,8 +21,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.codeInspection.fix.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.Deployment
 import sap.commerce.toolset.typeSystem.model.Items
@@ -47,7 +47,7 @@ class TSDeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : CustomOnly
     ) {
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
-        if (typeCode != null && typeCode <= HybrisConstants.TS_TYPECODE_MIN_ALLOWED) {
+        if (typeCode != null && typeCode <= TSConstants.TYPECODE_MIN_ALLOWED) {
             holder.createProblem(
                 dom.typeCode,
                 severity,

@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.Items
 import sap.commerce.toolset.typeSystem.model.all
@@ -57,11 +57,11 @@ class TSTypeNameMustPointToExistingType : TSInspection() {
         project: Project
     ) {
         val typeCode = dom.stringValue
-            ?.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
+            ?.replace(TSConstants.Attribute.LOCALIZED_PREFIX, "")
             ?: return
 
         // If type code is Primitive - skip, it is not registered via TS, but available in Service Layer
-        if (HybrisConstants.TS_PRIMITIVE_TYPES.contains(typeCode)) return
+        if (TSConstants.Type.PRIMITIVES.contains(typeCode)) return
         if (typeCode.startsWith("HYBRIS.")) return
         if ("String" == typeCode) return
         if ("java.io.Serializable" == typeCode) return

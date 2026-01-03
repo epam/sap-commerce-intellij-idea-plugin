@@ -28,7 +28,8 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.isCustomExtensionFile
+import sap.commerce.toolset.meta.util.isCustomExtensionFile
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.model.Items
 
 object TSUtils {
@@ -49,7 +50,7 @@ object TSUtils {
     fun cleanItemModelSearchName(searchName: String?): String? {
         if (searchName == null) return null
 
-        val idx = searchName.lastIndexOf(HybrisConstants.MODEL_SUFFIX)
+        val idx = searchName.lastIndexOf(TSConstants.MODEL_SUFFIX)
 
         return if (idx == -1) searchName
         else searchName.substring(0, idx)
@@ -112,11 +113,11 @@ object TSUtils {
         extension: String
     ): Boolean {
         val path = virtualFile.path
-        if (extension == "java" && !path.contains(HybrisConstants.BOOTSTRAP_GEN_SRC_PATH)) return false
+        if (extension == "java" && !path.contains(HybrisConstants.PATH_BOOTSTRAP_GEN_SRC)) return false
         if (extension == "class" && !path.contains(HybrisConstants.JAR_MODELS)) return false
 
         val className = psiClass.name ?: return false
-        if (className.endsWith(HybrisConstants.MODEL_SUFFIX)) return true
+        if (className.endsWith(TSConstants.MODEL_SUFFIX)) return true
 
         val superClass = psiClass.superClass
         return superClass != null && superClass.name != null && superClass.name!!.startsWith("Generated")
@@ -128,7 +129,7 @@ object TSUtils {
         extension: String
     ): Boolean {
         val path = virtualFile.path
-        if (extension == "java" && !path.contains(HybrisConstants.BOOTSTRAP_GEN_SRC_PATH)) return false
+        if (extension == "java" && !path.contains(HybrisConstants.PATH_BOOTSTRAP_GEN_SRC)) return false
         if (extension == "class" && !path.contains(HybrisConstants.JAR_MODELS)) return false
 
         for (implementsListType in psiClass.implementsListTypes) {

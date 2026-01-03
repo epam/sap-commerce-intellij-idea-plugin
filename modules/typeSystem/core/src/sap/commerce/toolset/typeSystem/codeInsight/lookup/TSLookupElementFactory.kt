@@ -26,6 +26,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.model.*
 import sap.commerce.toolset.typeSystem.model.AtomicType
 import sap.commerce.toolset.typeSystem.model.EnumType
@@ -138,7 +139,7 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + i18n("hybris.ts.type.dynamic") + ")" else "", true)
                 .withIcon(HybrisIcons.TypeSystem.Types.ENUM)
-                .withTypeText(": ${HybrisConstants.TS_TYPE_ENUMERATION_VALUE}", HybrisIcons.TypeSystem.Types.ITEM, true)
+                .withTypeText(": ${TSConstants.Type.ENUMERATION_VALUE}", HybrisIcons.TypeSystem.Types.ITEM, true)
                 .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
         }

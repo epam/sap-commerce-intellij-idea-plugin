@@ -23,17 +23,13 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.facet.YFacetConstants
-import java.io.File
 import java.nio.file.Path
 
 fun Module.yExtensionName(): String = YFacet.get(this)
@@ -52,43 +48,16 @@ fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.ge
     .firstOrNull { YFacetConstants.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
     ?.let { ModuleRootManager.getInstance(it) }
     ?.contentRoots
-    ?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }
+    ?.firstOrNull { it.findChild(ProjectConstants.File.EXTENSIONS_XML) != null }
 
-fun isHybrisModule(psi: PsiElement): Boolean {
-    val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return false
-    val descriptorType = YFacetConstants.getModuleSettings(module).type
-    return descriptorType == ModuleDescriptorType.PLATFORM
-        || descriptorType == ModuleDescriptorType.EXT
-}
+val PsiElement.isHybrisModule: Boolean
+    get() {
+        val module = ModuleUtilCore.findModuleForPsiElement(this) ?: return false
+        val descriptorType = YFacetConstants.getModuleSettings(module).type
+        return descriptorType == ModuleDescriptorType.PLATFORM
+            || descriptorType == ModuleDescriptorType.EXT
+    }
 
 val PsiFile.module
     get() = this.virtualFile
         ?.let { ModuleUtilCore.findModuleForFile(it, this.project) }
-
-fun VirtualFile.isCustomExtensionFile(project: Project): Boolean {
-    val descriptorType = ModuleUtilCore.findModuleForFile(this, project)
-        ?.let { YFacetConstants.getModuleSettings(it).type }
-        ?: return false
-
-    return when (descriptorType) {
-        ModuleDescriptorType.NONE -> if (project.isHybrisProject) estimateIsCustomExtension(this) == ModuleDescriptorType.CUSTOM
-        else false
-
-        else -> descriptorType == ModuleDescriptorType.CUSTOM
-    }
-}
-
-private fun estimateIsCustomExtension(file: VirtualFile): ModuleDescriptorType {
-    val itemsFile = VfsUtilCore.virtualToIoFile(file)
-    val filePath = normalize(itemsFile.absolutePath)
-
-    return when {
-        filePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX)) -> ModuleDescriptorType.OOTB
-        filePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019)) -> ModuleDescriptorType.OOTB
-        filePath.contains(normalize(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)) -> ModuleDescriptorType.EXT
-        else -> ModuleDescriptorType.CUSTOM
-    }
-}
-
-private fun normalize(path: String): String =
-    path.replace(File.separatorChar, '/')

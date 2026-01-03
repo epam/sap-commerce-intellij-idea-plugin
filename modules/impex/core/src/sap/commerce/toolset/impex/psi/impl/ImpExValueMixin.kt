@@ -31,7 +31,6 @@ import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
@@ -39,6 +38,7 @@ import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.impex.psi.references.*
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.meta.model.*
@@ -164,7 +164,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             ?.parameterList
             ?: return null
 
-        if (HybrisConstants.TS_COMPOSED_TYPE == attributeType) {
+        if (TSConstants.Type.COMPOSED_TYPE == attributeType) {
             /**
              * UPDATE BundleTemplateStatus[batchmode = true]; itemtype(code)[unique = true]
              *                                              ; Address
@@ -174,7 +174,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             return parameters
                 .takeIf { it.size == 1 }
                 ?.firstOrNull()
-                ?.takeIf { HybrisConstants.ATTRIBUTE_CODE == it.text }
+                ?.takeIf { TSConstants.Attribute.CODE == it.text }
                 ?.let { ImpExValueTSClassifierReference(this, TextRange.create(0, textLength)) }
                 ?.let { listOf(it) }
         }
@@ -199,14 +199,14 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                             else -> null
                         }
                     }
-                    ?.takeIf { HybrisConstants.TS_COMPOSED_TYPE == it }
+                    ?.takeIf { TSConstants.Type.COMPOSED_TYPE == it }
                     ?.let { ranges.getOrNull(index) }
                     ?.let { ImpExValueTSClassifierReference(this, it) }
             }
     }
 
     private fun collectTSReferencesForMetaAtomic(attributeType: String): List<PsiReference>? {
-        if (HybrisConstants.TS_TYPE_JAVA_CLASS != attributeType) return null
+        if (TSConstants.Type.JAVA_CLASS != attributeType) return null
 
         return if (text.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)) null
         else listOf(ImpExJavaClassReference(this))
@@ -235,10 +235,10 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                             ?: return@let null
 
                         when {
-                            it.name == HybrisConstants.ATTRIBUTE_CODE -> if (attributeMeta.isDynamic) ImpExValueTSDynamicEnumReference(this, attributeType, range)
+                            it.name == TSConstants.Attribute.CODE -> if (attributeMeta.isDynamic) ImpExValueTSDynamicEnumReference(this, attributeType, range)
                             else ImpExValueTSStaticEnumReference(this, attributeType, range)
 
-                            it.type == HybrisConstants.TS_COMPOSED_TYPE -> ImpExValueTSClassifierReference(this, range)
+                            it.type == TSConstants.Type.COMPOSED_TYPE -> ImpExValueTSClassifierReference(this, range)
                             else -> null
                         }
                     }
@@ -254,7 +254,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         return metaModelAccess.findMetaClassifierByName(attributeMeta.elementType)
             ?.let { targetMeta ->
                 when {
-                    targetMeta is TSGlobalMetaItem && targetMeta.name == HybrisConstants.TS_COMPOSED_TYPE -> collectRanges(
+                    targetMeta is TSGlobalMetaItem && targetMeta.name == TSConstants.Type.COMPOSED_TYPE -> collectRanges(
                         fullHeaderParameter,
                         AttributeModifier.COLLECTION_DELIMITER,
                         ","

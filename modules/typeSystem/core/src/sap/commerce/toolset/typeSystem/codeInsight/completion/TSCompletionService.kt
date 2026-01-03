@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.settings.yDeveloperSettings
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.typeSystem.meta.TSMetaHelper
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -131,7 +132,7 @@ class TSCompletionService(private val project: Project) {
         .map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
 
     private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
-        if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()
+        if (recursionLevel > TSConstants.MAX_RECURSION_LEVEL) return emptyList()
 
         val metaService = TSMetaModelAccess.getInstance(project)
         return types
@@ -158,23 +159,23 @@ class TSCompletionService(private val project: Project) {
             ?: emptyList()
     }
 
-    private fun getCompletionsForEnum(metaModelAccess: TSMetaModelAccess) = metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+    private fun getCompletionsForEnum(metaModelAccess: TSMetaModelAccess) = metaModelAccess.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE)
         ?.allAttributes
         ?.values
         ?.map { TSLookupElementFactory.build(it) }
         ?: emptyList()
 
     private fun getCompletions(metaRelation: TSGlobalMetaRelation, metaService: TSMetaModelAccess): List<LookupElementBuilder> {
-        val linkMetaItem = metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK) ?: return emptyList()
-        val completions = LinkedList(getCompletions(linkMetaItem, setOf(HybrisConstants.ATTRIBUTE_SOURCE, HybrisConstants.ATTRIBUTE_TARGET)))
-        completions.add(TSLookupElementFactory.build(metaRelation.source, HybrisConstants.ATTRIBUTE_SOURCE))
-        completions.add(TSLookupElementFactory.build(metaRelation.target, HybrisConstants.ATTRIBUTE_TARGET))
+        val linkMetaItem = metaService.findMetaItemByName(TSConstants.Type.LINK) ?: return emptyList()
+        val completions = LinkedList(getCompletions(linkMetaItem, setOf(TSConstants.Attribute.SOURCE, TSConstants.Attribute.TARGET)))
+        completions.add(TSLookupElementFactory.build(metaRelation.source, TSConstants.Attribute.SOURCE))
+        completions.add(TSLookupElementFactory.build(metaRelation.target, TSConstants.Attribute.TARGET))
         return completions
     }
 
     private fun getCompletions(metaMap: TSGlobalMetaMap) = listOf(
-        TSLookupElementFactory.build(metaMap.argumentType, HybrisConstants.ATTRIBUTE_KEY),
-        TSLookupElementFactory.build(metaMap.returnType, HybrisConstants.ATTRIBUTE_VALUE),
+        TSLookupElementFactory.build(metaMap.argumentType, TSConstants.Attribute.KEY),
+        TSLookupElementFactory.build(metaMap.returnType, TSConstants.Attribute.VALUE),
     )
 
     private fun getCompletions(metaItem: TSGlobalMetaItem) = getCompletions(metaItem, emptySet())

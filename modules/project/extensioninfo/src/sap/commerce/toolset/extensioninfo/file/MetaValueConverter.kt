@@ -22,15 +22,15 @@ import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 
 class MetaValueConverter : ResolvingConverter<String>() {
 
     private val BOOLEAN_KEYS = listOf(
-        HybrisConstants.EXTENSION_META_KEY_DEPRECATED,
-        HybrisConstants.EXTENSION_META_KEY_HAC_MODULE,
-        HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE,
-        HybrisConstants.EXTENSION_META_KEY_EXT_GEN
+        EiConstants.EXTENSION_META_KEY_DEPRECATED,
+        EiConstants.EXTENSION_META_KEY_HAC_MODULE,
+        EiConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE,
+        EiConstants.EXTENSION_META_KEY_EXT_GEN
     )
 
     override fun toString(t: String?, context: ConvertContext) = t

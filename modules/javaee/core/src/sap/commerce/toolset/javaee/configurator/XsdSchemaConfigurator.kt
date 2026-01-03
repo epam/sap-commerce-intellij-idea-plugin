@@ -18,27 +18,26 @@
 package sap.commerce.toolset.javaee.configurator
 
 import com.intellij.javaee.ExternalResourceManagerEx
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import sap.commerce.toolset.cockpitNG.CngConstants
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-class XsdSchemaConfigurator : ProjectPostImportConfigurator {
+class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "XSD Schema"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext) {
+        val project = importContext.project
         val cockpitJarToFile = readAction {
-            hybrisProjectDescriptor.chosenModuleDescriptors
-                .firstOrNull { it.name == ProjectConstants.Extension.BACK_OFFICE }
-                ?.moduleRootDirectory
-                ?.toPath()
+            importContext.chosenHybrisModuleDescriptors
+                .firstOrNull { it.name == EiConstants.Extension.BACK_OFFICE }
+                ?.moduleRootPath
                 ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))
                 ?.takeIf { it.exists() }
                 ?.toFile()
@@ -108,7 +107,7 @@ class XsdSchemaConfigurator : ProjectPostImportConfigurator {
 
         val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
 
-        edtWriteAction {
+        backgroundWriteAction {
             namespaces.forEach { (namespace, xsdLocation) ->
                 externalResourceManager.addResource(namespace, xsdLocation, project)
             }

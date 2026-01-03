@@ -20,8 +20,8 @@ package sap.commerce.toolset.project.compile
 import com.intellij.compiler.CompilerConfiguration
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.JavaCommandLineStateUtil
-import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
+import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.wsl.WSLCommandLineOptions
 import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.execution.wsl.WslPath
@@ -39,6 +39,7 @@ import com.intellij.util.io.ZipUtil
 import com.intellij.util.lang.JavaVersion
 import org.jetbrains.jps.model.java.compiler.AnnotationProcessingConfiguration
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.root
@@ -48,7 +49,6 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.charset.StandardCharsets
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.jar.JarOutputStream
@@ -73,13 +73,13 @@ class ProjectBeforeCompilerTask : CompileTask {
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
 
         val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
-        val platformModule = modules.firstOrNull { it.yExtensionName() == ProjectConstants.Extension.PLATFORM }
+        val platformModule = modules.firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
             ?: return true
 
         val platformModuleRoot = platformModule.root()
             ?: return true
         val coreModuleRoot = modules
-            .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CORE }
+            .firstOrNull { it.yExtensionName() == EiConstants.Extension.CORE }
             ?.root()
             ?: return true
 
@@ -123,7 +123,7 @@ class ProjectBeforeCompilerTask : CompileTask {
 
         var result = false
         val handler = JavaCommandLineStateUtil.startProcess(gcl, true)
-        handler.addProcessListener(object : ProcessAdapter() {
+        handler.addProcessListener(object : ProcessListener {
 
             override fun startNotified(event: ProcessEvent) {
                 context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started code generation...", null, -1, -1)
@@ -173,9 +173,9 @@ class ProjectBeforeCompilerTask : CompileTask {
 
         val commandLine = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkDirectory(platformModuleRoot.toFile())
+            .withWorkingDirectory(platformModuleRoot)
             .withExePath(osSpecificPath(vmExecutablePath))
-            .withCharset(StandardCharsets.UTF_8)
+            .withCharset(Charsets.UTF_8)
             .withParameters(
                 "-Dfile.encoding=UTF-8",
                 "-cp",

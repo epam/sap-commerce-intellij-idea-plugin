@@ -20,11 +20,7 @@ package sap.commerce.toolset.beanSystem.meta
 
 import com.intellij.util.xml.DomElement
 import kotlinx.collections.immutable.toImmutableSet
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisConstants.BS_SIGN_GREATER_THAN
-import sap.commerce.toolset.HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED
-import sap.commerce.toolset.HybrisConstants.BS_SIGN_LESS_THAN
-import sap.commerce.toolset.HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.meta.model.*
 
 object BSMetaHelper {
@@ -33,11 +29,11 @@ object BSMetaHelper {
     fun flattenType(meta: BSMetaBean) = flattenType(meta.fullName)
     fun flattenType(meta: BSMetaProperty) = flattenType(meta.type)
     fun referencedType(meta: BSMetaProperty) = meta.type
-        ?.replace(BS_SIGN_LESS_THAN_ESCAPED, BS_SIGN_LESS_THAN)
-        ?.replace(BS_SIGN_GREATER_THAN_ESCAPED, BS_SIGN_GREATER_THAN)
+        ?.replace(BSConstants.SIGN_LESS_THAN_ESCAPED, BSConstants.SIGN_LESS_THAN)
+        ?.replace(BSConstants.SIGN_GREATER_THAN_ESCAPED, BSConstants.SIGN_GREATER_THAN)
         ?.replace(" ", "")
-        ?.substringAfter(BS_SIGN_LESS_THAN)
-        ?.substringBefore(BS_SIGN_GREATER_THAN)
+        ?.substringAfter(BSConstants.SIGN_LESS_THAN)
+        ?.substringBefore(BSConstants.SIGN_GREATER_THAN)
 
     fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
     fun getNameWithGeneric(name: String?, generic: String?) = (name ?: "") + (generic?.let { "<$it>" } ?: "")
@@ -64,7 +60,7 @@ object BSMetaHelper {
         ?.map { it.trim() }
 
     fun getBeanName(name: String) = getUnescapedName(name)
-        .substringBefore(BS_SIGN_LESS_THAN)
+        .substringBefore(BSConstants.SIGN_LESS_THAN)
 
     fun getAllExtends(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): Set<BSGlobalMetaBean> {
         val tempParents = LinkedHashSet<BSGlobalMetaBean>()
@@ -78,14 +74,14 @@ object BSMetaHelper {
     }
 
     fun getEscapedName(name: String) = name
-        .replace(BS_SIGN_LESS_THAN, BS_SIGN_LESS_THAN_ESCAPED)
-        .replace(BS_SIGN_GREATER_THAN, BS_SIGN_GREATER_THAN_ESCAPED)
+        .replace(BSConstants.SIGN_LESS_THAN, BSConstants.SIGN_LESS_THAN_ESCAPED)
+        .replace(BSConstants.SIGN_GREATER_THAN, BSConstants.SIGN_GREATER_THAN_ESCAPED)
 
     private fun getExtendsMetaItem(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): BSGlobalMetaBean? {
         val extendsName = meta.extends
             // prevent deadlock when type extends itself
             ?.takeIf { it != meta.name }
-            ?: HybrisConstants.BS_TYPE_OBJECT
+            ?: BSConstants.TYPE_OBJECT
 
         return metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN)[extendsName]
             ?: metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT)[extendsName]
@@ -93,13 +89,13 @@ object BSMetaHelper {
     }
 
     private fun getUnescapedName(name: String) = name
-        .replace(BS_SIGN_LESS_THAN_ESCAPED, BS_SIGN_LESS_THAN)
-        .replace(BS_SIGN_GREATER_THAN_ESCAPED, BS_SIGN_GREATER_THAN)
+        .replace(BSConstants.SIGN_LESS_THAN_ESCAPED, BSConstants.SIGN_LESS_THAN)
+        .replace(BSConstants.SIGN_GREATER_THAN_ESCAPED, BSConstants.SIGN_GREATER_THAN)
 
     fun flattenType(type: String?) = type
         ?.replace(flattenTypeRegex, "")
-        ?.replace(BS_SIGN_LESS_THAN_ESCAPED, BS_SIGN_LESS_THAN)
-        ?.replace(BS_SIGN_GREATER_THAN_ESCAPED, BS_SIGN_GREATER_THAN)
+        ?.replace(BSConstants.SIGN_LESS_THAN_ESCAPED, BSConstants.SIGN_LESS_THAN)
+        ?.replace(BSConstants.SIGN_GREATER_THAN_ESCAPED, BSConstants.SIGN_GREATER_THAN)
         ?.replace(" ", "")
         ?.replace(",", ", ")
 }

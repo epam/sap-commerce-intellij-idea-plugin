@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":shared-ui"))
     implementation(project(":meta-core"))
     implementation(project(":project-core"))
+    implementation(project(":project-extensioninfo"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

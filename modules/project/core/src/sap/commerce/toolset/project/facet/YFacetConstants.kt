@@ -27,5 +27,5 @@ object YFacetConstants {
     val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
 
     fun getModuleSettings(module: Module): ExtensionDescriptor = YFacet.getState(module)
-        ?: ExtensionDescriptor(module.yExtensionName())
+        ?: ExtensionDescriptor(name = module.yExtensionName())
 }

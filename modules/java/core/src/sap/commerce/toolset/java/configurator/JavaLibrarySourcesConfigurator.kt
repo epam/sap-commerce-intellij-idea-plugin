@@ -20,7 +20,7 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.diagnostic.thisLogger
@@ -47,7 +47,7 @@ import sap.commerce.toolset.java.jarFinder.LibraryRootLookup
 import sap.commerce.toolset.java.jarFinder.LibraryRootLookupService
 import sap.commerce.toolset.java.jarFinder.LibraryRootType
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.io.File
 import java.io.IOException
 
@@ -56,15 +56,15 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     override val name
         get() = "Libraries Sources"
 
-    override fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
+    override fun postImport(importContext: ProjectImportContext) {
         val libraryRootTypes = buildSet {
-            if (hybrisProjectDescriptor.isWithExternalLibrarySources) add(LibraryRootType.SOURCES)
-            if (hybrisProjectDescriptor.isWithExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
+            if (importContext.settings.withExternalLibrarySources) add(LibraryRootType.SOURCES)
+            if (importContext.settings.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
         }
             .takeIf { it.isNotEmpty() }
             ?: return
 
-        val project = hybrisProjectDescriptor.project ?: return
+        val project = importContext.project
         val librarySourceDir = getLibrarySourceDir() ?: return
         val lookupService = LibraryRootLookupService.getService()
         val lookupRepositories = lookupService.getLookupRepositories(project)
@@ -112,6 +112,8 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         return reportProgressScope(libraryEntities.size) { reporter ->
             libraryEntities
                 .map { libraryEntity ->
+                    checkCanceled()
+
                     async {
                         libraryEntity to fetchSources(project, lookupService, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
                     }
@@ -129,7 +131,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     ) {
         checkCanceled()
 
-        edtWriteAction {
+        val librarySourceDirVf = backgroundWriteAction {
             workspaceModel.updateProjectModel("Updating libraries sources") { builder ->
                 libraries.forEach { (libraryEntity, libraryRoots) ->
                     builder.modifyLibraryEntity(libraryEntity) {
@@ -138,24 +140,25 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 }
             }
 
-            val librarySourceDirVf = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(librarySourceDir) ?: return@edtWriteAction
-            val updatedLibraries = libraries.size
-            val updatedSourcesLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.SOURCES.id }
-            val updatedJavadocsLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.JAVADOC.id }
+            LocalFileSystem.getInstance().refreshAndFindFileByIoFile(librarySourceDir)
+        }
+            ?: return
 
-            Notifications.info(
-                "Libraries sources successfully updated",
-                """
+        val updatedLibraries = libraries.size
+        val updatedSourcesLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.SOURCES.id }
+        val updatedJavadocsLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.JAVADOC.id }
+
+        Notifications.info(
+            "Libraries sources successfully updated",
+            """
                     Updated $updatedLibraries libraries with:<br>
                     - $updatedSourcesLibraryRoots sources jars<br>
                     - $updatedJavadocsLibraryRoots javadocs jars<br>
                 """.trimIndent()
-            )
-                .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
-                .system(true)
-                .hideAfter(10)
-                .notify(project)
-        }
+        )
+            .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
+            .system(true)
+            .notify(project)
     }
 
     private suspend fun fetchSources(
@@ -170,8 +173,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
         return reporter.itemStep("Fetching sources for library '${library.name}'...") {
             library.roots
-                .map { libraryRoot -> processLibraryRoot(project, lookupService, librarySourceDir, libraryRootTypes, libraryRoot) }
-                .flatten()
+                .flatMap { libraryRoot -> processLibraryRoot(project, lookupService, librarySourceDir, libraryRootTypes, libraryRoot) }
         }
     }
 
@@ -250,12 +252,14 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     ): LibraryRoot? {
         val artifactSourceUrl = libraryRootLookup.url ?: return null
         val targetFile = libraryRootLookup.targetFile
-        val tmp = File.createTempFile("download_${targetFile.nameWithoutExtension}", ".tmp", librarySourceDir)
+        val tmp = withContext(Dispatchers.IO) {
+            File.createTempFile("download_${targetFile.nameWithoutExtension}", ".tmp", librarySourceDir)
+        }
 
         try {
             checkCanceled()
 
-            reportProgressScope() {
+            reportProgressScope {
                 it.itemStep("Downloading ${targetFile.name}") {
                     retryHttp {
                         HttpRequests

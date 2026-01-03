@@ -22,10 +22,10 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.cockpitNG.model.config.Config
 import sap.commerce.toolset.cockpitNG.model.config.Context
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
@@ -57,7 +57,7 @@ class CngContextMergeByTypeParentIsNotValid : CngConfigInspection() {
         val typeMeta = metaModelAccess.findMetaClassifierByName(type) ?: return
 
         // skip enums
-        if (typeMeta is TSGlobalMetaEnum && parentType == HybrisConstants.TS_TYPE_ENUMERATION_VALUE) return
+        if (typeMeta is TSGlobalMetaEnum && parentType == TSConstants.Type.ENUMERATION_VALUE) return
 
         // skip non-item types
         if (typeMeta !is TSGlobalMetaItem) return
