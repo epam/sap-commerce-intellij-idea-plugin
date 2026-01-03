@@ -21,34 +21,21 @@ package sap.commerce.toolset.jrebel.configurator
 import com.intellij.facet.FacetType
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.openapi.util.io.NioFiles
 import com.zeroturnaround.javarebel.idea.plugin.actions.ToggleRebelFacetAction
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacet
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
 import com.zeroturnaround.javarebel.idea.plugin.xml.RebelXML
-import org.apache.commons.io.IOUtils
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.directory
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
-import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
-import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.nio.charset.StandardCharsets
 
-class JRebelConfigurator : ProjectPostImportAsyncConfigurator, ProjectStartupConfigurator {
+class JRebelConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "JRebel"
@@ -86,31 +73,6 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator, ProjectStartupCon
 
                 ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)
             }
-        }
-    }
-
-    override fun onStartup(project: Project) {
-        val projectSettings = ProjectSettings.getInstance(project)
-        val projectDirectory = project.directory ?: return
-        val hybrisDirectory = projectSettings.hybrisDirectory ?: return
-        val path = projectDirectory + "/" + hybrisDirectory + ProjectConstants.Paths.BIN_PLATFORM + HybrisConstants.ANT_COMPILING_XML
-        val compilingXml = File(FileUtilRt.toSystemDependentName(path))
-        if (!compilingXml.isFile) return
-
-        var content = try {
-            IOUtils.toString(FileInputStream(compilingXml), StandardCharsets.UTF_8)
-        } catch (e: IOException) {
-            thisLogger().error(e)
-            return
-        }
-        if (!content.contains("excludes=\"**/rebel.xml\"")) {
-            return
-        }
-        content = content.replace("excludes=\"**/rebel.xml\"", "")
-        try {
-            IOUtils.write(content, FileOutputStream(compilingXml), StandardCharsets.UTF_8)
-        } catch (e: IOException) {
-            thisLogger().error(e)
         }
     }
 

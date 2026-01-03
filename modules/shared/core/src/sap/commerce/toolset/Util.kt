@@ -26,7 +26,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.jetbrains.annotations.PropertyKey
 import sap.commerce.toolset.settings.WorkspaceSettings
-import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.isDirectory
@@ -75,5 +74,5 @@ fun i18nFallback(
 ) = HybrisI18nBundle.messageFallback(key, fallback, *params)
 
 fun Any.readResource(resourcePath: String) = javaClass.classLoader.getResourceAsStream(resourcePath)
-    ?.bufferedReader(StandardCharsets.UTF_8)?.use { it.readText() }
+    ?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
     ?: throw IllegalStateException("Resource not found: $resourcePath")

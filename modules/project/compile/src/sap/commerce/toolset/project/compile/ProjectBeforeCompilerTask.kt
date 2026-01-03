@@ -49,7 +49,6 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.charset.StandardCharsets
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.jar.JarOutputStream
@@ -176,7 +175,7 @@ class ProjectBeforeCompilerTask : CompileTask {
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
             .withWorkingDirectory(platformModuleRoot)
             .withExePath(osSpecificPath(vmExecutablePath))
-            .withCharset(StandardCharsets.UTF_8)
+            .withCharset(Charsets.UTF_8)
             .withParameters(
                 "-Dfile.encoding=UTF-8",
                 "-cp",

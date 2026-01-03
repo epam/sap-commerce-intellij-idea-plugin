@@ -35,7 +35,6 @@ import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
 import java.io.IOException
 import java.io.Serial
-import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
 class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<ImpExExecContext>(project, coroutineScope) {
@@ -60,7 +59,7 @@ class ImpExExecClient(project: Project, coroutineScope: CoroutineScope) : Defaul
         )
 
         try {
-            val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+            val document = Jsoup.parse(response.entity.content, Charsets.UTF_8.name(), "")
 
             return when (context.executionMode) {
                 ImpExExecutionMode.IMPORT -> processResponse(document, "impexResult") { element ->

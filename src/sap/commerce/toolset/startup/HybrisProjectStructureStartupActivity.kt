@@ -75,7 +75,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         thisLogger().info("Opening hybris version $hybrisVersion which was imported by $importedByVersion. Current plugin is $pluginVersion")
     }
 
-    private fun continueOpening(project: Project) {
+    private suspend fun continueOpening(project: Project) {
         if (project.isDisposed) return
 
         ProjectStartupConfigurator.EP.extensionList.forEach { it.onStartup(project) }

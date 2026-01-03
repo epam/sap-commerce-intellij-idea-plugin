@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.nio.charset.StandardCharsets
 
 /**
  * Let's assume that UTF-8 is the standard charset for all properties files.
@@ -38,6 +37,6 @@ class ProjectEncodingConfigurator : ProjectImportConfigurator {
         val project = importContext.project
 
         EncodingProjectManager.getInstance(project)
-            .setDefaultCharsetForPropertiesFiles(null, StandardCharsets.UTF_8)
+            .setDefaultCharsetForPropertiesFiles(null, Charsets.UTF_8)
     }
 }
