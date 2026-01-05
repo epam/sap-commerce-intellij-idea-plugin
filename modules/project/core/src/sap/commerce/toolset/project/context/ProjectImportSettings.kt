@@ -44,6 +44,7 @@ data class ProjectImportSettings(
     val groupPlatform: String,
     val groupCCv2: String,
     val groupNameExternalModules: String,
+    val extensionsResourcesToExclude: Collection<String>,
 ) {
 
     fun mutable() = Mutable(
@@ -67,6 +68,7 @@ data class ProjectImportSettings(
         groupPlatform = AtomicProperty(groupPlatform),
         groupCCv2 = AtomicProperty(groupCCv2),
         groupNameExternalModules = AtomicProperty(groupNameExternalModules),
+        extensionsResourcesToExclude = AtomicProperty(extensionsResourcesToExclude),
     )
 
     data class Mutable(
@@ -90,6 +92,7 @@ data class ProjectImportSettings(
         val groupPlatform: AtomicProperty<String>,
         val groupCCv2: AtomicProperty<String>,
         val groupNameExternalModules: AtomicProperty<String>,
+        val extensionsResourcesToExclude: AtomicProperty<Collection<String>>,
     ) {
         fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
@@ -112,6 +115,7 @@ data class ProjectImportSettings(
             groupPlatform = groupPlatform.get(),
             groupCCv2 = groupCCv2.get(),
             groupNameExternalModules = groupNameExternalModules.get(),
+            extensionsResourcesToExclude = extensionsResourcesToExclude.get(),
         )
     }
 
@@ -137,6 +141,7 @@ data class ProjectImportSettings(
             groupPlatform = applicationSettings.groupPlatform,
             groupCCv2 = applicationSettings.groupCCv2,
             groupNameExternalModules = applicationSettings.groupNameExternalModules,
+            extensionsResourcesToExclude = applicationSettings.extensionsResourcesToExclude,
         )
 
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
@@ -161,6 +166,7 @@ data class ProjectImportSettings(
             groupPlatform = applicationSettings.groupPlatform,
             groupCCv2 = applicationSettings.groupCCv2,
             groupNameExternalModules = applicationSettings.groupNameExternalModules,
+            extensionsResourcesToExclude = applicationSettings.extensionsResourcesToExclude,
         )
     }
 }
