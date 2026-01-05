@@ -31,8 +31,8 @@ import java.nio.file.Path
 
 class GradleModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path) = Plugin.GRADLE.ifActive {
-        GradleConstants.KNOWN_GRADLE_FILES.any { path.resolve(it).fileExists }
+    override fun isApplicable(rootDirectory: Path, path: Path) = Plugin.GRADLE.ifActive {
+        rootDirectory != path && GradleConstants.KNOWN_GRADLE_FILES.any { path.resolve(it).fileExists }
     } ?: false
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(
