@@ -72,7 +72,7 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
                 row {
                     checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                        .bindSelected(applicationSettings::defaultPlatformInReadOnly)
+                        .bindSelected(applicationSettings::importOOTBModulesInReadOnlyMode)
                     contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.help.description"))
                 }
 

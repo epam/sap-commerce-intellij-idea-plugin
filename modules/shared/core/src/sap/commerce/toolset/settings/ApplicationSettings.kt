@@ -49,7 +49,7 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(hideEmptyMiddleFolders = value) }
         }
-    var defaultPlatformInReadOnly: Boolean
+    var importOOTBModulesInReadOnlyMode: Boolean
         get() = state.defaultPlatformInReadOnly
         set(value) {
             updateState { it.copy(defaultPlatformInReadOnly = value) }

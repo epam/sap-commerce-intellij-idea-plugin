@@ -91,6 +91,7 @@ class ImportProjectTask(private val project: Project) {
                 moduleReporter.itemStep("Importing '${moduleDescriptor.name}' module...") {
                     checkCanceled()
 
+                    logger.debug("Importing module [${moduleDescriptor.name}].")
                     val duration = measureTime { importModule(importContext, moduleDescriptor, provider, modifiableModelsProvider) }
                     logger.info("Imported module [${moduleDescriptor.name} | ${duration}].")
                 }

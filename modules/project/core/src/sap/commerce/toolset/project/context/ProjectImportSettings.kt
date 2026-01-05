@@ -46,6 +46,10 @@ data class ProjectImportSettings(
     val groupNameExternalModules: String,
     val extensionsResourcesToExclude: Collection<String>,
 ) {
+    val includeTestSources: Boolean
+        get() = !excludeTestSources
+    val importOOTBModulesInWriteMode
+        get() = !importOOTBModulesInReadOnlyMode
 
     fun mutable() = Mutable(
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
@@ -121,7 +125,7 @@ data class ProjectImportSettings(
 
     companion object {
         fun of(applicationSettings: ApplicationSettings) = ProjectImportSettings(
-            importOOTBModulesInReadOnlyMode = applicationSettings.defaultPlatformInReadOnly,
+            importOOTBModulesInReadOnlyMode = applicationSettings.importOOTBModulesInReadOnlyMode,
             followSymlink = applicationSettings.followSymlink,
             excludeTestSources = applicationSettings.excludeTestSources,
             importCustomAntBuildFiles = applicationSettings.importCustomAntBuildFiles,

@@ -32,7 +32,7 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
         with(ApplicationSettings.getInstance()) {
             this.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.toSystemIndependentName
 
-            this.defaultPlatformInReadOnly = importSettings.importOOTBModulesInReadOnlyMode
+            this.importOOTBModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
             this.followSymlink = importSettings.followSymlink
             this.excludeTestSources = importSettings.excludeTestSources
             this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles

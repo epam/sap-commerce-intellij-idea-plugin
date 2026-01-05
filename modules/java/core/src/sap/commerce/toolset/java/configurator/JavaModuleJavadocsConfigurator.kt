@@ -41,15 +41,11 @@ class JavaModuleJavadocsConfigurator : ModuleImportConfigurator {
         module: Module,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        if (moduleDescriptor is YCustomRegularModuleDescriptor || moduleDescriptor is ConfigModuleDescriptor) return
+        val javadocUrl = importContext.javadocUrl ?: return
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
-        val javadocRefList = mutableListOf<String>()
         val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
-        importContext.javadocUrl
-            ?.takeUnless { moduleDescriptor is YCustomRegularModuleDescriptor }
-            ?.takeUnless { moduleDescriptor is ConfigModuleDescriptor }
-            ?.let { javadocRefList.add(it) }
-
-        javaModuleExternalPaths.javadocUrls = javadocRefList.toTypedArray()
+        javaModuleExternalPaths.javadocUrls = listOf(javadocUrl).toTypedArray()
     }
 }

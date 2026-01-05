@@ -88,7 +88,7 @@ private fun YRegularModuleDescriptor.backofficeClassesLib(importContext: Project
     .takeIf { this.extensionInfo.backofficeModule }
     ?.firstOrNull { it is YBackofficeSubModuleDescriptor }
     ?.let { yModule ->
-        val attachSources = this.type == ModuleDescriptorType.CUSTOM || !importContext.settings.importOOTBModulesInReadOnlyMode
+        val attachSources = this.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
         val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
             .map { yModule.moduleRootPath.resolve(it) }
             .filter { it.directoryExists }
@@ -133,7 +133,7 @@ private val YModuleDescriptor.rootLib
     )
 
 private fun YModuleDescriptor.nonCustomModuleLibs(importContext: ProjectImportContext): Collection<JavaLibraryDescriptor> {
-    if (!importContext.settings.importOOTBModulesInReadOnlyMode) return emptyList()
+    if (importContext.settings.importOOTBModulesInWriteMode) return emptyList()
     if (this.type == ModuleDescriptorType.CUSTOM) return emptyList()
 
     val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
@@ -247,7 +247,7 @@ private fun YAcceleratorAddonSubModuleDescriptor.libs(importContext: ProjectImpo
     libs.addAll(this.serverLibs(importContext))
     libs.add(this.rootLib)
 
-    val attachSources = this.type == ModuleDescriptorType.CUSTOM || !importContext.settings.importOOTBModulesInReadOnlyMode
+    val attachSources = this.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
 
     val allYModules = importContext.chosenHybrisModuleDescriptors
         .filterIsInstance<YModuleDescriptor>()
