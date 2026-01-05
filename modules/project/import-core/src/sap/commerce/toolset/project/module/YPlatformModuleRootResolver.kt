@@ -33,7 +33,7 @@ class YPlatformModuleRootResolver : ModuleRootResolver {
 
     private val hybrisBinPlatform by lazy { Path("hybris").resolve("bin").resolve("platform") }
 
-    override fun isApplicable(path: Path) = with(path) {
+    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
         name == EiConstants.Extension.PLATFORM
             && resolve(ProjectConstants.File.EXTENSIONS_XML).fileExists
             && endsWith(hybrisBinPlatform)

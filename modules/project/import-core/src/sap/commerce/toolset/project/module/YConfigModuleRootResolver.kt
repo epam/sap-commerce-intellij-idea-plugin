@@ -29,7 +29,7 @@ import java.nio.file.Path
 
 class YConfigModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path) = with(path) {
+    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
         resolve(ProjectConstants.Directory.LICENCE).directoryExists
             && resolve(ProjectConstants.Directory.TOMCAT).resolve("tomcat_context.tpl").fileExists
     }

@@ -23,7 +23,7 @@ import java.nio.file.Path
 
 interface ModuleRootResolver {
 
-    fun isApplicable(path: Path): Boolean
+    fun isApplicable(rootDirectory: Path, path: Path): Boolean
     fun resolve(path : Path) : ResolvedModuleRoot
 
     companion object {

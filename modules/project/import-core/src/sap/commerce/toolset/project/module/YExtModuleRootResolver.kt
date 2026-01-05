@@ -31,7 +31,7 @@ class YExtModuleRootResolver : ModuleRootResolver {
 
     private val platformExt by lazy { Path("platform").resolve("ext") }
 
-    override fun isApplicable(path: Path) = with(path) {
+    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
         resolve(EiConstants.EXTENSION_INFO_XML).fileExists
             && parent.endsWith(platformExt)
     }

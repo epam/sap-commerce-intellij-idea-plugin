@@ -31,8 +31,8 @@ import java.nio.file.Path
 
 class MavenModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path) = Plugin.MAVEN.ifActive {
-        path.resolve(MavenConstants.POM_XML).fileExists
+    override fun isApplicable(rootDirectory: Path, path: Path) = Plugin.MAVEN.ifActive {
+        rootDirectory != path && path.resolve(MavenConstants.POM_XML).fileExists
     } ?: false
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(

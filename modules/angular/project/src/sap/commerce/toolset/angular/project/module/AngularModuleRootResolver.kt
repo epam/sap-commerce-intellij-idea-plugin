@@ -31,7 +31,7 @@ import java.nio.file.Path
 
 class AngularModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path) = Plugin.ANGULAR.ifActive {
+    override fun isApplicable(rootDirectory: Path, path: Path) = Plugin.ANGULAR.ifActive {
         path.resolve(AngularConstants.ANGULAR_JSON).fileExists
     } ?: false
 

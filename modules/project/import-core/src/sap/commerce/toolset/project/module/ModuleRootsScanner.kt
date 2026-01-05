@@ -96,7 +96,7 @@ class ModuleRootsScanner {
                                     processVcsRoot(path, importContext)
 
                                     moduleRootResolvers
-                                        .firstOrNull { it.isApplicable(path) }
+                                        .firstOrNull { it.isApplicable(rootDirectory, path) }
                                         ?.resolve(path)
                                         ?.also {
                                             it.moduleRoot?.let { moduleRoot ->

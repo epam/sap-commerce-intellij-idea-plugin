@@ -30,7 +30,7 @@ import kotlin.io.path.pathString
 
 class YOotbModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path): Boolean {
+    override fun isApplicable(rootDirectory: Path, path: Path): Boolean {
         if (!path.resolve(EiConstants.EXTENSION_INFO_XML).fileExists) return false
 
         val parentPathString = path.parent.normalize().pathString

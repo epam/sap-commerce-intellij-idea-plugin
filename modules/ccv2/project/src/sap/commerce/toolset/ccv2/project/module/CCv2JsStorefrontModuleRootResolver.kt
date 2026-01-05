@@ -30,7 +30,7 @@ import kotlin.io.path.name
 
 class CCv2JsStorefrontModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path) = with(path) {
+    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
         name == CCv2Constants.JS_STOREFRONT_NAME && isCCv2ManifestFileExists
     }
 

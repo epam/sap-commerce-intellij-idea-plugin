@@ -31,8 +31,8 @@ import java.nio.file.Path
 
 class EclipseModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path) = Plugin.ECLIPSE.ifActive {
-        path.resolve(EclipseConstants.DOT_PROJECT).fileExists
+    override fun isApplicable(rootDirectory: Path, path: Path) = Plugin.ECLIPSE.ifActive {
+        rootDirectory != path && path.resolve(EclipseConstants.DOT_PROJECT).fileExists
     } ?: false
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(

@@ -25,6 +25,7 @@ import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
@@ -32,6 +33,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.directory
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
@@ -125,15 +127,19 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                 val virtualFile = child.virtualFile
                     ?: continue
 
+
                 val file = VfsUtil.virtualToIoFile(virtualFile)
                 val moduleDescriptorType = projectRootManager.fileIndex.getModuleForFile(virtualFile)
                     ?.let { YFacet.getState(it) }
                     ?.type
-                    ?: ModuleRootResolver.EP.extensionList
-                        .firstOrNull { it.isApplicable(file.toPath()) }
-                        ?.resolve(file.toPath())
-                        ?.moduleRoot
-                        ?.type
+                    ?: project.directory?.toNioPathOrNull()
+                        ?.let { rootDirectory ->
+                            ModuleRootResolver.EP.extensionList
+                                .firstOrNull { it.isApplicable(rootDirectory, file.toPath()) }
+                                ?.resolve(file.toPath())
+                                ?.moduleRoot
+                                ?.type
+                        } ?: continue
 
                 if (moduleDescriptorType == ModuleDescriptorType.ECLIPSE
                     || moduleDescriptorType == ModuleDescriptorType.GRADLE

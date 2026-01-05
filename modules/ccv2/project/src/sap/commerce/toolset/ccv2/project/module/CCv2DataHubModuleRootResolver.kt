@@ -30,7 +30,7 @@ import kotlin.io.path.name
 
 class CCv2DataHubModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(path: Path) = with(path) {
+    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
         name == CCv2Constants.DATAHUB_NAME && isCCv2ManifestFileExists
     }
 
