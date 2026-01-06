@@ -16,30 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.library
+package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.java.configurator.library.PlatformEntitySource
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.pathString
 
-class PlatformBootstrapLibraryConfigurator : ModuleLibraryConfigurator {
+class PlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
-        get() = "Platform Bootstrap"
+        get() = HybrisConstants.LIBRARY_GROUP_PLATFORM
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
-
-    override suspend fun configure(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) {
-        val workspaceModel = WorkspaceModel.getInstance(importContext.project)
+    override suspend fun preConfigure(importContext: ProjectImportContext) {
+        val moduleDescriptor = importContext.platformModuleDescriptor
+        val workspaceModel = WorkspaceModel.Companion.getInstance(importContext.project)
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
 
         val roots = buildList {
@@ -62,13 +62,13 @@ class PlatformBootstrapLibraryConfigurator : ModuleLibraryConfigurator {
         }
 
         backgroundWriteAction {
-            workspaceModel.updateProjectModel("Processing library: ${HybrisConstants.PLATFORM_LIBRARY_GROUP}") { storage ->
+            workspaceModel.updateProjectModel("Processing library: ${HybrisConstants.LIBRARY_GROUP_PLATFORM}") { storage ->
                 val libraryEntity = storage
                     .entities(LibraryEntity::class.java)
-                    .firstOrNull { it.name == HybrisConstants.PLATFORM_LIBRARY_GROUP }
+                    .firstOrNull { it.name == HybrisConstants.LIBRARY_GROUP_PLATFORM }
                     ?: storage.addEntity(
                         LibraryEntity(
-                            name = HybrisConstants.PLATFORM_LIBRARY_GROUP,
+                            name = HybrisConstants.LIBRARY_GROUP_PLATFORM,
                             tableId = LibraryTableId.ProjectLibraryTableId,
                             roots = emptyList(),
                             entitySource = PlatformEntitySource,

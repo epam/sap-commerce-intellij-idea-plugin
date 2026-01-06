@@ -35,7 +35,8 @@ object HybrisConstants {
 
     const val SERVER_JAR_SUFFIX = "server.jar"
 
-    const val BACKOFFICE_LIBRARY_GROUP = "Backoffice Library"
+    const val LIBRARY_GROUP_BACKOFFICE = "Backoffice Library"
+    const val LIBRARY_GROUP_PLATFORM = "Platform Bootstrap"
 
     const val PATH_IDE_CONSOLES = "consoles/ide/"
     const val PATH_BOOTSTRAP_GEN_SRC = "bootstrap/gensrc"
@@ -46,7 +47,6 @@ object HybrisConstants {
     const val SPOCK_META_INF_SERVICES_DIRECTORY = "resources/META-INF/services"
 
     const val PLATFORM_HOME_PLACEHOLDER = "\${platformhome}"
-    const val PLATFORM_LIBRARY_GROUP = "Platform Bootstrap"
     const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
     const val STORAGE_HYBRIS_PROJECT_SETTINGS = "hybrisProjectSettings.xml"

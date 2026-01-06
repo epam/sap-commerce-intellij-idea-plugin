@@ -28,6 +28,7 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
+        <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.PlatformBootstrapLibraryConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
 
@@ -57,7 +58,7 @@
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryTestSourcesConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryWebInjectedSourcesConfigurator"/>
 
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformBootstrapLibraryConfigurator"/>
+
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

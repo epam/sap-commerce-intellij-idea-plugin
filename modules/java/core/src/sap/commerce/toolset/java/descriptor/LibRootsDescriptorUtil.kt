@@ -59,7 +59,7 @@ internal fun addBackofficeRootProjectLibrary(
     sourcesDirRoot: Path? = null,
     addJarDirectory: Boolean = true
 ) {
-    val libraryName = HybrisConstants.BACKOFFICE_LIBRARY_GROUP
+    val libraryName = HybrisConstants.LIBRARY_GROUP_BACKOFFICE
     val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
     val library = libraryTableModifiableModel.getLibraryByName(libraryName)
         ?: libraryTableModifiableModel.createLibrary(libraryName)
