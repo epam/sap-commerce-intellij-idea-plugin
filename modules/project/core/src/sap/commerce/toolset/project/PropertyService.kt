@@ -60,50 +60,6 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     private val nestedPropertySuffix = "}"
     private val optionalPropertiesFilePattern = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
-    private val cachedProperties = CachedValuesManager.getManager(project).createCachedValue(
-        {
-            val result = LinkedHashMap<String, IProperty>()
-            val configModule = obtainConfigModule() ?: return@createCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
-            val platformModule = obtainPlatformModule() ?: return@createCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
-            val scope = createSearchScope(configModule, platformModule)
-            var envPropsFile: PropertiesFile? = null
-            var advancedPropsFile: PropertiesFile? = null
-            var localPropsFile: PropertiesFile? = null
-
-            val propertiesFiles = ArrayList<PropertiesFile>()
-
-            // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
-            FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
-                .mapNotNull { PsiManager.getInstance(project).findFile(it) }
-                .mapNotNull { it as? PropertiesFile }
-                .forEach { file ->
-                    when (file.name) {
-                        ProjectConstants.File.ENV_PROPERTIES -> envPropsFile = file
-                        ProjectConstants.File.ADVANCED_PROPERTIES -> advancedPropsFile = file
-                        ProjectConstants.File.LOCAL_PROPERTIES -> localPropsFile = file
-                        ProjectConstants.File.PROJECT_PROPERTIES -> propertiesFiles.add(file)
-                        ProjectConstants.File.PLATFORM_HOME_PROPERTIES -> propertiesFiles.add(file)
-                    }
-                }
-
-            localPropsFile?.let { propertiesFiles.add(it) }
-            advancedPropsFile?.let { propertiesFiles.add(0, it) }
-            envPropsFile?.let { propertiesFiles.add(0, it) }
-
-            propertiesFiles.forEach { addPropertyFile(result, it) }
-
-            loadHybrisRuntimeProperties(result)
-            loadHybrisOptionalConfigDir(result)
-
-            CachedValueProvider.Result.create(
-                result.values.toList(), propertiesFiles
-                    .map { it.virtualFile }
-                    .toTypedArray()
-                    .ifEmpty { ModificationTracker.EVER_CHANGED }
-            )
-        }, false
-    )
-
     fun initCache() = coroutineScope.launch {
         withBackgroundProgress(project, "Init properties cache", true) {
             smartReadAction(project) { findAllIProperties() }
@@ -142,7 +98,6 @@ class PropertyService(private val project: Project, private val coroutineScope: 
             ?.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
-    // TODO: migrate to coroutine and smartReadAction
     fun findAllProperties(): Map<String, String> = application.runReadAction<Map<String, String>> {
         findAllIProperties()
             .filter { it.value != null && it.key != null }
@@ -159,7 +114,49 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     fun getPlatformHome(): String? = findPlatformRootDirectory(project)
         ?.path
 
-    private fun findAllIProperties() = cachedProperties.value
+    private fun findAllIProperties(): List<IProperty> = CachedValuesManager.getManager(project).getCachedValue(project) {
+        val result = LinkedHashMap<String, IProperty>()
+        val configModule = obtainConfigModule()
+            ?: return@getCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
+        val platformModule = obtainPlatformModule()
+            ?: return@getCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
+        val scope = createSearchScope(configModule, platformModule)
+        var envPropsFile: PropertiesFile? = null
+        var advancedPropsFile: PropertiesFile? = null
+        var localPropsFile: PropertiesFile? = null
+
+        val propertiesFiles = ArrayList<PropertiesFile>()
+
+        // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
+        FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
+            .mapNotNull { PsiManager.getInstance(project).findFile(it) }
+            .mapNotNull { it as? PropertiesFile }
+            .forEach { file ->
+                when (file.name) {
+                    ProjectConstants.File.ENV_PROPERTIES -> envPropsFile = file
+                    ProjectConstants.File.ADVANCED_PROPERTIES -> advancedPropsFile = file
+                    ProjectConstants.File.LOCAL_PROPERTIES -> localPropsFile = file
+                    ProjectConstants.File.PROJECT_PROPERTIES -> propertiesFiles.add(file)
+                    ProjectConstants.File.PLATFORM_HOME_PROPERTIES -> propertiesFiles.add(file)
+                }
+            }
+
+        localPropsFile?.let { propertiesFiles.add(it) }
+        advancedPropsFile?.let { propertiesFiles.add(0, it) }
+        envPropsFile?.let { propertiesFiles.add(0, it) }
+
+        propertiesFiles.forEach { addPropertyFile(result, it) }
+
+        loadHybrisRuntimeProperties(result)
+        loadHybrisOptionalConfigDir(result)
+
+        val dependencies = propertiesFiles
+            .map { it.virtualFile }
+            .toTypedArray()
+            .ifEmpty { ModificationTracker.EVER_CHANGED }
+
+        CachedValueProvider.Result.create(result.values.toList(), dependencies)
+    }
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
         val platformHomePropertyKey = HybrisConstants.PROPERTY_PLATFORMHOME
