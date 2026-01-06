@@ -362,6 +362,10 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
             }
 
             indent {
+                row {
+                    comment(i18n("hybris.import.settings.group.modules.help"))
+                }
+
                 groupProperties(
                     HybrisIcons.Extension.CUSTOM,
                     i18n("hybris.import.settings.group.custom"),
