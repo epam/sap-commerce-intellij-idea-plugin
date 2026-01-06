@@ -27,6 +27,7 @@ import com.intellij.util.asSafely
 import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.java.configurator.contentEntry.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
@@ -35,6 +36,8 @@ import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
+
+// TODO: Split this to LibraryDescriptors provider
 
 internal fun ModuleDescriptor.collectLibraryDescriptors(importContext: ProjectImportContext): Collection<JavaLibraryDescriptor> = when (this) {
     is YRegularModuleDescriptor -> this.libs(importContext)
@@ -79,8 +82,8 @@ private fun YRegularModuleDescriptor.libs(importContext: ProjectImportContext) =
     add(this@libs.rootLib)
 
     addAll(this@libs.nonCustomModuleLibs(importContext))
-    addAll(this@libs.serverLibs(importContext))
 
+    addIfNotNull(this@libs.serverLibs(importContext))
     addIfNotNull(this@libs.backofficeClassesLib(importContext))
 }
 
@@ -89,17 +92,19 @@ private fun YRegularModuleDescriptor.backofficeClassesLib(importContext: Project
     ?.firstOrNull { it is YBackofficeSubModuleDescriptor }
     ?.let { yModule ->
         val attachSources = this.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
-        val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
+        val sourcePaths = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
             .map { yModule.moduleRootPath.resolve(it) }
             .filter { it.directoryExists }
+            .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
 
         JavaLibraryDescriptor(
             name = "${this.name} - Backoffice Classes",
-            libraryFile = yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES),
-            sourceFiles = if (attachSources) sourceFiles
-            else emptyList(),
-            directoryWithClasses = true,
-            scope = DependencyScope.PROVIDED
+            scope = DependencyScope.PROVIDED,
+            libraryPaths = buildList {
+                add(JavaLibraryPath.Root(OrderRootType.CLASSES, yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)))
+
+                if (attachSources) addAll(sourcePaths)
+            },
         )
     }
 
@@ -107,8 +112,10 @@ private fun YHmcSubModuleDescriptor.hmcLibs(importContext: ProjectImportContext)
     add(
         JavaLibraryDescriptor(
             name = "${this@hmcLibs.name} - HMC Bin",
-            libraryFile = this@hmcLibs.moduleRootPath.resolve(ProjectConstants.Directory.BIN),
-            exported = true
+            exported = true,
+            libraryPaths = listOf(
+                JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this@hmcLibs.moduleRootPath.resolve(ProjectConstants.Directory.BIN))
+            )
         )
     )
 
@@ -117,8 +124,9 @@ private fun YHmcSubModuleDescriptor.hmcLibs(importContext: ProjectImportContext)
         ?.let {
             JavaLibraryDescriptor(
                 name = "${this@hmcLibs.name} - Web Classes",
-                libraryFile = it.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES),
-                directoryWithClasses = true
+                libraryPaths = listOf(
+                    JavaLibraryPath.Root(OrderRootType.CLASSES, it.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES))
+                ),
             )
         }
         ?.let { add(it) }
@@ -127,28 +135,39 @@ private fun YHmcSubModuleDescriptor.hmcLibs(importContext: ProjectImportContext)
 private val YModuleDescriptor.rootLib
     get() = JavaLibraryDescriptor(
         name = "${this.name} - lib",
-        libraryFile = this.moduleRootPath.resolve(ProjectConstants.Directory.LIB),
+        descriptorType = LibraryDescriptorType.LIB,
         exported = true,
-        descriptorType = LibraryDescriptorType.LIB
+        libraryPaths = listOf(
+            JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this.moduleRootPath.resolve(ProjectConstants.Directory.LIB))
+        )
     )
 
 private fun YModuleDescriptor.nonCustomModuleLibs(importContext: ProjectImportContext): Collection<JavaLibraryDescriptor> {
-    if (importContext.settings.importOOTBModulesInWriteMode) return emptyList()
     if (this.type == ModuleDescriptorType.CUSTOM) return emptyList()
-
-    val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-        .map { this.moduleRootPath.resolve(it) }
-        .filter { it.directoryExists }
+    if (importContext.settings.importOOTBModulesInWriteMode) return emptyList()
 
     return buildList {
+        val moduleRootPath = this@nonCustomModuleLibs.moduleRootPath
+
         if (EiConstants.Extension.PLATFORM_SERVICES != this@nonCustomModuleLibs.name) {
             add(
                 JavaLibraryDescriptor(
                     name = "${this@nonCustomModuleLibs.name} - compiler output",
-                    libraryFile = this@nonCustomModuleLibs.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES),
-                    sourceFiles = sourceFiles,
                     exported = true,
-                    directoryWithClasses = true
+                    libraryPaths = buildList {
+                        add(
+                            JavaLibraryPath.Root(
+                                OrderRootType.CLASSES,
+                                moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)
+                            )
+                        )
+
+                        (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
+                            .map { moduleRootPath.resolve(it) }
+                            .filter { it.directoryExists }
+                            .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                            .forEach { add(it) }
+                    }
                 )
             )
         }
@@ -156,41 +175,51 @@ private fun YModuleDescriptor.nonCustomModuleLibs(importContext: ProjectImportCo
         add(
             JavaLibraryDescriptor(
                 name = "${this@nonCustomModuleLibs.name} - resources",
-                libraryFile = this@nonCustomModuleLibs.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES),
                 exported = true,
-                directoryWithClasses = true
+                libraryPaths = listOf(
+                    JavaLibraryPath.Root(OrderRootType.CLASSES, moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
+                )
             )
         )
     }
 }
 
 // TODO: server jar may not present, example -> apparelstore, electronicsstore, core
-private fun YModuleDescriptor.serverLibs(importContext: ProjectImportContext): Collection<JavaLibraryDescriptor> {
-    val serverJars = this.moduleRootPath.resolve(ProjectConstants.Directory.BIN)
-        .takeIf { it.directoryExists }
-        ?.listDirectoryEntries()
-        ?.filter { it.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
-        ?.takeIf { it.isNotEmpty() }
-        ?: return emptyList()
-
-    val sourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-        .map { this.moduleRootPath.resolve(it) }
-        .filter { it.directoryExists }
+private fun YModuleDescriptor.serverLibs(importContext: ProjectImportContext): JavaLibraryDescriptor? {
+    if (this.isCustomModuleDescriptor) return null
 
     // Attach standard sources to server jar
-    val sourceJarDirectories = this.getStandardSourceJarDirectory(importContext)
+    return JavaLibraryDescriptor(
+        name = "${this.name} - server",
+        exported = true,
+        libraryPaths = buildList {
+            val moduleRootPath = this@serverLibs.moduleRootPath
 
-    return serverJars
-        .map { serverJar ->
-            JavaLibraryDescriptor(
-                name = "${this.name} - server",
-                libraryFile = serverJar,
-                sourceFiles = sourceFiles,
-                sourceJarDirectories = sourceJarDirectories,
-                exported = true,
-                directoryWithClasses = true
-            )
+            moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)
+                .takeIf { it.directoryExists }
+                ?.let { JavaLibraryPath.Root(OrderRootType.CLASSES, it) }
+                ?.let { add(it) }
+
+
+            moduleRootPath.resolve(ProjectConstants.Directory.BIN)
+                .takeIf { it.directoryExists }
+                ?.listDirectoryEntries()
+                ?.filter { it.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
+                ?.takeIf { it.isNotEmpty() }
+                ?.map { JavaLibraryPath.Root(OrderRootType.CLASSES, it) }
+                ?.forEach { add(it) }
+
+            (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
+                .map { moduleRootPath.resolve(it) }
+                .filter { it.directoryExists }
+                .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                .forEach { add(it) }
+
+            this@serverLibs.getStandardSourceJarDirectory(importContext)
+                .map { JavaLibraryPath.JarDirectory(OrderRootType.SOURCES, it) }
+                .forEach { add(it) }
         }
+    )
 }
 
 private fun YBackofficeSubModuleDescriptor.libs(importContext: ProjectImportContext) = buildList {
@@ -198,13 +227,15 @@ private fun YBackofficeSubModuleDescriptor.libs(importContext: ProjectImportCont
     add(this@libs.backofficeLib())
 
     addAll(this@libs.nonCustomModuleLibs(importContext))
-    addAll(this@libs.serverLibs(importContext))
+    addIfNotNull(this@libs.serverLibs(importContext))
 }
 
 private fun YBackofficeSubModuleDescriptor.backofficeLib() = JavaLibraryDescriptor(
     name = "${this.name} - Backoffice lib",
-    libraryFile = this.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_BIN),
-    exported = true
+    exported = true,
+    libraryPaths = listOf(
+        JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_BIN))
+    )
 )
 
 /**
@@ -217,7 +248,7 @@ private fun YHacSubModuleDescriptor.libs(importContext: ProjectImportContext) = 
     add(this@libs.rootLib)
 
     addAll(this@libs.nonCustomModuleLibs(importContext))
-    addAll(this@libs.serverLibs(importContext))
+    addIfNotNull(this@libs.serverLibs(importContext))
 
     importContext.platformDirectory.resolve(ProjectConstants.Paths.HAC_WEB_INF_CLASSES)
         .takeIf { it.directoryExists }
@@ -225,8 +256,9 @@ private fun YHacSubModuleDescriptor.libs(importContext: ProjectImportContext) = 
             add(
                 JavaLibraryDescriptor(
                     name = "${this@libs.name} - HAC Web Classes",
-                    libraryFile = it,
-                    directoryWithClasses = true
+                    libraryPaths = listOf(
+                        JavaLibraryPath.Root(OrderRootType.CLASSES, it)
+                    )
                 )
             )
         }
@@ -237,14 +269,14 @@ private fun YHmcSubModuleDescriptor.libs(importContext: ProjectImportContext) = 
 
     addAll(this@libs.nonCustomModuleLibs(importContext))
     addAll(this@libs.hmcLibs(importContext))
-    addAll(this@libs.serverLibs(importContext))
+    addIfNotNull(this@libs.serverLibs(importContext))
 }
 
 private fun YAcceleratorAddonSubModuleDescriptor.libs(importContext: ProjectImportContext): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
     libs.addAll(this.nonCustomModuleLibs(importContext))
-    libs.addAll(this.serverLibs(importContext))
+    libs.addIfNotNull(this.serverLibs(importContext))
     libs.add(this.rootLib)
 
     val attachSources = this.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
@@ -258,24 +290,29 @@ private fun YAcceleratorAddonSubModuleDescriptor.libs(importContext: ProjectImpo
         .filter { it != this }
         .forEach { yModule ->
             // process owner extension dependencies
-            val addonSourceFiles = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-                .map { yModule.moduleRootPath.resolve(it) }
-                .filter { it.directoryExists }
 
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${yModule.name} - Addon's Target Classes",
-                    libraryFile = yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES),
-                    sourceFiles = if (attachSources) addonSourceFiles
-                    else emptyList(),
-                    directoryWithClasses = true
+                    libraryPaths = buildList {
+                        add(JavaLibraryPath.Root(OrderRootType.CLASSES, yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)))
+
+                        if (attachSources) {
+                            (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
+                                .map { yModule.moduleRootPath.resolve(it) }
+                                .filter { it.directoryExists }
+                                .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                                .forEach { add(it) }
+                        }
+                    }
                 )
             )
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${yModule.name} - Addon's Target Resources",
-                    libraryFile = yModule.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES),
-                    directoryWithClasses = true
+                    libraryPaths = listOf(
+                        JavaLibraryPath.Root(OrderRootType.CLASSES, yModule.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)),
+                    )
                 )
             )
         }
@@ -286,28 +323,8 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
     libs.addAll(this.nonCustomModuleLibs(importContext))
-    libs.addAll(this.serverLibs(importContext))
+    libs.addIfNotNull(this.serverLibs(importContext))
     libs.add(this.rootLib)
-
-    val sourceFiles = ProjectConstants.Directory.ALL_SRC_DIR_NAMES
-        .map { this.moduleRootPath.resolve(it) }
-        .filter { it.directoryExists }
-        .toMutableList()
-    val testSourceFiles = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
-        .map { this.moduleRootPath.resolve(it) }
-        .filter { it.directoryExists }
-        .toMutableList()
-
-    listOf(
-        this.moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC),
-        this.moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
-    )
-        .filter { it.directoryExists }
-        .flatMap { srcDir ->
-            srcDir.listDirectoryEntries()
-                .filter { it.directoryExists }
-        }
-        .forEach { sourceFiles.add(it) }
 
     if (this.owner.name == EiConstants.Extension.BACK_OFFICE) return libs
 
@@ -315,20 +332,50 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
         libs.add(
             JavaLibraryDescriptor(
                 name = "${this.name} - Web Classes",
-                libraryFile = this.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES),
-                sourceFiles = sourceFiles,
                 exported = true,
-                directoryWithClasses = true
+                libraryPaths = buildList {
+                    add(
+                        JavaLibraryPath.Root(
+                            OrderRootType.CLASSES,
+                            this@webLibs.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
+                        )
+                    )
+
+                    ProjectConstants.Directory.ALL_SRC_DIR_NAMES
+                        .map { this@webLibs.moduleRootPath.resolve(it) }
+                        .filter { it.directoryExists }
+                        .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                        .forEach { add(it) }
+
+                    listOf(
+                        this@webLibs.moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC),
+                        this@webLibs.moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
+                    )
+                        .filter { it.directoryExists }
+                        .flatMap { srcDir ->
+                            srcDir.listDirectoryEntries()
+                                .filter { it.directoryExists }
+                        }
+                        .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                        .forEach { add(it) }
+                }
             )
         )
+
         libs.add(
             JavaLibraryDescriptor(
                 name = "${this.name} - Test Classes",
-                libraryFile = this.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
-                sourceFiles = testSourceFiles,
                 exported = true,
-                directoryWithClasses = true,
-                scope = DependencyScope.TEST
+                scope = DependencyScope.TEST,
+                libraryPaths = buildList {
+                    add(JavaLibraryPath.Root(OrderRootType.CLASSES, this@webLibs.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES)))
+
+                    ProjectConstants.Directory.TEST_SRC_DIR_NAMES
+                        .map { this@webLibs.moduleRootPath.resolve(it) }
+                        .filter { it.directoryExists }
+                        .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                        .forEach { add(it) }
+                }
             )
         )
     }
@@ -339,13 +386,22 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${this.name} - Web Library",
-                    libraryFile = libFolder,
-                    jarFiles = libFolder.listDirectoryEntries()
-                        .filter { it.name.endsWith(".jar") }
-                        .toSet(),
-                    sourceJarDirectories = this.getStandardSourceJarDirectory(importContext),
+                    descriptorType = LibraryDescriptorType.WEB_INF_LIB,
                     exported = true,
-                    descriptorType = LibraryDescriptorType.WEB_INF_LIB
+                    libraryPaths = buildList {
+                        add(JavaLibraryPath.Root(OrderRootType.CLASSES, libFolder))
+
+                        // we have to add each jar file explicitly, otherwise Spring will not recognise `classpath:/META-INF/my.xml` in the jar files
+                        // JetBrains IntelliJ IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
+                        libFolder.listDirectoryEntries()
+                            .filter { it.name.endsWith(".jar") }
+                            .map { JavaLibraryPath.Root(OrderRootType.CLASSES, it) }
+                            .forEach { add(it) }
+
+                        this@webLibs.getStandardSourceJarDirectory(importContext)
+                            .map { JavaLibraryPath.JarDirectory(OrderRootType.SOURCES, it) }
+                            .forEach { add(it) }
+                    },
                 )
             )
         }
@@ -359,12 +415,15 @@ private fun YCommonWebSubModuleDescriptor.commonWebLibs(importContext: ProjectIm
             val webSourceFiles = ProjectConstants.Directory.ALL_SRC_DIR_NAMES
                 .map { dir -> this@commonWebLibs.moduleRootPath.resolve(dir) }
                 .filter { dir -> dir.directoryExists }
+                .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
             JavaLibraryDescriptor(
                 name = "${it.name} - Common Web Classes",
-                libraryFile = it.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES),
-                sourceFiles = webSourceFiles,
                 exported = true,
-                directoryWithClasses = true
+                libraryPaths = buildList {
+                    add(JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, it.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)))
+
+                    addAll(webSourceFiles)
+                }
             )
         }
 
@@ -375,8 +434,10 @@ private fun YCommonWebSubModuleDescriptor.commonWebLibs(importContext: ProjectIm
 private fun ConfigModuleDescriptor.libs() = listOf(
     JavaLibraryDescriptor(
         name = "Config License",
-        libraryFile = this.moduleRootPath.resolve(ProjectConstants.Directory.LICENCE),
-        exported = true
+        exported = true,
+        libraryPaths = listOf(
+            JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this.moduleRootPath.resolve(ProjectConstants.Directory.LICENCE))
+        )
     )
 )
 
@@ -386,8 +447,10 @@ private fun PlatformModuleDescriptor.libs(importContext: ProjectImportContext): 
     return listOf(
         JavaLibraryDescriptor(
             name = HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY,
-            libraryFile = dbDriversPath,
             exported = true,
+            libraryPaths = listOf(
+                JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, dbDriversPath),
+            )
         )
     )
 }

@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.java.configurator
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.DependencyScope
@@ -31,6 +32,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
+import sap.commerce.toolset.java.descriptor.JavaLibraryPath
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
 import sap.commerce.toolset.java.descriptor.collectLibraryDescriptors
 import sap.commerce.toolset.project.ProjectConstants
@@ -61,15 +63,22 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
         val sourceCodeRoot = getSourceCodeRoot(importContext)
 
+        // TODO: migrate to new Configurator for JavaLibraryDescriptor
+
         for (javaLibraryDescriptor in moduleDescriptor.collectLibraryDescriptors(importContext)) {
-            if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
+            val noValidClassesPaths = javaLibraryDescriptor.libraryPaths
+                .filter { it.rootType == OrderRootType.CLASSES }
+                .takeIf { it.isNotEmpty() }
+                ?.none { it.path.exists() }
+
+                ?: true
+
+            if (noValidClassesPaths) {
+                thisLogger().warn("Library paths not found: ${moduleDescriptor.name} | ${javaLibraryDescriptor.name}")
                 continue
             }
-            if (javaLibraryDescriptor.directoryWithClasses) {
-                addClassesToModuleLibs(modifiableRootModel, modifiableModelsProvider, sourceCodeRoot, javaLibraryDescriptor)
-            } else {
-                addJarFolderToModuleLibs(modifiableRootModel, modifiableModelsProvider, javaLibraryDescriptor)
-            }
+
+            addRoots(modifiableRootModel, modifiableModelsProvider, sourceCodeRoot, javaLibraryDescriptor)
         }
 
         when (moduleDescriptor) {
@@ -92,6 +101,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                     val classes = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
                     val library = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
                     val sources = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
+
                     addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, classes, null, false)
                     addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, library, sources)
                 }
@@ -106,61 +116,29 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             else JarFileSystem.getInstance().getJarRootForLocalFile(vf)
         }
 
-    private fun addClassesToModuleLibs(
+    private fun addRoots(
         modifiableRootModel: ModifiableRootModel,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         sourceCodeRoot: VirtualFile?,
         javaLibraryDescriptor: JavaLibraryDescriptor
     ) {
-        val library = javaLibraryDescriptor.name
-            ?.let { modifiableRootModel.moduleLibraryTable.createLibrary(it) }
-            ?: modifiableRootModel.moduleLibraryTable.createLibrary()
+        val library = modifiableRootModel.moduleLibraryTable.createLibrary(javaLibraryDescriptor.name)
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
-        libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), OrderRootType.CLASSES)
 
-        val sourceDirAttached = attachSourceFiles(javaLibraryDescriptor, libraryModifiableModel).isNotEmpty()
-        attachSourceJarDirectories(javaLibraryDescriptor, libraryModifiableModel)
+        setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.scope)
 
-        if (sourceCodeRoot != null
-            && !sourceDirAttached
-            && javaLibraryDescriptor.libraryFile.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX)
-        ) {
+        if (javaLibraryDescriptor.exported) setLibraryEntryExported(modifiableRootModel, library)
+
+        if (sourceCodeRoot != null && javaLibraryDescriptor.libraryPaths.any { it.path.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES)
         }
 
-        if (javaLibraryDescriptor.exported) {
-            setLibraryEntryExported(modifiableRootModel, library)
+        javaLibraryDescriptor.libraryPaths.forEach {
+            when (it) {
+                is JavaLibraryPath.Root -> libraryModifiableModel.addRoot(it.url, it.rootType)
+                is JavaLibraryPath.JarDirectory -> libraryModifiableModel.addJarDirectory(it.url, true, it.rootType)
+            }
         }
-
-        setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.scope)
-    }
-
-    private fun addJarFolderToModuleLibs(
-        modifiableRootModel: ModifiableRootModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        javaLibraryDescriptor: JavaLibraryDescriptor
-    ) {
-        val projectLibraryTable = modifiableRootModel.moduleLibraryTable
-        val library = javaLibraryDescriptor.name
-            ?.let { projectLibraryTable.createLibrary(it) }
-            ?: projectLibraryTable.createLibrary()
-
-        val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
-        libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), true)
-        // we have to add each jar file explicitly, otherwise Spring will not recognise `classpath:/META-INF/my.xml` in the jar files
-        // JetBrains IntelliJ IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
-        javaLibraryDescriptor.jarFiles.forEach {
-            libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(it), OrderRootType.CLASSES)
-        }
-
-        attachSourceFiles(javaLibraryDescriptor, libraryModifiableModel)
-        attachSourceJarDirectories(javaLibraryDescriptor, libraryModifiableModel)
-
-        if (javaLibraryDescriptor.exported) {
-            setLibraryEntryExported(modifiableRootModel, library)
-        }
-
-        setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.scope)
     }
 
     private fun addLibsToModule(
@@ -185,22 +163,6 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
     private fun setLibraryEntryScope(modifiableRootModel: ModifiableRootModel, library: Library, scope: DependencyScope) {
         findOrderEntryForLibrary(modifiableRootModel, library).scope = scope
-    }
-
-    private fun attachSourceFiles(
-        javaLibraryDescriptor: JavaLibraryDescriptor,
-        libraryModifiableModel: Library.ModifiableModel
-    ) = javaLibraryDescriptor.sourceFiles
-        .mapNotNull { VfsUtil.findFile(it, true) }
-        .onEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
-
-    private fun attachSourceJarDirectories(
-        javaLibraryDescriptor: JavaLibraryDescriptor,
-        libraryModifiableModel: Library.ModifiableModel
-    ) {
-        javaLibraryDescriptor.sourceJarDirectories
-            .mapNotNull { VfsUtil.findFile(it, true) }
-            .forEach { libraryModifiableModel.addJarDirectory(it, true, OrderRootType.SOURCES) }
     }
 
     // Workaround of using Library.equals in findLibraryOrderEntry, which doesn't work here, because all empty libs are equal. Use == instead.

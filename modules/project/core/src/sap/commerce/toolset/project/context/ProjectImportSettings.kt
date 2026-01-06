@@ -26,6 +26,7 @@ import sap.commerce.toolset.settings.ApplicationSettings
 data class ProjectImportSettings(
     val importOOTBModulesInReadOnlyMode: Boolean,
     val followSymlink: Boolean,
+    @Deprecated("remove")
     val excludeTestSources: Boolean,
     val importCustomAntBuildFiles: Boolean,
     val ignoreNonExistingSourceDirectories: Boolean,
@@ -46,6 +47,7 @@ data class ProjectImportSettings(
     val groupNameExternalModules: String,
     val extensionsResourcesToExclude: Collection<String>,
 ) {
+    @Deprecated("remove")
     val includeTestSources: Boolean
         get() = !excludeTestSources
     val importOOTBModulesInWriteMode

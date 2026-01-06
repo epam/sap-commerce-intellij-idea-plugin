@@ -20,7 +20,6 @@ package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.openapi.roots.ContentEntry
 import org.jetbrains.jps.model.java.JavaSourceRootType
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -31,12 +30,8 @@ class ContentEntryTestSourcesConfigurator : ModuleContentEntryConfigurator {
     override val name: String
         get() = "Test sources"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = importContext.settings.includeTestSources
-        || (
-        moduleDescriptor.isCustomModuleDescriptor
-            || importContext.settings.importOOTBModulesInWriteMode
-            || EiConstants.Extension.PLATFORM_SERVICES == moduleDescriptor.name
-        )
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
+        || importContext.settings.importOOTBModulesInWriteMode
 
     override fun configure(
         importContext: ProjectImportContext,

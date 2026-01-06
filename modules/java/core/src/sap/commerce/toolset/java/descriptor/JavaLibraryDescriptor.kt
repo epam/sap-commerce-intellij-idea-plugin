@@ -19,26 +19,25 @@
 package sap.commerce.toolset.java.descriptor
 
 import com.intellij.openapi.roots.DependencyScope
-import sap.commerce.toolset.project.descriptor.LibraryDescriptorType
+import com.intellij.openapi.roots.OrderRootType
+import com.intellij.openapi.vfs.VfsUtil
 import java.nio.file.Path
 
-data class JavaLibraryDescriptor(
-    var name: String? = null,
-    @Deprecated(
-        "review it, for server-jars it it preferable to have single library for multiple jars," +
-            "why we need this library File at all?" +
-            "Mby just set libraryPaths and that all!"
-    )
-    var libraryFile: Path,
-    var jarFiles: Set<Path> = emptySet(),
-    @Deprecated("introduce source paths")
-    var sourceFiles: List<Path> = emptyList(),
-    @Deprecated("introduce source paths")
-    var sourceJarDirectories: List<Path> = emptyList(),
-    var sourcePaths: List<Path> = emptyList(),
-    var exported: Boolean = false,
-    @Deprecated("What is it?")
-    var directoryWithClasses: Boolean = false,
-    var descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
-    var scope: DependencyScope = DependencyScope.COMPILE
+internal data class JavaLibraryDescriptor(
+    val name: String,
+    val descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
+    val scope: DependencyScope = DependencyScope.COMPILE,
+    val exported: Boolean = false,
+    val libraryPaths: Collection<JavaLibraryPath> = emptyList(),
 )
+
+internal sealed class JavaLibraryPath private constructor(
+    open val rootType: OrderRootType,
+    open val path: Path
+) {
+    data class Root(override val rootType: OrderRootType, override val path: Path) : JavaLibraryPath(rootType, path)
+    data class JarDirectory(override val rootType: OrderRootType, override val path: Path) : JavaLibraryPath(rootType, path)
+
+    val url
+        get() = VfsUtil.getUrlForLibraryRoot(path)
+}

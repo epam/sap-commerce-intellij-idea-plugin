@@ -21,7 +21,6 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.openapi.roots.ContentEntry
 import org.jetbrains.jps.model.java.JavaResourceRootType
 import org.jetbrains.jps.model.java.JpsJavaExtensionService
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -35,7 +34,6 @@ class ContentEntryResourcesConfigurator : ModuleContentEntryConfigurator {
 
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
         || importContext.settings.importOOTBModulesInWriteMode
-        || EiConstants.Extension.PLATFORM_SERVICES == moduleDescriptor.name
 
     override fun configure(
         importContext: ProjectImportContext,
