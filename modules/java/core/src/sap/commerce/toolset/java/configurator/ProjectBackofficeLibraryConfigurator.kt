@@ -19,59 +19,73 @@
 package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
+import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.java.configurator.library.PlatformEntitySource
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
-import sap.commerce.toolset.util.fileExists
-import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.pathString
 
-class PlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator {
+class ProjectBackofficeLibraryConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
-        get() = HybrisConstants.LIBRARY_GROUP_PLATFORM
+        get() = HybrisConstants.LIBRARY_GROUP_BACKOFFICE
 
     override suspend fun preConfigure(importContext: ProjectImportContext) {
-        val moduleDescriptor = importContext.platformModuleDescriptor
+        val moduleDescriptor = importContext.chosenHybrisModuleDescriptors
+            .filterIsInstance<YWebSubModuleDescriptor>()
+            .find { it.owner.name == EiConstants.Extension.BACK_OFFICE }
+
+        if (moduleDescriptor == null) {
+            thisLogger().info("Backoffice Library will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")
+            return
+        }
+
         val workspaceModel = WorkspaceModel.Companion.getInstance(importContext.project)
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
 
         val roots = buildList {
-            moduleDescriptor.libraryDirectories
-                .map { virtualFileUrlManager.fromPath(it.pathString) }
-                .map { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
-                .forEach { add(it) }
-
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC)
+            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
                 .takeIf { it.directoryExists }
+                ?.normalize()
+                ?.let { virtualFileUrlManager.fromPath(it.pathString) }
+                ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                ?.let { add(it) }
+            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+                .takeIf { it.directoryExists }
+                ?.normalize()
+                ?.let { virtualFileUrlManager.fromPath(it.pathString) }
+                ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY) }
+                ?.let { add(it) }
+
+            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
+                .takeIf { it.directoryExists && importContext.settings.withStandardProvidedSources }
+                ?.normalize()
                 ?.let { virtualFileUrlManager.fromPath(it.pathString) }
                 ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                 ?.let { add(it) }
 
-            importContext.sourceCodeFile
-                ?.takeIf { it.fileExists }
-                ?.let { virtualFileUrlManager.fromPath(it.pathString) }
-                ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
-                ?.let { add(it) }
         }
 
         backgroundWriteAction {
-            workspaceModel.updateProjectModel("Processing library: ${HybrisConstants.LIBRARY_GROUP_PLATFORM}") { storage ->
+            workspaceModel.updateProjectModel("Processing library: ${HybrisConstants.LIBRARY_GROUP_BACKOFFICE}") { storage ->
                 val libraryEntity = storage
                     .entities(LibraryEntity::class.java)
-                    .firstOrNull { it.name == HybrisConstants.LIBRARY_GROUP_PLATFORM }
+                    .firstOrNull { it.name == HybrisConstants.LIBRARY_GROUP_BACKOFFICE }
                     ?: storage.addEntity(
                         LibraryEntity(
-                            name = HybrisConstants.LIBRARY_GROUP_PLATFORM,
+                            name = HybrisConstants.LIBRARY_GROUP_BACKOFFICE,
                             tableId = LibraryTableId.ProjectLibraryTableId,
                             roots = emptyList(),
-                            entitySource = PlatformEntitySource,
+                            entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)
+                                .createEntitySourceForProjectLibrary(null),
                         )
                     )
 
@@ -82,25 +96,4 @@ class PlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator {
             }
         }
     }
-
-    private val ModuleDescriptor.libraryDirectories
-        get() = buildList {
-            val moduleRootPath = this@libraryDirectories.moduleRootPath
-
-            moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
-                .takeIf { it.directoryExists }
-                ?.listDirectoryEntries()
-                ?.filter { it.directoryExists }
-                ?.forEach { resourcesInnerDirectory ->
-                    add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.LIB))
-                    add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.BIN))
-                }
-
-            add(moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_BIN))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_BIN))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_BIN))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_LIB))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_LIB))
-        }
-            .filter { it.directoryExists }
 }

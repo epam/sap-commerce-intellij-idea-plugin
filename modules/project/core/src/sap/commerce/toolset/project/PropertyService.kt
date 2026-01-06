@@ -142,6 +142,7 @@ class PropertyService(private val project: Project, private val coroutineScope: 
             ?.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
+    // TODO: migrate to coroutine and smartReadAction
     fun findAllProperties(): Map<String, String> = application.runReadAction<Map<String, String>> {
         findAllIProperties()
             .filter { it.value != null && it.key != null }

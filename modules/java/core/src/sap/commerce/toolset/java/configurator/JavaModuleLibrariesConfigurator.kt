@@ -42,7 +42,6 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.exists
@@ -106,17 +105,6 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 }
                 if (moduleDescriptor.name == EiConstants.Extension.BACK_OFFICE) {
                     addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.LIBRARY_GROUP_BACKOFFICE, true)
-                }
-            }
-
-            is YWebSubModuleDescriptor -> {
-                if (moduleDescriptor.owner.name == EiConstants.Extension.BACK_OFFICE) {
-                    val classes = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES).normalize()
-                    val library = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB).normalize()
-                    val sources = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES).normalize()
-
-                    addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, classes, null, false)
-                    addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, library, sources)
                 }
             }
         }
