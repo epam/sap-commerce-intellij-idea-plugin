@@ -51,6 +51,7 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
             this.groupPlatform = importSettings.groupPlatform
             this.groupCCv2 = importSettings.groupCCv2
             this.groupNameExternalModules = importSettings.groupNameExternalModules
+            this.extensionsResourcesToExclude = importSettings.extensionsResourcesToExclude.toList()
         }
     }
 }
