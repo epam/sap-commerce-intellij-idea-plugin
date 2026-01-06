@@ -84,11 +84,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
-    var excludeTestSources: Boolean
-        get() = state.excludeTestSources
-        set(value) {
-            updateState { it.copy(excludeTestSources = value) }
-        }
     var importCustomAntBuildFiles: Boolean
         get() = state.importCustomAntBuildFiles
         set(value) {

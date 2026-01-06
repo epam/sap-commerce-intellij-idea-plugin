@@ -94,11 +94,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(followSymlink = value) }
         }
-    var excludeTestSources
-        get() = state.excludeTestSources
-        set(value) {
-            updateState { it.copy(excludeTestSources = value) }
-        }
     var importCustomAntBuildFiles
         get() = state.importCustomAntBuildFiles
         set(value) {

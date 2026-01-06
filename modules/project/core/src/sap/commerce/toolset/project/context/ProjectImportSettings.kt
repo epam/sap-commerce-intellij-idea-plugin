@@ -26,8 +26,6 @@ import sap.commerce.toolset.settings.ApplicationSettings
 data class ProjectImportSettings(
     val importOOTBModulesInReadOnlyMode: Boolean,
     val followSymlink: Boolean,
-    @Deprecated("remove")
-    val excludeTestSources: Boolean,
     val importCustomAntBuildFiles: Boolean,
     val ignoreNonExistingSourceDirectories: Boolean,
     val hideEmptyMiddleFolders: Boolean,
@@ -47,16 +45,12 @@ data class ProjectImportSettings(
     val groupNameExternalModules: String,
     val extensionsResourcesToExclude: Collection<String>,
 ) {
-    @Deprecated("remove")
-    val includeTestSources: Boolean
-        get() = !excludeTestSources
     val importOOTBModulesInWriteMode
         get() = !importOOTBModulesInReadOnlyMode
 
     fun mutable() = Mutable(
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
         followSymlink = AtomicBooleanProperty(followSymlink),
-        excludeTestSources = AtomicBooleanProperty(excludeTestSources),
         importCustomAntBuildFiles = AtomicBooleanProperty(importCustomAntBuildFiles),
         ignoreNonExistingSourceDirectories = AtomicBooleanProperty(ignoreNonExistingSourceDirectories),
         hideEmptyMiddleFolders = AtomicBooleanProperty(hideEmptyMiddleFolders),
@@ -80,7 +74,6 @@ data class ProjectImportSettings(
     data class Mutable(
         val importOOTBModulesInReadOnlyMode: AtomicBooleanProperty,
         val followSymlink: AtomicBooleanProperty,
-        val excludeTestSources: AtomicBooleanProperty,
         val importCustomAntBuildFiles: AtomicBooleanProperty,
         val ignoreNonExistingSourceDirectories: AtomicBooleanProperty,
         val hideEmptyMiddleFolders: AtomicBooleanProperty,
@@ -103,7 +96,6 @@ data class ProjectImportSettings(
         fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
             followSymlink = followSymlink.get(),
-            excludeTestSources = excludeTestSources.get(),
             importCustomAntBuildFiles = importCustomAntBuildFiles.get(),
             ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.get(),
             hideEmptyMiddleFolders = hideEmptyMiddleFolders.get(),
@@ -129,7 +121,6 @@ data class ProjectImportSettings(
         fun of(applicationSettings: ApplicationSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = applicationSettings.importOOTBModulesInReadOnlyMode,
             followSymlink = applicationSettings.followSymlink,
-            excludeTestSources = applicationSettings.excludeTestSources,
             importCustomAntBuildFiles = applicationSettings.importCustomAntBuildFiles,
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
@@ -153,7 +144,6 @@ data class ProjectImportSettings(
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
             followSymlink = projectSettings.followSymlink,
-            excludeTestSources = projectSettings.excludeTestSources,
             importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles,
 
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,

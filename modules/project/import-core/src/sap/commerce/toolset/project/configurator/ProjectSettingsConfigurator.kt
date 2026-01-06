@@ -56,7 +56,6 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
 
         projectSettings.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
         projectSettings.followSymlink = importSettings.followSymlink
-        projectSettings.excludeTestSources = importSettings.excludeTestSources
         projectSettings.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
         projectSettings.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
 

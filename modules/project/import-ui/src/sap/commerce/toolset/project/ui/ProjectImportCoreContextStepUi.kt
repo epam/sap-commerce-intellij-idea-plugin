@@ -244,11 +244,6 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
             }
 
             row {
-                checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(context.importSettings.excludeTestSources)
-            }
-
-            row {
                 checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
                     .bindSelected(context.importSettings.ignoreNonExistingSourceDirectories)
             }

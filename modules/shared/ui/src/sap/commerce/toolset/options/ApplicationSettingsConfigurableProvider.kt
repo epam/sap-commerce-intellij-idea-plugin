@@ -83,11 +83,6 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
 
                 row {
-                    checkBox(i18n("hybris.project.import.excludeTestSources"))
-                        .bindSelected(applicationSettings::excludeTestSources)
-                }
-
-                row {
                     checkBox(i18n("hybris.project.import.ignore.non.existing.sources"))
                         .bindSelected(applicationSettings::ignoreNonExistingSourceDirectories)
                 }

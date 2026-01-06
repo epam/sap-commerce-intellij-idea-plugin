@@ -78,11 +78,6 @@ class ProjectRefreshDialog(
             }
 
             row {
-                checkBox(i18n("hybris.project.import.excludeTestSources"))
-                    .bindSelected(refreshContext.importSettings.excludeTestSources)
-            }
-
-            row {
                 checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
                     .bindSelected(refreshContext.importSettings.ignoreNonExistingSourceDirectories)
             }
