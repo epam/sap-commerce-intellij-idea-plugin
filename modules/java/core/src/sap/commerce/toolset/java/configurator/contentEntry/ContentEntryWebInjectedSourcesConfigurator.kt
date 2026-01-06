@@ -50,8 +50,8 @@ class ContentEntryWebInjectedSourcesConfigurator : ModuleContentEntryConfigurato
             moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
         )
             .filter { it.directoryExists }
-            .flatMap {
-                Files.newDirectoryStream(it) { it.isDirectory() }.use { directoryStream ->
+            .flatMap { path ->
+                Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
                     directoryStream.toList()
                 }
             }

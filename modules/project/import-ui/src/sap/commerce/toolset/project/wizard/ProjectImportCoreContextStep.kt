@@ -36,10 +36,7 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.HybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.context.ProjectImportCoreContext
-import sap.commerce.toolset.project.context.ProjectImportSettings
-import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.context.*
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.tasks.LookupModuleDescriptorsTask
 import sap.commerce.toolset.project.tasks.LookupPlatformDirectoryTask
@@ -48,9 +45,8 @@ import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.awt.Dimension
-import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import javax.swing.ScrollPaneConstants
@@ -108,15 +104,14 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             this.modulesFilesDirectory = importCoreContext.moduleFilesStorageDirectory.takeIf { importCoreContext.moduleFilesStorage.get() }
                 ?.get()?.toNioPathOrNull()
 
-            this.sourceCodeFile = importCoreContext.sourceCodeDirectory.takeIf { importCoreContext.sourceCodeDirectoryOverride.get() }
+            this.sourceCodePath = importCoreContext.sourceCodePath.takeIf { importCoreContext.sourceCodePathOverride.get() }
                 ?.get()
                 ?.toNioPathOrNull()
-                ?.let {
-                    // TODO: detect exact suitable file as an observable property on directory selection
-                    // also respect on project refresh
-                    if (it.directoryExists && it.pathString == platformDirectory?.pathString) null
-                    else it
-                }
+                ?.takeIf { it.exists() }
+            this.sourceCodeFile = importCoreContext.sourceCodeFile.takeIf { importCoreContext.sourceCodePathOverride.get() }
+                ?.get()
+                ?.toNioPathOrNull()
+                ?.takeIf { it.fileExists }
 
             this.ccv2Token = importCoreContext.ccv2Token.get()
 
@@ -149,9 +144,12 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             ?.takeIf { it.exists() }
             ?: return
 
-        val hybrisApiVersion = getPlatformVersion(platformPath, true)
-            ?.also { importCoreContext.platformVersion.set(it) }
-        val hybrisVersion = getPlatformVersion(platformPath, false)
+        val platformApiVersion = getPlatformVersion(platformPath, true)
+            ?.also {
+                importCoreContext.platformApiVersion.set(it)
+                importCoreContext.platformVersion.set(it)
+            }
+        val platformVersion = getPlatformVersion(platformPath, false)
             ?.also { importCoreContext.platformVersion.set(it) }
 
         if (importCoreContext.customDirectory.get().isBlank()) {
@@ -179,17 +177,18 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         }
 
         if (importCoreContext.javadocUrl.get().isBlank()) {
-            getPlatformJavadocUrl(hybrisApiVersion)
+            getPlatformJavadocUrl(platformApiVersion)
                 .takeIf { it.isNotBlank() }
                 ?.let { importCoreContext.javadocUrl.set(it) }
         }
 
-        if (importCoreContext.sourceCodeDirectory.get().isBlank()) {
-            val sourceCodeFile = findSourceZip(platformPath, hybrisVersion)
-                ?.absolutePath
-                ?: platformPath.absolutePathString()
+        if (importCoreContext.sourceCodePath.get().isBlank()) {
+            val sourceCodeFile = platformPath.findSourceCodeFile(platformVersion, platformApiVersion)
+                ?.pathString
+                ?.also { importCoreContext.sourceCodeFile.set(it) }
+                ?: platformPath.pathString
 
-            importCoreContext.sourceCodeDirectory.set(sourceCodeFile)
+            importCoreContext.sourceCodePath.set(sourceCodeFile)
         }
     }
 
@@ -201,13 +200,18 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         with(importContext) {
             val platformPath = refreshContext.projectPath.resolve("hybris")
 
-            this.platformVersion = getPlatformVersion(platformPath, false)
+            val platformApiVersion = getPlatformVersion(platformPath, true)
+            val platformVersion = getPlatformVersion(platformPath, false)
+
+            this.platformVersion = platformVersion
                 ?: projectSettings.hybrisVersion
-            this.javadocUrl = getPlatformVersion(platformPath, true)
+            this.javadocUrl = platformApiVersion
                 ?.let { getPlatformJavadocUrl(it) }
                 ?.takeIf { it.isNotBlank() }
                 ?: projectSettings.javadocUrl
-            this.sourceCodeFile = projectSettings.sourceCodeFile?.toNioPathOrNull()
+            this.sourceCodePath = projectSettings.sourceCodePath?.toNioPathOrNull()
+            this.sourceCodeFile = this.sourceCodePath?.findSourceCodeFile(platformVersion, platformApiVersion)
+
             this.externalExtensionsDirectory = projectSettings.externalExtensionsDirectory?.toNioPathOrNull()
             this.externalConfigDirectory = projectSettings.externalConfigDirectory?.toNioPathOrNull()
             this.externalDbDriversDirectory = projectSettings.externalDbDriversDirectory?.toNioPathOrNull()
@@ -263,29 +267,12 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         return true
     }
 
-    private fun findSourceZip(sourceCodePath: Path, hybrisApiVersion: String?): File? {
-        hybrisApiVersion ?: return null
-        if (hybrisApiVersion.isBlank()) return null
-
-        if (!sourceCodePath.isDirectory()) return null
-
-        val sourceZipList = sourceCodePath.toFile().listFiles()
-            ?.filter { it.name.endsWith(".zip") }
-            ?.filter { it.name.contains(hybrisApiVersion) }
-            ?.takeIf { it.isNotEmpty() }
-            ?: return null
-
-        return if (sourceZipList.size > 1) sourceZipList.maxByOrNull { getPlatformPatchVersion(it, hybrisApiVersion) }
-        else sourceZipList[0]
-    }
-
-    private fun getPlatformVersion(hybrisRootDir: Path, apiOnly: Boolean): String? {
-        val buildInfoFile = hybrisRootDir.resolve(ProjectConstants.Paths.BIN_PLATFORM_BUILD_NUMBER)
-            .toFile()
+    private fun getPlatformVersion(platformPath: Path, apiOnly: Boolean): String? {
+        val buildInfoFile = platformPath.resolve(ProjectConstants.Paths.BIN_PLATFORM_BUILD_NUMBER)
         val buildProperties = Properties()
 
         try {
-            FileInputStream(buildInfoFile).use { fis ->
+            Files.newBufferedReader(buildInfoFile, Charsets.UTF_8).use { fis ->
                 buildProperties.load(fis)
             }
         } catch (_: IOException) {
@@ -300,17 +287,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         return buildProperties.getProperty(ProjectImportConstants.HYBRIS_API_VERSION_KEY)
     }
 
-    private fun getPlatformPatchVersion(sourceZip: File, hybrisApiVersion: String): Int {
-        val name = sourceZip.name
-        val index = name.indexOf(hybrisApiVersion)
-        val firstDigit = name[index + hybrisApiVersion.length + 1]
-        val secondDigit = name[index + hybrisApiVersion.length + 2]
-
-        return if (Character.isDigit(secondDigit)) Character.getNumericValue(firstDigit) * 10 + Character.getNumericValue(secondDigit)
-        else Character.getNumericValue(firstDigit)
-    }
-
-    private fun getPlatformJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, hybrisApiVersion)
+    private fun getPlatformJavadocUrl(platformApiVersion: String?) = if (platformApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, platformApiVersion)
     else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
     private fun searchModuleRoots(importContext: ProjectImportContext.Mutable) {

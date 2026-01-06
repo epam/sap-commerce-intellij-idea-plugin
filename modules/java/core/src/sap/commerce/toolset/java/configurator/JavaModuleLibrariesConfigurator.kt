@@ -27,9 +27,7 @@ import com.intellij.openapi.roots.LibraryOrderEntry
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.Library
-import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.util.progress.reportProgressScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
@@ -46,6 +44,7 @@ import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
+import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.exists
 import kotlin.io.path.name
 import kotlin.time.measureTime
@@ -66,7 +65,6 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
-        val sourceCodeRoot = getSourceCodeRoot(importContext)
 
         // TODO: migrate to new Configurator for JavaLibraryDescriptor
 
@@ -93,11 +91,11 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 ?: true
 
             if (noValidClassesPaths) {
-                thisLogger().warn("Library paths with CLASSES root type are not found: ${moduleDescriptor.name} | ${javaLibraryDescriptor.name}")
+                thisLogger().debug("Library paths with CLASSES root type are not found: ${moduleDescriptor.name} | ${javaLibraryDescriptor.name}")
                 continue
             }
 
-            addRoots(modifiableRootModel, modifiableModelsProvider, sourceCodeRoot, javaLibraryDescriptor)
+            addRoots(importContext, modifiableRootModel, modifiableModelsProvider, javaLibraryDescriptor)
         }
 
         when (moduleDescriptor) {
@@ -127,17 +125,10 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         }
     }
 
-    private fun getSourceCodeRoot(importContext: ProjectImportContext) = importContext.sourceCodeFile
-        ?.let { VfsUtil.findFile(it, true) }
-        ?.let { vf ->
-            if (vf.isDirectory) vf
-            else JarFileSystem.getInstance().getJarRootForLocalFile(vf)
-        }
-
     private fun addRoots(
+        importContext: ProjectImportContext,
         modifiableRootModel: ModifiableRootModel,
         modifiableModelsProvider: IdeModifiableModelsProvider,
-        sourceCodeRoot: VirtualFile?,
         javaLibraryDescriptor: JavaLibraryDescriptor
     ) {
         val library = modifiableRootModel.moduleLibraryTable.createLibrary(javaLibraryDescriptor.name)
@@ -147,9 +138,11 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
         if (javaLibraryDescriptor.exported) setLibraryEntryExported(modifiableRootModel, library)
 
-        if (sourceCodeRoot != null && javaLibraryDescriptor.libraryPaths.any { it.path.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }) {
-            libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES)
-        }
+        importContext.sourceCodeFile
+            ?.takeIf { it.fileExists }
+            ?.takeIf { javaLibraryDescriptor.libraryPaths.any { it.path.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) } }
+            ?.let { VfsUtil.findFile(it, true) }
+            ?.let { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
 
         javaLibraryDescriptor.libraryPaths.forEach {
             when (it) {

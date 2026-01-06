@@ -36,7 +36,7 @@ data class ProjectImportContext(
 
     val modulesFilesDirectory: Path? = null,
     val ccv2Token: String? = null,
-    // TODO: review this attribute
+    val sourceCodePath: Path? = null,
     val sourceCodeFile: Path? = null,
     val projectIconFile: Path? = null,
 
@@ -73,6 +73,7 @@ data class ProjectImportContext(
         var project: Project? = null,
         var modulesFilesDirectory: Path? = null,
         var ccv2Token: String? = null,
+        var sourceCodePath: Path? = null,
         var sourceCodeFile: Path? = null,
         var projectIconFile: Path? = null,
         var platformDirectory: Path? = null,
@@ -116,6 +117,7 @@ data class ProjectImportContext(
 
             modulesFilesDirectory = modulesFilesDirectory,
             ccv2Token = ccv2Token,
+            sourceCodePath = sourceCodePath,
             sourceCodeFile = sourceCodeFile,
             projectIconFile = projectIconFile,
             platformDirectory = platformDirectory

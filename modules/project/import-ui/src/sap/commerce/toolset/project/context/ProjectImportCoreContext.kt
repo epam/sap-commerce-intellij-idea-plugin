@@ -30,11 +30,12 @@ data class ProjectImportCoreContext(
 
     val javadocUrl: AtomicProperty<String> = AtomicProperty(""),
 
+    val platformApiVersion: AtomicProperty<String> = AtomicProperty(""),
     val platformVersion: AtomicProperty<String> = AtomicProperty(""),
     val platformDirectory: AtomicProperty<String> = AtomicProperty(""),
 
-    val sourceCodeDirectoryOverride: AtomicBooleanProperty = AtomicBooleanProperty(false),
-    val sourceCodeDirectory: AtomicProperty<String> = AtomicProperty(""),
+    val sourceCodePathOverride: AtomicBooleanProperty = AtomicBooleanProperty(false),
+    val sourceCodePath: AtomicProperty<String> = AtomicProperty(""),
     val sourceCodeFile: AtomicProperty<String> = AtomicProperty(""),
 
     val moduleFilesStorage: AtomicBooleanProperty = AtomicBooleanProperty(true),

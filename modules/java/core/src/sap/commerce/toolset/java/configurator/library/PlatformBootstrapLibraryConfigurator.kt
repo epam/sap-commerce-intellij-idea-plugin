@@ -54,7 +54,6 @@ class PlatformBootstrapLibraryConfigurator : ModuleLibraryConfigurator {
                 ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                 ?.let { add(it) }
 
-            // TODO:
             importContext.sourceCodeFile
                 ?.takeIf { it.fileExists }
                 ?.let { virtualFileUrlManager.fromPath(it.pathString) }

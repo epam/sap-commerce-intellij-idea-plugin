@@ -59,7 +59,7 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(javadocUrl = value) }
         }
-    var sourceCodeFile
+    var sourceCodePath
         get() = state.sourceCodeFile
         set(value) {
             updateState { it.copy(sourceCodeFile = value) }

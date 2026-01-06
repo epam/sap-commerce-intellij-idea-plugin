@@ -69,7 +69,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         projectSettings.hybrisVersion = importContext.platformVersion
         projectSettings.javadocUrl = importContext.javadocUrl
 
-        projectSettings.sourceCodeFile = importContext.sourceCodeFile?.toSystemIndependentName
+        projectSettings.sourceCodePath = importContext.sourceCodePath?.toSystemIndependentName
     }
 
     private fun saveCustomDirectoryLocation(importContext: ProjectImportContext) {
