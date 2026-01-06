@@ -35,6 +35,7 @@ data class ProjectImportCoreContext(
 
     val sourceCodeDirectoryOverride: AtomicBooleanProperty = AtomicBooleanProperty(false),
     val sourceCodeDirectory: AtomicProperty<String> = AtomicProperty(""),
+    val sourceCodeFile: AtomicProperty<String> = AtomicProperty(""),
 
     val moduleFilesStorage: AtomicBooleanProperty = AtomicBooleanProperty(true),
     val moduleFilesStorageDirectory: AtomicProperty<String> = AtomicProperty(""),

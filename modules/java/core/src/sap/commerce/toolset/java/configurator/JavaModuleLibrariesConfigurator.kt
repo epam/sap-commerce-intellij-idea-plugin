@@ -21,6 +21,7 @@ package sap.commerce.toolset.java.configurator
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.LibraryOrderEntry
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -29,8 +30,10 @@ import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.util.progress.reportProgressScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.java.descriptor.JavaLibraryPath
 import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
@@ -39,15 +42,17 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import kotlin.io.path.exists
 import kotlin.io.path.name
+import kotlin.time.measureTime
 
 class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
+
+    private val logger = thisLogger()
 
     override val name: String
         get() = "Library Roots"
@@ -65,6 +70,20 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
         // TODO: migrate to new Configurator for JavaLibraryDescriptor
 
+        val configurators = ModuleLibraryConfigurator.EP.extensionList
+            .filter { configurator -> configurator.isApplicable(importContext, moduleDescriptor) }
+
+        reportProgressScope(configurators.size) { reporter ->
+            configurators.forEach { configurator ->
+                reporter.itemStep("Applying library '${configurator.name}' configurator...") {
+                    checkCanceled()
+
+                    val duration = measureTime { configurator.configure(importContext, moduleDescriptor) }
+                    logger.info("Content root configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
+                }
+            }
+        }
+
         for (javaLibraryDescriptor in moduleDescriptor.collectLibraryDescriptors(importContext)) {
             val noValidClassesPaths = javaLibraryDescriptor.libraryPaths
                 .filter { it.rootType == OrderRootType.CLASSES }
@@ -74,7 +93,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 ?: true
 
             if (noValidClassesPaths) {
-                thisLogger().warn("Library paths not found: ${moduleDescriptor.name} | ${javaLibraryDescriptor.name}")
+                thisLogger().warn("Library paths with CLASSES root type are not found: ${moduleDescriptor.name} | ${javaLibraryDescriptor.name}")
                 continue
             }
 
@@ -82,7 +101,6 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         }
 
         when (moduleDescriptor) {
-            is PlatformModuleDescriptor -> moduleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider)
             is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
             is YOotbRegularModuleDescriptor -> {
                 if (moduleDescriptor.extensionInfo.backofficeModule) {

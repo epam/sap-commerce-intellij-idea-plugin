@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.descriptor
+package sap.commerce.toolset.java.configurator.library
 
+import com.intellij.openapi.extensions.ExtensionPointName
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.settings.ApplicationSettings
-import sap.commerce.toolset.settings.toIdeaGroup
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-interface PlatformModuleDescriptor : ModuleDescriptor {
+interface ModuleLibraryConfigurator {
 
-    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
+    val name: String
 
+    fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
+
+    suspend fun configure(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor)
+
+    companion object {
+        val EP = ExtensionPointName.create<ModuleLibraryConfigurator>("sap.commerce.toolset.project.module.libraryConfigurator")
+    }
 }

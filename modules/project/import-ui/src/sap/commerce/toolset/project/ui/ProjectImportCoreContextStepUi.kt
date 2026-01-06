@@ -147,7 +147,8 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 cell(
                     textFieldWithBrowseButton(
                         null,
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                        FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor()
+                            .withExtensionFilter("zip")
                             .withTitle(i18n("hybris.import.label.select.hybris.src.file"))
                     )
                 )
@@ -158,6 +159,12 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 contextHelp("Select platform source code zip file or directory")
                     .customize(rightGaps)
             }.layout(RowLayout.PARENT_GRID)
+
+//            row {
+//
+//            }
+//                .layout(RowLayout.PARENT_GRID)
+//                .visibleIf(context.sourceCodeDirectoryOverride)
 
             row {
                 checkBox("Custom directory:")

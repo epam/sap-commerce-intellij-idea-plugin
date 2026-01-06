@@ -112,6 +112,8 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 ?.get()
                 ?.toNioPathOrNull()
                 ?.let {
+                    // TODO: detect exact suitable file as an observable property on directory selection
+                    // also respect on project refresh
                     if (it.directoryExists && it.pathString == platformDirectory?.pathString) null
                     else it
                 }
