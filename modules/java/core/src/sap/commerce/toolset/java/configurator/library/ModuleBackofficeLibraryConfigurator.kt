@@ -19,6 +19,7 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -35,23 +36,10 @@ class ModuleBackofficeLibraryConfigurator : ModuleLibraryConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: ModuleDescriptor,
+        moduleEntity: ModuleEntity
     ) {
-        val workspaceModel = WorkspaceModel.getInstance(importContext.project)
-//        val moduleEntity = workspaceModel.currentSnapshot
-//            .resolve(ModuleId(module.name)) ?: return
-//        backgroundWriteAction {
-//            workspaceModel.updateProjectModel("Adding new module dependency") { storage ->
-//                storage.modifyModuleEntity(moduleEntity) {
-//                    val libraryId = LibraryId(
-//                        JavaConstants.Library.BACKOFFICE,
-//                        LibraryTableId.ProjectLibraryTableId
-//                    )
-//                    this.dependencies.add(
-//                        LibraryDependency(libraryId, true, DependencyScope.COMPILE)
-//                    )
-//                }
-//            }
-//        }
+        moduleEntity.addLibrary(workspaceModel, JavaConstants.Library.BACKOFFICE)
     }
 }

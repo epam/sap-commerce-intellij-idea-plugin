@@ -18,39 +18,27 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.progress.checkCanceled
-import com.intellij.openapi.roots.DependencyScope
-import com.intellij.openapi.roots.LibraryOrderEntry
-import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.OrderRootType
-import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.workspaceModel.ide.legacyBridge.findModule
+import com.intellij.platform.workspace.jps.entities.*
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
-import sap.commerce.toolset.java.descriptor.JavaLibraryPath
-import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
 import sap.commerce.toolset.java.descriptor.collectLibraryDescriptors
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
-import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.exists
 import kotlin.io.path.name
+import kotlin.io.path.pathString
 import kotlin.time.measureTime
 
 class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
@@ -68,19 +56,21 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         moduleDescriptor: ModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
-        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule)
-
         val configurators = ModuleLibraryConfigurator.EP.extensionList
             .filter { configurator -> configurator.isApplicable(importContext, moduleDescriptor) }
+
+        workspaceModel.update("Remove existing libraries for module ${moduleEntity.name}") { storage ->
+            storage.modifyModuleEntity(moduleEntity) {
+                this.dependencies.removeIf { it is LibraryDependency }
+            }
+        }
 
         reportProgressScope(configurators.size) { reporter ->
             configurators.forEach { configurator ->
                 reporter.itemStep("Applying library '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.configure(importContext, moduleDescriptor) }
+                    val duration = measureTime { configurator.configure(importContext, workspaceModel, moduleDescriptor, moduleEntity) }
                     logger.info("Library configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
                 }
             }
@@ -98,83 +88,100 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 continue
             }
 
-            addRoots(importContext, modifiableRootModel, modifiableModelsProvider, javaLibraryDescriptor)
+            createLibrary(importContext, workspaceModel, moduleEntity, javaLibraryDescriptor)
         }
 
         when (moduleDescriptor) {
-            is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, JavaConstants.Library.PLATFORM_BOOTSTRAP, true)
-            is YOotbRegularModuleDescriptor -> {
-                if (moduleDescriptor.extensionInfo.backofficeModule) {
-                    moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_JAR)
-                        .takeIf { it.directoryExists }
-                        ?.let { addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, it.normalize()) }
-                }
-                if (moduleDescriptor.name == EiConstants.Extension.BACK_OFFICE) {
-                    addLibsToModule(modifiableRootModel, modifiableModelsProvider, JavaConstants.Library.BACKOFFICE, true)
-                }
-            }
+            is YCoreExtModuleDescriptor -> addLibsToModule(workspaceModel, moduleEntity, JavaConstants.Library.PLATFORM_BOOTSTRAP)
         }
-
-        backgroundWriteAction { modifiableModelsProvider.commit() }
     }
 
-    private fun addRoots(
+    private suspend fun addLibsToModule(
+        workspaceModel: WorkspaceModel,
+        moduleEntity: ModuleEntity,
+        libraryName: String
+    ) {
+        workspaceModel.update("Add library $libraryName to module ${moduleEntity.name}") { storage ->
+            val libraryId = storage.projectLibraries.find { it.name == libraryName }
+                ?.let {
+                    LibraryId(
+                        name = libraryName,
+                        tableId = it.tableId,
+                    )
+                }
+                ?: return@update
+
+            storage.modifyModuleEntity(moduleEntity) {
+                this.dependencies += LibraryDependency(
+                    libraryId,
+                    true,
+                    DependencyScope.PROVIDED
+                )
+            }
+        }
+    }
+
+    private suspend fun createLibrary(
         importContext: ProjectImportContext,
-        modifiableRootModel: ModifiableRootModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
+        workspaceModel: WorkspaceModel,
+        moduleEntity: ModuleEntity,
         javaLibraryDescriptor: JavaLibraryDescriptor
     ) {
-        val library = modifiableRootModel.moduleLibraryTable.createLibrary(javaLibraryDescriptor.name)
-        val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val moduleId = ModuleId(moduleEntity.name)
+        val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)
+        val libraryId = LibraryId(javaLibraryDescriptor.name, libraryTableId)
 
-        setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.scope)
+        val libraryRoots = buildList {
+            javaLibraryDescriptor.libraryPaths
+                .map {
+                    LibraryRoot(
+                        url = virtualFileUrlManager.fromPath(it.path.pathString),
+                        type = if (it.rootType == OrderRootType.CLASSES) LibraryRootTypeId.COMPILED
+                        else LibraryRootTypeId.SOURCES,
+                        inclusionOptions = it.inclusionOptions
+                    )
+                }
+                .forEach { add(it) }
 
-        if (javaLibraryDescriptor.exported) setLibraryEntryExported(modifiableRootModel, library)
+            val sourceCodeFile = importContext.sourceCodeFile
+            sourceCodeFile
+                ?.takeIf { it.fileExists }
+                ?.takeIf { javaLibraryDescriptor.libraryPaths.any { it.path.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) } }
+                ?.let { VfsUtil.findFile(it, true) }
+                ?.let {
+                    LibraryRoot(
+                        url = virtualFileUrlManager.fromPath(sourceCodeFile.pathString),
+                        type = LibraryRootTypeId.SOURCES,
+                    )
+                }
+                ?.also { add(it) }
+        }
 
-        importContext.sourceCodeFile
-            ?.takeIf { it.fileExists }
-            ?.takeIf { javaLibraryDescriptor.libraryPaths.any { it.path.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) } }
-            ?.let { VfsUtil.findFile(it, true) }
-            ?.let { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
+        workspaceModel.update("Update library ${libraryId.name} for module ${moduleEntity.name}") { storage ->
+            val libraryEntity = moduleEntity.getModuleLibraries(storage)
+                .find { it.name == javaLibraryDescriptor.name }
+                ?: storage.addEntity(
+                    LibraryEntity(
+                        name = javaLibraryDescriptor.name,
+                        tableId = libraryTableId,
+                        roots = emptyList(),
+                        entitySource = moduleEntity.entitySource,
+                    )
+                )
 
-        javaLibraryDescriptor.libraryPaths.forEach {
-            when (it) {
-                is JavaLibraryPath.Root -> libraryModifiableModel.addRoot(it.url, it.rootType)
-                is JavaLibraryPath.JarDirectory -> libraryModifiableModel.addJarDirectory(it.url, true, it.rootType)
+            storage.modifyLibraryEntity(libraryEntity) {
+                this.roots.clear()
+                this.roots.addAll(libraryRoots)
+            }
+
+            storage.modifyModuleEntity(moduleEntity) {
+                this.dependencies += LibraryDependency(
+                    libraryId,
+                    javaLibraryDescriptor.exported,
+                    javaLibraryDescriptor.scope
+                )
             }
         }
     }
-
-    private fun addLibsToModule(
-        modifiableRootModel: ModifiableRootModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        libraryName: String,
-        export: Boolean
-    ) {
-        val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
-        val library = libraryTableModifiableModel.getLibraryByName(libraryName)
-            ?: libraryTableModifiableModel.createLibrary(libraryName)
-        modifiableRootModel.addLibraryEntry(library)
-
-        if (export) {
-            setLibraryEntryExported(modifiableRootModel, library)
-        }
-    }
-
-    private fun setLibraryEntryExported(modifiableRootModel: ModifiableRootModel, library: Library) {
-        findOrderEntryForLibrary(modifiableRootModel, library).isExported = true
-    }
-
-    private fun setLibraryEntryScope(modifiableRootModel: ModifiableRootModel, library: Library, scope: DependencyScope) {
-        findOrderEntryForLibrary(modifiableRootModel, library).scope = scope
-    }
-
-    // Workaround of using Library.equals in findLibraryOrderEntry, which doesn't work here, because all empty libs are equal. Use == instead.
-    private fun findOrderEntryForLibrary(
-        modifiableRootModel: ModifiableRootModel,
-        library: Library
-    ) = modifiableRootModel.orderEntries
-        .mapNotNull { it as? LibraryOrderEntry }
-        .find { it.library == library }
-        ?: (modifiableRootModel.findLibraryOrderEntry(library) as LibraryOrderEntry)
 }

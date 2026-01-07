@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
@@ -40,10 +39,10 @@ class ProjectPlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator
 
     override suspend fun preConfigure(importContext: ProjectImportContext) {
         val moduleDescriptor = importContext.platformModuleDescriptor
-        val workspaceModel = WorkspaceModel.Companion.getInstance(importContext.project)
+        val workspaceModel = WorkspaceModel.getInstance(importContext.project)
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
 
-        val roots = buildList {
+        val libraryRoots = buildList {
             moduleDescriptor.libraryDirectories
                 .map { virtualFileUrlManager.fromPath(it.pathString) }
                 .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY) }
@@ -62,25 +61,22 @@ class ProjectPlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator
                 ?.let { add(it) }
         }
 
-        backgroundWriteAction {
-            workspaceModel.updateProjectModel("Processing library: ${JavaConstants.Library.PLATFORM_BOOTSTRAP}") { storage ->
-                val libraryEntity = storage
-                    .entities(LibraryEntity::class.java)
-                    .firstOrNull { it.name == JavaConstants.Library.PLATFORM_BOOTSTRAP }
-                    ?: storage.addEntity(
-                        LibraryEntity(
-                            name = JavaConstants.Library.PLATFORM_BOOTSTRAP,
-                            tableId = LibraryTableId.ProjectLibraryTableId,
-                            roots = emptyList(),
-                            entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)
-                                .createEntitySourceForProjectLibrary(null),
-                        )
+        workspaceModel.update("Processing library: ${JavaConstants.Library.PLATFORM_BOOTSTRAP}") { storage ->
+            val libraryEntity = storage.projectLibraries
+                .find { it.name == JavaConstants.Library.PLATFORM_BOOTSTRAP }
+                ?: storage.addEntity(
+                    LibraryEntity(
+                        name = JavaConstants.Library.PLATFORM_BOOTSTRAP,
+                        tableId = LibraryTableId.ProjectLibraryTableId,
+                        roots = emptyList(),
+                        entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)
+                            .createEntitySourceForProjectLibrary(null),
                     )
+                )
 
-                storage.modifyLibraryEntity(libraryEntity) {
-                    this.roots.clear()
-                    this.roots.addAll(roots)
-                }
+            storage.modifyLibraryEntity(libraryEntity) {
+                this.roots.clear()
+                this.roots.addAll(libraryRoots)
             }
         }
     }

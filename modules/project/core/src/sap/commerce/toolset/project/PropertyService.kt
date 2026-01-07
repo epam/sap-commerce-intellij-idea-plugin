@@ -27,7 +27,9 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.util.removeUserData
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
@@ -35,6 +37,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
@@ -64,6 +67,10 @@ class PropertyService(private val project: Project, private val coroutineScope: 
         withBackgroundProgress(project, "Init properties cache", true) {
             smartReadAction(project) { findAllIProperties() }
         }
+    }
+
+    fun resetCache() {
+        project.removeUserData(CACHE_KEY)
     }
 
     fun getLanguages(): Set<String> {
@@ -114,7 +121,7 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     fun getPlatformHome(): String? = findPlatformRootDirectory(project)
         ?.path
 
-    private fun findAllIProperties(): List<IProperty> = CachedValuesManager.getManager(project).getCachedValue(project) {
+    private fun findAllIProperties(): List<IProperty> = CachedValuesManager.getManager(project).getCachedValue(project, CACHE_KEY, {
         val result = LinkedHashMap<String, IProperty>()
         val configModule = obtainConfigModule()
             ?: return@getCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
@@ -156,7 +163,7 @@ class PropertyService(private val project: Project, private val coroutineScope: 
             .ifEmpty { ModificationTracker.EVER_CHANGED }
 
         CachedValueProvider.Result.create(result.values.toList(), dependencies)
-    }
+    }, false)
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
         val platformHomePropertyKey = HybrisConstants.PROPERTY_PLATFORMHOME
@@ -282,6 +289,8 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     fun GlobalSearchScope.or(otherScope: GlobalSearchScope): GlobalSearchScope = union(otherScope)
 
     companion object {
+        private val CACHE_KEY = Key.create<CachedValue<List<IProperty>>>("sap.commerce.toolset.propertiesCache")
+
         @JvmStatic
         fun getInstance(project: Project): PropertyService = project.service()
     }

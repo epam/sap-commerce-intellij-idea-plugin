@@ -18,23 +18,18 @@
 
 package sap.commerce.toolset.java.descriptor
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
-import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.workspace.jps.entities.DependencyScope
 import com.intellij.util.asSafely
 import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.contentEntry.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.util.directoryExists
-import java.nio.file.Path
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
@@ -51,32 +46,6 @@ internal fun ModuleDescriptor.collectLibraryDescriptors(importContext: ProjectIm
     is PlatformModuleDescriptor -> this.libs(importContext)
     is ConfigModuleDescriptor -> this.libs()
     else -> emptyList()
-}
-
-internal fun addBackofficeRootProjectLibrary(
-    importContext: ProjectImportContext,
-    modifiableModelsProvider: IdeModifiableModelsProvider,
-    libraryDirRoot: Path,
-    sourcesDirRoot: Path? = null,
-    addJarDirectory: Boolean = true
-) {
-    val libraryName = JavaConstants.Library.BACKOFFICE
-    val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
-    val library = libraryTableModifiableModel.getLibraryByName(libraryName)
-        ?: libraryTableModifiableModel.createLibrary(libraryName)
-
-    if (libraryTableModifiableModel is LibrariesModifiableModel) {
-        val libraryEditor = libraryTableModifiableModel.getLibraryEditor(library)
-        if (addJarDirectory) libraryEditor.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true, OrderRootType.CLASSES)
-        else libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
-    } else {
-        val libraryModel = modifiableModelsProvider.getModifiableLibraryModel(library)
-        if (addJarDirectory) libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
-        else libraryModel.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
-        if (sourcesDirRoot != null && importContext.settings.withStandardProvidedSources) {
-            libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(sourcesDirRoot), true, OrderRootType.SOURCES)
-        }
-    }
 }
 
 private fun YRegularModuleDescriptor.libs(importContext: ProjectImportContext) = buildList {

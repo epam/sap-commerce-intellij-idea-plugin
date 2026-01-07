@@ -18,9 +18,10 @@
 
 package sap.commerce.toolset.java.descriptor
 
-import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.workspace.jps.entities.DependencyScope
+import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
 import java.nio.file.Path
 
 internal data class JavaLibraryDescriptor(
@@ -28,15 +29,17 @@ internal data class JavaLibraryDescriptor(
     val descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
     val scope: DependencyScope = DependencyScope.COMPILE,
     val exported: Boolean = false,
+    @Deprecated("migrate to LibraryRoot")
     val libraryPaths: Collection<JavaLibraryPath> = emptyList(),
 )
 
 internal sealed class JavaLibraryPath private constructor(
     open val rootType: OrderRootType,
-    open val path: Path
+    open val path: Path,
+    val inclusionOptions: InclusionOptions
 ) {
-    data class Root(override val rootType: OrderRootType, override val path: Path) : JavaLibraryPath(rootType, path)
-    data class JarDirectory(override val rootType: OrderRootType, override val path: Path) : JavaLibraryPath(rootType, path)
+    data class Root(override val rootType: OrderRootType, override val path: Path) : JavaLibraryPath(rootType, path, InclusionOptions.ROOT_ITSELF)
+    data class JarDirectory(override val rootType: OrderRootType, override val path: Path) : JavaLibraryPath(rootType, path, InclusionOptions.ARCHIVES_UNDER_ROOT)
 
     val url
         get() = VfsUtil.getUrlForLibraryRoot(path)

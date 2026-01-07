@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
@@ -29,6 +28,7 @@ import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import kotlin.io.path.pathString
@@ -39,60 +39,68 @@ class ProjectBackofficeLibraryConfigurator : ProjectPreImportConfigurator {
         get() = JavaConstants.Library.BACKOFFICE
 
     override suspend fun preConfigure(importContext: ProjectImportContext) {
-        val moduleDescriptor = importContext.chosenHybrisModuleDescriptors
+        val backofficeWebDescriptor = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YWebSubModuleDescriptor>()
             .find { it.owner.name == EiConstants.Extension.BACK_OFFICE }
 
-        if (moduleDescriptor == null) {
+        if (backofficeWebDescriptor == null) {
             thisLogger().info("Backoffice Library will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")
             return
         }
 
-        val workspaceModel = WorkspaceModel.Companion.getInstance(importContext.project)
+        val workspaceModel = WorkspaceModel.getInstance(importContext.project)
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
 
-        val roots = buildList {
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
+        val libraryRoots = buildList {
+            backofficeWebDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
                 .takeIf { it.directoryExists }
                 ?.normalize()
                 ?.let { virtualFileUrlManager.fromPath(it.pathString) }
                 ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
                 ?.let { add(it) }
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+            backofficeWebDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
                 .takeIf { it.directoryExists }
                 ?.normalize()
                 ?.let { virtualFileUrlManager.fromPath(it.pathString) }
                 ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY) }
                 ?.let { add(it) }
 
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
+            backofficeWebDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.RELATIVE_DOC_SOURCES)
                 .takeIf { it.directoryExists && importContext.settings.withStandardProvidedSources }
                 ?.normalize()
                 ?.let { virtualFileUrlManager.fromPath(it.pathString) }
                 ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                 ?.let { add(it) }
 
+            importContext.chosenHybrisModuleDescriptors
+                .asSequence()
+                .filterIsInstance<YOotbRegularModuleDescriptor>()
+                .filter { it.extensionInfo.backofficeModule }
+                .map { it.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_JAR) }
+                .filter { it.directoryExists }
+                .map { it.normalize() }
+                .map { virtualFileUrlManager.fromPath(it.pathString) }
+                .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY) }
+                .toList()
+                .forEach { add(it) }
         }
 
-        backgroundWriteAction {
-            workspaceModel.updateProjectModel("Processing library: ${JavaConstants.Library.BACKOFFICE}") { storage ->
-                val libraryEntity = storage
-                    .entities(LibraryEntity::class.java)
-                    .firstOrNull { it.name == JavaConstants.Library.BACKOFFICE }
-                    ?: storage.addEntity(
-                        LibraryEntity(
-                            name = JavaConstants.Library.BACKOFFICE,
-                            tableId = LibraryTableId.ProjectLibraryTableId,
-                            roots = emptyList(),
-                            entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)
-                                .createEntitySourceForProjectLibrary(null),
-                        )
+        workspaceModel.update("Processing library ${JavaConstants.Library.BACKOFFICE}") { storage ->
+            val libraryEntity = storage.projectLibraries
+                .find { it.name == JavaConstants.Library.BACKOFFICE }
+                ?: storage.addEntity(
+                    LibraryEntity(
+                        name = JavaConstants.Library.BACKOFFICE,
+                        tableId = LibraryTableId.ProjectLibraryTableId,
+                        roots = emptyList(),
+                        entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)
+                            .createEntitySourceForProjectLibrary(null),
                     )
+                )
 
-                storage.modifyLibraryEntity(libraryEntity) {
-                    this.roots.clear()
-                    this.roots.addAll(roots)
-                }
+            storage.modifyLibraryEntity(libraryEntity) {
+                this.roots.clear()
+                this.roots.addAll(libraryRoots)
             }
         }
     }

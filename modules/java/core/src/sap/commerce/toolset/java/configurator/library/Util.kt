@@ -18,21 +18,27 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import com.intellij.platform.workspace.jps.entities.*
 
-interface ModuleLibraryConfigurator {
+internal suspend fun ModuleEntity.addLibrary(
+    workspaceModel: WorkspaceModel,
+    libraryName: String
+) = workspaceModel.update("Add library $libraryName to module ${this.name}") { storage ->
+    val libraryId = storage.projectLibraries.find { it.name == libraryName }
+        ?.let {
+            LibraryId(
+                name = libraryName,
+                tableId = it.tableId,
+            )
+        }
+        ?: return@update
 
-    val name: String
-
-    fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
-
-    suspend fun configure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel, moduleDescriptor: ModuleDescriptor, moduleEntity: ModuleEntity)
-
-    companion object {
-        val EP = ExtensionPointName.create<ModuleLibraryConfigurator>("sap.commerce.toolset.project.module.libraryConfigurator")
+    storage.modifyModuleEntity(this@addLibrary) {
+        this.dependencies += LibraryDependency(
+            libraryId,
+            true,
+            DependencyScope.PROVIDED
+        )
     }
 }

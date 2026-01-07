@@ -40,6 +40,7 @@
                                      implementation="sap.commerce.toolset.project.configurator.CleanupProjectRefreshConfigurator"/>
         <project.refreshConfigurator order="after cleanupProjectRefreshConfigurator" id="projectSettingsRefreshConfigurator"
                                      implementation="sap.commerce.toolset.project.configurator.ProjectSettingsRefreshConfigurator"/>
+        <project.refreshConfigurator implementation="sap.commerce.toolset.project.configurator.ResetCacheProjectRefreshConfigurator"/>
 
         <project.module.importConfigurator order="last" id="yFacetConfigurator"
                                            implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>

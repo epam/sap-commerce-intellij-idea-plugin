@@ -15,24 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.project.configurator
 
-package sap.commerce.toolset.java.configurator.library
+import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+class ResetCacheProjectRefreshConfigurator : ProjectRefreshConfigurator {
+    override val name: String
+        get() = "Reset Cache"
 
-interface ModuleLibraryConfigurator {
-
-    val name: String
-
-    fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
-
-    suspend fun configure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel, moduleDescriptor: ModuleDescriptor, moduleEntity: ModuleEntity)
-
-    companion object {
-        val EP = ExtensionPointName.create<ModuleLibraryConfigurator>("sap.commerce.toolset.project.module.libraryConfigurator")
+    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+        PropertyService.getInstance(refreshContext.project).resetCache()
     }
 }
