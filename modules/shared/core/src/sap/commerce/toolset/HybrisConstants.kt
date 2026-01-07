@@ -44,7 +44,6 @@ object HybrisConstants {
     const val SPOCK_META_INF_SERVICES_DIRECTORY = "resources/META-INF/services"
 
     const val PLATFORM_HOME_PLACEHOLDER = "\${platformhome}"
-    const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
     const val STORAGE_HYBRIS_PROJECT_SETTINGS = "hybrisProjectSettings.xml"
     const val STORAGE_HYBRIS_INTEGRATION_SETTINGS = "hybrisIntegrationSettings.xml"

@@ -26,16 +26,16 @@ import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.fromPath
 
-class ConfigLicenseModuleLibraryConfigurator : ModuleLibraryConfigurator {
+class PlatformModuleLibraryConfigurator : ModuleLibraryConfigurator {
 
     override val name: String
-        get() = JavaConstants.Library.CONFIG_LICENSE
+        get() = JavaConstants.Library.DATABASE_DRIVERS
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is ConfigModuleDescriptor
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -44,14 +44,15 @@ class ConfigLicenseModuleLibraryConfigurator : ModuleLibraryConfigurator {
         moduleEntity: ModuleEntity
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val path = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.LICENCE)
-        val libraryRoot = virtualFileUrlManager.fromPath(path)
+        val dbDriversPath = importContext.externalDbDriversDirectory
+            ?: moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER)
+        val libraryRoot = virtualFileUrlManager.fromPath(dbDriversPath)
             ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
             ?: return
 
         moduleEntity.addLibrary(
             workspaceModel = workspaceModel,
-            libraryName = JavaConstants.Library.CONFIG_LICENSE,
+            libraryName = JavaConstants.Library.DATABASE_DRIVERS,
             libraryRoots = listOf(libraryRoot)
         )
     }

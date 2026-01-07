@@ -61,7 +61,7 @@ internal suspend fun ModuleEntity.addLibrary(
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
-    vararg libraryRoots: LibraryRoot,
+    libraryRoots: Collection<LibraryRoot>,
 ) = workspaceModel.update("Add library $libraryName to module ${this.name}") { storage ->
     val moduleId = ModuleId(this.name)
     val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)

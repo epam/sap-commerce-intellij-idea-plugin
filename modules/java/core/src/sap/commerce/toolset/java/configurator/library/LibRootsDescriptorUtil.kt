@@ -50,7 +50,6 @@ internal fun ModuleDescriptor.collectLibraryDescriptors(importContext: ProjectIm
     is YAcceleratorAddonSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
     is YHacSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
     is YHmcSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
-    is PlatformModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
     else -> emptyList()
 }
 
@@ -404,21 +403,6 @@ private fun YCommonWebSubModuleDescriptor.commonWebLibs(importContext: ProjectIm
 
     addAll(this@commonWebLibs.webLibs(importContext, virtualFileUrlManager))
     addAll(classesLibs)
-}
-
-private fun PlatformModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager): Collection<JavaLibraryDescriptor> {
-    val dbDriversPath = (importContext.externalDbDriversDirectory
-        ?: this.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER))
-    val libraryRoot = virtualFileUrlManager.fromPath(dbDriversPath)
-        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
-        ?: return emptyList()
-    return listOf(
-        JavaLibraryDescriptor(
-            name = HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY,
-            exported = true,
-            libraryRoots = listOf(libraryRoot)
-        )
-    )
 }
 
 private fun YModuleDescriptor.getStandardSourceJarDirectory(importContext: ProjectImportContext) = if (importContext.settings.withStandardProvidedSources) {

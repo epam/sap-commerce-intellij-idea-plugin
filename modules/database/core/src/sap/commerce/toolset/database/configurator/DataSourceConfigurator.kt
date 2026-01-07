@@ -37,8 +37,8 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -95,9 +95,10 @@ class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
         if (driver.additionalClasspathElements.isNotEmpty()) return
 
         // let's try to pick up a suitable driver located in the Database Drivers library
+        // TODO: migrate to Workspace API
         ModuleManager.getInstance(project).modules
             .firstOrNull { it.name.endsWith(EiConstants.Extension.PLATFORM) }
-            ?.let { LibraryUtil.findLibrary(it, HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY) }
+            ?.let { LibraryUtil.findLibrary(it, JavaConstants.Library.DATABASE_DRIVERS) }
             ?.let { library ->
                 library.rootProvider.getFiles(OrderRootType.CLASSES)
                     .filter { it.name.startsWith(driver.sqlDialect, true) }

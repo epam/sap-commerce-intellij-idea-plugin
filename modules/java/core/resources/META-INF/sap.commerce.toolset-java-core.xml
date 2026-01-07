@@ -61,6 +61,7 @@
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformBootstrapModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ConfigLicenseModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformModuleLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
