@@ -21,22 +21,19 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
-import sap.commerce.toolset.util.directoryExists
-import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.isDirectory
 
-class ContentEntryWebInjectedSourcesConfigurator : ModuleContentEntryConfigurator {
+class SourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Web injected sources (addons, common web)"
+        get() = "Sources"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
-        && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
+        || importContext.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -47,17 +44,17 @@ class ContentEntryWebInjectedSourcesConfigurator : ModuleContentEntryConfigurato
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = moduleDescriptor.moduleRootPath
-        val rootEntities = listOf(
-            moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
-            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
-        )
-            .filter { it.directoryExists }
-            .flatMap { path ->
-                Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
-                    directoryStream.toList()
-                }
-            }
-            .map { SourceRootEntityDto.generatedSources(moduleEntity, it) }
+
+        val rootEntities = buildList {
+            ProjectConstants.Directory.SRC_DIR_NAMES
+                .map { moduleRootPath.resolve(it) }
+                .map { SourceRootEntityDescriptor.sources(moduleEntity = moduleEntity, path = it) }
+                .forEach { add(it) }
+
+            moduleRootPath.resolve(ProjectConstants.Directory.GEN_SRC)
+                .let { SourceRootEntityDescriptor.generatedSources(moduleEntity = moduleEntity, path = it) }
+                .also { add(it) }
+        }
 
         contentRootEntity.addSourceRoots(
             importContext = importContext,

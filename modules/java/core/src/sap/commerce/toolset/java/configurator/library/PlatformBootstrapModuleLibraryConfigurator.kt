@@ -16,32 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator
+package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
-import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.pathString
 
-class ProjectPlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator {
+class PlatformBootstrapModuleLibraryConfigurator : ModuleLibraryConfigurator {
 
     override val name: String
         get() = JavaConstants.Library.PLATFORM_BOOTSTRAP
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
-        val moduleDescriptor = importContext.platformModuleDescriptor
-        val workspaceModel = WorkspaceModel.getInstance(importContext.project)
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YCoreExtModuleDescriptor
 
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: ModuleDescriptor,
+        moduleEntity: ModuleEntity
+    ) {
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             moduleDescriptor.libraryDirectories
                 .map { virtualFileUrlManager.fromPath(it.pathString) }
@@ -61,24 +66,12 @@ class ProjectPlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator
                 ?.let { add(it) }
         }
 
-        workspaceModel.update("Processing library: ${JavaConstants.Library.PLATFORM_BOOTSTRAP}") { storage ->
-            val libraryEntity = storage.projectLibraries
-                .find { it.name == JavaConstants.Library.PLATFORM_BOOTSTRAP }
-                ?: storage.addEntity(
-                    LibraryEntity(
-                        name = JavaConstants.Library.PLATFORM_BOOTSTRAP,
-                        tableId = LibraryTableId.ProjectLibraryTableId,
-                        roots = emptyList(),
-                        entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)
-                            .createEntitySourceForProjectLibrary(null),
-                    )
-                )
-
-            storage.modifyLibraryEntity(libraryEntity) {
-                this.roots.clear()
-                this.roots.addAll(libraryRoots)
-            }
-        }
+        moduleEntity.addProjectLibrary(
+            project = importContext.project,
+            workspaceModel = workspaceModel,
+            libraryName = JavaConstants.Library.PLATFORM_BOOTSTRAP,
+            libraryRoots = libraryRoots,
+        )
     }
 
     private val ModuleDescriptor.libraryDirectories

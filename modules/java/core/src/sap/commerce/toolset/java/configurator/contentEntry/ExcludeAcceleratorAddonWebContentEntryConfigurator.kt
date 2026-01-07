@@ -24,15 +24,22 @@ import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 
-class ContentEntryTestSourcesConfigurator : ModuleContentEntryConfigurator {
+class ExcludeAcceleratorAddonWebContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Test sources"
+        get() = "Accelerator addon web (exclusion)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
-        || importContext.settings.importOOTBModulesInWriteMode
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isWebModuleDescriptor
+        && (
+        moduleDescriptor.isCustomModuleDescriptor
+            || (importContext.settings.importOOTBModulesInWriteMode && moduleDescriptor.moduleRootPath.testSrcDirectoriesExists)
+        )
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -42,15 +49,17 @@ class ContentEntryTestSourcesConfigurator : ModuleContentEntryConfigurator {
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val rootEntities = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
-            .map { moduleDescriptor.moduleRootPath.resolve(it) }
-            .map { SourceRootEntityDto.testSources(moduleEntity = moduleEntity, path = it) }
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ACCELERATOR_ADDON_WEB))
 
-        contentRootEntity.addSourceRoots(
-            importContext = importContext,
-            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
-            rootEntities = rootEntities,
-            pathsToIgnore = pathsToIgnore,
-        )
+        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
     }
+
+    private val ModuleDescriptor.isWebModuleDescriptor: Boolean
+        get() = this is YWebSubModuleDescriptor
+            || this is YCommonWebSubModuleDescriptor
+            || this is YAcceleratorAddonSubModuleDescriptor
+
+    private val Path.testSrcDirectoriesExists
+        get() = ProjectConstants.Directory.TEST_SRC_DIR_NAMES.any { this.resolve(it).directoryExists }
 }

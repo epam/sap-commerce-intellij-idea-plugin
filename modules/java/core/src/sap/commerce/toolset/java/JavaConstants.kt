@@ -23,5 +23,6 @@ object JavaConstants {
     object Library {
         const val BACKOFFICE = "Backoffice Library"
         const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
+        const val CONFIG_LICENSE = "Config License"
     }
 }

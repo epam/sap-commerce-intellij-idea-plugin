@@ -28,8 +28,6 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.ProjectPlatformBootstrapLibraryConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.ProjectBackofficeLibraryConfigurator"/>
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
@@ -48,20 +46,21 @@
         <project.module.importConfigurator order="after javaModuleLibrariesConfigurator" id="javaModuleContentRootsConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleContentRootsConfigurator"/>
 
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludeAcceleratorAddonWebConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludeClassesConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludeCommonsConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludeResourcesConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludeWebTestClassesConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludePlatformConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryPlatformConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryResourcesConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntrySourcesConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryTestSourcesConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryWebInjectedSourcesConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeAcceleratorAddonWebContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeClassesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeCommonsContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeResourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebTestClassesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludePlatformContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.PlatformContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ResourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.SourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.TestSourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.WebInjectedSourcesContentEntryConfigurator"/>
 
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ModuleBackofficeLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ModuleCoreLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformBootstrapModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ConfigLicenseModuleLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

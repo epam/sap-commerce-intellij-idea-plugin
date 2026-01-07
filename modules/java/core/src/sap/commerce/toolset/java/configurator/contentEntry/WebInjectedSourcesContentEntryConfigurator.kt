@@ -21,19 +21,23 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.util.directoryExists
+import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
 
-class ContentEntryResourcesConfigurator : ModuleContentEntryConfigurator {
+class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Resources"
+        get() = "Web injected sources (addons, common web)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
-        || importContext.settings.importOOTBModulesInWriteMode
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
+        && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -43,11 +47,18 @@ class ContentEntryResourcesConfigurator : ModuleContentEntryConfigurator {
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val resourcesPath = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
-        val relativeOutputPath = if (moduleDescriptor is YBackofficeSubModuleDescriptor) "cockpitng" else ""
-        val rootEntities = resourcesPath
-            .let { SourceRootEntityDto.resources(moduleEntity = moduleEntity, path = it, relativeOutputPath = relativeOutputPath) }
-            .let { listOf(it) }
+        val moduleRootPath = moduleDescriptor.moduleRootPath
+        val rootEntities = listOf(
+            moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
+            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
+        )
+            .filter { it.directoryExists }
+            .flatMap { path ->
+                Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
+                    directoryStream.toList()
+                }
+            }
+            .map { SourceRootEntityDescriptor.generatedSources(moduleEntity, it) }
 
         contentRootEntity.addSourceRoots(
             importContext = importContext,

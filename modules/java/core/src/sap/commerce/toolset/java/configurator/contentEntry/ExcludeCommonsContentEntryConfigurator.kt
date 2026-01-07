@@ -21,18 +21,18 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.nio.file.Path
 
-class ContentEntryExcludeResourcesConfigurator : ModuleContentEntryConfigurator {
+class ExcludeCommonsContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Resources (exclusion)"
+        get() = "Common (exclusion)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = importContext.settings
-        .extensionsResourcesToExclude.contains(moduleDescriptor.name)
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = true
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -42,8 +42,18 @@ class ContentEntryExcludeResourcesConfigurator : ModuleContentEntryConfigurator 
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
+        val moduleRootPath = moduleDescriptor.moduleRootPath
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
+        val excludePaths = listOf(
+            moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY),
+            moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY),
+            moduleRootPath.resolve(HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY),
+            moduleRootPath.resolve(ProjectConstants.Directory.NODE_MODULES),
+            moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
+            moduleRootPath.resolve(ProjectConstants.Directory.ECLIPSE_BIN),
+            moduleRootPath.resolve(ProjectConstants.Directory.BOWER_COMPONENTS),
+            moduleRootPath.resolve(ProjectConstants.Directory.JS_TARGET),
+        )
 
         contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
     }

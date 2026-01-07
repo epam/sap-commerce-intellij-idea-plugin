@@ -23,7 +23,6 @@ import com.intellij.platform.workspace.jps.entities.LibraryRoot
 
 internal data class JavaLibraryDescriptor(
     val name: String,
-    val descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
     val scope: DependencyScope = DependencyScope.COMPILE,
     val exported: Boolean = false,
     val libraryRoots: Collection<LibraryRoot> = emptyList(),

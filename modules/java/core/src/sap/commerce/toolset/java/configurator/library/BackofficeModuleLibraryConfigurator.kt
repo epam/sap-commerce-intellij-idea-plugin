@@ -16,29 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator
+package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
-import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import kotlin.io.path.pathString
 
-class ProjectBackofficeLibraryConfigurator : ProjectPreImportConfigurator {
+class BackofficeModuleLibraryConfigurator : ModuleLibraryConfigurator {
 
     override val name: String
         get() = JavaConstants.Library.BACKOFFICE
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YOotbRegularModuleDescriptor
+        && moduleDescriptor.name == EiConstants.Extension.BACK_OFFICE
+
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: ModuleDescriptor,
+        moduleEntity: ModuleEntity
+    ) {
         val backofficeWebDescriptor = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YWebSubModuleDescriptor>()
             .find { it.owner.name == EiConstants.Extension.BACK_OFFICE }
@@ -50,7 +59,6 @@ class ProjectBackofficeLibraryConfigurator : ProjectPreImportConfigurator {
 
         val workspaceModel = WorkspaceModel.getInstance(importContext.project)
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-
         val libraryRoots = buildList {
             backofficeWebDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
                 .takeIf { it.directoryExists }
@@ -85,23 +93,11 @@ class ProjectBackofficeLibraryConfigurator : ProjectPreImportConfigurator {
                 .forEach { add(it) }
         }
 
-        workspaceModel.update("Processing library ${JavaConstants.Library.BACKOFFICE}") { storage ->
-            val libraryEntity = storage.projectLibraries
-                .find { it.name == JavaConstants.Library.BACKOFFICE }
-                ?: storage.addEntity(
-                    LibraryEntity(
-                        name = JavaConstants.Library.BACKOFFICE,
-                        tableId = LibraryTableId.ProjectLibraryTableId,
-                        roots = emptyList(),
-                        entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)
-                            .createEntitySourceForProjectLibrary(null),
-                    )
-                )
-
-            storage.modifyLibraryEntity(libraryEntity) {
-                this.roots.clear()
-                this.roots.addAll(libraryRoots)
-            }
-        }
+        moduleEntity.addProjectLibrary(
+            project = importContext.project,
+            workspaceModel = workspaceModel,
+            libraryName = JavaConstants.Library.BACKOFFICE,
+            libraryRoots = libraryRoots
+        )
     }
 }

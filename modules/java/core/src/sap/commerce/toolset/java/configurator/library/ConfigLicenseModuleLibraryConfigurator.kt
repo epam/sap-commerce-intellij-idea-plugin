@@ -16,45 +16,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.contentEntry
+package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
+import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import java.nio.file.Path
+import sap.commerce.toolset.project.fromPath
 
-class ContentEntryExcludeCommonsConfigurator : ModuleContentEntryConfigurator {
+class ConfigLicenseModuleLibraryConfigurator : ModuleLibraryConfigurator {
 
     override val name: String
-        get() = "Common (exclusion)"
+        get() = JavaConstants.Library.CONFIG_LICENSE
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = true
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is ConfigModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
-        contentRootEntity: ContentRootEntityBuilder,
-        pathsToIgnore: Collection<Path>
+        moduleEntity: ModuleEntity
     ) {
-        val moduleRootPath = moduleDescriptor.moduleRootPath
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val excludePaths = listOf(
-            moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY),
-            moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY),
-            moduleRootPath.resolve(HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY),
-            moduleRootPath.resolve(ProjectConstants.Directory.NODE_MODULES),
-            moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
-            moduleRootPath.resolve(ProjectConstants.Directory.ECLIPSE_BIN),
-            moduleRootPath.resolve(ProjectConstants.Directory.BOWER_COMPONENTS),
-            moduleRootPath.resolve(ProjectConstants.Directory.JS_TARGET),
-        )
+        val path = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.LICENCE)
+        val libraryRoot = virtualFileUrlManager.fromPath(path)
+            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
+            ?: return
 
-        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
+        moduleEntity.addLibrary(
+            workspaceModel = workspaceModel,
+            libraryName = JavaConstants.Library.CONFIG_LICENSE,
+            libraryRoots = arrayOf(libraryRoot)
+        )
     }
 }

@@ -26,10 +26,10 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.nio.file.Path
 
-class ContentEntrySourcesConfigurator : ModuleContentEntryConfigurator {
+class ExcludeClassesContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Sources"
+        get() = "Classes (exclusion)"
 
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
         || importContext.settings.importOOTBModulesInWriteMode
@@ -42,24 +42,9 @@ class ContentEntrySourcesConfigurator : ModuleContentEntryConfigurator {
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleRootPath = moduleDescriptor.moduleRootPath
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
 
-        val rootEntities = buildList {
-            ProjectConstants.Directory.SRC_DIR_NAMES
-                .map { moduleRootPath.resolve(it) }
-                .map { SourceRootEntityDto.sources(moduleEntity = moduleEntity, path = it) }
-                .forEach { add(it) }
-
-            moduleRootPath.resolve(ProjectConstants.Directory.GEN_SRC)
-                .let { SourceRootEntityDto.generatedSources(moduleEntity = moduleEntity, path = it) }
-                .also { add(it) }
-        }
-
-        contentRootEntity.addSourceRoots(
-            importContext = importContext,
-            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
-            rootEntities = rootEntities,
-            pathsToIgnore = pathsToIgnore,
-        )
+        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
     }
 }

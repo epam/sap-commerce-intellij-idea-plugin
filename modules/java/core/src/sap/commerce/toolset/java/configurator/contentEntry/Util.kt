@@ -25,6 +25,7 @@ import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ExcludeUrlEntity
 import com.intellij.platform.workspace.jps.entities.SourceRootEntity
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
+import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
@@ -50,7 +51,7 @@ internal fun ContentRootEntityBuilder.excludeDirectories(
 internal fun ContentRootEntityBuilder.addSourceRoots(
     importContext: ProjectImportContext,
     virtualFileUrlManager: VirtualFileUrlManager,
-    rootEntities: Collection<SourceRootEntityDto>,
+    rootEntities: Collection<SourceRootEntityDescriptor>,
     pathsToIgnore: Collection<Path>,
 ) = rootEntities
     .filter { rootEntity -> !importContext.settings.ignoreNonExistingSourceDirectories || rootEntity.path.directoryExists }

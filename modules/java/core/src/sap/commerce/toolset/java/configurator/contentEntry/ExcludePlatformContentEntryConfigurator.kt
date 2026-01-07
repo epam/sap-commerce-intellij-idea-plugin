@@ -27,7 +27,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
 
-class ContentEntryExcludePlatformConfigurator : ModuleContentEntryConfigurator {
+class ExcludePlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
         get() = "Platform (exclusion)"

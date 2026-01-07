@@ -24,8 +24,8 @@ import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.*
 import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
+import sap.commerce.toolset.java.configurator.library.collectLibraryDescriptors
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
-import sap.commerce.toolset.java.descriptor.collectLibraryDescriptors
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext

@@ -21,18 +21,19 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
 
-class ContentEntryExcludeClassesConfigurator : ModuleContentEntryConfigurator {
+class PlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Classes (exclusion)"
+        get() = "Platform"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
-        || importContext.settings.importOOTBModulesInWriteMode
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -42,9 +43,23 @@ class ContentEntryExcludeClassesConfigurator : ModuleContentEntryConfigurator {
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
+        val bootstrapPath = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
+        val rootEntities = buildList {
+            // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
+            bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
+                .let { SourceRootEntityDescriptor.generatedSources(moduleEntity, it) }
+                .also { add(it) }
 
-        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
+            bootstrapPath.resolve(ProjectConstants.Directory.RESOURCES)
+                .let { SourceRootEntityDescriptor.resources(moduleEntity = moduleEntity, path = it) }
+                .also { add(it) }
+        }
+
+        contentRootEntity.addSourceRoots(
+            importContext = importContext,
+            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
+        )
     }
 }

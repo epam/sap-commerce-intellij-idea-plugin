@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.contentEntry
+package sap.commerce.toolset.java.descriptor
 
 import com.intellij.java.workspace.entities.JavaResourceRootPropertiesEntity
 import com.intellij.java.workspace.entities.JavaResourceRootPropertiesEntityBuilder
@@ -33,7 +33,7 @@ import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_TEST_ROOT_ENT
 import java.nio.file.Path
 import kotlin.io.path.pathString
 
-internal class SourceRootEntityDto private constructor(
+internal class SourceRootEntityDescriptor private constructor(
     val sourceRootTypeId: SourceRootTypeId,
     val moduleEntity: ModuleEntity,
     val path: Path,
@@ -50,7 +50,7 @@ internal class SourceRootEntityDto private constructor(
             path: Path,
             generated: Boolean = false,
             packagePrefix: String = ""
-        ) = SourceRootEntityDto(
+        ) = SourceRootEntityDescriptor(
             sourceRootTypeId = sourceRootTypeId,
             moduleEntity = moduleEntity,
             path = path,
@@ -63,7 +63,7 @@ internal class SourceRootEntityDto private constructor(
             path: Path,
             generated: Boolean = false,
             relativeOutputPath: String = ""
-        ) = SourceRootEntityDto(
+        ) = SourceRootEntityDescriptor(
             sourceRootTypeId = sourceRootTypeId,
             moduleEntity = moduleEntity,
             path = path,

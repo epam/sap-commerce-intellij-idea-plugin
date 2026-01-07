@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.descriptor
+package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.DependencyScope
@@ -29,6 +29,7 @@ import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.configurator.contentEntry.isCustomModuleDescriptor
+import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
@@ -50,7 +51,6 @@ internal fun ModuleDescriptor.collectLibraryDescriptors(importContext: ProjectIm
     is YHacSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
     is YHmcSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
     is PlatformModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
-    is ConfigModuleDescriptor -> this.libs(workspaceModel.getVirtualFileUrlManager())
     else -> emptyList()
 }
 
@@ -115,7 +115,6 @@ private fun YModuleDescriptor.rootLib(virtualFileUrlManager: VirtualFileUrlManag
 
     return JavaLibraryDescriptor(
         name = "${this.name} - lib",
-        descriptorType = LibraryDescriptorType.LIB,
         exported = true,
         libraryRoots = listOf(libraryRoot)
     )
@@ -358,7 +357,6 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext, vi
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${this.name} - Web Library",
-                    descriptorType = LibraryDescriptorType.WEB_INF_LIB,
                     exported = true,
                     libraryRoots = buildList {
                         virtualFileUrlManager.fromPath(libPath)
@@ -406,20 +404,6 @@ private fun YCommonWebSubModuleDescriptor.commonWebLibs(importContext: ProjectIm
 
     addAll(this@commonWebLibs.webLibs(importContext, virtualFileUrlManager))
     addAll(classesLibs)
-}
-
-private fun ConfigModuleDescriptor.libs(virtualFileUrlManager: VirtualFileUrlManager): List<JavaLibraryDescriptor> {
-    val libraryRoot = virtualFileUrlManager.fromPath(this.moduleRootPath.resolve(ProjectConstants.Directory.LICENCE))
-        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
-        ?: return emptyList()
-
-    return listOf(
-        JavaLibraryDescriptor(
-            name = "Config License",
-            exported = true,
-            libraryRoots = listOf(libraryRoot)
-        )
-    )
 }
 
 private fun PlatformModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager): Collection<JavaLibraryDescriptor> {

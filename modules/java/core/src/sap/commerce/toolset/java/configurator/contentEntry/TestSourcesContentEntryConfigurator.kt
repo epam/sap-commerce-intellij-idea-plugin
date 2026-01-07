@@ -21,22 +21,19 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.nio.file.Path
 
-class ContentEntryExcludeWebTestClassesConfigurator : ModuleContentEntryConfigurator {
+class TestSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Web test classes (exclusion)"
+        get() = "Test sources"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
-        || moduleDescriptor is YCommonWebSubModuleDescriptor
-        || moduleDescriptor is YAcceleratorAddonSubModuleDescriptor
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
+        || importContext.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -46,9 +43,15 @@ class ContentEntryExcludeWebTestClassesConfigurator : ModuleContentEntryConfigur
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES))
+        val rootEntities = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
+            .map { moduleDescriptor.moduleRootPath.resolve(it) }
+            .map { SourceRootEntityDescriptor.testSources(moduleEntity = moduleEntity, path = it) }
 
-        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
+        contentRootEntity.addSourceRoots(
+            importContext = importContext,
+            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
+        )
     }
 }
