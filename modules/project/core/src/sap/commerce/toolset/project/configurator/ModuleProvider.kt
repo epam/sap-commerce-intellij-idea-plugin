@@ -18,10 +18,16 @@
 
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.platform.workspace.jps.entities.ModuleTypeId
+import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import kotlin.io.path.pathString
 
 interface ModuleProvider {
 
@@ -30,14 +36,42 @@ interface ModuleProvider {
 
     suspend fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
 
-    suspend fun create(
+    suspend fun getOrCreate(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-    ) = modifiableModelsProvider.modifiableModuleModel.newModule(
-        moduleDescriptor.ideaModuleFile(importContext),
-        moduleTypeId
-    )
+    ) = workspaceModel.currentSnapshot.resolve(ModuleId(moduleDescriptor.ideaModuleName()))
+        ?.also { thisLogger().debug("Module already exists: ${it.name}") }
+        ?: create(importContext, workspaceModel, moduleDescriptor)
+
+    private suspend fun create(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: ModuleDescriptor
+    ): ModuleEntity {
+        val project = importContext.project
+        val ideaModuleParentPath = moduleDescriptor.ideaModuleFile(importContext).parent
+
+        val baseModuleDir = workspaceModel.getVirtualFileUrlManager().fromPath(ideaModuleParentPath.normalize().pathString)
+        val entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(project).createEntitySourceForModule(
+            baseModuleDir = baseModuleDir,
+            externalSource = null
+        )
+
+        lateinit var entity: ModuleEntity
+
+        WorkspaceModel.getInstance(project).update("Add new module: ${moduleDescriptor.name}") { storage ->
+            entity = storage addEntity ModuleEntity(
+                name = moduleDescriptor.ideaModuleName(),
+                dependencies = emptyList(),
+                entitySource = entitySource
+            ) {
+                type = ModuleTypeId(moduleTypeId)
+            }
+        }
+
+        return entity
+    }
 
     companion object {
         val EP = ExtensionPointName.create<ModuleProvider>("sap.commerce.toolset.project.module.provider")

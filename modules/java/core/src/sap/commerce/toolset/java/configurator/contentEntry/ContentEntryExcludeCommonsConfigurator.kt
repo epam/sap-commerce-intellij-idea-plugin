@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -32,15 +34,17 @@ class ContentEntryExcludeCommonsConfigurator : ModuleContentEntryConfigurator {
 
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = true
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = moduleDescriptor.moduleRootPath
-
-        contentEntry.excludeDirectories(
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val excludePaths = listOf(
             moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY),
             moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY),
             moduleRootPath.resolve(HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY),
@@ -50,5 +54,7 @@ class ContentEntryExcludeCommonsConfigurator : ModuleContentEntryConfigurator {
             moduleRootPath.resolve(ProjectConstants.Directory.BOWER_COMPONENTS),
             moduleRootPath.resolve(ProjectConstants.Directory.JS_TARGET),
         )
+
+        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
     }
 }

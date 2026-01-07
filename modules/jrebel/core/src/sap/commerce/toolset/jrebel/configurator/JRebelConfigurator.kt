@@ -24,6 +24,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.util.io.NioFiles
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.zeroturnaround.javarebel.idea.plugin.actions.ToggleRebelFacetAction
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacet
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
@@ -40,7 +41,7 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "JRebel"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
 
         val moduleDescriptors = importContext.chosenHybrisModuleDescriptors

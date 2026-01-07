@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -33,7 +33,7 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        workspaceModel: WorkspaceModel
     ) {
         val ideaDirectory = importContext.rootDirectory.resolve(".idea")
 

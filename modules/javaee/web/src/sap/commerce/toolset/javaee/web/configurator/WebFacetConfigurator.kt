@@ -22,10 +22,12 @@ import com.intellij.facet.FacetTypeRegistry
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
 import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -44,12 +46,14 @@ class WebFacetConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module)
-        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
+        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
+        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
+        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule)
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule)
         val webRoot = when (moduleDescriptor) {
             is YWebSubModuleDescriptor -> moduleDescriptor.webRoot
             is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot
@@ -64,8 +68,8 @@ class WebFacetConfigurator : ModuleImportConfigurator {
                     it.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
                 }
                 ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
-                    .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
-                    ?.let { FacetManager.getInstance(module).createFacet(it, it.defaultFacetName, null) }
+                    .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
+                    ?.let { FacetManager.getInstance(javaModule).createFacet(it, it.defaultFacetName, null) }
                     ?.also { modifiableFacetModel.addFacet(it) }
                 ?: return@backgroundWriteAction
 
@@ -74,6 +78,8 @@ class WebFacetConfigurator : ModuleImportConfigurator {
 
             VfsUtil.findFile(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
                 ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
+
+            modifiableModelsProvider.commit()
         }
     }
 }

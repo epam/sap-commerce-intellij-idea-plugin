@@ -19,11 +19,11 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
 
 class VersionControlSystemConfigurator : ProjectImportConfigurator {
@@ -33,7 +33,7 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        workspaceModel: WorkspaceModel
     ) {
         val project = importContext.project
         val vcsManager = ProjectLevelVcsManager.getInstance(project)

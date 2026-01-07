@@ -23,7 +23,7 @@ import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -36,7 +36,7 @@ import kotlin.io.path.pathString
 class ProjectPlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
-        get() = HybrisConstants.LIBRARY_GROUP_PLATFORM
+        get() = JavaConstants.Library.PLATFORM_BOOTSTRAP
 
     override suspend fun preConfigure(importContext: ProjectImportContext) {
         val moduleDescriptor = importContext.platformModuleDescriptor
@@ -63,13 +63,13 @@ class ProjectPlatformBootstrapLibraryConfigurator : ProjectPreImportConfigurator
         }
 
         backgroundWriteAction {
-            workspaceModel.updateProjectModel("Processing library: ${HybrisConstants.LIBRARY_GROUP_PLATFORM}") { storage ->
+            workspaceModel.updateProjectModel("Processing library: ${JavaConstants.Library.PLATFORM_BOOTSTRAP}") { storage ->
                 val libraryEntity = storage
                     .entities(LibraryEntity::class.java)
-                    .firstOrNull { it.name == HybrisConstants.LIBRARY_GROUP_PLATFORM }
+                    .firstOrNull { it.name == JavaConstants.Library.PLATFORM_BOOTSTRAP }
                     ?: storage.addEntity(
                         LibraryEntity(
-                            name = HybrisConstants.LIBRARY_GROUP_PLATFORM,
+                            name = JavaConstants.Library.PLATFORM_BOOTSTRAP,
                             tableId = LibraryTableId.ProjectLibraryTableId,
                             roots = emptyList(),
                             entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(importContext.project)

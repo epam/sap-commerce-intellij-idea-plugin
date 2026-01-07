@@ -17,14 +17,16 @@
  */
 package sap.commerce.toolset.spring.configurator
 
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ProjectConstants
@@ -46,26 +48,30 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
         if (Plugin.SPRING.isDisabled()) return
-        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
+        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
 
         when (moduleDescriptor) {
             is YBackofficeSubModuleDescriptor -> return
-            is PlatformModuleDescriptor -> configure(module, moduleDescriptor, modifiableFacetModel, emptySet())
-            is YModuleDescriptor -> configure(module, moduleDescriptor, modifiableFacetModel, moduleDescriptor.getSpringFiles())
+            is PlatformModuleDescriptor -> configure(workspaceModel, modifiableModelsProvider, moduleDescriptor, moduleEntity, emptySet())
+            is YModuleDescriptor -> configure(workspaceModel, modifiableModelsProvider, moduleDescriptor, moduleEntity, moduleDescriptor.getSpringFiles())
         }
     }
 
     private suspend fun configure(
-        javaModule: Module,
+        workspaceModel: WorkspaceModel,
+        modifiableModelsProvider: IdeModifiableModelsProvider,
         moduleDescriptor: ModuleDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+        moduleEntity: ModuleEntity,
         additionalFileSet: Set<String>
     ) {
+        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule)
+
         backgroundWriteAction {
             val springFacet = SpringFacet.getInstance(javaModule)
                 ?.also { it.removeFileSets() }
@@ -96,6 +102,8 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
                 setting.apply()
             }
             modifiableFacetModel.addFacet(springFacet)
+
+            modifiableModelsProvider.commit()
         }
     }
 }

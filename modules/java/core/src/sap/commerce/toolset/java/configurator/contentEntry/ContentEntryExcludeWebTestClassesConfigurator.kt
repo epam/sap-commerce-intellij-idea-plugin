@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -36,15 +38,17 @@ class ContentEntryExcludeWebTestClassesConfigurator : ModuleContentEntryConfigur
         || moduleDescriptor is YCommonWebSubModuleDescriptor
         || moduleDescriptor is YAcceleratorAddonSubModuleDescriptor
 
-
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        contentEntry.excludeDirectories(
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
-        )
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES))
+
+        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
     }
 }

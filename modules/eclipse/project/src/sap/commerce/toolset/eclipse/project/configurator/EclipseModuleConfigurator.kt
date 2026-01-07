@@ -19,7 +19,9 @@
 package sap.commerce.toolset.eclipse.project.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.module.Module
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleId
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.EclipseConstants
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
@@ -35,7 +37,7 @@ class EclipseModuleConfigurator : ExternalModuleConfigurator() {
     override val moduleTypeId: String
         get() = EclipseConstants.MODULE_TYPE_ID
 
-    override suspend fun import(importContext: ProjectImportContext): Map<ModuleDescriptor, Module> {
+    override suspend fun import(importContext: ProjectImportContext, workspaceModel: WorkspaceModel): Map<ModuleDescriptor, ModuleEntity> {
         val project = importContext.project
         val eclipseModules = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
@@ -53,7 +55,9 @@ class EclipseModuleConfigurator : ExternalModuleConfigurator() {
             .mapNotNull { module ->
                 val moduleDescriptor = eclipseModules.find { it.name == module.name }
                     ?: return@mapNotNull null
-                moduleDescriptor to module
+                val moduleEntity = workspaceModel.currentSnapshot.resolve(ModuleId(module.name))
+                    ?: return@mapNotNull null
+                moduleDescriptor to moduleEntity
             }
             .associate { it.first to it.second }
     }

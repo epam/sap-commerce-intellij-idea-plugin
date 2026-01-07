@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.execution.RunManager
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
@@ -29,7 +30,7 @@ class LocalSapCxRunConfigurationConfigurator : ProjectPostImportAsyncConfigurato
     override val name: String
         get() = "Run Configurations - Local SAP CX"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val runManager = RunManager.getInstance(project)
 

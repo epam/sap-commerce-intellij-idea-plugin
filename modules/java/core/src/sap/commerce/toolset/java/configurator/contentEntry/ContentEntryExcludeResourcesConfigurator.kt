@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -32,14 +34,17 @@ class ContentEntryExcludeResourcesConfigurator : ModuleContentEntryConfigurator 
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = importContext.settings
         .extensionsResourcesToExclude.contains(moduleDescriptor.name)
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        contentEntry.excludeDirectories(
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
-        )
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
+
+        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
     }
 }

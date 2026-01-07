@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,17 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurator
+package sap.commerce.toolset.java
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import sap.commerce.toolset.project.context.ProjectImportContext
+object JavaConstants {
 
-interface ProjectPostImportConfigurator : Configurator {
-
-    fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel)
-
-    companion object {
-        val EP = ExtensionPointName.create<ProjectPostImportConfigurator>("sap.commerce.toolset.project.postImportConfigurator")
+    object Library {
+        const val BACKOFFICE = "Backoffice Library"
+        const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
     }
 }

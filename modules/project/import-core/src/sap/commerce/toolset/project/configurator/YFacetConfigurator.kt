@@ -19,15 +19,9 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
-import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.FacetEntity
-import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleId
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
+import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.util.xmlb.XmlSerializer
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -43,49 +37,29 @@ class YFacetConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
-        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
-
-        backgroundWriteAction {
-            modifiableFacetModel.getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
-                ?.let { modifiableFacetModel.removeFacet(it) }
-
-            val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
-            val facet = facetType.createFacet(
-                module,
-                facetType.defaultFacetName,
-                facetType.createDefaultConfiguration(),
-                null
-            )
-            facet.configuration.loadState(moduleDescriptor.extensionDescriptor)
-
-            modifiableFacetModel.addFacet(facet)
-        }
-    }
-
-    override suspend fun configure(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor, module: Module) {
-        val project = importContext.project
-        val workspaceModel = WorkspaceModel.getInstance(project)
-        val moduleEntity = workspaceModel.currentSnapshot.resolve(ModuleId(module.name))
-            ?: return
         val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
         val xmlTag = XmlSerializer.serialize(moduleDescriptor.extensionDescriptor)
             .let { JDOMUtil.writeElement(it) }
         val facetEntityTypeId = FacetEntityTypeId(YFacetType.FACET_ID)
+        val facetEntity = moduleEntity.facets.find { it.typeId == facetEntityTypeId }
 
-        backgroundWriteAction {
-            workspaceModel.updateProjectModel("Adding SAP CX Facet to $name modules") { storage ->
-                val entitySource = moduleEntity.entitySource
-                storage.modifyModuleEntity(moduleEntity) module@{
-                    storage.addEntity(
-                        FacetEntity(ModuleId(moduleEntity.name), facetType.presentableName, facetEntityTypeId, entitySource) {
-                            this.configurationXmlTag = xmlTag
-                            this.module = this@module
-                        }
-                    )
+        workspaceModel.update("Adding SAP CX Facet to $name modules") { storage ->
+            val entitySource = moduleEntity.entitySource
+            storage.modifyModuleEntity(moduleEntity) module@{
+                facetEntity?.let { storage.removeEntity(it) }
+
+                storage addEntity FacetEntity(
+                    moduleId = ModuleId(moduleEntity.name),
+                    name = facetType.presentableName,
+                    typeId = facetEntityTypeId,
+                    entitySource = entitySource
+                ) {
+                    this.configurationXmlTag = xmlTag
+                    this.module = this@module
                 }
             }
         }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,13 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.CompilerModuleExtension
-import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.java.workspace.entities.JavaModuleSettingsEntity
+import com.intellij.java.workspace.entities.javaSettings
+import com.intellij.java.workspace.entities.modifyJavaModuleSettingsEntity
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -29,21 +30,19 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import kotlin.io.path.pathString
 
-class JavaModuleCompilerConfigurator : ModuleImportConfigurator {
+class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
 
     override val name: String
-        get() = "Compiler"
+        get() = "Java Settings"
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module)
-
         val fakeOutputPath = importContext.settings.useFakeOutputPathForCustomExtensions
         val ootbReadonlyMode = importContext.settings.importOOTBModulesInReadOnlyMode
 
@@ -55,14 +54,31 @@ class JavaModuleCompilerConfigurator : ModuleImportConfigurator {
             else ProjectConstants.Directory.CLASSES
         }
 
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val outputDirectory = moduleDescriptor.moduleRootPath.resolve(output)
+        val javaSettings = moduleEntity.javaSettings
 
-        with(modifiableRootModel.getModuleExtension(CompilerModuleExtension::class.java)) {
-            setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.pathString))
-            setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.pathString))
-
-            isExcludeOutput = true
-            inheritCompilerOutputPath(false)
+        workspaceModel.update("Apply Java Settings") {
+            if (javaSettings != null) {
+                it.modifyJavaModuleSettingsEntity(javaSettings) {
+                    this.excludeOutput = true
+                    this.inheritedCompilerOutput = false
+                    this.compilerOutput = virtualFileUrlManager.fromPath(outputDirectory.pathString)
+                    this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
+                }
+            } else {
+                it.modifyModuleEntity(moduleEntity) {
+                    this.javaSettings = JavaModuleSettingsEntity(
+                        inheritedCompilerOutput = false,
+                        excludeOutput = true,
+                        entitySource = moduleEntity.entitySource
+                    ) {
+                        this.excludeOutput = true
+                        this.compilerOutput = virtualFileUrlManager.fromPath(outputDirectory.pathString)
+                        this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
+                    }
+                }
+            }
         }
     }
 }

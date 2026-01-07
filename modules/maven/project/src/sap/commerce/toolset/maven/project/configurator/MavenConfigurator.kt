@@ -19,6 +19,7 @@ package sap.commerce.toolset.maven.project.configurator
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
 import org.jetbrains.idea.maven.model.MavenConstants
 import org.jetbrains.idea.maven.project.MavenProjectsManager
@@ -33,7 +34,7 @@ class MavenConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Maven"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val mavenModules = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<MavenModuleDescriptor>()

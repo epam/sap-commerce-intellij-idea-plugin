@@ -18,11 +18,13 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.DependencyScope
-import com.intellij.openapi.roots.ModifiableRootModel
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleDependency
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
 
@@ -33,60 +35,42 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        workspaceModel: WorkspaceModel
     ) {
-        val allModules = modifiableModelsProvider.modules
+        val allModules = workspaceModel.currentSnapshot
+            .entities(ModuleEntity::class.java)
             .associateBy { it.name }
         val extModules = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YPlatformExtModuleDescriptor>()
             .toSet()
 
-        val platformIdeaModuleName = importContext.platformModuleDescriptor.ideaModuleName()
-        val platformModule = allModules[platformIdeaModuleName] ?: return
-
         importContext.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
             allModules[moduleDescriptor.ideaModuleName()]
-                ?.let { module ->
-                    val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
-
+                ?.let { moduleEntity ->
                     moduleDescriptor.getDirectDependencies()
                         .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
-                        .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
+                        .forEach { addModuleDependency(workspaceModel, moduleEntity, it) }
                 }
         }
 
-        processPlatformModulesDependencies(
-            importContext,
-            platformModule,
-            allModules,
-            modifiableModelsProvider
-        )
+        allModules[importContext.platformModuleDescriptor.ideaModuleName()]
+            ?.let { addModuleDependency(workspaceModel, it, importContext.configModuleDescriptor) }
     }
 
-    private fun processPlatformModulesDependencies(
-        importContext: ProjectImportContext,
-        platformModule: Module,
-        allModules: Map<String, Module>,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+    private suspend fun addModuleDependency(
+        workspaceModel: WorkspaceModel,
+        moduleEntity: ModuleEntity,
+        dependencyModuleDescriptor: ModuleDescriptor,
     ) {
-        val platformRootModel = modifiableModelsProvider.getModifiableRootModel(platformModule)
-        val configModuleName = importContext.configModuleDescriptor.ideaModuleName()
-
-        addModuleDependency(allModules, configModuleName, platformRootModel)
-    }
-
-    private fun addModuleDependency(
-        allModules: Map<String, Module>,
-        dependencyName: String,
-        rootModel: ModifiableRootModel
-    ) {
-        val moduleOrderEntry = allModules[dependencyName]
-            ?.let { rootModel.addModuleOrderEntry(it) }
-            ?: rootModel.addInvalidModuleEntry(dependencyName)
-
-        with(moduleOrderEntry) {
-            isExported = true
-            scope = DependencyScope.COMPILE
+        workspaceModel.update("Update module dependency '${moduleEntity.name}'") {
+            it.modifyModuleEntity(moduleEntity) {
+                this.dependencies += ModuleDependency(
+                    module = ModuleId(dependencyModuleDescriptor.ideaModuleName()),
+                    exported = true,
+                    scope = com.intellij.platform.workspace.jps.entities.DependencyScope.COMPILE,
+                    productionOnTest = false
+                )
+            }
         }
     }
 }

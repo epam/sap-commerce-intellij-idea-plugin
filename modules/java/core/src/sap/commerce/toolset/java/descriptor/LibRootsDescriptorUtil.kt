@@ -27,6 +27,7 @@ import com.intellij.util.asSafely
 import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.contentEntry.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -59,7 +60,7 @@ internal fun addBackofficeRootProjectLibrary(
     sourcesDirRoot: Path? = null,
     addJarDirectory: Boolean = true
 ) {
-    val libraryName = HybrisConstants.LIBRARY_GROUP_BACKOFFICE
+    val libraryName = JavaConstants.Library.BACKOFFICE
     val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
     val library = libraryTableModifiableModel.getLibraryByName(libraryName)
         ?: libraryTableModifiableModel.createLibrary(libraryName)

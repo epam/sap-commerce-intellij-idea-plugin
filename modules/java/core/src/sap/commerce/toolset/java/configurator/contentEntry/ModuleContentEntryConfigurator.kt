@@ -19,7 +19,9 @@
 package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.roots.ContentEntry
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.nio.file.Path
@@ -30,7 +32,14 @@ interface ModuleContentEntryConfigurator {
 
     fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
 
-    fun configure(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor, contentEntry: ContentEntry, pathsToIgnore: Collection<Path>)
+    suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: ModuleDescriptor,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
+        pathsToIgnore: Collection<Path>
+    )
 
     companion object {
         val EP = ExtensionPointName.create<ModuleContentEntryConfigurator>("sap.commerce.toolset.project.module.contentEntryConfigurator")

@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
-import org.jetbrains.jps.model.java.JavaSourceRootType
-import org.jetbrains.jps.model.java.JpsJavaExtensionService
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -38,14 +38,16 @@ class ContentEntryWebInjectedSourcesConfigurator : ModuleContentEntryConfigurato
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
         && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = moduleDescriptor.moduleRootPath
-        val paths = listOf(
+        val rootEntities = listOf(
             moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
             moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
         )
@@ -55,13 +57,13 @@ class ContentEntryWebInjectedSourcesConfigurator : ModuleContentEntryConfigurato
                     directoryStream.toList()
                 }
             }
+            .map { SourceRootEntityDto.generatedSources(moduleEntity, it) }
 
-        contentEntry.addSourceRoots(
-            importContext,
-            paths,
-            pathsToIgnore,
-            JavaSourceRootType.SOURCE,
-            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
+        contentRootEntity.addSourceRoots(
+            importContext = importContext,
+            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
         )
     }
 }

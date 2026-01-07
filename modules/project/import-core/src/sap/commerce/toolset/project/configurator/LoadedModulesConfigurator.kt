@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -30,7 +30,7 @@ class LoadedModulesConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        workspaceModel: WorkspaceModel
     ) {
         val project = importContext.project
         val unusedModuleNames = importContext.chosenHybrisModuleDescriptors

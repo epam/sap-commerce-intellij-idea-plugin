@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.settings.GradleSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
@@ -40,7 +41,7 @@ class GradleConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshCon
     override val name: String
         get() = "Gradle"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         PropertiesComponent.getInstance(project).setValue("show.inlinked.gradle.project.popup", false)
 

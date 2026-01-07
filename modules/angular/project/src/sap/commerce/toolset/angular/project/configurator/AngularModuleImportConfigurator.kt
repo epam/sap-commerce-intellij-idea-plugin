@@ -17,9 +17,10 @@
  */
 package sap.commerce.toolset.angular.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.angular.AngularConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -35,11 +36,22 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
-        modifiableModelsProvider.getModifiableRootModel(module)
-            .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootPath.pathString));
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
+
+        workspaceModel.update("Adding source root [${moduleDescriptor.name}]") { builder ->
+            val contentRootEntity = ContentRootEntity(
+                url = contentRootUrl,
+                excludedPatterns = emptyList(),
+                entitySource = moduleEntity.entitySource
+            )
+            builder.modifyModuleEntity(moduleEntity) {
+                this.contentRoots = mutableListOf(contentRootEntity)
+            }
+        }
     }
 }

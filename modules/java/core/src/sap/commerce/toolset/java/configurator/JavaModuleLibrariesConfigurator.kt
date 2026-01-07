@@ -18,9 +18,10 @@
 
 package sap.commerce.toolset.java.configurator
 
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.LibraryOrderEntry
@@ -28,9 +29,13 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.java.descriptor.JavaLibraryPath
@@ -59,11 +64,13 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
+        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
+        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
+        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule)
 
         val configurators = ModuleLibraryConfigurator.EP.extensionList
             .filter { configurator -> configurator.isApplicable(importContext, moduleDescriptor) }
@@ -84,7 +91,6 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 .filter { it.rootType == OrderRootType.CLASSES }
                 .takeIf { it.isNotEmpty() }
                 ?.none { it.path.exists() }
-
                 ?: true
 
             if (noValidClassesPaths) {
@@ -96,7 +102,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         }
 
         when (moduleDescriptor) {
-            is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.LIBRARY_GROUP_PLATFORM, true)
+            is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, JavaConstants.Library.PLATFORM_BOOTSTRAP, true)
             is YOotbRegularModuleDescriptor -> {
                 if (moduleDescriptor.extensionInfo.backofficeModule) {
                     moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_JAR)
@@ -104,10 +110,12 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                         ?.let { addBackofficeRootProjectLibrary(importContext, modifiableModelsProvider, it.normalize()) }
                 }
                 if (moduleDescriptor.name == EiConstants.Extension.BACK_OFFICE) {
-                    addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.LIBRARY_GROUP_BACKOFFICE, true)
+                    addLibsToModule(modifiableRootModel, modifiableModelsProvider, JavaConstants.Library.BACKOFFICE, true)
                 }
             }
         }
+
+        backgroundWriteAction { modifiableModelsProvider.commit() }
     }
 
     private fun addRoots(

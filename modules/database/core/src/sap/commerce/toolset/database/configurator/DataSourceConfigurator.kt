@@ -35,6 +35,7 @@ import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.LibraryUtil
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
@@ -47,7 +48,7 @@ class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Database - Data Sources"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()

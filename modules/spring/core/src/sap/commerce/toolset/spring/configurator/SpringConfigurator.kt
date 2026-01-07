@@ -19,7 +19,9 @@
 package sap.commerce.toolset.spring.configurator
 
 import com.intellij.facet.ModifiableFacetModel
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.application.backgroundWriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
@@ -34,15 +36,18 @@ class SpringConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        workspaceModel: WorkspaceModel
     ) {
         if (Plugin.SPRING.isDisabled()) return
 
+        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
         val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 
         importContext.chosenHybrisModuleDescriptors
             .forEach { configureFacetDependencies(it, facetModels, it.getDirectDependencies()) }
+
+        backgroundWriteAction { modifiableModelsProvider.commit() }
     }
 
     private fun configureFacetDependencies(

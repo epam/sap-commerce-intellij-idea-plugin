@@ -18,9 +18,12 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.application.backgroundWriteAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.roots.JavaModuleExternalPaths
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -37,15 +40,19 @@ class JavaModuleJavadocsConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
         if (moduleDescriptor is YCustomRegularModuleDescriptor || moduleDescriptor is ConfigModuleDescriptor) return
         val javadocUrl = importContext.javadocUrl ?: return
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
+        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
+        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
+        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule)
         val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
         javaModuleExternalPaths.javadocUrls = listOf(javadocUrl).toTypedArray()
+
+        backgroundWriteAction { modifiableModelsProvider.commit() }
     }
 }

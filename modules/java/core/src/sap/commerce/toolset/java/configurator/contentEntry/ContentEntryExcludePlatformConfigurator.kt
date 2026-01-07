@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -32,22 +34,29 @@ class ContentEntryExcludePlatformConfigurator : ModuleContentEntryConfigurator {
 
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = moduleDescriptor.moduleRootPath
         val bootstrapPath = moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
-
-        contentEntry.excludeDirectories(
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val excludePaths = listOf(
             bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC),
             bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES),
+
             moduleRootPath.resolve(ProjectConstants.Directory.TOMCAT_6),
             moduleRootPath.resolve(ProjectConstants.Directory.TOMCAT)
         )
 
-        contentEntry.addExcludePattern("apache-ant-*")
+        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
+
+        if ("apache-ant-*" !in contentRootEntity.excludedPatterns) {
+            contentRootEntity.excludedPatterns += "apache-ant-*"
+        }
     }
 }

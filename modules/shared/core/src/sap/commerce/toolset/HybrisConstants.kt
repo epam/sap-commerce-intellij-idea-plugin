@@ -35,9 +35,6 @@ object HybrisConstants {
 
     const val SERVER_JAR_SUFFIX = "server.jar"
 
-    const val LIBRARY_GROUP_BACKOFFICE = "Backoffice Library"
-    const val LIBRARY_GROUP_PLATFORM = "Platform Bootstrap"
-
     const val PATH_IDE_CONSOLES = "consoles/ide/"
     const val PATH_BOOTSTRAP_GEN_SRC = "bootstrap/gensrc"
 

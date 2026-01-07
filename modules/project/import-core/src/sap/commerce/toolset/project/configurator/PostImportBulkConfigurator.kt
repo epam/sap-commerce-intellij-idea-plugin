@@ -23,6 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
 import kotlinx.coroutines.*
@@ -37,11 +38,12 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
     private val logger = thisLogger()
 
     fun configure(importContext: ProjectImportContext) {
+        val workspaceModel = WorkspaceModel.getInstance(project)
         val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList
 
         // mostly background operations
         ProjectPostImportConfigurator.EP.extensionList.forEach { configurator ->
-            val duration = measureTime { configurator.postImport(importContext) }
+            val duration = measureTime { configurator.postImport(importContext, workspaceModel) }
             logger.info("Post-configured project [${configurator.name} | $duration]")
         }
 
@@ -56,7 +58,7 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                             async {
                                 progressReporter.itemStep("Applying '${configurator.name}' configurator...") {
                                     runCatching {
-                                        val duration = measureTime { configurator.postImport(importContext) }
+                                        val duration = measureTime { configurator.postImport(importContext, workspaceModel) }
                                         logger.info("Post-configured async project [${configurator.name} | $duration]")
                                     }
                                         .exceptionOrNull()

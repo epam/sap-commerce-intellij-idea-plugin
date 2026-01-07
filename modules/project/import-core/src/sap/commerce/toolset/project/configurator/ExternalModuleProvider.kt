@@ -18,7 +18,8 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.module.Module
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
@@ -26,19 +27,19 @@ abstract class ExternalModuleConfigurator : ProjectPostImportAsyncConfigurator {
 
     abstract val moduleTypeId: String
 
-    abstract suspend fun import(importContext: ProjectImportContext): Map<ModuleDescriptor, Module>
+    abstract suspend fun import(importContext: ProjectImportContext, workspaceModel: WorkspaceModel): Map<ModuleDescriptor, ModuleEntity>
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
-        val descriptorToModule = import(importContext)
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        val descriptorToModule = import(importContext, workspaceModel)
             .takeIf { it.isNotEmpty() }
             ?: return
 
         val configurators = ModuleImportConfigurator.EP.extensionList
             .filter { it.isApplicable(moduleTypeId) }
 
-        descriptorToModule.forEach { (moduleDescriptor, module) ->
+        descriptorToModule.forEach { (moduleDescriptor, moduleEntity) ->
             configurators.forEach { configurator ->
-                configurator.configure(importContext, moduleDescriptor, module)
+                configurator.configure(importContext, workspaceModel, moduleDescriptor, moduleEntity)
             }
         }
     }

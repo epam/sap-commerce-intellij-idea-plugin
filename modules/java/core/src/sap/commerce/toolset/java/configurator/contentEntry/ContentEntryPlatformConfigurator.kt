@@ -18,11 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
-import com.intellij.openapi.vfs.VfsUtil
-import org.jetbrains.jps.model.java.JavaResourceRootType
-import org.jetbrains.jps.model.java.JavaSourceRootType
-import org.jetbrains.jps.model.java.JpsJavaExtensionService
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -36,27 +34,31 @@ class ContentEntryPlatformConfigurator : ModuleContentEntryConfigurator {
 
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleRootPath = moduleDescriptor.moduleRootPath
-        val bootstrapPath = moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
+        val bootstrapPath = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
+        val rootEntities = buildList {
+            // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
+            bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
+                .let { SourceRootEntityDto.generatedSources(moduleEntity, it) }
+                .also { add(it) }
 
-        bootstrapPath.resolve(ProjectConstants.Directory.RESOURCES)
-            .let { VfsUtil.findFile(it, true) }
-            ?.let { contentEntry.addSourceFolder(it, JavaResourceRootType.RESOURCE) }
+            bootstrapPath.resolve(ProjectConstants.Directory.RESOURCES)
+                .let { SourceRootEntityDto.resources(moduleEntity = moduleEntity, path = it) }
+                .also { add(it) }
+        }
 
-        // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
-        val genSrcPath = bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
-        contentEntry.addSourceRoots(
-            importContext,
-            listOf(genSrcPath),
-            pathsToIgnore,
-            JavaSourceRootType.SOURCE,
-            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
+        contentRootEntity.addSourceRoots(
+            importContext = importContext,
+            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
         )
     }
 }

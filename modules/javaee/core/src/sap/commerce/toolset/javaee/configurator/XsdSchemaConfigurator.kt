@@ -20,6 +20,7 @@ package sap.commerce.toolset.javaee.configurator
 import com.intellij.javaee.ExternalResourceManagerEx
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
@@ -32,7 +33,7 @@ class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "XSD Schema"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val cockpitJarToFile = readAction {
             importContext.chosenHybrisModuleDescriptors

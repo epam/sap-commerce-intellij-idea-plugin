@@ -18,15 +18,13 @@
 
 package sap.commerce.toolset.project.tasks
 
-import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.platform.util.progress.reportProgressScope
@@ -49,16 +47,14 @@ class ImportProjectTask(private val project: Project) {
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.commit"),
     ) {
-        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(project)
+        val workspaceModel = WorkspaceModel.getInstance(project)
 
         reportSequentialProgress { spr ->
             spr.nextStep(5) { preConfigureProject(importContext) }
-            spr.nextStep(95) { importModules(importContext, modifiableModelsProvider) }
-            spr.nextStep(100) { configureProject(importContext, modifiableModelsProvider) }
+            spr.nextStep(95) { importModules(importContext, workspaceModel) }
+            spr.nextStep(100) { configureProject(importContext, workspaceModel) }
 
-            spr.indeterminateStep(i18n("hybris.project.import.saving.project"))
-
-            saveProject(modifiableModelsProvider)
+            project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, true)
         }
     }
 
@@ -77,7 +73,7 @@ class ImportProjectTask(private val project: Project) {
         }
     }
 
-    private suspend fun importModules(importContext: ProjectImportContext, modifiableModelsProvider: IdeModifiableModelsProviderImpl) {
+    private suspend fun importModules(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val chosenModuleDescriptors = importContext.allChosenModuleDescriptors
         val moduleProviders = ModuleProvider.EP.extensionList
 
@@ -92,7 +88,7 @@ class ImportProjectTask(private val project: Project) {
                     checkCanceled()
 
                     logger.debug("Importing module [${moduleDescriptor.name}].")
-                    val duration = measureTime { importModule(importContext, moduleDescriptor, provider, modifiableModelsProvider) }
+                    val duration = measureTime { importModule(importContext, workspaceModel, moduleDescriptor, provider) }
                     logger.info("Imported module [${moduleDescriptor.name} | ${duration}].")
                 }
             }
@@ -101,11 +97,11 @@ class ImportProjectTask(private val project: Project) {
 
     private suspend fun importModule(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        provider: ModuleProvider,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        provider: ModuleProvider
     ) {
-        val module = provider.create(importContext, moduleDescriptor, modifiableModelsProvider)
+        val moduleEntity = provider.getOrCreate(importContext, workspaceModel, moduleDescriptor)
         val configurators = ModuleImportConfigurator.EP.extensionList
             .filter { it.isApplicable(provider.moduleTypeId) }
 
@@ -115,7 +111,7 @@ class ImportProjectTask(private val project: Project) {
                     checkCanceled()
 
                     runCatching {
-                        val duration = measureTime { configurator.configure(importContext, moduleDescriptor, module, modifiableModelsProvider) }
+                        val duration = measureTime { configurator.configure(importContext, workspaceModel, moduleDescriptor, moduleEntity) }
                         logger.info("Applied module configurator [${moduleDescriptor.name} | ${configurator.name} | ${duration}].")
                     }
                         .exceptionOrNull()
@@ -125,7 +121,7 @@ class ImportProjectTask(private val project: Project) {
         }
     }
 
-    private suspend fun configureProject(importContext: ProjectImportContext, modifiableModelsProvider: IdeModifiableModelsProvider) {
+    private suspend fun configureProject(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val configurators = ProjectImportConfigurator.EP.extensionList
 
         reportProgressScope(configurators.size) {
@@ -133,18 +129,12 @@ class ImportProjectTask(private val project: Project) {
                 it.itemStep("Applying '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.configure(importContext, modifiableModelsProvider) }
+                    val duration = measureTime { configurator.configure(importContext, workspaceModel) }
 
                     logger.info("Applied project configurator [${configurator.name} | ${duration}].")
                 }
             }
         }
-    }
-
-    private suspend fun saveProject(modifiableModelsProvider: IdeModifiableModelsProvider) {
-        backgroundWriteAction { modifiableModelsProvider.commit() }
-
-        project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, true)
     }
 
     companion object {

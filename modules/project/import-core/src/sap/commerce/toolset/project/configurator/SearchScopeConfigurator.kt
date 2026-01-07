@@ -22,6 +22,7 @@ import com.intellij.find.FindSettings
 import com.intellij.ide.projectView.impl.ModuleGroup
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet
 import com.intellij.psi.search.scope.packageSet.NamedScope
 import com.intellij.psi.search.scope.packageSet.NamedScopeManager
@@ -39,7 +40,7 @@ class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Search Scope"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val applicationSettings = importContext.settings
         val customGroupName = applicationSettings.groupCustom

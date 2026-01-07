@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
-import org.jetbrains.jps.model.java.JavaResourceRootType
-import org.jetbrains.jps.model.java.JpsJavaExtensionService
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -35,22 +35,25 @@ class ContentEntryResourcesConfigurator : ModuleContentEntryConfigurator {
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
         || importContext.settings.importOOTBModulesInWriteMode
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val resourcesPath = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
-        val properties = if (moduleDescriptor is YBackofficeSubModuleDescriptor) JpsJavaExtensionService.getInstance().createResourceRootProperties("cockpitng", false)
-        else JavaResourceRootType.RESOURCE.createDefaultProperties()
+        val relativeOutputPath = if (moduleDescriptor is YBackofficeSubModuleDescriptor) "cockpitng" else ""
+        val rootEntities = resourcesPath
+            .let { SourceRootEntityDto.resources(moduleEntity = moduleEntity, path = it, relativeOutputPath = relativeOutputPath) }
+            .let { listOf(it) }
 
-        contentEntry.addSourceRoots(
-            importContext,
-            listOf(resourcesPath),
-            pathsToIgnore,
-            JavaResourceRootType.RESOURCE,
-            properties,
+        contentRootEntity.addSourceRoots(
+            importContext = importContext,
+            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
         )
     }
 }

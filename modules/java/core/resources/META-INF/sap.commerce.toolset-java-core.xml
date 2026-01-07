@@ -41,12 +41,12 @@
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleSdkConfigurator"/>
         <project.module.importConfigurator order="after javaModuleSdkConfigurator" id="javaModuleJavadocsConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleJavadocsConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleSdkConfigurator" id="javaModuleSettingsConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleSettingsConfigurator"/>
         <project.module.importConfigurator order="after javaModuleJavadocsConfigurator" id="javaModuleLibrariesConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleLibrariesConfigurator"/>
         <project.module.importConfigurator order="after javaModuleLibrariesConfigurator" id="javaModuleContentRootsConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleContentRootsConfigurator"/>
-        <project.module.importConfigurator order="after javaModuleContentRootsConfigurator" id="javaModuleCompilerConfigurator"
-                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleCompilerConfigurator"/>
 
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludeAcceleratorAddonWebConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryExcludeClassesConfigurator"/>
@@ -60,7 +60,7 @@
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryTestSourcesConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryWebInjectedSourcesConfigurator"/>
 
-
+<!--        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ModuleBackofficeLibraryConfigurator"/>-->
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

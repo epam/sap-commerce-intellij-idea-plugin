@@ -18,8 +18,11 @@
 package sap.commerce.toolset.kotlin.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.module.Module
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.extensioninfo.EiConstants
@@ -39,9 +42,9 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
         if (moduleDescriptor !is YModuleDescriptor) return
 
@@ -49,8 +52,10 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
             .firstOrNull { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
+        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
         val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
-        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module)
+        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
+        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule)
 
         backgroundWriteAction {
             // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
@@ -60,10 +65,12 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
 
             if (!hasKotlinDirectories) return@backgroundWriteAction
 
-            val facet = KotlinFacet.get(module)
-                ?: createFacet(module)
+            val facet = KotlinFacet.get(javaModule)
+                ?: createFacet(javaModule)
 
             modifiableFacetModel.addFacet(facet)
+
+            modifiableModelsProvider.commit()
         }
     }
 

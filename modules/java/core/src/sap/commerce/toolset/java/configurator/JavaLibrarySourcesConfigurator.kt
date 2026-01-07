@@ -56,7 +56,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     override val name
         get() = "Libraries Sources"
 
-    override fun postImport(importContext: ProjectImportContext) {
+    override fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val libraryRootTypes = buildSet {
             if (importContext.settings.withExternalLibrarySources) add(LibraryRootType.SOURCES)
             if (importContext.settings.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)

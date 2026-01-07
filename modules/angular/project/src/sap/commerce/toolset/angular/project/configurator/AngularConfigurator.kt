@@ -22,6 +22,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.angular2.cli.Angular2ProjectConfigurator
 import sap.commerce.toolset.angular.project.descriptor.AngularModuleDescriptor
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
@@ -32,7 +33,7 @@ class AngularConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Angular"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
             .takeUnless { it.isDisposed }
             ?: return

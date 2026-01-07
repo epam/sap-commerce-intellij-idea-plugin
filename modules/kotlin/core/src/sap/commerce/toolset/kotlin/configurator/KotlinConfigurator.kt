@@ -22,11 +22,11 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.smartReadAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
@@ -50,7 +50,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
 
     override suspend fun configure(
         importContext: ProjectImportContext,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        workspaceModel: WorkspaceModel
     ) {
         val project = importContext.project
         val hasKotlinnatureExtension = importContext.chosenHybrisModuleDescriptors
@@ -63,7 +63,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         importContext.chosenHybrisModuleDescriptors
             .find { EiConstants.Extension.KOTLIN_NATURE == it.name }

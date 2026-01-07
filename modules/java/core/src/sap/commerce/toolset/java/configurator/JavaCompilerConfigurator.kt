@@ -22,6 +22,7 @@ import com.intellij.compiler.CompilerConfiguration
 import com.intellij.compiler.CompilerConfigurationImpl
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.util.asSafely
 import org.jetbrains.jps.model.java.compiler.JavaCompilers
 import sap.commerce.toolset.HybrisConstants
@@ -34,7 +35,7 @@ class JavaCompilerConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Java Compiler"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val compilerConfiguration = CompilerConfiguration.getInstance(project)
             .asSafely<CompilerConfigurationImpl>() ?: return

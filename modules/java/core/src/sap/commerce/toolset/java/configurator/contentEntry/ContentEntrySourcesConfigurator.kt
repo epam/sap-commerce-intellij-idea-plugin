@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
-import org.jetbrains.jps.model.java.JavaSourceRootType
-import org.jetbrains.jps.model.java.JpsJavaExtensionService
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -34,29 +34,32 @@ class ContentEntrySourcesConfigurator : ModuleContentEntryConfigurator {
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
         || importContext.settings.importOOTBModulesInWriteMode
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = moduleDescriptor.moduleRootPath
 
-        val paths = ProjectConstants.Directory.SRC_DIR_NAMES
-            .map { moduleRootPath.resolve(it) }
-        contentEntry.addSourceRoots(
-            importContext,
-            paths,
-            pathsToIgnore,
-            JavaSourceRootType.SOURCE
-        )
+        val rootEntities = buildList {
+            ProjectConstants.Directory.SRC_DIR_NAMES
+                .map { moduleRootPath.resolve(it) }
+                .map { SourceRootEntityDto.sources(moduleEntity = moduleEntity, path = it) }
+                .forEach { add(it) }
 
-        contentEntry.addSourceRoots(
-            importContext,
-            listOf(moduleRootPath.resolve(ProjectConstants.Directory.GEN_SRC)),
-            pathsToIgnore,
-            JavaSourceRootType.SOURCE,
-            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
+            moduleRootPath.resolve(ProjectConstants.Directory.GEN_SRC)
+                .let { SourceRootEntityDto.generatedSources(moduleEntity = moduleEntity, path = it) }
+                .also { add(it) }
+        }
+
+        contentRootEntity.addSourceRoots(
+            importContext = importContext,
+            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
         )
     }
 }

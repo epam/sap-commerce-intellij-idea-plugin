@@ -18,34 +18,54 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
+import com.intellij.java.workspace.entities.javaResourceRoots
+import com.intellij.java.workspace.entities.javaSourceRoots
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.vfs.VfsUtil
-import org.jetbrains.jps.model.JpsElement
-import org.jetbrains.jps.model.module.JpsModuleSourceRootType
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ExcludeUrlEntity
+import com.intellij.platform.workspace.jps.entities.SourceRootEntity
+import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
+import kotlin.io.path.pathString
 
 internal val ModuleDescriptor.isCustomModuleDescriptor
     get() = this is YCustomRegularModuleDescriptor
         || (this is YSubModuleDescriptor && this.owner is YCustomRegularModuleDescriptor)
 
-internal fun ContentEntry.excludeDirectories(vararg excludePaths: Path) = excludePaths
-    .mapNotNull { VfsUtil.findFile(it, true) }
-    .forEach { this.addExcludeFolder(it) }
-
-internal fun <P : JpsElement> ContentEntry.addSourceRoots(
+internal fun ContentRootEntityBuilder.excludeDirectories(
     importContext: ProjectImportContext,
-    paths: Collection<Path>,
+    virtualFileUrlManager: VirtualFileUrlManager,
+    excludePaths: Collection<Path>
+) = excludePaths
+    .filter { path -> !importContext.settings.ignoreNonExistingSourceDirectories || path.directoryExists }
+    .map { virtualFileUrlManager.fromPath(it.pathString) }
+    .map { ExcludeUrlEntity(it, this.entitySource) }
+    .let { newExcludedUrls -> this.excludedUrls += newExcludedUrls }
+
+internal fun ContentRootEntityBuilder.addSourceRoots(
+    importContext: ProjectImportContext,
+    virtualFileUrlManager: VirtualFileUrlManager,
+    rootEntities: Collection<SourceRootEntityDto>,
     pathsToIgnore: Collection<Path>,
-    jpsRootType: JpsModuleSourceRootType<P>,
-    jpsProperties: P = jpsRootType.createDefaultProperties(),
-) = paths
-    .filter { path -> !importContext.settings.ignoreNonExistingSourceDirectories || path.directoryExists  }
-    .filter { path -> pathsToIgnore.none { FileUtil.isAncestor(it.toFile(), path.toFile(), false) } }
-    .mapNotNull { path -> VfsUtil.findFile(path, true) }
-    .forEach { vf -> this.addSourceFolder(vf, jpsRootType, jpsProperties) }
+) = rootEntities
+    .filter { rootEntity -> !importContext.settings.ignoreNonExistingSourceDirectories || rootEntity.path.directoryExists }
+    .filter { rootEntity -> pathsToIgnore.none { FileUtil.isAncestor(it.toFile(), rootEntity.path.toFile(), false) } }
+    .map { rootEntity ->
+        SourceRootEntity(
+            url = rootEntity.url(virtualFileUrlManager),
+            rootTypeId = rootEntity.sourceRootTypeId,
+            entitySource = rootEntity.moduleEntity.entitySource
+        ) {
+            rootEntity.javaSourceRoot?.let { it(this) }
+                ?.let { this.javaSourceRoots += it }
+            rootEntity.javaResourceRoot?.let { it(this) }
+                ?.let { this.javaResourceRoots += it }
+        }
+    }
+    .let { newSourceRoots -> this.sourceRoots += newSourceRoots }
+

@@ -18,8 +18,9 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.openapi.roots.ContentEntry
-import org.jetbrains.jps.model.java.JavaSourceRootType
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -33,20 +34,23 @@ class ContentEntryTestSourcesConfigurator : ModuleContentEntryConfigurator {
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isCustomModuleDescriptor
         || importContext.settings.importOOTBModulesInWriteMode
 
-    override fun configure(
+    override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        contentEntry: ContentEntry,
+        moduleEntity: ModuleEntity,
+        contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val paths = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
+        val rootEntities = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
             .map { moduleDescriptor.moduleRootPath.resolve(it) }
+            .map { SourceRootEntityDto.testSources(moduleEntity = moduleEntity, path = it) }
 
-        contentEntry.addSourceRoots(
-            importContext,
-            paths,
-            pathsToIgnore,
-            JavaSourceRootType.TEST_SOURCE
+        contentRootEntity.addSourceRoots(
+            importContext = importContext,
+            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
         )
     }
 }

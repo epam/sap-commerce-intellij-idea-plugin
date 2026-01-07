@@ -23,6 +23,7 @@ import com.intellij.execution.remote.RemoteConfiguration
 import com.intellij.execution.remote.RemoteConfigurationType
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.PropertyService
@@ -37,7 +38,7 @@ class RemoteDebugRunConfigurationConfigurator : ProjectPostImportAsyncConfigurat
     override val name: String
         get() = "Run Configurations - Debug"
 
-    override suspend fun postImport(importContext: ProjectImportContext) {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val runManager = RunManager.getInstance(project)
         val configurationName = i18n("hybris.project.run.configuration.remote.debug")

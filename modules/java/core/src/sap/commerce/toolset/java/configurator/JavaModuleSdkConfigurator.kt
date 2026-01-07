@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil
-import com.intellij.openapi.roots.impl.storage.ClasspathStorage
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.InheritedSdkDependency
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -36,14 +36,14 @@ class JavaModuleSdkConfigurator : ModuleImportConfigurator {
 
     override suspend fun configure(
         importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        moduleEntity: ModuleEntity
     ) {
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module)
-
-        ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE)
-
-        modifiableRootModel.inheritSdk();
+        workspaceModel.update("Update SDK for ${moduleDescriptor.name}") {
+            it.modifyModuleEntity(moduleEntity) {
+                this.dependencies += InheritedSdkDependency
+            }
+        }
     }
 }
