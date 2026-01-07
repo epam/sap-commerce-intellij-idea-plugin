@@ -18,8 +18,12 @@
 
 package sap.commerce.toolset.java.descriptor
 
-import com.intellij.openapi.roots.OrderRootType
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.DependencyScope
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
+import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
+import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.asSafely
 import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.HybrisConstants
@@ -29,90 +33,95 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.descriptor.impl.*
+import sap.commerce.toolset.project.fromJar
+import sap.commerce.toolset.project.fromPath
 import sap.commerce.toolset.util.directoryExists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
 // TODO: Split this to LibraryDescriptors provider
 
-internal fun ModuleDescriptor.collectLibraryDescriptors(importContext: ProjectImportContext): Collection<JavaLibraryDescriptor> = when (this) {
-    is YRegularModuleDescriptor -> this.libs(importContext)
-    is YWebSubModuleDescriptor -> this.webLibs(importContext)
-    is YCommonWebSubModuleDescriptor -> this.commonWebLibs(importContext)
-    is YBackofficeSubModuleDescriptor -> this.libs(importContext)
-    is YAcceleratorAddonSubModuleDescriptor -> this.libs(importContext)
-    is YHacSubModuleDescriptor -> this.libs(importContext)
-    is YHmcSubModuleDescriptor -> this.libs(importContext)
-    is PlatformModuleDescriptor -> this.libs(importContext)
-    is ConfigModuleDescriptor -> this.libs()
+internal fun ModuleDescriptor.collectLibraryDescriptors(importContext: ProjectImportContext, workspaceModel: WorkspaceModel): Collection<JavaLibraryDescriptor> = when (this) {
+    is YRegularModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is YWebSubModuleDescriptor -> this.webLibs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is YCommonWebSubModuleDescriptor -> this.commonWebLibs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is YBackofficeSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is YAcceleratorAddonSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is YHacSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is YHmcSubModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is PlatformModuleDescriptor -> this.libs(importContext, workspaceModel.getVirtualFileUrlManager())
+    is ConfigModuleDescriptor -> this.libs(workspaceModel.getVirtualFileUrlManager())
     else -> emptyList()
 }
 
-private fun YRegularModuleDescriptor.libs(importContext: ProjectImportContext) = buildList {
-    add(this@libs.rootLib)
+private fun YRegularModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = buildList {
+    addAll(this@libs.nonCustomModuleLibs(importContext, virtualFileUrlManager))
 
-    addAll(this@libs.nonCustomModuleLibs(importContext))
-
-    addIfNotNull(this@libs.serverLibs(importContext))
-    addIfNotNull(this@libs.backofficeClassesLib(importContext))
+    addIfNotNull(this@libs.rootLib(virtualFileUrlManager))
+    addIfNotNull(this@libs.serverLibs(importContext, virtualFileUrlManager))
+    addIfNotNull(this@libs.backofficeClassesLib(importContext, virtualFileUrlManager))
 }
 
-private fun YRegularModuleDescriptor.backofficeClassesLib(importContext: ProjectImportContext) = this.getSubModules()
+private fun YRegularModuleDescriptor.backofficeClassesLib(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = this.getSubModules()
     .takeIf { this.extensionInfo.backofficeModule }
     ?.firstOrNull { it is YBackofficeSubModuleDescriptor }
     ?.let { yModule ->
         val attachSources = this.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
-        val sourcePaths = (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-            .map { yModule.moduleRootPath.resolve(it) }
-            .filter { it.directoryExists }
-            .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
-
         JavaLibraryDescriptor(
             name = "${this.name} - Backoffice Classes",
             scope = DependencyScope.PROVIDED,
-            libraryPaths = buildList {
-                add(JavaLibraryPath.Root(OrderRootType.CLASSES, yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)))
+            libraryRoots = buildList {
+                virtualFileUrlManager.fromPath(yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
+                    ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                    ?.let { add(it) }
 
-                if (attachSources) addAll(sourcePaths)
+                if (attachSources) (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
+                    .mapNotNull { virtualFileUrlManager.fromPath(yModule.moduleRootPath.resolve(it)) }
+                    .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
+                    .forEach { add(it) }
             },
         )
     }
 
-private fun YHmcSubModuleDescriptor.hmcLibs(importContext: ProjectImportContext) = buildList {
-    add(
-        JavaLibraryDescriptor(
-            name = "${this@hmcLibs.name} - HMC Bin",
-            exported = true,
-            libraryPaths = listOf(
-                JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this@hmcLibs.moduleRootPath.resolve(ProjectConstants.Directory.BIN))
+private fun YHmcSubModuleDescriptor.hmcLibs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = buildList {
+    virtualFileUrlManager.fromPath(this@hmcLibs.moduleRootPath.resolve(ProjectConstants.Directory.BIN))
+        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+        ?.let {
+            JavaLibraryDescriptor(
+                name = "${this@hmcLibs.name} - HMC Bin",
+                exported = true,
+                libraryRoots = listOf(it)
             )
-        )
-    )
+        }
+        ?.let { add(it) }
 
     importContext.chosenHybrisModuleDescriptors
         .firstOrNull { it.name == EiConstants.Extension.HMC }
+        ?.let { virtualFileUrlManager.fromPath(it.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)) }
+        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
         ?.let {
             JavaLibraryDescriptor(
                 name = "${this@hmcLibs.name} - Web Classes",
-                libraryPaths = listOf(
-                    JavaLibraryPath.Root(OrderRootType.CLASSES, it.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES))
-                ),
+                libraryRoots = listOf(it),
             )
         }
         ?.let { add(it) }
 }
 
-private val YModuleDescriptor.rootLib
-    get() = JavaLibraryDescriptor(
+private fun YModuleDescriptor.rootLib(virtualFileUrlManager: VirtualFileUrlManager): JavaLibraryDescriptor? {
+    val libraryRoot = virtualFileUrlManager.fromPath(this.moduleRootPath.resolve(ProjectConstants.Directory.LIB))
+        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
+        ?: return null
+
+    return JavaLibraryDescriptor(
         name = "${this.name} - lib",
         descriptorType = LibraryDescriptorType.LIB,
         exported = true,
-        libraryPaths = listOf(
-            JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this.moduleRootPath.resolve(ProjectConstants.Directory.LIB))
-        )
+        libraryRoots = listOf(libraryRoot)
     )
+}
 
-private fun YModuleDescriptor.nonCustomModuleLibs(importContext: ProjectImportContext): Collection<JavaLibraryDescriptor> {
+private fun YModuleDescriptor.nonCustomModuleLibs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager): Collection<JavaLibraryDescriptor> {
     if (this.type == ModuleDescriptorType.CUSTOM) return emptyList()
     if (importContext.settings.importOOTBModulesInWriteMode) return emptyList()
 
@@ -124,89 +133,87 @@ private fun YModuleDescriptor.nonCustomModuleLibs(importContext: ProjectImportCo
                 JavaLibraryDescriptor(
                     name = "${this@nonCustomModuleLibs.name} - compiler output",
                     exported = true,
-                    libraryPaths = buildList {
-                        add(
-                            JavaLibraryPath.Root(
-                                OrderRootType.CLASSES,
-                                moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)
-                            )
-                        )
+                    libraryRoots = buildList {
+                        virtualFileUrlManager.fromPath(moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
+                            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                            ?.let { add(it) }
 
                         (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-                            .map { moduleRootPath.resolve(it) }
-                            .filter { it.directoryExists }
-                            .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                            .mapNotNull { virtualFileUrlManager.fromPath(moduleRootPath.resolve(it)) }
+                            .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                             .forEach { add(it) }
                     }
                 )
             )
         }
 
-        add(
-            JavaLibraryDescriptor(
-                name = "${this@nonCustomModuleLibs.name} - resources",
-                exported = true,
-                libraryPaths = listOf(
-                    JavaLibraryPath.Root(OrderRootType.CLASSES, moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
+        virtualFileUrlManager.fromPath(moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
+            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+            ?.let {
+                JavaLibraryDescriptor(
+                    name = "${this@nonCustomModuleLibs.name} - resources",
+                    exported = true,
+                    libraryRoots = listOf(it)
                 )
-            )
-        )
+            }
+            ?.let { add(it) }
     }
 }
 
-// TODO: server jar may not present, example -> apparelstore, electronicsstore, core
-private fun YModuleDescriptor.serverLibs(importContext: ProjectImportContext): JavaLibraryDescriptor? {
+private fun YModuleDescriptor.serverLibs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager): JavaLibraryDescriptor? {
     if (this.isCustomModuleDescriptor) return null
 
     // Attach standard sources to server jar
     return JavaLibraryDescriptor(
         name = "${this.name} - server",
         exported = true,
-        libraryPaths = buildList {
+        libraryRoots = buildList {
             val moduleRootPath = this@serverLibs.moduleRootPath
 
-            moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)
-                .takeIf { it.directoryExists }
-                ?.let { JavaLibraryPath.Root(OrderRootType.CLASSES, it) }
+            virtualFileUrlManager.fromPath(moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
+                ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
                 ?.let { add(it) }
-
 
             moduleRootPath.resolve(ProjectConstants.Directory.BIN)
                 .takeIf { it.directoryExists }
                 ?.listDirectoryEntries()
                 ?.filter { it.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
-                ?.takeIf { it.isNotEmpty() }
-                ?.map { JavaLibraryPath.Root(OrderRootType.CLASSES, it) }
+                ?.mapNotNull { virtualFileUrlManager.fromJar(it) }
+                ?.map { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
                 ?.forEach { add(it) }
 
             (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-                .map { moduleRootPath.resolve(it) }
-                .filter { it.directoryExists }
-                .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                .mapNotNull { virtualFileUrlManager.fromPath(moduleRootPath.resolve(it)) }
+                .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                 .forEach { add(it) }
 
             this@serverLibs.getStandardSourceJarDirectory(importContext)
-                .map { JavaLibraryPath.JarDirectory(OrderRootType.SOURCES, it) }
+                .mapNotNull { virtualFileUrlManager.fromPath(it) }
+                .map { LibraryRoot(it, LibraryRootTypeId.SOURCES, InclusionOptions.ARCHIVES_UNDER_ROOT) }
                 .forEach { add(it) }
         }
     )
 }
 
-private fun YBackofficeSubModuleDescriptor.libs(importContext: ProjectImportContext) = buildList {
-    add(this@libs.rootLib)
-    add(this@libs.backofficeLib())
+private fun YBackofficeSubModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = buildList {
+    addAll(this@libs.nonCustomModuleLibs(importContext, virtualFileUrlManager))
 
-    addAll(this@libs.nonCustomModuleLibs(importContext))
-    addIfNotNull(this@libs.serverLibs(importContext))
+    addIfNotNull(this@libs.rootLib(virtualFileUrlManager))
+    addIfNotNull(this@libs.backofficeLib(virtualFileUrlManager))
+    addIfNotNull(this@libs.serverLibs(importContext, virtualFileUrlManager))
 }
 
-private fun YBackofficeSubModuleDescriptor.backofficeLib() = JavaLibraryDescriptor(
-    name = "${this.name} - Backoffice lib",
-    exported = true,
-    libraryPaths = listOf(
-        JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_BIN))
+private fun YBackofficeSubModuleDescriptor.backofficeLib(virtualFileUrlManager: VirtualFileUrlManager): JavaLibraryDescriptor? {
+    val libraryRoot = virtualFileUrlManager.fromPath(this.moduleRootPath.resolve(ProjectConstants.Paths.BACKOFFICE_BIN))
+        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+        ?: return null
+
+    return JavaLibraryDescriptor(
+        name = "${this.name} - Backoffice lib",
+        exported = true,
+        libraryRoots = listOf(libraryRoot)
     )
-)
+}
 
 /**
  * https://hybris-integration.atlassian.net/browse/IIP-355
@@ -214,40 +221,37 @@ private fun YBackofficeSubModuleDescriptor.backofficeLib() = JavaLibraryDescript
  * "hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes" from "hac" extension is not registered
  * as a dependency for HAC addons.
  */
-private fun YHacSubModuleDescriptor.libs(importContext: ProjectImportContext) = buildList {
-    add(this@libs.rootLib)
+private fun YHacSubModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = buildList {
+    addAll(this@libs.nonCustomModuleLibs(importContext, virtualFileUrlManager))
 
-    addAll(this@libs.nonCustomModuleLibs(importContext))
-    addIfNotNull(this@libs.serverLibs(importContext))
+    addIfNotNull(this@libs.rootLib(virtualFileUrlManager))
+    addIfNotNull(this@libs.serverLibs(importContext, virtualFileUrlManager))
 
-    importContext.platformDirectory.resolve(ProjectConstants.Paths.HAC_WEB_INF_CLASSES)
-        .takeIf { it.directoryExists }
+    virtualFileUrlManager.fromPath(importContext.platformDirectory.resolve(ProjectConstants.Paths.HAC_WEB_INF_CLASSES))
+        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
         ?.let {
-            add(
-                JavaLibraryDescriptor(
-                    name = "${this@libs.name} - HAC Web Classes",
-                    libraryPaths = listOf(
-                        JavaLibraryPath.Root(OrderRootType.CLASSES, it)
-                    )
-                )
+            JavaLibraryDescriptor(
+                name = "${this@libs.name} - HAC Web Classes",
+                libraryRoots = listOf(it)
             )
         }
+        ?.let { add(it) }
 }
 
-private fun YHmcSubModuleDescriptor.libs(importContext: ProjectImportContext) = buildList {
-    add(this@libs.rootLib)
+private fun YHmcSubModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = buildList {
+    addAll(this@libs.nonCustomModuleLibs(importContext, virtualFileUrlManager))
+    addAll(this@libs.hmcLibs(importContext, virtualFileUrlManager))
 
-    addAll(this@libs.nonCustomModuleLibs(importContext))
-    addAll(this@libs.hmcLibs(importContext))
-    addIfNotNull(this@libs.serverLibs(importContext))
+    addIfNotNull(this@libs.rootLib(virtualFileUrlManager))
+    addIfNotNull(this@libs.serverLibs(importContext, virtualFileUrlManager))
 }
 
-private fun YAcceleratorAddonSubModuleDescriptor.libs(importContext: ProjectImportContext): MutableList<JavaLibraryDescriptor> {
+private fun YAcceleratorAddonSubModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager): MutableList<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    libs.addAll(this.nonCustomModuleLibs(importContext))
-    libs.addIfNotNull(this.serverLibs(importContext))
-    libs.add(this.rootLib)
+    libs.addAll(this.nonCustomModuleLibs(importContext, virtualFileUrlManager))
+    libs.addIfNotNull(this.serverLibs(importContext, virtualFileUrlManager))
+    libs.addIfNotNull(this.rootLib(virtualFileUrlManager))
 
     val attachSources = this.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
 
@@ -264,37 +268,40 @@ private fun YAcceleratorAddonSubModuleDescriptor.libs(importContext: ProjectImpo
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${yModule.name} - Addon's Target Classes",
-                    libraryPaths = buildList {
-                        add(JavaLibraryPath.Root(OrderRootType.CLASSES, yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES)))
+                    libraryRoots = buildList {
+                        virtualFileUrlManager.fromPath(yModule.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
+                            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                            ?.let { add(it) }
 
                         if (attachSources) {
                             (ProjectConstants.Directory.ALL_SRC_DIR_NAMES + ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
-                                .map { yModule.moduleRootPath.resolve(it) }
-                                .filter { it.directoryExists }
-                                .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                                .mapNotNull { virtualFileUrlManager.fromPath(yModule.moduleRootPath.resolve(it)) }
+                                .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                                 .forEach { add(it) }
                         }
                     }
                 )
             )
-            libs.add(
-                JavaLibraryDescriptor(
-                    name = "${yModule.name} - Addon's Target Resources",
-                    libraryPaths = listOf(
-                        JavaLibraryPath.Root(OrderRootType.CLASSES, yModule.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)),
+
+            virtualFileUrlManager.fromPath(yModule.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
+                ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                ?.let {
+                    JavaLibraryDescriptor(
+                        name = "${yModule.name} - Addon's Target Resources",
+                        libraryRoots = listOf(it)
                     )
-                )
-            )
+                }
+                ?.let { libs.add(it) }
         }
     return libs
 }
 
-private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): Collection<JavaLibraryDescriptor> {
+private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager): Collection<JavaLibraryDescriptor> {
     val libs = mutableListOf<JavaLibraryDescriptor>()
 
-    libs.addAll(this.nonCustomModuleLibs(importContext))
-    libs.addIfNotNull(this.serverLibs(importContext))
-    libs.add(this.rootLib)
+    libs.addAll(this.nonCustomModuleLibs(importContext, virtualFileUrlManager))
+    libs.addIfNotNull(this.serverLibs(importContext, virtualFileUrlManager))
+    libs.addIfNotNull(this.rootLib(virtualFileUrlManager))
 
     if (this.owner.name == EiConstants.Extension.BACK_OFFICE) return libs
 
@@ -303,18 +310,14 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
             JavaLibraryDescriptor(
                 name = "${this.name} - Web Classes",
                 exported = true,
-                libraryPaths = buildList {
-                    add(
-                        JavaLibraryPath.Root(
-                            OrderRootType.CLASSES,
-                            this@webLibs.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)
-                        )
-                    )
+                libraryRoots = buildList {
+                    virtualFileUrlManager.fromPath(this@webLibs.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES))
+                        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                        ?.let { add(it) }
 
                     ProjectConstants.Directory.ALL_SRC_DIR_NAMES
-                        .map { this@webLibs.moduleRootPath.resolve(it) }
-                        .filter { it.directoryExists }
-                        .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                        .mapNotNull { virtualFileUrlManager.fromPath(this@webLibs.moduleRootPath.resolve(it)) }
+                        .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                         .forEach { add(it) }
 
                     listOf(
@@ -322,11 +325,9 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
                         this@webLibs.moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
                     )
                         .filter { it.directoryExists }
-                        .flatMap { srcDir ->
-                            srcDir.listDirectoryEntries()
-                                .filter { it.directoryExists }
-                        }
-                        .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                        .flatMap { it.listDirectoryEntries() }
+                        .mapNotNull { virtualFileUrlManager.fromPath(it) }
+                        .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                         .forEach { add(it) }
                 }
             )
@@ -337,13 +338,14 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
                 name = "${this.name} - Test Classes",
                 exported = true,
                 scope = DependencyScope.TEST,
-                libraryPaths = buildList {
-                    add(JavaLibraryPath.Root(OrderRootType.CLASSES, this@webLibs.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES)))
+                libraryRoots = buildList {
+                    virtualFileUrlManager.fromPath(this@webLibs.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES))
+                        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                        ?.let { add(it) }
 
                     ProjectConstants.Directory.TEST_SRC_DIR_NAMES
-                        .map { this@webLibs.moduleRootPath.resolve(it) }
-                        .filter { it.directoryExists }
-                        .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+                        .mapNotNull { virtualFileUrlManager.fromPath(this@webLibs.moduleRootPath.resolve(it)) }
+                        .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
                         .forEach { add(it) }
                 }
             )
@@ -352,24 +354,28 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
 
     this.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
         .takeIf { it.directoryExists }
-        ?.let { libFolder ->
+        ?.let { libPath ->
             libs.add(
                 JavaLibraryDescriptor(
                     name = "${this.name} - Web Library",
                     descriptorType = LibraryDescriptorType.WEB_INF_LIB,
                     exported = true,
-                    libraryPaths = buildList {
-                        add(JavaLibraryPath.Root(OrderRootType.CLASSES, libFolder))
+                    libraryRoots = buildList {
+                        virtualFileUrlManager.fromPath(libPath)
+                            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
+                            ?.let { add(it) }
 
                         // we have to add each jar file explicitly, otherwise Spring will not recognise `classpath:/META-INF/my.xml` in the jar files
                         // JetBrains IntelliJ IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
-                        libFolder.listDirectoryEntries()
+                        libPath.listDirectoryEntries()
                             .filter { it.name.endsWith(".jar") }
-                            .map { JavaLibraryPath.Root(OrderRootType.CLASSES, it) }
+                            .mapNotNull { virtualFileUrlManager.fromJar(it) }
+                            .map { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
                             .forEach { add(it) }
 
                         this@webLibs.getStandardSourceJarDirectory(importContext)
-                            .map { JavaLibraryPath.JarDirectory(OrderRootType.SOURCES, it) }
+                            .mapNotNull { virtualFileUrlManager.fromPath(it) }
+                            .map { LibraryRoot(it, LibraryRootTypeId.SOURCES, InclusionOptions.ARCHIVES_UNDER_ROOT) }
                             .forEach { add(it) }
                     },
                 )
@@ -378,49 +384,55 @@ private fun YSubModuleDescriptor.webLibs(importContext: ProjectImportContext): C
     return libs.toList()
 }
 
-private fun YCommonWebSubModuleDescriptor.commonWebLibs(importContext: ProjectImportContext) = buildList {
+private fun YCommonWebSubModuleDescriptor.commonWebLibs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = buildList {
     val classesLibs = this@commonWebLibs
         .dependantWebExtensions
-        .map {
-            val webSourceFiles = ProjectConstants.Directory.ALL_SRC_DIR_NAMES
-                .map { dir -> this@commonWebLibs.moduleRootPath.resolve(dir) }
-                .filter { dir -> dir.directoryExists }
-                .map { JavaLibraryPath.Root(OrderRootType.SOURCES, it) }
+        .map { moduleDescriptor ->
             JavaLibraryDescriptor(
-                name = "${it.name} - Common Web Classes",
+                name = "${moduleDescriptor.name} - Common Web Classes",
                 exported = true,
-                libraryPaths = buildList {
-                    add(JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, it.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES)))
+                libraryRoots = buildList {
+                    virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES))
+                        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
+                        ?.let { add(it) }
 
-                    addAll(webSourceFiles)
+                    ProjectConstants.Directory.ALL_SRC_DIR_NAMES
+                        .mapNotNull { virtualFileUrlManager.fromPath(this@commonWebLibs.moduleRootPath.resolve(it)) }
+                        .map { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
+                        .forEach { add(it) }
                 }
             )
         }
 
-    addAll(this@commonWebLibs.webLibs(importContext))
+    addAll(this@commonWebLibs.webLibs(importContext, virtualFileUrlManager))
     addAll(classesLibs)
 }
 
-private fun ConfigModuleDescriptor.libs() = listOf(
-    JavaLibraryDescriptor(
-        name = "Config License",
-        exported = true,
-        libraryPaths = listOf(
-            JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, this.moduleRootPath.resolve(ProjectConstants.Directory.LICENCE))
+private fun ConfigModuleDescriptor.libs(virtualFileUrlManager: VirtualFileUrlManager): List<JavaLibraryDescriptor> {
+    val libraryRoot = virtualFileUrlManager.fromPath(this.moduleRootPath.resolve(ProjectConstants.Directory.LICENCE))
+        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
+        ?: return emptyList()
+
+    return listOf(
+        JavaLibraryDescriptor(
+            name = "Config License",
+            exported = true,
+            libraryRoots = listOf(libraryRoot)
         )
     )
-)
+}
 
-private fun PlatformModuleDescriptor.libs(importContext: ProjectImportContext): List<JavaLibraryDescriptor> {
+private fun PlatformModuleDescriptor.libs(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager): Collection<JavaLibraryDescriptor> {
     val dbDriversPath = (importContext.externalDbDriversDirectory
         ?: this.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER))
+    val libraryRoot = virtualFileUrlManager.fromPath(dbDriversPath)
+        ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
+        ?: return emptyList()
     return listOf(
         JavaLibraryDescriptor(
             name = HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY,
             exported = true,
-            libraryPaths = listOf(
-                JavaLibraryPath.JarDirectory(OrderRootType.CLASSES, dbDriversPath),
-            )
+            libraryRoots = listOf(libraryRoot)
         )
     )
 }

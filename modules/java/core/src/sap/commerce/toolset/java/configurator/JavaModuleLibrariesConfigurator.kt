@@ -20,13 +20,9 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
-import com.intellij.openapi.roots.OrderRootType
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.*
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.java.descriptor.JavaLibraryDescriptor
 import sap.commerce.toolset.java.descriptor.collectLibraryDescriptors
@@ -34,11 +30,6 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
-import sap.commerce.toolset.util.fileExists
-import kotlin.io.path.exists
-import kotlin.io.path.name
-import kotlin.io.path.pathString
 import kotlin.time.measureTime
 
 class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
@@ -76,12 +67,8 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             }
         }
 
-        for (javaLibraryDescriptor in moduleDescriptor.collectLibraryDescriptors(importContext)) {
-            val noValidClassesPaths = javaLibraryDescriptor.libraryPaths
-                .filter { it.rootType == OrderRootType.CLASSES }
-                .takeIf { it.isNotEmpty() }
-                ?.none { it.path.exists() }
-                ?: true
+        for (javaLibraryDescriptor in moduleDescriptor.collectLibraryDescriptors(importContext, workspaceModel)) {
+            val noValidClassesPaths = javaLibraryDescriptor.libraryRoots.none { it.type == LibraryRootTypeId.COMPILED }
 
             if (noValidClassesPaths) {
                 thisLogger().debug("Library paths with CLASSES root type are not found: ${moduleDescriptor.name} | ${javaLibraryDescriptor.name}")
@@ -89,35 +76,6 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
             }
 
             createLibrary(importContext, workspaceModel, moduleEntity, javaLibraryDescriptor)
-        }
-
-        when (moduleDescriptor) {
-            is YCoreExtModuleDescriptor -> addLibsToModule(workspaceModel, moduleEntity, JavaConstants.Library.PLATFORM_BOOTSTRAP)
-        }
-    }
-
-    private suspend fun addLibsToModule(
-        workspaceModel: WorkspaceModel,
-        moduleEntity: ModuleEntity,
-        libraryName: String
-    ) {
-        workspaceModel.update("Add library $libraryName to module ${moduleEntity.name}") { storage ->
-            val libraryId = storage.projectLibraries.find { it.name == libraryName }
-                ?.let {
-                    LibraryId(
-                        name = libraryName,
-                        tableId = it.tableId,
-                    )
-                }
-                ?: return@update
-
-            storage.modifyModuleEntity(moduleEntity) {
-                this.dependencies += LibraryDependency(
-                    libraryId,
-                    true,
-                    DependencyScope.PROVIDED
-                )
-            }
         }
     }
 
@@ -133,29 +91,22 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
         val libraryId = LibraryId(javaLibraryDescriptor.name, libraryTableId)
 
         val libraryRoots = buildList {
-            javaLibraryDescriptor.libraryPaths
-                .map {
-                    LibraryRoot(
-                        url = virtualFileUrlManager.fromPath(it.path.pathString),
-                        type = if (it.rootType == OrderRootType.CLASSES) LibraryRootTypeId.COMPILED
-                        else LibraryRootTypeId.SOURCES,
-                        inclusionOptions = it.inclusionOptions
-                    )
-                }
+            javaLibraryDescriptor.libraryRoots
                 .forEach { add(it) }
 
-            val sourceCodeFile = importContext.sourceCodeFile
-            sourceCodeFile
-                ?.takeIf { it.fileExists }
-                ?.takeIf { javaLibraryDescriptor.libraryPaths.any { it.path.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) } }
-                ?.let { VfsUtil.findFile(it, true) }
-                ?.let {
-                    LibraryRoot(
-                        url = virtualFileUrlManager.fromPath(sourceCodeFile.pathString),
-                        type = LibraryRootTypeId.SOURCES,
-                    )
-                }
-                ?.also { add(it) }
+            // applicable only for non-custom modules, to be respected with in custom Configurator
+//            val sourceCodeFile = importContext.sourceCodeFile
+//            sourceCodeFile
+//                ?.takeIf { it.fileExists }
+//                ?.takeIf { javaLibraryDescriptor.libraryPaths.any { it.path.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) } }
+//                ?.let { VfsUtil.findFile(it, true) }
+//                ?.let {
+//                    LibraryRoot(
+//                        url = virtualFileUrlManager.fromPath(sourceCodeFile.pathString),
+//                        type = LibraryRootTypeId.SOURCES,
+//                    )
+//                }
+//                ?.also { add(it) }
         }
 
         workspaceModel.update("Update library ${libraryId.name} for module ${moduleEntity.name}") { storage ->

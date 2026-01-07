@@ -61,6 +61,7 @@
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ContentEntryWebInjectedSourcesConfigurator"/>
 
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ModuleBackofficeLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ModuleCoreLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

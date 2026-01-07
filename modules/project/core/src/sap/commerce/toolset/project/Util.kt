@@ -23,14 +23,19 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.JarFileSystem
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
+import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.facet.YFacetConstants
+import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
+import kotlin.io.path.pathString
 
 fun Module.yExtensionName(): String = YFacet.get(this)
     ?.configuration
@@ -61,3 +66,11 @@ val PsiElement.isHybrisModule: Boolean
 val PsiFile.module
     get() = this.virtualFile
         ?.let { ModuleUtilCore.findModuleForFile(it, this.project) }
+
+fun VirtualFileUrlManager.fromPath(path: Path) = path
+    .takeIf { it.directoryExists }
+    ?.let { this.fromPath(path.normalize().pathString) }
+
+fun VirtualFileUrlManager.fromJar(path: Path) = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)
+    ?.let { JarFileSystem.getInstance().getJarRootForLocalFile(it) }
+    ?.let { this.getOrCreateFromUrl(it.url) }

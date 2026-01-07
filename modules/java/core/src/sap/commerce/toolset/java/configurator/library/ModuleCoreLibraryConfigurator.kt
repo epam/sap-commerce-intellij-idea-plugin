@@ -19,26 +19,25 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import sap.commerce.toolset.java.JavaConstants
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 
-internal suspend fun ModuleEntity.addLibrary(
-    workspaceModel: WorkspaceModel,
-    libraryName: String
-) = workspaceModel.update("Add library $libraryName to module ${this.name}") { storage ->
-    val libraryId = storage.projectLibraries.find { it.name == libraryName }
-        ?.let {
-            LibraryId(
-                name = libraryName,
-                tableId = it.tableId,
-            )
-        }
-        ?: return@update
+class ModuleCoreLibraryConfigurator : ModuleLibraryConfigurator {
 
-    storage.modifyModuleEntity(this@addLibrary) {
-        this.dependencies += LibraryDependency(
-            libraryId,
-            true,
-            DependencyScope.COMPILE
-        )
+    override val name: String
+        get() = JavaConstants.Library.PLATFORM_BOOTSTRAP
+
+    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YCoreExtModuleDescriptor
+
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: ModuleDescriptor,
+        moduleEntity: ModuleEntity
+    ) {
+        moduleEntity.addLibrary(workspaceModel, JavaConstants.Library.PLATFORM_BOOTSTRAP)
     }
 }
