@@ -44,29 +44,8 @@ class LocalSapCXRunProfileState(
     environment: ExecutionEnvironment, val project: Project, val configuration: LocalSapCXRunConfiguration
 ) : CommandLineState(environment), JavaCommandLine, RemoteConnectionCreator {
 
-    private fun getScriptPath(): String {
-        val projectDirectory = project.directory ?: ""
-        val settings = ProjectSettings.getInstance(project)
-        val hybrisDirectory = settings.hybrisDirectory ?: ""
-
-        val scriptPath = if (SystemInfo.isWindows && !WslPath.isWslUncPath(projectDirectory)) ProjectConstants.Paths.HYBRIS_SERVER_BASH_SCRIPT_NAME
-        else ProjectConstants.Paths.HYBRIS_SERVER_SHELL_SCRIPT_NAME
-
-        return Paths.get(projectDirectory, hybrisDirectory)
-            .resolve(scriptPath)
-            .toString()
-    }
-
-    private fun getWorkDirectory(): String {
-        val projectDirectory = project.directory ?: ""
-        val settings = ProjectSettings.getInstance(project)
-        val hybrisDirectory = settings.hybrisDirectory ?: ""
-
-        return Paths.get(projectDirectory)
-            .resolve(hybrisDirectory)
-            .resolve(ProjectConstants.Paths.BIN_PLATFORM)
-            .pathString
-    }
+    private val sapCXOptions: LocalSapCXRunnerOptions
+        get() = configuration.getSapCXOptions()
 
     override fun startProcess(): ProcessHandler {
         val commandLine = GeneralCommandLine(getScriptPath())
@@ -90,6 +69,13 @@ class LocalSapCXRunProfileState(
         return processHandler
     }
 
+    override fun createRemoteConnection(environment: ExecutionEnvironment?) = configuration.getRemoteConnection()
+        .apply { updateDebugPort(this.debuggerAddress) }
+
+    override fun getJavaParameters(): JavaParameters = JavaParameters()
+
+    override fun isPollConnection(): Boolean = true
+
     private fun waitForPort(host: String, port: Int, timeoutMillis: Long = 30000) {
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < timeoutMillis) {
@@ -107,18 +93,31 @@ class LocalSapCXRunProfileState(
         debuggerRunnerSettings.debugPort = debugPort
     }
 
-    override fun createRemoteConnection(environment: ExecutionEnvironment?): RemoteConnection {
-        val remoteConnetion = configuration.getRemoteConnection()
-        updateDebugPort(remoteConnetion.debuggerAddress)
-        return remoteConnetion
+    private fun getScriptPath(): String {
+        // TODO: review these fallbacks, "" is not a correct value
+        val projectDirectory = project.directory ?: ""
+        val settings = ProjectSettings.getInstance(project)
+        val hybrisDirectory = settings.hybrisDirectory ?: ""
+
+        val scriptPath = if (SystemInfo.isWindows && !WslPath.isWslUncPath(projectDirectory)) ProjectConstants.Paths.HYBRIS_SERVER_BASH_SCRIPT_NAME
+        else ProjectConstants.Paths.HYBRIS_SERVER_SHELL_SCRIPT_NAME
+
+        return Paths.get(projectDirectory, hybrisDirectory)
+            .resolve(scriptPath)
+            .toString()
     }
 
+    private fun getWorkDirectory(): String {
+        // TODO: review these fallbacks, "" is not a correct value
+        val projectDirectory = project.directory ?: ""
+        val settings = ProjectSettings.getInstance(project)
+        val hybrisDirectory = settings.hybrisDirectory ?: ""
 
-    override fun getJavaParameters(): JavaParameters = JavaParameters()
-
-    override fun isPollConnection(): Boolean = true
-
-    private val sapCXOptions: LocalSapCXRunnerOptions get() = configuration.getSapCXOptions()
+        return Paths.get(projectDirectory)
+            .resolve(hybrisDirectory)
+            .resolve(ProjectConstants.Paths.BIN_PLATFORM)
+            .pathString
+    }
 
 
 }

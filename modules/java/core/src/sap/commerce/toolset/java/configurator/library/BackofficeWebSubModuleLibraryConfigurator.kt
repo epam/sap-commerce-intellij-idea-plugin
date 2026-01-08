@@ -19,45 +19,57 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
-import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.configureLibrary
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.java.configurator.library.util.*
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import sap.commerce.toolset.project.fromPath
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 
-class PlatformModuleLibraryConfigurator : ModuleLibraryConfigurator<PlatformModuleDescriptor> {
+class BackofficeWebSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YWebSubModuleDescriptor> {
 
     override val name: String
-        get() = "Platform"
+        get() = "Backoffice Web Sub Module"
 
     override fun isApplicable(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is PlatformModuleDescriptor
+    ) = moduleDescriptor is YWebSubModuleDescriptor
+        && moduleDescriptor.owner.name == EiConstants.Extension.BACK_OFFICE
 
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
-        moduleDescriptor: PlatformModuleDescriptor,
+        moduleDescriptor: YWebSubModuleDescriptor,
+        moduleEntity: ModuleEntity
+    ) {
+        configureExtensionLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
+        configureTestLibrary(workspaceModel, moduleDescriptor, moduleEntity)
+    }
+
+    private suspend fun configureExtensionLibrary(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: YWebSubModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val dbDriversPath = importContext.externalDbDriversDirectory
-            ?: moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER)
-        val libraryRoot = virtualFileUrlManager.fromPath(dbDriversPath)
-            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
-            ?: return
+        val libraryRoots = buildList {
+            addAll(moduleDescriptor.serverJarFiles(virtualFileUrlManager))
+            addAll(moduleDescriptor.sources(virtualFileUrlManager))
+            addAll(moduleDescriptor.resources(virtualFileUrlManager))
+            addAll(moduleDescriptor.classes(virtualFileUrlManager))
+            addAll(moduleDescriptor.docSources(importContext, virtualFileUrlManager))
+            addAll(moduleDescriptor.lib(virtualFileUrlManager))
+
+            addAll(moduleDescriptor.webRootJars(virtualFileUrlManager))
+        }
 
         moduleEntity.configureLibrary(
             workspaceModel = workspaceModel,
-            libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
-            libraryRoots = listOf(libraryRoot)
+            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.EXTENSION}",
+            libraryRoots = libraryRoots
         )
     }
 }

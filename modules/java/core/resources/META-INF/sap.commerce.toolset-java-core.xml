@@ -62,6 +62,14 @@
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformBootstrapModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ConfigLicenseModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HmcSubModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HacSubModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.AcceleratorAddonSubModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeSubModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.RegularModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.CommonWebSubModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeWebSubModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.WebSubModuleLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

@@ -88,9 +88,9 @@ object ProjectConstants {
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 
-        val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-        val ALL_SRC_DIR_NAMES = listOf(GEN_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-        val TEST_SRC_DIR_NAMES = listOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
+        val SRC_DIR_NAMES = arrayOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
+        val ALL_SRC_DIR_NAMES = arrayOf(GEN_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
+        val TEST_SRC_DIR_NAMES = arrayOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
     }
 
     object File {
@@ -136,11 +136,10 @@ object ProjectConstants {
         val WEBROOT_WEB_INF_LIB = Path("webroot", "WEB-INF", "lib")
         val WEBROOT_WEB_INF_CLASSES = Path("webroot", "WEB-INF", "classes")
         val WEBROOT_WEB_INF_WEB_XML = Path("webroot", "WEB-INF", "web.xml")
+        val WEB_WEB_ROOT_WEB_INF_CLASSES = Path( "web", "webroot", "WEB-INF", "classes")
 
         val BACKOFFICE_BIN = Path("backoffice", "bin")
         val BACKOFFICE_JAR = Path("resources", "backoffice")
-
-        val HAC_WEB_INF_CLASSES = Path("bin", "platform", "ext", "hac", "web", "webroot", "WEB-INF", "classes")
 
         val RESERVED_TYPE_CODES_FILE = Path("resources", "core", "unittest", "reservedTypecodes.txt")
 

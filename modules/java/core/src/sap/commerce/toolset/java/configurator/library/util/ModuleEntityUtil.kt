@@ -16,14 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.library
+package sap.commerce.toolset.java.configurator.library.util
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
 
-internal suspend fun ModuleEntity.addProjectLibrary(
+internal suspend fun removeProjectLibrary(
+    workspaceModel: WorkspaceModel,
+    libraryName: String
+) = workspaceModel.update("Removing project library '$libraryName'") { storage ->
+    val libraryEntity = storage.projectLibraries.find { it.name == libraryName }
+        ?: return@update
+
+    storage.removeEntity(libraryEntity)
+}
+
+internal suspend fun ModuleEntity.configureProjectLibrary(
     project: Project,
     workspaceModel: WorkspaceModel,
     libraryName: String,
@@ -51,38 +62,45 @@ internal suspend fun ModuleEntity.addProjectLibrary(
         this.roots.addAll(libraryRoots)
     }
 
-    storage.modifyModuleEntity(this@addProjectLibrary) {
+    storage.modifyModuleEntity(this@configureProjectLibrary) {
         this.dependencies += LibraryDependency(libraryId, exported, scope)
     }
 }
 
-internal suspend fun ModuleEntity.addLibrary(
+internal suspend fun ModuleEntity.configureLibrary(
     workspaceModel: WorkspaceModel,
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
     libraryRoots: Collection<LibraryRoot>,
-) = workspaceModel.update("Add library $libraryName to module ${this.name}") { storage ->
-    val moduleId = ModuleId(this.name)
-    val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)
-    val libraryId = LibraryId(libraryName, libraryTableId)
-    val libraryEntity = this@addLibrary.getModuleLibraries(storage)
-        .find { it.name == libraryName }
-        ?: storage.addEntity(
-            LibraryEntity(
-                name = libraryName,
-                tableId = libraryTableId,
-                roots = emptyList(),
-                entitySource = this.entitySource,
-            )
-        )
-
-    storage.modifyLibraryEntity(libraryEntity) {
-        this.roots.clear()
-        this.roots.addAll(libraryRoots)
+) {
+    if (libraryRoots.isEmpty()) {
+        thisLogger().debug("No library roots for: $libraryName")
+        return
     }
 
-    storage.modifyModuleEntity(this@addLibrary) {
-        this.dependencies += LibraryDependency(libraryId, exported, scope)
+    workspaceModel.update("Add library $libraryName to module ${this.name}") { storage ->
+        val moduleId = ModuleId(this.name)
+        val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)
+        val libraryId = LibraryId(libraryName, libraryTableId)
+        val libraryEntity = this@configureLibrary.getModuleLibraries(storage)
+            .find { it.name == libraryName }
+            ?: storage.addEntity(
+                LibraryEntity(
+                    name = libraryName,
+                    tableId = libraryTableId,
+                    roots = emptyList(),
+                    entitySource = this.entitySource,
+                )
+            )
+
+        storage.modifyLibraryEntity(libraryEntity) {
+            this.roots.clear()
+            this.roots.addAll(libraryRoots)
+        }
+
+        storage.modifyModuleEntity(this@configureLibrary) {
+            this.dependencies += LibraryDependency(libraryId, exported, scope)
+        }
     }
 }

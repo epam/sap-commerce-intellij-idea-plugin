@@ -23,75 +23,79 @@ import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
+import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.java.JavaConstants
+import sap.commerce.toolset.java.configurator.library.util.configureProjectLibrary
+import sap.commerce.toolset.java.configurator.library.util.sources
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.pathString
 
-class PlatformBootstrapModuleLibraryConfigurator : ModuleLibraryConfigurator {
+class PlatformBootstrapModuleLibraryConfigurator : ModuleLibraryConfigurator<YCoreExtModuleDescriptor> {
 
     override val name: String
-        get() = JavaConstants.Library.PLATFORM_BOOTSTRAP
+        get() = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YCoreExtModuleDescriptor
+    override fun isApplicable(
+        importContext: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor
+    ) = moduleDescriptor is YCoreExtModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
+        moduleDescriptor: YCoreExtModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val platformModuleDescriptor = importContext.platformModuleDescriptor
+
         val libraryRoots = buildList {
-            moduleDescriptor.libraryDirectories
-                .map { virtualFileUrlManager.fromPath(it.pathString) }
-                .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY) }
-                .forEach { add(it) }
+            addAll(platformModuleDescriptor.sources(virtualFileUrlManager, ProjectConstants.Paths.BOOTSTRAP_GEN_SRC))
+            addAll(platformModuleDescriptor.libraryDirectories(virtualFileUrlManager))
 
-            moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC)
-                .takeIf { it.directoryExists }
-                ?.let { virtualFileUrlManager.fromPath(it.pathString) }
-                ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
-                ?.let { add(it) }
-
-            importContext.sourceCodeFile
-                ?.takeIf { it.fileExists }
-                ?.let { virtualFileUrlManager.fromPath(it.pathString) }
-                ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
-                ?.let { add(it) }
+            addIfNotNull(importContext.sourceCode(virtualFileUrlManager))
         }
 
-        moduleEntity.addProjectLibrary(
+        moduleEntity.configureProjectLibrary(
             project = importContext.project,
             workspaceModel = workspaceModel,
-            libraryName = JavaConstants.Library.PLATFORM_BOOTSTRAP,
+            libraryName = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP,
             libraryRoots = libraryRoots,
         )
     }
 
-    private val ModuleDescriptor.libraryDirectories
-        get() = buildList {
-            val moduleRootPath = this@libraryDirectories.moduleRootPath
+    private fun ProjectImportContext.sourceCode(virtualFileUrlManager: VirtualFileUrlManager) = this.sourceCodeFile
+        ?.takeIf { it.fileExists }
+        ?.let { virtualFileUrlManager.fromPath(it.pathString) }
+        ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
 
-            moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
-                .takeIf { it.directoryExists }
-                ?.listDirectoryEntries()
-                ?.filter { it.directoryExists }
-                ?.forEach { resourcesInnerDirectory ->
-                    add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.LIB))
-                    add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.BIN))
-                }
+    private fun PlatformModuleDescriptor.libraryDirectories(virtualFileUrlManager: VirtualFileUrlManager) = buildList {
+        val moduleRootPath = this@libraryDirectories.moduleRootPath
 
-            add(moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_BIN))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_BIN))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_BIN))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_LIB))
-            add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_LIB))
-        }
-            .filter { it.directoryExists }
+        moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
+            .takeIf { it.directoryExists }
+            ?.listDirectoryEntries()
+            ?.filter { it.directoryExists }
+            ?.forEach { resourcesInnerDirectory ->
+                add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.LIB))
+                add(resourcesInnerDirectory.resolve(ProjectConstants.Directory.BIN))
+            }
+
+        add(moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_BIN))
+        add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_BIN))
+        add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_BIN))
+        add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_LIB))
+        add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_LIB))
+    }
+        .filter { it.directoryExists }
+        .map { virtualFileUrlManager.fromPath(it.pathString) }
+        .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY) }
 }

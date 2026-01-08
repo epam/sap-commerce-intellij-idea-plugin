@@ -40,10 +40,13 @@ object EiConstants {
     )
 
     object Extension {
+        @Deprecated("Introduce new BackofficeModuleDescriptor")
         const val BACK_OFFICE = "backoffice"
         const val CORE = "core"
         const val CONFIG = "config"
+        @Deprecated("Introduce new HmcModuleDescriptor")
         const val HMC = "hmc"
+        @Deprecated("Introduce new HacModuleDescriptor")
         const val HAC = "hac"
         const val PLATFORM = "platform"
         const val PLATFORM_SERVICES = "platformservices"

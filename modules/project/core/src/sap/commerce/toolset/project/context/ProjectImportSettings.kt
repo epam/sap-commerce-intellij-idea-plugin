@@ -48,6 +48,8 @@ data class ProjectImportSettings(
     val importOOTBModulesInWriteMode
         get() = !importOOTBModulesInReadOnlyMode
 
+    fun <T> ifWithStandardProvidedSources(operation: () -> T): T? = if (withStandardProvidedSources) operation() else null
+
     fun mutable() = Mutable(
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
         followSymlink = AtomicBooleanProperty(followSymlink),

@@ -20,10 +20,20 @@ package sap.commerce.toolset.java
 
 object JavaConstants {
 
-    object Library {
-        const val BACKOFFICE = "Backoffice Library"
+    object ModuleLibrary {
+        const val BACKOFFICE = "backoffice"
+        const val BACKOFFICE_TEST = "backoffice test"
+        const val TEST = "test"
+        const val WEB = "web"
+        const val ADDON = "addon"
+        const val ADDON_TEST = "addon test"
+        const val EXTENSION = "extension"
+        const val CONFIG_LICENSE = "config license"
+    }
+
+    object ProjectLibrary {
         const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
-        const val CONFIG_LICENSE = "Config License"
         const val DATABASE_DRIVERS = "Database Drivers"
+        const val BACKOFFICE = "Backoffice Library"
     }
 }
