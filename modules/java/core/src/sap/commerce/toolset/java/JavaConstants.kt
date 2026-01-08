@@ -29,14 +29,12 @@ object JavaConstants {
         const val EXTENSION = "extension"
         const val EXTENSION_TEST = "extension (test)"
         const val CONFIG_LICENSE = "config license"
-
-        @Deprecated("migrate to project library ad attach to platform")
-        const val DATABASE_DRIVERS = "database drivers"
     }
 
     object ProjectLibrary {
         const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
         const val BACKOFFICE = "Backoffice Library"
         const val HAC = "hAC Library"
+        const val DATABASE_DRIVERS = "Database Drivers"
     }
 }

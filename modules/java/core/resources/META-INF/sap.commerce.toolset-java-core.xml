@@ -32,6 +32,7 @@
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.PlatformBootstrapProjectLibraryConfigurator"/>
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.BackofficeProjectLibraryConfigurator"/>
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.HacProjectLibraryConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.DatabaseDriversProjectLibraryConfigurator"/>
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>

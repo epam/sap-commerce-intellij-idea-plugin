@@ -19,17 +19,12 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
-import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.configureLibrary
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import sap.commerce.toolset.project.fromPath
 
 class PlatformModuleLibraryConfigurator : ModuleLibraryConfigurator<PlatformModuleDescriptor> {
 
@@ -47,17 +42,9 @@ class PlatformModuleLibraryConfigurator : ModuleLibraryConfigurator<PlatformModu
         moduleDescriptor: PlatformModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val dbDriversPath = importContext.externalDbDriversDirectory
-            ?: moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER)
-        val libraryRoot = virtualFileUrlManager.fromPath(dbDriversPath)
-            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
-            ?: return
-
-        moduleEntity.configureLibrary(
+        moduleEntity.linkProjectLibrary(
             workspaceModel = workspaceModel,
-            libraryName = JavaConstants.ModuleLibrary.DATABASE_DRIVERS,
-            libraryRoots = listOf(libraryRoot)
+            libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
         )
     }
 }
