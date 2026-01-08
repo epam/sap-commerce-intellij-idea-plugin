@@ -40,7 +40,6 @@ object EiConstants {
     )
 
     object Extension {
-        @Deprecated("Introduce new BackofficeModuleDescriptor")
         const val BACK_OFFICE = "backoffice"
         const val CORE = "core"
         const val CONFIG = "config"

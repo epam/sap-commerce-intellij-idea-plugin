@@ -22,11 +22,16 @@ import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.cockpitNG.CngConstants
-import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.nio.file.Path
-import kotlin.io.path.exists
+import sap.commerce.toolset.project.descriptor.impl.YBackofficeModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.util.directoryExists
+import kotlin.io.path.extension
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
+import kotlin.io.path.pathString
 
 class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
 
@@ -37,19 +42,20 @@ class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
         val project = importContext.project
         val cockpitJarToFile = readAction {
             importContext.chosenHybrisModuleDescriptors
-                .firstOrNull { it.name == EiConstants.Extension.BACK_OFFICE }
+                .find { it is YWebSubModuleDescriptor && it.owner is YBackofficeModuleDescriptor }
                 ?.moduleRootPath
-                ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))
-                ?.takeIf { it.exists() }
-                ?.toFile()
-                ?.listFiles { _, name -> name.endsWith(".jar", true) }
+                ?.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+                ?.takeIf { it.directoryExists }
+                ?.listDirectoryEntries()
+                ?.filter { it.extension == "jar" }
+                ?.map { it.normalize() }
                 ?.mapNotNull { file ->
                     val name = file.name
                     when {
-                        name.startsWith("cockpitcore-", true) -> "CORE" to file.absolutePath
-                        name.startsWith("cockpit-data-integration-", true) -> "DATA_INTEGRATION" to file.absolutePath
-                        name.startsWith("cockpitframework-", true) -> "FRAMEWORK" to file.absolutePath
-                        name.startsWith("backoffice-widgets-", true) -> "BO_WIDGETS" to file.absolutePath
+                        name.startsWith("cockpitcore-", true) -> "CORE" to file.pathString
+                        name.startsWith("cockpit-data-integration-", true) -> "DATA_INTEGRATION" to file.pathString
+                        name.startsWith("cockpitframework-", true) -> "FRAMEWORK" to file.pathString
+                        name.startsWith("backoffice-widgets-", true) -> "BO_WIDGETS" to file.pathString
                         else -> null
                     }
                 }

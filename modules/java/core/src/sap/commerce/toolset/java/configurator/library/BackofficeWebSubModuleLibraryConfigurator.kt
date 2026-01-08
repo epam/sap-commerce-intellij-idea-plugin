@@ -20,13 +20,14 @@ package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YBackofficeModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 
+@Deprecated("Looks very similar to Web Library Configurator")
 class BackofficeWebSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YWebSubModuleDescriptor> {
 
     override val name: String
@@ -35,8 +36,7 @@ class BackofficeWebSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YWeb
     override fun isApplicable(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is YWebSubModuleDescriptor
-        && moduleDescriptor.owner.name == EiConstants.Extension.BACK_OFFICE
+    ) = moduleDescriptor is YWebSubModuleDescriptor && moduleDescriptor.owner is YBackofficeModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,

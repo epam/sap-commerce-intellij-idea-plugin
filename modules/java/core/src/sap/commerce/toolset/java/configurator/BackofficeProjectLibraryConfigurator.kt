@@ -26,6 +26,7 @@ import sap.commerce.toolset.java.configurator.library.util.*
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.impl.YBackofficeModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 
@@ -40,7 +41,7 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
     ) {
         val backofficeWebDescriptor = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YWebSubModuleDescriptor>()
-            .find { it.owner.name == EiConstants.Extension.BACK_OFFICE }
+            .find { it.owner is YBackofficeModuleDescriptor }
 
         if (backofficeWebDescriptor == null) {
             thisLogger().info("Backoffice Library will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")

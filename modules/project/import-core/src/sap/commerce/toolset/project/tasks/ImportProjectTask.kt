@@ -45,7 +45,8 @@ class ImportProjectTask(private val project: Project) {
 
     fun execute(importContext: ProjectImportContext) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
-        title = i18n("hybris.project.import.commit"),
+        title = if (importContext.refresh) i18n("hybris.project.refresh.commit")
+        else i18n("hybris.project.import.commit"),
     ) {
         val workspaceModel = WorkspaceModel.getInstance(project)
 
