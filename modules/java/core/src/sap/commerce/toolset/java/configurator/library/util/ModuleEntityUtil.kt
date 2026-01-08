@@ -56,7 +56,7 @@ internal suspend fun WorkspaceModel.configureProjectLibrary(
     project: Project,
     libraryName: String,
     libraryRoots: Collection<LibraryRoot>,
-) = this.update("Configur project library $libraryName") { storage ->
+) = this.update("Configure project library $libraryName") { storage ->
     val libraryEntity = storage.projectLibraries.find { it.name == libraryName }
         ?: storage.addEntity(
             LibraryEntity(

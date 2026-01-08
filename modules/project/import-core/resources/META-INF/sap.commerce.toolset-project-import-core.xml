@@ -52,7 +52,9 @@
                                            implementation="sap.commerce.toolset.project.descriptor.provider.PlatformModuleDescriptorProvider"/>
         <project.module.descriptorProvider order="after platformModuleDescriptorProvider" id="yCoreExtModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.YCoreExtModuleDescriptorProvider"/>
-        <project.module.descriptorProvider order="after yCoreExtModuleDescriptorProvider" id="yBackofficeModuleDescriptorProvider"
+        <project.module.descriptorProvider order="after yCoreExtModuleDescriptorProvider" id="yHacExtModuleDescriptorProvider"
+                                           implementation="sap.commerce.toolset.project.descriptor.provider.YHacExtModuleDescriptorProvider"/>
+        <project.module.descriptorProvider order="after yHacExtModuleDescriptorProvider" id="yBackofficeModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.YBackofficeModuleDescriptorProvider"/>
         <project.module.descriptorProvider order="after yBackofficeModuleDescriptorProvider" id="yPlatformExtModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.YPlatformExtModuleDescriptorProvider"/>

@@ -20,13 +20,10 @@ package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.util.asSafely
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YHacSubModuleDescriptor
 
 /**
@@ -40,7 +37,10 @@ class HacSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YHacSubModuleD
     override val name: String
         get() = "Hac Libraries"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YHacSubModuleDescriptor
+    override fun isApplicable(
+        importContext: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor
+    ) = moduleDescriptor is YHacSubModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -50,7 +50,12 @@ class HacSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YHacSubModuleD
     ) {
         configureExtensionLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
         configureTestLibrary(workspaceModel, moduleDescriptor, moduleEntity)
-        configureWebClassesLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
+
+        moduleEntity.linkProjectLibrary(
+            workspaceModel = workspaceModel,
+            libraryName = JavaConstants.ProjectLibrary.HAC,
+            exported = false,
+        )
     }
 
     private suspend fun configureExtensionLibrary(
@@ -74,30 +79,6 @@ class HacSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YHacSubModuleD
             workspaceModel = workspaceModel,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.EXTENSION}",
             libraryRoots = libraryRoots
-        )
-    }
-
-    private suspend fun configureWebClassesLibrary(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YHacSubModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val hacModuleDescriptor = importContext.chosenHybrisModuleDescriptors
-            .firstOrNull { it.name == EiConstants.Extension.HAC }
-            ?.asSafely<YModuleDescriptor>()
-            ?: return
-
-        val libraryRoots = buildList {
-            addAll(hacModuleDescriptor.webClasses(virtualFileUrlManager))
-        }
-
-        moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.WEB}",
-            exported = false,
-            libraryRoots = libraryRoots,
         )
     }
 }

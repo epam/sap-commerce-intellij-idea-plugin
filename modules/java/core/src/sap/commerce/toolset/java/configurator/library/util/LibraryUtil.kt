@@ -40,7 +40,7 @@ internal suspend fun configureTestLibrary(
 
     moduleEntity.configureLibrary(
         workspaceModel = workspaceModel,
-        libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.TEST}",
+        libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.EXTENSION_TEST}",
         scope = DependencyScope.TEST,
         libraryRoots = libraryRoots
     )

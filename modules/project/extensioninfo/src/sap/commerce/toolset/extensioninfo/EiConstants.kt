@@ -45,7 +45,6 @@ object EiConstants {
         const val CONFIG = "config"
         @Deprecated("Introduce new HmcModuleDescriptor")
         const val HMC = "hmc"
-        @Deprecated("Introduce new HacModuleDescriptor")
         const val HAC = "hac"
         const val PLATFORM = "platform"
         const val PLATFORM_SERVICES = "platformservices"

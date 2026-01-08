@@ -22,18 +22,21 @@ object JavaConstants {
 
     object ModuleLibrary {
         const val BACKOFFICE = "backoffice"
-        const val BACKOFFICE_TEST = "backoffice test"
-        const val TEST = "test"
+        const val BACKOFFICE_TEST = "backoffice (test)"
         const val WEB = "web"
         const val ADDON = "addon"
-        const val ADDON_TEST = "addon test"
+        const val ADDON_TEST = "addon (test)"
         const val EXTENSION = "extension"
+        const val EXTENSION_TEST = "extension (test)"
         const val CONFIG_LICENSE = "config license"
+
+        @Deprecated("migrate to project library ad attach to platform")
         const val DATABASE_DRIVERS = "database drivers"
     }
 
     object ProjectLibrary {
         const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
         const val BACKOFFICE = "Backoffice Library"
+        const val HAC = "hAC Library"
     }
 }
