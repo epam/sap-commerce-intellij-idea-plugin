@@ -71,10 +71,6 @@ fun ModuleDescriptor.webRootClasses(virtualFileUrlManager: VirtualFileUrlManager
     virtualFileUrlManager, ProjectConstants.Paths.WEBROOT_WEB_INF_CLASSES
 )
 
-fun ModuleDescriptor.webClasses(virtualFileUrlManager: VirtualFileUrlManager) = this.compiled(
-    virtualFileUrlManager, ProjectConstants.Paths.WEB_WEB_ROOT_WEB_INF_CLASSES
-)
-
 fun ModuleDescriptor.nestedSources(virtualFileUrlManager: VirtualFileUrlManager, path: String) = this
     .moduleRootPath.resolve(path)
     .takeIf { it.directoryExists }

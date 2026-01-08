@@ -449,7 +449,7 @@ class HacConnectionSettingsDialog(
             id = GotItTooltips.Hac.AUTH_MODES,
             textSupplier = {
                 """
-                    You can choose one of the authentication modes for integration with ${code("hAC")}.
+                    You can choose one of the authentication modes for integration with ${code("HAC")}.
                     <br><br>With the ${icon(AuthMode.AUTOMATIC.icon)} ${code(AuthMode.AUTOMATIC.shortTitle)} the Plugin will rely on the specified persisted credentials to authenticate and renew connection to hAC.
                     <br><br>Whereas with the ${icon(AuthMode.MANUAL.icon)} ${code(AuthMode.MANUAL.shortTitle)} credentials will not be persisted and you will be asked for authentication via Browser every time when it is required.
                     This mode also supports http basic authorization of the connection (e.g. ${code("nginx")} reverse proxy). 

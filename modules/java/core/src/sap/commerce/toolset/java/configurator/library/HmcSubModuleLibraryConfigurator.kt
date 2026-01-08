@@ -20,17 +20,14 @@ package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.util.asSafely
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.compiled
 import sap.commerce.toolset.java.configurator.library.util.configureLibrary
 import sap.commerce.toolset.java.configurator.library.util.configureTestLibrary
-import sap.commerce.toolset.java.configurator.library.util.webClasses
+import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor
 import kotlin.io.path.Path
 
@@ -52,7 +49,12 @@ class HmcSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YHmcSubModuleD
     ) {
         configureExtensionLibrary(workspaceModel, moduleDescriptor, moduleEntity)
         configureTestLibrary(workspaceModel, moduleDescriptor, moduleEntity)
-        configureWebClassesLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
+
+        moduleEntity.linkProjectLibrary(
+            workspaceModel = workspaceModel,
+            libraryName = JavaConstants.ProjectLibrary.HMC,
+            exported = false
+        )
     }
 
     private suspend fun configureExtensionLibrary(
@@ -69,29 +71,6 @@ class HmcSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YHmcSubModuleD
             workspaceModel = workspaceModel,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.EXTENSION}",
             libraryRoots = libraryRoots
-        )
-    }
-
-    private suspend fun configureWebClassesLibrary(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YHmcSubModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val hmcModuleDescriptor = importContext.chosenHybrisModuleDescriptors
-            .firstOrNull { it.name == EiConstants.Extension.HMC }
-            ?.asSafely<YModuleDescriptor>()
-            ?: return
-        val libraryRoots = buildList {
-            addAll(hmcModuleDescriptor.webClasses(virtualFileUrlManager))
-        }
-
-        moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.WEB}",
-            exported = false,
-            libraryRoots = libraryRoots,
         )
     }
 }

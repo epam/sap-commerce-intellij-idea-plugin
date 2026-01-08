@@ -34,7 +34,8 @@ object JavaConstants {
     object ProjectLibrary {
         const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
         const val BACKOFFICE = "Backoffice Library"
-        const val HAC = "hAC Library"
+        const val HAC = "HAC Library"
+        const val HMC = "HMC Library"
         const val DATABASE_DRIVERS = "Database Drivers"
     }
 }

@@ -43,7 +43,6 @@ object EiConstants {
         const val BACK_OFFICE = "backoffice"
         const val CORE = "core"
         const val CONFIG = "config"
-        @Deprecated("Introduce new HmcModuleDescriptor")
         const val HMC = "hmc"
         const val HAC = "hac"
         const val PLATFORM = "platform"
