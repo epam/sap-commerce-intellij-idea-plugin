@@ -18,6 +18,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.components.service
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.spellchecker.state.ProjectDictionaryState
 import sap.commerce.toolset.project.context.ProjectImportContext
 
@@ -26,7 +27,7 @@ class ProjectDictionaryConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Project Dictionaries"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val moduleNames = importContext.foundModules
             .map { it.name.lowercase() }

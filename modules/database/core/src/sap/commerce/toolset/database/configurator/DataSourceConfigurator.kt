@@ -98,7 +98,7 @@ class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
         // TODO: migrate to Workspace API
         ModuleManager.getInstance(project).modules
             .firstOrNull { it.name.endsWith(EiConstants.Extension.PLATFORM) }
-            ?.let { LibraryUtil.findLibrary(it, JavaConstants.ProjectLibrary.DATABASE_DRIVERS) }
+            ?.let { LibraryUtil.findLibrary(it, JavaConstants.ModuleLibrary.DATABASE_DRIVERS) }
             ?.let { library ->
                 library.rootProvider.getFiles(OrderRootType.CLASSES)
                     .filter { it.name.startsWith(driver.sqlDialect, true) }

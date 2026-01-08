@@ -18,6 +18,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.util.io.FileUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -33,7 +34,7 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Project Settings"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val workspaceSettings = WorkspaceSettings.getInstance(project)
         val projectSettings = ProjectSettings.getInstance(project)

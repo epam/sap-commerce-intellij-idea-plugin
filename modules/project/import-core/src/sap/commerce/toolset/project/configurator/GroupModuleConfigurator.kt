@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.util.asSafely
 import sap.commerce.toolset.project.ModuleGroupingUtil
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -28,7 +29,7 @@ class GroupModuleConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Modules Grouping"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         if (!importContext.settings.groupModules) return
 
         val moduleDescriptorsToImport = importContext.allChosenModuleDescriptors

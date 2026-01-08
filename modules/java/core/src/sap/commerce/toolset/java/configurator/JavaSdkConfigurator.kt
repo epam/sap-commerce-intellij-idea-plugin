@@ -20,6 +20,7 @@ package sap.commerce.toolset.java.configurator
 import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.LanguageLevelProjectExtension
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
@@ -28,7 +29,7 @@ class JavaSdkConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Java Sdk"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val projectRootManager = ProjectRootManager.getInstance(project)
 

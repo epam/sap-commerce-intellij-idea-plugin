@@ -18,23 +18,19 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.*
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 
 class BackofficeModuleLibraryConfigurator : ModuleLibraryConfigurator<YOotbRegularModuleDescriptor> {
 
     override val name: String
-        get() = JavaConstants.ProjectLibrary.BACKOFFICE
+        get() = "Backoffice Module"
 
     override fun isApplicable(
         importContext: ProjectImportContext,
@@ -47,45 +43,9 @@ class BackofficeModuleLibraryConfigurator : ModuleLibraryConfigurator<YOotbRegul
         moduleDescriptor: YOotbRegularModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        val backofficeWebDescriptor = importContext.chosenHybrisModuleDescriptors
-            .filterIsInstance<YWebSubModuleDescriptor>()
-            .find { it.owner.name == EiConstants.Extension.BACK_OFFICE }
-
-        if (backofficeWebDescriptor == null) {
-            thisLogger().info("Backoffice Library will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")
-            removeProjectLibrary(workspaceModel, JavaConstants.ProjectLibrary.BACKOFFICE)
-            return
-        }
-
-        configureProjectLibrary(importContext, backofficeWebDescriptor, moduleEntity)
-    }
-
-    private suspend fun configureProjectLibrary(
-        importContext: ProjectImportContext,
-        backofficeWebDescriptor: YWebSubModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val workspaceModel = WorkspaceModel.getInstance(importContext.project)
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val libraryRoots = buildList {
-            addAll(backofficeWebDescriptor.webRootClasses(virtualFileUrlManager))
-            addAll(backofficeWebDescriptor.webRootJars(virtualFileUrlManager))
-            addAll(backofficeWebDescriptor.docSources(importContext, virtualFileUrlManager))
-
-            addAll(importContext.backofficeJars(virtualFileUrlManager))
-        }
-
-        moduleEntity.configureProjectLibrary(
-            project = importContext.project,
+        moduleEntity.linkProjectLibrary(
             workspaceModel = workspaceModel,
             libraryName = JavaConstants.ProjectLibrary.BACKOFFICE,
-            libraryRoots = libraryRoots
         )
     }
-
-    private fun ProjectImportContext.backofficeJars(virtualFileUrlManager: VirtualFileUrlManager) = this.chosenHybrisModuleDescriptors
-        .filterIsInstance<YOotbRegularModuleDescriptor>()
-        .filter { it.extensionInfo.backofficeModule }
-        .flatMap { it.compiledArchivesRecursively(virtualFileUrlManager, ProjectConstants.Paths.BACKOFFICE_JAR) }
-
 }

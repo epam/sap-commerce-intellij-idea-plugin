@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.impex.configurator
 
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.psi.codeStyle.CodeStyleSchemes
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import sap.commerce.toolset.impex.ImpExLanguage
@@ -28,7 +29,7 @@ class ImpExCodeStyleConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "ImpEx Code Style"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         CodeStyleSchemes.getInstance().currentScheme
             .codeStyleSettings
             .getCommonSettings(ImpExLanguage)

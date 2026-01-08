@@ -29,11 +29,11 @@ object JavaConstants {
         const val ADDON_TEST = "addon test"
         const val EXTENSION = "extension"
         const val CONFIG_LICENSE = "config license"
+        const val DATABASE_DRIVERS = "database drivers"
     }
 
     object ProjectLibrary {
         const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
-        const val DATABASE_DRIVERS = "Database Drivers"
         const val BACKOFFICE = "Backoffice Library"
     }
 }

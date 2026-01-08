@@ -15,21 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.nio.file.Files
-import kotlin.io.path.exists
 
-class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
+interface ProjectLibraryConfigurator : Configurator {
 
-    override val name: String
-        get() = "Modules Directory"
+    suspend fun configure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel)
 
-    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        importContext.modulesFilesDirectory
-            ?.takeUnless { it.exists() }
-            ?.let { Files.createDirectories(it) }
+    companion object {
+        val EP = ExtensionPointName.create<ProjectLibraryConfigurator>("sap.commerce.toolset.project.libraryConfigurator")
     }
 }

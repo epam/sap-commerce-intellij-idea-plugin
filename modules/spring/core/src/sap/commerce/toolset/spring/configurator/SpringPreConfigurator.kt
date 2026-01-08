@@ -20,6 +20,7 @@ package sap.commerce.toolset.spring.configurator
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
@@ -48,7 +49,7 @@ class SpringPreConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Spring"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         if (Plugin.SPRING.isDisabled()) return
 
         val moduleDescriptors = importContext.chosenHybrisModuleDescriptors

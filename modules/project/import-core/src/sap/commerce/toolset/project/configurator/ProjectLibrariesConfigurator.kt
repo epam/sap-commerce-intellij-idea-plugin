@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,19 +17,32 @@
  */
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.util.progress.reportProgressScope
 import sap.commerce.toolset.project.context.ProjectImportContext
-import java.nio.file.Files
-import kotlin.io.path.exists
+import kotlin.time.measureTime
 
-class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
+class ProjectLibrariesConfigurator : ProjectPreImportConfigurator {
+
+    private val logger = thisLogger()
 
     override val name: String
-        get() = "Modules Directory"
+        get() = "Project Libraries"
 
     override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        importContext.modulesFilesDirectory
-            ?.takeUnless { it.exists() }
-            ?.let { Files.createDirectories(it) }
+        val configurators = ProjectLibraryConfigurator.EP.extensionList
+
+        reportProgressScope(configurators.size) { reporter ->
+            configurators.forEach { configurator ->
+                reporter.itemStep("Applying project library '${configurator.name}' configurator...") {
+                    checkCanceled()
+
+                    val duration = measureTime { configurator.configure(importContext, workspaceModel) }
+                    logger.info("Library configurator [${configurator.name} | $duration]")
+                }
+            }
+        }
     }
 }

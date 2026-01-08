@@ -34,18 +34,29 @@ internal suspend fun removeProjectLibrary(
     storage.removeEntity(libraryEntity)
 }
 
-internal suspend fun ModuleEntity.configureProjectLibrary(
-    project: Project,
+internal suspend fun ModuleEntity.linkProjectLibrary(
     workspaceModel: WorkspaceModel,
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
-    libraryRoots: Collection<LibraryRoot>,
-) = workspaceModel.update("Add library $libraryName to module ${this.name}") { storage ->
+) = workspaceModel.update("Add project library $libraryName to module ${this.name}") { storage ->
+    storage.projectLibraries.find { it.name == libraryName }
+        ?: return@update
     val libraryId = LibraryId(
         name = libraryName,
         tableId = LibraryTableId.ProjectLibraryTableId,
     )
+
+    storage.modifyModuleEntity(this@linkProjectLibrary) {
+        this.dependencies += LibraryDependency(libraryId, exported, scope)
+    }
+}
+
+internal suspend fun WorkspaceModel.configureProjectLibrary(
+    project: Project,
+    libraryName: String,
+    libraryRoots: Collection<LibraryRoot>,
+) = this.update("Configur project library $libraryName") { storage ->
     val libraryEntity = storage.projectLibraries.find { it.name == libraryName }
         ?: storage.addEntity(
             LibraryEntity(
@@ -60,10 +71,6 @@ internal suspend fun ModuleEntity.configureProjectLibrary(
     storage.modifyLibraryEntity(libraryEntity) {
         this.roots.clear()
         this.roots.addAll(libraryRoots)
-    }
-
-    storage.modifyModuleEntity(this@configureProjectLibrary) {
-        this.dependencies += LibraryDependency(libraryId, exported, scope)
     }
 }
 

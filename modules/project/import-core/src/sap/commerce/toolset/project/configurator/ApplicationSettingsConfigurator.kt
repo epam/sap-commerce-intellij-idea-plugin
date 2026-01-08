@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.util.toSystemIndependentName
@@ -26,7 +27,7 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
     override val name: String
         get() = "Application Settings"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext) {
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val importSettings = importContext.settings
 
         with(ApplicationSettings.getInstance()) {

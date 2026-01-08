@@ -50,7 +50,7 @@ class ImportProjectTask(private val project: Project) {
         val workspaceModel = WorkspaceModel.getInstance(project)
 
         reportSequentialProgress { spr ->
-            spr.nextStep(5) { preConfigureProject(importContext) }
+            spr.nextStep(5) { preConfigureProject(importContext, workspaceModel) }
             spr.nextStep(95) { importModules(importContext, workspaceModel) }
             spr.nextStep(100) { configureProject(importContext, workspaceModel) }
 
@@ -58,7 +58,7 @@ class ImportProjectTask(private val project: Project) {
         }
     }
 
-    private suspend fun preConfigureProject(importContext: ProjectImportContext) {
+    private suspend fun preConfigureProject(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val configurators = ProjectPreImportConfigurator.EP.extensionList
 
         reportProgressScope(configurators.size) { reporter ->
@@ -66,7 +66,7 @@ class ImportProjectTask(private val project: Project) {
                 reporter.itemStep("Configuring project using '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.preConfigure(importContext) }
+                    val duration = measureTime { configurator.preConfigure(importContext, workspaceModel) }
                     logger.info("Pre-configured project [${configurator.name} | $duration]")
                 }
             }

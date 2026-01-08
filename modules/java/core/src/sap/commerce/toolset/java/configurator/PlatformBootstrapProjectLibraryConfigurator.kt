@@ -15,44 +15,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package sap.commerce.toolset.java.configurator.library
+package sap.commerce.toolset.java.configurator
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.configureProjectLibrary
 import sap.commerce.toolset.java.configurator.library.util.sources
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ProjectLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.pathString
 
-class PlatformBootstrapModuleLibraryConfigurator : ModuleLibraryConfigurator<YCoreExtModuleDescriptor> {
+class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
 
     override val name: String
         get() = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP
 
-    override fun isApplicable(
-        importContext: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is YCoreExtModuleDescriptor
-
     override suspend fun configure(
         importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YCoreExtModuleDescriptor,
-        moduleEntity: ModuleEntity
+        workspaceModel: WorkspaceModel
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val platformModuleDescriptor = importContext.platformModuleDescriptor
@@ -64,9 +54,8 @@ class PlatformBootstrapModuleLibraryConfigurator : ModuleLibraryConfigurator<YCo
             addIfNotNull(importContext.sourceCode(virtualFileUrlManager))
         }
 
-        moduleEntity.configureProjectLibrary(
+        workspaceModel.configureProjectLibrary(
             project = importContext.project,
-            workspaceModel = workspaceModel,
             libraryName = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP,
             libraryRoots = libraryRoots,
         )
