@@ -28,10 +28,10 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 
-class AcceleratorAddonSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAddonSubModuleDescriptor> {
+class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAddonSubModuleDescriptor> {
 
     override val name: String
-        get() = "Accelerator Addon Libraries"
+        get() = "Addon"
 
     override fun isApplicable(
         importContext: ProjectImportContext,
@@ -44,33 +44,8 @@ class AcceleratorAddonSubModuleLibraryConfigurator : ModuleLibraryConfigurator<Y
         moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        configureExtensionLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
-        configureTestLibrary(workspaceModel, moduleDescriptor, moduleEntity)
         configureAddonLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
         configureAddonTestLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
-    }
-
-    private suspend fun configureExtensionLibrary(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val libraryRoots = buildList {
-            addAll(moduleDescriptor.serverJarFiles(virtualFileUrlManager))
-            addAll(moduleDescriptor.sources(virtualFileUrlManager))
-            addAll(moduleDescriptor.resources(virtualFileUrlManager))
-            addAll(moduleDescriptor.classes(virtualFileUrlManager))
-            addAll(moduleDescriptor.docSources(importContext, virtualFileUrlManager))
-            addAll(moduleDescriptor.lib(virtualFileUrlManager))
-        }
-
-        moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.EXTENSION}",
-            libraryRoots = libraryRoots
-        )
     }
 
     private suspend fun configureAddonLibrary(

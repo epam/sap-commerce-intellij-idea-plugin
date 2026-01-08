@@ -29,7 +29,7 @@ import sap.commerce.toolset.project.descriptor.impl.YBackofficeModuleDescriptor
 class BackofficeModuleLibraryConfigurator : ModuleLibraryConfigurator<YBackofficeModuleDescriptor> {
 
     override val name: String
-        get() = "Backoffice Module"
+        get() = "Backoffice"
 
     override fun isApplicable(
         importContext: ProjectImportContext,

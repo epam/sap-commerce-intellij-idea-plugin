@@ -44,8 +44,8 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
             .find { it.owner is YBackofficeModuleDescriptor }
 
         if (backofficeWebDescriptor == null) {
-            thisLogger().info("Backoffice Library will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")
-            removeProjectLibrary(workspaceModel, JavaConstants.ProjectLibrary.BACKOFFICE)
+            thisLogger().info("Project library '${JavaConstants.ProjectLibrary.BACKOFFICE}' will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")
+            workspaceModel.removeProjectLibrary(JavaConstants.ProjectLibrary.BACKOFFICE)
             return
         }
 

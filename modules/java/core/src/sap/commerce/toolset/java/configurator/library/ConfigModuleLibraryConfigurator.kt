@@ -16,45 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.contentEntry
+package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.DependencyScope
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
-import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.java.JavaConstants
+import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import java.nio.file.Path
 
-class TestSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ConfigModuleLibraryConfigurator : ModuleLibraryConfigurator<ConfigModuleDescriptor> {
 
     override val name: String
-        get() = "Test sources"
+        get() = JavaConstants.ProjectLibrary.LICENSE
 
     override fun isApplicable(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode
+    ) = moduleDescriptor is ConfigModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
-        contentRootEntity: ContentRootEntityBuilder,
-        pathsToIgnore: Collection<Path>
+        moduleDescriptor: ConfigModuleDescriptor,
+        moduleEntity: ModuleEntity
     ) {
-        val rootEntities = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
-            .map { moduleDescriptor.moduleRootPath.resolve(it) }
-            .map { SourceRootEntityDescriptor.testSources(moduleEntity = moduleEntity, path = it) }
-
-        contentRootEntity.addSourceRoots(
-            importContext = importContext,
-            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
-            rootEntities = rootEntities,
-            pathsToIgnore = pathsToIgnore,
+        moduleEntity.linkProjectLibrary(
+            workspaceModel = workspaceModel,
+            libraryName = JavaConstants.ProjectLibrary.LICENSE,
+            exported = false,
+            scope = DependencyScope.RUNTIME
         )
     }
 }

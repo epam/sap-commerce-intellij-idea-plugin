@@ -21,39 +21,37 @@ package sap.commerce.toolset.java.configurator.library
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.compiledArchives
-import sap.commerce.toolset.java.configurator.library.util.configureLibrary
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import kotlin.io.path.Path
+import sap.commerce.toolset.project.descriptor.impl.YHacSubModuleDescriptor
 
-class ConfigLicenseModuleLibraryConfigurator : ModuleLibraryConfigurator<ConfigModuleDescriptor> {
+/**
+ * https://hybris-integration.atlassian.net/browse/IIP-355
+ * HAC addons can not be compiled correctly by Intellij build because
+ * "hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes" from "hac" extension is not registered
+ * as a dependency for HAC addons.
+ */
+class HacModuleLibraryConfigurator : ModuleLibraryConfigurator<YHacSubModuleDescriptor> {
 
     override val name: String
-        get() = JavaConstants.ModuleLibrary.CONFIG_LICENSE
+        get() = "Hac Sub Module"
 
     override fun isApplicable(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is ConfigModuleDescriptor
+    ) = moduleDescriptor is YHacSubModuleDescriptor
 
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
-        moduleDescriptor: ConfigModuleDescriptor,
+        moduleDescriptor: YHacSubModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val libraryRoots = moduleDescriptor.compiledArchives(
-            virtualFileUrlManager, Path(ProjectConstants.Directory.LICENCE)
-        )
-
-        moduleEntity.configureLibrary(
+        moduleEntity.linkProjectLibrary(
             workspaceModel = workspaceModel,
-            libraryName = JavaConstants.ModuleLibrary.CONFIG_LICENSE,
-            libraryRoots = libraryRoots
+            libraryName = JavaConstants.ProjectLibrary.HAC,
+            exported = false,
         )
     }
 }

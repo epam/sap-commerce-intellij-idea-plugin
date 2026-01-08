@@ -27,16 +27,9 @@ import com.intellij.platform.workspace.jps.entities.SourceRootEntity
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 import kotlin.io.path.pathString
-
-internal val ModuleDescriptor.isCustomModuleDescriptor
-    get() = this is YCustomRegularModuleDescriptor
-        || (this is YSubModuleDescriptor && this.owner is YCustomRegularModuleDescriptor)
 
 internal fun ContentRootEntityBuilder.excludeDirectories(
     importContext: ProjectImportContext,

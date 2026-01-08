@@ -17,12 +17,11 @@
  */
 package sap.commerce.toolset.java.configurator
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.configureProjectLibrary
-import sap.commerce.toolset.java.configurator.library.util.docSources
-import sap.commerce.toolset.java.configurator.library.util.webRootClasses
-import sap.commerce.toolset.java.configurator.library.util.webRootJars
+import sap.commerce.toolset.java.configurator.library.util.*
 import sap.commerce.toolset.project.configurator.ProjectLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.impl.YHmcExtModuleDescriptor
@@ -43,7 +42,13 @@ class HmcProjectLibraryConfigurator : ProjectLibraryConfigurator {
             ?.getSubModules()
             ?.filterIsInstance<YWebSubModuleDescriptor>()
             ?.firstOrNull()
-            ?: return
+
+        if (hmcWebModuleDescriptor == null) {
+            thisLogger().info("Project library '${JavaConstants.ProjectLibrary.HMC}' will not be created because ${EiConstants.Extension.HMC} extension is not used.")
+            workspaceModel.removeProjectLibrary(JavaConstants.ProjectLibrary.HMC)
+            return
+        }
+
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(hmcWebModuleDescriptor.webRootClasses(virtualFileUrlManager))

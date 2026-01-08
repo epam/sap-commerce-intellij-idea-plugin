@@ -6,7 +6,7 @@
 - 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 
 ### `Project Import` enhancements
-- Project refresh 2.0 [#1699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699)
+- Project import & refresh 3.0 [#1699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699)
 - Lazy dependency on `java-el` plugin [#1700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1700)
 
 ### `SAP CX Logging` enhancements

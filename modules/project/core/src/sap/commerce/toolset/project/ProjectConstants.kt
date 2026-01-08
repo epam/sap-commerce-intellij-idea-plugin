@@ -136,9 +136,7 @@ object ProjectConstants {
         val WEBROOT_WEB_INF_LIB = Path("webroot", "WEB-INF", "lib")
         val WEBROOT_WEB_INF_CLASSES = Path("webroot", "WEB-INF", "classes")
         val WEBROOT_WEB_INF_WEB_XML = Path("webroot", "WEB-INF", "web.xml")
-        val WEB_WEB_ROOT_WEB_INF_CLASSES = Path( "web", "webroot", "WEB-INF", "classes")
 
-        val BACKOFFICE_BIN = Path("backoffice", "bin")
         val BACKOFFICE_JAR = Path("resources", "backoffice")
 
         val RESERVED_TYPE_CODES_FILE = Path("resources", "core", "unittest", "reservedTypecodes.txt")

@@ -19,16 +19,19 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.DependencyScope
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
 
-class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YBackofficeSubModuleDescriptor> {
+class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegularModuleDescriptor> {
 
     override val name: String
         get() = "Backoffice Sub Module"
@@ -36,43 +39,50 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YBackof
     override fun isApplicable(
         importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is YBackofficeSubModuleDescriptor
+    ) = moduleDescriptor is YRegularModuleDescriptor && moduleDescriptor.extensionInfo.backofficeModule
 
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
-        moduleDescriptor: YBackofficeSubModuleDescriptor,
+        moduleDescriptor: YRegularModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        configureExtensionLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
-        configureTestLibrary(workspaceModel, moduleDescriptor, moduleEntity)
-    }
+        val backofficeSubModuleDescriptor = moduleDescriptor.getSubModules()
+            .firstOrNull { it is YBackofficeSubModuleDescriptor }
+            ?: return
+        val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
 
-    private suspend fun configureExtensionLibrary(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YBackofficeSubModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val libraryRoots = buildList {
-            addAll(moduleDescriptor.serverJarFiles(virtualFileUrlManager))
-            addAll(moduleDescriptor.sources(virtualFileUrlManager))
-            addAll(moduleDescriptor.resources(virtualFileUrlManager))
-            addAll(moduleDescriptor.classes(virtualFileUrlManager))
-            addAll(moduleDescriptor.docSources(importContext, virtualFileUrlManager))
-            addAll(moduleDescriptor.lib(virtualFileUrlManager))
-            addAll(moduleDescriptor.backofficeBin(virtualFileUrlManager))
+        configureLibrary(workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE) {
+            buildList {
+                addAll(backofficeSubModuleDescriptor.classes(it))
+                addAll(backofficeSubModuleDescriptor.resources(it))
+
+                if (attachSources) addAll(backofficeSubModuleDescriptor.sources(it))
+            }
         }
 
-        moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.EXTENSION}",
-            libraryRoots = libraryRoots
-        )
+        configureLibrary(workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE_TEST) {
+            buildList {
+                addAll(backofficeSubModuleDescriptor.classes(it))
+                addAll(backofficeSubModuleDescriptor.testClasses(it))
+                addAll(backofficeSubModuleDescriptor.resources(it))
+
+                if (attachSources) addAll(backofficeSubModuleDescriptor.testSources(it))
+            }
+        }
     }
 
-    private fun YBackofficeSubModuleDescriptor.backofficeBin(virtualFileUrlManager: VirtualFileUrlManager) = this.compiled(
-        virtualFileUrlManager, ProjectConstants.Paths.BACKOFFICE_BIN
+    private suspend fun configureLibrary(
+        workspaceModel: WorkspaceModel,
+        moduleDescriptor: YRegularModuleDescriptor,
+        moduleEntity: ModuleEntity,
+        libraryNameSuffix: String,
+        libraryRootsProvider: (VirtualFileUrlManager) -> Collection<LibraryRoot>
+    ) = moduleEntity.configureLibrary(
+        workspaceModel = workspaceModel,
+        libraryName = "${moduleDescriptor.name} - $libraryNameSuffix",
+        scope = DependencyScope.PROVIDED,
+        exported = false,
+        libraryRoots = libraryRootsProvider(workspaceModel.getVirtualFileUrlManager())
     )
 }

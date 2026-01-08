@@ -17,45 +17,34 @@
  */
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
-import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import sap.commerce.toolset.java.JavaConstants
+import sap.commerce.toolset.java.configurator.library.util.compiledArchives
 import sap.commerce.toolset.java.configurator.library.util.configureProjectLibrary
-import sap.commerce.toolset.java.configurator.library.util.removeProjectLibrary
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.fromPath
+import kotlin.io.path.Path
 
-class DatabaseDriversProjectLibraryConfigurator : ProjectLibraryConfigurator {
+class LicenseProjectLibraryConfigurator : ProjectLibraryConfigurator {
 
     override val name: String
-        get() = JavaConstants.ProjectLibrary.DATABASE_DRIVERS
+        get() = JavaConstants.ProjectLibrary.LICENSE
 
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val dbDriversPath = importContext.externalDbDriversDirectory
-            ?: importContext.platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER)
-
-        val libraryRoot = virtualFileUrlManager.fromPath(dbDriversPath)
-            ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
-
-        if (libraryRoot == null) {
-            thisLogger().info("Project library '${JavaConstants.ProjectLibrary.DATABASE_DRIVERS}' will not be created because database drivers location cannot be identified.")
-            workspaceModel.removeProjectLibrary(JavaConstants.ProjectLibrary.DATABASE_DRIVERS)
-            return
-        }
+        val configModuleDescriptor = importContext.configModuleDescriptor
+        val libraryRoots = configModuleDescriptor.compiledArchives(
+            virtualFileUrlManager, Path(ProjectConstants.Directory.LICENCE)
+        )
 
         workspaceModel.configureProjectLibrary(
             project = importContext.project,
-            libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
-            libraryRoots = listOf(libraryRoot)
+            libraryName = JavaConstants.ProjectLibrary.LICENSE,
+            libraryRoots = libraryRoots
         )
     }
 }

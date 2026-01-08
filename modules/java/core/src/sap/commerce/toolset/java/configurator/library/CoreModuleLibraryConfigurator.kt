@@ -29,7 +29,7 @@ import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 class CoreModuleLibraryConfigurator : ModuleLibraryConfigurator<YCoreExtModuleDescriptor> {
 
     override val name: String
-        get() = JavaConstants.ProjectLibrary.BACKOFFICE
+        get() = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP
 
     override fun isApplicable(
         importContext: ProjectImportContext,

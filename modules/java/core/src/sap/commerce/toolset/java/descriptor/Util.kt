@@ -16,25 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java
+package sap.commerce.toolset.java.descriptor
 
-object JavaConstants {
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 
-    object ModuleLibrary {
-        const val BACKOFFICE = "backoffice library"
-        const val BACKOFFICE_TEST = "backoffice library (test)"
-        const val ADDON = "addon library"
-        const val ADDON_TEST = "addon library (test)"
-        const val COMPILE = "library"
-        const val TEST = "library (test)"
-    }
+internal val ModuleDescriptor.isCustomModuleDescriptor
+    get() = this is YCustomRegularModuleDescriptor
+        || (this is YSubModuleDescriptor && this.owner is YCustomRegularModuleDescriptor)
 
-    object ProjectLibrary {
-        const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
-        const val BACKOFFICE = "Backoffice Library"
-        const val HAC = "HAC Library"
-        const val HMC = "HMC Library"
-        const val DATABASE_DRIVERS = "Database Drivers"
-        const val LICENSE = "License"
-    }
-}
+internal val ModuleDescriptor.isNonCustomModuleDescriptor
+    get() = !this.isCustomModuleDescriptor

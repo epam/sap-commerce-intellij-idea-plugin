@@ -34,6 +34,7 @@
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.HacProjectLibraryConfigurator"/>
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.HmcProjectLibraryConfigurator"/>
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.DatabaseDriversProjectLibraryConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.LicenseProjectLibraryConfigurator"/>
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
@@ -64,18 +65,18 @@
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.TestSourcesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.WebInjectedSourcesContentEntryConfigurator"/>
 
+        <project.module.libraryConfigurator order="first" id="ootbModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.java.configurator.library.CompileModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator order="after ootbModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.java.configurator.library.TestModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.CoreModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ConfigLicenseModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ConfigModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HmcSubModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HacSubModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.AcceleratorAddonSubModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HmcModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HacModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.AddonModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeSubModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.RegularModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.CommonWebSubModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeWebSubModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.WebSubModuleLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
