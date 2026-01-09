@@ -78,7 +78,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
 
         context.list
             .filter { it.importStatus == ModuleDescriptorImportStatus.MANDATORY }
-            .forEach { fileChooser.disableElement(it) }
+            .forEach { if (!isInConflict(it)) fileChooser.disableElement(it) }
 
         //scroll to top
         fileChooser.component
