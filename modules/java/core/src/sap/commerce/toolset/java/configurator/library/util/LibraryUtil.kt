@@ -23,6 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 internal suspend fun WorkspaceModel.removeProjectLibrary(
     libraryName: String
@@ -55,26 +56,23 @@ internal suspend fun WorkspaceModel.configureProjectLibrary(
     }
 }
 
-internal suspend fun ModuleEntity.linkProjectLibrary(
-    workspaceModel: WorkspaceModel,
+internal fun ModuleEntity.linkProjectLibrary(
+    importContext: ProjectImportContext,
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
-) = workspaceModel.update("Add project library $libraryName to module ${this.name}") { storage ->
-    storage.projectLibraries.find { it.name == libraryName }
-        ?: return@update
+) {
     val libraryId = LibraryId(
         name = libraryName,
         tableId = LibraryTableId.ProjectLibraryTableId,
     )
+    val libraryDependency = LibraryDependency(libraryId, exported, scope)
 
-    storage.modifyModuleEntity(this@linkProjectLibrary) {
-        this.dependencies += LibraryDependency(libraryId, exported, scope)
-    }
+    importContext.mutableStorage.add(this, libraryDependency)
 }
 
-internal suspend fun ModuleEntity.configureLibrary(
-    workspaceModel: WorkspaceModel,
+internal fun ModuleEntity.configureLibrary(
+    importContext: ProjectImportContext,
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
@@ -85,28 +83,17 @@ internal suspend fun ModuleEntity.configureLibrary(
         return
     }
 
-    workspaceModel.update("Add library $libraryName to module ${this.name}") { storage ->
-        val moduleId = ModuleId(this.name)
-        val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)
-        val libraryId = LibraryId(libraryName, libraryTableId)
-        val libraryEntity = this@configureLibrary.getModuleLibraries(storage)
-            .find { it.name == libraryName }
-            ?: storage.addEntity(
-                LibraryEntity(
-                    name = libraryName,
-                    tableId = libraryTableId,
-                    roots = emptyList(),
-                    entitySource = this.entitySource,
-                )
-            )
+    val moduleId = ModuleId(this.name)
+    val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)
+    val libraryId = LibraryId(libraryName, libraryTableId)
+    val libraryEntity = LibraryEntity(
+        name = libraryName,
+        tableId = libraryTableId,
+        roots = libraryRoots.toList(),
+        entitySource = this.entitySource,
+    )
+    val libraryDependency = LibraryDependency(libraryId, exported, scope)
 
-        storage.modifyLibraryEntity(libraryEntity) {
-            this.roots.clear()
-            this.roots.addAll(libraryRoots)
-        }
-
-        storage.modifyModuleEntity(this@configureLibrary) {
-            this.dependencies += LibraryDependency(libraryId, exported, scope)
-        }
-    }
+    importContext.mutableStorage.add(this, libraryEntity)
+    importContext.mutableStorage.add(this, libraryDependency)
 }

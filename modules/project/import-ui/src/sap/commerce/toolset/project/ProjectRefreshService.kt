@@ -29,6 +29,9 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.ide.progress.ModalTaskOwner
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.projectImport.ProjectImportProvider
 import com.intellij.util.asSafely
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
@@ -54,7 +57,14 @@ class ProjectRefreshService(private val project: Project) {
         val provider = getHybrisProjectImportProvider() ?: return
         val compilerProjectExtension = CompilerProjectExtension.getInstance(project) ?: return
 
-        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(refreshContext) }
+        runWithModalProgressBlocking(
+            owner = ModalTaskOwner.guess(),
+            title = "Before Refresh Configurators",
+        ) {
+            val workspaceModel = WorkspaceModel.getInstance(project)
+
+            ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(refreshContext, workspaceModel) }
+        }
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {
             override fun init() = Unit

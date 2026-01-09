@@ -17,15 +17,18 @@
  */
 package sap.commerce.toolset.spring.configurator
 
-import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.FacetEntity
+import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
+import com.intellij.spring.facet.SpringFacetType
+import com.intellij.util.io.URLUtil
 import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
@@ -37,6 +40,7 @@ import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.facet.configurationXmlTag
 import java.io.File
 
 class SpringFacetConfigurator : ModuleImportConfigurator {
@@ -53,57 +57,66 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
         moduleEntity: ModuleEntity
     ) {
         if (Plugin.SPRING.isDisabled()) return
-        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
+        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
 
         when (moduleDescriptor) {
             is YBackofficeSubModuleDescriptor -> return
-            is PlatformModuleDescriptor -> configure(workspaceModel, modifiableModelsProvider, moduleDescriptor, moduleEntity, emptySet())
-            is YModuleDescriptor -> configure(workspaceModel, modifiableModelsProvider, moduleDescriptor, moduleEntity, moduleDescriptor.getSpringFiles())
+            is PlatformModuleDescriptor -> configure(importContext, moduleDescriptor, moduleEntity, javaModule, emptySet())
+            is YModuleDescriptor -> configure(importContext, moduleDescriptor, moduleEntity, javaModule, moduleDescriptor.getSpringFiles())
         }
     }
 
-    private suspend fun configure(
-        workspaceModel: WorkspaceModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
+    private fun configure(
+        importContext: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor,
         moduleEntity: ModuleEntity,
+        javaModule: Module,
         additionalFileSet: Set<String>
     ) {
-        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
-        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule)
+        val facetType = SpringFacet.getSpringFacetType()
+            .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
+            ?: return
+        val facet = facetType.createFacet(
+            javaModule,
+            facetType.defaultFacetName,
+            facetType.createDefaultConfiguration(), null
+        )
 
-        backgroundWriteAction {
-            val springFacet = SpringFacet.getInstance(javaModule)
-                ?.also { it.removeFileSets() }
-                ?: SpringFacet.getSpringFacetType()
-                    .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
-                    ?.let { it.createFacet(javaModule, it.defaultFacetName, it.createDefaultConfiguration(), null) }
-                ?: return@backgroundWriteAction
+        val facetName = moduleDescriptor.name + " - " + SpringFacet.FACET_TYPE_ID
+        // dirty hack to trick IDEA autodetection of the web Spring context, see https://youtrack.jetbrains.com/issue/IDEA-257819
+        // and WebXmlSpringWebModelContributor
+        val facetId = if (moduleDescriptor is YWebSubModuleDescriptor) HybrisConstants.SPRING_WEB_FILE_SET_NAME
+        else facetName
 
-            val facetName = moduleDescriptor.name + SpringFacet.FACET_TYPE_ID
-            // dirty hack to trick IDEA autodetection of the web Spring context, see https://youtrack.jetbrains.com/issue/IDEA-257819
-            // and WebXmlSpringWebModelContributor
-            val facetId = if (moduleDescriptor is YWebSubModuleDescriptor) HybrisConstants.SPRING_WEB_FILE_SET_NAME
-            else facetName
+        val springFileSet = facet.addFileSet(facetId, facetName)
+        springFileSet.isAutodetected = true
 
-            val springFileSet = springFacet.addFileSet(facetId, facetName)
-            springFileSet.isAutodetected = true
+        additionalFileSet
+            .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
+            .forEach { springFileSet.addFile(it) }
+        additionalFileSet
+            // jar://
+            .filter { it.startsWith("${URLUtil.JAR_PROTOCOL}${URLUtil.SCHEME_SEPARATOR}") }
+            .forEach { springFileSet.addFile(it) }
 
-            additionalFileSet
-                .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
-                .forEach { springFileSet.addFile(it) }
-            additionalFileSet
-                .filter { it.startsWith("jar://") }
-                .forEach { springFileSet.addFile(it) }
+        facet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED)
+            ?.let {
 
-            val setting = springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED)
-            if (setting != null) {
-                setting.booleanValue = false
-                setting.apply()
+                it.booleanValue = false
+                it.apply()
             }
-            modifiableFacetModel.addFacet(springFacet)
 
-            modifiableModelsProvider.commit()
+        val configurationXmlTag = facet.configurationXmlTag ?: return
+        val facetEntityTypeId = FacetEntityTypeId(SpringFacetType.SPRING_FACET_TYPE__STRING_ID)
+        val facetEntity = FacetEntity(
+            moduleId = ModuleId(moduleEntity.name),
+            name = facetType.presentableName,
+            typeId = facetEntityTypeId,
+            entitySource = moduleEntity.entitySource
+        ) {
+            this.configurationXmlTag = configurationXmlTag
         }
+
+        importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }

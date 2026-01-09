@@ -24,7 +24,6 @@ import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.ModuleContentEntryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
@@ -80,10 +79,6 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
             }
         }
 
-        workspaceModel.update("Adding content root [${moduleDescriptor.name}]") { storage ->
-            storage.modifyModuleEntity(moduleEntity) {
-                this.contentRoots = mutableListOf(contentRootEntity)
-            }
-        }
+        importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }

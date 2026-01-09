@@ -43,9 +43,9 @@ class HmcModuleLibraryConfigurator : ModuleLibraryConfigurator<YHmcSubModuleDesc
         moduleEntity: ModuleEntity
     ) {
         moduleEntity.linkProjectLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = JavaConstants.ProjectLibrary.HMC,
-            exported = false
+            exported = false,
         )
     }
 }

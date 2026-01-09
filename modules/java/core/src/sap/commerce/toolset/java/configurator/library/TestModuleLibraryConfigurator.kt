@@ -65,10 +65,10 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
         }
 
         moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.TEST}",
             scope = DependencyScope.TEST,
-            libraryRoots = libraryRoots
+            libraryRoots = libraryRoots,
         )
     }
 }

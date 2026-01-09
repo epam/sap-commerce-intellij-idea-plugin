@@ -30,7 +30,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 class ConfigModuleLibraryConfigurator : ModuleLibraryConfigurator<ConfigModuleDescriptor> {
 
     override val name: String
-        get() = JavaConstants.ProjectLibrary.LICENSE
+        get() = JavaConstants.ProjectLibrary.PLATFORM_LICENSE
 
     override fun isApplicable(
         importContext: ProjectImportContext,
@@ -44,10 +44,10 @@ class ConfigModuleLibraryConfigurator : ModuleLibraryConfigurator<ConfigModuleDe
         moduleEntity: ModuleEntity
     ) {
         moduleEntity.linkProjectLibrary(
-            workspaceModel = workspaceModel,
-            libraryName = JavaConstants.ProjectLibrary.LICENSE,
+            importContext = importContext,
+            libraryName = JavaConstants.ProjectLibrary.PLATFORM_LICENSE,
+            scope = DependencyScope.RUNTIME,
             exported = false,
-            scope = DependencyScope.RUNTIME
         )
     }
 }

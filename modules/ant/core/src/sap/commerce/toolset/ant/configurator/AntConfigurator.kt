@@ -61,7 +61,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshConfig
     override val name: String
         get() = "Ant"
 
-    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+    override suspend fun beforeRefresh(refreshContext: ProjectRefreshContext, workspaceModel: WorkspaceModel) {
         val project = refreshContext.project
         val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
 

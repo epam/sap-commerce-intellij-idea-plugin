@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.context.ProjectRefreshContext
+package sap.commerce.toolset.project.facet
 
-class ResetCacheProjectRefreshConfigurator : ProjectRefreshConfigurator {
-    override val name: String
-        get() = "Reset Cache"
+import com.intellij.facet.Facet
+import com.intellij.facet.impl.FacetUtil
+import com.intellij.openapi.util.JDOMUtil
+import com.intellij.openapi.util.WriteExternalException
 
-    override suspend fun beforeRefresh(refreshContext: ProjectRefreshContext, workspaceModel: WorkspaceModel) {
-        PropertyService.getInstance(refreshContext.project).resetCache()
+val Facet<*>.configurationXmlTag
+    get() = try {
+        FacetUtil.saveFacetConfiguration(this.getConfiguration())
+    } catch (_: WriteExternalException) {
+        null
     }
-}
+        ?.let { JDOMUtil.write(it) }

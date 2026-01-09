@@ -18,13 +18,14 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.roots.LibraryOrderEntry
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import com.intellij.openapi.application.backgroundWriteAction
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.LibraryEntity
+import com.intellij.platform.workspace.jps.entities.LibraryTableId
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 
 class CleanupProjectRefreshConfigurator : ProjectRefreshConfigurator {
@@ -32,34 +33,28 @@ class CleanupProjectRefreshConfigurator : ProjectRefreshConfigurator {
     override val name: String
         get() = "Cleanup"
 
-    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+    override suspend fun beforeRefresh(refreshContext: ProjectRefreshContext, workspaceModel: WorkspaceModel) {
         if (!refreshContext.removeOldProjectData && !refreshContext.removeExternalModules) return
-        val project = refreshContext.project
 
-        val moduleModel = ModuleManager.getInstance(project).getModifiableModel()
-        val libraryModel = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
+        backgroundWriteAction {
+            workspaceModel.updateProjectModel("Cleanup current project") { storage ->
+                storage.entities(LibraryEntity::class.java)
+                    .filter { it.tableId == LibraryTableId.ProjectLibraryTableId }
+                    .forEach { storage.removeEntity(it) }
 
-        moduleModel.modules
-            .filter {
-                if (YFacet.get(it) != null) refreshContext.removeOldProjectData
-                else refreshContext.removeExternalModules
+                storage.entities(ModuleEntity::class.java)
+                    .filter { moduleEntity ->
+                        moduleEntity.findModule(storage)
+                            ?.let { YFacet.getState(it) }
+                            ?.let {
+                                it.type != ModuleDescriptorType.ECLIPSE
+                                    && it.type != ModuleDescriptorType.MAVEN
+                                    && it.type != ModuleDescriptorType.GRADLE
+                            }
+                            ?: refreshContext.removeExternalModules
+                    }
+                    .forEach { storage.removeEntity(it) }
             }
-            .forEach { module ->
-                val moduleLibraries = ModuleRootManager.getInstance(module)
-                    .orderEntries
-                    .filterIsInstance<LibraryOrderEntry>()
-                    .mapNotNull { it.library }
-
-                val moduleLibrariesNames = moduleLibraries.map { it.presentableName }
-                thisLogger().debug("Disposing module '${module.name}' and linked libraries: $moduleLibrariesNames")
-
-                moduleLibraries.forEach { libraryModel.removeLibrary(it) }
-                moduleModel.disposeModule(module)
-            }
-
-        ApplicationManager.getApplication().runWriteAction {
-            moduleModel.commit()
-            libraryModel.commit()
         }
     }
 }

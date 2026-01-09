@@ -43,7 +43,7 @@ class BackofficeModuleLibraryConfigurator : ModuleLibraryConfigurator<YBackoffic
         moduleEntity: ModuleEntity
     ) {
         moduleEntity.linkProjectLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = JavaConstants.ProjectLibrary.BACKOFFICE,
         )
     }

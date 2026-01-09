@@ -29,7 +29,7 @@ import kotlin.io.path.Path
 class LicenseProjectLibraryConfigurator : ProjectLibraryConfigurator {
 
     override val name: String
-        get() = JavaConstants.ProjectLibrary.LICENSE
+        get() = JavaConstants.ProjectLibrary.PLATFORM_LICENSE
 
     override suspend fun configure(
         importContext: ProjectImportContext,
@@ -43,7 +43,7 @@ class LicenseProjectLibraryConfigurator : ProjectLibraryConfigurator {
 
         workspaceModel.configureProjectLibrary(
             project = importContext.project,
-            libraryName = JavaConstants.ProjectLibrary.LICENSE,
+            libraryName = JavaConstants.ProjectLibrary.PLATFORM_LICENSE,
             libraryRoots = libraryRoots
         )
     }

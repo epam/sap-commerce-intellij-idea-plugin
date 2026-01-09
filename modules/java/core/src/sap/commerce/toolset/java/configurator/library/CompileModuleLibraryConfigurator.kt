@@ -92,9 +92,9 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
         }
 
         moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.COMPILE}",
-            libraryRoots = libraryRoots
+            libraryRoots = libraryRoots,
         )
     }
 

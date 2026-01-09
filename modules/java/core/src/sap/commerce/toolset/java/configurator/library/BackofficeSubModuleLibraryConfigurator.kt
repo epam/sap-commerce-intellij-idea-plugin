@@ -52,7 +52,7 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
             ?: return
         val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
 
-        configureLibrary(workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE) {
+        configureLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE) {
             buildList {
                 addAll(backofficeSubModuleDescriptor.classes(it))
                 addAll(backofficeSubModuleDescriptor.resources(it))
@@ -61,7 +61,7 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
             }
         }
 
-        configureLibrary(workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE_TEST) {
+        configureLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE_TEST) {
             buildList {
                 addAll(backofficeSubModuleDescriptor.classes(it))
                 addAll(backofficeSubModuleDescriptor.testClasses(it))
@@ -72,17 +72,18 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
         }
     }
 
-    private suspend fun configureLibrary(
+    private fun configureLibrary(
+        importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YRegularModuleDescriptor,
         moduleEntity: ModuleEntity,
         libraryNameSuffix: String,
         libraryRootsProvider: (VirtualFileUrlManager) -> Collection<LibraryRoot>
     ) = moduleEntity.configureLibrary(
-        workspaceModel = workspaceModel,
+        importContext = importContext,
         libraryName = "${moduleDescriptor.name} - $libraryNameSuffix",
         scope = DependencyScope.PROVIDED,
         exported = false,
-        libraryRoots = libraryRootsProvider(workspaceModel.getVirtualFileUrlManager())
+        libraryRoots = libraryRootsProvider(workspaceModel.getVirtualFileUrlManager()),
     )
 }

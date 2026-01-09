@@ -67,7 +67,7 @@ class GradleConfigurator : ProjectPostImportAsyncConfigurator, ProjectRefreshCon
         }
     }
 
-    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+    override suspend fun beforeRefresh(refreshContext: ProjectRefreshContext, workspaceModel: WorkspaceModel) {
         if (!refreshContext.removeExternalModules) return
 
         val project = refreshContext.project

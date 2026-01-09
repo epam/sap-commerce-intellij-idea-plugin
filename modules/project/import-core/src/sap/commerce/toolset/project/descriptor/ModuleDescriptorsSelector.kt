@@ -61,7 +61,7 @@ class ModuleDescriptorsSelector {
     }
 
     fun getSelectableHybrisModules(importContext: ProjectImportContext.Mutable, settings: ProjectSettings): List<ModuleDescriptor> {
-        val moduleToImport = mutableListOf<ModuleDescriptor>()
+        val moduleToImport = mutableSetOf<ModuleDescriptor>()
         val moduleToCheck = mutableSetOf<ModuleDescriptor>()
 
         importContext.foundModules
@@ -88,7 +88,7 @@ class ModuleDescriptorsSelector {
     }
 
     private fun resolveDependencies(
-        moduleToImport: MutableList<ModuleDescriptor>,
+        moduleToImport: MutableSet<ModuleDescriptor>,
         moduleToCheck: MutableSet<ModuleDescriptor>,
         selectionMode: ModuleDescriptorImportStatus
     ) {

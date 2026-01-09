@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.project.configurator
 
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.settings.ySettings
 
@@ -25,7 +26,7 @@ class ProjectSettingsRefreshConfigurator : ProjectRefreshConfigurator {
     override val name: String
         get() = "Project Settings"
 
-    override fun beforeRefresh(refreshContext: ProjectRefreshContext) {
+    override suspend fun beforeRefresh(refreshContext: ProjectRefreshContext, workspaceModel: WorkspaceModel) {
         refreshContext.project.ySettings.apply {
             removeOldProjectData = refreshContext.removeOldProjectData
             removeExternalModulesOnRefresh = refreshContext.removeExternalModules

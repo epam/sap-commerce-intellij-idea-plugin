@@ -21,7 +21,6 @@ package sap.commerce.toolset.java.configurator
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.InheritedSdkDependency
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -40,10 +39,6 @@ class JavaModuleSdkConfigurator : ModuleImportConfigurator {
         moduleDescriptor: ModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        workspaceModel.update("Update SDK for ${moduleDescriptor.name}") {
-            it.modifyModuleEntity(moduleEntity) {
-                this.dependencies += InheritedSdkDependency
-            }
-        }
+        importContext.mutableStorage.add(moduleEntity, InheritedSdkDependency)
     }
 }

@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil.SHOW_TEXT_IN_TOOLBAR
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisI18nBundle.message
@@ -60,10 +61,12 @@ class ProjectRefreshAction : DumbAwareAction(
 
         try {
             ProjectRefreshService.getInstance(project).refresh(refreshContext)
-        } catch (ex: Exception) {
+        } catch (e: Exception) {
+            thisLogger().error(e)
+
             Messages.showErrorDialog(
                 project,
-                ex.message,
+                e.message,
                 message("hybris.project.import.error.unable.to.proceed")
             )
         }

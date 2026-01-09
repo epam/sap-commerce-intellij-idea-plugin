@@ -43,7 +43,7 @@ class CoreModuleLibraryConfigurator : ModuleLibraryConfigurator<YCoreExtModuleDe
         moduleEntity: ModuleEntity
     ) {
         moduleEntity.linkProjectLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP,
         )
     }

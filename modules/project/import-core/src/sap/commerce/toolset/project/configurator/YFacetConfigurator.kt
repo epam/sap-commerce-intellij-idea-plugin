@@ -21,7 +21,10 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.jps.entities.FacetEntity
+import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.util.xmlb.XmlSerializer
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -45,23 +48,15 @@ class YFacetConfigurator : ModuleImportConfigurator {
         val xmlTag = XmlSerializer.serialize(moduleDescriptor.extensionDescriptor)
             .let { JDOMUtil.writeElement(it) }
         val facetEntityTypeId = FacetEntityTypeId(YFacetType.FACET_ID)
-        val facetEntity = moduleEntity.facets.find { it.typeId == facetEntityTypeId }
-
-        workspaceModel.update("Adding SAP CX Facet to $name modules") { storage ->
-            val entitySource = moduleEntity.entitySource
-            storage.modifyModuleEntity(moduleEntity) module@{
-                facetEntity?.let { storage.removeEntity(it) }
-
-                storage addEntity FacetEntity(
-                    moduleId = ModuleId(moduleEntity.name),
-                    name = facetType.presentableName,
-                    typeId = facetEntityTypeId,
-                    entitySource = entitySource
-                ) {
-                    this.configurationXmlTag = xmlTag
-                    this.module = this@module
-                }
-            }
+        val facetEntity = FacetEntity(
+            moduleId = ModuleId(moduleEntity.name),
+            name = facetType.presentableName,
+            typeId = facetEntityTypeId,
+            entitySource = moduleEntity.entitySource
+        ) {
+            this.configurationXmlTag = xmlTag
         }
+
+        importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }

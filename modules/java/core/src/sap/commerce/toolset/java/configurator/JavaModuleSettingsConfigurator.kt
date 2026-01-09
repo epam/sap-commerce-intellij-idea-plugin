@@ -18,11 +18,8 @@
 package sap.commerce.toolset.java.configurator
 
 import com.intellij.java.workspace.entities.JavaModuleSettingsEntity
-import com.intellij.java.workspace.entities.javaSettings
-import com.intellij.java.workspace.entities.modifyJavaModuleSettingsEntity
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -56,29 +53,16 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
 
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val outputDirectory = moduleDescriptor.moduleRootPath.resolve(output)
-        val javaSettings = moduleEntity.javaSettings
-
-        workspaceModel.update("Apply Java Settings") {
-            if (javaSettings != null) {
-                it.modifyJavaModuleSettingsEntity(javaSettings) {
-                    this.excludeOutput = true
-                    this.inheritedCompilerOutput = false
-                    this.compilerOutput = virtualFileUrlManager.fromPath(outputDirectory.pathString)
-                    this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
-                }
-            } else {
-                it.modifyModuleEntity(moduleEntity) {
-                    this.javaSettings = JavaModuleSettingsEntity(
-                        inheritedCompilerOutput = false,
-                        excludeOutput = true,
-                        entitySource = moduleEntity.entitySource
-                    ) {
-                        this.excludeOutput = true
-                        this.compilerOutput = virtualFileUrlManager.fromPath(outputDirectory.pathString)
-                        this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
-                    }
-                }
-            }
+        val javaSettingsEntity = JavaModuleSettingsEntity(
+            inheritedCompilerOutput = false,
+            excludeOutput = true,
+            entitySource = moduleEntity.entitySource
+        ) {
+            this.excludeOutput = true
+            this.compilerOutput = virtualFileUrlManager.fromPath(outputDirectory.pathString)
+            this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
         }
+
+        importContext.mutableStorage.set(moduleEntity, javaSettingsEntity)
     }
 }

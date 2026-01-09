@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.project.context
 
+import com.intellij.java.workspace.entities.JavaModuleSettingsEntityBuilder
 import com.intellij.openapi.project.Project
+import com.intellij.platform.workspace.jps.entities.*
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
@@ -58,12 +60,73 @@ data class ProjectImportContext(
 
     val chosenHybrisModuleDescriptors: Collection<ModuleDescriptor>,
     val chosenOtherModuleDescriptors: Collection<ModuleDescriptor>,
+
+    // Must not be used in PostImportConfigurators as it will be cleared beforehand
+    // represents intermediate state of the storage to be persisted by ProjectImportTask
+    val mutableStorage: MutableWorkspace = MutableWorkspace(),
 ) {
     val allChosenModuleDescriptors
         get() = chosenHybrisModuleDescriptors + chosenOtherModuleDescriptors
 
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
+
+    data class MutableWorkspace(
+        private val _contentRootEntities: MutableMap<ModuleEntity, MutableList<ContentRootEntityBuilder>> = mutableMapOf(),
+        private val _libraryEntities: MutableMap<ModuleEntity, MutableList<LibraryEntityBuilder>> = mutableMapOf(),
+        private val _facetEntities: MutableMap<ModuleEntity, MutableList<FacetEntityBuilder>> = mutableMapOf(),
+        private val _dependencyItems: MutableMap<ModuleEntity, MutableList<ModuleDependencyItem>> = mutableMapOf(),
+        private val _javaSettingsEntities: MutableMap<ModuleEntity, JavaModuleSettingsEntityBuilder> = mutableMapOf(),
+    ) {
+        private var accessAllowed = true
+
+        private fun <T> access(exec: () -> T) = if (accessAllowed) exec()
+        else throw IllegalStateException("Access is not allowed at this point.")
+
+        val contentRootEntities
+            get() = access { _contentRootEntities.mapValues { (_, list) -> list.toList() } }
+        val libraryEntities
+            get() = access { _libraryEntities.mapValues { (_, list) -> list.toList() } }
+        val facetEntities
+            get() = access { _facetEntities.mapValues { (_, list) -> list.toList() } }
+        val dependencyItems
+            get() = access { _dependencyItems.mapValues { (_, list) -> list.toList() } }
+
+        @Deprecated("it must be visible only to Java module, approach to persist non-standard entities has to be identified")
+        val javaSettingsEntities
+            get() = access { _javaSettingsEntities.toList() }
+
+        fun add(moduleEntity: ModuleEntity, entity: ContentRootEntityBuilder) = access {
+            _contentRootEntities.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
+        }
+
+        fun add(moduleEntity: ModuleEntity, entity: LibraryEntityBuilder) = access {
+            _libraryEntities.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
+        }
+
+        fun add(moduleEntity: ModuleEntity, entity: ModuleDependencyItem) = access {
+            _dependencyItems.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
+        }
+
+        fun add(moduleEntity: ModuleEntity, entity: FacetEntityBuilder) = access {
+            _facetEntities.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
+        }
+
+        fun set(moduleEntity: ModuleEntity, entity: JavaModuleSettingsEntityBuilder) = access {
+            _javaSettingsEntities[moduleEntity] = entity
+        }
+
+        fun clear() = access {
+            // Any access to the class must not take place after cleanup
+            accessAllowed = false
+
+            _contentRootEntities.clear()
+            _libraryEntities.clear()
+            _facetEntities.clear()
+            _javaSettingsEntities.clear()
+            _dependencyItems.clear()
+        }
+    }
 
     data class Mutable(
         val rootDirectory: Path,

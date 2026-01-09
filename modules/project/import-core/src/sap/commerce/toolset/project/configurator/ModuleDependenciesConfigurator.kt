@@ -19,10 +19,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleDependency
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.ModuleId
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
+import com.intellij.platform.workspace.jps.entities.*
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
@@ -44,33 +41,45 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
             .filterIsInstance<YPlatformExtModuleDescriptor>()
             .toSet()
 
-        importContext.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
-            allModules[moduleDescriptor.ideaModuleName()]
-                ?.let { moduleEntity ->
-                    moduleDescriptor.getDirectDependencies()
-                        .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
-                        .forEach { addModuleDependency(workspaceModel, moduleEntity, it) }
-                }
+
+        val moduleDependencies = buildMap {
+            importContext.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
+                allModules[moduleDescriptor.ideaModuleName()]
+                    ?.let { moduleEntity ->
+                        moduleDescriptor.getDirectDependencies()
+                            .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
+                            .forEach { addDependency(moduleEntity, it) }
+                    }
+            }
+
+            allModules[importContext.platformModuleDescriptor.ideaModuleName()]
+                ?.let { addDependency(it, importContext.configModuleDescriptor) }
         }
 
-        allModules[importContext.platformModuleDescriptor.ideaModuleName()]
-            ?.let { addModuleDependency(workspaceModel, it, importContext.configModuleDescriptor) }
-    }
-
-    private suspend fun addModuleDependency(
-        workspaceModel: WorkspaceModel,
-        moduleEntity: ModuleEntity,
-        dependencyModuleDescriptor: ModuleDescriptor,
-    ) {
-        workspaceModel.update("Update module dependency '${moduleEntity.name}'") {
-            it.modifyModuleEntity(moduleEntity) {
-                this.dependencies += ModuleDependency(
-                    module = ModuleId(dependencyModuleDescriptor.ideaModuleName()),
-                    exported = true,
-                    scope = com.intellij.platform.workspace.jps.entities.DependencyScope.COMPILE,
-                    productionOnTest = false
-                )
+        workspaceModel.update("Update module dependencies") { storage ->
+            moduleDependencies.forEach { (moduleEntity, dependencies) ->
+                storage.modifyModuleEntity(moduleEntity) {
+                    this.dependencies += dependencies
+                }
             }
         }
+    }
+
+    private fun MutableMap<ModuleEntity, MutableList<ModuleDependency>>.addDependency(
+        moduleEntity: ModuleEntity,
+        descriptor: ModuleDescriptor
+    ) {
+        getOrPut(moduleEntity) { mutableListOf() }
+            .add(moduleDependency(descriptor))
+    }
+
+    private fun moduleDependency(moduleDescriptor: ModuleDescriptor): ModuleDependency {
+        val moduleDependency = ModuleDependency(
+            module = ModuleId(moduleDescriptor.ideaModuleName()),
+            exported = true,
+            scope = DependencyScope.COMPILE,
+            productionOnTest = false
+        )
+        return moduleDependency
     }
 }

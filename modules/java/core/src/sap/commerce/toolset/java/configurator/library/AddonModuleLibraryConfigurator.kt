@@ -77,7 +77,7 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         }
 
         moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.ADDON}",
             exported = false,
             libraryRoots = libraryRoots,
@@ -114,10 +114,10 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         }
 
         moduleEntity.configureLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.ADDON_TEST}",
             exported = false,
-            libraryRoots = libraryRoots,
+            libraryRoots = libraryRoots
         )
     }
 }

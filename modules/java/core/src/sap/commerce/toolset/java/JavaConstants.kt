@@ -21,20 +21,20 @@ package sap.commerce.toolset.java
 object JavaConstants {
 
     object ModuleLibrary {
+        const val COMPILE = "library"
+        const val TEST = "library (test)"
         const val BACKOFFICE = "backoffice library"
         const val BACKOFFICE_TEST = "backoffice library (test)"
         const val ADDON = "addon library"
         const val ADDON_TEST = "addon library (test)"
-        const val COMPILE = "library"
-        const val TEST = "library (test)"
     }
 
     object ProjectLibrary {
         const val PLATFORM_BOOTSTRAP = "Platform Bootstrap"
+        const val PLATFORM_LICENSE = "Platform License"
         const val BACKOFFICE = "Backoffice Library"
         const val HAC = "HAC Library"
         const val HMC = "HMC Library"
         const val DATABASE_DRIVERS = "Database Drivers"
-        const val LICENSE = "License"
     }
 }

@@ -30,6 +30,8 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.isDirectory
 
+val isSandbox = System.getProperty("sap.commerce.toolset.mode") == "sandbox"
+
 val PsiElement.isHybrisProject: Boolean
     get() = project.isHybrisProject
 

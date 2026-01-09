@@ -86,5 +86,5 @@ class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
     }
         .filter { it.directoryExists }
         .map { virtualFileUrlManager.fromPath(it.pathString) }
-        .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY) }
+        .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
 }

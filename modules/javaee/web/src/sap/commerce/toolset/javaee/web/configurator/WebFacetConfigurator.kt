@@ -17,17 +17,21 @@
  */
 package sap.commerce.toolset.javaee.web.configurator
 
-import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
-import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
+import com.intellij.javaee.web.facet.WebFacetType
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.FacetEntity
+import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.util.descriptors.ConfigFileInfo
 import com.intellij.workspaceModel.ide.legacyBridge.findModule
+import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_SOURCE_ROOT_ENTITY_TYPE_ID
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -35,6 +39,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.facet.configurationXmlTag
 import sap.commerce.toolset.util.toSystemIndependentName
 
 class WebFacetConfigurator : ModuleImportConfigurator {
@@ -50,10 +55,7 @@ class WebFacetConfigurator : ModuleImportConfigurator {
         moduleDescriptor: ModuleDescriptor,
         moduleEntity: ModuleEntity
     ) {
-        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
         val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule)
-        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule)
         val webRoot = when (moduleDescriptor) {
             is YWebSubModuleDescriptor -> moduleDescriptor.webRoot
             is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot
@@ -61,25 +63,78 @@ class WebFacetConfigurator : ModuleImportConfigurator {
             else -> return
         }
 
-        backgroundWriteAction {
-            val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
-                ?.also {
-                    it.removeAllWebRoots()
-                    it.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
+        val facetType = FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
+            .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
+            ?: return
+        val facet = facetType.createFacet(
+            javaModule,
+            facetType.defaultFacetName,
+            facetType.createDefaultConfiguration(), null
+        )
+
+        val sourceRoots = importContext.mutableStorage.contentRootEntities[moduleEntity]
+            ?.flatMap { it.sourceRoots }
+            ?.filter { it.rootTypeId == JAVA_SOURCE_ROOT_ENTITY_TYPE_ID }
+            ?.map { it.url.url }
+            ?: listOf()
+
+        facet.addWebRootNoFire(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
+        facet.webConfiguration.sourceRoots = sourceRoots
+
+        VfsUtil.findFile(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
+            ?.let { ConfigFileInfo(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
+            ?.let {
+                edtWriteAction {
+                    facet.descriptorsContainer.configuration.addConfigFile(it)
                 }
-                ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
-                    .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
-                    ?.let { FacetManager.getInstance(javaModule).createFacet(it, it.defaultFacetName, null) }
-                    ?.also { modifiableFacetModel.addFacet(it) }
-                ?: return@backgroundWriteAction
+            }
 
-            webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
-            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
-
-            VfsUtil.findFile(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
-                ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
-
-            modifiableModelsProvider.commit()
+        val configurationXmlTag = facet.configurationXmlTag ?: return
+        val facetEntityTypeId = FacetEntityTypeId(WebFacetType.getInstance().stringId)
+        val facetEntity = FacetEntity(
+            moduleId = ModuleId(moduleEntity.name),
+            name = facetType.presentableName,
+            typeId = facetEntityTypeId,
+            entitySource = moduleEntity.entitySource
+        ) {
+            this.configurationXmlTag = configurationXmlTag
         }
+
+        importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
+
+    /*
+    Workspace Model Version - internal API :(
+    val sourceRoots = importContext.mutableStorage.contentRootEntities[moduleEntity]
+            ?.flatMap { it.sourceRoots }
+            ?.filter { it.rootTypeId == JAVA_SOURCE_ROOT_ENTITY_TYPE_ID }
+            ?.map { it.url.url }
+            ?: emptyList()
+
+        val webRoots = listOf(
+            WebRootData(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
+        )
+
+        val configFileItems = listOfNotNull(
+            VfsUtil.findFile(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
+                ?.let { ConfigFileItem(DeploymentDescriptorsConstants.WEB_XML_META_DATA.id, it.url) }
+
+        )
+
+        val webSettingsEntity = WebSettingsEntity(
+            moduleId = ModuleId(moduleEntity.name),
+            name = WebFacetType.getInstance().defaultFacetName,
+            webRoots = webRoots,
+            configFileItems = configFileItems,
+            sourceRoots = sourceRoots,
+            entitySource = moduleEntity.entitySource,
+        )
+
+        workspaceModel.update("Add web facet for ${moduleEntity.name}") { storage ->
+            storage.modifyModuleEntity(moduleEntity) {
+                this.webSettings += webSettingsEntity
+            }
+        }
+
+     */
 }

@@ -22,9 +22,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
-import com.intellij.platform.workspace.jps.entities.LibraryDependency
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
@@ -49,13 +47,6 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
     ) {
         val configurators = ModuleLibraryConfigurator.EP.extensionList
             .filter { configurator -> configurator.isApplicable(importContext, moduleDescriptor) }
-
-        // TODO: review this, respect flag ProjectRefreshContext.removeOldProjectData
-        workspaceModel.update("Remove existing libraries for module ${moduleEntity.name}") { storage ->
-            storage.modifyModuleEntity(moduleEntity) {
-                this.dependencies.removeIf { it is LibraryDependency }
-            }
-        }
 
         reportProgressScope(configurators.size) { reporter ->
             configurators.forEach { configurator ->

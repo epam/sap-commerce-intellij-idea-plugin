@@ -49,7 +49,7 @@ class HacModuleLibraryConfigurator : ModuleLibraryConfigurator<YHacSubModuleDesc
         moduleEntity: ModuleEntity
     ) {
         moduleEntity.linkProjectLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = JavaConstants.ProjectLibrary.HAC,
             exported = false,
         )

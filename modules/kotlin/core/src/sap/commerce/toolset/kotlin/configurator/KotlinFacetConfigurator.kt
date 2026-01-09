@@ -17,13 +17,14 @@
  */
 package sap.commerce.toolset.kotlin.configurator
 
-import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
-import com.intellij.openapi.module.Module
+import com.intellij.facet.FacetTypeRegistry
+import com.intellij.openapi.util.JDOMUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.FacetEntity
+import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.workspaceModel.ide.legacyBridge.findModule
-import org.jetbrains.kotlin.idea.facet.KotlinFacet
+import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.util.xmlb.XmlSerializer
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
@@ -52,35 +53,25 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
             .firstOrNull { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
-        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
         val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
-        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
-        val modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule)
 
-        backgroundWriteAction {
-            // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
-            modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
-                ?.takeUnless { hasKotlinDirectories }
-                ?.let { modifiableFacetModel.removeFacet(it) }
+        if (!hasKotlinDirectories) return
 
-            if (!hasKotlinDirectories) return@backgroundWriteAction
+        val facetType = FacetTypeRegistry.getInstance().findFacetType(KotlinFacetType.TYPE_ID)
+        val xmlTag = XmlSerializer.serialize(KotlinFacetType.INSTANCE.createDefaultConfiguration())
+            .let { JDOMUtil.writeElement(it) }
+        val facetEntityTypeId = FacetEntityTypeId(KotlinFacetType.ID)
 
-            val facet = KotlinFacet.get(javaModule)
-                ?: createFacet(javaModule)
-
-            modifiableFacetModel.addFacet(facet)
-
-            modifiableModelsProvider.commit()
+        val facetEntity = FacetEntity(
+            moduleId = ModuleId(moduleEntity.name),
+            name = facetType.presentableName,
+            typeId = facetEntityTypeId,
+            entitySource = moduleEntity.entitySource
+        ) {
+            this.configurationXmlTag = xmlTag
         }
-    }
 
-    private fun createFacet(module: Module) = with(KotlinFacetType.INSTANCE) {
-        createFacet(
-            module,
-            defaultFacetName,
-            createDefaultConfiguration(),
-            null
-        )
+        importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 
     private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists

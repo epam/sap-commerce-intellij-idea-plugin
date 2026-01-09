@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project
 
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -35,11 +34,8 @@ import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.tasks.ImportProjectTask
-import sap.commerce.toolset.project.vfs.VirtualFileSystemService
+import sap.commerce.toolset.project.tasks.ProjectImportTask
 import sap.commerce.toolset.util.directoryExists
-import sap.commerce.toolset.util.fileExists
-import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
@@ -79,13 +75,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
             ?.immutable(project)
             ?: return emptyList()
 
-        val chosenModuleDescriptors = context.allChosenModuleDescriptors
-            .takeIf { it.isNotEmpty() }
-            ?: return emptyList()
-
-        performProjectsCleanup(context, chosenModuleDescriptors)
-
-        ImportProjectTask.getInstance(project).execute(context)
+        ProjectImportTask.getInstance(project).execute(context)
 
         if (context.refresh) {
             PostImportBulkConfigurator.getInstance(project).configure(context)
@@ -119,21 +109,6 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         project = getCurrentProject(),
     ).also {
         importContext = it
-    }
-
-    // TODO: review it
-    protected fun performProjectsCleanup(importContext: ProjectImportContext, chosenModuleDescriptors: Iterable<ModuleDescriptor>) {
-        val alreadyExistingModuleFiles = importContext.modulesFilesDirectory
-            ?.let { getAllImlFiles(it) }
-            ?: chosenModuleDescriptors
-                .map { it.ideaModuleFile(importContext) }
-                .filter { it.fileExists }
-
-        try {
-            VirtualFileSystemService.getInstance().removeAllFiles(alreadyExistingModuleFiles)
-        } catch (e: IOException) {
-            thisLogger().error("Can not remove old module files.", e)
-        }
     }
 
     private fun notifyImportNotFinishedYet(project: Project) = Notifications.create(

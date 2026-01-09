@@ -43,7 +43,7 @@ class PlatformModuleLibraryConfigurator : ModuleLibraryConfigurator<PlatformModu
         moduleEntity: ModuleEntity
     ) {
         moduleEntity.linkProjectLibrary(
-            workspaceModel = workspaceModel,
+            importContext = importContext,
             libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
         )
     }

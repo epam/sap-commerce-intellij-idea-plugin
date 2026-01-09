@@ -31,6 +31,7 @@ import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.isSandbox
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.ui.banner
 import java.awt.Dimension
@@ -45,8 +46,15 @@ class ProjectRefreshDialog(
     private var ui = panel {
         group("Cleanup") {
             row {
-                checkBox("Remove old project data")
-                    .comment("Experimental feature! Modules with respective .iml files will not be removed on refresh.")
+                checkBox("Re-create [y] modules")
+                    .comment(
+                        """
+                        Experimental feature! Modules with be removed and recreated from the scratch.<br>
+                        Hopefully, will be released at some point. There is a need to properly support complex modificiations of the modules configurations.<br>
+                        As for now, this feature is not available for production environments.
+                    """.trimIndent()
+                    )
+                    .enabled(isSandbox)
                     .bindSelected(refreshContext.removeOldProjectData)
                 icon(AllIcons.General.Warning)
             }
