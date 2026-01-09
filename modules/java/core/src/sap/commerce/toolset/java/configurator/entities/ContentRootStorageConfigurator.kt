@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.java.configurator.entities
 
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
@@ -29,10 +30,11 @@ class ContentRootStorageConfigurator : ProjectStorageConfigurator {
         get() = "Content Roots"
 
     override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) {
-        importContext.mutableStorage.contentRootEntities.forEach { (moduleEntity, contentRootEntities) ->
-            storage.modifyModuleEntity(moduleEntity) {
-                this.contentRoots = contentRootEntities.toMutableList()
+        importContext.mutableStorage.entities(ContentRootEntityBuilder::class)
+            .forEach { (moduleEntity, contentRootEntities) ->
+                storage.modifyModuleEntity(moduleEntity) {
+                    this.contentRoots = contentRootEntities.toMutableList()
+                }
             }
-        }
     }
 }

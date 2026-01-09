@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.java.configurator.entities
 
+import com.intellij.platform.workspace.jps.entities.FacetEntityBuilder
 import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
@@ -27,16 +28,17 @@ class FacetsStorageConfigurator : ProjectStorageConfigurator {
         get() = "Facets"
 
     override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) {
-        importContext.mutableStorage.facetEntities.forEach { (moduleEntity, facetEntities) ->
-            storage.modifyModuleEntity(moduleEntity) module@{
-                moduleEntity.facets.forEach { storage.removeEntity(it) }
+        importContext.mutableStorage.entities(FacetEntityBuilder::class)
+            .forEach { (moduleEntity, facetEntities) ->
+                storage.modifyModuleEntity(moduleEntity) module@{
+                    moduleEntity.facets.forEach { storage.removeEntity(it) }
 
-                facetEntities.forEach { facetEntity ->
-                    storage addEntity facetEntity.also {
-                        it.module = this@module
+                    facetEntities.forEach { facetEntity ->
+                        storage addEntity facetEntity.also {
+                            it.module = this@module
+                        }
                     }
                 }
             }
-        }
     }
 }

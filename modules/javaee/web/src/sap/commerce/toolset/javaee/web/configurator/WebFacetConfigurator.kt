@@ -25,10 +25,7 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.FacetEntity
-import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.util.descriptors.ConfigFileInfo
 import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_SOURCE_ROOT_ENTITY_TYPE_ID
@@ -76,7 +73,7 @@ class WebFacetConfigurator : ModuleImportConfigurator {
             facetType.createDefaultConfiguration(), null
         )
 
-        val sourceRoots = importContext.mutableStorage.contentRootEntities[moduleEntity]
+        val sourceRoots = importContext.mutableStorage.entities(ContentRootEntityBuilder::class)[moduleEntity]
             ?.flatMap { it.sourceRoots }
             ?.filter { it.rootTypeId == JAVA_SOURCE_ROOT_ENTITY_TYPE_ID }
             ?.map { it.url.url }

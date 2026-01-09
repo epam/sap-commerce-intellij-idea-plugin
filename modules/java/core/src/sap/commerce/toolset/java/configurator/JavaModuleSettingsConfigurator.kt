@@ -63,6 +63,6 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
             this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
         }
 
-        importContext.mutableStorage.set(moduleEntity, javaSettingsEntity)
+        importContext.mutableStorage.add(moduleEntity, javaSettingsEntity)
     }
 }

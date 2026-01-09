@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.java.configurator.entities
 
+import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import com.intellij.platform.workspace.jps.entities.getModuleLibraries
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
@@ -28,9 +29,10 @@ class LibrariesStorageConfigurator : ProjectStorageConfigurator {
         get() = "Libraries"
 
     override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) {
-        importContext.mutableStorage.libraryEntities.forEach { (moduleEntity, libraryEntities) ->
-            moduleEntity.getModuleLibraries(storage).forEach { storage.removeEntity(it) }
-            libraryEntities.forEach { storage.addEntity(it) }
-        }
+        importContext.mutableStorage.entities(LibraryEntityBuilder::class)
+            .forEach { (moduleEntity, libraryEntities) ->
+                moduleEntity.getModuleLibraries(storage).forEach { storage.removeEntity(it) }
+                libraryEntities.forEach { storage.addEntity(it) }
+            }
     }
 }

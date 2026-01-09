@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.java.configurator.entities
 
+import com.intellij.java.workspace.entities.JavaModuleSettingsEntityBuilder
 import com.intellij.java.workspace.entities.javaSettings
 import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
@@ -29,10 +30,13 @@ class JavaSettingsStorageConfigurator : ProjectStorageConfigurator {
         get() = "Java Settings"
 
     override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) {
-        importContext.mutableStorage.javaSettingsEntities.forEach { (moduleEntity, javaSettingsEntity) ->
-            storage.modifyModuleEntity(moduleEntity) module@{
-                this.javaSettings = javaSettingsEntity
+        importContext.mutableStorage.entities(JavaModuleSettingsEntityBuilder::class)
+            .forEach { (moduleEntity, javaSettingsEntities) ->
+                val javaSettingsEntity = javaSettingsEntities.firstOrNull() ?: return@forEach
+
+                storage.modifyModuleEntity(moduleEntity) module@{
+                    this.javaSettings = javaSettingsEntity
+                }
             }
-        }
     }
 }

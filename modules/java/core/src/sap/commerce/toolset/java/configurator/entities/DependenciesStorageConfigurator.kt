@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.java.configurator.entities
 
+import com.intellij.platform.workspace.jps.entities.ModuleDependencyItem
 import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
@@ -28,10 +29,11 @@ class DependenciesStorageConfigurator : ProjectStorageConfigurator {
         get() = "Module Dependencies"
 
     override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) {
-        importContext.mutableStorage.dependencyItems.forEach { (moduleEntity, dependencies) ->
-            storage.modifyModuleEntity(moduleEntity) module@{
-                this.dependencies += dependencies
+        importContext.mutableStorage.entities(ModuleDependencyItem::class)
+            .forEach { (moduleEntity, dependencies) ->
+                storage.modifyModuleEntity(moduleEntity) module@{
+                    this.dependencies += dependencies
+                }
             }
-        }
     }
 }

@@ -18,9 +18,8 @@
 
 package sap.commerce.toolset.project.context
 
-import com.intellij.java.workspace.entities.JavaModuleSettingsEntityBuilder
 import com.intellij.openapi.project.Project
-import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
@@ -28,6 +27,8 @@ import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
+import kotlin.reflect.KClass
+import kotlin.reflect.cast
 
 data class ProjectImportContext(
     val project: Project,
@@ -71,58 +72,35 @@ data class ProjectImportContext(
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
 
+    data class WorkspaceEntityContext(
+        val moduleEntity: ModuleEntity,
+        val entity: Any,
+    )
+
     data class MutableWorkspace(
-        private val _contentRootEntities: MutableMap<ModuleEntity, MutableList<ContentRootEntityBuilder>> = mutableMapOf(),
-        private val _libraryEntities: MutableMap<ModuleEntity, MutableList<LibraryEntityBuilder>> = mutableMapOf(),
-        private val _facetEntities: MutableMap<ModuleEntity, MutableList<FacetEntityBuilder>> = mutableMapOf(),
-        private val _dependencyItems: MutableMap<ModuleEntity, MutableList<ModuleDependencyItem>> = mutableMapOf(),
-        private val _javaSettingsEntities: MutableMap<ModuleEntity, JavaModuleSettingsEntityBuilder> = mutableMapOf(),
+        private val _entities: MutableList<WorkspaceEntityContext> = mutableListOf(),
     ) {
         private var accessAllowed = true
 
         private fun <T> access(exec: () -> T) = if (accessAllowed) exec()
         else throw IllegalStateException("Access is not allowed at this point.")
 
-        val contentRootEntities
-            get() = access { _contentRootEntities.mapValues { (_, list) -> list.toList() } }
-        val libraryEntities
-            get() = access { _libraryEntities.mapValues { (_, list) -> list.toList() } }
-        val facetEntities
-            get() = access { _facetEntities.mapValues { (_, list) -> list.toList() } }
-        val dependencyItems
-            get() = access { _dependencyItems.mapValues { (_, list) -> list.toList() } }
-        val javaSettingsEntities
-            get() = access { _javaSettingsEntities.toList() }
+        fun <T : Any> entities(clazz: KClass<T>): Map<ModuleEntity, Collection<T>> = _entities
+            .filter { clazz.isInstance(it.entity) }
+            .groupBy(
+                keySelector = { it.moduleEntity },
+                valueTransform = { clazz.cast(it.entity) }
+            )
 
-        fun add(moduleEntity: ModuleEntity, entity: ContentRootEntityBuilder) = access {
-            _contentRootEntities.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
-        }
-
-        fun add(moduleEntity: ModuleEntity, entity: LibraryEntityBuilder) = access {
-            _libraryEntities.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
-        }
-
-        fun add(moduleEntity: ModuleEntity, entity: ModuleDependencyItem) = access {
-            _dependencyItems.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
-        }
-
-        fun add(moduleEntity: ModuleEntity, entity: FacetEntityBuilder) = access {
-            _facetEntities.getOrPut(moduleEntity) { mutableListOf() }.add(entity)
-        }
-
-        fun set(moduleEntity: ModuleEntity, entity: JavaModuleSettingsEntityBuilder) = access {
-            _javaSettingsEntities[moduleEntity] = entity
+        fun add(moduleEntity: ModuleEntity, entity: Any) = access {
+            _entities.add(WorkspaceEntityContext(moduleEntity, entity))
         }
 
         fun clear() = access {
             // Any access to the class must not take place after cleanup
             accessAllowed = false
 
-            _contentRootEntities.clear()
-            _libraryEntities.clear()
-            _facetEntities.clear()
-            _javaSettingsEntities.clear()
-            _dependencyItems.clear()
+            _entities.clear()
         }
     }
 
