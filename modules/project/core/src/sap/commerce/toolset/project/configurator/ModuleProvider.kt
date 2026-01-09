@@ -60,7 +60,8 @@ interface ModuleProvider {
 
         lateinit var entity: ModuleEntity
 
-        WorkspaceModel.getInstance(project).update("Add new module: ${moduleDescriptor.name}") { storage ->
+        // TODO: mby, do not create module right away and use Builder all over the Configurators and then... persist it
+        workspaceModel.update("Add new module: ${moduleDescriptor.name}") { storage ->
             entity = storage addEntity ModuleEntity(
                 name = moduleDescriptor.ideaModuleName(),
                 dependencies = emptyList(),

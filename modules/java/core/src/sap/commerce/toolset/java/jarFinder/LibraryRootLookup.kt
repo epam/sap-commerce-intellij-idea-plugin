@@ -19,11 +19,11 @@
 package sap.commerce.toolset.java.jarFinder
 
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import java.io.File
+import java.nio.file.Path
 
 data class LibraryRootLookup(
     val type: LibraryRootType,
-    val targetFile: File,
+    val targetFile: Path,
     var libraryRoot: LibraryRoot? = null,
     var url: String? = null
 )
