@@ -27,7 +27,7 @@ interface ProjectImportConfigurator : Configurator {
     suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel
-    ) = Unit
+    )
 
     companion object {
         val EP = ExtensionPointName.create<ProjectImportConfigurator>("sap.commerce.toolset.project.importConfigurator")

@@ -20,38 +20,39 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.roots.JavaModuleExternalPaths
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.workspaceModel.ide.legacyBridge.findModule
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.facet.YFacet
 
-class JavaModuleJavadocsConfigurator : ModuleImportConfigurator {
+class JavadocsProjectImportConfigurator : ProjectImportConfigurator {
 
     override val name: String
         get() = "Javadocs"
 
-    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
-
     override suspend fun configure(
         importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
+        workspaceModel: WorkspaceModel
     ) {
-        if (moduleDescriptor is YCustomRegularModuleDescriptor || moduleDescriptor is ConfigModuleDescriptor) return
         val javadocUrl = importContext.javadocUrl ?: return
-        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
         val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule)
-        val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
-        javaModuleExternalPaths.javadocUrls = listOf(javadocUrl).toTypedArray()
+        ModuleManager.getInstance(importContext.project).modules
+            .filterNot { module ->
+                YFacet.getState(module)
+                    ?.type
+                    ?.let { it != ModuleDescriptorType.CUSTOM && it == ModuleDescriptorType.CONFIG }
+                    ?: false
+            }
+            .forEach {
+                val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(it)
+                val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
+
+                javaModuleExternalPaths.javadocUrls = listOf(javadocUrl).toTypedArray()
+            }
 
         backgroundWriteAction { modifiableModelsProvider.commit() }
     }

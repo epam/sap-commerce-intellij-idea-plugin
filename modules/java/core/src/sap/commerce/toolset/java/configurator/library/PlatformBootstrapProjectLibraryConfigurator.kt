@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.java.configurator
+
+package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import com.intellij.platform.workspace.jps.entities.LibraryRoot.InclusionOptions
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.containers.addIfNotNull
@@ -86,5 +86,5 @@ class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
     }
         .filter { it.directoryExists }
         .map { virtualFileUrlManager.fromPath(it.pathString) }
-        .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, InclusionOptions.ARCHIVES_UNDER_ROOT) }
+        .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT) }
 }

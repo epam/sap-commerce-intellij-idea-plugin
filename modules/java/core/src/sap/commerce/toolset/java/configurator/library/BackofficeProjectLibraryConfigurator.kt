@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.java.configurator
+
+package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
@@ -49,7 +50,7 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
             return
         }
 
-        val workspaceModel = WorkspaceModel.getInstance(importContext.project)
+        val workspaceModel = WorkspaceModel.Companion.getInstance(importContext.project)
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(backofficeWebDescriptor.webRootClasses(virtualFileUrlManager))
