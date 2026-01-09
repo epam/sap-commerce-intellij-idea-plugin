@@ -1,8 +1,12 @@
 <!-- TOC -->
   * [Technical Notes & How-To(s)](#technical-notes--how-tos)
+    * [Enable specific feature only during development](#enable-specific-feature-only-during-development)
     * [Get project's base directory](#get-projects-base-directory)
     * [Invoke AnAction](#invoke-anaction)
     * [Refresh state of an AnAction in case of background thread](#refresh-state-of-an-anaction-in-case-of-background-thread)
+    * [Forms](#forms)
+      * [Register form validators for DSL DialogPanel created outside the DialogWrapper](#register-form-validators-for-dsl-dialogpanel-created-outside-the-dialogwrapper)
+      * [Example of the scrollable DialogWrapper with validations](#example-of-the-scrollable-dialogwrapper-with-validations)
     * [Resize Kotlin Dsl Dialog on content change](#resize-kotlin-dsl-dialog-on-content-change)
     * [Notifications](#notifications)
 <!-- TOC -->
@@ -10,6 +14,10 @@
 ---
 
 ## Technical Notes & How-To(s)
+
+### Enable specific feature only during development
+
+Rely on `sap.commerce.toolset.isSandbox` flag set via `build.gradle.kts # applyRunIdeSystemSettings`, which is available only on "SandBox" environments.
 
 ### Get project's base directory
 

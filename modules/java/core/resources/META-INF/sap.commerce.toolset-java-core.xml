@@ -77,6 +77,12 @@
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HacModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.AddonModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeSubModuleLibraryConfigurator"/>
+
+        <project.storageConfigurator implementation="sap.commerce.toolset.java.configurator.entities.ContentRootStorageConfigurator"/>
+        <project.storageConfigurator implementation="sap.commerce.toolset.java.configurator.entities.LibrariesStorageConfigurator"/>
+        <project.storageConfigurator implementation="sap.commerce.toolset.java.configurator.entities.FacetsStorageConfigurator"/>
+        <project.storageConfigurator implementation="sap.commerce.toolset.java.configurator.entities.DependenciesStorageConfigurator"/>
+        <project.storageConfigurator implementation="sap.commerce.toolset.java.configurator.entities.JavaSettingsStorageConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

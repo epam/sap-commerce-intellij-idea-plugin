@@ -42,6 +42,10 @@ import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.facet.configurationXmlTag
 import sap.commerce.toolset.util.toSystemIndependentName
 
+/**
+ * No need to migrate to the new Workspace API or use the {@code webSettings} storage builder at the moment.
+ * See <a href="https://platform.jetbrains.com/t/how-to-properly-manage-javasettings-and-websettings-in-workspace-api/3471">How to properly manage javaSettings and webSettings in Workspace API</a>.
+ */
 class WebFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
@@ -102,39 +106,4 @@ class WebFacetConfigurator : ModuleImportConfigurator {
 
         importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
-
-    /*
-    Workspace Model Version - internal API :(
-    val sourceRoots = importContext.mutableStorage.contentRootEntities[moduleEntity]
-            ?.flatMap { it.sourceRoots }
-            ?.filter { it.rootTypeId == JAVA_SOURCE_ROOT_ENTITY_TYPE_ID }
-            ?.map { it.url.url }
-            ?: emptyList()
-
-        val webRoots = listOf(
-            WebRootData(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
-        )
-
-        val configFileItems = listOfNotNull(
-            VfsUtil.findFile(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
-                ?.let { ConfigFileItem(DeploymentDescriptorsConstants.WEB_XML_META_DATA.id, it.url) }
-
-        )
-
-        val webSettingsEntity = WebSettingsEntity(
-            moduleId = ModuleId(moduleEntity.name),
-            name = WebFacetType.getInstance().defaultFacetName,
-            webRoots = webRoots,
-            configFileItems = configFileItems,
-            sourceRoots = sourceRoots,
-            entitySource = moduleEntity.entitySource,
-        )
-
-        workspaceModel.update("Add web facet for ${moduleEntity.name}") { storage ->
-            storage.modifyModuleEntity(moduleEntity) {
-                this.webSettings += webSettingsEntity
-            }
-        }
-
-     */
 }

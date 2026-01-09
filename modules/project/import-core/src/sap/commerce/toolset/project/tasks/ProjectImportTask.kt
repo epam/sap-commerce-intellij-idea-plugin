@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.tasks
 
-import com.intellij.java.workspace.entities.javaSettings
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -30,13 +29,8 @@ import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportSequentialProgress
-import com.intellij.platform.workspace.jps.entities.getModuleLibraries
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.configurator.ModuleProvider
-import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
+import sap.commerce.toolset.project.configurator.*
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.time.measureTime
@@ -128,41 +122,10 @@ class ProjectImportTask(private val project: Project) {
 
     private suspend fun saveWorkspaceModel(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         workspaceModel.update("Saving Workspace Model") { storage ->
-            importContext.mutableStorage.contentRootEntities.forEach { (moduleEntity, contentRootEntities) ->
-                storage.modifyModuleEntity(moduleEntity) {
-                    this.contentRoots = contentRootEntities.toMutableList()
-                }
+            ProjectStorageConfigurator.EP.extensionList.forEach { configurator ->
+                logger.info("Saving workspace using ${configurator.name} configurator...")
+                configurator.configure(importContext, storage)
             }
-
-            importContext.mutableStorage.libraryEntities.forEach { (moduleEntity, libraryEntities) ->
-                moduleEntity.getModuleLibraries(storage).forEach { storage.removeEntity(it) }
-                libraryEntities.forEach { storage.addEntity(it) }
-            }
-
-            importContext.mutableStorage.facetEntities.forEach { (moduleEntity, facetEntities) ->
-                storage.modifyModuleEntity(moduleEntity) module@{
-                    moduleEntity.facets.forEach { storage.removeEntity(it) }
-
-                    facetEntities.forEach { facetEntity ->
-                        storage addEntity facetEntity.also {
-                            it.module = this@module
-                        }
-                    }
-                }
-            }
-
-            importContext.mutableStorage.dependencyItems.forEach { (moduleEntity, dependencies) ->
-                storage.modifyModuleEntity(moduleEntity) module@{
-                    this.dependencies += dependencies
-                }
-            }
-
-            importContext.mutableStorage.javaSettingsEntities.forEach { (moduleEntity, javaSettingsEntity) ->
-                storage.modifyModuleEntity(moduleEntity) module@{
-                    this.javaSettings = javaSettingsEntity
-                }
-            }
-
         }
 
         importContext.mutableStorage.clear()

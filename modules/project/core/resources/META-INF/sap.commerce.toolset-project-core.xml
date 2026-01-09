@@ -39,6 +39,10 @@
         <extensionPoint qualifiedName="sap.commerce.toolset.project.refreshConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator"
                         dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.storageConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectStorageConfigurator"
+                        dynamic="true"/>
+
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.importConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ModuleImportConfigurator"
                         dynamic="true"/>
@@ -66,7 +70,7 @@
         <directoryIndexExcludePolicy implementation="sap.commerce.toolset.project.indexing.HybrisDirectoryIndexExcludePolicy"/>
         <gotoClassContributor implementation="sap.commerce.toolset.project.gotoClass.CustomGotoClassContributor"/>
 
-        <writingAccessProvider implementation="sap.commerce.toolset.project.vfs.HybrisWritingAccessProvider" />
+        <writingAccessProvider implementation="sap.commerce.toolset.project.vfs.HybrisWritingAccessProvider"/>
         <nonProjectFileWritingAccessExtension implementation="sap.commerce.toolset.project.vfs.HybrisNonProjectFileWritingAccessExtension"/>
     </extensions>
 

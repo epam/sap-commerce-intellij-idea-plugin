@@ -91,8 +91,6 @@ data class ProjectImportContext(
             get() = access { _facetEntities.mapValues { (_, list) -> list.toList() } }
         val dependencyItems
             get() = access { _dependencyItems.mapValues { (_, list) -> list.toList() } }
-
-        @Deprecated("it must be visible only to Java module, approach to persist non-standard entities has to be identified")
         val javaSettingsEntities
             get() = access { _javaSettingsEntities.toList() }
 
