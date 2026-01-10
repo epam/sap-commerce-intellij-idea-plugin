@@ -22,6 +22,7 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlPatterns
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.businessProcess.BpConstants
 
 object SpringPatterns {
 
@@ -40,8 +41,8 @@ object SpringPatterns {
             XmlPatterns.xmlTag().withLocalName("action")
                 .inside(
                     XmlPatterns.xmlTag()
-                        .withLocalName(HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML)
-                        .withNamespace(HybrisConstants.SCHEMA_BUSINESS_PROCESS)
+                        .withLocalName(BpConstants.ROOT_TAG_BUSINESS_PROCESS_XML)
+                        .withNamespace(BpConstants.SCHEMA_BUSINESS_PROCESS)
                 )
         )
 

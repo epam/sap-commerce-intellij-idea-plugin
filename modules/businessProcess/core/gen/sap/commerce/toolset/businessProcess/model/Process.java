@@ -22,6 +22,7 @@
 package sap.commerce.toolset.businessProcess.model;
 
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.businessProcess.BpConstants;
 import sap.commerce.toolset.businessProcess.util.xml.BpNavigableElementConverter;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @Stubbed
 @StubbedOccurrence
-@Namespace(HybrisConstants.SCHEMA_BUSINESS_PROCESS)
+@Namespace(BpConstants.SCHEMA_BUSINESS_PROCESS)
 public interface Process extends DomElement {
 
 	String DEFAULT_NODE_GROUP = "defaultNodeGroup";

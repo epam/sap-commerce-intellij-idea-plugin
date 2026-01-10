@@ -19,18 +19,19 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.execution.RunManager
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
 import sap.commerce.toolset.project.runConfigurations.createRunConfiguration
 
-class LocalSapCxRunConfigurationConfigurator : ProjectPostImportConfigurator {
+class LocalSapCxRunConfigurationConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Run Configurations - Local SAP CX"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        val project = importContext.project
         val runManager = RunManager.getInstance(project)
 
         createRunConfiguration(

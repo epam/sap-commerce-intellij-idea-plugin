@@ -19,7 +19,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="2"
-                          implementation="sap.commerce.toolset.localextensions.LeSDomFileDescription"/>
+                          implementation="sap.commerce.toolset.localextensions.LeDomFileDescription"/>
     </extensions>
 
 </idea-plugin>

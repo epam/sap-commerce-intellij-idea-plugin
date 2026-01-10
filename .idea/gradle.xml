@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/modules/acl/core" />
             <option value="$PROJECT_DIR$/modules/acl/ui" />
             <option value="$PROJECT_DIR$/modules/angular/core" />
+            <option value="$PROJECT_DIR$/modules/angular/project" />
             <option value="$PROJECT_DIR$/modules/ant/core" />
             <option value="$PROJECT_DIR$/modules/ant/ui" />
             <option value="$PROJECT_DIR$/modules/beanSystem/core" />
@@ -25,6 +26,7 @@
             <option value="$PROJECT_DIR$/modules/ccv2/core" />
             <option value="$PROJECT_DIR$/modules/ccv2/exec" />
             <option value="$PROJECT_DIR$/modules/ccv2/manifest" />
+            <option value="$PROJECT_DIR$/modules/ccv2/project" />
             <option value="$PROJECT_DIR$/modules/ccv2/ui" />
             <option value="$PROJECT_DIR$/modules/cockpitNG/core" />
             <option value="$PROJECT_DIR$/modules/cockpitNG/ui" />
@@ -35,13 +37,14 @@
             <option value="$PROJECT_DIR$/modules/database/core" />
             <option value="$PROJECT_DIR$/modules/debugger/ui" />
             <option value="$PROJECT_DIR$/modules/eclipse/core" />
+            <option value="$PROJECT_DIR$/modules/eclipse/project" />
             <option value="$PROJECT_DIR$/modules/exec/core" />
             <option value="$PROJECT_DIR$/modules/exec/ui" />
             <option value="$PROJECT_DIR$/modules/externalDependencies/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/exec" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/ui" />
-            <option value="$PROJECT_DIR$/modules/gradle/core" />
+            <option value="$PROJECT_DIR$/modules/gradle/project" />
             <option value="$PROJECT_DIR$/modules/groovy/core" />
             <option value="$PROJECT_DIR$/modules/groovy/exec" />
             <option value="$PROJECT_DIR$/modules/groovy/ui" />
@@ -64,7 +67,7 @@
             <option value="$PROJECT_DIR$/modules/logging/core" />
             <option value="$PROJECT_DIR$/modules/logging/exec" />
             <option value="$PROJECT_DIR$/modules/logging/ui" />
-            <option value="$PROJECT_DIR$/modules/maven/core" />
+            <option value="$PROJECT_DIR$/modules/maven/project" />
             <option value="$PROJECT_DIR$/modules/meta/core" />
             <option value="$PROJECT_DIR$/modules/occ/core" />
             <option value="$PROJECT_DIR$/modules/occ/ui" />

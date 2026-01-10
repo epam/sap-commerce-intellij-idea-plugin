@@ -19,15 +19,14 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
 
 class ConfigModuleDescriptorImpl(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String = moduleRootDirectory.name
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), ConfigModuleDescriptor {
+    moduleRootPath: Path,
+    name: String = moduleRootPath.name
+) : AbstractModuleDescriptor(moduleRootPath, name, ModuleDescriptorType.CONFIG), ConfigModuleDescriptor {
 
     private var preselected = false
     override var isMainConfig = false
@@ -37,7 +36,7 @@ class ConfigModuleDescriptorImpl(
     }
     override fun isPreselected() = preselected
 
-    override val descriptorType: ModuleDescriptorType
+    override val type: ModuleDescriptorType
         get() = if (isMainConfig) ModuleDescriptorType.CONFIG
         else ModuleDescriptorType.NONE
 }

@@ -28,11 +28,6 @@
 
         <applicationConfigurable id="hybris.settings" parentId="root" displayName="[y] SAP CX"
                                  provider="sap.commerce.toolset.options.ApplicationSettingsConfigurableProvider"/>
-
-        <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
-                                 bundle="i18n.HybrisBundle"
-                                 key="hybris.settings.application.project_import.title"
-                                 provider="sap.commerce.toolset.options.ApplicationProjectImportSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>

@@ -20,7 +20,7 @@
 package sap.commerce.toolset.flexibleSearch.exec.context;
 
 import org.apache.commons.lang3.StringUtils;
-import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -77,7 +77,7 @@ public class TableBuilder {
                 );
 
                 if (colNum < row.length - 1) {
-                    buf.append(HybrisConstants.FXS_TABLE_RESULT_SEPARATOR)
+                    buf.append(FlexibleSearchConstants.TABLE_RESULT_SEPARATOR)
                         .append(' ');
                 }
             }

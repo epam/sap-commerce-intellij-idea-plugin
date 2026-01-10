@@ -84,25 +84,12 @@ class Notifications private constructor(type: NotificationType, title: String, c
         if (system) {
             val frame = WindowManager.getInstance().getFrame(project) ?: return
             if (!frame.hasFocus()) {
-                SystemNotifications.getInstance().notify("SAP CX", notification.title!!, notification.content)
+                SystemNotifications.getInstance().notify("SAP CX", notification.title, notification.content)
             }
         }
     }
 
     companion object {
-        @JvmStatic
-        fun showSystemNotificationIfNotActive(
-            project: Project,
-            notificationName: String,
-            notificationTitle: String,
-            notificationText: String
-        ) {
-            val frame = WindowManager.getInstance().getFrame(project) ?: return
-            if (!frame.hasFocus()) {
-                SystemNotifications.getInstance().notify("SAP CX", notificationTitle, notificationText)
-            }
-        }
-
         @JvmStatic
         fun create(type: NotificationType, title: String, content: String = "") = Notifications(type, title, content)
 

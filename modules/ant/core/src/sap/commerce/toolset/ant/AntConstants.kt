@@ -19,8 +19,11 @@
 package sap.commerce.toolset.ant
 
 import java.util.regex.Pattern
+import kotlin.io.path.Path
 
 object AntConstants {
+
+    val PATH_ANT_LIB = Path("resources", "ant", "lib")
 
     val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
 

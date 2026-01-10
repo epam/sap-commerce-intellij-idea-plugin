@@ -71,7 +71,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             }
             .map { (psiElement, loggerIdentifier) ->
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(psiElement)
-                val logger = CxRemoteLogStateService.Companion.getInstance(project).logger(loggerIdentifier)
+                val logger = CxRemoteLogStateService.getInstance(project).logger(loggerIdentifier)
                 val text = if (logger == null) RichText("[y] log level")
                 else {
                     val style = if (logger.inherited) SimpleTextAttributes(

@@ -20,30 +20,31 @@ package sap.commerce.toolset.project.vfs
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.application
-import sap.commerce.toolset.project.tasks.TaskProgressProcessor
-import java.io.File
 import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
+import kotlin.io.path.pathString
 
+// TODO: review / remove / refactor
 @Service
 class VirtualFileSystemService {
 
     @Throws(IOException::class)
-    fun removeAllFiles(files: Collection<File>) {
+    fun removeAllFiles(files: Collection<Path>) {
         if (files.isEmpty()) return
 
         val localFileSystem = LocalFileSystem.getInstance()
 
         val virtualFiles = mutableListOf<VirtualFile>()
-        val nonVirtualFiles = mutableListOf<File>()
+        val nonVirtualFiles = mutableListOf<Path>()
 
         for (file in files) {
-            val virtualFile = localFileSystem.findFileByIoFile(file)
+            val virtualFile = localFileSystem.findFileByNioFile(file)
             if (null != virtualFile) {
                 virtualFiles.add(virtualFile)
             } else {
@@ -51,7 +52,7 @@ class VirtualFileSystemService {
             }
         }
 
-        nonVirtualFiles.forEach { FileUtil.delete(it) }
+        nonVirtualFiles.forEach { Files.delete(it) }
 
         virtualFiles
             .takeIf { it.isNotEmpty() }
@@ -64,39 +65,7 @@ class VirtualFileSystemService {
             }
     }
 
-    @Throws(InterruptedException::class)
-    fun findFileByNameInDirectory(
-        directory: File,
-        fileName: String,
-        progressListenerProcessor: TaskProgressProcessor<File>,
-    ): File? {
-        val result = Ref.create<File>()
-        val interrupted = Ref.create(false)
-
-        FileUtil.processFilesRecursively(directory) { file ->
-            if (!progressListenerProcessor.shouldContinue(directory)) {
-                interrupted.set(true)
-                return@processFilesRecursively false
-            }
-            if (file.absolutePath.endsWith(fileName)) {
-                result.set(file)
-                return@processFilesRecursively false
-            }
-            true
-        }
-
-        if (interrupted.get()) {
-            throw InterruptedException("Modules scanning has been interrupted.")
-        }
-        return result.get()
-    }
-
-    fun fileContainsAnother(parent: File, child: File) = pathContainsAnother(parent.absolutePath, child.absolutePath)
-
-    fun getRelativePath(parent: File, child: File) = getRelativePath(parent.path, child.path)
-
-    private fun pathContainsAnother(parent: String, child: String): Boolean = FileUtil.normalize(child)
-        .startsWith(FileUtil.normalize(parent))
+    fun getRelativePath(parent: Path, child: Path) = getRelativePath(parent.pathString, child.pathString)
 
     private fun getRelativePath(parent: String, child: String) = FileUtil.normalize(child)
         .substring(FileUtil.normalize(parent).length)

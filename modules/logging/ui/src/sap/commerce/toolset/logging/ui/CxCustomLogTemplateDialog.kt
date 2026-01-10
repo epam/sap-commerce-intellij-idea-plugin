@@ -18,10 +18,7 @@
 
 package sap.commerce.toolset.logging.ui
 
-import com.intellij.openapi.fileEditor.FileEditor
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.ClientProperty
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
@@ -29,6 +26,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.logging.CxLogLevel
+import sap.commerce.toolset.ui.banner
 import javax.swing.JComponent
 
 class CxCustomLogTemplateDialog(
@@ -44,12 +42,10 @@ class CxCustomLogTemplateDialog(
     }
 
     override fun createNorthPanel() = if (context.duplicatedSourceTemplates) {
-        EditorNotificationPanel(null as FileEditor?, EditorNotificationPanel.Status.Warning).apply {
-            text = "Duplicates were found. The last occurrence wins."
-            val insideBorder = border
-            val outsideBorder = ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER)
-            border = JBUI.Borders.compound(outsideBorder, insideBorder)
-        }
+        banner(
+            "Duplicates were found. The last occurrence wins.",
+            EditorNotificationPanel.Status.Warning
+        )
     } else null
 
     override fun getStyle() = DialogStyle.COMPACT
@@ -89,7 +85,7 @@ class CxCustomLogTemplateDialog(
             }.layout(RowLayout.PARENT_GRID)
         }
     }.apply {
-        this.border = JBUI.Borders.empty(16)
+        this.border = JBUI.Borders.empty(8, 16)
     }
 
     override fun getPreferredFocusedComponent(): JComponent = nameTextField

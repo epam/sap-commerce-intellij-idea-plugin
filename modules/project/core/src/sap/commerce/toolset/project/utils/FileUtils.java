@@ -23,13 +23,13 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since = "Migrate to kotlin and Path")
 public final class FileUtils {
     private static final Logger LOG = Logger.getInstance(FileUtils.class);
 
@@ -37,7 +37,7 @@ public final class FileUtils {
         throw new IllegalAccessException("Util class should never be instantiated.");
     }
 
-    public static boolean isFileUnder(@NotNull final File child, @NotNull final File parent) {
+    private static boolean isFileUnder(@NotNull final File child, @NotNull final File parent) {
         final String parentPath = FileUtil.toCanonicalPath(parent.getPath())+ '/';
         final String childPath = FileUtil.toCanonicalPath(child.getPath())+ '/';
 
@@ -49,7 +49,7 @@ public final class FileUtils {
         @NotNull final File file,
         @NotNull final File parentDirectory
     ) throws IOException {
-        if (!FileUtils.isFileUnder(file, parentDirectory)) {
+        if (!isFileUnder(file, parentDirectory)) {
             throw new IOException("File '" + file + "' is not under '" + parentDirectory + '\'');
         }
 
@@ -62,30 +62,9 @@ public final class FileUtils {
         }
 
         final List<String> reversePath = Lists.reverse(path);
-        LOG.info("Relative path for module dir " + file.getAbsolutePath() + " in " + parentDirectory.getAbsolutePath()
+        LOG.debug("Relative path for module dir " + file.getAbsolutePath() + " in " + parentDirectory.getAbsolutePath()
                  + " found as " + StringUtils.join(reversePath, '/'));
         return reversePath;
     }
 
-    public static @Nullable File toFile(final String path) {
-        return toFile(path, false);
-    }
-
-    public static @Nullable File toFile(String path, final boolean checkExists) {
-        if (path == null) {
-            return null;
-        }
-        // this does not expand symlinks
-        path = FileUtil.toCanonicalPath(path);
-        final File file = new File(path);
-        if (checkExists && !file.exists()) {
-            return null;
-        }
-        return file;
-    }
-
-    public static File toFile(final String parent, final String child) {
-        final File file = new File(parent, child);
-        return toFile(file.getPath(), false);
-    }
 }

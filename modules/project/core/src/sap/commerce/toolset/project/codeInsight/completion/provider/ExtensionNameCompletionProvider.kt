@@ -37,7 +37,6 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
     }
 
     open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = ProjectSettings.getInstance(project)
-        .availableExtensions
-        .values
+        .extensionDescriptors
 
 }

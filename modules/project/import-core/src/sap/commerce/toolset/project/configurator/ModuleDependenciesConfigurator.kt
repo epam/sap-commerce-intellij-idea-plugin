@@ -18,11 +18,10 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.DependencyScope
-import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.*
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
 
@@ -31,62 +30,56 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Modules Dependencies"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
     ) {
-        val modulesChosenForImport = hybrisProjectDescriptor.chosenModuleDescriptors
-        val allModules = modifiableModelsProvider.modules
+        val allModules = workspaceModel.currentSnapshot
+            .entities(ModuleEntity::class.java)
             .associateBy { it.name }
-        val extModules = modulesChosenForImport.filterIsInstance<YPlatformExtModuleDescriptor>()
+        val extModules = importContext.chosenHybrisModuleDescriptors
+            .filterIsInstance<YPlatformExtModuleDescriptor>()
             .toSet()
 
-        val platformIdeaModuleName = hybrisProjectDescriptor.platformHybrisModuleDescriptor.ideaModuleName()
-        val platformModule = allModules[platformIdeaModuleName] ?: return
 
-        modulesChosenForImport.forEach { moduleDescriptor ->
-            allModules[moduleDescriptor.ideaModuleName()]
-                ?.let { module ->
-                    val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
+        val moduleDependencies = buildMap {
+            importContext.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
+                allModules[moduleDescriptor.ideaModuleName()]
+                    ?.let { moduleEntity ->
+                        moduleDescriptor.getDirectDependencies()
+                            .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
+                            .forEach { addDependency(moduleEntity, it) }
+                    }
+            }
 
-                    moduleDescriptor.getDirectDependencies()
-                        .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
-                        .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
+            allModules[importContext.platformModuleDescriptor.ideaModuleName()]
+                ?.let { addDependency(it, importContext.configModuleDescriptor) }
+        }
+
+        workspaceModel.update("Update module dependencies") { storage ->
+            moduleDependencies.forEach { (moduleEntity, dependencies) ->
+                storage.modifyModuleEntity(moduleEntity) {
+                    this.dependencies += dependencies
                 }
+            }
         }
+    }
 
-        processPlatformModulesDependencies(
-            hybrisProjectDescriptor,
-            platformModule,
-            allModules,
-            modifiableModelsProvider
+    private fun MutableMap<ModuleEntity, MutableList<ModuleDependency>>.addDependency(
+        moduleEntity: ModuleEntity,
+        descriptor: ModuleDescriptor
+    ) {
+        getOrPut(moduleEntity) { mutableListOf() }
+            .add(moduleDependency(descriptor))
+    }
+
+    private fun moduleDependency(moduleDescriptor: ModuleDescriptor): ModuleDependency {
+        val moduleDependency = ModuleDependency(
+            module = ModuleId(moduleDescriptor.ideaModuleName()),
+            exported = true,
+            scope = DependencyScope.COMPILE,
+            productionOnTest = false
         )
-    }
-
-    private fun processPlatformModulesDependencies(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        platformModule: Module,
-        allModules: Map<String, Module>,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    ) {
-        val platformRootModel = modifiableModelsProvider.getModifiableRootModel(platformModule)
-
-        hybrisProjectDescriptor.configHybrisModuleDescriptor
-            ?.let { addModuleDependency(allModules, it.ideaModuleName(), platformRootModel) }
-    }
-
-    private fun addModuleDependency(
-        allModules: Map<String, Module>,
-        dependencyName: String,
-        rootModel: ModifiableRootModel
-    ) {
-        val moduleOrderEntry = allModules[dependencyName]
-            ?.let { rootModel.addModuleOrderEntry(it) }
-            ?: rootModel.addInvalidModuleEntry(dependencyName)
-
-        with(moduleOrderEntry) {
-            isExported = true
-            scope = DependencyScope.COMPILE
-        }
+        return moduleDependency
     }
 }

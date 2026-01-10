@@ -18,9 +18,9 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable id="sap.commerce.toolset.hac.exec.settings" parentId="hybris.project.settings"
+        <projectConfigurable id="sap.commerce.toolset.hac.exec.settings" parentId="hybris.settings"
                              nonDefaultProject="true" dynamic="true"
-                             displayName="hAC"
+                             displayName="HAC"
                              provider="sap.commerce.toolset.hac.options.HacExecProjectSettingsConfigurableProvider"/>
 
         <projectService serviceInterface="sap.commerce.toolset.hac.auth.HacManualAuthenticator"

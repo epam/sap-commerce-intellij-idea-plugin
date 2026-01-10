@@ -38,6 +38,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.hints.SystemAwareInlayHintsCollector
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.EnumType
 import sap.commerce.toolset.typeSystem.model.EnumTypes
@@ -50,9 +51,9 @@ import sap.commerce.toolset.typeSystem.model.ItemTypes
 class ItemsXmlInlayHintsCollector(editor: Editor) : SystemAwareInlayHintsCollector(editor) {
 
     private val excludedItemTypes = setOf(
-        HybrisConstants.TS_TYPE_GENERIC_ITEM,
-        HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,
-        HybrisConstants.TS_TYPE_EXTENSIBLE_ITEM
+        TSConstants.Type.GENERIC_ITEM,
+        TSConstants.Type.LOCALIZABLE_ITEM,
+        TSConstants.Type.EXTENSIBLE_ITEM
     )
 
     override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
@@ -115,7 +116,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : SystemAwareInlayHintsCollect
 
     private fun findItemClass(project: Project, element: String): Array<out PsiClass> =
         PsiShortNamesCache.getInstance(project).getClassesByName(
-            element + HybrisConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project)
+            element + TSConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project)
         )
             .filter { it.containingFile.virtualFile.path.contains("/platform/bootstrap") }
             .toTypedArray()

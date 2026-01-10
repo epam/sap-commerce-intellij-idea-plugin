@@ -31,7 +31,6 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ant.AntConstants
 import sap.commerce.toolset.externalDependencies.EdConstants
@@ -43,7 +42,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
         if (!project.isHybrisProject) return null
-        if (file.name != HybrisConstants.EXTERNAL_DEPENDENCIES_XML) return null
+        if (file.name != EdConstants.EXTERNAL_DEPENDENCIES_XML) return null
 
         val showPanel = file
             .getUserData(EdConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)

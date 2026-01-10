@@ -21,7 +21,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
 import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.Beans
@@ -48,7 +48,7 @@ class BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass : BSInspection() {
     ) {
         val fqn = dom.clazz.xmlAttributeValue
             ?.value
-            ?.takeIf { it.contains(HybrisConstants.BS_SIGN_GREATER_THAN) }
+            ?.takeIf { it.contains(BSConstants.SIGN_GREATER_THAN) }
             ?: return
 
         holder.createProblem(
@@ -58,8 +58,8 @@ class BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass : BSInspection() {
             XmlUpdateAttributeQuickFix(
                 Bean.CLASS,
                 fqn
-                    .replace(HybrisConstants.BS_SIGN_LESS_THAN, HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED)
-                    .replace(HybrisConstants.BS_SIGN_GREATER_THAN, HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED)
+                    .replace(BSConstants.SIGN_LESS_THAN, BSConstants.SIGN_LESS_THAN_ESCAPED)
+                    .replace(BSConstants.SIGN_GREATER_THAN, BSConstants.SIGN_GREATER_THAN_ESCAPED)
             )
         )
     }

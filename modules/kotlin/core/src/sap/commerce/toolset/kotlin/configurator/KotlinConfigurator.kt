@@ -19,15 +19,14 @@ package sap.commerce.toolset.kotlin.configurator
 
 import com.intellij.facet.FacetManager
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.smartReadAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.util.application
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
@@ -37,37 +36,37 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.kotlin.KotlinConstants
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 
-class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
+class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Kotlin"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
     ) {
-        val project = hybrisProjectDescriptor.project ?: return
-        val hasKotlinnatureExtension = hybrisProjectDescriptor.chosenModuleDescriptors.stream()
-            .anyMatch { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+        val project = importContext.project
+        val hasKotlinnatureExtension = importContext.chosenHybrisModuleDescriptors
+            .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
-        application.runReadAction {
+        readAction {
             setKotlinCompilerVersion(project, KotlinConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
         }
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
-        hybrisProjectDescriptor.chosenModuleDescriptors
-            .find { ProjectConstants.Extension.KOTLIN_NATURE == it.name }
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        val project = importContext.project
+        importContext.chosenHybrisModuleDescriptors
+            .find { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
         smartReadAction(project) {
@@ -92,7 +91,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
 
         val collector = NotificationMessageCollector.create(project)
 
-        edtWriteAction {
+        backgroundWriteAction {
             KotlinJavaModuleConfigurator.instance.getOrCreateKotlinLibrary(project, collector)
         }
 
@@ -114,7 +113,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
             }
         }
 
-        edtWriteAction {
+        backgroundWriteAction {
             writeActions.forEach { it() }
         }
     }
@@ -127,18 +126,16 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         }
     }
 
-    private fun setKotlinJvmTarget(project: Project) {
-        application.runReadAction {
-            val projectRootManager = ProjectRootManager.getInstance(project)
+    private suspend fun setKotlinJvmTarget(project: Project) = readAction {
+        val projectRootManager = ProjectRootManager.getInstance(project)
 
-            projectRootManager.projectSdk
-                ?.let { sdk -> getDefaultJvmTarget(sdk, KotlinPluginLayout.ideCompilerVersion) }
-                ?.let { defaultJvmTarget ->
-                    Kotlin2JvmCompilerArgumentsHolder.getInstance(project).update {
-                        jvmTarget = defaultJvmTarget.description
-                    }
+        projectRootManager.projectSdk
+            ?.let { sdk -> getDefaultJvmTarget(sdk, KotlinPluginLayout.ideCompilerVersion) }
+            ?.let { defaultJvmTarget ->
+                Kotlin2JvmCompilerArgumentsHolder.getInstance(project).update {
+                    jvmTarget = defaultJvmTarget.description
                 }
-        }
+            }
     }
 
 }

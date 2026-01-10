@@ -17,62 +17,90 @@
  */
 package sap.commerce.toolset.javaee.web.configurator
 
-import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
-import com.intellij.openapi.application.WriteAction
-import com.intellij.openapi.module.Module
+import com.intellij.javaee.web.facet.WebFacetType
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.module.ModuleType
-import com.intellij.openapi.roots.ModifiableRootModel
-import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtil
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.util.descriptors.ConfigFileInfo
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
+import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_SOURCE_ROOT_ENTITY_TYPE_ID
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
-import java.io.File
+import sap.commerce.toolset.project.facet.configurationXmlTag
+import sap.commerce.toolset.util.toSystemIndependentName
 
-class WebFacetConfigurator : ModuleFacetConfigurator {
+/**
+ * No need to migrate to the new Workspace API or use the {@code webSettings} storage builder at the moment.
+ * See <a href="https://platform.jetbrains.com/t/how-to-properly-manage-javasettings-and-websettings-in-workspace-api/3471">How to properly manage javaSettings and webSettings in Workspace API</a>.
+ */
+class WebFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "Web Facets"
 
-    override fun configureModuleFacet(
-        module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        moduleEntity: ModuleEntity
     ) {
+        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
         val webRoot = when (moduleDescriptor) {
-            is YWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
-            is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
-            is YAcceleratorAddonSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
+            is YWebSubModuleDescriptor -> moduleDescriptor.webRoot
+            is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot
+            is YAcceleratorAddonSubModuleDescriptor -> moduleDescriptor.webRoot
             else -> return
         }
 
-        WriteAction.runAndWait<RuntimeException> {
-            val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
-                ?.also {
-                    it.removeAllWebRoots()
-                    it.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
+        val facetType = FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
+            .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
+            ?: return
+        val facet = facetType.createFacet(
+            javaModule,
+            facetType.defaultFacetName,
+            facetType.createDefaultConfiguration(), null
+        )
+
+        val sourceRoots = importContext.mutableStorage.entities(ContentRootEntityBuilder::class)[moduleEntity]
+            ?.flatMap { it.sourceRoots }
+            ?.filter { it.rootTypeId == JAVA_SOURCE_ROOT_ENTITY_TYPE_ID }
+            ?.map { it.url.url }
+            ?: listOf()
+
+        facet.addWebRootNoFire(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
+        facet.webConfiguration.sourceRoots = sourceRoots
+
+        VfsUtil.findFile(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML), true)
+            ?.let { ConfigFileInfo(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
+            ?.let {
+                edtWriteAction {
+                    facet.descriptorsContainer.configuration.addConfigFile(it)
                 }
-                ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
-                    .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
-                    ?.let { FacetManager.getInstance(module).createFacet(it, it.defaultFacetName, null) }
-                    ?.also { modifiableFacetModel.addFacet(it) }
-                ?: return@runAndWait
+            }
 
-            webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
-            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(webRoot)), "/")
-
-            VfsUtil.findFileByIoFile(File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_WEB_XML_PATH), true)
-                ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
+        val configurationXmlTag = facet.configurationXmlTag ?: return
+        val facetEntityTypeId = FacetEntityTypeId(WebFacetType.getInstance().stringId)
+        val facetEntity = FacetEntity(
+            moduleId = ModuleId(moduleEntity.name),
+            name = facetType.presentableName,
+            typeId = facetEntityTypeId,
+            entitySource = moduleEntity.entitySource
+        ) {
+            this.configurationXmlTag = configurationXmlTag
         }
+
+        importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }

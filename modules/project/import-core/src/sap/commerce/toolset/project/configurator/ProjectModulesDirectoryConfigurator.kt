@@ -17,17 +17,19 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import sap.commerce.toolset.project.context.ProjectImportContext
+import java.nio.file.Files
+import kotlin.io.path.exists
 
 class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
         get() = "Modules Directory"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        hybrisProjectDescriptor.modulesFilesDirectory
-            ?.takeIf { it.exists() }
-            ?.takeIf { it.isDirectory }
-            ?.mkdirs()
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        importContext.modulesFilesDirectory
+            ?.takeUnless { it.exists() }
+            ?.let { Files.createDirectories(it) }
     }
 }

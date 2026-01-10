@@ -35,6 +35,7 @@ enum class Plugin(val id: String, val url: String? = null, val dependencies: Set
     KOTLIN("org.jetbrains.kotlin", url = "https://plugins.jetbrains.com/plugin/6954-kotlin"),
     GROOVY("org.intellij.groovy", url = "https://plugins.jetbrains.com/plugin/1524-groovy"),
     GRADLE("com.intellij.gradle"),
+    ECLIPSE("org.jetbrains.idea.eclipse"),
     ANGULAR("AngularJS", url = "https://plugins.jetbrains.com/plugin/6971-angular"),
     DATABASE("com.intellij.database", url = "https://plugins.jetbrains.com/plugin/10925-database-tools-and-sql-for-webstorm", dependencies = setOf(ULTIMATE)),
     DIAGRAM("com.intellij.diagram"),

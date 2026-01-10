@@ -18,9 +18,8 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.util.application
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.settings.ProjectSettings
 
@@ -29,18 +28,16 @@ class LoadedModulesConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Loaded Modules"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
     ) {
-        val project = hybrisProjectDescriptor.project ?: return
-        val unusedModuleNames = hybrisProjectDescriptor.chosenModuleDescriptors
+        val project = importContext.project
+        val unusedModuleNames = importContext.chosenHybrisModuleDescriptors
             .filter { it.importStatus == ModuleDescriptorImportStatus.UNUSED }
             .map { it.name }
             .toMutableSet()
 
-        application.invokeAndWait {
-            ProjectSettings.getInstance(project).unusedExtensions = unusedModuleNames
-        }
+        ProjectSettings.getInstance(project).unusedExtensions = unusedModuleNames
     }
 }

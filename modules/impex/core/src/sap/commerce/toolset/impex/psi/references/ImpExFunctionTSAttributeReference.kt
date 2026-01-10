@@ -29,11 +29,11 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpExParameter
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.psi.PsiTreeUtilExt
 import sap.commerce.toolset.psi.getValidResults
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -101,11 +101,11 @@ class ImpExFunctionTSAttributeReference(owner: ImpExParameter) : TSReferenceBase
             recursionLevel: Int = 0
         ): ResolveResult? {
             // If we've entered this method, 2+ times it may sound like a bidirectional relation, return right away
-            if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return null
+            if (recursionLevel > TSConstants.MAX_RECURSION_LEVEL) return null
             return metaService.findMetaClassifierByName(typeName)
                 ?.let { meta ->
                     when (meta) {
-                        is TSGlobalMetaEnum -> metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+                        is TSGlobalMetaEnum -> metaService.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE)
                             ?.let { it.allAttributes[featureName] }
                             ?.let { attr -> AttributeResolveResult(attr) }
 

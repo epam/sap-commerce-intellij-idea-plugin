@@ -24,17 +24,17 @@ import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
@@ -47,14 +47,14 @@ import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
 
-    private val hybrisApplicationSettings = ApplicationSettings.getInstance()
-    private val commerceGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupHybris)
+    private val applicationSettings = ApplicationSettings.getInstance()
+    private val commerceGroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupHybris)
         ?.firstOrNull()
-    private val platformGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupPlatform)
+    private val platformGroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupPlatform)
         ?.firstOrNull()
-    private val ccv2GroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
+    private val ccv2GroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupCCv2)
         ?.firstOrNull()
-    private val customGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupCustom)
+    private val customGroupName = ApplicationSettings.toIdeaGroup(applicationSettings.groupCustom)
         ?.firstOrNull()
     private val groupToIcon = mapOf(
         customGroupName to HybrisIcons.Module.CUSTOM_GROUP,
@@ -113,22 +113,17 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         children: Collection<AbstractTreeNode<*>>,
         settings: ViewSettings?
     ): Collection<AbstractTreeNode<*>> {
-        if (!hybrisApplicationSettings.groupExternalModules || isExternalModuleParent(parent)) return children
+        if (!applicationSettings.groupExternalModules || isExternalModuleParent(parent)) return children
 
         val otherNodes = mutableListOf<AbstractTreeNode<*>>()
         val treeNodes = mutableListOf<AbstractTreeNode<*>>()
-
         val projectRootManager = ProjectRootManager.getInstance(project)
+
         for (child in children) {
             if (child is PsiDirectoryNode) {
-                val virtualFile = child.virtualFile
-                    ?: continue
+                val nodeCategory = getNodeCategory(child, projectRootManager)
 
-                val file = VfsUtil.virtualToIoFile(virtualFile)
-                val yFacet = projectRootManager.fileIndex.getModuleForFile(virtualFile)
-                    ?.let { YFacet.get(it) }
-
-                if (yFacet == null && ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(project, file) }) {
+                if (nodeCategory == NodeCategory.OTHER) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)
@@ -141,6 +136,16 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             treeNodes.add(ExternalProjectViewNode(project, otherNodes, settings))
         }
         return treeNodes
+    }
+
+    private fun getNodeCategory(node: PsiDirectoryNode, projectRootManager: ProjectRootManager): NodeCategory {
+        val vf = node.virtualFile ?: return NodeCategory.Y
+        val module = projectRootManager.fileIndex.getModuleForFile(vf) ?: return NodeCategory.Y
+        if (YFacet.getState(module) != null) return NodeCategory.Y
+        ModuleRootManager.getInstance(module).contentRoots.find { it == vf }
+            ?: return NodeCategory.Y
+
+        return NodeCategory.OTHER
     }
 
     private fun isExternalModuleParent(child: AbstractTreeNode<*>): Boolean {
@@ -181,8 +186,9 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?: return true
 
         // hide `core-customize/hybris` node
-        if (ProjectConstants.Directory.HYBRIS == vf.name
-            && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name
+        if (
+            (ProjectConstants.Directory.HYBRIS == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name)
+            || ProjectConstants.Directory.INSTALLER == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name
         ) return false
 
         val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf)
@@ -190,7 +196,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         // hide `platform/ext` node
         if (ProjectConstants.Directory.EXT == vf.name
-            && ProjectConstants.Extension.PLATFORM == module.yExtensionName()
+            && EiConstants.Extension.PLATFORM == module.yExtensionName()
         ) return false
 
         return YFacet.getState(module)
@@ -203,7 +209,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?: true
     }
 
-    private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = hybrisApplicationSettings.hideEmptyMiddleFolders
+    private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = applicationSettings.hideEmptyMiddleFolders
         && settings.isHideEmptyMiddlePackages
 
     private fun modifyExternalLibrariesNodes(
@@ -345,4 +351,5 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         .name
         .endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
 
+    private enum class NodeCategory { Y, OTHER }
 }

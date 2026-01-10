@@ -44,7 +44,7 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        "hAC", "sap.commerce.toolset.hac.exec.settings"
+        "HAC", "sap.commerce.toolset.hac.exec.settings"
     ) {
 
         private lateinit var connectionsListPanel: HacConnectionSettingsListPanel

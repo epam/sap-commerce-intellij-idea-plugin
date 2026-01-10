@@ -19,7 +19,7 @@ package sap.commerce.toolset.typeSystem.meta.impl
 
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.CaseInsensitiveMap
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModel
 import sap.commerce.toolset.typeSystem.meta.model.*
 import sap.commerce.toolset.typeSystem.meta.model.impl.*
@@ -153,7 +153,7 @@ class TSMetaModelBuilder(
         moduleName = moduleName,
         extensionName = extensionName,
         isCustom = custom,
-        qualifier = qualifierPrefix + HybrisConstants.TS_RELATION_ORDERING_POSTFIX
+        qualifier = qualifierPrefix + TSConstants.Attribute.RELATION_ORDERING_POSTFIX
     )
 
     private fun create(dom: RelationElement, end: TSMetaRelation.RelationEnd): TSMetaRelation.TSMetaRelationElement {

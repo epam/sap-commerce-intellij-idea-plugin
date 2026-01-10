@@ -22,9 +22,9 @@ import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.psi.ResolveResult
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
@@ -143,29 +143,29 @@ object FxSLookupElementFactory {
         .withTailText(" ${i18n("hybris.fxs.completion.column.postfix.outerJoin")}")
         .withIcon(HybrisIcons.FlexibleSearch.OUTER_JOIN)
 
-    fun buildTablePostfixExclamationMark(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK}")
-        .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK)
+    fun buildTablePostfixExclamationMark(prefix: String) = LookupElementBuilder.create("$prefix${FlexibleSearchConstants.TABLE_POSTFIX_EXCLAMATION_MARK}")
+        .withPresentableText(FlexibleSearchConstants.TABLE_POSTFIX_EXCLAMATION_MARK)
         .withTailText(" ${i18n("hybris.fxs.completion.table.name.postfix.exclamationMark")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_SUFFIX)
 
-    fun buildTablePostfixStar(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_STAR}")
-        .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_STAR)
+    fun buildTablePostfixStar(prefix: String) = LookupElementBuilder.create("$prefix${FlexibleSearchConstants.TABLE_POSTFIX_STAR}")
+        .withPresentableText(FlexibleSearchConstants.TABLE_POSTFIX_STAR)
         .withTailText(" ${i18n("hybris.fxs.completion.table.name.postfix.star")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_SUFFIX)
 
-    fun buildTablePostfixDashMark(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_DASH_MARK}")
-        .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_DASH_MARK)
+    fun buildTablePostfixDashMark(prefix: String) = LookupElementBuilder.create("$prefix${FlexibleSearchConstants.TABLE_POSTFIX_DASH_MARK}")
+        .withPresentableText(FlexibleSearchConstants.TABLE_POSTFIX_DASH_MARK)
         .withTailText(" ${i18n("hybris.fxs.completion.table.name.postfix.dashMark")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_SUFFIX)
 
-    fun buildSeparatorDot(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT}")
-        .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
+    fun buildSeparatorDot(prefix: String) = LookupElementBuilder.create("$prefix${FlexibleSearchConstants.TABLE_ALIAS_SEPARATOR_DOT}")
+        .withPresentableText(FlexibleSearchConstants.TABLE_ALIAS_SEPARATOR_DOT)
         .withTailText(" ${i18n("hybris.fxs.completion.table.alias.separator.dot")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_ALIAS_SEPARATOR)
         .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
-    fun buildSeparatorColon(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
-        .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON)
+    fun buildSeparatorColon(prefix: String) = LookupElementBuilder.create("$prefix${FlexibleSearchConstants.TABLE_ALIAS_SEPARATOR_COLON}")
+        .withPresentableText(FlexibleSearchConstants.TABLE_ALIAS_SEPARATOR_COLON)
         .withTailText(" ${i18n("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_ALIAS_SEPARATOR)
         .withInsertHandler(AutoPopupInsertHandler.INSTANCE)

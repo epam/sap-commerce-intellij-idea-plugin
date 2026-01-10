@@ -21,46 +21,57 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
 import kotlinx.coroutines.*
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
+import kotlin.time.measureTime
 
 @Service(Service.Level.PROJECT)
 class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val postImportConfigurators = ProjectPostImportConfigurator.EP.extensionList
+    private val logger = thisLogger()
+
+    fun configure(importContext: ProjectImportContext) {
+        val workspaceModel = WorkspaceModel.getInstance(project)
+        val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList
 
         // mostly background operations
-        postImportConfigurators.forEach { it.postImport(hybrisProjectDescriptor) }
+        ProjectPostImportConfigurator.EP.extensionList.forEach { configurator ->
+            val duration = measureTime { configurator.postImport(importContext, workspaceModel) }
+            logger.info("Post-configured project [${configurator.name} | $duration]")
+        }
 
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            // async operations
-            supervisorScope {
-                reportProgressScope(postImportConfigurators.size) { progressReporter ->
-                    postImportConfigurators.map {
-                        async {
-                            progressReporter.itemStep("Configuring project using '${it.name}' Configurator...") {
-                                try {
-                                    it.asyncPostImport(hybrisProjectDescriptor)
-                                } catch (e: Exception) {
-                                    println(e)
-                                    // ignore
+            withBackgroundProgress(project, "Applying post-import configurators...", true) {
+                // async operations
+                supervisorScope {
+                    reportProgressScope(postImportAsyncConfigurators.size) { progressReporter ->
+                        postImportAsyncConfigurators.map { configurator ->
+                            async {
+                                progressReporter.itemStep("Applying '${configurator.name}' configurator...") {
+                                    runCatching {
+                                        val duration = measureTime { configurator.postImport(importContext, workspaceModel) }
+                                        logger.info("Post-configured async project [${configurator.name} | $duration]")
+                                    }
+                                        .exceptionOrNull()
+                                        ?.let { logger.warn("Post-configurator '${configurator.name}' error: ${it.message}", it) }
                                 }
                             }
                         }
+                            .awaitAll()
                     }
-                        .awaitAll()
                 }
             }
 
-            hybrisProjectDescriptor.clear()
-            notifyImportFinished(project, hybrisProjectDescriptor.refresh)
+            notifyImportFinished(project, importContext.refresh)
         }
     }
 
@@ -70,10 +81,9 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
         val notificationTitle = if (refresh) i18n("hybris.notification.project.refresh.title")
         else i18n("hybris.notification.project.import.title")
 
-        with(Notifications.Companion) {
-            create(NotificationType.INFORMATION, notificationTitle, notificationContent).notify(project)
-            showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent)
-        }
+        Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
+            .system(true)
+            .notify(project)
     }
 
     companion object {

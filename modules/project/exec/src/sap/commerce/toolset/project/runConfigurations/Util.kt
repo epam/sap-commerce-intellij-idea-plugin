@@ -22,7 +22,7 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.ConfigurationTypeUtil
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 
 suspend fun <T : ConfigurationType> createRunConfiguration(
     runManager: RunManager,
@@ -36,7 +36,7 @@ suspend fun <T : ConfigurationType> createRunConfiguration(
     val confType = ConfigurationTypeUtil.findConfigurationType(configurationType)
     val configurationFactory = confType.configurationFactories.first()
 
-    return edtWriteAction {
+    return backgroundWriteAction {
         val runner = runManager.createConfiguration(
             configurationName,
             configurationFactory

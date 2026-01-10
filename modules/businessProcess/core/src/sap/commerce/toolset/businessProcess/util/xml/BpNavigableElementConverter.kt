@@ -27,8 +27,8 @@ import com.intellij.util.asSafely
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.ResolvingConverter
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.businessProcess.BpConstants
 import sap.commerce.toolset.businessProcess.model.*
 
 class BpNavigableElementConverter : ResolvingConverter<NavigableElement>() {
@@ -98,7 +98,7 @@ class BpNavigableElementConverter : ResolvingConverter<NavigableElement>() {
 
     companion object {
         private val filter: (PsiElement) -> Boolean = { el ->
-            el is XmlTag && HybrisConstants.BP_NAVIGABLE_ELEMENTS.contains(el.name)
+            el is XmlTag && BpConstants.NAVIGABLE_ELEMENTS.contains(el.name)
         }
     }
 }

@@ -45,7 +45,7 @@
         <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.typeSystem.structureView.TSXmlStructureViewBuilderProvider"/>
 
         <codeFoldingOptionsProvider instance="sap.commerce.toolset.typeSystem.options.TSCodeFoldingOptionsProvider"/>
-        <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
+        <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
                              provider="sap.commerce.toolset.typeSystem.options.TSProjectConfigurableProvider"/>

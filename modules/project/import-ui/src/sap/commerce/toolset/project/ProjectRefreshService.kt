@@ -19,34 +19,52 @@
 package sap.commerce.toolset.project
 
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.CompilerProjectExtension
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.ide.progress.ModalTaskOwner
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.projectImport.ProjectImportProvider
-import sap.commerce.toolset.directory
+import com.intellij.util.asSafely
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import sap.commerce.toolset.project.context.ModuleGroup
+import sap.commerce.toolset.project.context.ModuleRoot
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.wizard.RefreshSupport
+import kotlin.io.path.absolutePathString
 
 @Service(Service.Level.PROJECT)
 class ProjectRefreshService(private val project: Project) {
 
-    @Throws(ConfigurationException::class)
-    fun refresh() {
-        val projectDirectory = project.directory ?: return
+    @Throws(HybrisConfigurationException::class)
+    fun refresh(refreshContext: ProjectRefreshContext) {
+        val project = refreshContext.project
+        val projectDirectory = refreshContext.projectPath.absolutePathString()
         val provider = getHybrisProjectImportProvider() ?: return
         val compilerProjectExtension = CompilerProjectExtension.getInstance(project) ?: return
-        val projectSettings = ProjectSettings.getInstance(project)
 
-        removeOldProjectData()
+        runWithModalProgressBlocking(
+            owner = ModalTaskOwner.guess(),
+            title = "Before Refresh Configurators",
+        ) {
+            val workspaceModel = WorkspaceModel.getInstance(project)
+
+            ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(refreshContext, workspaceModel) }
+        }
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {
             override fun init() = Unit
@@ -58,33 +76,42 @@ class ProjectRefreshService(private val project: Project) {
             it.compilerOutputDirectory = compilerProjectExtension.compilerOutputUrl
         }
 
-        wizard.sequence.getAllSteps()
+        wizard.sequence.allSteps
             .filterIsInstance<RefreshSupport>()
-            .forEach { step -> step.refresh(projectSettings) }
+            .forEach { step -> step.refresh(refreshContext) }
 
-        wizard.projectBuilder
-            .commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
+        wizard.projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER)
+        wizard.projectBuilder.cleanup()
     }
 
-    private fun removeOldProjectData() {
-        val projectSettings = ProjectSettings.getInstance(project)
-        val moduleModel = ModuleManager.getInstance(project).getModifiableModel()
-        val libraryModel = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-        val removeExternalModulesOnRefresh = projectSettings.removeExternalModulesOnRefresh
+    fun openModuleDescriptors(importContext: ProjectImportContext.Mutable): List<ModuleDescriptor> = ModuleManager.getInstance(project).modules
+        .mapNotNull { module ->
+            val extensionDescriptor = YFacet.getState(module)
+                ?.takeIf { it.subModuleType == null }
+                ?: return@mapNotNull null
 
-        moduleModel.modules
-            .filter { removeExternalModulesOnRefresh || YFacet.get(it) != null }
-            .forEach { moduleModel.disposeModule(it) }
-
-        libraryModel.libraries.forEach { libraryModel.removeLibrary(it) }
-
-        ApplicationManager.getApplication().runWriteAction {
-            moduleModel.commit()
-            libraryModel.commit()
+            ModuleRootManager.getInstance(module).contentRoots
+                .firstOrNull()
+                ?.let { VfsUtil.virtualToIoFile(it) }
+                ?.let { ModuleRoot(ModuleGroup.HYBRIS, extensionDescriptor.type, it.toPath()) }
+                ?.let {
+                    try {
+                        ModuleDescriptorFactory.getInstance().createDescriptor(importContext, it)
+                    } catch (e: HybrisConfigurationException) {
+                        thisLogger().error(e)
+                        return@let null
+                    }
+                }
         }
-
-        ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(project) }
-    }
+        .flatMap { moduleDescriptor ->
+            buildList {
+                add(moduleDescriptor)
+                moduleDescriptor.asSafely<YModuleDescriptor>()
+                    ?.let {
+                        addAll(it.getSubModules())
+                    }
+            }
+        }
 
     private fun getHybrisProjectImportProvider() = ProjectImportProvider.PROJECT_IMPORT_PROVIDER.extensionsIfPointIsRegistered
         .filterIsInstance<HybrisProjectImportProvider>()

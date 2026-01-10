@@ -26,11 +26,11 @@ import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.cockpitNG.codeInsight.lookup.CngLookupElementFactory
 import sap.commerce.toolset.cockpitNG.meta.CngWrappingType
 import sap.commerce.toolset.cockpitNG.model.config.Config
 import sap.commerce.toolset.cockpitNG.model.config.Context
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.codeInsight.completion.ItemTypeCodeCompletionProvider
 import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -138,7 +138,7 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
             .filter { meta ->
                 when (meta) {
                     is TSGlobalMetaItem -> meta.allExtends.find { it == anotherAttributeMeta } != null
-                    is TSGlobalMetaEnum -> anotherAttributeMeta.name == HybrisConstants.TS_TYPE_ENUMERATION_VALUE
+                    is TSGlobalMetaEnum -> anotherAttributeMeta.name == TSConstants.Type.ENUMERATION_VALUE
                     else -> false
                 }
             }
@@ -146,7 +146,7 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
         Context.PARENT -> when (anotherAttributeMeta) {
             is TSGlobalMetaItem -> anotherAttributeMeta.allExtends
             is TSGlobalMetaEnum -> allItems
-                .find { it.name == HybrisConstants.TS_TYPE_ENUMERATION_VALUE }
+                .find { it.name == TSConstants.Type.ENUMERATION_VALUE }
                 ?.let { listOf(it) }
                 ?: emptyList()
 

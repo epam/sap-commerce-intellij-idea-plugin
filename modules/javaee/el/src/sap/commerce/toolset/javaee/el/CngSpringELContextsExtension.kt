@@ -33,7 +33,6 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.contextProviders.SpringElContextsExtension
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.model.config.hybris.Labels
@@ -41,6 +40,7 @@ import sap.commerce.toolset.cockpitNG.model.config.hybris.Preview
 import sap.commerce.toolset.cockpitNG.model.wizardConfig.AbstractAction
 import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
 import sap.commerce.toolset.spring.SpringHelper
+import sap.commerce.toolset.typeSystem.TSConstants
 
 class CngSpringELContextsExtension : SpringElContextsExtension() {
 
@@ -100,7 +100,7 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
         ?: mutableListOf()
 
     private fun findClassByHybrisTypeName(project: Project, typeName: String) = PsiShortNamesCache.getInstance(project)
-        .getClassesByName(typeName + HybrisConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project))
+        .getClassesByName(typeName + TSConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project))
         .firstOrNull { psiClass -> psiClass.containingFile.virtualFile.path.contains("/platform/bootstrap") }
 
     private fun findClassByFQN(project: Project, className: String) = JavaPsiFacade.getInstance(project)

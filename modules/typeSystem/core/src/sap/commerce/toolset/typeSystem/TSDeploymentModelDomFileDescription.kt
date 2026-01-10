@@ -27,7 +27,7 @@ import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.typeSystem.model.deployment.Model
 import javax.swing.Icon
 
-class TSDeploymentModelDomFileDescription : DomFileDescription<Model>(Model::class.java, HybrisConstants.ROOT_TAG_DEPLOYMENT_MODEL_XML) {
+class TSDeploymentModelDomFileDescription : DomFileDescription<Model>(Model::class.java, TSConstants.ROOT_TAG_DEPLOYMENT_MODEL_XML) {
 
     override fun getFileIcon(@IconFlags flags: Int): Icon = HybrisIcons.TypeSystem.DEPLOYMENT_MODEL
 

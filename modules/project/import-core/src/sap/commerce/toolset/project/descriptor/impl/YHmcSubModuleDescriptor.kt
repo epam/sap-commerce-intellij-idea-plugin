@@ -18,20 +18,20 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import java.nio.file.Path
 
 class YHmcSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
+    moduleRootPath: Path,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HMC,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
         owner.name,
-        ProjectConstants.Extension.HMC + "." + ProjectConstants.Extension.WEB
+        EiConstants.Extension.HMC + "." + EiConstants.Extension.WEB
     )
 }

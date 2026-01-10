@@ -18,11 +18,12 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import java.io.FileInputStream
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
 class ProjectIconConfigurator : ProjectImportConfigurator {
@@ -30,32 +31,36 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Project Icon"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
     ) {
-        val rootDirectory = hybrisProjectDescriptor.rootDirectory ?: return
+        val ideaDirectory = importContext.rootDirectory.resolve(".idea")
 
-        val target = Paths.get(rootDirectory.path, ".idea", "icon.svg")
-        val targetDark = Paths.get(rootDirectory.path, ".idea", "icon_dark.svg")
+        val target = ideaDirectory.resolve("icon.svg")
+        val targetDark = ideaDirectory.resolve("icon_dark.svg")
 
         // do not override existing Icon
-        if (Files.exists(target)) return
+        if (target.fileExists) return
 
-        val projectIconFile = hybrisProjectDescriptor.projectIconFile
+        val projectIconFile = importContext.projectIconFile
         if (projectIconFile == null) {
             this::class.java.getResourceAsStream("/icons/hybrisIcon.svg")
                 ?.use { input ->
-                Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
-            }
+                    withContext(Dispatchers.IO) {
+                        Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
+                    }
+                }
             // as for now, Dark icon supported only for Plugin's icons
             this::class.java.getResourceAsStream("/icons/hybrisIcon_dark.svg")
                 ?.use { input ->
-                Files.copy(input, targetDark, StandardCopyOption.REPLACE_EXISTING)
-            }
+                    withContext(Dispatchers.IO) {
+                        Files.copy(input, targetDark, StandardCopyOption.REPLACE_EXISTING)
+                    }
+                }
         } else {
-            FileInputStream(projectIconFile).use { input ->
-                Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
+            withContext(Dispatchers.IO) {
+                Files.copy(projectIconFile, target, StandardCopyOption.REPLACE_EXISTING)
             }
         }
     }

@@ -18,38 +18,44 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.asSafely
 import kotlinx.collections.immutable.toImmutableSet
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService
-import java.io.File
+import sap.commerce.toolset.util.isDescendantOf
+import java.nio.file.Path
 import java.util.*
+import kotlin.io.path.pathString
 
 abstract class AbstractModuleDescriptor(
-    override val moduleRootDirectory: File,
-    override val rootProjectDescriptor: HybrisProjectDescriptor,
+    override val moduleRootPath: Path,
     override val name: String,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    override val type: ModuleDescriptorType,
     override var groupNames: Array<String> = emptyArray(),
     override var readonly: Boolean = false,
 ) : ModuleDescriptor {
 
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
     private lateinit var requiredExtensionNames: MutableSet<String>
-    private val springFileSet = mutableSetOf<String>()
     private val directDependencies = mutableSetOf<ModuleDescriptor>()
     private val dependencies: Set<ModuleDescriptor> by lazy {
         recursivelyCollectDependenciesPlainSet(this, TreeSet())
             .toImmutableSet()
     }
-    private val myExtensionDescriptor by lazy {
+
+    override val extensionDescriptor by lazy {
         ExtensionDescriptor(
+            path = FileUtil.toSystemIndependentName(moduleRootPath.pathString),
             name = name,
-            type = descriptorType
+            readonly = readonly,
+            type = type,
+            subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
         )
     }
 
@@ -58,7 +64,7 @@ abstract class AbstractModuleDescriptor(
 
     override fun hashCode() = HashCodeBuilder(17, 37)
         .append(this.name)
-        .append(moduleRootDirectory)
+        .append(moduleRootPath)
         .toHashCode()
 
     override fun equals(other: Any?): Boolean {
@@ -74,51 +80,44 @@ abstract class AbstractModuleDescriptor(
             ?.let {
                 EqualsBuilder()
                     .append(this.name, it.name)
-                    .append(moduleRootDirectory, it.moduleRootDirectory)
+                    .append(moduleRootPath, it.moduleRootPath)
                     .isEquals
             }
             ?: false
     }
 
-    override fun extensionDescriptor() = myExtensionDescriptor
     override fun isPreselected() = false
 
-    override fun ideaModuleFile(): File {
+    override fun ideaModuleFile(importContext: ProjectImportContext): Path {
         val futureModuleName = ideaModuleName()
-        return rootProjectDescriptor.modulesFilesDirectory
-            ?.let { File(rootProjectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
-            ?: File(moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
+        val modulesFilesDirectory = importContext.modulesFilesDirectory
+        return modulesFilesDirectory
+            ?.let { modulesFilesDirectory.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+            ?: moduleRootPath.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
-    override fun getRelativePath(): String {
-        val projectRootDir: File = rootProjectDescriptor.rootDirectory
-            ?: return moduleRootDirectory.path
-        val virtualFileSystemService = VirtualFileSystemService.getInstance()
-
-        return if (virtualFileSystemService.fileContainsAnother(projectRootDir, moduleRootDirectory)) {
-            virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDirectory)
-        } else moduleRootDirectory.path
-    }
+    override fun getRelativePath(rootDirectory: Path): String = VirtualFileSystemService.getInstance()
+        .takeIf { moduleRootPath.isDescendantOf(rootDirectory) }
+        ?.getRelativePath(rootDirectory, moduleRootPath)
+        ?: moduleRootPath.pathString
 
     override fun getAllDependencies() = dependencies
 
     override fun getRequiredExtensionNames() = requiredExtensionNames
-    override fun addRequiredExtensionNames(extensions: Set<YModuleDescriptor>) = extensions
+    override fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>) = extensions
         .map { it.name }
         .let { requiredExtensionNames.addAll(it) }
+
     override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
         requiredExtensionNames = initDependencies(moduleDescriptors).toMutableSet()
     }
 
-    override fun getSpringFiles() = springFileSet
-
-    override fun addSpringFile(file: String) = springFileSet.add(file)
     override fun getDirectDependencies() = directDependencies
 
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>) = this.directDependencies.addAll(dependencies)
     open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
 
-    override fun toString() = "${javaClass.simpleName} {name=$name, moduleRootDirectory=$moduleRootDirectory}"
+    override fun toString() = "${javaClass.simpleName} {name=$name, path=$moduleRootPath}"
 
     private fun recursivelyCollectDependenciesPlainSet(descriptor: ModuleDescriptor, dependenciesSet: MutableSet<ModuleDescriptor>): Set<ModuleDescriptor> {
         val dependencies = descriptor.getDirectDependencies()

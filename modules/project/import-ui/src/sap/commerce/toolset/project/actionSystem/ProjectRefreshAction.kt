@@ -21,12 +21,18 @@ package sap.commerce.toolset.project.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil.SHOW_TEXT_IN_TOOLBAR
-import com.intellij.openapi.options.ConfigurationException
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.path
 import sap.commerce.toolset.project.ProjectRefreshService
+import sap.commerce.toolset.project.context.ProjectImportSettings
+import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.project.ui.ProjectRefreshDialog
+import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 
 class ProjectRefreshAction : DumbAwareAction(
@@ -38,13 +44,29 @@ class ProjectRefreshAction : DumbAwareAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+        val projectPath = project.path ?: return
+        val applicationSettings = ApplicationSettings.getInstance()
+        val projectSettings = project.ySettings
+        val refreshContext = ProjectRefreshContext(
+            project = project,
+            projectPath = projectPath,
+            importSettings = ProjectImportSettings.of(applicationSettings, projectSettings),
+            removeOldProjectData = projectSettings.removeOldProjectData,
+            removeExternalModules = projectSettings.removeExternalModulesOnRefresh,
+        )
+            .mutable()
+            .takeIf { ProjectRefreshDialog(project, it).showAndGet() }
+            ?.immutable()
+            ?: return
 
         try {
-            ProjectRefreshService.getInstance(project).refresh()
-        } catch (ex: ConfigurationException) {
+            ProjectRefreshService.getInstance(project).refresh(refreshContext)
+        } catch (e: Exception) {
+            thisLogger().error(e)
+
             Messages.showErrorDialog(
                 project,
-                ex.getMessageHtml().toString(),
+                e.message,
                 message("hybris.project.import.error.unable.to.proceed")
             )
         }

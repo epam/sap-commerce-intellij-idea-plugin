@@ -26,6 +26,7 @@
         <projectViewNodeDecorator order="last" implementation="sap.commerce.toolset.project.view.HybrisProjectViewNodeDecorator"/>
 
         <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
+                             order="first"
                              dynamic="true"
                              bundle="i18n.HybrisBundle"
                              key="hybris.settings.project.title"

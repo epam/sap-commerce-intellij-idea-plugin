@@ -26,7 +26,7 @@ import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Referencing;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
+import sap.commerce.toolset.xml.converter.SpringBeanReferenceConverter;
 
 /**
  * http://www.hybris.com/cockpitng/component/summaryview:customAttribute interface.

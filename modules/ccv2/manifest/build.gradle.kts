@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
     implementation(project(":project-core"))
+    implementation(project(":project-extensioninfo"))
     implementation(project(":ccv2-core"))
 
     intellijPlatform {

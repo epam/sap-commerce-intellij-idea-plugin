@@ -19,40 +19,44 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
-import com.intellij.facet.ModifiableFacetModel
-import com.intellij.openapi.application.WriteAction
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.openapi.util.JDOMUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.FacetEntity
+import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.util.xmlb.XmlSerializer
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacetConstants
+import sap.commerce.toolset.project.facet.YFacetType
 
-class YFacetConfigurator : ModuleFacetConfigurator {
+class YFacetConfigurator : ModuleImportConfigurator {
 
     override val name: String
         get() = "SAP CX Facet"
 
-    override fun configureModuleFacet(
-        module: Module,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+    override fun isApplicable(moduleTypeId: String) = true
+
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableRootModel: ModifiableRootModel
+        moduleEntity: ModuleEntity
     ) {
-        WriteAction.runAndWait<RuntimeException> {
-            modifiableFacetModel.getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
-                ?.let { modifiableFacetModel.removeFacet(it) }
-
-            val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
-            val facet = facetType.createFacet(
-                module,
-                facetType.defaultFacetName,
-                facetType.createDefaultConfiguration(),
-                null
-            )
-            facet.configuration.loadState(moduleDescriptor.extensionDescriptor())
-
-            modifiableFacetModel.addFacet(facet)
+        val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
+        val xmlTag = XmlSerializer.serialize(moduleDescriptor.extensionDescriptor)
+            .let { JDOMUtil.writeElement(it) }
+        val facetEntityTypeId = FacetEntityTypeId(YFacetType.FACET_ID)
+        val facetEntity = FacetEntity(
+            moduleId = ModuleId(moduleEntity.name),
+            name = facetType.presentableName,
+            typeId = facetEntityTypeId,
+            entitySource = moduleEntity.entitySource
+        ) {
+            this.configurationXmlTag = xmlTag
         }
+
+        importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }
