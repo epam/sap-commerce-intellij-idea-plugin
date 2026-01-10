@@ -25,5 +25,10 @@ data class LibraryRootLookup(
     val type: LibraryRootType,
     val targetFile: Path,
     var libraryRoot: LibraryRoot? = null,
-    var url: String? = null
+    var url: String? = null,
+    var scope: LibraryRootLookupScope = LibraryRootLookupScope.MISSING
 )
+
+enum class LibraryRootLookupScope {
+    MISSING, CACHED, NEW
+}

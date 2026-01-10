@@ -17,12 +17,10 @@
  */
 package sap.commerce.toolset.java.jarFinder
 
-import com.intellij.jarRepository.RemoteRepositoriesConfiguration
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -47,14 +45,8 @@ import java.util.jar.JarFile
 @Service
 class LibraryRootLookupService {
 
-    fun getLookupRepositories(project: Project): List<String>? = RemoteRepositoriesConfiguration.getInstance(project).repositories
-        .map { it.url }
-        .takeIf { it.isNotEmpty() }
-
-    suspend fun findJarUrls(project: Project, libraryJar: VirtualFile, libraryRootLookups: Collection<LibraryRootLookup>) {
+    suspend fun findJarUrls(lookupRepositories: List<String>, libraryJar: VirtualFile, libraryRootLookups: Collection<LibraryRootLookup>) {
         if (libraryRootLookups.isEmpty()) return
-        val baseUrls = getLookupRepositories(project)
-            ?: return
 
         checkCanceled()
 
@@ -68,11 +60,11 @@ class LibraryRootLookupService {
 
             // cache it only if artifact exists in remote
             localMavenCoords
-                ?.takeIf { remoteExists(baseUrls) { baseUrl -> localMavenCoords.toUrl(baseUrl) } != null }
+                ?.takeIf { remoteExists(lookupRepositories) { baseUrl -> localMavenCoords.toUrl(baseUrl) } != null }
             // if nothing helps -> fallback to search by SHA1 of the respective jar file
                 ?: getExternalMavenCoords(libraryJar)
                     ?.let { MavenArtifactCoords.from(it) }
-                    ?.takeIf { remoteExists(baseUrls) { baseUrl -> it.toUrl(baseUrl) } != null }
+                    ?.takeIf { remoteExists(lookupRepositories) { baseUrl -> it.toUrl(baseUrl) } != null }
         } ?: return
 
         libraryRootLookups.forEach {
@@ -81,7 +73,7 @@ class LibraryRootLookupService {
             val artifactSourceType = it.type
 
             it.url = libraryJar.getOrCreateUserDataUnsafe(artifactSourceType.key) {
-                remoteExists(baseUrls) { baseUrl -> mavenArtifactCoords.toUrl(baseUrl, artifactSourceType) }
+                remoteExists(lookupRepositories) { baseUrl -> mavenArtifactCoords.toUrl(baseUrl, artifactSourceType) }
             }
         }
     }

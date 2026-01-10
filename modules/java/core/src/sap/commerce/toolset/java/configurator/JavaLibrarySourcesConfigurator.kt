@@ -19,10 +19,10 @@
 package sap.commerce.toolset.java.configurator
 
 import com.intellij.ide.BrowserUtil
+import com.intellij.jarRepository.RemoteRepositoriesConfiguration
 import com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.checkCanceled
@@ -45,6 +45,7 @@ import com.intellij.util.io.delete
 import kotlinx.coroutines.*
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.java.jarFinder.LibraryRootLookup
+import sap.commerce.toolset.java.jarFinder.LibraryRootLookupScope
 import sap.commerce.toolset.java.jarFinder.LibraryRootLookupService
 import sap.commerce.toolset.java.jarFinder.LibraryRootType
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
@@ -73,8 +74,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
         val project = importContext.project
         val librarySourceDir = getLibrarySourceDir() ?: return
-        val lookupService = LibraryRootLookupService.getService()
-        val lookupRepositories = lookupService.getLookupRepositories(project)
+        val lookupRepositories = getLookupRepositories(project)
 
         if (lookupRepositories == null) {
             Notifications.warning(
@@ -94,7 +94,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
             withBackgroundProgress(project, "Fetching libraries sources...", true) {
                 supervisorScope {
-                    val libraries = processLibraries(project, workspaceModel, lookupService, librarySourceDir, libraryRootTypes)
+                    val libraries = processLibraries(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes)
 
                     updateLibraries(project, workspaceModel, libraries, librarySourceDir)
                 }
@@ -103,17 +103,14 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     }
 
     private suspend fun processLibraries(
-        project: Project,
         workspaceModel: WorkspaceModel,
-        lookupService: LibraryRootLookupService,
+        lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>
-    ): Map<LibraryEntity, Collection<LibraryRoot>> {
-        val libraryEntities = smartReadAction(project) {
-            workspaceModel.currentSnapshot
-                .entities(LibraryEntity::class.java)
-                .toList()
-        }
+    ): Map<LibraryEntity, Collection<LibraryRootLookup>> {
+        val libraryEntities = workspaceModel.currentSnapshot
+            .entities(LibraryEntity::class.java)
+            .toList()
 
         return reportProgressScope(libraryEntities.size) { reporter ->
             libraryEntities
@@ -121,7 +118,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     checkCanceled()
 
                     async {
-                        libraryEntity to fetchSources(project, workspaceModel, lookupService, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
+                        libraryEntity to fetchSources(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
                     }
                 }
                 .awaitAll()
@@ -132,16 +129,17 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     private suspend fun updateLibraries(
         project: Project,
         workspaceModel: WorkspaceModel,
-        libraries: Map<LibraryEntity, Collection<LibraryRoot>>,
+        libraries: Map<LibraryEntity, Collection<LibraryRootLookup>>,
         librarySourceDir: Path
     ) {
         checkCanceled()
 
         val librarySourceDirVf = backgroundWriteAction {
             workspaceModel.updateProjectModel("Updating libraries sources") { builder ->
-                libraries.forEach { (libraryEntity, libraryRoots) ->
+                libraries.forEach { (libraryEntity, LibraryRootLookups) ->
+                    val libraryRoots = LibraryRootLookups.mapNotNull { it.libraryRoot }
                     builder.modifyLibraryEntity(libraryEntity) {
-                        this.roots.addAll(libraryRoots)
+                        this.roots += libraryRoots
                     }
                 }
             }
@@ -151,15 +149,26 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
             ?: return
 
         val updatedLibraries = libraries.size
-        val updatedSourcesLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.SOURCES.id }
-        val updatedJavadocsLibraryRoots = libraries.values.flatten().count { it.type == LibraryRootType.JAVADOC.id }
+        val details = libraries.values.flatten().groupBy { it.type }
+            .mapValues { (_, lookups) ->
+                lookups
+                    .groupBy { it.scope }
+                    .mapValues { (_, scopedLookups) -> scopedLookups.size }
+            }
+            .map { (type, scopeCounts) ->
+                val missing = scopeCounts[LibraryRootLookupScope.MISSING] ?: 0
+                val cached = scopeCounts[LibraryRootLookupScope.CACHED] ?: 0
+                val new = scopeCounts[LibraryRootLookupScope.NEW] ?: 0
+
+                " - ${type.presentableName}: $cached cached, $new new, $missing missing"
+            }
+            .joinToString("<br>")
 
         Notifications.info(
             "Libraries sources successfully updated",
             """
                     Updated $updatedLibraries libraries with:<br>
-                    - $updatedSourcesLibraryRoots sources jars<br>
-                    - $updatedJavadocsLibraryRoots javadocs jars<br>
+                    $details
                 """.trimIndent()
         )
             .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
@@ -168,33 +177,31 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     }
 
     private suspend fun fetchSources(
-        project: Project,
         workspaceModel: WorkspaceModel,
-        lookupService: LibraryRootLookupService,
+        lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>,
         library: LibraryEntity,
         reporter: ProgressReporter
-    ): Collection<LibraryRoot> {
+    ): Collection<LibraryRootLookup> {
         checkCanceled()
 
         return reporter.itemStep("Fetching sources for library '${library.name}'...") {
-            library.roots.flatMap { libraryRoot -> processLibraryRoot(project, workspaceModel, lookupService, librarySourceDir, libraryRootTypes, libraryRoot) }
+            library.roots.flatMap { libraryRoot -> processLibraryRoot(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes, libraryRoot) }
         }
     }
 
     private suspend fun processLibraryRoot(
-        project: Project,
         workspaceModel: WorkspaceModel,
-        lookupService: LibraryRootLookupService,
+        lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>,
         libraryRoot: LibraryRoot
-    ): Collection<LibraryRoot> {
+    ): Collection<LibraryRootLookup> {
         checkCanceled()
 
         val libraryJars = libraryRoot
-            .takeIf { it.inclusionOptions == LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT ||  it.inclusionOptions == LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY }
+            .takeIf { it.inclusionOptions == LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT || it.inclusionOptions == LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT_RECURSIVELY }
             ?.url?.url
             ?.takeIf { it.endsWith("/lib") || it.endsWith("/lib/dbdriver") }
             ?.let { VirtualFileManager.getInstance().findFileByUrl(it) }
@@ -208,7 +215,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 libraryJars.map { libraryJar ->
                     async {
                         reporter.itemStep("Fetching sources for '${libraryJar.nameWithoutExtension}'...") {
-                            fetchLibrarySourcesJars(project, workspaceModel, lookupService, librarySourceDir, libraryRootTypes, libraryJar)
+                            fetchLibrarySourcesJars(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes, libraryJar)
                         }
                     }
                 }
@@ -219,13 +226,12 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     }
 
     private suspend fun fetchLibrarySourcesJars(
-        project: Project,
         workspaceModel: WorkspaceModel,
-        lookupService: LibraryRootLookupService,
+        lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>,
         libraryJar: VirtualFile
-    ): Collection<LibraryRoot> {
+    ): Collection<LibraryRootLookup> {
         checkCanceled()
 
         val vfUrlManager = workspaceModel.getVirtualFileUrlManager()
@@ -235,21 +241,26 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     .resolve("${libraryJar.nameWithoutExtension}-${sourceType.mavenPostfix}.jar")
                 val libraryRoot = toLibraryRoot(targetFile, vfUrlManager, sourceType)
 
-                LibraryRootLookup(sourceType, targetFile, libraryRoot)
+                LibraryRootLookup(sourceType, targetFile, libraryRoot, scope = LibraryRootLookupScope.CACHED)
             }
         // identify not yet downloaded sources
         val missingLibraryRootLookups = libraryRootLookups.filter { it.libraryRoot == null }
+            .onEach { it.scope = LibraryRootLookupScope.MISSING }
 
         // find and set urls for each not yet downloaded source jar
-        lookupService.findJarUrls(project, libraryJar, missingLibraryRootLookups)
+        LibraryRootLookupService.getService().findJarUrls(lookupRepositories, libraryJar, missingLibraryRootLookups)
 
         // download not yet downloaded source jars
-        missingLibraryRootLookups.forEach {
-            downloadSourceJar(librarySourceDir, vfUrlManager, it)
+        missingLibraryRootLookups.forEach { libraryRootLookup ->
+            downloadSourceJar(librarySourceDir, vfUrlManager, libraryRootLookup)
+                ?.let {
+                    libraryRootLookup.libraryRoot = it
+                    libraryRootLookup.scope = LibraryRootLookupScope.NEW
+                }
         }
 
         // we're operating on the same objects, so it should be safe to return local
-        return libraryRootLookups.mapNotNull { it.libraryRoot }
+        return libraryRootLookups
     }
 
     private suspend fun downloadSourceJar(
@@ -341,4 +352,8 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         return if (!librarySourceDir.directoryExists && !librarySourceDir.toFile().mkdirs()) null
         else librarySourceDir
     }
+
+    private fun getLookupRepositories(project: Project): List<String>? = RemoteRepositoriesConfiguration.getInstance(project).repositories
+        .map { it.url }
+        .takeIf { it.isNotEmpty() }
 }

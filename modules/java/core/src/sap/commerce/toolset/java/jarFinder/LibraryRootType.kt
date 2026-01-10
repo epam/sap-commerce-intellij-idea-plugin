@@ -24,16 +24,19 @@ import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 enum class LibraryRootType(
     val id: LibraryRootTypeId,
     val mavenPostfix: String,
-    val key: Key<String?>
+    val key: Key<String?>,
+    val presentableName: String
 ) {
     SOURCES(
         LibraryRootTypeId.SOURCES,
         "sources",
         Key.create("sap.commerce.toolset.java.jarArtifactUrl.sources"),
+        "sources",
     ),
     JAVADOC(
         LibraryRootTypeId("JAVADOC"),
         "javadoc",
         Key.create("sap.commerce.toolset.java.jarArtifactUrl.javadoc"),
+        "javadocs",
     )
 }
