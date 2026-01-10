@@ -30,7 +30,6 @@ plugins {
     id("org.jetbrains.intellij.platform") // IDEA support
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.changelog) // ChangeLog Plugin
-    alias(libs.plugins.openAPIGenerator) // openapi Generator
 }
 
 java {
