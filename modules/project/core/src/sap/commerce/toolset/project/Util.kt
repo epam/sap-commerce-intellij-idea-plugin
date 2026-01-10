@@ -32,7 +32,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 import kotlin.io.path.pathString
@@ -50,7 +49,7 @@ fun Module.root(): Path? = this
 
 fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.getInstance(project)
     .modules
-    .firstOrNull { YFacetConstants.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
+    .firstOrNull { YFacet.getState(it)?.type == ModuleDescriptorType.PLATFORM }
     ?.let { ModuleRootManager.getInstance(it) }
     ?.contentRoots
     ?.firstOrNull { it.findChild(ProjectConstants.File.EXTENSIONS_XML) != null }
@@ -58,7 +57,7 @@ fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.ge
 val PsiElement.isHybrisModule: Boolean
     get() {
         val module = ModuleUtilCore.findModuleForPsiElement(this) ?: return false
-        val descriptorType = YFacetConstants.getModuleSettings(module).type
+        val descriptorType = YFacet.getState(module)?.type
         return descriptorType == ModuleDescriptorType.PLATFORM
             || descriptorType == ModuleDescriptorType.EXT
     }

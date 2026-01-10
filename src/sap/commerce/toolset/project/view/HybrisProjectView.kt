@@ -24,6 +24,7 @@ import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
@@ -36,7 +37,6 @@ import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
-import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
 import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
 import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
@@ -121,15 +121,9 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         for (child in children) {
             if (child is PsiDirectoryNode) {
-                val moduleDescriptorType = child.virtualFile
-                    ?.let { projectRootManager.fileIndex.getModuleForFile(it) }
-                    ?.let { YFacetConstants.getModuleSettings(it) }
-                    ?.type
+                val nodeCategory = getNodeCategory(child, projectRootManager)
 
-                if (moduleDescriptorType == ModuleDescriptorType.ECLIPSE
-                    || moduleDescriptorType == ModuleDescriptorType.GRADLE
-                    || moduleDescriptorType == ModuleDescriptorType.MAVEN
-                ) {
+                if (nodeCategory == NodeCategory.OTHER) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)
@@ -142,6 +136,16 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             treeNodes.add(ExternalProjectViewNode(project, otherNodes, settings))
         }
         return treeNodes
+    }
+
+    private fun getNodeCategory(node: PsiDirectoryNode, projectRootManager: ProjectRootManager): NodeCategory {
+        val vf = node.virtualFile ?: return NodeCategory.Y
+        val module = projectRootManager.fileIndex.getModuleForFile(vf) ?: return NodeCategory.Y
+        if (YFacet.getState(module) != null) return NodeCategory.Y
+        ModuleRootManager.getInstance(module).contentRoots.find { it == vf }
+            ?: return NodeCategory.Y
+
+        return NodeCategory.OTHER
     }
 
     private fun isExternalModuleParent(child: AbstractTreeNode<*>): Boolean {
@@ -347,4 +351,5 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         .name
         .endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
 
+    private enum class NodeCategory { Y, OTHER }
 }

@@ -19,12 +19,15 @@
 package sap.commerce.toolset.project.diagram.node.graph
 
 import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.facet.YFacetConstants
+import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.yExtensionName
 
 object ModuleDepGraphFactory {
 
-    fun buildNode(module: Module) = with(YFacetConstants.getModuleSettings(module)) {
+    fun buildNode(module: Module) = YFacet.getState(module)?.let { buildNode(module, it) }
+
+    private fun buildNode(module: Module, extensionDescriptor: ExtensionDescriptor) = with(extensionDescriptor) {
         val eiContext = getContext()
         val properties = buildList {
             eiContext?.description?.let { add(ModuleDepGraphFieldDescription(it)) }

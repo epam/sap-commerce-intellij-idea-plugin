@@ -25,7 +25,7 @@ import com.intellij.uml.java.project.*
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.diagram.ModuleDepDiagramVisibilityManager
 import sap.commerce.toolset.project.diagram.node.graph.ModuleDepGraphFactory
-import sap.commerce.toolset.project.facet.YFacetConstants
+import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 object ModuleDepDiagramRefresher {
@@ -52,24 +52,36 @@ object ModuleDepDiagramRefresher {
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
                 .filter {
-                    val descriptor = YFacetConstants.getModuleSettings(it).type
-                    isCustomExtension(descriptor) || isOotbOrPlatformExtension(descriptor)
+                    val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                    isCustomExtension(descriptorType) || isOotbOrPlatformExtension(descriptorType)
                 }
         }
         val customExtModules = allModules
-            .filter { isCustomExtension(YFacetConstants.getModuleSettings(it).type) }
+            .filter {
+                val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                isCustomExtension(descriptorType)
+            }
 
         if (ModuleDepDiagramVisibilityManager.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
 
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }
-            .filter { isOotbOrPlatformExtension(YFacetConstants.getModuleSettings(it).type) }
+            .filter {
+                val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                isOotbOrPlatformExtension(descriptorType)
+            }
         val backwardDependencies = allModules
             .filter {
                 ModuleRootManager.getInstance(it).dependencies
-                    .any { module: Module -> isCustomExtension(YFacetConstants.getModuleSettings(module).type) }
+                    .any { module: Module ->
+                        val descriptorType = YFacet.getState(module)?.type ?: return@any false
+                        isCustomExtension(descriptorType)
+                    }
             }
-            .filter { isOotbOrPlatformExtension(YFacetConstants.getModuleSettings(it).type) }
+            .filter {
+                val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                isOotbOrPlatformExtension(descriptorType)
+            }
         return customExtModules + dependencies + backwardDependencies
     }
 
@@ -80,11 +92,11 @@ object ModuleDepDiagramRefresher {
     }
 
     private fun createAdaptedEdges(model: ModuleDepDiagramDataModel, edges: Collection<ModulesUmlEdge>): List<ModuleDepDiagramEdge> = edges
-        .map {
+        .mapNotNull {
             val from = it.source.identifyingElement.module
-            val fromItem = ModuleDepGraphFactory.buildNode(from)
+            val fromItem = ModuleDepGraphFactory.buildNode(from) ?: return@mapNotNull null
             val to = it.target.identifyingElement.module
-            val toItem = ModuleDepGraphFactory.buildNode(to)
+            val toItem = ModuleDepGraphFactory.buildNode(to) ?: return@mapNotNull null
             ModuleDepDiagramEdge(
                 ModuleDepDiagramNode(fromItem, model.provider),
                 ModuleDepDiagramNode(toItem, model.provider),
@@ -93,7 +105,8 @@ object ModuleDepDiagramRefresher {
         }
 
     private fun createAdaptedNodes(model: ModuleDepDiagramDataModel, items: Collection<ModuleItem>): List<ModuleDepDiagramNode> = items
-        .map {
-            ModuleDepDiagramNode(ModuleDepGraphFactory.buildNode(it.module), model.provider)
+        .mapNotNull {
+            val graphNode = ModuleDepGraphFactory.buildNode(it.module) ?: return@mapNotNull null
+            ModuleDepDiagramNode(graphNode, model.provider)
         }
 }

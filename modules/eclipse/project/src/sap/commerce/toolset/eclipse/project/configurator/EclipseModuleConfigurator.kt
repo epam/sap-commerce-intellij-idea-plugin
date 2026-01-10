@@ -20,24 +20,18 @@ package sap.commerce.toolset.eclipse.project.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.ModuleId
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
-import sap.commerce.toolset.eclipse.EclipseConstants
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
-import sap.commerce.toolset.project.configurator.ExternalModuleConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.io.path.pathString
 
-class EclipseModuleConfigurator : ExternalModuleConfigurator() {
+class EclipseModuleConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Eclipse"
-    override val moduleTypeId: String
-        get() = EclipseConstants.MODULE_TYPE_ID
 
-    override suspend fun import(importContext: ProjectImportContext, workspaceModel: WorkspaceModel): Map<ModuleDescriptor, ModuleEntity> {
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val project = importContext.project
         val eclipseModules = importContext.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
@@ -48,17 +42,8 @@ class EclipseModuleConfigurator : ExternalModuleConfigurator() {
         }
         eclipseImportBuilder.list = eclipseModules.map { it.moduleRootPath.pathString }
 
-        val modules = backgroundWriteAction {
+        backgroundWriteAction {
             eclipseImportBuilder.commit(project)
         }
-        return modules
-            .mapNotNull { module ->
-                val moduleDescriptor = eclipseModules.find { it.name == module.name }
-                    ?: return@mapNotNull null
-                val moduleEntity = workspaceModel.currentSnapshot.resolve(ModuleId(module.name))
-                    ?: return@mapNotNull null
-                moduleDescriptor to moduleEntity
-            }
-            .associate { it.first to it.second }
     }
 }
