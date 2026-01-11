@@ -34,6 +34,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
@@ -63,17 +64,12 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         ccv2GroupName to HybrisIcons.Module.CCV2_GROUP,
     )
     private val hideModuleLibraries = setOf(
-        "- Backoffice Classes",
-        "- Web Classes",
-        "- Test Classes",
-        "- Common Web Classes",
-        "- Addon's Target Classes",
-        "- HAC Web Classes",
-        "- lib",
-        "- Backoffice lib",
-        "- compiler output",
-        "- resources",
-        "- server",
+        JavaConstants.ModuleLibrary.COMPILE,
+        JavaConstants.ModuleLibrary.TEST,
+        JavaConstants.ModuleLibrary.BACKOFFICE,
+        JavaConstants.ModuleLibrary.BACKOFFICE_TEST,
+        JavaConstants.ModuleLibrary.ADDON,
+        JavaConstants.ModuleLibrary.ADDON_TEST,
     )
 
     override fun modify(
