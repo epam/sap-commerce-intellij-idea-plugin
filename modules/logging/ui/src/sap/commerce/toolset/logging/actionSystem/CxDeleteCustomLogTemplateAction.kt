@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.selectedNodes
 import sap.commerce.toolset.logging.ui.tree.nodes.CxCustomLogTemplateItemNode
@@ -33,12 +33,9 @@ class CxDeleteCustomLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
-        val selectedNodes = customLogTemplateItemNodes(e) ?: return
+    override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
+        val selectedNodes = customLogTemplateItemNodes(e) ?: return@ifNotFromSearchPopup
         val message = if (selectedNodes.size == 1) "Delete template \"${selectedNodes.first().name}\"?"
         else "Delete ${selectedNodes.size} templates?"
 
@@ -48,7 +45,7 @@ class CxDeleteCustomLogTemplateAction : AnAction() {
                 "Confirm Deletion",
                 HybrisIcons.Log.Action.DELETE
             ) != Messages.YES
-        ) return
+        ) return@ifNotFromSearchPopup
 
         val templateIds = selectedNodes.map { it.uuid }
 

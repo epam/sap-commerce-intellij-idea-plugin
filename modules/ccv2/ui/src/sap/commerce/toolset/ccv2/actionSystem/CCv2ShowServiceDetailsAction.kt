@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
@@ -29,6 +28,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.ui.view.CCv2ServiceDetailsView
+import sap.commerce.toolset.hideFromSearchPopup
 
 class CCv2ShowServiceDetailsAction : DumbAwareAction("Show Service Details", null, HybrisIcons.CCv2.Service.Actions.SHOW_DETAILS) {
 
@@ -58,9 +58,6 @@ class CCv2ShowServiceDetailsAction : DumbAwareAction("Show Service Details", nul
         contentManager.setSelectedContent(content)
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-    }
+    override fun update(e: AnActionEvent) = e.hideFromSearchPopup()
 
 }

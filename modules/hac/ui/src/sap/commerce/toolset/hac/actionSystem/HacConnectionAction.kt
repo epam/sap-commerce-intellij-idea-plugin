@@ -18,22 +18,17 @@
 
 package sap.commerce.toolset.hac.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.ifNotFromSearchPopup
 import javax.swing.Icon
 
 abstract class HacConnectionAction(private val actionName: String, val icon: Icon) : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val presentation = e.presentation
-
-        presentation.text = actionName
-        presentation.icon = icon
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        e.presentation.text = actionName
+        e.presentation.icon = icon
     }
 }

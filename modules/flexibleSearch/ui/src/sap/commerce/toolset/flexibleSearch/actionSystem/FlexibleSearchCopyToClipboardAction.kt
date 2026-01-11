@@ -19,7 +19,6 @@
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ide.CopyPasteManager
@@ -29,6 +28,7 @@ import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.scratch.createScratchFile
 import java.awt.datatransfer.StringSelection
 
@@ -36,10 +36,7 @@ class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.text = i18n("hybris.fxs.actions.copy_query_to_clipboard")
         e.presentation.description = i18n("hybris.fxs.actions.copy_query_to_clipboard.description")
         e.presentation.icon = HybrisIcons.FlexibleSearch.COPY_TO_CLIPBOARD

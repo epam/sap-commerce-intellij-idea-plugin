@@ -18,20 +18,17 @@
 package sap.commerce.toolset.impex.actionSystem
 
 import com.intellij.ide.BrowserUtil
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.hideFromSearchPopup
 
 class ImpExLearnMoreAboutAclAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-    }
+    override fun update(e: AnActionEvent) = e.hideFromSearchPopup()
 
     override fun actionPerformed(e: AnActionEvent) {
         BrowserUtil.browse(HybrisConstants.Documentation.WIKI_ACL)

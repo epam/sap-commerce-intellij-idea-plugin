@@ -18,12 +18,12 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.logging.selectedNodes
@@ -34,12 +34,9 @@ class CxApplyLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
-        val selectedNodes = e.selectedNodes() ?: return
+    override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
+        val selectedNodes = e.selectedNodes() ?: return@ifNotFromSearchPopup
         val loggers = selectedNodes
             .mapNotNull {
                 when (it) {
@@ -70,7 +67,7 @@ class CxApplyLogTemplateAction : AnAction() {
                 "Confirm Applying Templates",
                 HybrisIcons.Log.Template.EXECUTE
             )
-            if (userDecision != Messages.YES) return
+            if (userDecision != Messages.YES) return@ifNotFromSearchPopup
         }
 
         CxRemoteLogStateService.getInstance(project).setLoggers(uniqueLoggers)

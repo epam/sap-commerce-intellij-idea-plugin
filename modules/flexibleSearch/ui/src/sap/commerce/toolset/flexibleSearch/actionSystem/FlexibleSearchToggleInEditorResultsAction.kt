@@ -17,13 +17,13 @@
  */
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.ifNotFromSearchPopup
 
 class FlexibleSearchToggleInEditorResultsAction : ToggleAction(
     i18n("hybris.actions.in_editor.results"),
@@ -33,10 +33,7 @@ class FlexibleSearchToggleInEditorResultsAction : ToggleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         super.update(e)
     }
 

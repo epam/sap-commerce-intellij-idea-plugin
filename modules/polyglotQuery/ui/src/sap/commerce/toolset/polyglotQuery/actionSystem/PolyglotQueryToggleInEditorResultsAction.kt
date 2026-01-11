@@ -17,12 +17,12 @@
  */
 package sap.commerce.toolset.polyglotQuery.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.polyglotQuery.editor.polyglotQuerySplitEditor
 
 class PolyglotQueryToggleInEditorResultsAction : ToggleAction(
@@ -33,10 +33,7 @@ class PolyglotQueryToggleInEditorResultsAction : ToggleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         super.update(e)
     }
 

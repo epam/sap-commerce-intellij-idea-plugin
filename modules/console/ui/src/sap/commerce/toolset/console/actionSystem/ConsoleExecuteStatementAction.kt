@@ -19,34 +19,28 @@
 package sap.commerce.toolset.console.actionSystem
 
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
+import sap.commerce.toolset.ifNotFromSearchPopup
 
 class ConsoleExecuteStatementAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
+    override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
 
         HybrisConsoleService.getInstance(project).getActiveConsole()
             ?.execute()
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
         val consoleService = HybrisConsoleService.getInstance(project)
-        val console = consoleService.getActiveConsole() ?: return
+        val console = consoleService.getActiveConsole() ?: return@ifNotFromSearchPopup
         val editor = console.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 

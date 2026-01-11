@@ -911,7 +911,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 "CCv2: API Token is not set",
                 "Please, specify CCv2 API token via corresponding application settings."
             )
-            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.open.settings.action") }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(10)
             .system(true)
@@ -939,7 +939,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     Exceeded current read timeout, it can be adjusted via CCv2 settings.
                 """.trimIndent()
             )
-            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.open.settings.action") }
             .hideAfter(10)
             .system(true)
             .notify(project)
@@ -957,7 +957,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     ${e.message ?: ""}
                 """.trimIndent()
             )
-            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.open.settings.action") }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(15)
             .system(true)

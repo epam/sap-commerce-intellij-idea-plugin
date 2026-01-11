@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.typeSystem.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -25,16 +24,14 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.typeSystem.options.TSProjectConfigurableProvider
 
 class OpenSettingsDiagramAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.text = i18n("hybris.diagram.ts.provider.actions.open_settings")
         e.presentation.description = i18n("hybris.diagram.ts.provider.actions.open_settings.description")
         e.presentation.icon = HybrisIcons.TypeSystem.Diagram.Actions.OPEN_SETTINGS

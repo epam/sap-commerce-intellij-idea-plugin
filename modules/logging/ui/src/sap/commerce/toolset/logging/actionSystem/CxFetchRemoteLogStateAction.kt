@@ -18,32 +18,26 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 
 class CxFetchRemoteLogStateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
+    override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
 
         CxRemoteLogStateService.getInstance(project).fetch()
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
         val loggerAccess = CxRemoteLogStateService.getInstance(project)
 
         e.presentation.isEnabled = loggerAccess.ready

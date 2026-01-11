@@ -17,12 +17,12 @@
  */
 package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
+import sap.commerce.toolset.ifNotFromSearchPopup
 
 class CCv2ResetCacheAction : DumbAwareAction("Reset Cached CCv2 Details", null, HybrisIcons.Actions.FORCE_REFRESH) {
 
@@ -33,12 +33,8 @@ class CCv2ResetCacheAction : DumbAwareAction("Reset Cached CCv2 Details", null, 
         CCv2Service.getInstance(project).resetCache()
     }
 
-    override fun update(e: AnActionEvent) {
-        val project = e.project ?: return
-
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
         e.presentation.isEnabled = CCv2Service.getInstance(project).cached()
     }
 }

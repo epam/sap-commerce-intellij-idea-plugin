@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowUtil
+import sap.commerce.toolset.hideFromSearchPopup
 
 class CCv2ShowBuildDetailsAction : DumbAwareAction(
     "Show Build Details",
@@ -42,9 +42,6 @@ class CCv2ShowBuildDetailsAction : DumbAwareAction(
         CCv2ToolWindowUtil.showBuildDetailsTab(project, subscription, build)
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-    }
+    override fun update(e: AnActionEvent) = e.hideFromSearchPopup()
 
 }

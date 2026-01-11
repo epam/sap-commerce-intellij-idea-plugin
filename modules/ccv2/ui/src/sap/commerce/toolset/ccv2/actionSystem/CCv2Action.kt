@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.ui.CCv2ToolWindow
 import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
+import sap.commerce.toolset.ifNotFromSearchPopup
 import javax.swing.Icon
 
 abstract class CCv2Action(
@@ -36,10 +36,7 @@ abstract class CCv2Action(
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.isEnabled = isEnabled(e)
         e.presentation.isVisible = e.project
             ?.let { CCv2ToolWindow.getActiveTab(it) == tab }

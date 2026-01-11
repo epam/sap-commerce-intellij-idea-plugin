@@ -19,7 +19,6 @@
 package sap.commerce.toolset.ccv2.actionSystem
 
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.invokeLater
@@ -30,6 +29,7 @@ import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.CCv2UiConstants
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.ifNotFromSearchPopup
 
 class CCv2FetchEnvironmentAction : DumbAwareAction("Fetch Environment", null, HybrisIcons.CCv2.Actions.FETCH) {
 
@@ -71,10 +71,7 @@ class CCv2FetchEnvironmentAction : DumbAwareAction("Fetch Environment", null, Hy
         )
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.isEnabled = !fetching && CCv2ProjectSettings.getInstance().subscriptions.isNotEmpty()
         e.presentation.text = if (fetching) "Fetching..." else "Fetch Environment"
         e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH

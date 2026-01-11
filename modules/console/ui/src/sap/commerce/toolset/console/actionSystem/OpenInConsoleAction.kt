@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.console.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -30,6 +29,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.ifNotFromSearchPopup
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
@@ -43,10 +43,7 @@ abstract class OpenInConsoleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.text = text
         e.presentation.description = description
         e.presentation.icon = icon

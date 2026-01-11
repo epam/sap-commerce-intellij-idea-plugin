@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -27,6 +26,7 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.ui.AnimatedIcon
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
@@ -41,21 +41,18 @@ class CxCreateCustomTemplateStateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
-        val selectedNodes = e.selectedNodes() ?: return
+    override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
+        val selectedNodes = e.selectedNodes() ?: return@ifNotFromSearchPopup
 
         if (selectedNodes.groupBy { it.javaClass }.keys.size > 1) {
             Messages.showErrorDialog("A custom template cannot be created from the current selection.", "Incompatible Nodes Selected")
-            return
+            return@ifNotFromSearchPopup
         }
 
         val node = selectedNodes.first()
         val multiChoice = selectedNodes.size > 1
-        val templateName = templateName(project, node, multiChoice) ?: return
+        val templateName = templateName(project, node, multiChoice) ?: return@ifNotFromSearchPopup
         val dialogTitle = getDialogTitle(node, multiChoice)
         val loggers = loggers(project, selectedNodes)
         val uniqueLoggers = loggers
@@ -80,7 +77,7 @@ class CxCreateCustomTemplateStateAction : AnAction() {
             is CxBundledLogTemplateItemNode -> CxCustomLogTemplateDialog(dialogContext)
             is CxCustomLogTemplateItemNode -> CxCustomLogTemplateDialog(dialogContext)
             else -> null
-        } ?: return
+        } ?: return@ifNotFromSearchPopup
 
         if (dialog.showAndGet()) {
             customLogTemplateService.addTemplate(customTemplate.immutable())
@@ -94,15 +91,14 @@ class CxCreateCustomTemplateStateAction : AnAction() {
         }
     }
 
-    override fun update(e: AnActionEvent) {
-        val selectedNodes = e.selectedNodes() ?: return
-        val project = e.project ?: return
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val selectedNodes = e.selectedNodes() ?: return@ifNotFromSearchPopup
+        val project = e.project ?: return@ifNotFromSearchPopup
         val selectedNodeType = selectedNodeType(project, selectedNodes)
 
-        val isVisible = ActionPlaces.ACTION_SEARCH != e.place && selectedNodeType != null
-        e.presentation.isVisible = isVisible
+        e.presentation.isVisible = selectedNodeType != null
 
-        if (!isVisible) return
+        if (selectedNodeType == null) return@ifNotFromSearchPopup
 
         val multiChoice = selectedNodes.size > 1
 

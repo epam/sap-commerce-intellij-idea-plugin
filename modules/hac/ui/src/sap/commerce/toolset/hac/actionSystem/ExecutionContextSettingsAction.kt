@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.hac.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -29,6 +28,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.popup.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.ifNotFromSearchPopup
 import java.awt.event.KeyEvent
 
 abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> : DumbAwareAction() {
@@ -40,10 +40,8 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-        val project = e.project ?: return
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
 
         e.presentation.icon = HybrisIcons.Connection.CONTEXT
         e.presentation.text = "Execution Context Settings<br>" + previewSettings(e, project)

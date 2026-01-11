@@ -55,6 +55,16 @@ val Project.isNotHybrisProject: Boolean
 val AnActionEvent.isHybrisProject: Boolean
     get() = this.dataContext.isHybrisProject
 
+val AnActionEvent.notFromSearchPopup: Boolean
+    get() = !this.isFromSearchPopup
+
+fun AnActionEvent.ifNotFromSearchPopup(operation: () -> Unit = {}) {
+    this.presentation.isEnabledAndVisible = notFromSearchPopup
+    if (this.presentation.isEnabledAndVisible) operation()
+}
+
+fun AnActionEvent.hideFromSearchPopup() = this.ifNotFromSearchPopup()
+
 val DataContext.isHybrisProject: Boolean
     get() = this.getData(CommonDataKeys.PROJECT)?.isHybrisProject ?: false
 
