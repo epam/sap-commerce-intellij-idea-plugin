@@ -53,6 +53,6 @@ fun triggerAction(
         ?.let { ActionUtil.performAction(it, event) }
 
     if (action == null) {
-        logger<ActionManager>().warn("Could not find action $actionId")
+        logger<Project>().warn("Could not find action $actionId")
     }
 }

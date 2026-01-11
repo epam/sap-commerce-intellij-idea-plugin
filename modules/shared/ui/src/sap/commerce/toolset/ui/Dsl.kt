@@ -55,7 +55,10 @@ fun DialogWrapper.repackDialog() {
     }
 }
 
-fun DialogWrapper.banner(text: String, status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info) = EditorNotificationPanel(null as FileEditor?, status).apply {
+fun DialogWrapper.banner(
+    text: String,
+    status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info
+) = EditorNotificationPanel(null as FileEditor?, status).apply {
     this.text = text
     border = JBUI.Borders.compound(
         ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER),
