@@ -79,7 +79,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
                     else null
                 }
             }
-            data.setIcon(descriptorType?.icon)
+            descriptorType?.icon?.let { data.setIcon(it) }
         } else if (extensionDescriptor.type != ModuleDescriptorType.NONE) {
             data.setIcon(extensionDescriptor.type.icon)
         }
