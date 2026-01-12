@@ -54,19 +54,16 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
             addAll(moduleDescriptor.docSources(virtualFileUrlManager))
             addAll(moduleDescriptor.lib(virtualFileUrlManager))
 
+            when (moduleDescriptor) {
+                is YWebSubModuleDescriptor -> addAll(moduleDescriptor.webRootJars(virtualFileUrlManager))
+                is YCommonWebSubModuleDescriptor -> addAll(moduleDescriptor.webRootJars(virtualFileUrlManager))
+            }
+
             if (moduleDescriptor.isNonCustomModuleDescriptor) {
                 when (moduleDescriptor) {
-                    is YWebSubModuleDescriptor -> {
-                        addAll(moduleDescriptor.webRootJars(virtualFileUrlManager))
-                        addAll(moduleDescriptor.webRootClasses(virtualFileUrlManager))
-                    }
-
-                    is YCommonWebSubModuleDescriptor -> {
-                        addAll(moduleDescriptor.webRootJars(virtualFileUrlManager))
-                        addAll(moduleDescriptor.webRootClasses(virtualFileUrlManager))
-                    }
+                    is YWebSubModuleDescriptor -> addAll(moduleDescriptor.webRootClasses(virtualFileUrlManager))
+                    is YCommonWebSubModuleDescriptor -> addAll(moduleDescriptor.webRootClasses(virtualFileUrlManager))
                 }
-
                 if (importContext.settings.importOOTBModulesInReadOnlyMode) {
                     addAll(moduleDescriptor.classes(virtualFileUrlManager))
                     addAll(moduleDescriptor.resources(virtualFileUrlManager))
