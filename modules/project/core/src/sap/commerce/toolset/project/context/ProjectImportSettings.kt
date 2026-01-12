@@ -29,7 +29,6 @@ data class ProjectImportSettings(
     val ignoreNonExistingSourceDirectories: Boolean,
     val hideEmptyMiddleFolders: Boolean,
     val useFakeOutputPathForCustomExtensions: Boolean,
-    val withStandardProvidedSources: Boolean,
     val withExternalLibrarySources: Boolean,
     val withExternalLibraryJavadocs: Boolean,
     val groupModules: Boolean,
@@ -47,15 +46,12 @@ data class ProjectImportSettings(
     val importOOTBModulesInWriteMode
         get() = !importOOTBModulesInReadOnlyMode
 
-    fun <T> ifWithStandardProvidedSources(operation: () -> T): T? = if (withStandardProvidedSources) operation() else null
-
     fun mutable() = Mutable(
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
         importCustomAntBuildFiles = AtomicBooleanProperty(importCustomAntBuildFiles),
         ignoreNonExistingSourceDirectories = AtomicBooleanProperty(ignoreNonExistingSourceDirectories),
         hideEmptyMiddleFolders = AtomicBooleanProperty(hideEmptyMiddleFolders),
         useFakeOutputPathForCustomExtensions = AtomicBooleanProperty(useFakeOutputPathForCustomExtensions),
-        withStandardProvidedSources = AtomicBooleanProperty(withStandardProvidedSources),
         withExternalLibrarySources = AtomicBooleanProperty(withExternalLibrarySources),
         withExternalLibraryJavadocs = AtomicBooleanProperty(withExternalLibraryJavadocs),
         groupModules = AtomicBooleanProperty(groupModules),
@@ -77,7 +73,6 @@ data class ProjectImportSettings(
         val ignoreNonExistingSourceDirectories: AtomicBooleanProperty,
         val hideEmptyMiddleFolders: AtomicBooleanProperty,
         val useFakeOutputPathForCustomExtensions: AtomicBooleanProperty,
-        val withStandardProvidedSources: AtomicBooleanProperty,
         val withExternalLibrarySources: AtomicBooleanProperty,
         val withExternalLibraryJavadocs: AtomicBooleanProperty,
         val groupModules: AtomicBooleanProperty,
@@ -98,7 +93,6 @@ data class ProjectImportSettings(
             ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.get(),
             hideEmptyMiddleFolders = hideEmptyMiddleFolders.get(),
             useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensions.get(),
-            withStandardProvidedSources = withStandardProvidedSources.get(),
             withExternalLibrarySources = withExternalLibrarySources.get(),
             withExternalLibraryJavadocs = withExternalLibraryJavadocs.get(),
             groupModules = groupModules.get(),
@@ -122,7 +116,6 @@ data class ProjectImportSettings(
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
             useFakeOutputPathForCustomExtensions = applicationSettings.useFakeOutputPathForCustomExtensions,
-            withStandardProvidedSources = applicationSettings.withStandardProvidedSources,
             withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
             withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
             groupModules = applicationSettings.groupModules,
@@ -145,7 +138,6 @@ data class ProjectImportSettings(
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
             useFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions,
-            withStandardProvidedSources = applicationSettings.withStandardProvidedSources,
             withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
             withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
             groupModules = applicationSettings.groupModules,

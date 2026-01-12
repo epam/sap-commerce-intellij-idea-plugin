@@ -51,7 +51,7 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(moduleDescriptor.serverJarFiles(virtualFileUrlManager))
-            addAll(moduleDescriptor.docSources(importContext, virtualFileUrlManager))
+            addAll(moduleDescriptor.docSources(virtualFileUrlManager))
             addAll(moduleDescriptor.lib(virtualFileUrlManager))
 
             if (moduleDescriptor.isNonCustomModuleDescriptor) {

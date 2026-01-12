@@ -88,12 +88,6 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
 
                 row {
-                    checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                        .bindSelected(applicationSettings::withStandardProvidedSources)
-                    contextHelp(i18n("hybris.project.import.withStandardProvidedSources.help.description"))
-                }
-
-                row {
                     label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                     checkBox(i18n("hybris.project.import.withExternalLibrarySources"))

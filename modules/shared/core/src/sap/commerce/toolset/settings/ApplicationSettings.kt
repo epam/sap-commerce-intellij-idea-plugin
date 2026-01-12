@@ -59,11 +59,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(ignoreNonExistingSourceDirectories = value) }
         }
-    var withStandardProvidedSources: Boolean
-        get() = state.withStandardProvidedSources
-        set(value) {
-            updateState { it.copy(withStandardProvidedSources = value) }
-        }
     var withExternalLibrarySources: Boolean
         get() = state.withExternalLibrarySources
         set(value) {

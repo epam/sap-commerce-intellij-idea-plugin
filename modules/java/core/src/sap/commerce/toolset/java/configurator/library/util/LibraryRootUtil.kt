@@ -25,7 +25,6 @@ import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.fromJar
@@ -88,14 +87,12 @@ fun ModuleDescriptor.serverJarFiles(virtualFileUrlManager: VirtualFileUrlManager
     ?.map { LibraryRoot(it, LibraryRootTypeId.COMPILED) }
     ?: emptyList()
 
-fun ModuleDescriptor.docSources(importContext: ProjectImportContext, virtualFileUrlManager: VirtualFileUrlManager) = importContext
-    .settings.ifWithStandardProvidedSources {
-        val rootDescriptor = this.asSafely<YSubModuleDescriptor>()?.owner
-            ?: this
+fun ModuleDescriptor.docSources(virtualFileUrlManager: VirtualFileUrlManager): List<LibraryRoot> {
+    val rootDescriptor = this.asSafely<YSubModuleDescriptor>()?.owner
+        ?: this
 
-        rootDescriptor.sourcesArchives(virtualFileUrlManager, ProjectConstants.Paths.DOC_SOURCES)
-    }
-    ?: emptyList()
+    return rootDescriptor.sourcesArchives(virtualFileUrlManager, ProjectConstants.Paths.DOC_SOURCES)
+}
 
 fun ModuleDescriptor.compiledJars(virtualFileUrlManager: VirtualFileUrlManager, vararg paths: Path) = paths
     .asSequence()

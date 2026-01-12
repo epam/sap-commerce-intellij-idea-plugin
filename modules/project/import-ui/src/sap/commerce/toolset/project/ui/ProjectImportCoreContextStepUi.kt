@@ -306,13 +306,6 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
             }
 
             row {
-                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .bindSelected(context.importSettings.withStandardProvidedSources)
-                contextHelp(i18n("hybris.project.import.withStandardProvidedSources.help.description"))
-                    .customize(rightGaps)
-            }
-
-            row {
                 label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))

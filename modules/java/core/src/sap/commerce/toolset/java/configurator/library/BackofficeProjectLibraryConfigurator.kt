@@ -55,7 +55,7 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
         val libraryRoots = buildList {
             addAll(backofficeWebDescriptor.webRootClasses(virtualFileUrlManager))
             addAll(backofficeWebDescriptor.webRootJars(virtualFileUrlManager))
-            addAll(backofficeWebDescriptor.docSources(importContext, virtualFileUrlManager))
+            addAll(backofficeWebDescriptor.docSources(virtualFileUrlManager))
 
             addAll(importContext.backofficeJars(virtualFileUrlManager))
         }

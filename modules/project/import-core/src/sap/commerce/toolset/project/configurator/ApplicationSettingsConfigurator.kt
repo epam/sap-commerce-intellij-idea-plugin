@@ -37,7 +37,6 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
             this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
             this.ignoreNonExistingSourceDirectories = importSettings.ignoreNonExistingSourceDirectories
             this.hideEmptyMiddleFolders = importSettings.hideEmptyMiddleFolders
-            this.withStandardProvidedSources = importSettings.withStandardProvidedSources
             this.withExternalLibrarySources = importSettings.withExternalLibrarySources
             this.withExternalLibraryJavadocs = importSettings.withExternalLibraryJavadocs
             this.groupModules = importSettings.groupModules

@@ -54,7 +54,7 @@ class HacProjectLibraryConfigurator : ProjectLibraryConfigurator {
         val libraryRoots = buildList {
             addAll(hacWebModuleDescriptor.webRootClasses(virtualFileUrlManager))
             addAll(hacWebModuleDescriptor.webRootJars(virtualFileUrlManager))
-            addAll(hacWebModuleDescriptor.docSources(importContext, virtualFileUrlManager))
+            addAll(hacWebModuleDescriptor.docSources(virtualFileUrlManager))
         }
 
         workspaceModel.configureProjectLibrary(

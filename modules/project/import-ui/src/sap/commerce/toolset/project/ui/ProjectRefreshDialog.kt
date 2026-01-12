@@ -91,12 +91,6 @@ class ProjectRefreshDialog(
             }
 
             row {
-                checkBox(i18n("hybris.project.import.withStandardProvidedSources"))
-                    .bindSelected(refreshContext.importSettings.withStandardProvidedSources)
-                contextHelp(i18n("hybris.project.import.withStandardProvidedSources.help.description"))
-            }
-
-            row {
                 label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))

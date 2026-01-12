@@ -54,7 +54,7 @@ class HmcProjectLibraryConfigurator : ProjectLibraryConfigurator {
         val libraryRoots = buildList {
             addAll(hmcWebModuleDescriptor.webRootClasses(virtualFileUrlManager))
             addAll(hmcWebModuleDescriptor.webRootJars(virtualFileUrlManager))
-            addAll(hmcWebModuleDescriptor.docSources(importContext, virtualFileUrlManager))
+            addAll(hmcWebModuleDescriptor.docSources(virtualFileUrlManager))
         }
 
         workspaceModel.configureProjectLibrary(
