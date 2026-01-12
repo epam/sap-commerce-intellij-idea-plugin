@@ -21,9 +21,7 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
-import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
-import sap.commerce.toolset.java.configurator.contentEntry.util.testGeneratedSources
+import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -34,10 +32,10 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 
-class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ExcludedWebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
-        get() = "Web injected sources (addons, common web)"
+        get() = "Web injected sources: addons, common web (exclusion)"
 
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
         && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
@@ -51,24 +49,14 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = moduleDescriptor.moduleRootPath
-        val generatedSourcePaths = childrenOf(
+        val addonPaths = childrenOf(
             moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
-            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
-        )
-        val generatedTestSourcePaths = childrenOf(
+            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC),
             moduleRootPath.resolve(ProjectConstants.Directory.ADDON_TEST_SRC),
         )
-        val rootEntities = buildList {
-            addAll(generatedSourcePaths.map { moduleEntity.generatedSources(it) })
-            addAll(generatedTestSourcePaths.map { moduleEntity.testGeneratedSources(it) })
-        }
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
 
-        contentRootEntity.addSourceRoots(
-            importContext = importContext,
-            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
-            rootEntities = rootEntities,
-            pathsToIgnore = pathsToIgnore,
-        )
+        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, addonPaths)
     }
 
     private fun childrenOf(vararg paths: Path): List<Path> = paths
