@@ -38,6 +38,7 @@ import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
 import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
 import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
@@ -180,12 +181,11 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         val vf = node.virtualFile
             ?: return true
+        val distroName = project.ySettings.platformRelativePath?.split('/')?.lastOrNull()
 
         // hide `core-customize/hybris` node
-        if (
-            (ProjectConstants.Directory.HYBRIS == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name)
-            || ProjectConstants.Directory.INSTALLER == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name
-        ) return false
+        if (ProjectConstants.Directory.INSTALLER == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name) return false
+        if (distroName != null && distroName == vf.name && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name) return false
 
         val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf)
             ?: return true
