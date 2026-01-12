@@ -82,7 +82,7 @@ class MainConfigModuleDescriptorResolver {
         if (configHybrisModuleDescriptor != null) return configHybrisModuleDescriptor
 
         return ModuleRootResolver.EP.extensionList
-            .find { it.isApplicable(importContext.rootDirectory, configDir) }
+            .find { it.isApplicable(importContext, importContext.rootDirectory, configDir) }
             ?.resolve(configDir)
             ?.moduleRoot
             ?.takeIf { it.type == ModuleDescriptorType.CONFIG }

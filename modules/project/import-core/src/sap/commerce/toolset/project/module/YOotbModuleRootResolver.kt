@@ -22,6 +22,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.FileVisitResult
@@ -30,7 +31,7 @@ import kotlin.io.path.pathString
 
 class YOotbModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(rootDirectory: Path, path: Path): Boolean {
+    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path): Boolean {
         if (!path.resolve(EiConstants.EXTENSION_INFO_XML).fileExists) return false
 
         val parentPathString = path.parent.normalize().pathString

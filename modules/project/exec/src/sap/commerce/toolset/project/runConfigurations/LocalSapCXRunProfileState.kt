@@ -97,7 +97,7 @@ class LocalSapCXRunProfileState(
         // TODO: review these fallbacks, "" is not a correct value
         val projectDirectory = project.directory ?: ""
         val settings = ProjectSettings.getInstance(project)
-        val hybrisDirectory = settings.hybrisDirectory ?: ""
+        val hybrisDirectory = settings.platformRelativePath ?: ""
 
         val scriptPath = if (SystemInfo.isWindows && !WslPath.isWslUncPath(projectDirectory)) ProjectConstants.Paths.HYBRIS_SERVER_BASH_SCRIPT_NAME
         else ProjectConstants.Paths.HYBRIS_SERVER_SHELL_SCRIPT_NAME
@@ -111,7 +111,7 @@ class LocalSapCXRunProfileState(
         // TODO: review these fallbacks, "" is not a correct value
         val projectDirectory = project.directory ?: ""
         val settings = ProjectSettings.getInstance(project)
-        val hybrisDirectory = settings.hybrisDirectory ?: ""
+        val hybrisDirectory = settings.platformRelativePath ?: ""
 
         return Paths.get(projectDirectory)
             .resolve(hybrisDirectory)

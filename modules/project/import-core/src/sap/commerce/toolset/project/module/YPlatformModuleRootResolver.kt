@@ -22,21 +22,21 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.FileVisitResult
 import java.nio.file.Path
-import kotlin.io.path.Path
 import kotlin.io.path.name
 
 class YPlatformModuleRootResolver : ModuleRootResolver {
 
-    private val hybrisBinPlatform by lazy { Path("hybris").resolve("bin").resolve("platform") }
-
-    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
+    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
         name == EiConstants.Extension.PLATFORM
             && resolve(ProjectConstants.File.EXTENSIONS_XML).fileExists
-            && endsWith(hybrisBinPlatform)
+            && importContext.platformDistributionPath
+            ?.let { this.endsWith(it.resolve(ProjectConstants.Paths.BIN_PLATFORM)) }
+            ?: false
     }
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(

@@ -32,7 +32,7 @@ data class ProjectImportCoreContext(
 
     val platformApiVersion: AtomicProperty<String> = AtomicProperty(""),
     val platformVersion: AtomicProperty<String> = AtomicProperty(""),
-    val platformDirectory: AtomicProperty<String> = AtomicProperty(""),
+    val platformDistributionPath: AtomicProperty<String> = AtomicProperty(""),
 
     val sourceCodePathOverride: AtomicBooleanProperty = AtomicBooleanProperty(false),
     val sourceCodePath: AtomicProperty<String> = AtomicProperty(""),

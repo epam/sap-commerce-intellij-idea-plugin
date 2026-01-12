@@ -115,7 +115,7 @@ data class ProjectImportContext(
         var sourceCodePath: Path? = null,
         var sourceCodeFile: Path? = null,
         var projectIconFile: Path? = null,
-        var platformDirectory: Path? = null,
+        var platformDistributionPath: Path? = null,
         var externalExtensionsDirectory: Path? = null,
         var externalConfigDirectory: Path? = null,
         var externalDbDriversDirectory: Path? = null,
@@ -159,7 +159,7 @@ data class ProjectImportContext(
             sourceCodePath = sourceCodePath,
             sourceCodeFile = sourceCodeFile,
             projectIconFile = projectIconFile,
-            platformDirectory = platformDirectory
+            platformDirectory = platformDistributionPath
                 ?: throw HybrisConfigurationException("Unable to find platform directory"),
             externalExtensionsDirectory = externalExtensionsDirectory,
             externalConfigDirectory = externalConfigDirectory,

@@ -19,11 +19,12 @@
 package sap.commerce.toolset.project.module
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Path
 
 interface ModuleRootResolver {
 
-    fun isApplicable(rootDirectory: Path, path: Path): Boolean
+    fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path): Boolean
     fun resolve(path : Path) : ResolvedModuleRoot
 
     companion object {

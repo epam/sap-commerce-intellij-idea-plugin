@@ -206,8 +206,8 @@ object HybrisConstants {
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
 
     const val PLATFORM_EXT_MODULE_PREFIX = "bin/platform/ext/"
-    const val HYBRIS_OOTB_MODULE_PREFIX = "hybris/bin/ext-"
-    const val HYBRIS_OOTB_MODULE_PREFIX_2019 = "hybris/bin/modules/"
+    const val HYBRIS_OOTB_MODULE_PREFIX = "bin/ext-"
+    const val HYBRIS_OOTB_MODULE_PREFIX_2019 = "bin/modules/"
 
     @JvmField
     val LOCAL_GROUP_OVERRIDE_COMMENTS = """

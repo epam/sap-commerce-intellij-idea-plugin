@@ -96,7 +96,7 @@ class ModuleRootsScanner {
                                     processVcsRoot(path, importContext)
 
                                     moduleRootResolvers
-                                        .firstOrNull { it.isApplicable(rootDirectory, path) }
+                                        .firstOrNull { it.isApplicable(importContext, rootDirectory, path) }
                                         ?.resolve(path)
                                         ?.also {
                                             it.moduleRoot?.let { moduleRoot ->
@@ -143,7 +143,7 @@ class ModuleRootsScanner {
         moduleRoot: ModuleRoot,
         moduleRoots: MutableMap<String, ModuleRoot>
     ) {
-        val hybrisDistributionDirectory = importContext.platformDirectory
+        val hybrisDistributionDirectory = importContext.platformDistributionPath
         val externalExtensionsDirectory = importContext.externalExtensionsDirectory
         try {
             // this will resolve symlinks

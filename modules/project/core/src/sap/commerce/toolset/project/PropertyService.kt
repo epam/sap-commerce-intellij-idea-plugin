@@ -33,6 +33,7 @@ import com.intellij.openapi.util.removeUserData
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.withProgressText
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
@@ -64,6 +65,7 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     private val optionalPropertiesFilePattern = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
     fun initCache() = coroutineScope.launch {
+        withProgressText("Waiting for completion of the Index process...") {}
         withBackgroundProgress(project, "Init properties cache", true) {
             smartReadAction(project) { findAllIProperties() }
         }

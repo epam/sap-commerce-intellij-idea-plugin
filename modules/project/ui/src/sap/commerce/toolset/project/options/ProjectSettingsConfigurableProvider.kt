@@ -62,7 +62,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                     textField()
                         .label(i18n("hybris.import.wizard.hybris.distribution.directory.label"))
                         .enabled(false)
-                        .text(projectSettings.hybrisDirectory ?: "")
+                        .text(projectSettings.platformRelativePath ?: "")
                         .align(AlignX.FILL)
                         .resizableColumn()
 

@@ -22,6 +22,7 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.eclipse.EclipseConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.module.ModuleRootResolver
 import sap.commerce.toolset.project.module.ResolvedModuleRoot
@@ -31,7 +32,7 @@ import java.nio.file.Path
 
 class EclipseModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(rootDirectory: Path, path: Path) = Plugin.ECLIPSE.ifActive {
+    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.ECLIPSE.ifActive {
         rootDirectory != path && path.resolve(EclipseConstants.DOT_PROJECT).fileExists
     } ?: false
 

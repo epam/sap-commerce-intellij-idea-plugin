@@ -81,7 +81,7 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 )
             )
                 .label(i18n("hybris.import.wizard.hybris.distribution.directory.label"))
-                .bindText(context.platformDirectory)
+                .bindText(context.platformDistributionPath)
                 .align(AlignX.FILL)
 
             contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.help.description"))

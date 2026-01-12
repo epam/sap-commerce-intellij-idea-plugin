@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.module
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
@@ -29,7 +30,7 @@ import java.nio.file.Path
 
 class YConfigModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
+    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
         resolve(ProjectConstants.Directory.LICENCE).directoryExists
             && resolve(ProjectConstants.Directory.TOMCAT).resolve("tomcat_context.tpl").fileExists
     }

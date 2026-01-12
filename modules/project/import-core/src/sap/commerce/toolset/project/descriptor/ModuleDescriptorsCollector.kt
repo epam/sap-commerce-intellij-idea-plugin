@@ -54,7 +54,7 @@ class ModuleDescriptorsCollector {
         val foundModuleRoots = mutableListOf<ModuleRoot>()
 
         withProgressText("Scanning for modules & vcs...") {
-            thisLogger().info("Scanning for modules & vcs: $rootDirectory")
+            logger.info("Scanning for modules & vcs: $rootDirectory")
             moduleRootsScanner.execute(importContext, rootDirectory, skipDirectories)
                 .apply { foundModuleRoots.addAll(this) }
         }
@@ -69,7 +69,7 @@ class ModuleDescriptorsCollector {
             }
             ?.apply { foundModuleRoots.addAll(this) }
 
-        importContext.platformDirectory
+        importContext.platformDistributionPath
             ?.takeUnless { it.isDescendantOf(rootDirectory) }
             ?.let {
                 withProgressText("Scanning for modules & vcs in: ${it.name}") {

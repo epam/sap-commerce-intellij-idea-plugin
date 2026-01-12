@@ -35,7 +35,7 @@ class ModuleDescriptorsSelector {
         val extensionsInLocalExtensions = LeExtensionsCollector.getInstance().collect(
             foundExtensions,
             configModuleDescriptor.moduleRootPath,
-            importContext.platformDirectory
+            importContext.platformDistributionPath
         )
 
         importContext.foundModules

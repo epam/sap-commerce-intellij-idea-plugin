@@ -89,7 +89,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
         with(importContext) {
             this.platformVersion = importCoreContext.platformVersion.get()
-            this.platformDirectory = importCoreContext.platformDirectory.get().toNioPathOrNull()
+            this.platformDistributionPath = importCoreContext.platformDistributionPath.get().toNioPathOrNull()
             this.javadocUrl = importCoreContext.javadocUrl.get()
             this.excludedFromScanning = importCoreContext.excludedFromScanningDirectories.get().toImmutableSet()
 
@@ -133,12 +133,12 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             importCoreContext.projectName.set(wizardContext.projectName)
         }
 
-        if (importCoreContext.platformDirectory.get().isBlank()) {
-            findPlatformDirectory()
-                ?.let { importCoreContext.platformDirectory.set(it.normalize().pathString) }
+        if (importCoreContext.platformDistributionPath.get().isBlank()) {
+            findPlatformDistributionPath()
+                ?.let { importCoreContext.platformDistributionPath.set(it.normalize().pathString) }
         }
 
-        val platformPath = importCoreContext.platformDirectory.get()
+        val platformPath = importCoreContext.platformDistributionPath.get()
             .takeIf { it.isNotBlank() }
             ?.let { Path(it) }
             ?.takeIf { it.exists() }
@@ -198,10 +198,14 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         val importContext = importBuilder().initContext(importSettings)
 
         with(importContext) {
-            val platformPath = refreshContext.projectPath.resolve("hybris")
+            val resolvedPlatformDistributionPath = (projectSettings.platformRelativePath
+                ?.let { refreshContext.projectPath.resolve(it) }
+            // refreshing a project which was never imported by this plugin
+                ?: findPlatformDistributionPath())
+            this.platformDistributionPath = resolvedPlatformDistributionPath
 
-            val platformApiVersion = getPlatformVersion(platformPath, true)
-            val platformVersion = getPlatformVersion(platformPath, false)
+            val platformApiVersion = resolvedPlatformDistributionPath?.let { getPlatformVersion(it, true) }
+            val platformVersion = resolvedPlatformDistributionPath?.let { getPlatformVersion(it, false) }
 
             this.platformVersion = platformVersion
                 ?: projectSettings.hybrisVersion
@@ -217,15 +221,10 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             this.externalDbDriversDirectory = projectSettings.externalDbDriversDirectory?.toNioPathOrNull()
 
             this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory?.toNioPathOrNull()
-                ?: builder.fileToImport.toNioPathOrNull()?.resolve(ProjectConstants.Paths.IDEA_MODULES)
+                ?: refreshContext.projectPath.resolve(ProjectConstants.Paths.IDEA_MODULES)
 
             this.ccv2Token = CCv2ProjectSettings.getInstance().getCCv2Token()
             this.excludedFromScanning = projectSettings.excludedFromScanning
-
-            this.platformDirectory = projectSettings.hybrisDirectory
-                ?.let { builder.fileToImport.toNioPathOrNull()?.resolve(it) }
-                // refreshing a project which was never imported by this plugin
-                ?: findPlatformDirectory()
         }
 
         thisLogger().info("Refreshing a project with the following settings: $importContext")
@@ -260,9 +259,9 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             ?.takeUnless { it.get().toNioPathOrNull()?.directoryExists ?: false }
             ?.let { throw ConfigurationException(i18n("hybris.import.wizard.validation.dbdriver.directory.does.not.exist")) }
 
-        val platformDirectory = importCoreContext.platformDirectory.get()
-        if (platformDirectory.isBlank()) throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.empty"))
-        if (!Path(platformDirectory).isDirectory()) throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"))
+        val distributionPath = importCoreContext.platformDistributionPath.get()
+        if (distributionPath.isBlank()) throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.empty"))
+        if (!Path(distributionPath).isDirectory()) throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"))
 
         return true
     }
@@ -287,8 +286,9 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         return buildProperties.getProperty(ProjectImportConstants.HYBRIS_API_VERSION_KEY)
     }
 
-    private fun getPlatformJavadocUrl(platformApiVersion: String?) = if (platformApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, platformApiVersion)
-    else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
+    private fun getPlatformJavadocUrl(platformApiVersion: String?) =
+        if (platformApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, platformApiVersion)
+        else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
     private fun searchModuleRoots(importContext: ProjectImportContext.Mutable) {
         try {
@@ -306,7 +306,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         }
     }
 
-    private fun findPlatformDirectory(): Path? {
+    private fun findPlatformDistributionPath(): Path? {
         try {
             val rootProjectDirectory = Path(builder.fileToImport)
 

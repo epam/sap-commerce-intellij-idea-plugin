@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.util.io.FileUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.directory
@@ -26,7 +25,6 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 import sap.commerce.toolset.util.toSystemIndependentName
-import java.io.File
 import kotlin.io.path.Path
 
 class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
@@ -77,9 +75,9 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         val project = importContext.project
         val projectDir = project.directory?.let { Path(it) } ?: return
         val projectSettings = project.ySettings
-        val platformPath = importContext.platformDirectory ?: return
+        val platformPath = importContext.platformDirectory
 
-        projectSettings.hybrisDirectory = projectDir
+        projectSettings.platformRelativePath = projectDir
             .relativize(platformPath)
             .toString()
 
@@ -89,18 +87,6 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
                 projectSettings.customDirectory = relativeCustomPath.toString()
             }
     }
-
-    private val File.directorySystemIndependentName: String?
-        get() = this
-            .takeIf { it.exists() }
-            ?.takeIf { it.isDirectory }
-            ?.let { FileUtil.toSystemIndependentName(it.path) }
-
-    private val File.fileSystemIndependentName: String?
-        get() = this
-            .takeIf { it.exists() }
-            ?.takeIf { it.isFile }
-            ?.let { FileUtil.toSystemIndependentName(it.path) }
 
     private fun createModulesOnBlackList(importContext: ProjectImportContext): Set<String> {
         val chosenHybrisModuleDescriptors = importContext.chosenHybrisModuleDescriptors

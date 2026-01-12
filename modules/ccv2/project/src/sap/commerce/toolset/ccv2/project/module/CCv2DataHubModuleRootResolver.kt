@@ -21,6 +21,7 @@ package sap.commerce.toolset.ccv2.project.module
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.module.ModuleRootResolver
 import sap.commerce.toolset.project.module.ResolvedModuleRoot
@@ -30,7 +31,7 @@ import kotlin.io.path.name
 
 class CCv2DataHubModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(rootDirectory: Path, path: Path) = with(path) {
+    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
         name == CCv2Constants.DATAHUB_NAME && isCCv2ManifestFileExists
     }
 

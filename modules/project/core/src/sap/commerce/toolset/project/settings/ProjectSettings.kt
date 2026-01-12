@@ -39,7 +39,7 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(customDirectory = value) }
         }
-    var hybrisDirectory
+    var platformRelativePath
         get() = state.hybrisDirectory
         set(value) {
             updateState { it.copy(hybrisDirectory = value) }

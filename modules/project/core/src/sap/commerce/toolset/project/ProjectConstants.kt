@@ -83,6 +83,7 @@ object ProjectConstants {
         const val JS_TARGET = "jsTarget"
 
         const val EXT = "ext"
+        @Deprecated("review it!")
         const val HYBRIS = "hybris"
         const val INSTALLER = "installer"
         const val ACCELERATOR_ADDON = "acceleratoraddon"
