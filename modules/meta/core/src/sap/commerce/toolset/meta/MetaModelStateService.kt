@@ -78,7 +78,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
         coroutineScope.launch {
             val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
 
-                val collectedDependencies = withProgressText("Waiting for completion of the Index process ...") {
+                val collectedDependencies = withProgressText("Waiting for completion of the Index process...") {
                     metaCollector.collectDependencies()
                 }
 

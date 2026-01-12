@@ -66,8 +66,9 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     fun initCache() = coroutineScope.launch {
         withBackgroundProgress(project, "Init properties cache", true) {
-            withProgressText("Waiting for completion of the Index process...") {}
-            smartReadAction(project) { findAllIProperties() }
+            withProgressText("Waiting for completion of the Index process...") {
+                smartReadAction(project) { findAllIProperties() }
+            }
         }
     }
 
