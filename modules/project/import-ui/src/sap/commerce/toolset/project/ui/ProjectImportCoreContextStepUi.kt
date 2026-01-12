@@ -296,6 +296,8 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
             row {
                 checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
                     .bindSelected(context.importSettings.ignoreNonExistingSourceDirectories)
+                contextHelp(i18n("hybris.project.import.ignoreNonExistingSourceDirectories.help.description"))
+                    .customize(rightGaps)
             }
 
             row {

@@ -82,6 +82,7 @@ class ProjectRefreshDialog(
             row {
                 checkBox(i18n("hybris.project.import.ignoreNonExistingSourceDirectories"))
                     .bindSelected(refreshContext.importSettings.ignoreNonExistingSourceDirectories)
+                contextHelp(i18n("hybris.project.import.ignoreNonExistingSourceDirectories.help.description"))
             }
 
             row {
