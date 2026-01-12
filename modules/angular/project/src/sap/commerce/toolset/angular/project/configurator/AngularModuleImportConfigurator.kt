@@ -20,7 +20,6 @@ package sap.commerce.toolset.angular.project.configurator
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.angular.AngularConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -43,15 +42,12 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
 
-        workspaceModel.update("Adding source root [${moduleDescriptor.name}]") { builder ->
-            val contentRootEntity = ContentRootEntity(
-                url = contentRootUrl,
-                excludedPatterns = emptyList(),
-                entitySource = moduleEntity.entitySource
-            )
-            builder.modifyModuleEntity(moduleEntity) {
-                this.contentRoots = mutableListOf(contentRootEntity)
-            }
-        }
+        val contentRootEntity = ContentRootEntity(
+            url = contentRootUrl,
+            excludedPatterns = emptyList(),
+            entitySource = moduleEntity.entitySource
+        )
+
+        importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }

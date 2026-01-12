@@ -20,9 +20,7 @@ package sap.commerce.toolset.ccv2.project.configurator
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -43,16 +41,14 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
+        val distributionPath = importContext.platformDirectory.pathString.replace('\\', '/')
 
-        workspaceModel.update("Adding source root [${moduleDescriptor.name}]") { builder ->
-            val contentRootEntity = ContentRootEntity(
-                url = contentRootUrl,
-                excludedPatterns = listOf(ProjectConstants.Directory.HYBRIS),
-                entitySource = moduleEntity.entitySource
-            )
-            builder.modifyModuleEntity(moduleEntity) {
-                this.contentRoots = mutableListOf(contentRootEntity)
-            }
-        }
+        val contentRootEntity = ContentRootEntity(
+            url = contentRootUrl,
+            excludedPatterns = listOf(distributionPath),
+            entitySource = moduleEntity.entitySource
+        )
+
+        importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }
