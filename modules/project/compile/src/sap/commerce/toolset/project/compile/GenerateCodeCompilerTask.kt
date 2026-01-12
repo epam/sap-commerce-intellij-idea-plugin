@@ -56,7 +56,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.extension
 import kotlin.io.path.name
 
-class ProjectBeforeCompilerTask : CompileTask {
+class GenerateCodeCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
         val project = context.project

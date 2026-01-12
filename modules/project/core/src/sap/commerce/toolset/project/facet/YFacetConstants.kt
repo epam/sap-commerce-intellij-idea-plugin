@@ -19,22 +19,7 @@
 package sap.commerce.toolset.project.facet
 
 import com.intellij.facet.FacetTypeId
-import com.intellij.openapi.externalSystem.ExternalSystemModulePropertyManager
-import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.yExtensionName
 
 object YFacetConstants {
     val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
-
-    fun getModuleSettings(module: Module): ExtensionDescriptor = YFacet.getState(module)
-        ?: ExtensionDescriptor(
-            name = module.yExtensionName(),
-            type = when (ExternalSystemModulePropertyManager.getInstance(module).getExternalSystemId()) {
-                "GRADLE" -> ModuleDescriptorType.GRADLE
-                "Maven" -> ModuleDescriptorType.MAVEN
-                else -> ModuleDescriptorType.NONE
-            }
-        )
 }

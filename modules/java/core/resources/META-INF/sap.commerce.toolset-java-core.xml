@@ -48,7 +48,7 @@
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleSdkConfigurator"/>
         <project.module.importConfigurator order="after javaModuleSdkConfigurator" id="javaModuleSettingsConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleSettingsConfigurator"/>
-        <project.module.importConfigurator order="after javaModuleJavadocsConfigurator" id="javaModuleLibrariesConfigurator"
+        <project.module.importConfigurator order="after javaModuleSettingsConfigurator" id="javaModuleLibrariesConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleLibrariesConfigurator"/>
         <project.module.importConfigurator order="after javaModuleLibrariesConfigurator" id="javaModuleContentRootsConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleContentRootsConfigurator"/>
@@ -59,7 +59,6 @@
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeResourcesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebTestClassesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludePlatformContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludedWebInjectedSourcesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.PlatformContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ResourcesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.SourcesContentEntryConfigurator"/>
