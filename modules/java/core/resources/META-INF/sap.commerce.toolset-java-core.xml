@@ -59,6 +59,7 @@
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeResourcesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebTestClassesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludePlatformContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludedWebInjectedSourcesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.PlatformContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ResourcesContentEntryConfigurator"/>
         <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.SourcesContentEntryConfigurator"/>
