@@ -16,15 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.contentEntry
+package sap.commerce.toolset.java.configurator.contentEntry.util
 
+import com.intellij.java.workspace.entities.JavaResourceRootPropertiesEntity
+import com.intellij.java.workspace.entities.JavaSourceRootPropertiesEntity
 import com.intellij.java.workspace.entities.javaResourceRoots
 import com.intellij.java.workspace.entities.javaSourceRoots
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ExcludeUrlEntity
-import com.intellij.platform.workspace.jps.entities.SourceRootEntity
+import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
+import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_RESOURCE_ROOT_ENTITY_TYPE_ID
+import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_SOURCE_ROOT_ENTITY_TYPE_ID
+import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_TEST_ROOT_ENTITY_TYPE_ID
 import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.util.directoryExists
@@ -63,3 +66,43 @@ internal fun ContentRootEntityBuilder.addSourceRoots(
     }
     .let { newSourceRoots -> this.sourceRoots += newSourceRoots }
 
+
+internal fun ModuleEntity.generatedSources(path: Path) = this.sources(
+    path = path,
+    generated = true
+)
+
+internal fun ModuleEntity.testGeneratedSources(path: Path) = this.sources(
+    sourceRootTypeId = JAVA_TEST_ROOT_ENTITY_TYPE_ID,
+    path = path,
+    generated = true
+)
+
+internal fun ModuleEntity.testSources(path: Path) = this.sources(
+    sourceRootTypeId = JAVA_TEST_ROOT_ENTITY_TYPE_ID,
+    path = path
+)
+
+internal fun ModuleEntity.sources(
+    sourceRootTypeId: SourceRootTypeId = JAVA_SOURCE_ROOT_ENTITY_TYPE_ID,
+    path: Path,
+    generated: Boolean = false,
+    packagePrefix: String = ""
+) = SourceRootEntityDescriptor(
+    sourceRootTypeId = sourceRootTypeId,
+    moduleEntity = this,
+    path = path,
+    javaSourceRoot = { JavaSourceRootPropertiesEntity(generated, packagePrefix, it.entitySource) }
+)
+
+internal fun ModuleEntity.resources(
+    sourceRootTypeId: SourceRootTypeId = JAVA_RESOURCE_ROOT_ENTITY_TYPE_ID,
+    path: Path,
+    generated: Boolean = false,
+    relativeOutputPath: String = ""
+) = SourceRootEntityDescriptor(
+    sourceRootTypeId = sourceRootTypeId,
+    moduleEntity = this,
+    path = path,
+    javaResourceRoot = { JavaResourceRootPropertiesEntity(generated, relativeOutputPath, it.entitySource) }
+)

@@ -21,7 +21,9 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
+import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
+import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
+import sap.commerce.toolset.java.configurator.contentEntry.util.resources
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -47,11 +49,11 @@ class PlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
         val rootEntities = buildList {
             // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
             bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
-                .let { SourceRootEntityDescriptor.generatedSources(moduleEntity, it) }
+                .let { moduleEntity.generatedSources(it) }
                 .also { add(it) }
 
             bootstrapPath.resolve(ProjectConstants.Directory.RESOURCES)
-                .let { SourceRootEntityDescriptor.resources(moduleEntity = moduleEntity, path = it) }
+                .let { moduleEntity.resources(path = it) }
                 .also { add(it) }
         }
 

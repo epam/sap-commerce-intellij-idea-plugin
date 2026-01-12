@@ -21,7 +21,8 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
+import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
+import sap.commerce.toolset.java.configurator.contentEntry.util.testSources
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -48,7 +49,7 @@ class TestSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
     ) {
         val rootEntities = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
             .map { moduleDescriptor.moduleRootPath.resolve(it) }
-            .map { SourceRootEntityDescriptor.testSources(moduleEntity = moduleEntity, path = it) }
+            .map { moduleEntity.testSources(path = it) }
 
         contentRootEntity.addSourceRoots(
             importContext = importContext,

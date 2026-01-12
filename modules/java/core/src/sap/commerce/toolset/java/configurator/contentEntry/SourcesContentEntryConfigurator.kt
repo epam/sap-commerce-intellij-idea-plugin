@@ -21,7 +21,9 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
+import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
+import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
+import sap.commerce.toolset.java.configurator.contentEntry.util.sources
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -51,11 +53,11 @@ class SourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
         val rootEntities = buildList {
             ProjectConstants.Directory.SRC_DIR_NAMES
                 .map { moduleRootPath.resolve(it) }
-                .map { SourceRootEntityDescriptor.sources(moduleEntity = moduleEntity, path = it) }
+                .map { moduleEntity.sources(path = it) }
                 .forEach { add(it) }
 
             moduleRootPath.resolve(ProjectConstants.Directory.GEN_SRC)
-                .let { SourceRootEntityDescriptor.generatedSources(moduleEntity = moduleEntity, path = it) }
+                .let { moduleEntity.generatedSources(path = it) }
                 .also { add(it) }
         }
 

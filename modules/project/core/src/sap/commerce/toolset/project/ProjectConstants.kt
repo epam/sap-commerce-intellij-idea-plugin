@@ -70,6 +70,7 @@ object ProjectConstants {
         const val GROOVY_TEST_SRC = "groovytestsrc"
         const val KOTLIN_TEST_SRC = "kotlintestsrc"
         const val SCALA_TEST_SRC = "scalatestsrc"
+        const val ADDON_TEST_SRC = "addontestsrc"
 
         const val RESOURCES = "resources"
         const val ECLIPSE_BIN = "eclipsebin"

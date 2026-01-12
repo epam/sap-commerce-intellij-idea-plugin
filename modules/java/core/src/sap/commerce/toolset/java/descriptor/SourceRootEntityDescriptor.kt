@@ -18,74 +18,22 @@
 
 package sap.commerce.toolset.java.descriptor
 
-import com.intellij.java.workspace.entities.JavaResourceRootPropertiesEntity
 import com.intellij.java.workspace.entities.JavaResourceRootPropertiesEntityBuilder
-import com.intellij.java.workspace.entities.JavaSourceRootPropertiesEntity
 import com.intellij.java.workspace.entities.JavaSourceRootPropertiesEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.SourceRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.SourceRootTypeId
+import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
-import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_RESOURCE_ROOT_ENTITY_TYPE_ID
-import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_SOURCE_ROOT_ENTITY_TYPE_ID
-import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_TEST_RESOURCE_ROOT_ENTITY_TYPE_ID
-import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_TEST_ROOT_ENTITY_TYPE_ID
 import java.nio.file.Path
 import kotlin.io.path.pathString
 
-internal class SourceRootEntityDescriptor private constructor(
+internal class SourceRootEntityDescriptor(
     val sourceRootTypeId: SourceRootTypeId,
     val moduleEntity: ModuleEntity,
     val path: Path,
     val javaSourceRoot: ((SourceRootEntityBuilder) -> JavaSourceRootPropertiesEntityBuilder)? = null,
     val javaResourceRoot: ((SourceRootEntityBuilder) -> JavaResourceRootPropertiesEntityBuilder)? = null,
 ) {
-    fun url(virtualFileUrlManager: VirtualFileUrlManager) = virtualFileUrlManager.fromPath(path.pathString)
-
-    companion object {
-
-        fun sources(
-            sourceRootTypeId: SourceRootTypeId = JAVA_SOURCE_ROOT_ENTITY_TYPE_ID,
-            moduleEntity: ModuleEntity,
-            path: Path,
-            generated: Boolean = false,
-            packagePrefix: String = ""
-        ) = SourceRootEntityDescriptor(
-            sourceRootTypeId = sourceRootTypeId,
-            moduleEntity = moduleEntity,
-            path = path,
-            javaSourceRoot = { JavaSourceRootPropertiesEntity(generated, packagePrefix, it.entitySource) }
-        )
-
-        fun resources(
-            sourceRootTypeId: SourceRootTypeId = JAVA_RESOURCE_ROOT_ENTITY_TYPE_ID,
-            moduleEntity: ModuleEntity,
-            path: Path,
-            generated: Boolean = false,
-            relativeOutputPath: String = ""
-        ) = SourceRootEntityDescriptor(
-            sourceRootTypeId = sourceRootTypeId,
-            moduleEntity = moduleEntity,
-            path = path,
-            javaResourceRoot = { JavaResourceRootPropertiesEntity(generated, relativeOutputPath, it.entitySource) }
-        )
-
-        fun generatedSources(moduleEntity: ModuleEntity, path: Path) = sources(
-            moduleEntity = moduleEntity,
-            path = path,
-            generated = true
-        )
-
-        fun testSources(moduleEntity: ModuleEntity, path: Path) = sources(
-            sourceRootTypeId = JAVA_TEST_ROOT_ENTITY_TYPE_ID,
-            moduleEntity = moduleEntity,
-            path = path
-        )
-
-        fun testResources(moduleEntity: ModuleEntity, path: Path) = resources(
-            sourceRootTypeId = JAVA_TEST_RESOURCE_ROOT_ENTITY_TYPE_ID,
-            moduleEntity = moduleEntity,
-            path = path
-        )
-    }
+    fun url(virtualFileUrlManager: VirtualFileUrlManager): VirtualFileUrl = virtualFileUrlManager.fromPath(path.pathString)
 }

@@ -21,7 +21,9 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
+import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
+import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
+import sap.commerce.toolset.java.configurator.contentEntry.util.testGeneratedSources
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -49,17 +51,17 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = moduleDescriptor.moduleRootPath
-        val rootEntities = listOf(
+        val generatedSourcePaths = paths(
             moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
             moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
         )
-            .filter { it.directoryExists }
-            .flatMap { path ->
-                Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
-                    directoryStream.toList()
-                }
-            }
-            .map { SourceRootEntityDescriptor.generatedSources(moduleEntity, it) }
+        val generatedTestSourcePaths = paths(
+            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_TEST_SRC),
+        )
+        val rootEntities = buildList {
+            addAll(generatedSourcePaths.map { moduleEntity.generatedSources(it) })
+            addAll(generatedTestSourcePaths.map { moduleEntity.testGeneratedSources(it) })
+        }
 
         contentRootEntity.addSourceRoots(
             importContext = importContext,
@@ -68,4 +70,12 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
             pathsToIgnore = pathsToIgnore,
         )
     }
+
+    private fun paths(vararg paths: Path): List<Path> = paths
+        .filter { it.directoryExists }
+        .flatMap { path ->
+            Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
+                directoryStream.toList()
+            }
+        }
 }

@@ -21,7 +21,8 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import sap.commerce.toolset.java.descriptor.SourceRootEntityDescriptor
+import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
+import sap.commerce.toolset.java.configurator.contentEntry.util.resources
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -50,7 +51,7 @@ class ResourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
         val resourcesPath = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
         val relativeOutputPath = if (moduleDescriptor is YBackofficeSubModuleDescriptor) "cockpitng" else ""
         val rootEntities = resourcesPath
-            .let { SourceRootEntityDescriptor.resources(moduleEntity = moduleEntity, path = it, relativeOutputPath = relativeOutputPath) }
+            .let { moduleEntity.resources(path = it, relativeOutputPath = relativeOutputPath) }
             .let { listOf(it) }
 
         contentRootEntity.addSourceRoots(
