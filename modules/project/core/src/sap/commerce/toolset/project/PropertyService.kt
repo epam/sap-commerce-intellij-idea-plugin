@@ -65,8 +65,8 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     private val optionalPropertiesFilePattern = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
     fun initCache() = coroutineScope.launch {
-        withProgressText("Waiting for completion of the Index process...") {}
         withBackgroundProgress(project, "Init properties cache", true) {
+            withProgressText("Waiting for completion of the Index process...") {}
             smartReadAction(project) { findAllIProperties() }
         }
     }
