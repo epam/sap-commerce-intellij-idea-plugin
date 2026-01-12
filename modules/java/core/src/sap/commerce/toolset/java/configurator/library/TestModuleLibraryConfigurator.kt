@@ -63,12 +63,16 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
                 }
             }
         }
+        val excludedRoots = buildList {
+            addAll(moduleDescriptor.excludedResources(virtualFileUrlManager))
+        }
 
         moduleEntity.configureLibrary(
             importContext = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.TEST}",
             scope = DependencyScope.TEST,
             libraryRoots = libraryRoots,
+            excludedRoots = excludedRoots,
         )
     }
 }

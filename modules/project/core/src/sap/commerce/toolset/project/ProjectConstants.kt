@@ -73,6 +73,7 @@ object ProjectConstants {
 
         const val RESOURCES = "resources"
         const val ECLIPSE_BIN = "eclipsebin"
+        const val NPM = "npm"
         const val NODE_MODULES = "node_modules"
         const val JS_STOREFRONT = "js-storefront"
 

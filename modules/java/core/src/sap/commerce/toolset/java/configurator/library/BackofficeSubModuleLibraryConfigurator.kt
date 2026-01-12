@@ -22,6 +22,7 @@ import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.DependencyScope
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
@@ -50,9 +51,13 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
         val backofficeSubModuleDescriptor = moduleDescriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
             ?: return
+        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
+        val excludedRoots = buildList {
+            addAll(moduleDescriptor.excludedResources(virtualFileUrlManager))
+        }
 
-        configureLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE) {
+        configureLibrary(importContext, virtualFileUrlManager, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE, excludedRoots) {
             buildList {
                 addAll(backofficeSubModuleDescriptor.classes(it))
                 addAll(backofficeSubModuleDescriptor.resources(it))
@@ -61,7 +66,7 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
             }
         }
 
-        configureLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE_TEST) {
+        configureLibrary(importContext, virtualFileUrlManager, moduleDescriptor, moduleEntity, JavaConstants.ModuleLibrary.BACKOFFICE_TEST, excludedRoots) {
             buildList {
                 addAll(backofficeSubModuleDescriptor.classes(it))
                 addAll(backofficeSubModuleDescriptor.testClasses(it))
@@ -74,16 +79,18 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
 
     private fun configureLibrary(
         importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
+        virtualFileUrlManager: VirtualFileUrlManager,
         moduleDescriptor: YRegularModuleDescriptor,
         moduleEntity: ModuleEntity,
         libraryNameSuffix: String,
+        excludedRoots: List<VirtualFileUrl>,
         libraryRootsProvider: (VirtualFileUrlManager) -> Collection<LibraryRoot>
     ) = moduleEntity.configureLibrary(
         importContext = importContext,
         libraryName = "${moduleDescriptor.name} - $libraryNameSuffix",
         scope = DependencyScope.PROVIDED,
         exported = false,
-        libraryRoots = libraryRootsProvider(workspaceModel.getVirtualFileUrlManager()),
+        libraryRoots = libraryRootsProvider(virtualFileUrlManager),
+        excludedRoots = excludedRoots,
     )
 }

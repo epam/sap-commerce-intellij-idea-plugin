@@ -48,7 +48,7 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         configureAddonTestLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
     }
 
-    private suspend fun configureAddonLibrary(
+    private fun configureAddonLibrary(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
@@ -84,7 +84,7 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         )
     }
 
-    private suspend fun configureAddonTestLibrary(
+    private fun configureAddonTestLibrary(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
@@ -92,32 +92,39 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
+        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
+            .filterIsInstance<YModuleDescriptor>()
+            .distinct()
+            .associateBy { it.name }
+            .values
+            .filter { it.getDirectDependencies().contains(moduleDescriptor.owner) }
+            .filter { it != this }
         val libraryRoots = buildList {
-            importContext.chosenHybrisModuleDescriptors
-                .filterIsInstance<YModuleDescriptor>()
-                .distinct()
-                .associateBy { it.name }
-                .values
-                .filter { it.getDirectDependencies().contains(moduleDescriptor.owner) }
-                .filter { it != this }
-                .forEach { yModule ->
-                    // process owner extension dependencies
+            moduleDescriptors.forEach { yModule ->
+                // process owner extension dependencies
 
-                    addAll(yModule.classes(virtualFileUrlManager))
-                    addAll(yModule.testClasses(virtualFileUrlManager))
-                    addAll(yModule.resources(virtualFileUrlManager))
+                addAll(yModule.classes(virtualFileUrlManager))
+                addAll(yModule.testClasses(virtualFileUrlManager))
+                addAll(yModule.resources(virtualFileUrlManager))
 
-                    if (attachSources) {
-                        addAll(yModule.testSources(virtualFileUrlManager))
-                    }
+                if (attachSources) {
+                    addAll(yModule.testSources(virtualFileUrlManager))
                 }
+            }
+        }
+
+        val excludedRoots = buildList {
+            moduleDescriptors.forEach { yModule ->
+                addAll(yModule.excludedResources(virtualFileUrlManager))
+            }
         }
 
         moduleEntity.configureLibrary(
             importContext = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.ADDON_TEST}",
             exported = false,
-            libraryRoots = libraryRoots
+            libraryRoots = libraryRoots,
+            excludedRoots = excludedRoots
         )
     }
 }

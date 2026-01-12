@@ -88,10 +88,15 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
             }
         }
 
+        val excludedRoots = buildList {
+            addAll(moduleDescriptor.excludedResources(virtualFileUrlManager))
+        }
+
         moduleEntity.configureLibrary(
             importContext = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.COMPILE}",
             libraryRoots = libraryRoots,
+            excludedRoots = excludedRoots,
         )
     }
 

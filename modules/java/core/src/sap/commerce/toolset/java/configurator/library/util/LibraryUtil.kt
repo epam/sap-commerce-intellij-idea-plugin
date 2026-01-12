@@ -22,6 +22,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
 import sap.commerce.toolset.project.context.ProjectImportContext
 
@@ -77,6 +78,7 @@ internal fun ModuleEntity.configureLibrary(
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
     libraryRoots: Collection<LibraryRoot>,
+    excludedRoots: Collection<VirtualFileUrl> = emptyList(),
 ) {
     if (libraryRoots.isEmpty()) {
         thisLogger().debug("No library roots for: $libraryName")
@@ -91,9 +93,21 @@ internal fun ModuleEntity.configureLibrary(
         tableId = libraryTableId,
         roots = libraryRoots.toList(),
         entitySource = this.entitySource,
-    )
+    ) {
+        this.excludedRoots = this.excludedRoots(excludedRoots)
+    }
+
     val libraryDependency = LibraryDependency(libraryId, exported, scope)
 
     importContext.mutableStorage.add(this, libraryEntity)
     importContext.mutableStorage.add(this, libraryDependency)
+}
+
+private fun LibraryEntityBuilder.excludedRoots(
+    excludedRoots: Collection<VirtualFileUrl>
+): List<ExcludeUrlEntityBuilder> = excludedRoots.map {
+    ExcludeUrlEntity(
+        url = it,
+        entitySource = this.entitySource,
+    )
 }
