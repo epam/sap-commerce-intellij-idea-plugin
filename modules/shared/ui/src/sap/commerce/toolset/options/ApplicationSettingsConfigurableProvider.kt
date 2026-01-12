@@ -65,12 +65,6 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
         private val _ui = panel {
             group(i18n("hybris.project.import.projectImportSettings.title")) {
                 row {
-                    checkBox(i18n("hybris.project.import.followSymlink"))
-                        .bindSelected(applicationSettings::followSymlink)
-                    contextHelp(i18n("hybris.project.import.followSymlink.help.description"))
-                }
-
-                row {
                     checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
                         .bindSelected(applicationSettings::importOOTBModulesInReadOnlyMode)
                     contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.help.description"))

@@ -54,11 +54,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(defaultPlatformInReadOnly = value) }
         }
-    var followSymlink: Boolean
-        get() = state.followSymlink
-        set(value) {
-            updateState { it.copy(followSymlink = value) }
-        }
     var ignoreNonExistingSourceDirectories: Boolean
         get() = state.ignoreNonExistingSourceDirectories
         set(value) {

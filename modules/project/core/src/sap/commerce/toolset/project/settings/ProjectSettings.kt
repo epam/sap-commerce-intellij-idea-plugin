@@ -89,11 +89,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(importOotbModulesInReadOnlyMode = value) }
         }
-    var followSymlink
-        get() = state.followSymlink
-        set(value) {
-            updateState { it.copy(followSymlink = value) }
-        }
     var importCustomAntBuildFiles
         get() = state.importCustomAntBuildFiles
         set(value) {

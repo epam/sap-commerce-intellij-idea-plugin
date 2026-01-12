@@ -68,12 +68,6 @@ class ProjectRefreshDialog(
 
         group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
-                checkBox(i18n("hybris.project.import.followSymlink"))
-                    .bindSelected(refreshContext.importSettings.followSymlink)
-                contextHelp(i18n("hybris.project.import.followSymlink.help.description"))
-            }
-
-            row {
                 checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
                     .bindSelected(refreshContext.importSettings.importOOTBModulesInReadOnlyMode)
                 contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.help.description"))

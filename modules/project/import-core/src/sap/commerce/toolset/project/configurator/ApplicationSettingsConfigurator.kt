@@ -34,7 +34,6 @@ class ApplicationSettingsConfigurator : ProjectPreImportConfigurator {
             this.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.toSystemIndependentName
 
             this.importOOTBModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
-            this.followSymlink = importSettings.followSymlink
             this.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
             this.ignoreNonExistingSourceDirectories = importSettings.ignoreNonExistingSourceDirectories
             this.hideEmptyMiddleFolders = importSettings.hideEmptyMiddleFolders

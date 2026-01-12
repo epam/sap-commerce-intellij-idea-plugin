@@ -280,12 +280,6 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
 
         group(i18n("hybris.project.import.projectImportSettings.title")) {
             row {
-                checkBox(i18n("hybris.project.import.followSymlink"))
-                    .bindSelected(context.importSettings.followSymlink)
-                contextHelp(i18n("hybris.project.import.followSymlink.help.description"))
-            }
-
-            row {
                 checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
                     .bindSelected(context.importSettings.importOOTBModulesInReadOnlyMode)
                 contextHelp(i18n("hybris.import.wizard.import.ootb.modules.read.only.help.description"))

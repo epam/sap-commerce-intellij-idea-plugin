@@ -54,7 +54,6 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         val importSettings = importContext.settings
 
         projectSettings.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
-        projectSettings.followSymlink = importSettings.followSymlink
         projectSettings.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
         projectSettings.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
 

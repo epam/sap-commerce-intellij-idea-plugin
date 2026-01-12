@@ -54,8 +54,7 @@ class ModuleRootsScanner {
     ): Collection<ModuleRoot> {
         // prevent infinity loops in case of cycle symlinks
         val visited = mutableSetOf<Path>()
-        val options = if (importContext.settings.followSymlink) setOf(FileVisitOption.FOLLOW_LINKS)
-        else emptySet()
+        val options = setOf(FileVisitOption.FOLLOW_LINKS)
 
         val moduleRootResolvers = ModuleRootResolver.EP.extensionList
         val moduleRoots = mutableListOf<ModuleRoot>()
