@@ -32,7 +32,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 
-class ExcludedWebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ExcludeWebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
 
     override val name: String
         get() = "Web injected test sources (exclusion)"

@@ -77,7 +77,7 @@ public final class ModuleGroupingUtil {
         final var configDescriptor = importContext.getConfigModuleDescriptor();
         final var groupFile = configDescriptor.getModuleRootPath().resolve(HybrisConstants.IMPORT_OVERRIDE_FILENAME);
 
-        if (!FileUtilKt.getDirectoryExists(groupFile)) {
+        if (!FileUtilKt.getFileExists(groupFile)) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
         }
         return getGroupPathOverride(groupFile, moduleDescriptor);
@@ -87,7 +87,7 @@ public final class ModuleGroupingUtil {
     private static String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
         final var groupFile = moduleDescriptor.getModuleRootPath().resolve(HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         final var pathOverride = getGroupPathOverride(groupFile, moduleDescriptor);
-        if (FileUtilKt.getDirectoryExists(groupFile) && pathOverride == null) {
+        if (FileUtilKt.getFileExists(groupFile) && pathOverride == null) {
             createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
         }
         return pathOverride;
@@ -106,7 +106,7 @@ public final class ModuleGroupingUtil {
     }
 
     private static String[] getGroupPathOverride(final Path groupFile, final ModuleDescriptor moduleDescriptor) {
-        if (!FileUtilKt.getDirectoryExists(groupFile)) {
+        if (!FileUtilKt.getFileExists(groupFile)) {
             return null;
         }
         // take group override from owner module for sub-modules
