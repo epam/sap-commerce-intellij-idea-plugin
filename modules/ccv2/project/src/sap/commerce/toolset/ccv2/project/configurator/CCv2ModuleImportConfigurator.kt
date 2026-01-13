@@ -36,12 +36,10 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
         val contentRootUrl = virtualFileUrlManager.fromPath(context.moduleDescriptor.moduleRootPath.pathString)
         val distributionPath = context.importContext.platformDirectory.pathString.replace('\\', '/')
 
-        val contentRootEntity = ContentRootEntity(
+        moduleEntity.contentRoots += ContentRootEntity(
             url = contentRootUrl,
             excludedPatterns = listOf(distributionPath),
             entitySource = moduleEntity.entitySource
         )
-
-        context.importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }

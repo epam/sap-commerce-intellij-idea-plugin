@@ -30,9 +30,10 @@
 
         <project.startupConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringStartupConfigurator"/>
         <project.preImportConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringPreConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringDependenciesConfigurator"/>
-
-        <project.module.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringFacetConfigurator"/>
+        <project.importConfigurator id="springFacetConfigurator"
+                                    implementation="sap.commerce.toolset.spring.configurator.SpringFacetConfigurator"/>
+        <project.importConfigurator order="after springFacetConfigurator"
+                                    implementation="sap.commerce.toolset.spring.configurator.SpringDependenciesConfigurator"/>
 
         <shared.springService implementation="sap.commerce.toolset.spring.AdvancedSpringService"/>
     </extensions>

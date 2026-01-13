@@ -15,24 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.java.configurator.entities
+package sap.commerce.toolset.project.configurator.entities
 
-import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
-import com.intellij.platform.workspace.jps.entities.getModuleLibraries
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class LibrariesStorageConfigurator : ProjectStorageConfigurator {
+class ModuleEntitiesStorageConfigurator : ProjectStorageConfigurator {
 
     override val name: String
-        get() = "Libraries"
+        get() = "Modules"
 
-    override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) {
-        importContext.mutableStorage.entities(LibraryEntityBuilder::class)
-            .forEach { (moduleEntity, libraryEntities) ->
-                moduleEntity.getModuleLibraries(storage).forEach { storage.removeEntity(it) }
-                libraryEntities.forEach { storage.addEntity(it) }
-            }
-    }
+    val logger = thisLogger()
+
+    override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) = importContext.mutableStorage
+        .modules.forEach { moduleEntity -> storage.addEntity(moduleEntity) }
 }

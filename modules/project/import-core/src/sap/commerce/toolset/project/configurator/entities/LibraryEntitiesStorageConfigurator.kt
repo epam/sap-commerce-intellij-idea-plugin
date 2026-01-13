@@ -15,30 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.java.configurator.entities
+package sap.commerce.toolset.project.configurator.entities
 
-import com.intellij.platform.workspace.jps.entities.FacetEntityBuilder
-import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class FacetsStorageConfigurator : ProjectStorageConfigurator {
+class LibraryEntitiesStorageConfigurator : ProjectStorageConfigurator {
+
     override val name: String
-        get() = "Facets"
+        get() = "Libraries"
 
-    override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) {
-        importContext.mutableStorage.entities(FacetEntityBuilder::class)
-            .forEach { (moduleEntity, facetEntities) ->
-                storage.modifyModuleEntity(moduleEntity) module@{
-                    moduleEntity.facets.forEach { storage.removeEntity(it) }
+    val logger = thisLogger()
 
-                    facetEntities.forEach { facetEntity ->
-                        storage addEntity facetEntity.also {
-                            it.module = this@module
-                        }
-                    }
-                }
-            }
-    }
+    override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) = importContext.mutableStorage
+        .libraries.forEach { libraryEntity -> storage.addEntity(libraryEntity) }
 }

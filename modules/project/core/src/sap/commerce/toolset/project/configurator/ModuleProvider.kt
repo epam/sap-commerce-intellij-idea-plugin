@@ -18,11 +18,10 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleTypeId
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -36,19 +35,11 @@ interface ModuleProvider {
 
     suspend fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
 
-    suspend fun getOrCreate(
+    suspend fun create(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: ModuleDescriptor,
-    ) = workspaceModel.currentSnapshot.resolve(ModuleId(moduleDescriptor.ideaModuleName()))
-        ?.also { thisLogger().debug("Module already exists: ${it.name}") }
-        ?: create(importContext, workspaceModel, moduleDescriptor)
-
-    private suspend fun create(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor
-    ): ModuleEntity {
+    ): ModuleEntityBuilder {
         val project = importContext.project
         val ideaModuleParentPath = moduleDescriptor.ideaModuleFile(importContext).parent
 
@@ -58,20 +49,13 @@ interface ModuleProvider {
             externalSource = null
         )
 
-        lateinit var entity: ModuleEntity
-
-        // TODO: mby, do not create module right away and use Builder all over the Configurators and then... persist it
-        workspaceModel.update("Add new module: ${moduleDescriptor.name}") { storage ->
-            entity = storage addEntity ModuleEntity(
-                name = moduleDescriptor.ideaModuleName(),
-                dependencies = emptyList(),
-                entitySource = entitySource
-            ) {
-                type = ModuleTypeId(moduleTypeId)
-            }
+        return ModuleEntity(
+            name = moduleDescriptor.ideaModuleName(),
+            dependencies = emptyList(),
+            entitySource = entitySource
+        ) {
+            type = ModuleTypeId(moduleTypeId)
         }
-
-        return entity
     }
 
     companion object {

@@ -31,6 +31,6 @@ class JavaModuleSdkConfigurator : ModuleImportConfigurator {
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
     override suspend fun configure(context: ProjectModuleConfigurationContext) {
-        context.importContext.mutableStorage.add(context.moduleEntity, InheritedSdkDependency)
+        context.moduleEntity.dependencies += InheritedSdkDependency
     }
 }

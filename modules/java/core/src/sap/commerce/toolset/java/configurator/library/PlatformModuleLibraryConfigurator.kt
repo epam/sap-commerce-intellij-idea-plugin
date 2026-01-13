@@ -19,7 +19,7 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -40,10 +40,9 @@ class PlatformModuleLibraryConfigurator : ModuleLibraryConfigurator<PlatformModu
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: PlatformModuleDescriptor,
-        moduleEntity: ModuleEntity
+        moduleEntity: ModuleEntityBuilder
     ) {
         moduleEntity.linkProjectLibrary(
-            importContext = importContext,
             libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
         )
     }

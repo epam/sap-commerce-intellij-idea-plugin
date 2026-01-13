@@ -20,7 +20,7 @@ package sap.commerce.toolset.java.descriptor
 
 import com.intellij.java.workspace.entities.JavaResourceRootPropertiesEntityBuilder
 import com.intellij.java.workspace.entities.JavaSourceRootPropertiesEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import com.intellij.platform.workspace.jps.entities.SourceRootEntityBuilder
 import com.intellij.platform.workspace.jps.entities.SourceRootTypeId
 import com.intellij.platform.workspace.storage.url.VirtualFileUrl
@@ -30,7 +30,7 @@ import kotlin.io.path.pathString
 
 internal class SourceRootEntityDescriptor(
     val sourceRootTypeId: SourceRootTypeId,
-    val moduleEntity: ModuleEntity,
+    val moduleEntity: ModuleEntityBuilder,
     val path: Path,
     val javaSourceRoot: ((SourceRootEntityBuilder) -> JavaSourceRootPropertiesEntityBuilder)? = null,
     val javaResourceRoot: ((SourceRootEntityBuilder) -> JavaResourceRootPropertiesEntityBuilder)? = null,

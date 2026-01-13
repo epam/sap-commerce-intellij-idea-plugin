@@ -63,6 +63,7 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
             emptyList(),
             moduleEntity.entitySource
         )
+        moduleEntity.contentRoots += contentRootEntity
 
         reportProgressScope(configurators.size) { reporter ->
             configurators.forEach { configurator ->
@@ -74,7 +75,5 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
                 }
             }
         }
-
-        importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }

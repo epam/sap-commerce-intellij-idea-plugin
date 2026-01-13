@@ -19,7 +19,12 @@
 package sap.commerce.toolset.project.facet
 
 import com.intellij.facet.FacetTypeId
+import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
 
 object YFacetConstants {
-    val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
+    const val FACET_ID = "SAP_COMMERCE_Y_FACET_ID"
+    const val FACET_NAME = "SAP Commerce"
+
+    val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(FACET_ID)
+    val FACET_ENTITY_TYPE_ID = FacetEntityTypeId(FACET_ID)
 }

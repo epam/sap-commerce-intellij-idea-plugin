@@ -36,12 +36,10 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
         val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
 
-        val contentRootEntity = ContentRootEntity(
+        moduleEntity.contentRoots += ContentRootEntity(
             url = contentRootUrl,
             excludedPatterns = emptyList(),
             entitySource = moduleEntity.entitySource
         )
-
-        context.importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }

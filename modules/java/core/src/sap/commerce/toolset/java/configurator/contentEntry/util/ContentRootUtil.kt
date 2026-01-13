@@ -67,23 +67,23 @@ internal fun ContentRootEntityBuilder.addSourceRoots(
     .let { newSourceRoots -> this.sourceRoots += newSourceRoots }
 
 
-internal fun ModuleEntity.generatedSources(path: Path) = this.sources(
+internal fun ModuleEntityBuilder.generatedSources(path: Path) = this.sources(
     path = path,
     generated = true
 )
 
-internal fun ModuleEntity.testGeneratedSources(path: Path) = this.sources(
+internal fun ModuleEntityBuilder.testGeneratedSources(path: Path) = this.sources(
     sourceRootTypeId = JAVA_TEST_ROOT_ENTITY_TYPE_ID,
     path = path,
     generated = true
 )
 
-internal fun ModuleEntity.testSources(path: Path) = this.sources(
+internal fun ModuleEntityBuilder.testSources(path: Path) = this.sources(
     sourceRootTypeId = JAVA_TEST_ROOT_ENTITY_TYPE_ID,
     path = path
 )
 
-internal fun ModuleEntity.sources(
+internal fun ModuleEntityBuilder.sources(
     sourceRootTypeId: SourceRootTypeId = JAVA_SOURCE_ROOT_ENTITY_TYPE_ID,
     path: Path,
     generated: Boolean = false,
@@ -95,7 +95,7 @@ internal fun ModuleEntity.sources(
     javaSourceRoot = { JavaSourceRootPropertiesEntity(generated, packagePrefix, it.entitySource) }
 )
 
-internal fun ModuleEntity.resources(
+internal fun ModuleEntityBuilder.resources(
     sourceRootTypeId: SourceRootTypeId = JAVA_RESOURCE_ROOT_ENTITY_TYPE_ID,
     path: Path,
     generated: Boolean = false,

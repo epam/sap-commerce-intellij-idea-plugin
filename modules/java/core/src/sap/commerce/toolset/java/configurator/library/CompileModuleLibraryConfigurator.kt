@@ -19,7 +19,7 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
@@ -46,7 +46,7 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YModuleDescriptor,
-        moduleEntity: ModuleEntity
+        moduleEntity: ModuleEntityBuilder
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val libraryRoots = buildList {

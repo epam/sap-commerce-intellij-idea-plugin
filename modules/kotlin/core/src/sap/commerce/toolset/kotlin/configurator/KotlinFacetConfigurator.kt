@@ -57,7 +57,7 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
             .let { JDOMUtil.writeElement(it) }
         val facetEntityTypeId = FacetEntityTypeId(KotlinFacetType.ID)
 
-        val facetEntity = FacetEntity(
+        moduleEntity.facets += FacetEntity(
             moduleId = ModuleId(moduleEntity.name),
             name = facetType.presentableName,
             typeId = facetEntityTypeId,
@@ -65,8 +65,6 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
         ) {
             this.configurationXmlTag = xmlTag
         }
-
-        context.importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 
     private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists

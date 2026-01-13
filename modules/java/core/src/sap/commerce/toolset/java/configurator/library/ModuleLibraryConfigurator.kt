@@ -20,7 +20,7 @@ package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
@@ -34,7 +34,7 @@ interface ModuleLibraryConfigurator<T : ModuleDescriptor> {
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: T,
-        moduleEntity: ModuleEntity
+        moduleEntity: ModuleEntityBuilder
     )
 
     companion object {

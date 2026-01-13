@@ -34,21 +34,17 @@ class ProjectLibrariesConfigurator : ProjectPreImportConfigurator {
     override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val configurators = ProjectLibraryConfigurator.EP.extensionList
 
-        val projectLibraryEntities = reportProgressScope(configurators.size) { reporter ->
-            configurators.mapNotNull { configurator ->
+        reportProgressScope(configurators.size) { reporter ->
+            configurators.forEach { configurator ->
                 reporter.itemStep("Applying project library '${configurator.name}' configurator...") {
                     checkCanceled()
 
                     val timedValue = measureTimedValue { configurator.configure(importContext, workspaceModel) }
                     logger.info("Library configurator [${configurator.name} | ${timedValue.duration}]")
-                    return@itemStep timedValue.value
-                }
-            }
-        }
+                    val libraryEntity = timedValue.value ?: return@itemStep
 
-        workspaceModel.update("Configuring project libraries") { storage ->
-            projectLibraryEntities.forEach {
-                storage.addEntity(it)
+                    importContext.mutableStorage.add(libraryEntity)
+                }
             }
         }
     }

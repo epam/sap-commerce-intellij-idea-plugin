@@ -48,8 +48,7 @@ internal fun Project.configureProjectLibrary(
     entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(this).createEntitySourceForProjectLibrary(null),
 )
 
-internal fun ModuleEntity.linkProjectLibrary(
-    importContext: ProjectImportContext,
+internal fun ModuleEntityBuilder.linkProjectLibrary(
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
@@ -60,10 +59,10 @@ internal fun ModuleEntity.linkProjectLibrary(
     )
     val libraryDependency = LibraryDependency(libraryId, exported, scope)
 
-    importContext.mutableStorage.add(this, libraryDependency)
+    this.dependencies += libraryDependency
 }
 
-internal fun ModuleEntity.configureLibrary(
+internal fun ModuleEntityBuilder.configureLibrary(
     importContext: ProjectImportContext,
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
@@ -89,10 +88,9 @@ internal fun ModuleEntity.configureLibrary(
         this.excludedRoots = this.excludedRoots(excludedRoots)
     }
 
-    val libraryDependency = LibraryDependency(libraryId, exported, scope)
+    this.dependencies += LibraryDependency(libraryId, exported, scope)
 
-    importContext.mutableStorage.add(this, libraryEntity)
-    importContext.mutableStorage.add(this, libraryDependency)
+    importContext.mutableStorage.add(libraryEntity)
 }
 
 private fun LibraryEntityBuilder.excludedRoots(

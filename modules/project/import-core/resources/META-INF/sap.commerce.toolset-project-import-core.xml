@@ -75,6 +75,11 @@
                                      implementation="sap.commerce.toolset.project.module.YConfigModuleRootResolver"/>
         <project.module.rootResolver order="after yConfigModuleRootResolver" id="yCustomModuleRootResolver"
                                      implementation="sap.commerce.toolset.project.module.YCustomModuleRootResolver"/>
+
+        <project.storageConfigurator order="first" id="libraryEntitiesStorageConfigurator"
+                                     implementation="sap.commerce.toolset.project.configurator.entities.LibraryEntitiesStorageConfigurator"/>
+        <project.storageConfigurator order="after libraryEntitiesStorageConfigurator"
+                                     implementation="sap.commerce.toolset.project.configurator.entities.ModuleEntitiesStorageConfigurator"/>
     </extensions>
 
 </idea-plugin>

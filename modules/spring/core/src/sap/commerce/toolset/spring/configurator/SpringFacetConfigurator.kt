@@ -18,21 +18,20 @@
 package sap.commerce.toolset.spring.configurator
 
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.workspace.jps.entities.FacetEntity
-import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleId
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import com.intellij.spring.facet.SpringFacetType
 import com.intellij.util.io.URLUtil
-import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
@@ -40,34 +39,55 @@ import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.facet.configurationXmlTag
 import java.io.File
 
-class SpringFacetConfigurator : ModuleImportConfigurator {
+class SpringFacetConfigurator : ProjectImportConfigurator {
 
     override val name: String
-        get() = "Spring Facet"
+        get() = "Spring Facets"
 
-    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
-
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
+    ) {
         if (Plugin.SPRING.isDisabled()) return
-        val javaModule = context.moduleEntity.findModule(context.workspaceModel.currentSnapshot) ?: return
 
-        when (val moduleDescriptor = context.moduleDescriptor) {
-            is YBackofficeSubModuleDescriptor -> return
-            is PlatformModuleDescriptor -> configure(context, javaModule, emptySet())
-            is YModuleDescriptor -> configure(context, javaModule, moduleDescriptor.getSpringFiles())
+        val moduleEntities = workspaceModel.currentSnapshot.entities(ModuleEntity::class.java)
+            .associateBy { it.name }
+        val facetEntities = importContext.chosenHybrisModuleDescriptors.mapNotNull { moduleDescriptor ->
+            val ideaModuleName = moduleDescriptor.ideaModuleName()
+            val javaModule = ModuleManager.getInstance(importContext.project).findModuleByName(ideaModuleName)
+                ?: return@mapNotNull null
+            val moduleEntity = moduleEntities[ideaModuleName]
+                ?: return@mapNotNull null
+
+            val facetEntity = when (moduleDescriptor) {
+                is YBackofficeSubModuleDescriptor -> null
+                is PlatformModuleDescriptor -> configure(moduleDescriptor, moduleEntity, javaModule, emptySet())
+                is YModuleDescriptor -> configure(moduleDescriptor, moduleEntity, javaModule, moduleDescriptor.getSpringFiles())
+                else -> null
+            } ?: return@mapNotNull null
+
+            moduleEntity to facetEntity
+        }
+            .associate { it.first to it.second }
+
+        workspaceModel.update("Configure Spring Facets") { storage ->
+            facetEntities.forEach { (moduleEntity, facetEntity) ->
+                storage.modifyModuleEntity(moduleEntity) {
+                    this.facets += facetEntity
+                }
+            }
         }
     }
 
     private fun configure(
-        context: ProjectModuleConfigurationContext,
+        moduleDescriptor: ModuleDescriptor,
+        moduleEntity: ModuleEntity,
         javaModule: Module,
         additionalFileSet: Set<String>
-    ) {
-        val moduleDescriptor = context.moduleDescriptor
-        val moduleEntity = context.moduleEntity
+    ): FacetEntityBuilder? {
         val facetType = SpringFacet.getSpringFacetType()
             .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
-            ?: return
+            ?: return null
         val facet = facetType.createFacet(
             javaModule,
             facetType.defaultFacetName,
@@ -98,9 +118,10 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
                 it.apply()
             }
 
-        val configurationXmlTag = facet.configurationXmlTag ?: return
+        val configurationXmlTag = facet.configurationXmlTag ?: return null
         val facetEntityTypeId = FacetEntityTypeId(SpringFacetType.SPRING_FACET_TYPE__STRING_ID)
-        val facetEntity = FacetEntity(
+
+        return FacetEntity(
             moduleId = ModuleId(moduleEntity.name),
             name = facetType.presentableName,
             typeId = facetEntityTypeId,
@@ -108,7 +129,5 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
         ) {
             this.configurationXmlTag = configurationXmlTag
         }
-
-        context.importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }

@@ -197,7 +197,10 @@ object HybrisConstants {
         "smartedit-build",
         "node_modules",
         "apps/**/node_modules",
-        "common/temp/node_modules"
+        "common/temp/node_modules",
+        "temp",
+        "log",
+        "data",
     )
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")

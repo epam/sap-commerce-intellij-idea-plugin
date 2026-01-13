@@ -19,7 +19,7 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -42,7 +42,7 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
-        moduleEntity: ModuleEntity
+        moduleEntity: ModuleEntityBuilder
     ) {
         configureAddonLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
         configureAddonTestLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
@@ -52,7 +52,7 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
-        moduleEntity: ModuleEntity
+        moduleEntity: ModuleEntityBuilder
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
@@ -88,7 +88,7 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
-        moduleEntity: ModuleEntity
+        moduleEntity: ModuleEntityBuilder
     ) {
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode

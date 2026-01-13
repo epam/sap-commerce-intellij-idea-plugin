@@ -74,7 +74,10 @@ class ProjectImportTask(private val project: Project) {
         }
     }
 
-    private suspend fun importModules(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+    private suspend fun importModules(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
+    ) {
         val chosenModuleDescriptors = importContext.allChosenModuleDescriptors
         val moduleProviders = ModuleProvider.EP.extensionList
 
@@ -98,7 +101,7 @@ class ProjectImportTask(private val project: Project) {
         moduleProviders: List<ModuleProvider>,
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel
-    ): List<ProjectModuleConfigurationContext> = reportProgressScope(chosenModuleDescriptors.size) { moduleReporter ->
+    ): Collection<ProjectModuleConfigurationContext> = reportProgressScope(chosenModuleDescriptors.size) { moduleReporter ->
         chosenModuleDescriptors.mapNotNull { moduleDescriptor ->
             val provider = moduleProviders.find { provider -> provider.isApplicable(moduleDescriptor) }
             if (provider == null) {
@@ -112,14 +115,17 @@ class ProjectImportTask(private val project: Project) {
                 checkCanceled()
 
                 logger.debug("Creating module [${moduleDescriptor.name}].")
-                val timedValue = measureTimedValue { provider.getOrCreate(importContext, workspaceModel, moduleDescriptor) }
+                val timedValue = measureTimedValue { provider.create(importContext, workspaceModel, moduleDescriptor) }
+                val moduleEntity = timedValue.value
                 logger.info("Created module [${moduleDescriptor.name} | ${timedValue.duration}].")
+
+                importContext.mutableStorage.add(moduleEntity)
 
                 return@itemStep ProjectModuleConfigurationContext(
                     importContext = importContext,
                     workspaceModel = workspaceModel,
                     moduleDescriptor = moduleDescriptor,
-                    moduleEntity = timedValue.value,
+                    moduleEntity = moduleEntity,
                     moduleTypeId = provider.moduleTypeId
                 )
             }
@@ -152,9 +158,9 @@ class ProjectImportTask(private val project: Project) {
                 logger.info("Saving workspace using ${configurator.name} configurator...")
                 configurator.configure(importContext, storage)
             }
-        }
 
-        importContext.mutableStorage.clear()
+            importContext.mutableStorage.clear()
+        }
     }
 
     private suspend fun configureProject(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {

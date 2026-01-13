@@ -19,7 +19,8 @@
 package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.project.Project
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
@@ -27,8 +28,6 @@ import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
-import kotlin.reflect.KClass
-import kotlin.reflect.cast
 
 data class ProjectImportContext(
     val project: Project,
@@ -72,35 +71,29 @@ data class ProjectImportContext(
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
 
-    data class WorkspaceEntityContext(
-        val moduleEntity: ModuleEntity,
-        val entity: Any,
-    )
-
     data class MutableWorkspace(
-        private val _entities: MutableList<WorkspaceEntityContext> = mutableListOf(),
+        private val _modules: MutableList<ModuleEntityBuilder> = mutableListOf(),
+        private val _libraries: MutableList<LibraryEntityBuilder> = mutableListOf(),
     ) {
         private var accessAllowed = true
 
         private fun <T> access(exec: () -> T) = if (accessAllowed) exec()
         else throw IllegalStateException("Access is not allowed at this point.")
 
-        fun <T : Any> entities(clazz: KClass<T>): Map<ModuleEntity, Collection<T>> = _entities
-            .filter { clazz.isInstance(it.entity) }
-            .groupBy(
-                keySelector = { it.moduleEntity },
-                valueTransform = { clazz.cast(it.entity) }
-            )
+        val libraries
+            get() = access { _libraries.toList() }
+        val modules
+            get() = access { _modules.toList() }
 
-        fun add(moduleEntity: ModuleEntity, entity: Any) = access {
-            _entities.add(WorkspaceEntityContext(moduleEntity, entity))
-        }
+        fun add(entity: LibraryEntityBuilder) = access { _libraries.add(entity) }
+        fun add(entity: ModuleEntityBuilder) = access { _modules.add(entity) }
 
         fun clear() = access {
             // Any access to the class must not take place after cleanup
             accessAllowed = false
 
-            _entities.clear()
+            _modules.clear()
+            _libraries.clear()
         }
     }
 

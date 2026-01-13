@@ -21,12 +21,10 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.platform.workspace.jps.entities.FacetEntity
-import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
 import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.util.xmlb.XmlSerializer
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.facet.YFacetConstants
-import sap.commerce.toolset.project.facet.YFacetType
 
 class YFacetConfigurator : ModuleImportConfigurator {
 
@@ -40,17 +38,14 @@ class YFacetConfigurator : ModuleImportConfigurator {
         val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
         val xmlTag = XmlSerializer.serialize(context.moduleDescriptor.extensionDescriptor)
             .let { JDOMUtil.writeElement(it) }
-        val facetEntityTypeId = FacetEntityTypeId(YFacetType.FACET_ID)
 
-        val facetEntity = FacetEntity(
+        moduleEntity.facets += FacetEntity(
             moduleId = ModuleId(moduleEntity.name),
             name = facetType.presentableName,
-            typeId = facetEntityTypeId,
+            typeId = YFacetConstants.FACET_ENTITY_TYPE_ID,
             entitySource = moduleEntity.entitySource
         ) {
             this.configurationXmlTag = xmlTag
         }
-
-        context.importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }

@@ -19,13 +19,13 @@
 package sap.commerce.toolset.project.context
 
 import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 data class ProjectModuleConfigurationContext(
     val importContext: ProjectImportContext,
     val workspaceModel: WorkspaceModel,
     val moduleDescriptor: ModuleDescriptor,
-    val moduleEntity: ModuleEntity,
+    val moduleEntity: ModuleEntityBuilder,
     val moduleTypeId: String
 )

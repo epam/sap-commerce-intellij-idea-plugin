@@ -21,7 +21,7 @@ package sap.commerce.toolset.java.configurator.library
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.DependencyScope
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.java.JavaConstants
@@ -46,7 +46,7 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel,
         moduleDescriptor: YRegularModuleDescriptor,
-        moduleEntity: ModuleEntity
+        moduleEntity: ModuleEntityBuilder
     ) {
         val backofficeSubModuleDescriptor = moduleDescriptor.getSubModules()
             .firstOrNull { it is YBackofficeSubModuleDescriptor }
@@ -81,7 +81,7 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
         importContext: ProjectImportContext,
         virtualFileUrlManager: VirtualFileUrlManager,
         moduleDescriptor: YRegularModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        moduleEntity: ModuleEntityBuilder,
         libraryNameSuffix: String,
         excludedRoots: List<VirtualFileUrl>,
         libraryRootsProvider: (VirtualFileUrlManager) -> Collection<LibraryRoot>

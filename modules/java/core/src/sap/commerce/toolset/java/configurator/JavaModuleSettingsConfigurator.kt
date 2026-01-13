@@ -18,6 +18,7 @@
 package sap.commerce.toolset.java.configurator
 
 import com.intellij.java.workspace.entities.JavaModuleSettingsEntity
+import com.intellij.java.workspace.entities.javaSettings
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
@@ -58,6 +59,6 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
             this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
         }
 
-        importContext.mutableStorage.add(moduleEntity, javaSettingsEntity)
+        moduleEntity.javaSettings = javaSettingsEntity
     }
 }
