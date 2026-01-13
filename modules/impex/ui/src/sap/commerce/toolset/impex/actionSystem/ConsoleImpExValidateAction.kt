@@ -19,7 +19,6 @@
 package sap.commerce.toolset.impex.actionSystem
 
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -27,6 +26,7 @@ import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
@@ -56,13 +56,10 @@ class ConsoleImpExValidateAction : AnAction() {
         )
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
         val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole()
-            ?: return
+            ?: return@ifNotFromSearchPopup
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 

@@ -25,7 +25,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
@@ -127,7 +126,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 
             val addComma = FxSUtils.shouldAddCommaAfterExpression(element, fxsSettings)
             // only DOT allowed for non [y] columns
-            val nonYColumnAliasSeparator = if (fxsSettings.completion.injectTableAliasSeparator) HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT
+            val nonYColumnAliasSeparator = if (fxsSettings.completion.injectTableAliasSeparator) FlexibleSearchConstants.TABLE_ALIAS_SEPARATOR_DOT
             else ""
 
             val selectCores = getSuitableSelectCores(element)

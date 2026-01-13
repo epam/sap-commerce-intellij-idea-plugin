@@ -38,17 +38,16 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val generateCodeOnJUnitRunConfiguration: Boolean = false,
     @JvmField @OptionTag val generateCodeTimeoutSeconds: Int = 60,
     @JvmField @OptionTag val importOotbModulesInReadOnlyMode: Boolean = true,
-    @JvmField @OptionTag val followSymlink: Boolean = false,
-    @JvmField @OptionTag val scanThroughExternalModule: Boolean = true,
-    @JvmField @OptionTag val excludeTestSources: Boolean = false,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
     @JvmField @OptionTag val showFullModuleName: Boolean = false,
+    @JvmField @OptionTag val removeOldProjectData: Boolean = true,
     @JvmField @OptionTag val removeExternalModulesOnRefresh: Boolean = false,
     @JvmField val unusedExtensions: Set<String> = emptySet(),
     @JvmField val modulesOnBlackList: Set<String> = emptySet(),
 
     // by BaseState.property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
-    @JvmField val availableExtensions: Map<String, ExtensionDescriptor> = emptyMap(),
+//    @JvmField val availableExtensions: Map<String, ExtensionDescriptor> = emptyMap(),
+    @JvmField val extensionDescriptors: Collection<ExtensionDescriptor> = emptySet(),
     @JvmField val excludedFromScanning: Set<String> = emptySet(),
     @JvmField @OptionTag val useFakeOutputPathForCustomExtensions: Boolean = false,
 )

@@ -18,20 +18,20 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.descriptor.*
-import java.io.File
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
+import java.nio.file.Path
+import kotlin.io.path.name
 
 abstract class AbstractYSubModuleDescriptor(
     override val owner: YRegularModuleDescriptor,
-    override val moduleRootDirectory: File,
-    override val name: String = owner.name + "." + moduleRootDirectory.name,
-    override val rootProjectDescriptor: HybrisProjectDescriptor = owner.rootProjectDescriptor,
-    override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
-    override val descriptorType: ModuleDescriptorType = owner.descriptorType,
+    override val moduleRootPath: Path,
+    override val name: String = owner.name + "." + moduleRootPath.name,
 ) : AbstractYModuleDescriptor(
-    moduleRootDirectory = moduleRootDirectory,
-    rootProjectDescriptor = rootProjectDescriptor,
+    moduleRootPath = moduleRootPath,
     name = name,
+    descriptorType = owner.type,
     extensionInfo = owner.extensionInfo
 ), YSubModuleDescriptor {
 

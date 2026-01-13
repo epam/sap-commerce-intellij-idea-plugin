@@ -19,9 +19,9 @@
 package sap.commerce.toolset.project.wizard
 
 import com.intellij.openapi.options.ConfigurationException
-import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 
 interface RefreshSupport {
     @Throws(ConfigurationException::class)
-    fun refresh(projectSettings: ProjectSettings)
+    fun refresh(refreshContext: ProjectRefreshContext)
 }

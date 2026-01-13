@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.invokeLater
@@ -27,6 +26,7 @@ import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.CCv2UiConstants
+import sap.commerce.toolset.ifNotFromSearchPopup
 
 class CCv2FetchBuildDetailsAction : DumbAwareAction("Fetch Build", null, HybrisIcons.CCv2.Actions.FETCH) {
 
@@ -54,10 +54,7 @@ class CCv2FetchBuildDetailsAction : DumbAwareAction("Fetch Build", null, HybrisI
         )
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.isEnabled = !fetching
         e.presentation.text = if (fetching) "Fetching" else "Fetch Build"
         e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH

@@ -19,28 +19,26 @@
 package sap.commerce.toolset.project.descriptor
 
 import sap.commerce.toolset.project.ExtensionDescriptor
-import java.io.File
+import sap.commerce.toolset.project.context.ProjectImportContext
+import java.nio.file.Path
 
 interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
     var groupNames: Array<String>
-    val moduleRootDirectory: File
-    val rootProjectDescriptor: HybrisProjectDescriptor
+    val moduleRootPath: Path
     var importStatus: ModuleDescriptorImportStatus
-    val descriptorType: ModuleDescriptorType
+    val type: ModuleDescriptorType
     var readonly: Boolean
 
-    fun extensionDescriptor(): ExtensionDescriptor
+    val extensionDescriptor: ExtensionDescriptor
     fun ideaModuleName(): String = (if (groupNames.isEmpty()) "" else groupNames.joinToString(separator = ".", postfix = ".")) + name
-    fun groupName(): Array<String>? = null
+    fun groupName(importContext: ProjectImportContext): Array<String>? = null
     fun isPreselected(): Boolean
-    fun ideaModuleFile(): File
-    fun getRelativePath(): String
+    fun ideaModuleFile(importContext: ProjectImportContext): Path
+    fun getRelativePath(rootDirectory: Path): String
     fun getRequiredExtensionNames(): Set<String>
-    fun addRequiredExtensionNames(extensions: Set<YModuleDescriptor>): Boolean
+    fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean
     fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
-    fun getSpringFiles(): Set<String>
-    fun addSpringFile(file: String): Boolean
     fun getAllDependencies(): Set<ModuleDescriptor>
     fun getDirectDependencies(): Set<ModuleDescriptor>
     fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>): Boolean

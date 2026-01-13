@@ -19,7 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable id="sap.commerce.toolset.solr.exec.settings" parentId="hybris.project.settings"
+        <projectConfigurable id="sap.commerce.toolset.solr.exec.settings" parentId="hybris.settings"
                              nonDefaultProject="true" dynamic="true"
                              displayName="Solr"
                              provider="sap.commerce.toolset.solr.options.SolrExecProjectSettingsConfigurableProvider"/>

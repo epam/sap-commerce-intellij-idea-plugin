@@ -49,6 +49,7 @@ import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.util.directoryExists
 import java.io.Serial
 import java.net.SocketTimeoutException
 import java.nio.file.Files
@@ -154,13 +155,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                     checkCanceled()
                                     val ccv2Token = getCCv2Token(subscription) ?: return@async (subscription to emptyList())
                                     try {
-                                        val cachedEnvironments =
-                                            fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
+                                        val cachedEnvironments = fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
 
                                         cachedEnvironments
                                             .filter { it.accessible }
-                                            .map { environment ->
-
+                                            .flatMap { environment ->
                                                 listOfNotNull(
                                                     if (requestServices) {
                                                         async {
@@ -177,7 +176,6 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                                     } else null,
                                                 )
                                             }
-                                            .flatten()
                                             .awaitAll()
 
                                         return@async subscription to cachedEnvironments
@@ -612,13 +610,16 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
                     buildLogsPath.deleteIfExists()
 
-                    val logFiles = tempDirectory.listDirectoryEntries()
-                        .map {
+                    val logFiles = tempDirectory
+                        .takeIf { it.directoryExists }
+                        ?.listDirectoryEntries()
+                        ?.map {
                             // rename <logFile>.txt to <logFile>.log
                             Files.move(it, it.resolveSibling(it.nameWithoutExtension + ".log"))
                         }
-                        .onEach { it.toFile().deleteOnExit() }
-                        .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.pathString) }
+                        ?.onEach { it.toFile().deleteOnExit() }
+                        ?.mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.pathString) }
+                        ?: emptyList()
 
                     onCompleteCallback.invoke(logFiles)
                 } catch (e: SocketTimeoutException) {
@@ -910,7 +911,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 "CCv2: API Token is not set",
                 "Please, specify CCv2 API token via corresponding application settings."
             )
-            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.open.settings.action") }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(10)
             .system(true)
@@ -938,7 +939,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     Exceeded current read timeout, it can be adjusted via CCv2 settings.
                 """.trimIndent()
             )
-            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.open.settings.action") }
             .hideAfter(10)
             .system(true)
             .notify(project)
@@ -956,7 +957,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     ${e.message ?: ""}
                 """.trimIndent()
             )
-            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.open.settings.action") }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(15)
             .system(true)

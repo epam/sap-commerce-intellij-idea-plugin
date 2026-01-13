@@ -24,11 +24,11 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.childrenOfType
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.impex.psi.ImpExString
 import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
+import sap.commerce.toolset.typeSystem.TSConstants
 
 class CronExpLanguageInjector : LanguageInjector {
 
@@ -77,7 +77,7 @@ class CronExpLanguageInjector : LanguageInjector {
             ?.takeIf {
                 it.fullHeaderType
                     ?.headerTypeName
-                    ?.textMatches(HybrisConstants.TS_TYPE_TRIGGER)
+                    ?.textMatches(TSConstants.Type.TRIGGER)
                     ?: false
             }
             ?: return false

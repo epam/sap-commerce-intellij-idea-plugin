@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -26,6 +25,7 @@ import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2SettingsState
 import sap.commerce.toolset.ccv2.ui.CCv2ToolWindow
 import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
+import sap.commerce.toolset.ifNotFromSearchPopup
 import javax.swing.Icon
 
 abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
@@ -41,10 +41,7 @@ abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
         ?.contains(status)
         ?: false
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         super.update(e)
 
         e.presentation.isVisible = e.project

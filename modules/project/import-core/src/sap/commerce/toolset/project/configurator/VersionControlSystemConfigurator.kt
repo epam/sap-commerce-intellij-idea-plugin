@@ -18,35 +18,40 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import sap.commerce.toolset.project.context.ProjectImportContext
 
-class VersionControlSystemConfigurator : ProjectImportConfigurator {
+class VersionControlSystemConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Version Control System"
 
-    override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+    override suspend fun postImport(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
     ) {
-        val project = hybrisProjectDescriptor.project ?: return
+        val project = importContext.project
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)
-        val detectedRoots = HashSet(rootDetector.detect())
 
-        val roots = hybrisProjectDescriptor.detectedVcs
-            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+        val roots = importContext.detectedVcs
+            .mapNotNull { readAction { VfsUtil.findFile(it, true) } }
             .flatMap { rootDetector.detect(it) }
-        detectedRoots.addAll(roots)
 
-        val directoryMappings = detectedRoots
-            .filter { it.vcs != null }
-            .map { VcsDirectoryMapping(it.path.path, it.vcs!!.name) }
+        val directoryMappings = buildSet {
+            addAll(rootDetector.detect())
+            addAll(roots)
+        }
+            .mapNotNull { vcsRoot ->
+                val vcs = vcsRoot.vcs ?: return@mapNotNull null
+
+                VcsDirectoryMapping(vcsRoot.path.path, vcs.name)
+            }
 
         vcsManager.setDirectoryMappings(directoryMappings)
     }

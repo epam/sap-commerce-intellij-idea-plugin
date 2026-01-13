@@ -23,28 +23,35 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.project.context.ProjectImportContext;
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor;
 import sap.commerce.toolset.project.utils.FileUtils;
 import sap.commerce.toolset.settings.ApplicationSettings;
+import sap.commerce.toolset.util.FileUtilKt;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
 import static sap.commerce.toolset.HybrisConstants.*;
-import static sap.commerce.toolset.project.utils.FileUtils.toFile;
 
+// TODO: -> kotlin
+@Deprecated(since = "migrate to kotlin, improve IO operations with NIO")
 public final class ModuleGroupingUtil {
 
     private static final Logger LOG = Logger.getInstance(ModuleGroupingUtil.class);
 
+    private ModuleGroupingUtil() {
+    }
+
     @Nullable
     public static String[] getGroupName(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext, @NotNull final ModuleDescriptor moduleDescriptor,
         final Collection<ModuleDescriptor> requiredYModuleDescriptorList
     ) {
         if (!(moduleDescriptor instanceof ConfigModuleDescriptor)) {
@@ -54,25 +61,23 @@ public final class ModuleGroupingUtil {
             }
         }
 
-        final String[] groupPathOverride = getGlobalGroupPathOverride(moduleDescriptor);
+        final String[] groupPathOverride = getGlobalGroupPathOverride(importContext, moduleDescriptor);
         if (groupPathOverride != null) {
             return groupPathOverride.clone();
         }
 
-        final String[] groupPath = getGroupPath(moduleDescriptor, requiredYModuleDescriptorList);
+        final String[] groupPath = getGroupPath(importContext, moduleDescriptor, requiredYModuleDescriptorList);
         if (groupPath == null) {
             return null;
         }
         return groupPath.clone();
     }
 
-    private static String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
-        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
-        if (configDescriptor == null) {
-            return null;
-        }
-        final File groupFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
-        if (!groupFile.exists()) {
+    private static String[] getGlobalGroupPathOverride(final @NotNull ProjectImportContext importContext, final ModuleDescriptor moduleDescriptor) {
+        final var configDescriptor = importContext.getConfigModuleDescriptor();
+        final var groupFile = configDescriptor.getModuleRootPath().resolve(HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+
+        if (!FileUtilKt.getFileExists(groupFile)) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
         }
         return getGroupPathOverride(groupFile, moduleDescriptor);
@@ -80,28 +85,28 @@ public final class ModuleGroupingUtil {
 
 
     private static String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
-        final File groupFile = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
-        final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor);
-        if (groupFile.exists() && pathOverride == null) {
+        final var groupFile = moduleDescriptor.getModuleRootPath().resolve(HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+        final var pathOverride = getGroupPathOverride(groupFile, moduleDescriptor);
+        if (FileUtilKt.getFileExists(groupFile) && pathOverride == null) {
             createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
         }
         return pathOverride;
     }
 
-    private static void createCommentedProperties(final File groupFile, final String key, final String comments) {
-        try (final OutputStream out = new FileOutputStream(groupFile)) {
+    private static void createCommentedProperties(final Path groupFile, final String key, final String comments) {
+        try (final OutputStream out = new FileOutputStream(groupFile.toFile())) {
             final Properties properties = new Properties();
             if (key != null) {
                 properties.setProperty(key, "");
             }
             properties.store(out, comments);
         } catch (IOException e) {
-            LOG.error("Cannot write " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + ": " + groupFile.getAbsolutePath());
+            LOG.error("Cannot write " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + ": " + groupFile.toAbsolutePath());
         }
     }
 
-    private static String[] getGroupPathOverride(final File groupFile, final ModuleDescriptor moduleDescriptor) {
-        if (!groupFile.exists()) {
+    private static String[] getGroupPathOverride(final Path groupFile, final ModuleDescriptor moduleDescriptor) {
+        if (!FileUtilKt.getFileExists(groupFile)) {
             return null;
         }
         // take group override from owner module for sub-modules
@@ -109,7 +114,7 @@ public final class ModuleGroupingUtil {
             ? subModuleDescriptor.getOwner().getName()
             : moduleDescriptor.getName();
         final Properties properties = new Properties();
-        try (final InputStream in = new FileInputStream(groupFile)) {
+        try (final InputStream in = new FileInputStream(groupFile.toFile())) {
             properties.load(in);
         } catch (IOException e) {
             LOG.error("Cannot read " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + " for module " + moduleName);
@@ -123,37 +128,38 @@ public final class ModuleGroupingUtil {
     }
 
     public static String[] getGroupPath(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        final @NotNull ProjectImportContext importContext,
+        final @NotNull ModuleDescriptor moduleDescriptor,
         final Collection<ModuleDescriptor> requiredYModuleDescriptorList
     ) {
-        final var groupName = moduleDescriptor.groupName();
+        final var groupName = moduleDescriptor.groupName(importContext);
         if (groupName != null) return groupName;
 
         if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
-            return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList);
+            return getGroupPath(importContext, ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList);
         }
 
+        final var platformDirectory = importContext.getPlatformDirectory();
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
-            File customDirectory = moduleDescriptor.getRootProjectDescriptor().getExternalExtensionsDirectory();
+            var customDirectory = importContext.getExternalExtensionsDirectory();
 
-            if (null == customDirectory) {
-                customDirectory = new File(moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
+            if (customDirectory == null) {
+                customDirectory = platformDirectory.resolve(ProjectConstants.Paths.INSTANCE.getBIN_CUSTOM());
             }
-            if (!customDirectory.exists()) {
-                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
+            if (!FileUtilKt.getDirectoryExists(customDirectory) || !FileUtilKt.getDirectoryExists(customDirectory)) {
+                return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupCustom());
             }
-            customDirectory = toFile(customDirectory.getAbsolutePath());
 
             final List<String> path;
             try {
-                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootDirectory(), customDirectory);
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootPath().toFile(), customDirectory.toFile());
             } catch (IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for a custom module '%s' because its root directory '%s' is not under" +
                         " custom directory  '%s'.",
-                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), customDirectory
+                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootPath(), customDirectory
                 ));
-                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
+                return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupCustom());
             }
 
             final boolean isCustomModuleInLocalExtensionsXml = requiredYModuleDescriptorList.contains(
@@ -162,35 +168,32 @@ public final class ModuleGroupingUtil {
 
             return ArrayUtils.addAll(
                 isCustomModuleInLocalExtensionsXml
-                    ? ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom())
-                    : ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupOtherCustom()),
+                    ? ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupCustom())
+                    : ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupOtherCustom()),
                 path.toArray(new String[0])
             );
         }
 
-        if (requiredYModuleDescriptorList.contains(moduleDescriptor)) {
-            final File hybrisBinDirectory = new File(
-                moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                ProjectConstants.Directory.BIN
-            );
+        if (requiredYModuleDescriptorList.contains(moduleDescriptor) && FileUtilKt.getDirectoryExists(platformDirectory)) {
+            final var hybrisBinDirectory = platformDirectory.resolve(ProjectConstants.Directory.BIN);
 
             final List<String> path;
             try {
-                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory);
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootPath().toFile(), hybrisBinDirectory.toFile());
             } catch (final IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for OOTB module '%s' because its root directory '%s' is not under Hybris bin directory '%s'.",
-                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory
+                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootPath(), hybrisBinDirectory
                 ));
-                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupHybris());
+                return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupHybris());
             }
 
-            if (!path.isEmpty() && path.get(0).equals("modules")) {
-                path.remove(0);
+            if (!path.isEmpty() && path.getFirst().equals("modules")) {
+                path.removeFirst();
             }
-            return ArrayUtils.addAll(ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupHybris()), path.toArray(new String[0]));
+            return ArrayUtils.addAll(ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupHybris()), path.toArray(new String[0]));
         }
 
-        return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupOtherHybris());
+        return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupOtherHybris());
     }
 }

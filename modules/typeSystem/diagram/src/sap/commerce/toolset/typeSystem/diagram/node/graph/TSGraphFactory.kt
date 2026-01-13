@@ -20,7 +20,7 @@ package sap.commerce.toolset.typeSystem.diagram.node.graph
 
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaDetailsGenerator
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.*
@@ -107,9 +107,9 @@ object TSGraphFactory {
 
     private fun buildNode(meta: TSGlobalMetaEnum, transitiveNode: Boolean): TSGraphNodeClassifier? {
         val properties = listOf(
-            TSGraphFieldProperty(HybrisConstants.ATTRIBUTE_PK, "PK"),
-            TSGraphFieldProperty(HybrisConstants.ATTRIBUTE_CODE, "String"),
-            TSGraphFieldProperty(HybrisConstants.ATTRIBUTE_NAME, "String"),
+            TSGraphFieldProperty(TSConstants.Attribute.PK, "PK"),
+            TSGraphFieldProperty(TSConstants.Attribute.CODE, "String"),
+            TSGraphFieldProperty(TSConstants.Attribute.NAME, "String"),
         )
 
         val values = meta.values.entries

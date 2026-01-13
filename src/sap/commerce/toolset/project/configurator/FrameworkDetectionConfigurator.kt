@@ -24,17 +24,18 @@ import com.intellij.framework.detection.impl.FrameworkDetectionUtil
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet
 import com.intellij.javaee.web.facet.WebFacet
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 class FrameworkDetectionConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
         get() = "Framework Detection"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        val project = importContext.project
 
         Plugin.SPRING.ifActive { excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID) }
         Plugin.JAVAEE.ifActive { excludeFrameworkDetection(project, JavaeeApplicationFacet.ID) }

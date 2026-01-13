@@ -19,7 +19,10 @@
 package sap.commerce.toolset.hac.actionSystem
 
 import com.intellij.lang.Language
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.DumbAware
@@ -29,6 +32,7 @@ import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.ifNotFromSearchPopup
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
@@ -63,10 +67,7 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecContext>, F : Fi
         onActivation(it)
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         e.presentation.isEnabledAndVisible = this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE)
 
         val queryExecuting = fileEditor(e)

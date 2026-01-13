@@ -24,6 +24,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
+import com.intellij.platform.util.progress.withProgressText
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -76,7 +77,10 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
 
         coroutineScope.launch {
             val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
-                val collectedDependencies = metaCollector.collectDependencies()
+
+                val collectedDependencies = withProgressText("Waiting for completion of the Index process...") {
+                    metaCollector.collectDependencies()
+                }
 
                 val localMetaModels = reportProgressScope(collectedDependencies.size) { progressReporter ->
                     collectedDependencies

@@ -17,12 +17,67 @@
   -->
 <idea-plugin>
 
+    <extensionPoints>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.contentEntryConfigurator"
+                        interface="sap.commerce.toolset.java.configurator.contentEntry.ModuleContentEntryConfigurator"
+                        dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.libraryConfigurator"
+                        interface="sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator"
+                        dynamic="true"/>
+    </extensionPoints>
+
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
-        <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
-        <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
 
-        <project.module.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaModuleImportConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformBootstrapProjectLibraryConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeProjectLibraryConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HacProjectLibraryConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HmcProjectLibraryConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.DatabaseDriversProjectLibraryConfigurator"/>
+        <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.LicenseProjectLibraryConfigurator"/>
+
+        <project.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavadocsProjectImportConfigurator"/>
+
+        <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
+
+        <project.module.provider implementation="sap.commerce.toolset.java.configurator.JavaModuleProvider"/>
+        <project.module.importConfigurator order="first" id="javaModuleReadonlyConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleReadonlyConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleReadonlyConfigurator" id="javaModuleSdkConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleSdkConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleSdkConfigurator" id="javaModuleSettingsConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleSettingsConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleSettingsConfigurator" id="javaModuleLibrariesConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleLibrariesConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleLibrariesConfigurator" id="javaModuleContentRootsConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleContentRootsConfigurator"/>
+
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeAcceleratorAddonWebContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeClassesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeCommonsContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeResourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebTestClassesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludePlatformContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebInjectedSourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.PlatformContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ResourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.SourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.TestSourcesContentEntryConfigurator"/>
+        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.WebInjectedSourcesContentEntryConfigurator"/>
+
+        <project.module.libraryConfigurator order="first" id="ootbModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.java.configurator.library.CompileModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator order="after ootbModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.java.configurator.library.TestModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.CoreModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.ConfigModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HmcModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HacModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.AddonModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeSubModuleLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

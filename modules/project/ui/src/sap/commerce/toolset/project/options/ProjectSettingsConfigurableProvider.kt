@@ -36,7 +36,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        i18n("hybris.settings.project.title"), "hybris.project.settings"
+        i18n("hybris.settings.project.title"), "hybris.settings"
     ) {
 
         private val projectSettings = ProjectSettings.getInstance(project)
@@ -57,17 +57,27 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .text(projectSettings.hybrisVersion ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
-                row(i18n("hybris.import.wizard.hybris.distribution.directory.label")) {
+
+                row {
                     textField()
+                        .label(i18n("hybris.import.wizard.hybris.distribution.directory.label"))
                         .enabled(false)
-                        .text(projectSettings.hybrisDirectory ?: "")
+                        .text(projectSettings.platformRelativePath ?: "")
                         .align(AlignX.FILL)
+                        .resizableColumn()
+
+                    contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.help.description"))
                 }.layout(RowLayout.PARENT_GRID)
-                row(i18n("hybris.import.wizard.javadoc.url.label")) {
+
+                row {
                     textField()
+                        .label(i18n("hybris.import.wizard.javadoc.url.label"))
                         .enabled(false)
                         .text(projectSettings.javadocUrl ?: "")
                         .align(AlignX.FILL)
+                        .resizableColumn()
+
+                    contextHelp(i18n("hybris.import.wizard.javadoc.url.help.description"))
                 }.layout(RowLayout.PARENT_GRID)
             }
 
@@ -90,10 +100,11 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .bindSelected(projectSettings::generateCodeOnJUnitRunConfiguration)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)
                 }
-                row("Code generation timeout (in seconds):") {
+                row("Code generation timeout:") {
                     spinner(1..10000, 1)
                         .bindIntValue(projectSettings::generateCodeTimeoutSeconds)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)
+                        .commentRight("(seconds)")
                 }
             }
 
@@ -105,43 +116,9 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                 }
             }
 
-            group(i18n("hybris.settings.project.refresh.title")) {
+            group(i18n("hybris.project.import.isExcludedFromScanning"), false) {
                 row {
-                    checkBox("Remove external modules")
-                        .comment("If checked, non SAP Commerce external modules will be removed during the project refresh.")
-                        .bindSelected(projectSettings::removeExternalModulesOnRefresh)
-                }
-                row {
-                    checkBox("Use fake output path")
-                        .comment("When enabled the ‘eclipsebin’ folder will be used as an output path for extensions.")
-                        .bindSelected(projectSettings::useFakeOutputPathForCustomExtensions)
-                }
-                row {
-                    checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                        .comment(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                        .bindSelected(projectSettings::importOotbModulesInReadOnlyMode)
-                }
-                row {
-                    checkBox(i18n("hybris.import.wizard.exclude.test.sources.label"))
-                        .bindSelected(projectSettings::excludeTestSources)
-                }
-                row {
-                    checkBox(i18n("hybris.project.import.followSymlink"))
-                        .bindSelected(projectSettings::followSymlink)
-                }
-                row {
-                    checkBox(i18n("hybris.project.import.scanExternalModules"))
-                        .bindSelected(projectSettings::scanThroughExternalModule)
-                }
-                row {
-                    checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
-                        .bindSelected(projectSettings::importCustomAntBuildFiles)
-                }
-            }
-
-            group("Directories excluded from the project scanning", false) {
-                row {
-                    comment("Specify directories related to the project root, use '/' separator for sub-directories.")
+                    comment(i18n("hybris.project.import.isExcludedFromScanning.help.description"))
                 }
                 row {
                     cell(excludedFromScanning)

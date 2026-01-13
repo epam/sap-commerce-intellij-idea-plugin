@@ -26,6 +26,9 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.externalDependencies.EdConstants
+import sap.commerce.toolset.localextensions.LeConstants
 import javax.swing.Icon
 
 class HybrisProjectIconProvider : IconProvider() {
@@ -37,14 +40,14 @@ class HybrisProjectIconProvider : IconProvider() {
     }
 
     private fun getIcon(file: PsiFile): Icon? = when {
-        file.name == HybrisConstants.BUILD_CALLBACKS_XML -> HybrisIcons.BuildCallbacks.FILE
-        file.name == HybrisConstants.UNMANAGED_DEPENDENCIES_TXT -> HybrisIcons.UnmanagedDependencies.FILE
-        file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML -> HybrisIcons.ExternalDependencies.FILE
-        file.name == HybrisConstants.HYBRIS_LICENCE_JAR
-            || file.name == HybrisConstants.SAP_LICENCES -> HybrisIcons.Y.LICENCE
+        file.name == ProjectConstants.File.BUILD_CALLBACKS_XML -> HybrisIcons.BuildCallbacks.FILE
+        file.name == EdConstants.UNMANAGED_DEPENDENCIES_TXT -> HybrisIcons.UnmanagedDependencies.FILE
+        file.name == EdConstants.EXTERNAL_DEPENDENCIES_XML -> HybrisIcons.ExternalDependencies.FILE
+        file.name == ProjectConstants.File.HYBRIS_LICENCE_JAR
+            || file.name == ProjectConstants.File.SAP_LICENCES -> HybrisIcons.Y.LICENCE
 
-        file.name == HybrisConstants.EXTENSION_INFO_XML -> HybrisIcons.ExtensionInfo.FILE
-        file.name == HybrisConstants.LOCAL_EXTENSIONS_XML -> HybrisIcons.LocalExtensions.FILE
+        file.name == EiConstants.EXTENSION_INFO_XML -> HybrisIcons.ExtensionInfo.FILE
+        file.name == LeConstants.LOCAL_EXTENSIONS_XML -> HybrisIcons.LocalExtensions.FILE
         file.name.endsWith(HybrisConstants.IMPORT_OVERRIDE_FILENAME) -> HybrisIcons.PLUGIN_SETTINGS
         else -> null
     }
@@ -52,9 +55,9 @@ class HybrisProjectIconProvider : IconProvider() {
     private fun getIcon(directory: PsiDirectory): Icon? {
         val parentName = directory.parentDirectory?.name
         return when (directory.name) {
-            "tomcat" if (parentName == ProjectConstants.Extension.CONFIG || parentName == ProjectConstants.Extension.PLATFORM) -> HybrisIcons.Tools.TOMCAT
-            "solr" if parentName == ProjectConstants.Extension.CONFIG -> HybrisIcons.Tools.SOLR
-            "lib" if (directory.parentDirectory?.childrenOfType<XmlFile>()?.any { it.name == HybrisConstants.EXTENSION_INFO_XML } ?: false) -> HybrisIcons.Module.LIB
+            "tomcat" if (parentName == EiConstants.Extension.CONFIG || parentName == EiConstants.Extension.PLATFORM) -> HybrisIcons.Tools.TOMCAT
+            "solr" if parentName == EiConstants.Extension.CONFIG -> HybrisIcons.Tools.SOLR
+            "lib" if (directory.parentDirectory?.childrenOfType<XmlFile>()?.any { it.name == EiConstants.EXTENSION_INFO_XML } ?: false) -> HybrisIcons.Module.LIB
             else -> null
         }
     }

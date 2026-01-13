@@ -30,7 +30,6 @@ plugins {
     id("org.jetbrains.intellij.platform") // IDEA support
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.changelog) // ChangeLog Plugin
-    alias(libs.plugins.openAPIGenerator) // openapi Generator
 }
 
 java {
@@ -285,4 +284,5 @@ fun RunIdeTask.applyRunIdeSystemSettings() {
     systemProperty("idea.trust.all.projects", true)
     systemProperty("jb.consents.confirmation.enabled", false)
     systemProperty("compiler.process.debug.port", "5005")
+    systemProperty("sap.commerce.toolset.mode", "sandbox")
 }

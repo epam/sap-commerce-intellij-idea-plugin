@@ -36,7 +36,6 @@ import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import java.io.IOException
 import java.io.Serial
-import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
 class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<GroovyExecContext>(project, coroutineScope) {
@@ -59,7 +58,7 @@ class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : Defau
         )
 
         try {
-            val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+            val document = Jsoup.parse(response.entity.content, Charsets.UTF_8.name(), "")
             val jsonAsString = document.getElementsByTag("body").text()
             val json = Json.parseToJsonElement(jsonAsString)
 

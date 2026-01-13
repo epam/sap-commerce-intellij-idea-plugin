@@ -97,6 +97,7 @@ object HybrisIcons {
     }
 
     object Module {
+        val ROOT = PLUGIN_SETTINGS
         val NONE = AllIcons.Modules.UnloadedModule
         val ECLIPSE = AllIcons.Providers.Eclipse
         val MAVEN = OpenapiIcons.RepositoryLibraryLogo

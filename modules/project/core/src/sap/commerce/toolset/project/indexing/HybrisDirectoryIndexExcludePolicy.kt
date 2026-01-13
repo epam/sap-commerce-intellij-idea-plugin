@@ -39,15 +39,15 @@ class HybrisDirectoryIndexExcludePolicy : DirectoryIndexExcludePolicy {
 
     private fun getExcludedFoldersFromIndex(contentRoot: VirtualFile): List<VirtualFilePointer> {
         val excludedFoldersFromIndex = mutableListOf<VirtualFilePointer>()
-        getExcludedFromIndexList().forEach { excludedFolderPath ->
+        val excludedFromIndexList = ApplicationSettings.getInstance().excludedFromIndexList
+
+        excludedFromIndexList.forEach { excludedFolderPath ->
             val visitor = HybrisExcludeFromIndexFileVisitor(excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT)
             VfsUtilCore.visitChildrenRecursively(contentRoot, visitor)
         }
+
         return excludedFoldersFromIndex
     }
-
-    private fun getExcludedFromIndexList(): List<String> = ApplicationSettings.getInstance()
-        .excludedFromIndexList
 
     internal class HybrisExcludeFromIndexFileVisitor(
         excludedFolderPath: String,

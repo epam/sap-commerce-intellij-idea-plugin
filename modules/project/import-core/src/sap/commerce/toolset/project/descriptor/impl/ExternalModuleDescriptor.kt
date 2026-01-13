@@ -17,16 +17,17 @@
  */
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
-import java.io.File
+import java.nio.file.Path
 
 open class ExternalModuleDescriptor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
+    moduleRootPath: Path,
     name: String,
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+    descriptorType: ModuleDescriptorType,
+) : AbstractModuleDescriptor(moduleRootPath, name, descriptorType) {
 
-    override fun groupName(): Array<String>? = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext): Array<String>? = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
 }

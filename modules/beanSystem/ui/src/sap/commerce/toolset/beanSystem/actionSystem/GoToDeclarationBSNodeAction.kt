@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.beanSystem.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
@@ -32,6 +31,7 @@ import sap.commerce.toolset.beanSystem.model.Property
 import sap.commerce.toolset.beanSystem.ui.tree.BSTreeNode
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSMetaNode
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSNode
+import sap.commerce.toolset.ifNotFromSearchPopup
 import javax.swing.JTree
 
 class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
@@ -40,15 +40,12 @@ class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         val node = getSelectedNode(e)
 
         if (node == null || node !is BSMetaNode<*>) {
             e.presentation.isEnabledAndVisible = false
-            return
+            return@ifNotFromSearchPopup
         }
 
         e.presentation.isEnabledAndVisible = true

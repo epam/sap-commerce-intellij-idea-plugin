@@ -19,8 +19,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <projectImportProvider implementation="sap.commerce.toolset.project.HybrisProjectImportProvider"/>
-        <projectImportBuilder implementation="sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder"/>
-        <projectImportBuilder implementation="sap.commerce.toolset.project.OpenHybrisProjectImportBuilder"/>
+        <projectImportBuilder implementation="sap.commerce.toolset.project.HybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="sap.commerce.toolset.project.HybrisProjectOpenProcessor"/>
     </extensions>
 

@@ -25,7 +25,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.HybrisIcons
 
-class InformationStep(wizardContext: WizardContext) : ProjectImportWizardStep(wizardContext) {
+class InformationStep(context: WizardContext) : ProjectImportWizardStep(context) {
 
     override fun updateDataModel() = Unit
 

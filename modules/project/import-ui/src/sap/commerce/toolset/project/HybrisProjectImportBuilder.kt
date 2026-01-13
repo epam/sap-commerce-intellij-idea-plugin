@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,21 +15,120 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.project
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.module.ModifiableModuleModel
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.packaging.artifacts.ModifiableArtifactModel
+import com.intellij.projectImport.ProjectImportBuilder
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT
+import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectImportSettings
+import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.settings.ProjectSettings
-import java.io.File
+import sap.commerce.toolset.project.tasks.ProjectImportTask
+import sap.commerce.toolset.util.directoryExists
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 
-interface HybrisProjectImportBuilder {
+open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>() {
 
-    var hybrisModulesToImport: MutableList<ModuleDescriptor>
+    private var _openProjectSettingsAfterImport = false
+    private var _selectableModuleDescriptors: MutableList<ModuleDescriptor> = mutableListOf()
 
-    fun getHybrisProjectDescriptor(): HybrisProjectDescriptor
-    fun setRootProjectDirectory(directory: File)
-    fun setAllModuleList()
-    fun getBestMatchingExtensionsToImport(settings: ProjectSettings): MutableList<ModuleDescriptor>
-    fun setCoreStepModuleList()
-    fun setExternalStepModuleList()
+    var importContext: ProjectImportContext.Mutable? = null
+
+    override val isOpenProjectSettingsAfter
+        get() = _openProjectSettingsAfterImport
+
+    override fun getName() = i18n("hybris.project.name")
+    override fun getIcon() = HybrisIcons.Y.LOGO_BLUE
+    override fun setOpenProjectSettingsAfter(on: Boolean) {
+        _openProjectSettingsAfterImport = on
+    }
+
+    override fun createProject(name: String, path: String) = super.createProject(name, path).also {
+        importContext?.project = it
+    }
+
+    override fun isMarked(element: ModuleDescriptor?): Boolean = element
+        ?.isPreselected()
+        ?: false
+
+    override fun commit(
+        project: Project,
+        model: ModifiableModuleModel?,
+        modulesProvider: ModulesProvider?,
+        artifactModel: ModifiableArtifactModel?
+    ): List<Module> {
+        val context = importContext
+            ?.immutable(project)
+            ?: return emptyList()
+
+        try {
+            project.importState = ProjectImportState.IN_PROGRESS
+            ProjectImportTask.getInstance(project).execute(context)
+        } finally {
+            project.importState = ProjectImportState.IMPORTED
+        }
+
+        if (context.refresh) {
+            PostImportBulkConfigurator.getInstance(project).configure(context)
+        } else {
+            project.putUserData(KEY_FINALIZE_PROJECT_IMPORT, context)
+        }
+
+        notifyImportNotFinishedYet(project)
+
+        return emptyList()
+    }
+
+    override fun cleanup() = super.cleanup().also {
+        importContext = null
+        _openProjectSettingsAfterImport = false
+    }
+
+    override fun getList() = _selectableModuleDescriptors.toList()
+
+    override fun setList(list: List<ModuleDescriptor>) {
+        _selectableModuleDescriptors.apply {
+            clear()
+            addAll(list)
+        }
+    }
+
+    fun initContext(importSettings: ProjectImportSettings) = ProjectImportContext.Mutable(
+        rootDirectory = Path(fileToImport),
+        settings = importSettings,
+        refresh = isUpdate,
+        project = getCurrentProject(),
+    ).also {
+        importContext = it
+    }
+
+    private fun notifyImportNotFinishedYet(project: Project) = Notifications.create(
+        type = NotificationType.INFORMATION,
+        title = if (isUpdate) i18n("hybris.notification.project.refresh.title")
+        else i18n("hybris.notification.project.import.title"),
+        content = i18n("hybris.notification.import.or.refresh.process.not.finished.yet.content")
+    )
+        .notify(project)
+
+    private fun getAllImlFiles(dir: Path) = dir
+        .takeIf { it.directoryExists }
+        ?.listDirectoryEntries()
+        ?.filter { it.name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+        ?: emptyList()
+
 }

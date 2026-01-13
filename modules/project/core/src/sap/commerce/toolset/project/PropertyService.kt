@@ -27,14 +27,18 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.util.removeUserData
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.withProgressText
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
@@ -42,6 +46,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -59,54 +64,16 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     private val nestedPropertySuffix = "}"
     private val optionalPropertiesFilePattern = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
-    private val cachedProperties = CachedValuesManager.getManager(project).createCachedValue(
-        {
-            val result = LinkedHashMap<String, IProperty>()
-            val configModule = obtainConfigModule() ?: return@createCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
-            val platformModule = obtainPlatformModule() ?: return@createCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
-            val scope = createSearchScope(configModule, platformModule)
-            var envPropsFile: PropertiesFile? = null
-            var advancedPropsFile: PropertiesFile? = null
-            var localPropsFile: PropertiesFile? = null
-
-            val propertiesFiles = ArrayList<PropertiesFile>()
-
-            // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
-            FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
-                .mapNotNull { PsiManager.getInstance(project).findFile(it) }
-                .mapNotNull { it as? PropertiesFile }
-                .forEach { file ->
-                    when (file.name) {
-                        ProjectConstants.File.ENV_PROPERTIES -> envPropsFile = file
-                        ProjectConstants.File.ADVANCED_PROPERTIES -> advancedPropsFile = file
-                        ProjectConstants.File.LOCAL_PROPERTIES -> localPropsFile = file
-                        ProjectConstants.File.PROJECT_PROPERTIES -> propertiesFiles.add(file)
-                        ProjectConstants.File.PLATFORM_HOME_PROPERTIES -> propertiesFiles.add(file)
-                    }
-                }
-
-            localPropsFile?.let { propertiesFiles.add(it) }
-            advancedPropsFile?.let { propertiesFiles.add(0, it) }
-            envPropsFile?.let { propertiesFiles.add(0, it) }
-
-            propertiesFiles.forEach { addPropertyFile(result, it) }
-
-            loadHybrisRuntimeProperties(result)
-            loadHybrisOptionalConfigDir(result)
-
-            CachedValueProvider.Result.create(
-                result.values.toList(), propertiesFiles
-                    .map { it.virtualFile }
-                    .toTypedArray()
-                    .ifEmpty { ModificationTracker.EVER_CHANGED }
-            )
-        }, false
-    )
-
     fun initCache() = coroutineScope.launch {
         withBackgroundProgress(project, "Init properties cache", true) {
-            smartReadAction(project) { findAllIProperties() }
+            withProgressText("Waiting for completion of the Index process...") {
+                smartReadAction(project) { findAllIProperties() }
+            }
         }
+    }
+
+    fun resetCache() {
+        project.removeUserData(CACHE_KEY)
     }
 
     fun getLanguages(): Set<String> {
@@ -157,7 +124,49 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     fun getPlatformHome(): String? = findPlatformRootDirectory(project)
         ?.path
 
-    private fun findAllIProperties() = cachedProperties.value
+    private fun findAllIProperties(): List<IProperty> = CachedValuesManager.getManager(project).getCachedValue(project, CACHE_KEY, {
+        val result = LinkedHashMap<String, IProperty>()
+        val configModule = obtainConfigModule()
+            ?: return@getCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
+        val platformModule = obtainPlatformModule()
+            ?: return@getCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
+        val scope = createSearchScope(configModule, platformModule)
+        var envPropsFile: PropertiesFile? = null
+        var advancedPropsFile: PropertiesFile? = null
+        var localPropsFile: PropertiesFile? = null
+
+        val propertiesFiles = ArrayList<PropertiesFile>()
+
+        // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
+        FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
+            .mapNotNull { PsiManager.getInstance(project).findFile(it) }
+            .mapNotNull { it as? PropertiesFile }
+            .forEach { file ->
+                when (file.name) {
+                    ProjectConstants.File.ENV_PROPERTIES -> envPropsFile = file
+                    ProjectConstants.File.ADVANCED_PROPERTIES -> advancedPropsFile = file
+                    ProjectConstants.File.LOCAL_PROPERTIES -> localPropsFile = file
+                    ProjectConstants.File.PROJECT_PROPERTIES -> propertiesFiles.add(file)
+                    ProjectConstants.File.PLATFORM_HOME_PROPERTIES -> propertiesFiles.add(file)
+                }
+            }
+
+        localPropsFile?.let { propertiesFiles.add(it) }
+        advancedPropsFile?.let { propertiesFiles.add(0, it) }
+        envPropsFile?.let { propertiesFiles.add(0, it) }
+
+        propertiesFiles.forEach { addPropertyFile(result, it) }
+
+        loadHybrisRuntimeProperties(result)
+        loadHybrisOptionalConfigDir(result)
+
+        val dependencies = propertiesFiles
+            .map { it.virtualFile }
+            .toTypedArray()
+            .ifEmpty { ModificationTracker.EVER_CHANGED }
+
+        CachedValueProvider.Result.create(result.values.toList(), dependencies)
+    }, false)
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
         val platformHomePropertyKey = HybrisConstants.PROPERTY_PLATFORMHOME
@@ -268,11 +277,11 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CONFIG }
+        .firstOrNull { it.yExtensionName() == EiConstants.Extension.CONFIG }
 
     private fun obtainPlatformModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.PLATFORM }
+        .firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {
@@ -283,6 +292,8 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     fun GlobalSearchScope.or(otherScope: GlobalSearchScope): GlobalSearchScope = union(otherScope)
 
     companion object {
+        private val CACHE_KEY = Key.create<CachedValue<List<IProperty>>>("sap.commerce.toolset.propertiesCache")
+
         @JvmStatic
         fun getInstance(project: Project): PropertyService = project.service()
     }

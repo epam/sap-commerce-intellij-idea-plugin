@@ -26,7 +26,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum
 import sap.commerce.toolset.beanSystem.psi.reference.BSBeanReference
@@ -41,9 +41,9 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
             ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 
         val text = attributeValue.value
-            .replace(HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED, "    ")
-            .replace(HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED, "    ")
-            .replace(HybrisConstants.BS_SIGN_GREATER_THAN, " ")
+            .replace(BSConstants.SIGN_LESS_THAN_ESCAPED, "    ")
+            .replace(BSConstants.SIGN_GREATER_THAN_ESCAPED, "    ")
+            .replace(BSConstants.SIGN_GREATER_THAN, " ")
 
         val metaModelAccess = BSMetaModelAccess.getInstance(element.project)
 

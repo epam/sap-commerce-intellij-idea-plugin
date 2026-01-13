@@ -17,123 +17,86 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.project.guessProjectDir
-import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
+import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
-import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
-import java.io.File
+import sap.commerce.toolset.util.toSystemIndependentName
+import kotlin.io.path.Path
 
 class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
 
     override val name: String
         get() = "Project Settings"
 
-    override fun preConfigure(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        val project = importContext.project
         val workspaceSettings = WorkspaceSettings.getInstance(project)
         val projectSettings = ProjectSettings.getInstance(project)
-        WorkspaceSettings.getInstance(project).hybrisProject = true
+        workspaceSettings.hybrisProject = true
 
         Plugin.HYBRIS.pluginDescriptor
             ?.let { workspaceSettings.importedByVersion = it.version }
 
-        applySettings(hybrisProjectDescriptor)
+        applySettings(importContext)
 
-        hybrisProjectDescriptor.ifImport {
-            saveCustomDirectoryLocation(hybrisProjectDescriptor)
-            projectSettings.excludedFromScanning = hybrisProjectDescriptor.excludedFromScanning
+        importContext.ifImport {
+            saveCustomDirectoryLocation(importContext)
+            projectSettings.excludedFromScanning = importContext.excludedFromScanning.toSet()
         }
     }
 
-    private fun saveCustomDirectoryLocation(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
-        val projectDir = project.guessProjectDir() ?: return
-        val projectSettings = project.ySettings
-        val hybrisPath = hybrisProjectDescriptor.hybrisDistributionDirectory
-            ?.toPath() ?: return
+    private fun applySettings(importContext: ProjectImportContext) {
+        val projectSettings = importContext.project.ySettings
+        val importSettings = importContext.settings
 
-        projectSettings.hybrisDirectory = VfsUtilCore.virtualToIoFile(projectDir)
-            .toPath()
-            .relativize(hybrisPath)
+        projectSettings.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
+        projectSettings.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
+        projectSettings.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
+
+        projectSettings.externalExtensionsDirectory = importContext.externalExtensionsDirectory?.toSystemIndependentName
+        projectSettings.externalConfigDirectory = importContext.externalConfigDirectory?.toSystemIndependentName
+        projectSettings.ideModulesFilesDirectory = importContext.modulesFilesDirectory?.toSystemIndependentName
+        projectSettings.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.toSystemIndependentName
+        projectSettings.configDirectory = importContext.configModuleDescriptor.moduleRootPath.toSystemIndependentName
+
+        projectSettings.modulesOnBlackList = createModulesOnBlackList(importContext)
+        projectSettings.hybrisVersion = importContext.platformVersion
+        projectSettings.javadocUrl = importContext.javadocUrl
+
+        projectSettings.sourceCodePath = importContext.sourceCodePath?.toSystemIndependentName
+    }
+
+    private fun saveCustomDirectoryLocation(importContext: ProjectImportContext) {
+        val project = importContext.project
+        val projectDir = project.directory?.let { Path(it) } ?: return
+        val projectSettings = project.ySettings
+        val platformPath = importContext.platformDirectory
+
+        projectSettings.platformRelativePath = projectDir
+            .relativize(platformPath)
             .toString()
 
-        hybrisProjectDescriptor.externalExtensionsDirectory
-            ?.toPath()
+        importContext.externalExtensionsDirectory
             ?.let {
-                val relativeCustomPath = hybrisPath.relativize(it)
+                val relativeCustomPath = platformPath.relativize(it)
                 projectSettings.customDirectory = relativeCustomPath.toString()
             }
     }
 
-    private val File.directorySystemIndependentName: String?
-        get() = this
-            .takeIf { it.exists() }
-            ?.takeIf { it.isDirectory }
-            ?.let { FileUtil.toSystemIndependentName(it.path) }
-
-    private val File.fileSystemIndependentName: String?
-        get() = this
-            .takeIf { it.exists() }
-            ?.takeIf { it.isFile }
-            ?.let { FileUtil.toSystemIndependentName(it.path) }
-
-    private fun applySettings(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val projectSettings = hybrisProjectDescriptor.project?.ySettings ?: return
-        val applicationSettings = ApplicationSettings.getInstance()
-
-        applicationSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
-        applicationSettings.ignoreNonExistingSourceDirectories = hybrisProjectDescriptor.isIgnoreNonExistingSourceDirectories
-        applicationSettings.withStandardProvidedSources = hybrisProjectDescriptor.isWithStandardProvidedSources
-        applicationSettings.withExternalLibrarySources = hybrisProjectDescriptor.isWithExternalLibrarySources
-        applicationSettings.withExternalLibraryJavadocs = hybrisProjectDescriptor.isWithExternalLibraryJavadocs
-
-        projectSettings.importOotbModulesInReadOnlyMode = hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode
-        projectSettings.externalExtensionsDirectory = hybrisProjectDescriptor.externalExtensionsDirectory?.directorySystemIndependentName
-        projectSettings.externalConfigDirectory = hybrisProjectDescriptor.externalConfigDirectory?.directorySystemIndependentName
-        projectSettings.ideModulesFilesDirectory = hybrisProjectDescriptor.modulesFilesDirectory?.directorySystemIndependentName
-        projectSettings.externalDbDriversDirectory = hybrisProjectDescriptor.externalDbDriversDirectory?.directorySystemIndependentName
-        projectSettings.configDirectory = hybrisProjectDescriptor.configHybrisModuleDescriptor?.moduleRootDirectory?.directorySystemIndependentName
-
-        projectSettings.followSymlink = hybrisProjectDescriptor.isFollowSymlink
-        projectSettings.scanThroughExternalModule = hybrisProjectDescriptor.isScanThroughExternalModule
-        projectSettings.modulesOnBlackList = createModulesOnBlackList(hybrisProjectDescriptor)
-        projectSettings.hybrisVersion = hybrisProjectDescriptor.hybrisVersion
-        projectSettings.javadocUrl = hybrisProjectDescriptor.javadocUrl
-        projectSettings.excludeTestSources = hybrisProjectDescriptor.isExcludeTestSources
-
-        hybrisProjectDescriptor.sourceCodeFile
-            ?.takeIf { it.exists() }
-            ?.let { sourceCodeFile ->
-                projectSettings.sourceCodeFile = sourceCodeFile.fileSystemIndependentName
-                applicationSettings.sourceZipUsed = sourceCodeFile.isDirectory
-                applicationSettings.sourceCodeDirectory = if (applicationSettings.sourceZipUsed) sourceCodeFile.parentFile.directorySystemIndependentName
-                else sourceCodeFile.fileSystemIndependentName
-            }
-        projectSettings.availableExtensions = hybrisProjectDescriptor.foundModules
-            .filterNot { it is YSubModuleDescriptor }
-            .filterIsInstance<YModuleDescriptor>()
-            .toSet()
-            .map { it.extensionDescriptor() }
-            .associateBy { it.name }
-    }
-
-    private fun createModulesOnBlackList(hybrisProjectDescriptor: HybrisProjectDescriptor): Set<String> {
-        val chosenModuleDescriptors = hybrisProjectDescriptor.chosenModuleDescriptors
-        val toBeImportedNames = chosenModuleDescriptors
+    private fun createModulesOnBlackList(importContext: ProjectImportContext): Set<String> {
+        val chosenHybrisModuleDescriptors = importContext.chosenHybrisModuleDescriptors
+        val toBeImportedNames = chosenHybrisModuleDescriptors
             .map { it.name }
             .toSet()
 
-        return hybrisProjectDescriptor.foundModules
-            .filterNot { chosenModuleDescriptors.contains(it) }
+        return importContext.foundModules
+            .filterNot { chosenHybrisModuleDescriptors.contains(it) }
             .filter { toBeImportedNames.contains(it.name) }
-            .map { it.getRelativePath() }
+            .map { it.getRelativePath(importContext.rootDirectory) }
             .toSet()
     }
 }

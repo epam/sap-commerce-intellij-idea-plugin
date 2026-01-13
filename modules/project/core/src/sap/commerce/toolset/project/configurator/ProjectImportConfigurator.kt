@@ -19,15 +19,15 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 interface ProjectImportConfigurator : Configurator {
 
-    fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    ) = Unit
+    suspend fun configure(
+        importContext: ProjectImportContext,
+        workspaceModel: WorkspaceModel
+    )
 
     companion object {
         val EP = ExtensionPointName.create<ProjectImportConfigurator>("sap.commerce.toolset.project.importConfigurator")

@@ -25,7 +25,7 @@ import com.intellij.openapi.module.ModuleType
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-class YFacetType : com.intellij.facet.FacetType<YFacet, YFacetConfiguration>(YFacetConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
+class YFacetType : com.intellij.facet.FacetType<YFacet, YFacetConfiguration>(YFacetConstants.Y_FACET_TYPE_ID, YFacetConstants.FACET_ID, YFacetConstants.FACET_NAME) {
 
     override fun getIcon(): Icon = HybrisIcons.Y.FACET
     override fun isSuitableModuleType(type: ModuleType<*>?) = type is JavaModuleType
@@ -37,9 +37,4 @@ class YFacetType : com.intellij.facet.FacetType<YFacet, YFacetConfiguration>(YFa
         configuration: YFacetConfiguration,
         underlyingFacet: Facet<*>?
     ) = YFacet(this, module, name, configuration, underlyingFacet)
-
-    companion object {
-        const val FACET_ID = "SAP_COMMERCE_Y_FACET_ID"
-        const val FACET_NAME = "SAP Commerce"
-    }
 }

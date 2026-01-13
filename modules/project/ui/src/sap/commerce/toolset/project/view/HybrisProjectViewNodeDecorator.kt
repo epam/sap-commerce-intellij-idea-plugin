@@ -22,14 +22,17 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
+import com.intellij.openapi.externalSystem.ExternalSystemModulePropertyManager
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.facet.YFacetConstants
+import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.importState
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
 
@@ -44,6 +47,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
     private fun decorateModule(node: PsiDirectoryNode, data: PresentationData) {
         val vf = node.virtualFile ?: return
         val project = node.project.takeIf { it.isHybrisProject } ?: return
+        if (project.importState != ProjectImportState.IMPORTED) return
         val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf) ?: return
         val projectSettings = ProjectSettings.getInstance(module.project)
 
@@ -53,23 +57,34 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
                 ?.let { data.coloredText.remove(it) }
         }
 
-        ModuleRootManager.getInstance(module).contentRoots
-            .find { it == node.virtualFile }
+        ModuleRootManager.getInstance(module).contentRoots.find { it == vf }
             ?: return
 
-        val extensionDescriptor = YFacetConstants.getModuleSettings(module)
+        val extensionDescriptor = YFacet.getState(module)
 
-        if (ProjectConstants.Extension.KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
+        if (EiConstants.Extension.KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
             data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)
             return
         }
 
-        val subModuleType = extensionDescriptor.subModuleType
+        val subModuleType = extensionDescriptor?.subModuleType
         if (subModuleType != null) {
             data.setIcon(subModuleType.icon)
             return
         }
 
-        if (extensionDescriptor.type != ModuleDescriptorType.NONE) data.setIcon(extensionDescriptor.type.icon)
+        if (extensionDescriptor == null) {
+            val descriptorType = when (ExternalSystemModulePropertyManager.getInstance(module).getExternalSystemId()) {
+                "GRADLE" -> ModuleDescriptorType.GRADLE
+                "Maven" -> ModuleDescriptorType.MAVEN
+                else -> {
+                    if (vf.findChild(".project") != null) ModuleDescriptorType.ECLIPSE
+                    else null
+                }
+            }
+            descriptorType?.icon?.let { data.setIcon(it) }
+        } else if (extensionDescriptor.type != ModuleDescriptorType.NONE) {
+            data.setIcon(extensionDescriptor.type.icon)
+        }
     }
 }

@@ -20,11 +20,11 @@ package sap.commerce.toolset.extensioninfo.file
 
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 
 class MetaKeyConverter : ResolvingConverter<String>() {
 
     override fun toString(t: String?, context: ConvertContext) = t
     override fun fromString(s: String?, context: ConvertContext) = s
-    override fun getVariants(context: ConvertContext) = HybrisConstants.EXTENSION_INFO_META_KEYS
+    override fun getVariants(context: ConvertContext) = EiConstants.EXTENSION_INFO_META_KEYS
 }

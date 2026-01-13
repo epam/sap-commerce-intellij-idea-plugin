@@ -26,7 +26,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.jetbrains.annotations.PropertyKey
 import sap.commerce.toolset.settings.WorkspaceSettings
-import java.nio.charset.StandardCharsets
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.isDirectory
+
+val isSandbox = System.getProperty("sap.commerce.toolset.mode") == "sandbox"
 
 val PsiElement.isHybrisProject: Boolean
     get() = project.isHybrisProject
@@ -37,6 +41,11 @@ val PsiElement.isNotHybrisProject: Boolean
 val Project.directory: String?
     get() = PathMacroManager.getInstance(this).expandPath($$"$PROJECT_DIR$")
 
+val Project.path: Path?
+    get() = directory
+        ?.let { Path(it) }
+        ?.takeIf { it.isDirectory() }
+
 val Project.isHybrisProject: Boolean
     get() = WorkspaceSettings.getInstance(this).hybrisProject
 
@@ -45,6 +54,16 @@ val Project.isNotHybrisProject: Boolean
 
 val AnActionEvent.isHybrisProject: Boolean
     get() = this.dataContext.isHybrisProject
+
+val AnActionEvent.notFromSearchPopup: Boolean
+    get() = !this.isFromSearchPopup
+
+fun AnActionEvent.ifNotFromSearchPopup(operation: () -> Unit = {}) {
+    this.presentation.isEnabledAndVisible = notFromSearchPopup
+    if (this.presentation.isEnabledAndVisible) operation()
+}
+
+fun AnActionEvent.hideFromSearchPopup() = this.ifNotFromSearchPopup()
 
 val DataContext.isHybrisProject: Boolean
     get() = this.getData(CommonDataKeys.PROJECT)?.isHybrisProject ?: false
@@ -67,5 +86,5 @@ fun i18nFallback(
 ) = HybrisI18nBundle.messageFallback(key, fallback, *params)
 
 fun Any.readResource(resourcePath: String) = javaClass.classLoader.getResourceAsStream(resourcePath)
-    ?.bufferedReader(StandardCharsets.UTF_8)?.use { it.readText() }
+    ?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
     ?: throw IllegalStateException("Resource not found: $resourcePath")

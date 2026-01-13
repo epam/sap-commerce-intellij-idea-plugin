@@ -29,26 +29,23 @@ import com.intellij.database.util.LoaderContext
 import com.intellij.database.util.performAutoIntrospection
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
-import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.OrderRootType
-import com.intellij.openapi.roots.libraries.LibraryUtil
-import com.intellij.openapi.util.SystemInfo
-import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.LibraryEntity
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
 
-class DataSourceConfigurator : ProjectPostImportConfigurator {
+class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Database - Data Sources"
 
-    override suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) {
-        val project = hybrisProjectDescriptor.project ?: return
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        val project = importContext.project
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
@@ -73,41 +70,45 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
         edtWriteAction {
             dataSourceDetectorBuilder.commit()
 
-            DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, DatabaseCredentials.getInstance())
+            val credentials = DatabaseCredentials.getInstance()
+            DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, credentials)
 
             for (dataSource in dataSources) {
                 LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
 
-                loadDatabaseDriver(project, dataSource)
+                loadDatabaseDriver(workspaceModel, dataSource)
             }
         }
 
         for (dataSource in dataSources) {
-            performAutoIntrospection(LoaderContext.selectGeneralTask(project, dataSource), true)
+            val context = LoaderContext.selectGeneralTask(project, dataSource)
+            performAutoIntrospection(context, true)
         }
     }
 
-
-    private fun loadDatabaseDriver(project: Project, dataSource: LocalDataSource) {
+    private fun loadDatabaseDriver(workspaceModel: WorkspaceModel, dataSource: LocalDataSource) {
         val driver = dataSource.databaseDriver ?: return
 
         if (driver.additionalClasspathElements.isNotEmpty()) return
 
         // let's try to pick up a suitable driver located in the Database Drivers library
-        ModuleManager.getInstance(project).modules
-            .firstOrNull { it.name.endsWith(ProjectConstants.Extension.PLATFORM) }
-            ?.let { LibraryUtil.findLibrary(it, HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY) }
-            ?.let { library ->
-                library.rootProvider.getFiles(OrderRootType.CLASSES)
-                    .filter { it.name.startsWith(driver.sqlDialect, true) }
-                    .map { VfsUtilCore.virtualToIoFile(it) }
-                    .map {
-                        if (SystemInfo.isWindows) "file:/$it"
-                        else "file://$it"
-                    }
-                    .map { root -> SingleRootClasspathElement(root) }
-                    .forEach { driver.additionalClasspathElements.add(it) }
+
+        workspaceModel.currentSnapshot
+            .entities(LibraryEntity::class.java)
+            .find { it.name == JavaConstants.ProjectLibrary.DATABASE_DRIVERS }
+            ?.roots
+            ?.asSequence()
+            ?.filter { it.type == LibraryRootTypeId.COMPILED }
+            ?.mapNotNull { VirtualFileManager.getInstance().findFileByUrl(it.url.url) }
+            ?.mapNotNull { vf ->
+                vf.children
+                    ?.filter { it.extension == "jar" }
+                    ?.filter { it.nameWithoutExtension.startsWith(driver.sqlDialect, true) }
             }
+            ?.flatten()
+            ?.map { SingleRootClasspathElement(it.url) }
+            ?.toList()
+            ?.forEach { driver.additionalClasspathElements.add(it) }
 
         dataSource.resolveDriver()
         dataSource.ensureDriverConfigured()

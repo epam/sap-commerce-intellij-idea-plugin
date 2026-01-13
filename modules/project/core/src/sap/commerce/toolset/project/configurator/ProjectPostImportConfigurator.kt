@@ -19,12 +19,12 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import sap.commerce.toolset.project.context.ProjectImportContext
 
 interface ProjectPostImportConfigurator : Configurator {
 
-    fun postImport(hybrisProjectDescriptor: HybrisProjectDescriptor) = Unit
-    suspend fun asyncPostImport(hybrisProjectDescriptor: HybrisProjectDescriptor) = Unit
+    fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel)
 
     companion object {
         val EP = ExtensionPointName.create<ProjectPostImportConfigurator>("sap.commerce.toolset.project.postImportConfigurator")

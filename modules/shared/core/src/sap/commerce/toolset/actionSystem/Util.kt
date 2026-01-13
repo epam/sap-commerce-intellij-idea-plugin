@@ -21,6 +21,8 @@ package sap.commerce.toolset.actionSystem
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 
 fun Project.triggerAction(
@@ -28,17 +30,29 @@ fun Project.triggerAction(
     place: String = ActionPlaces.UNKNOWN,
     uiKind: ActionUiKind = ActionUiKind.Companion.NONE,
     dataContextProvider: () -> DataContext = { SimpleDataContext.getProjectContext(this) }
-) = ActionManager.getInstance().getAction(actionId)
-    ?.let {
-        val event = AnActionEvent.createEvent(
-            it, dataContextProvider.invoke(),
-            null, place, uiKind, null
-        );
-        ActionUtil.performAction(it, event)
+) {
+    val action = ActionManager.getInstance().getAction(actionId)
+        ?.let {
+            val event = AnActionEvent.createEvent(
+                it, dataContextProvider.invoke(),
+                null, place, uiKind, null
+            );
+            ActionUtil.performAction(it, event)
+        }
+
+    if (action == null) {
+        thisLogger().warn("Could not find action $actionId")
     }
+}
 
 fun triggerAction(
     actionId: String,
     event: AnActionEvent,
-) = ActionManager.getInstance().getAction(actionId)
-    ?.let { ActionUtil.performAction(it, event) }
+) {
+    val action = ActionManager.getInstance().getAction(actionId)
+        ?.let { ActionUtil.performAction(it, event) }
+
+    if (action == null) {
+        logger<Project>().warn("Could not find action $actionId")
+    }
+}

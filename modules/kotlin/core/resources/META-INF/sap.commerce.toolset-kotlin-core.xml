@@ -19,9 +19,9 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
-        <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
 
-        <project.module.facetConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
+        <project.module.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

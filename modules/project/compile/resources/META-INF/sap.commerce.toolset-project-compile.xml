@@ -21,7 +21,7 @@
         <!-- We cannot rely on `context.isRebuild` as it will be false in case of modules of various types.-->
         <!-- Thus, we're looking for Platform module.-->
         <!-- See ModulesBuildSettings.isRebuild.-->
-        <compiler.task execute="BEFORE" implementation="sap.commerce.toolset.project.compile.ProjectBeforeCompilerTask"/>
+        <compiler.task execute="BEFORE" implementation="sap.commerce.toolset.project.compile.GenerateCodeCompilerTask"/>
         <compiler.task execute="AFTER" implementation="sap.commerce.toolset.project.compile.ProjectAfterCompilerTask"/>
     </extensions>
 

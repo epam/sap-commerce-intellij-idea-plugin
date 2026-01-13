@@ -31,7 +31,6 @@ import com.intellij.ui.jcef.JBCefApp
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.isNotHybrisProject
 import java.io.IOException
-import java.nio.charset.StandardCharsets
 
 class WhatsNewStartupActivity : ProjectActivity {
 
@@ -46,7 +45,7 @@ class WhatsNewStartupActivity : ProjectActivity {
             try {
                 val content = this.javaClass.getResourceAsStream("/CHANGELOG.md").use { html ->
                     html
-                        ?.let { String(StreamUtil.readBytes(it), StandardCharsets.UTF_8) }
+                        ?.let { String(StreamUtil.readBytes(it), Charsets.UTF_8) }
                 } ?: return@runOnceForProject
 
                 val lvf = LightVirtualFile("What's New in SAP Commerce Developers Toolset - $version").also {

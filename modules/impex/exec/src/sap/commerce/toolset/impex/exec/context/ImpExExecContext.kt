@@ -22,7 +22,6 @@ import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import java.nio.charset.StandardCharsets
 
 data class ImpExExecContext(
     val connection: HacConnectionSettingsState,
@@ -131,7 +130,7 @@ data class ImpExExecContext(
                 validationMode = ImpExValidationMode.IMPORT_STRICT,
                 maxThreads = 20,
                 timeout = connectionSettings.timeout,
-                encoding = StandardCharsets.UTF_8.name(),
+                encoding = Charsets.UTF_8.name(),
                 legacyMode = ImpExToggle.OFF,
                 enableCodeExecution = ImpExToggle.ON,
                 sldEnabled = ImpExToggle.OFF,

@@ -18,68 +18,43 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import kotlinx.collections.immutable.toImmutableSet
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import java.nio.file.Path
 
 abstract class YRegularModuleDescriptorImpl protected constructor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    extensionInfo: ExtensionInfo,
-) : AbstractYModuleDescriptor(
-    moduleRootDirectory, rootProjectDescriptor,
-    extensionInfo.extension.name, extensionInfo = extensionInfo
-), YRegularModuleDescriptor {
+    moduleRootPath: Path,
+    descriptorType: ModuleDescriptorType,
+    extensionInfo: ExtensionInfoContext,
+) : AbstractYModuleDescriptor(moduleRootPath, extensionInfo.name, descriptorType, extensionInfo), YRegularModuleDescriptor {
 
     override var isInLocalExtensions = false
     override var isNeededDependency = false
 
-    override val hasHmcModule = extensionInfo.extension.hmcmodule != null
-    override val isHacAddon = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
-
-    override val hasBackofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-        && File(moduleRootDirectory, ProjectConstants.Extension.BACK_OFFICE).isDirectory
-
-    override val hasWebModule = extensionInfo.extension.webmodule != null
-        && File(moduleRootDirectory, ProjectConstants.Extension.WEB).isDirectory
-
     override fun isPreselected() = isInLocalExtensions || isNeededDependency
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
-        val extension = extensionInfo.extension
-            ?: return getDefaultRequiredExtensionNames()
+    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = extensionInfo.requiredExtensions
+        .takeIf { it.isNotEmpty() }
+        ?.map { it.name }
+        ?.let { directRequiredExtensions ->
+            buildSet {
+                addAll(directRequiredExtensions)
+                addAll(getAdditionalRequiredExtensionNames())
 
-        val requiresExtension = extension.requiresExtension
-            .takeIf { it.isNotEmpty() }
-            ?: return getDefaultRequiredExtensionNames()
+                if (extensionInfo.webModule) this
+                    .map { "$it." + EiConstants.Extension.COMMON_WEB }
+                    .filter { moduleDescriptors.contains(it) }
+                    .let { addAll(it) }
 
-        val requiredExtensionNames = requiresExtension
-            .filter { it.name.isNotBlank() }
-            .map { it.name }
-            .toMutableSet()
-
-        requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames())
-
-        if (hasWebModule) {
-            requiredExtensionNames
-                .map { "$it." + ProjectConstants.Extension.COMMON_WEB }
-                .filter { moduleDescriptors.contains(it) }
-                .let { requiredExtensionNames.addAll(it) }
+                if (extensionInfo.hmcModule) add(EiConstants.Extension.HMC)
+                if (extensionInfo.backofficeModule) add(EiConstants.Extension.BACK_OFFICE + "." + EiConstants.Extension.WEB)
+            }
         }
-        if (hasHmcModule) {
-            requiredExtensionNames.add(ProjectConstants.Extension.HMC)
-        }
-        if (hasBackofficeModule) {
-            requiredExtensionNames.add(ProjectConstants.Extension.BACK_OFFICE + "." + ProjectConstants.Extension.WEB)
-        }
-        return requiredExtensionNames.toImmutableSet()
-    }
+        ?: getDefaultRequiredExtensionNames()
 
-    override fun getDefaultRequiredExtensionNames() = setOf(ProjectConstants.Extension.PLATFORM)
-    override fun getAdditionalRequiredExtensionNames() = setOf(ProjectConstants.Extension.PLATFORM)
+    override fun getDefaultRequiredExtensionNames() = setOf(EiConstants.Extension.PLATFORM)
+    override fun getAdditionalRequiredExtensionNames() = setOf(EiConstants.Extension.PLATFORM)
 }

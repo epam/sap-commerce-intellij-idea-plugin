@@ -18,15 +18,17 @@
 
 package sap.commerce.toolset.project
 
+import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.util.Key
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import java.nio.file.Path
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.context.ProjectImportContext
 import kotlin.io.path.Path
 
 object ProjectConstants {
 
     @JvmStatic
-    val KEY_FINALIZE_PROJECT_IMPORT: Key<HybrisProjectDescriptor> = Key.create("hybrisProjectImportFinalize")
+    val KEY_FINALIZE_PROJECT_IMPORT: Key<ProjectImportContext> = Key.create("hybrisProjectImportFinalize")
+    val Y_MODULE_TYPE_ID = JavaModuleType.getModuleType().id
 
     object Directory {
         const val BOOTSTRAP = "bootstrap"
@@ -68,61 +70,28 @@ object ProjectConstants {
         const val GROOVY_TEST_SRC = "groovytestsrc"
         const val KOTLIN_TEST_SRC = "kotlintestsrc"
         const val SCALA_TEST_SRC = "scalatestsrc"
+        const val ADDON_TEST_SRC = "addontestsrc"
 
         const val RESOURCES = "resources"
         const val ECLIPSE_BIN = "eclipsebin"
+        const val NPM = "npm"
         const val NODE_MODULES = "node_modules"
         const val JS_STOREFRONT = "js-storefront"
 
+        const val BUILD_TOOLS = "build-tools"
+        const val LICENSES = "licenses"
         const val LICENCE = "licence"
         const val BOWER_COMPONENTS = "bower_components"
         const val JS_TARGET = "jsTarget"
 
         const val EXT = "ext"
-        const val HYBRIS = "hybris"
+        const val INSTALLER = "installer"
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 
-        val PATH_BOOTSTRAP: Path = Path("platform", BOOTSTRAP)
-
-        @JvmField
-        val SRC_DIR_NAMES = listOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-
-        @JvmField
-        val ALL_SRC_DIR_NAMES = listOf(TEST_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-
-        @JvmField
-        val TEST_SRC_DIR_NAMES = listOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
-    }
-
-    object Extension {
-        const val BACK_OFFICE = "backoffice"
-        const val CORE = "core"
-        const val CONFIG = "config"
-        const val HMC = "hmc"
-        const val HAC = "hac"
-        const val PLATFORM = "platform"
-        const val PLATFORM_SERVICES = "platformservices"
-        const val ADDON_SUPPORT = "addonsupport"
-        const val KOTLIN_NATURE = "kotlinnature"
-        const val COMMON_WEB = "commonweb"
-        const val WEB = "web"
-        const val ADVANCED_SAVED_QUERY = "advancedsavedquery"
-        const val CATALOG = "catalog"
-        const val COMMENTS = "comments"
-        const val COMMONS = "commons"
-        const val DELIVERY_ZONE = "deliveryzone"
-        const val EUROPE1 = "europe1"
-        const val IMPEX = "impex"
-        const val MAINTENANCE_WEB = "maintenanceweb"
-        const val MEDIA_WEB = "mediaweb"
-        const val OAUTH2 = "oauth2"
-        const val PAYMENT_STANDARD = "paymentstandard"
-        const val PROCESSING = "processing"
-        const val SCRIPTING = "scripting"
-        const val TEST_WEB = "testweb"
-        const val VALIDATION = "validation"
-        const val WORKFLOW = "workflow"
+        val SRC_DIR_NAMES = arrayOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
+        val ALL_SRC_DIR_NAMES = arrayOf(GEN_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
+        val TEST_SRC_DIR_NAMES = arrayOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
     }
 
     object File {
@@ -131,28 +100,71 @@ object ProjectConstants {
         const val PLATFORM_HOME_PROPERTIES = "platformhome.properties"
         const val ENV_PROPERTIES = "env.properties"
         const val ADVANCED_PROPERTIES = "advanced.properties"
+
+        const val EXTENSIONS_XML = "extensions.xml"
+        const val BUILD_CALLBACKS_XML = "buildcallbacks.xml"
+
+        const val HYBRIS_LICENCE_JAR = "hybrislicence.jar"
+        const val SAP_LICENCES = "installedSaplicenses.properties"
+    }
+
+    object Paths {
+        val IDEA_MODULES = Path(".idea", "idea-modules")
+
+        val RELATIVE_DOC_SOURCES = Path("..", "doc", "sources")
+        val RELATIVE_CONFIG = Path("..", "..", "config")
+
+        val PLATFORM_BOOTSTRAP = Path("platform", "bootstrap")
+        val BIN_PLATFORM = Path("bin", "platform")
+        val BIN_PLATFORM_BUILD_NUMBER = Path("bin", "platform", "build.number")
+
+        val BIN_CUSTOM = Path("bin", "custom")
+
+        val LIB_DB_DRIVER = Path("lib", "dbdriver")
+        val ADVANCED_PROPERTIES = Path("resources", "advanced.properties")
+
+        val BOOTSTRAP_BIN = Path("bootstrap", "bin")
+        val BOOTSTRAP_GEN_SRC = Path("bootstrap", "gensrc")
+
+        val TOMCAT_BIN = Path("tomcat", "bin")
+        val TOMCAT_LIB = Path("tomcat", "lib")
+        val TOMCAT_6_BIN = Path("tomcat-6", "bin")
+        val TOMCAT_6_LIB = Path("tomcat-6", "lib")
+
+        val DOC_SOURCES = Path("doc", "sources")
+        val ACCELERATOR_ADDON_WEB = Path("acceleratoraddon", "web")
+
+        val WEBROOT_WEB_INF_LIB = Path("webroot", "WEB-INF", "lib")
+        val WEBROOT_WEB_INF_CLASSES = Path("webroot", "WEB-INF", "classes")
+        val WEBROOT_WEB_INF_WEB_XML = Path("webroot", "WEB-INF", "web.xml")
+
+        val BACKOFFICE_JAR = Path("resources", "backoffice")
+
+        val RESERVED_TYPE_CODES_FILE = Path("resources", "core", "unittest", "reservedTypecodes.txt")
+
+        val HYBRIS_SERVER_SHELL_SCRIPT_NAME = Path("bin", "platform", "hybrisserver.sh")
+        val HYBRIS_SERVER_BASH_SCRIPT_NAME = Path("bin", "platform", "hybrisserver.bat")
     }
 
     val PLATFORM_EXTENSION_NAMES = setOf(
-        Extension.ADVANCED_SAVED_QUERY,
-        Extension.CATALOG,
-        Extension.COMMENTS,
-        Extension.COMMONS,
-        Extension.CORE,
-        Extension.DELIVERY_ZONE,
-        Extension.EUROPE1,
-        Extension.HAC,
-        Extension.IMPEX,
-        Extension.MAINTENANCE_WEB,
-        Extension.MEDIA_WEB,
-        Extension.OAUTH2,
-        Extension.PAYMENT_STANDARD,
-        Extension.PLATFORM_SERVICES,
-        Extension.PROCESSING,
-        Extension.SCRIPTING,
-        Extension.TEST_WEB,
-        Extension.VALIDATION,
-        Extension.WORKFLOW,
+        EiConstants.Extension.ADVANCED_SAVED_QUERY,
+        EiConstants.Extension.CATALOG,
+        EiConstants.Extension.COMMENTS,
+        EiConstants.Extension.COMMONS,
+        EiConstants.Extension.CORE,
+        EiConstants.Extension.DELIVERY_ZONE,
+        EiConstants.Extension.EUROPE1,
+        EiConstants.Extension.HAC,
+        EiConstants.Extension.IMPEX,
+        EiConstants.Extension.MAINTENANCE_WEB,
+        EiConstants.Extension.MEDIA_WEB,
+        EiConstants.Extension.OAUTH2,
+        EiConstants.Extension.PAYMENT_STANDARD,
+        EiConstants.Extension.PLATFORM_SERVICES,
+        EiConstants.Extension.PROCESSING,
+        EiConstants.Extension.SCRIPTING,
+        EiConstants.Extension.TEST_WEB,
+        EiConstants.Extension.VALIDATION,
+        EiConstants.Extension.WORKFLOW,
     )
-
 }

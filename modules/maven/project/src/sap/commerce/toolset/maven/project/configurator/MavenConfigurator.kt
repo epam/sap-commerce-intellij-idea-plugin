@@ -1,0 +1,58 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package sap.commerce.toolset.maven.project.configurator
+
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.backend.workspace.WorkspaceModel
+import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
+import org.jetbrains.idea.maven.model.MavenConstants
+import org.jetbrains.idea.maven.project.MavenProjectsManager
+import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
+import sap.commerce.toolset.maven.project.descriptor.MavenModuleDescriptor
+import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.util.fileExists
+
+class MavenConfigurator : ProjectPostImportAsyncConfigurator {
+
+    override val name: String
+        get() = "Maven"
+
+    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+        val project = importContext.project
+        val mavenModules = importContext.chosenOtherModuleDescriptors
+            .filterIsInstance<MavenModuleDescriptor>()
+            .takeIf { it.isNotEmpty() }
+            ?: return
+
+        val projectFiles = readAction {
+            mavenModules
+                .asSequence()
+                .map { it.moduleRootPath.resolve(MavenConstants.POM_XML) }
+                .filter { it.fileExists }
+                .mapNotNull { VfsUtil.findFile(it, true) }
+        }
+
+        projectFiles.forEach { projectFile ->
+            MavenProjectAsyncBuilder().commitSync(project, projectFile, null)
+        }
+
+        MavenProjectsManager.getInstance(project).scheduleUpdateAllMavenProjects(MavenSyncSpec.full("MavenProjectsManager.importProjects"))
+    }
+}

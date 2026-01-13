@@ -27,7 +27,7 @@ import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.typeSystem.model.Items
 import javax.swing.Icon
 
-class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, HybrisConstants.ROOT_TAG_ITEMS_XML) {
+class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, TSConstants.ROOT_TAG_ITEMS_XML) {
 
     override fun getFileIcon(@IconFlags flags: Int): Icon = HybrisIcons.TypeSystem.FILE
 

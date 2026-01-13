@@ -23,10 +23,11 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.root
 import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.impl.TSMetaModelNameProvider
 import sap.commerce.toolset.typeSystem.meta.model.*
 import sap.commerce.toolset.typeSystem.model.EnumType
@@ -53,9 +54,9 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
     private val myReservedTypeCodes by lazy {
         ModuleManager.getInstance(project)
             .modules
-            .firstOrNull { it.yExtensionName() == ProjectConstants.Extension.CORE }
+            .firstOrNull { it.yExtensionName() == EiConstants.Extension.CORE }
             ?.root()
-            ?.resolve(HybrisConstants.RESERVED_TYPE_CODES_FILE)
+            ?.resolve(ProjectConstants.Paths.RESERVED_TYPE_CODES_FILE)
             ?.takeIf { it.exists() }
             ?.let {
                 it.inputStream().use { fis ->
@@ -109,10 +110,10 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
 
         return (10100..Short.MAX_VALUE)
             .asSequence()
-            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
-            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
-            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
-            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
+            .filterNot { it in TSConstants.TYPECODE_RANGE_COMMONS }
+            .filterNot { it in TSConstants.TYPECODE_RANGE_XPRINT }
+            .filterNot { it in TSConstants.TYPECODE_RANGE_PRINT }
+            .filterNot { it in TSConstants.TYPECODE_RANGE_PROCESSING }
             .firstOrNull { !keys.contains(it) }
     }
 
@@ -129,13 +130,13 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
 
     fun isCatalogAware(meta: TSGlobalMetaItem, name: String?, includeInherited: Boolean) = findAttributeByName(meta, name, includeInherited)
         ?.let { attribute ->
-            if (HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(attribute.type, true)) return@let true
+            if (TSConstants.Type.CATALOG_VERSION.equals(attribute.type, true)) return@let true
 
             TSMetaModelStateService.state(project).getMetaItem(attribute.type)
                 ?.let { attributeTypeMeta ->
                     attributeTypeMeta.allExtends
                         .mapNotNull { extends -> extends.name }
-                        .any { HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(it, true) }
+                        .any { TSConstants.Type.CATALOG_VERSION.equals(it, true) }
                 } ?: false
         }
         ?: false

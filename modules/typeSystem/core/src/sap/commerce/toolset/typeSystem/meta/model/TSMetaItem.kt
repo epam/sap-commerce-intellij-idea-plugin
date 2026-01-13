@@ -20,6 +20,7 @@ package sap.commerce.toolset.typeSystem.meta.model
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.documentation.renderer.hybrisDoc
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.model.Attribute
 import sap.commerce.toolset.typeSystem.model.CreationMode
 import sap.commerce.toolset.typeSystem.model.Index
@@ -65,7 +66,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
         val type: String?
         val isSelectionOf: String?
         val metaType: String
-            get() = HybrisConstants.TS_TYPE_ATTRIBUTE_DESCRIPTOR
+            get() = TSConstants.Type.ATTRIBUTE_DESCRIPTOR
         val isDeprecated: Boolean
         val isAutoCreate: Boolean
         val isRedeclare: Boolean

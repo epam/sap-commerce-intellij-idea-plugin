@@ -46,7 +46,7 @@ class ManifestCommerceTemplateExtensionInspection : LocalInspectionTool() {
 
         override fun visitStringLiteral(o: JsonStringLiteral) {
             val parent = o.parent
-            if (isApplicable(parent, o) && !ProjectSettings.getInstance(o.project).availableExtensions.contains(o.value)) {
+            if (isApplicable(parent, o) && !ProjectSettings.getInstance(o.project).extensionDescriptors.any { it.name == o.value }) {
                 holder.registerProblem(
                     o,
                     i18n("hybris.inspections.fix.manifest.ManifestUnknownTemplateExtensionInspection.message", o.value)

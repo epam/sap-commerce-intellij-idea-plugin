@@ -28,12 +28,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
@@ -46,6 +43,7 @@ import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
+import sap.commerce.toolset.ui.banner
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.JComponent
@@ -87,13 +85,19 @@ class CCv2ReplicaSelectionDialog(
     private lateinit var jbLoadingPanel: JBLoadingPanel
     private lateinit var ccv2SubscriptionComboBox: ComboBox<CCv2Subscription>
 
+    override fun getStyle(): DialogStyle = DialogStyle.COMPACT
+
+    override fun createNorthPanel() = banner(
+        text = "Each selected replica will result into a standalone request to hAC associated with ROUTE cookie value of the replica id.",
+    )
+
     override fun createCenterPanel(): JComponent {
         val centerPanel = panel {
             ccv2Settings()
         }
             .apply {
-                border = JBUI.Borders.empty(16)
                 preferredSize = JBUI.DialogSizes.large()
+                border = JBUI.Borders.empty(8, 16, 32, 16)
             }
 
         return JBLoadingPanel(BorderLayout(), this)
@@ -110,18 +114,6 @@ class CCv2ReplicaSelectionDialog(
     }
 
     private fun Panel.ccv2Settings() {
-        row {
-            cell(
-                InlineBanner(
-                    "Each selected replica will result into a standalone request to hAC associated with <strong>ROUTE</strong> cookie value of the replica id.",
-                    EditorNotificationPanel.Status.Info
-                )
-                    .showCloseButton(false)
-            )
-                .customize(UnscaledGaps(12, 12, 12, 12))
-                .align(Align.CENTER)
-        }
-
         row {
             ccv2SubscriptionComboBox = comboBox(
                 ccv2SubscriptionsComboBoxModel,

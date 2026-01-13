@@ -18,14 +18,14 @@
 package sap.commerce.toolset.typeSystem.codeInspection
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.model.Deployment
 
 class TSDeploymentTypeCodeMustBeGreaterThanTenThousand : TSDeploymentTypeCodeInspection() {
 
     override fun applicable(project: Project, dom: Deployment) = dom.typeCode.stringValue
         ?.toIntOrNull()
-        ?.let { it in 1..HybrisConstants.TS_TYPECODE_MIN_ALLOWED }
+        ?.let { it in 1..TSConstants.TYPECODE_MIN_ALLOWED }
         ?: false
 
 }

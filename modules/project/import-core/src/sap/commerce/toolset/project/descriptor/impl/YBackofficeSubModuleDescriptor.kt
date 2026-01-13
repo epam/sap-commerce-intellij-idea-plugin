@@ -18,23 +18,24 @@
 
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import sap.commerce.toolset.util.directoryExists
+import java.nio.file.Path
 
 class YBackofficeSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
+    moduleRootPath: Path,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.BACKOFFICE,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
-    val hasWebModule = File(moduleRootDirectory, ProjectConstants.Extension.WEB).isDirectory
+    val hasWebModule = moduleRootPath.resolve(EiConstants.Extension.WEB).directoryExists
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.Extension.BACK_OFFICE }
+            .map { it + "." + EiConstants.Extension.BACK_OFFICE }
         return setOf(owner.name) + webNames
     }
 }

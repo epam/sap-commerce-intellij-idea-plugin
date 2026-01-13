@@ -35,9 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import sap.commerce.toolset.GotItTooltips
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.*
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
@@ -50,7 +48,6 @@ import sap.commerce.toolset.flexibleSearch.ui.FlexibleSearchRestrictionsDialog
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.readResource
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import java.awt.Dimension
@@ -63,10 +60,8 @@ class FlexibleSearchShowRestrictionsAction : AnAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-        val project = e.project ?: return
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
 
         e.presentation.isEnabled = TSMetaModelStateService.getInstance(project).initialized()
     }

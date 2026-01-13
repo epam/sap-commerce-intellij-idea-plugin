@@ -19,42 +19,47 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
-import java.io.File
+import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.util.toSystemIndependentName
+import java.nio.file.Path
 
 class YAcceleratorAddonSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
-    moduleRootDirectory: File,
-    val webRoot: File = File(moduleRootDirectory, ProjectConstants.Directory.WEB_ROOT),
-    override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB,
+    moduleRootPath: Path,
+    val webRoot: Path = moduleRootPath.resolve(ProjectConstants.Directory.WEB_ROOT),
+    override val name: String = owner.name + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + EiConstants.Extension.WEB,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
     private val yTargetModules = mutableSetOf<YModuleDescriptor>()
-    private val myExtensionDescriptor by lazy {
-        with(super.extensionDescriptor()) {
+
+    override val extensionDescriptor by lazy {
+        ExtensionDescriptor(
+            path = moduleRootPath.toSystemIndependentName,
+            name = name,
+            readonly = readonly,
+            type = type,
+            subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
+            addon = getRequiredExtensionNames().contains(EiConstants.Extension.ADDON_SUPPORT),
             installedIntoExtensions = yTargetModules
                 .map { it.name }
                 .toSet()
-            this
-        }
+        )
     }
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.Extension.WEB }
+            .map { it + "." + EiConstants.Extension.WEB }
         // Strange, but acceleratoraddon may rely on another acceleratoraddon
         val acceleratorWebNames = owner.getRequiredExtensionNames()
-            .map { it + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + ProjectConstants.Extension.WEB }
+            .map { it + "." + ProjectConstants.Directory.ACCELERATOR_ADDON + "." + EiConstants.Extension.WEB }
         return setOf(owner.name) + webNames + acceleratorWebNames
     }
 
     fun getTargetModules(): Set<YModuleDescriptor> = yTargetModules.toImmutableSet()
     fun addTargetModule(module: YModuleDescriptor) = yTargetModules.add(module)
 
-    override fun extensionDescriptor() = myExtensionDescriptor
 }

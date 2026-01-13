@@ -18,7 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.module.facetConfigurator implementation="sap.commerce.toolset.javaee.web.configurator.WebFacetConfigurator"/>
+        <project.importConfigurator order="last"
+                                    implementation="sap.commerce.toolset.javaee.web.configurator.WebFacetConfigurator"/>
     </extensions>
 
 </idea-plugin>

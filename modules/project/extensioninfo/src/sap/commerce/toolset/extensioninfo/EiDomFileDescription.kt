@@ -21,18 +21,17 @@ package sap.commerce.toolset.extensioninfo
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
 import sap.commerce.toolset.isHybrisProject
 import javax.swing.Icon
 
-class EiDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::class.java, HybrisConstants.ROOT_TAG_EXTENSION_INFO_XML) {
+class EiDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::class.java, EiConstants.ROOT_TAG_EXTENSION_INFO_XML) {
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.ExtensionInfo.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.name == HybrisConstants.EXTENSION_INFO_XML
+        && file.name == EiConstants.EXTENSION_INFO_XML
         && file.isHybrisProject
 
 }

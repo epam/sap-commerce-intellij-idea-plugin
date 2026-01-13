@@ -18,12 +18,12 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.selectedNode
@@ -36,23 +36,20 @@ class CxEditCustomLogTemplateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
+    override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
 
         e.presentation.isEnabled = e.selectedNodes()?.size == 1
 
         val templateNode = e.selectedNode()
             ?.asSafely<CxCustomLogTemplateItemNode>()
-            ?: return
+            ?: return@ifNotFromSearchPopup
 
         val mutable = CxCustomLogTemplatesSettings.getInstance(project)
             .templates
             .find { it.uuid == templateNode.uuid }
             ?.mutable()
-            ?: return
+            ?: return@ifNotFromSearchPopup
 
         val dialogContext = LogTemplateDialogContext(
             project = project,

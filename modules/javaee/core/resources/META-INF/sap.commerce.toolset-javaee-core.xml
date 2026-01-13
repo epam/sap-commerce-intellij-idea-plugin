@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.postImportConfigurator implementation="sap.commerce.toolset.javaee.configurator.XsdSchemaConfigurator"/>
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.javaee.configurator.XsdSchemaConfigurator"/>
     </extensions>
 
 </idea-plugin>

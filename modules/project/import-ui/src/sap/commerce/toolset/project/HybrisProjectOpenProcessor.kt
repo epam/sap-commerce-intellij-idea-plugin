@@ -25,16 +25,58 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.projectRoots.ProjectJdkTable
 import com.intellij.openapi.projectRoots.SdkType
 import com.intellij.openapi.roots.OrderRootType
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
 import com.intellij.util.asSafely
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.localextensions.LeConstants
 
-class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
+class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportBuilder>() {
+
+    private val keyHybrisProjectDirectory = Key.create<Boolean>("IS_HYBRIS_FILE")
+    private val skipDirs = setOf(
+        ProjectConstants.Directory.NODE_MODULES,
+
+        ProjectConstants.Directory.IDEA,
+        ProjectConstants.Directory.SVN,
+        ProjectConstants.Directory.GRADLE,
+
+        ProjectConstants.Directory.TEMP,
+        ProjectConstants.Directory.TMP,
+        ProjectConstants.Directory.LOG,
+        ProjectConstants.Directory.DATA,
+
+        ProjectConstants.Directory.ECLIPSE_BIN,
+        ProjectConstants.Directory.CLASSES,
+        ProjectConstants.Directory.TEST_CLASSES,
+        ProjectConstants.Directory.MODEL_CLASSES,
+
+        ProjectConstants.Directory.SRC,
+        ProjectConstants.Directory.GEN_SRC,
+        ProjectConstants.Directory.GROOVY_SRC,
+        ProjectConstants.Directory.KOTLIN_SRC,
+        ProjectConstants.Directory.SCALA_SRC,
+
+        ProjectConstants.Directory.TEST_SRC,
+        ProjectConstants.Directory.GROOVY_TEST_SRC,
+        ProjectConstants.Directory.KOTLIN_TEST_SRC,
+        ProjectConstants.Directory.SCALA_TEST_SRC,
+
+        ProjectConstants.Directory.RESOURCES,
+
+        ProjectConstants.Directory.BUILD_TOOLS,
+        ProjectConstants.Directory.LICENSES,
+        ProjectConstants.Directory.JS_STOREFRONT,
+
+        ProjectConstants.Directory.INSTALLER,
+    )
 
     override suspend fun openProjectAsync(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {
         val jdkTable = ProjectJdkTable.getInstance()
@@ -48,7 +90,6 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
             {
                 jdkTable.allJdks.forEach { sdk ->
                     sdk.homeDirectory
-
                     sdk.sdkType.asSafely<SdkType>()
                         ?.let { sdkType ->
                             orderRootTypes
@@ -70,6 +111,7 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
             ImportModuleAction.doImport(null) {
                 val wizard = ImportModuleAction.createImportWizard(null, null, virtualFile, *providers)
                     ?.apply {
+                        // TODO: also support "ESC"
                         cancelButton.addActionListener {
                             WelcomeFrame.showIfNoProjectOpened()
                         }
@@ -83,14 +125,38 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
     }
 
     override fun canOpenProject(file: VirtualFile) = if (super.canOpenProject(file)) true
-    else ProjectUtil.isPotentialHybrisProject(file)
+    else isPotentialHybrisProject(file)
 
     override val supportedExtensions = arrayOf(
-        HybrisConstants.EXTENSION_INFO_XML,
-        HybrisConstants.LOCAL_EXTENSIONS_XML,
-        HybrisConstants.EXTENSIONS_XML
+        EiConstants.EXTENSION_INFO_XML,
+        LeConstants.LOCAL_EXTENSIONS_XML,
+        ProjectConstants.File.EXTENSIONS_XML
     )
 
-    override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(OpenHybrisProjectImportBuilder::class.java)
+    override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME
+        .findExtensionOrFail(HybrisProjectImportBuilder::class.java)
 
+    private fun isPotentialHybrisProject(root: VirtualFile): Boolean {
+        if (root.getUserData(keyHybrisProjectDirectory) == true) return true
+
+        root.putUserData(keyHybrisProjectDirectory, false)
+
+        VfsUtilCore.iterateChildrenRecursively(
+            root,
+            { !skipDirs.contains(it.name) },
+            { fileOrDir: VirtualFile ->
+                val hybrisFile = fileOrDir.name == LeConstants.LOCAL_EXTENSIONS_XML
+                    || fileOrDir.name == ProjectConstants.File.EXTENSIONS_XML
+                    || fileOrDir.name == EiConstants.EXTENSION_INFO_XML
+
+                if (hybrisFile) {
+                    root.putUserData(keyHybrisProjectDirectory, true)
+                }
+
+                !hybrisFile
+            }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6)
+        )
+
+        return java.lang.Boolean.TRUE == root.getUserData(keyHybrisProjectDirectory)
+    }
 }

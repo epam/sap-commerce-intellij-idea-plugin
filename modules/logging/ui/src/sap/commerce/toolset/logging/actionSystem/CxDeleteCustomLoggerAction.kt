@@ -18,26 +18,23 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.logging.CxLogUiConstants
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
 
 class CxDeleteCustomLoggerAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
+    override fun actionPerformed(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val project = e.project ?: return@ifNotFromSearchPopup
 
-        val project = e.project ?: return
-
-        val templateUUID = e.getData(CxLogUiConstants.DataKeys.TemplateUUID) ?: return
-        val loggerName = e.getData(CxLogUiConstants.DataKeys.LoggerName) ?: return
+        val templateUUID = e.getData(CxLogUiConstants.DataKeys.TemplateUUID) ?: return@ifNotFromSearchPopup
+        val loggerName = e.getData(CxLogUiConstants.DataKeys.LoggerName) ?: return@ifNotFromSearchPopup
 
         if (Messages.showYesNoDialog(
                 project,
@@ -45,7 +42,7 @@ class CxDeleteCustomLoggerAction : AnAction() {
                 "Confirm Logger Deletion",
                 HybrisIcons.Log.Action.DELETE
             ) != Messages.YES
-        ) return
+        ) return@ifNotFromSearchPopup
 
         CxCustomLogTemplateService.getInstance(project).deleteLogger(templateUUID, loggerName)
     }

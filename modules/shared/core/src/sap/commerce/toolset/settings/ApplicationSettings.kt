@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.settings
 
+import com.intellij.openapi.application.Application
 import com.intellij.openapi.components.*
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.application
@@ -48,35 +49,15 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(hideEmptyMiddleFolders = value) }
         }
-    var defaultPlatformInReadOnly: Boolean
+    var importOOTBModulesInReadOnlyMode: Boolean
         get() = state.defaultPlatformInReadOnly
         set(value) {
             updateState { it.copy(defaultPlatformInReadOnly = value) }
-        }
-    var followSymlink: Boolean
-        get() = state.followSymlink
-        set(value) {
-            updateState { it.copy(followSymlink = value) }
-        }
-    var sourceZipUsed: Boolean
-        get() = state.sourceZipUsed
-        set(value) {
-            updateState { it.copy(sourceZipUsed = value) }
-        }
-    var warnIfGeneratedItemsAreOutOfDate: Boolean
-        get() = state.warnIfGeneratedItemsAreOutOfDate
-        set(value) {
-            updateState { it.copy(warnIfGeneratedItemsAreOutOfDate = value) }
         }
     var ignoreNonExistingSourceDirectories: Boolean
         get() = state.ignoreNonExistingSourceDirectories
         set(value) {
             updateState { it.copy(ignoreNonExistingSourceDirectories = value) }
-        }
-    var withStandardProvidedSources: Boolean
-        get() = state.withStandardProvidedSources
-        set(value) {
-            updateState { it.copy(withStandardProvidedSources = value) }
         }
     var withExternalLibrarySources: Boolean
         get() = state.withExternalLibrarySources
@@ -88,15 +69,10 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(withExternalLibraryJavadocs = value) }
         }
-    var scanThroughExternalModule: Boolean
-        get() = state.scanThroughExternalModule
+    var useFakeOutputPathForCustomExtensions: Boolean
+        get() = state.useFakeOutputPathForCustomExtensions
         set(value) {
-            updateState { it.copy(scanThroughExternalModule = value) }
-        }
-    var excludeTestSources: Boolean
-        get() = state.excludeTestSources
-        set(value) {
-            updateState { it.copy(excludeTestSources = value) }
+            updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
     var importCustomAntBuildFiles: Boolean
         get() = state.importCustomAntBuildFiles
@@ -148,11 +124,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(externalDbDriversDirectory = value) }
         }
-    var sourceCodeDirectory: String?
-        get() = state.sourceCodeDirectory
-        set(value) {
-            updateState { it.copy(sourceCodeDirectory = value) }
-        }
     var junkDirectoryList: List<String>
         get() = state.junkDirectoryList
         set(value) {
@@ -184,6 +155,10 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         }
     }
 }
+
+val Application.ySettings
+    get() = ApplicationSettings.getInstance()
+
 
 fun String.toIdeaGroup(): Array<String>? {
     if (this.trim { it <= ' ' }.isEmpty()) {

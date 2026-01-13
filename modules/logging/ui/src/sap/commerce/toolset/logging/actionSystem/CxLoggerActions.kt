@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.logging.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogStateService
@@ -45,12 +45,9 @@ abstract class CxLoggerLevelAction(private val logLevel: CxLogLevel) : AnAction(
         CxRemoteLogStateService.getInstance(project).setLogger(logIdentifier, logLevel)
     }
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         super.update(e)
-        val project = e.project ?: return
+        val project = e.project ?: return@ifNotFromSearchPopup
 
         e.presentation.text = logLevel.name
         e.presentation.icon = logLevel.icon

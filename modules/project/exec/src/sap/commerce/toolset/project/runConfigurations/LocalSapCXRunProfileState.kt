@@ -26,38 +26,26 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.project.Project
-import org.apache.commons.lang3.SystemUtils
-import sap.commerce.toolset.HybrisConstants
+import com.intellij.openapi.util.SystemInfo
 import sap.commerce.toolset.HybrisConstants.DEBUG_HOST
 import sap.commerce.toolset.HybrisConstants.DEBUG_PORT
 import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.IOException
 import java.net.Socket
 import java.nio.file.Paths
+import kotlin.io.path.pathString
 
 class LocalSapCXRunProfileState(
     val executor: Executor,
     environment: ExecutionEnvironment, val project: Project, val configuration: LocalSapCXRunConfiguration
 ) : CommandLineState(environment), JavaCommandLine, RemoteConnectionCreator {
 
-    private fun getScriptPath(): String {
-        val projectDirectory = project.directory ?: ""
-        val settings = ProjectSettings.getInstance(project)
-        val hybrisDirectory = settings.hybrisDirectory ?: ""
-        val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
-
-        return Paths.get(projectDirectory, hybrisDirectory, script).toString()
-    }
-
-    private fun getWorkDirectory(): String {
-        val projectDirectory = project.directory ?: ""
-        val settings = ProjectSettings.getInstance(project)
-        val hybrisDirectory = settings.hybrisDirectory ?: ""
-
-        return Paths.get(projectDirectory, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
-    }
+    private val sapCXOptions: LocalSapCXRunnerOptions
+        get() = configuration.getSapCXOptions()
 
     override fun startProcess(): ProcessHandler {
         val commandLine = GeneralCommandLine(getScriptPath())
@@ -81,6 +69,13 @@ class LocalSapCXRunProfileState(
         return processHandler
     }
 
+    override fun createRemoteConnection(environment: ExecutionEnvironment?) = configuration.getRemoteConnection()
+        .apply { updateDebugPort(this.debuggerAddress) }
+
+    override fun getJavaParameters(): JavaParameters = JavaParameters()
+
+    override fun isPollConnection(): Boolean = true
+
     private fun waitForPort(host: String, port: Int, timeoutMillis: Long = 30000) {
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < timeoutMillis) {
@@ -98,18 +93,31 @@ class LocalSapCXRunProfileState(
         debuggerRunnerSettings.debugPort = debugPort
     }
 
-    override fun createRemoteConnection(environment: ExecutionEnvironment?): RemoteConnection {
-        val remoteConnetion = configuration.getRemoteConnection()
-        updateDebugPort(remoteConnetion.debuggerAddress)
-        return remoteConnetion
+    private fun getScriptPath(): String {
+        // TODO: review these fallbacks, "" is not a correct value
+        val projectDirectory = project.directory ?: ""
+        val settings = ProjectSettings.getInstance(project)
+        val hybrisDirectory = settings.platformRelativePath ?: ""
+
+        val scriptPath = if (SystemInfo.isWindows && !WslPath.isWslUncPath(projectDirectory)) ProjectConstants.Paths.HYBRIS_SERVER_BASH_SCRIPT_NAME
+        else ProjectConstants.Paths.HYBRIS_SERVER_SHELL_SCRIPT_NAME
+
+        return Paths.get(projectDirectory, hybrisDirectory)
+            .resolve(scriptPath)
+            .toString()
     }
 
+    private fun getWorkDirectory(): String {
+        // TODO: review these fallbacks, "" is not a correct value
+        val projectDirectory = project.directory ?: ""
+        val settings = ProjectSettings.getInstance(project)
+        val hybrisDirectory = settings.platformRelativePath ?: ""
 
-    override fun getJavaParameters(): JavaParameters = JavaParameters()
-
-    override fun isPollConnection(): Boolean = true
-
-    private val sapCXOptions: LocalSapCXRunnerOptions get() = configuration.getSapCXOptions()
+        return Paths.get(projectDirectory)
+            .resolve(hybrisDirectory)
+            .resolve(ProjectConstants.Paths.BIN_PLATFORM)
+            .pathString
+    }
 
 
 }

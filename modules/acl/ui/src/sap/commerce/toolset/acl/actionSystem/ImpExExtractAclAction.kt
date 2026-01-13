@@ -18,7 +18,10 @@
 
 package sap.commerce.toolset.acl.actionSystem
 
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -37,6 +40,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.acl.AclLanguage
 import sap.commerce.toolset.acl.file.AclFileType
+import sap.commerce.toolset.hideFromSearchPopup
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExUserRights
 
@@ -44,10 +48,7 @@ class ImpExExtractAclAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-    }
+    override fun update(e: AnActionEvent) = e.hideFromSearchPopup()
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return

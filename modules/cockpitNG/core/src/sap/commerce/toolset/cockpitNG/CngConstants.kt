@@ -20,6 +20,8 @@ package sap.commerce.toolset.cockpitNG
 
 object CngConstants {
 
+    const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
+
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
     const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
     const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"

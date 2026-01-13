@@ -103,7 +103,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
             row {
                 checkBox("Enable actions toolbar for a IDE Groovy scripts")
                     .bindSelected(mutable::enableActionsToolbarForGroovyIdeConsole)
-                    .comment("Enables Actions toolbar for the groovy files located in the <code>${HybrisConstants.IDE_CONSOLES_PATH}</code> or <code>${GroovyConstants.PATH_CONSOLES_GROOVY}</code> (Scratches and Consoles -> IDE Consoles)")
+                    .comment("Enables Actions toolbar for the groovy files located in the <code>${HybrisConstants.PATH_IDE_CONSOLES}</code> or <code>${GroovyConstants.PATH_CONSOLES_GROOVY}</code> (Scratches and Consoles -> IDE Consoles)")
                     .enabledIf(enableActionToolbar.selected)
             }
         }

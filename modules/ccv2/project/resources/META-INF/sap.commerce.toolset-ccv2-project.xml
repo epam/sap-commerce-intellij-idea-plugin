@@ -1,0 +1,39 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<idea-plugin>
+
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.module.rootResolver order="after yCustomModuleRootResolver" id="ccv2CoreCustomizeModuleRootResolver"
+                                     implementation="sap.commerce.toolset.ccv2.project.module.CCv2CoreCustomizeModuleRootResolver"/>
+        <project.module.rootResolver order="after yCustomModuleRootResolver" id="ccv2DataHubModuleRootResolver"
+                                     implementation="sap.commerce.toolset.ccv2.project.module.CCv2DataHubModuleRootResolver"/>
+        <project.module.rootResolver order="after yCustomModuleRootResolver" id="ccv2JsStorefrontModuleRootResolver"
+                                     implementation="sap.commerce.toolset.ccv2.project.module.CCv2JsStorefrontModuleRootResolver"/>
+
+        <project.preImportConfigurator order="after projectSettingsConfigurator"
+                                       implementation="sap.commerce.toolset.ccv2.project.configurator.CCv2ProjectSettingsConfigurator"/>
+
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.project.descriptor.provider.CCv2CoreModuleDescriptorProvider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.project.descriptor.provider.CCv2StorefrontModuleDescriptorProvider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.project.descriptor.provider.CCv2DatahubModuleDescriptorProvider"/>
+
+        <project.module.provider implementation="sap.commerce.toolset.ccv2.project.configurator.CCv2ModuleProvider"/>
+        <project.module.importConfigurator implementation="sap.commerce.toolset.ccv2.project.configurator.CCv2ModuleImportConfigurator"/>
+    </extensions>
+
+</idea-plugin>

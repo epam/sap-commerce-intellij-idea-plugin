@@ -54,7 +54,6 @@ import sap.commerce.toolset.hac.exec.settings.state.ProxyAuthMode
 import java.io.IOException
 import java.net.ConnectException
 import java.net.HttpURLConnection
-import java.nio.charset.StandardCharsets
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
@@ -157,7 +156,7 @@ class HacHttpClient(private val project: Project) {
 
         val response: HttpResponse
         try {
-            post.entity = UrlEncodedFormEntity(params, StandardCharsets.UTF_8)
+            post.entity = UrlEncodedFormEntity(params, Charsets.UTF_8)
             response = client.execute(post)
         } catch (e: IOException) {
             thisLogger().warn(e.message, e)

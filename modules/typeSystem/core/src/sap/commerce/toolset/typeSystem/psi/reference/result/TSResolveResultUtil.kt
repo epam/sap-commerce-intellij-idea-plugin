@@ -19,12 +19,12 @@
 package sap.commerce.toolset.typeSystem.psi.reference.result
 
 import com.intellij.psi.ResolveResult
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.TSConstants
 
 object TSResolveResultUtil {
 
     fun isLocalized(resolveResult: ResolveResult, featureName: String) =
         (resolveResult is AttributeResolveResult && resolveResult.meta.isLocalized)
             || (resolveResult is RelationEndResolveResult && resolveResult.meta.owner.isLocalized)
-            || (resolveResult is EnumResolveResult && featureName == HybrisConstants.ATTRIBUTE_NAME)
+            || (resolveResult is EnumResolveResult && featureName == TSConstants.Attribute.NAME)
 }
