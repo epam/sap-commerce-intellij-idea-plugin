@@ -19,11 +19,10 @@
 package sap.commerce.toolset.project.descriptor
 
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
 
 interface PlatformModuleDescriptor : ModuleDescriptor {
 
-    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = importContext.settings.groupPlatform.toIdeaGroup()
 
 }

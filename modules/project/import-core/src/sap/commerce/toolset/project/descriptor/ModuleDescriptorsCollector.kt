@@ -35,7 +35,6 @@ import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.module.ModuleRootsScanner
-import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.isDescendantOf
 import java.nio.file.Path
@@ -124,7 +123,7 @@ class ModuleDescriptorsCollector {
         moduleDescriptors: MutableList<ModuleDescriptor>,
         moduleRootsFailedToImport: MutableList<ModuleRoot>
     ) {
-        if (ApplicationSettings.getInstance().groupModules) return
+        if (importContext.settings.groupModules) return
 
         val moduleRoot = ModuleRoot(
             moduleGroup = ModuleGroup.HYBRIS,

@@ -147,7 +147,7 @@ public final class ModuleGroupingUtil {
                 customDirectory = platformDirectory.resolve(ProjectConstants.Paths.INSTANCE.getBIN_CUSTOM());
             }
             if (!FileUtilKt.getDirectoryExists(customDirectory) || !FileUtilKt.getDirectoryExists(customDirectory)) {
-                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
+                return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupCustom());
             }
 
             final List<String> path;
@@ -159,7 +159,7 @@ public final class ModuleGroupingUtil {
                         " custom directory  '%s'.",
                     moduleDescriptor.getName(), moduleDescriptor.getModuleRootPath(), customDirectory
                 ));
-                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
+                return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupCustom());
             }
 
             final boolean isCustomModuleInLocalExtensionsXml = requiredYModuleDescriptorList.contains(
@@ -168,8 +168,8 @@ public final class ModuleGroupingUtil {
 
             return ArrayUtils.addAll(
                 isCustomModuleInLocalExtensionsXml
-                    ? ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom())
-                    : ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupOtherCustom()),
+                    ? ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupCustom())
+                    : ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupOtherCustom()),
                 path.toArray(new String[0])
             );
         }
@@ -185,15 +185,15 @@ public final class ModuleGroupingUtil {
                     "Can not build group path for OOTB module '%s' because its root directory '%s' is not under Hybris bin directory '%s'.",
                     moduleDescriptor.getName(), moduleDescriptor.getModuleRootPath(), hybrisBinDirectory
                 ));
-                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupHybris());
+                return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupHybris());
             }
 
             if (!path.isEmpty() && path.getFirst().equals("modules")) {
                 path.removeFirst();
             }
-            return ArrayUtils.addAll(ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupHybris()), path.toArray(new String[0]));
+            return ArrayUtils.addAll(ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupHybris()), path.toArray(new String[0]));
         }
 
-        return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupOtherHybris());
+        return ApplicationSettings.toIdeaGroup(importContext.getSettings().getGroupOtherHybris());
     }
 }

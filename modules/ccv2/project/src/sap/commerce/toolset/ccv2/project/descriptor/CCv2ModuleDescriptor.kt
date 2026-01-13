@@ -22,7 +22,6 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
-import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
 import java.nio.file.Path
 import kotlin.io.path.name
@@ -38,6 +37,6 @@ abstract class CCv2ModuleDescriptor(
     }
 
     override fun isPreselected() = true
-    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = importContext.settings.groupCCv2.toIdeaGroup()
 
 }

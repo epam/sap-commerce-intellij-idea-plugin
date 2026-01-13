@@ -23,7 +23,6 @@ import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.toIdeaGroup
 import java.nio.file.Path
 
@@ -36,5 +35,5 @@ open class YPlatformExtModuleDescriptor(
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(EiConstants.Extension.CORE)
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
-    override fun groupName(importContext: ProjectImportContext) = ApplicationSettings.getInstance().groupPlatform.toIdeaGroup()
+    override fun groupName(importContext: ProjectImportContext) = importContext.settings.groupPlatform.toIdeaGroup()
 }
