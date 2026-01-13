@@ -38,10 +38,12 @@ class CleanupProjectRefreshConfigurator : ProjectRefreshConfigurator {
 
         backgroundWriteAction {
             workspaceModel.updateProjectModel("Cleanup current project") { storage ->
+                // remove project libraries
                 storage.entities(LibraryEntity::class.java)
                     .filter { it.tableId == LibraryTableId.ProjectLibraryTableId }
                     .forEach { storage.removeEntity(it) }
 
+                // remove modules
                 storage.entities(ModuleEntity::class.java)
                     .filter { moduleEntity ->
                         moduleEntity.findModule(storage)

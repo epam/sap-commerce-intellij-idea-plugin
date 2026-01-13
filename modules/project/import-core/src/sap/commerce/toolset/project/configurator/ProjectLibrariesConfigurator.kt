@@ -22,7 +22,7 @@ import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
 import sap.commerce.toolset.project.context.ProjectImportContext
-import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 class ProjectLibrariesConfigurator : ProjectPreImportConfigurator {
 
@@ -34,14 +34,21 @@ class ProjectLibrariesConfigurator : ProjectPreImportConfigurator {
     override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
         val configurators = ProjectLibraryConfigurator.EP.extensionList
 
-        reportProgressScope(configurators.size) { reporter ->
-            configurators.forEach { configurator ->
+        val projectLibraryEntities = reportProgressScope(configurators.size) { reporter ->
+            configurators.mapNotNull { configurator ->
                 reporter.itemStep("Applying project library '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.configure(importContext, workspaceModel) }
-                    logger.info("Library configurator [${configurator.name} | $duration]")
+                    val timedValue = measureTimedValue { configurator.configure(importContext, workspaceModel) }
+                    logger.info("Library configurator [${configurator.name} | ${timedValue.duration}]")
+                    return@itemStep timedValue.value
                 }
+            }
+        }
+
+        workspaceModel.update("Configuring project libraries") { storage ->
+            projectLibraryEntities.forEach {
+                storage.addEntity(it)
             }
         }
     }

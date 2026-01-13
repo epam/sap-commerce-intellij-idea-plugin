@@ -20,11 +20,12 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import sap.commerce.toolset.project.context.ProjectImportContext
 
 interface ProjectLibraryConfigurator : Configurator {
 
-    suspend fun configure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel)
+    suspend fun configure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel): LibraryEntityBuilder?
 
     companion object {
         val EP = ExtensionPointName.create<ProjectLibraryConfigurator>("sap.commerce.toolset.project.libraryConfigurator")

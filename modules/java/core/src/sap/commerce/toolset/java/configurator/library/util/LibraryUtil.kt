@@ -28,34 +28,25 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 
 internal suspend fun WorkspaceModel.removeProjectLibrary(
     libraryName: String
-) = this.update("Removing project library '$libraryName'") { storage ->
-    val libraryEntity = storage.projectLibraries.find { it.name == libraryName }
-        ?: return@update
+) {
+    val libraryEntity = this.currentSnapshot.entities(LibraryEntity::class.java)
+        .find { it.name == libraryName }
+        ?: return
 
-    storage.removeEntity(libraryEntity)
-}
-
-internal suspend fun WorkspaceModel.configureProjectLibrary(
-    project: Project,
-    libraryName: String,
-    libraryRoots: Collection<LibraryRoot>,
-) = this.update("Configure project library $libraryName") { storage ->
-    val libraryEntity = storage.projectLibraries.find { it.name == libraryName }
-        ?: storage.addEntity(
-            LibraryEntity(
-                name = libraryName,
-                tableId = LibraryTableId.ProjectLibraryTableId,
-                roots = emptyList(),
-                entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(project)
-                    .createEntitySourceForProjectLibrary(null),
-            )
-        )
-
-    storage.modifyLibraryEntity(libraryEntity) {
-        this.roots.clear()
-        this.roots.addAll(libraryRoots)
+    this.update("Removing project library '$libraryName'") { storage ->
+        storage.removeEntity(libraryEntity)
     }
 }
+
+internal fun Project.configureProjectLibrary(
+    libraryName: String,
+    libraryRoots: Collection<LibraryRoot>,
+) = LibraryEntity(
+    name = libraryName,
+    tableId = LibraryTableId.ProjectLibraryTableId,
+    roots = libraryRoots.toMutableList(),
+    entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(this).createEntitySourceForProjectLibrary(null),
+)
 
 internal fun ModuleEntity.linkProjectLibrary(
     importContext: ProjectImportContext,
@@ -88,6 +79,7 @@ internal fun ModuleEntity.configureLibrary(
     val moduleId = ModuleId(this.name)
     val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)
     val libraryId = LibraryId(libraryName, libraryTableId)
+
     val libraryEntity = LibraryEntity(
         name = libraryName,
         tableId = libraryTableId,

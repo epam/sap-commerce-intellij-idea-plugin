@@ -20,6 +20,7 @@ package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
@@ -39,7 +40,7 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override suspend fun configure(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel
-    ) {
+    ): LibraryEntityBuilder? {
         val backofficeWebDescriptor = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YWebSubModuleDescriptor>()
             .find { it.owner is YBackofficeModuleDescriptor }
@@ -47,7 +48,7 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
         if (backofficeWebDescriptor == null) {
             thisLogger().info("Project library '${JavaConstants.ProjectLibrary.BACKOFFICE}' will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")
             workspaceModel.removeProjectLibrary(JavaConstants.ProjectLibrary.BACKOFFICE)
-            return
+            return null
         }
 
         val workspaceModel = WorkspaceModel.Companion.getInstance(importContext.project)
@@ -60,8 +61,7 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
             addAll(importContext.backofficeJars(virtualFileUrlManager))
         }
 
-        workspaceModel.configureProjectLibrary(
-            project = importContext.project,
+        return importContext.project.configureProjectLibrary(
             libraryName = JavaConstants.ProjectLibrary.BACKOFFICE,
             libraryRoots = libraryRoots,
         )
