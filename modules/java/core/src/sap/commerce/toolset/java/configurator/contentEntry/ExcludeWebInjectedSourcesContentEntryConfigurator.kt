@@ -18,13 +18,12 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
@@ -41,20 +40,17 @@ class ExcludeWebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConf
         && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
 
     override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleRootPath = moduleDescriptor.moduleRootPath
+        val moduleRootPath = context.moduleDescriptor.moduleRootPath
         val addonPaths = childrenOf(
             moduleRootPath.resolve(ProjectConstants.Directory.ADDON_TEST_SRC),
         )
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
 
-        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, addonPaths)
+        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, addonPaths)
     }
 
     private fun childrenOf(vararg paths: Path): List<Path> = paths

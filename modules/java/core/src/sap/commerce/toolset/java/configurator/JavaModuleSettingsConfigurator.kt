@@ -18,12 +18,9 @@
 package sap.commerce.toolset.java.configurator
 
 import com.intellij.java.workspace.entities.JavaModuleSettingsEntity
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import kotlin.io.path.pathString
 
@@ -34,12 +31,10 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val importContext = context.importContext
+        val moduleDescriptor = context.moduleDescriptor
+        val moduleEntity = context.moduleEntity
         val fakeOutputPath = importContext.settings.useFakeOutputPathForCustomExtensions
         val ootbReadonlyMode = importContext.settings.importOOTBModulesInReadOnlyMode
 
@@ -51,7 +46,7 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
             else ProjectConstants.Directory.CLASSES
         }
 
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
         val outputDirectory = moduleDescriptor.moduleRootPath.resolve(output)
         val javaSettingsEntity = JavaModuleSettingsEntity(
             inheritedCompilerOutput = false,

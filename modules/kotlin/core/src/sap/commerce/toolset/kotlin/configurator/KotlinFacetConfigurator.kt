@@ -19,17 +19,15 @@ package sap.commerce.toolset.kotlin.configurator
 
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.openapi.util.JDOMUtil
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.FacetEntity
 import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.util.xmlb.XmlSerializer
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
@@ -41,15 +39,12 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val moduleDescriptor = context.moduleDescriptor
+        val moduleEntity = context.moduleEntity
         if (moduleDescriptor !is YModuleDescriptor) return
 
-        importContext.chosenHybrisModuleDescriptors
+        context.importContext.chosenHybrisModuleDescriptors
             .firstOrNull { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
@@ -71,7 +66,7 @@ class KotlinFacetConfigurator : ModuleImportConfigurator {
             this.configurationXmlTag = xmlTag
         }
 
-        importContext.mutableStorage.add(moduleEntity, facetEntity)
+        context.importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 
     private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists

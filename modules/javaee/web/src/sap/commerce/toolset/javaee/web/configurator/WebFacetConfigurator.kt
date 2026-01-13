@@ -24,15 +24,16 @@ import com.intellij.javaee.web.facet.WebFacetType
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
+import com.intellij.platform.workspace.jps.entities.FacetEntity
+import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
+import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.util.descriptors.ConfigFileInfo
 import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import com.intellij.workspaceModel.ide.legacyBridge.impl.java.JAVA_SOURCE_ROOT_ENTITY_TYPE_ID
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
@@ -50,13 +51,11 @@ class WebFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
+    override suspend fun configure(context: ProjectModuleConfigurationContext, ) {
+        val importContext = context.importContext
+        val moduleDescriptor = context.moduleDescriptor
+        val moduleEntity = context.moduleEntity
+        val javaModule = moduleEntity.findModule(context.workspaceModel.currentSnapshot) ?: return
         val webRoot = when (moduleDescriptor) {
             is YWebSubModuleDescriptor -> moduleDescriptor.webRoot
             is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot

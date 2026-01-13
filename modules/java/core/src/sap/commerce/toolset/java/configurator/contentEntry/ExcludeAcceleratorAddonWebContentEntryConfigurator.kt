@@ -18,13 +18,12 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
@@ -44,17 +43,14 @@ class ExcludeAcceleratorAddonWebContentEntryConfigurator : ModuleContentEntryCon
         )
 
     override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val excludePaths = listOf(moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ACCELERATOR_ADDON_WEB))
+        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ACCELERATOR_ADDON_WEB))
 
-        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
+        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
     }
 
     private val ModuleDescriptor.isWebModuleDescriptor: Boolean

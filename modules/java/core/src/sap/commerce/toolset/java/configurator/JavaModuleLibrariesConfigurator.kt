@@ -20,14 +20,11 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import kotlin.time.measureTime
 
 class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
@@ -39,12 +36,9 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val importContext = context.importContext
+        val moduleDescriptor = context.moduleDescriptor
         val configurators = ModuleLibraryConfigurator.EP.extensionList
             .filter { configurator -> configurator.isApplicable(importContext, moduleDescriptor) }
 
@@ -53,7 +47,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 reporter.itemStep("Applying library '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.configure(importContext, workspaceModel, moduleDescriptor, moduleEntity) }
+                    val duration = measureTime { configurator.configure(importContext, context.workspaceModel, moduleDescriptor, context.moduleEntity) }
                     logger.info("Library configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
                 }
             }

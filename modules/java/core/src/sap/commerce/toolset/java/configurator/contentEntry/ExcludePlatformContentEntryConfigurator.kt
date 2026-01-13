@@ -18,12 +18,11 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
@@ -36,16 +35,13 @@ class ExcludePlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
     override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleRootPath = moduleDescriptor.moduleRootPath
+        val moduleRootPath = context.moduleDescriptor.moduleRootPath
         val bootstrapPath = moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
         val excludePaths = listOf(
             bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC),
             bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES),
@@ -54,7 +50,7 @@ class ExcludePlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
             moduleRootPath.resolve(ProjectConstants.Directory.TOMCAT)
         )
 
-        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
+        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
 
         if ("apache-ant-*" !in contentRootEntity.excludedPatterns) {
             contentRootEntity.excludedPatterns += "apache-ant-*"

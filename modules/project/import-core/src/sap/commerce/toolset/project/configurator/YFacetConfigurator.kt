@@ -20,14 +20,11 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.openapi.util.JDOMUtil
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.FacetEntity
 import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.util.xmlb.XmlSerializer
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.project.facet.YFacetType
 
@@ -38,16 +35,13 @@ class YFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = true
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val moduleEntity = context.moduleEntity
         val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
-        val xmlTag = XmlSerializer.serialize(moduleDescriptor.extensionDescriptor)
+        val xmlTag = XmlSerializer.serialize(context.moduleDescriptor.extensionDescriptor)
             .let { JDOMUtil.writeElement(it) }
         val facetEntityTypeId = FacetEntityTypeId(YFacetType.FACET_ID)
+
         val facetEntity = FacetEntity(
             moduleId = ModuleId(moduleEntity.name),
             name = facetType.presentableName,
@@ -57,6 +51,6 @@ class YFacetConfigurator : ModuleImportConfigurator {
             this.configurationXmlTag = xmlTag
         }
 
-        importContext.mutableStorage.add(moduleEntity, facetEntity)
+        context.importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }

@@ -18,13 +18,12 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.nio.file.Path
 
@@ -36,15 +35,12 @@ class ExcludeCommonsContentEntryConfigurator : ModuleContentEntryConfigurator {
     override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = true
 
     override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleRootPath = moduleDescriptor.moduleRootPath
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val moduleRootPath = context.moduleDescriptor.moduleRootPath
+        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
         val excludePaths = listOf(
             moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY),
             moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY),
@@ -56,6 +52,6 @@ class ExcludeCommonsContentEntryConfigurator : ModuleContentEntryConfigurator {
             moduleRootPath.resolve(ProjectConstants.Directory.JS_TARGET),
         )
 
-        contentRootEntity.excludeDirectories(importContext, virtualFileUrlManager, excludePaths)
+        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
     }
 }

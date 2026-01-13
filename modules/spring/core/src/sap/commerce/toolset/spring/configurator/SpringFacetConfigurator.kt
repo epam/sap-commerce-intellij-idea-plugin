@@ -20,10 +20,8 @@ package sap.commerce.toolset.spring.configurator
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.FacetEntity
 import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
@@ -34,8 +32,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
@@ -50,29 +47,24 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
         if (Plugin.SPRING.isDisabled()) return
-        val javaModule = moduleEntity.findModule(workspaceModel.currentSnapshot) ?: return
+        val javaModule = context.moduleEntity.findModule(context.workspaceModel.currentSnapshot) ?: return
 
-        when (moduleDescriptor) {
+        when (val moduleDescriptor = context.moduleDescriptor) {
             is YBackofficeSubModuleDescriptor -> return
-            is PlatformModuleDescriptor -> configure(importContext, moduleDescriptor, moduleEntity, javaModule, emptySet())
-            is YModuleDescriptor -> configure(importContext, moduleDescriptor, moduleEntity, javaModule, moduleDescriptor.getSpringFiles())
+            is PlatformModuleDescriptor -> configure(context, javaModule, emptySet())
+            is YModuleDescriptor -> configure(context, javaModule, moduleDescriptor.getSpringFiles())
         }
     }
 
     private fun configure(
-        importContext: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         javaModule: Module,
         additionalFileSet: Set<String>
     ) {
+        val moduleDescriptor = context.moduleDescriptor
+        val moduleEntity = context.moduleEntity
         val facetType = SpringFacet.getSpringFacetType()
             .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
             ?: return
@@ -117,6 +109,6 @@ class SpringFacetConfigurator : ModuleImportConfigurator {
             this.configurationXmlTag = configurationXmlTag
         }
 
-        importContext.mutableStorage.add(moduleEntity, facetEntity)
+        context.importContext.mutableStorage.add(moduleEntity, facetEntity)
     }
 }

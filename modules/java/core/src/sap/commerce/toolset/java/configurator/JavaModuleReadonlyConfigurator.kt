@@ -18,12 +18,9 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
 class JavaModuleReadonlyConfigurator : ModuleImportConfigurator {
@@ -33,14 +30,10 @@ class JavaModuleReadonlyConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val moduleDescriptor = context.moduleDescriptor
         val descriptorType = moduleDescriptor.type
-        val hasReadOnlySettings = importContext.settings.importOOTBModulesInReadOnlyMode
+        val hasReadOnlySettings = context.importContext.settings.importOOTBModulesInReadOnlyMode
         val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
             || descriptorType === ModuleDescriptorType.PLATFORM
             || descriptorType === ModuleDescriptorType.EXT

@@ -17,13 +17,10 @@
  */
 package sap.commerce.toolset.angular.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.angular.AngularConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import kotlin.io.path.pathString
 
 class AngularModuleImportConfigurator : ModuleImportConfigurator {
@@ -33,13 +30,10 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = AngularConstants.MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val moduleDescriptor = context.moduleDescriptor
+        val moduleEntity = context.moduleEntity
+        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
 
         val contentRootEntity = ContentRootEntity(
@@ -48,6 +42,6 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
             entitySource = moduleEntity.entitySource
         )
 
-        importContext.mutableStorage.add(moduleEntity, contentRootEntity)
+        context.importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }

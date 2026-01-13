@@ -17,13 +17,10 @@
  */
 package sap.commerce.toolset.ccv2.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import kotlin.io.path.pathString
 
 class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
@@ -33,15 +30,11 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = CCv2Constants.MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
-        val distributionPath = importContext.platformDirectory.pathString.replace('\\', '/')
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val moduleEntity = context.moduleEntity
+        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val contentRootUrl = virtualFileUrlManager.fromPath(context.moduleDescriptor.moduleRootPath.pathString)
+        val distributionPath = context.importContext.platformDirectory.pathString.replace('\\', '/')
 
         val contentRootEntity = ContentRootEntity(
             url = contentRootUrl,
@@ -49,6 +42,6 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
             entitySource = moduleEntity.entitySource
         )
 
-        importContext.mutableStorage.add(moduleEntity, contentRootEntity)
+        context.importContext.mutableStorage.add(moduleEntity, contentRootEntity)
     }
 }

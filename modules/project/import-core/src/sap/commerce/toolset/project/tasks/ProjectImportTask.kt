@@ -32,8 +32,10 @@ import com.intellij.platform.util.progress.reportSequentialProgress
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.*
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 @Service(Service.Level.PROJECT)
 class ProjectImportTask(private val project: Project) {
@@ -76,33 +78,57 @@ class ProjectImportTask(private val project: Project) {
         val chosenModuleDescriptors = importContext.allChosenModuleDescriptors
         val moduleProviders = ModuleProvider.EP.extensionList
 
-        reportProgressScope(chosenModuleDescriptors.size) { moduleReporter ->
-            chosenModuleDescriptors.forEach { moduleDescriptor ->
-                val provider = moduleProviders.find { provider -> provider.isApplicable(moduleDescriptor) }
-                    ?: return@forEach moduleReporter.itemStep("Skipping '${moduleDescriptor.name}' module...") {
-                        logger.warn("Unable to find suitable module provider for '${moduleDescriptor}' module...")
-                    }
+        val moduleImportContexts = createModuleEntities(chosenModuleDescriptors, moduleProviders, importContext, workspaceModel)
 
-                moduleReporter.itemStep("Importing '${moduleDescriptor.name}' module...") {
+        reportProgressScope(moduleImportContexts.size) { moduleReporter ->
+            moduleImportContexts.forEach { context ->
+                moduleReporter.itemStep("Importing '${context.moduleDescriptor.name}' module...") {
                     checkCanceled()
 
-                    logger.debug("Importing module [${moduleDescriptor.name}].")
-                    val duration = measureTime { importModule(importContext, workspaceModel, moduleDescriptor, provider) }
-                    logger.info("Imported module [${moduleDescriptor.name} | ${duration}].")
+                    logger.debug("Configuring module [${context.moduleDescriptor.name}].")
+                    val duration = measureTime { configureModule(context) }
+                    logger.info("Configured module [${context.moduleDescriptor.name} | ${duration}].")
                 }
             }
         }
     }
 
-    private suspend fun importModule(
+    private suspend fun createModuleEntities(
+        chosenModuleDescriptors: List<ModuleDescriptor>,
+        moduleProviders: List<ModuleProvider>,
         importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        provider: ModuleProvider
-    ) {
-        val moduleEntity = provider.getOrCreate(importContext, workspaceModel, moduleDescriptor)
+        workspaceModel: WorkspaceModel
+    ): List<ProjectModuleConfigurationContext> = reportProgressScope(chosenModuleDescriptors.size) { moduleReporter ->
+        chosenModuleDescriptors.mapNotNull { moduleDescriptor ->
+            val provider = moduleProviders.find { provider -> provider.isApplicable(moduleDescriptor) }
+            if (provider == null) {
+                moduleReporter.itemStep("Skipping '${moduleDescriptor.name}' module...") {
+                    logger.warn("Unable to find suitable module provider for '${moduleDescriptor}' module...")
+                }
+                return@mapNotNull null
+            }
+
+            return@mapNotNull moduleReporter.itemStep("Creating '${moduleDescriptor.name}' module...") {
+                checkCanceled()
+
+                logger.debug("Creating module [${moduleDescriptor.name}].")
+                val timedValue = measureTimedValue { provider.getOrCreate(importContext, workspaceModel, moduleDescriptor) }
+                logger.info("Created module [${moduleDescriptor.name} | ${timedValue.duration}].")
+
+                return@itemStep ProjectModuleConfigurationContext(
+                    importContext = importContext,
+                    workspaceModel = workspaceModel,
+                    moduleDescriptor = moduleDescriptor,
+                    moduleEntity = timedValue.value,
+                    moduleTypeId = provider.moduleTypeId
+                )
+            }
+        }
+    }
+
+    private suspend fun configureModule(context: ProjectModuleConfigurationContext) {
         val configurators = ModuleImportConfigurator.EP.extensionList
-            .filter { it.isApplicable(provider.moduleTypeId) }
+            .filter { it.isApplicable(context.moduleTypeId) }
 
         reportProgressScope(configurators.size) { moduleConfiguratorReporter ->
             configurators.forEach { configurator ->
@@ -110,8 +136,8 @@ class ProjectImportTask(private val project: Project) {
                     checkCanceled()
 
                     runCatching {
-                        val duration = measureTime { configurator.configure(importContext, workspaceModel, moduleDescriptor, moduleEntity) }
-                        logger.info("Applied module configurator [${moduleDescriptor.name} | ${configurator.name} | ${duration}].")
+                        val duration = measureTime { configurator.configure(context) }
+                        logger.info("Applied module configurator [${context.moduleDescriptor.name} | ${configurator.name} | ${duration}].")
                     }
                         .exceptionOrNull()
                         ?.let { logger.warn("Module configurator '${configurator.name}' error: ${it.message}", it) }

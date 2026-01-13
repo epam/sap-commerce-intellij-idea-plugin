@@ -18,14 +18,13 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
 import sap.commerce.toolset.java.configurator.contentEntry.util.resources
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
 import java.nio.file.Path
@@ -41,22 +40,20 @@ class ResourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
     ) = moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
+        val moduleDescriptor = context.moduleDescriptor
         val resourcesPath = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
         val relativeOutputPath = if (moduleDescriptor is YBackofficeSubModuleDescriptor) "cockpitng" else ""
         val rootEntities = resourcesPath
-            .let { moduleEntity.resources(path = it, relativeOutputPath = relativeOutputPath) }
+            .let { context.moduleEntity.resources(path = it, relativeOutputPath = relativeOutputPath) }
             .let { listOf(it) }
 
         contentRootEntity.addSourceRoots(
-            importContext = importContext,
-            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            importContext = context.importContext,
+            virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager(),
             rootEntities = rootEntities,
             pathsToIgnore = pathsToIgnore,
         )

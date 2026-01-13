@@ -18,15 +18,14 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
 import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
 import sap.commerce.toolset.java.configurator.contentEntry.util.testGeneratedSources
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
@@ -43,14 +42,12 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
         && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
 
     override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleRootPath = moduleDescriptor.moduleRootPath
+        val moduleEntity = context.moduleEntity
+        val moduleRootPath = context.moduleDescriptor.moduleRootPath
         val generatedSourcePaths = childrenOf(
             moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
             moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
@@ -64,8 +61,8 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
         }
 
         contentRootEntity.addSourceRoots(
-            importContext = importContext,
-            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            importContext = context.importContext,
+            virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager(),
             rootEntities = rootEntities,
             pathsToIgnore = pathsToIgnore,
         )

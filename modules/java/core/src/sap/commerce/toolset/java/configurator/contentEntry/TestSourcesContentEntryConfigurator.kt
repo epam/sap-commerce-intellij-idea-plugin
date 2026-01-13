@@ -18,14 +18,13 @@
 
 package sap.commerce.toolset.java.configurator.contentEntry
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
 import sap.commerce.toolset.java.configurator.contentEntry.util.testSources
 import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.nio.file.Path
 
@@ -40,20 +39,17 @@ class TestSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
     ) = moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity,
+        context: ProjectModuleConfigurationContext,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val rootEntities = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
-            .map { moduleDescriptor.moduleRootPath.resolve(it) }
-            .map { moduleEntity.testSources(path = it) }
+            .map { context.moduleDescriptor.moduleRootPath.resolve(it) }
+            .map { context.moduleEntity.testSources(path = it) }
 
         contentRootEntity.addSourceRoots(
-            importContext = importContext,
-            virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager(),
+            importContext = context.importContext,
+            virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager(),
             rootEntities = rootEntities,
             pathsToIgnore = pathsToIgnore,
         )

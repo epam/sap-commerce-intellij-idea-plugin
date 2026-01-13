@@ -20,15 +20,12 @@ package sap.commerce.toolset.java.configurator
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import sap.commerce.toolset.java.configurator.contentEntry.ModuleContentEntryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 import kotlin.time.measureTime
@@ -45,12 +42,11 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-        moduleEntity: ModuleEntity
-    ) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+        val importContext = context.importContext
+        val workspaceModel = context.workspaceModel
+        val moduleDescriptor = context.moduleDescriptor
+        val moduleEntity = context.moduleEntity
         val moduleRootPath = moduleDescriptor.moduleRootPath
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
@@ -73,7 +69,7 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
                 reporter.itemStep("Applying content root '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.configure(importContext, workspaceModel, moduleDescriptor, moduleEntity, contentRootEntity, pathsToIgnore) }
+                    val duration = measureTime { configurator.configure(context, contentRootEntity, pathsToIgnore) }
                     logger.info("Content root configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
                 }
             }
