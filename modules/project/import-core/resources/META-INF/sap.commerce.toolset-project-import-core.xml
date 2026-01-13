@@ -29,11 +29,11 @@
         <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectLibrariesConfigurator"/>
 
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ModuleDependenciesConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.LoadedModulesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectEncodingConfigurator"/>
 
+        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
         <project.postImportAsyncConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
 

@@ -26,12 +26,12 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class VersionControlSystemConfigurator : ProjectImportConfigurator {
+class VersionControlSystemConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Version Control System"
 
-    override suspend fun configure(
+    override suspend fun postImport(
         importContext: ProjectImportContext,
         workspaceModel: WorkspaceModel
     ) {
