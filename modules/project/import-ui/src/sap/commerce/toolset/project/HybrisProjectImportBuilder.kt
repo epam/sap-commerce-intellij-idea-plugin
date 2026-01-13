@@ -33,6 +33,7 @@ import sap.commerce.toolset.project.ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT
 import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
+import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.tasks.ProjectImportTask
 import sap.commerce.toolset.util.directoryExists
@@ -75,7 +76,12 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
             ?.immutable(project)
             ?: return emptyList()
 
-        ProjectImportTask.getInstance(project).execute(context)
+        try {
+            project.importState = ProjectImportState.IN_PROGRESS
+            ProjectImportTask.getInstance(project).execute(context)
+        } finally {
+            project.importState = ProjectImportState.IMPORTED
+        }
 
         if (context.refresh) {
             PostImportBulkConfigurator.getInstance(project).configure(context)

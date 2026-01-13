@@ -29,8 +29,10 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.importState
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
 
@@ -45,6 +47,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
     private fun decorateModule(node: PsiDirectoryNode, data: PresentationData) {
         val vf = node.virtualFile ?: return
         val project = node.project.takeIf { it.isHybrisProject } ?: return
+        if (project.importState != ProjectImportState.IMPORTED) return
         val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf) ?: return
         val projectSettings = ProjectSettings.getInstance(module.project)
 

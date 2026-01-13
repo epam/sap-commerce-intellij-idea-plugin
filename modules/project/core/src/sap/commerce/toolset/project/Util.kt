@@ -23,6 +23,7 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -30,11 +31,20 @@ import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 import kotlin.io.path.pathString
+
+private val importInProgress = Key<ProjectImportState>("sap.commerce.toolset.project.import.state")
+
+var Project.importState: ProjectImportState
+    get() = this.getUserData(importInProgress) ?: ProjectImportState.IMPORTED
+    set(value) {
+        this.putUserData(importInProgress, value)
+    }
 
 fun Module.yExtensionName(): String = YFacet.get(this)
     ?.configuration
