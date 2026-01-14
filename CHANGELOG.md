@@ -11,7 +11,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ### `Project Import` enhancements
 - Project import & refresh 3.0 [#1699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699)
-- Project import & refresh 3.1 [#1701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1701)
+- Project import & refresh 3.1 [#1704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704)
 - Lazy dependency on `java-el` plugin [#1700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1700)
 
 ### `SAP CX Logging` enhancements
