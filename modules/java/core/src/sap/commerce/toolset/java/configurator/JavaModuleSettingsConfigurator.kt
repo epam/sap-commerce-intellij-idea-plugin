@@ -22,6 +22,7 @@ import com.intellij.java.workspace.entities.javaSettings
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import kotlin.io.path.pathString
 
@@ -32,7 +33,7 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         val importContext = context.importContext
         val moduleDescriptor = context.moduleDescriptor
         val moduleEntity = context.moduleEntity
@@ -47,7 +48,7 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
             else ProjectConstants.Directory.CLASSES
         }
 
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val outputDirectory = moduleDescriptor.moduleRootPath.resolve(output)
         val javaSettingsEntity = JavaModuleSettingsEntity(
             inheritedCompilerOutput = false,

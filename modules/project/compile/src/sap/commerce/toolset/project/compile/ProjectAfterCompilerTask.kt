@@ -24,7 +24,7 @@ import com.intellij.util.application
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.root
+import sap.commerce.toolset.project.contentRoot
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
 
@@ -42,11 +42,11 @@ class ProjectAfterCompilerTask : CompileTask {
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
 
         val modules = context.compileScope.affectedModules
-        val platformModule = modules.firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
+        val platformModule = modules.firstOrNull { it.yExtensionName == EiConstants.Extension.PLATFORM }
             ?: return@runReadAction true
 
         val bootstrapDirectory = platformModule
-            .root()
+            .contentRoot
             ?.resolve(ProjectConstants.Directory.BOOTSTRAP)
             ?: return@runReadAction true
 

@@ -32,7 +32,7 @@ import java.nio.file.Path
 
 class GradleModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.GRADLE.ifActive {
+    override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.GRADLE.ifActive {
         rootDirectory != path && GradleConstants.KNOWN_GRADLE_FILES.any { path.resolve(it).fileExists }
     } ?: false
 

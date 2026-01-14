@@ -29,6 +29,6 @@ class LibraryEntitiesStorageConfigurator : ProjectStorageConfigurator {
 
     val logger = thisLogger()
 
-    override fun configure(importContext: ProjectImportContext, storage: MutableEntityStorage) = importContext.mutableStorage
+    override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) = context.mutableStorage
         .libraries.forEach { libraryEntity -> storage.addEntity(libraryEntity) }
 }

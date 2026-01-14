@@ -22,12 +22,12 @@ import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
 import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
 import sap.commerce.toolset.java.configurator.contentEntry.util.testGeneratedSources
-import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Files
 import java.nio.file.Path
@@ -38,11 +38,11 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
     override val name: String
         get() = "Web injected sources (addons, common web)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
-        && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
+        && (moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode)
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
@@ -61,8 +61,8 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
         }
 
         contentRootEntity.addSourceRoots(
-            importContext = context.importContext,
-            virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager(),
+            context = context.importContext,
+            virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager(),
             rootEntities = rootEntities,
             pathsToIgnore = pathsToIgnore,
         )

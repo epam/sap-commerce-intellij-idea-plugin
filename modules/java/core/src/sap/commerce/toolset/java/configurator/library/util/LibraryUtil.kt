@@ -63,7 +63,7 @@ internal fun ModuleEntityBuilder.linkProjectLibrary(
 }
 
 internal fun ModuleEntityBuilder.configureLibrary(
-    importContext: ProjectImportContext,
+    context: ProjectImportContext,
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
@@ -90,7 +90,7 @@ internal fun ModuleEntityBuilder.configureLibrary(
 
     this.dependencies += LibraryDependency(libraryId, exported, scope)
 
-    importContext.mutableStorage.add(libraryEntity)
+    context.mutableStorage.add(libraryEntity)
 }
 
 private fun LibraryEntityBuilder.excludedRoots(

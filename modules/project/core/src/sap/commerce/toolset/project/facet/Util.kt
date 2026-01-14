@@ -20,12 +20,15 @@ package sap.commerce.toolset.project.facet
 
 import com.intellij.facet.Facet
 import com.intellij.facet.impl.FacetUtil
+import com.intellij.openapi.util.JDOMExternalizable
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.util.WriteExternalException
+import com.intellij.util.asSafely
 
 val Facet<*>.configurationXmlTag
     get() = try {
         FacetUtil.saveFacetConfiguration(this.getConfiguration())
+            ?.also { it.asSafely<JDOMExternalizable>()?.writeExternal(it) }
     } catch (_: WriteExternalException) {
         null
     }

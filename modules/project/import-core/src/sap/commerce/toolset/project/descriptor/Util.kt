@@ -15,20 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurator.entities
 
-import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.platform.workspace.storage.MutableEntityStorage
-import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
+package sap.commerce.toolset.project.descriptor
 
-class ModuleEntitiesStorageConfigurator : ProjectStorageConfigurator {
+import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 
-    override val name: String
-        get() = "Modules"
+val ModuleDescriptor.isCustomModuleDescriptor
+    get() = this is YCustomRegularModuleDescriptor
+        || (this is YSubModuleDescriptor && this.owner is YCustomRegularModuleDescriptor)
 
-    val logger = thisLogger()
-
-    override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) = context.mutableStorage
-        .modules.forEach { moduleEntity -> storage.addEntity(moduleEntity) }
-}
+val ModuleDescriptor.isNonCustomModuleDescriptor
+    get() = !this.isCustomModuleDescriptor

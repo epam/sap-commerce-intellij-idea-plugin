@@ -18,11 +18,10 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor
 
@@ -32,19 +31,13 @@ class HmcModuleLibraryConfigurator : ModuleLibraryConfigurator<YHmcSubModuleDesc
         get() = "Hmc Sub Module"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
     ) = moduleDescriptor is YHmcSubModuleDescriptor
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YHmcSubModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        moduleEntity.linkProjectLibrary(
+    override suspend fun configure(context: ProjectModuleConfigurationContext<YHmcSubModuleDescriptor>) = context.moduleEntity
+        .linkProjectLibrary(
             libraryName = JavaConstants.ProjectLibrary.HMC,
             exported = false,
         )
-    }
 }

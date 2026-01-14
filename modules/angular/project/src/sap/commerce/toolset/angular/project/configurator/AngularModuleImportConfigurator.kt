@@ -21,6 +21,7 @@ import com.intellij.platform.workspace.jps.entities.ContentRootEntity
 import sap.commerce.toolset.angular.AngularConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.io.path.pathString
 
 class AngularModuleImportConfigurator : ModuleImportConfigurator {
@@ -30,10 +31,10 @@ class AngularModuleImportConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = AngularConstants.MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         val moduleDescriptor = context.moduleDescriptor
         val moduleEntity = context.moduleEntity
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
 
         moduleEntity.contentRoots += ContentRootEntity(

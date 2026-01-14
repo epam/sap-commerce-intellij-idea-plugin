@@ -26,7 +26,6 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
@@ -42,18 +41,16 @@ import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 
 class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Kotlin"
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ) {
-        val project = importContext.project
-        val hasKotlinnatureExtension = importContext.chosenHybrisModuleDescriptors
+    override suspend fun configure(context: ProjectImportContext) {
+        val project = context.project
+        val hasKotlinnatureExtension = context.chosenHybrisModuleDescriptors
             .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
         if (!hasKotlinnatureExtension) return
 
@@ -63,9 +60,9 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
-        importContext.chosenHybrisModuleDescriptors
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val project = context.project
+        context.chosenHybrisModuleDescriptors
             .find { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 

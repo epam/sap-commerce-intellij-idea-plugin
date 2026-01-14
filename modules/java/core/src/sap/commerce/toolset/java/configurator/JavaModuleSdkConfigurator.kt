@@ -22,6 +22,7 @@ import com.intellij.platform.workspace.jps.entities.InheritedSdkDependency
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class JavaModuleSdkConfigurator : ModuleImportConfigurator {
 
@@ -30,7 +31,7 @@ class JavaModuleSdkConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         context.moduleEntity.dependencies += InheritedSdkDependency
     }
 }

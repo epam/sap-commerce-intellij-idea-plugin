@@ -24,7 +24,7 @@ import java.nio.file.Path
 
 interface ModuleRootResolver {
 
-    fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path): Boolean
+    fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path): Boolean
     fun resolve(path : Path) : ResolvedModuleRoot
 
     companion object {

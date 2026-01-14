@@ -18,21 +18,20 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.util.asSafely
 import sap.commerce.toolset.project.ModuleGroupingUtil
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
-class GroupModuleConfigurator : ProjectPreImportConfigurator {
+class GroupModuleConfigurator : ProjectImportConfigurator {
 
     override val name: String
         get() = "Modules Grouping"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        if (!importContext.settings.groupModules) return
+    override suspend fun configure(context: ProjectImportContext) {
+        if (!context.settings.groupModules) return
 
-        val moduleDescriptorsToImport = importContext.allChosenModuleDescriptors
+        val moduleDescriptorsToImport = context.allChosenModuleDescriptors
         val requiredYModuleDescriptorList = buildSet {
             moduleDescriptorsToImport
                 .filterIsInstance<YModuleDescriptor>()
@@ -44,7 +43,7 @@ class GroupModuleConfigurator : ProjectPreImportConfigurator {
         }
 
         moduleDescriptorsToImport.forEach { moduleDescriptor ->
-            ModuleGroupingUtil.getGroupName(importContext, moduleDescriptor, requiredYModuleDescriptorList)
+            ModuleGroupingUtil.getGroupName(context, moduleDescriptor, requiredYModuleDescriptorList)
                 ?.asSafely<Array<String>>()
                 ?.let { moduleDescriptor.groupNames = it }
         }

@@ -35,5 +35,5 @@ open class YPlatformExtModuleDescriptor(
     override fun isPreselected() = true
     override fun getDefaultRequiredExtensionNames() = setOf(EiConstants.Extension.CORE)
     override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
-    override fun groupName(importContext: ProjectImportContext) = importContext.settings.groupPlatform.toIdeaGroup()
+    override fun groupName(context: ProjectImportContext) = context.settings.groupPlatform.toIdeaGroup()
 }

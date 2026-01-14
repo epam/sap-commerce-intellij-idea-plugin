@@ -27,7 +27,7 @@ interface ProjectStorageConfigurator {
     val name: String
 
     fun configure(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         storage: MutableEntityStorage,
     )
 

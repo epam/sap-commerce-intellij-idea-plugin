@@ -19,15 +19,11 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.module.JavaModuleType
-import com.intellij.openapi.util.Key
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.project.context.ProjectImportContext
 import kotlin.io.path.Path
 
 object ProjectConstants {
 
-    @JvmStatic
-    val KEY_FINALIZE_PROJECT_IMPORT: Key<ProjectImportContext> = Key.create("hybrisProjectImportFinalize")
     val Y_MODULE_TYPE_ID = JavaModuleType.getModuleType().id
 
     object Directory {

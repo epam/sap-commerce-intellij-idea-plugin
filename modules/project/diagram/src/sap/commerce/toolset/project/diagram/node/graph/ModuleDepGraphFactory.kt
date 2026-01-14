@@ -56,7 +56,7 @@ object ModuleDepGraphFactory {
             module,
             type,
             subModuleType,
-            module.yExtensionName(),
+            module.yExtensionName,
             properties.toTypedArray()
         )
     }

@@ -18,14 +18,11 @@
 <idea-plugin>
 
     <extensionPoints>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.preImportConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator"
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.importConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectImportConfigurator"
                         dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.libraryConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectLibraryConfigurator"
-                        dynamic="true"/>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.importConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectImportConfigurator"
                         dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator"

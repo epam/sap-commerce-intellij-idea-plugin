@@ -17,8 +17,7 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.settings.ySettings
@@ -28,10 +27,10 @@ class ExtensionDescriptorsConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "Extension Descriptors"
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val projectSettings = importContext.project.ySettings
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val projectSettings = context.project.ySettings
 
-        projectSettings.extensionDescriptors = importContext.foundModules
+        projectSettings.extensionDescriptors = context.foundModules
             .asSequence()
             .filterNot { it is YSubModuleDescriptor }
             .filterIsInstance<YModuleDescriptor>()

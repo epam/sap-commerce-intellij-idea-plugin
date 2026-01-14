@@ -29,10 +29,10 @@ interface ModuleContentEntryConfigurator {
 
     val name: String
 
-    fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
+    fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
 
     suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     )

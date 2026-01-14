@@ -20,12 +20,13 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface ModuleImportConfigurator : Configurator {
 
     fun isApplicable(moduleTypeId: String): Boolean
 
-    suspend fun configure(context: ProjectModuleConfigurationContext)
+    suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>)
 
     companion object {
         val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")

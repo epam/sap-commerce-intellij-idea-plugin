@@ -18,11 +18,10 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeModuleDescriptor
 
@@ -32,18 +31,12 @@ class BackofficeModuleLibraryConfigurator : ModuleLibraryConfigurator<YBackoffic
         get() = "Backoffice"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
     ) = moduleDescriptor is YBackofficeModuleDescriptor
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YBackofficeModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        moduleEntity.linkProjectLibrary(
+    override suspend fun configure(context: ProjectModuleConfigurationContext<YBackofficeModuleDescriptor>) = context.moduleEntity
+        .linkProjectLibrary(
             libraryName = JavaConstants.ProjectLibrary.BACKOFFICE,
         )
-    }
 }

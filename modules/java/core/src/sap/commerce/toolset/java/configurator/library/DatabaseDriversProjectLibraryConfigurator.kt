@@ -19,7 +19,6 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
@@ -36,24 +35,22 @@ class DatabaseDriversProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.DATABASE_DRIVERS
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ): LibraryEntityBuilder? {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val dbDriversPath = importContext.externalDbDriversDirectory
-            ?: importContext.platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER)
+    override suspend fun configure(context: ProjectImportContext): LibraryEntityBuilder? {
+        val workspace = context.workspace
+        val virtualFileUrlManager = workspace.getVirtualFileUrlManager()
+        val dbDriversPath = context.externalDbDriversDirectory
+            ?: context.platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.LIB_DB_DRIVER)
 
         val libraryRoot = virtualFileUrlManager.fromPath(dbDriversPath)
             ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT) }
 
         if (libraryRoot == null) {
             thisLogger().info("Project library '${JavaConstants.ProjectLibrary.DATABASE_DRIVERS}' will not be created because database drivers location cannot be identified.")
-            workspaceModel.removeProjectLibrary(JavaConstants.ProjectLibrary.DATABASE_DRIVERS)
+            workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.DATABASE_DRIVERS)
             return null
         }
 
-        return importContext.project.configureProjectLibrary(
+        return context.project.configureProjectLibrary(
             libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
             libraryRoots = listOf(libraryRoot)
         )

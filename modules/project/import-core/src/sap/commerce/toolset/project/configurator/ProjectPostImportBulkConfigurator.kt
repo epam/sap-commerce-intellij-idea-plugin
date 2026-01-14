@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,38 +19,67 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
 import com.intellij.openapi.project.Project
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
+import com.intellij.util.application
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectIndexed
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import kotlin.time.measureTime
 
-@Service(Service.Level.PROJECT)
-class PostImportBulkConfigurator(private val project: Project, private val coroutineScope: CoroutineScope) {
+class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
 
     private val logger = thisLogger()
 
-    fun configure(importContext: ProjectImportContext) {
-        val workspaceModel = WorkspaceModel.getInstance(project)
-        val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList
+    override val name: String
+        get() = "Post Import"
+
+    override suspend fun configure(context: ProjectImportContext) {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.workspace.eventLog.collectIndexed { index, value ->
+                logger.info("Handling workspace event: $index")
+
+                if (context.mutableStorage.committed) {
+                    configure(ProjectPostImportContext.from(context, value.storageAfter))
+                    cancel("post-import configurators started, do not listen for new events")
+                }
+            }
+        }
+    }
+
+    private fun configure(context: ProjectPostImportContext) {
+        val legacyWorkspace = IdeModifiableModelsProviderImpl(context.project)
+        val edtActions = mutableListOf<() -> Unit>()
 
         // mostly background operations
         ProjectPostImportConfigurator.EP.extensionList.forEach { configurator ->
-            val duration = measureTime { configurator.postImport(importContext, workspaceModel) }
-            logger.info("Post-configured project [${configurator.name} | $duration]")
+            runCatching {
+                val duration = measureTime { configurator.configure(context, legacyWorkspace, edtActions) }
+                logger.info("Post-configured project [${configurator.name} | $duration]")
+            }
+                .exceptionOrNull()
+                ?.let { logger.warn("Post-configurator '${configurator.name}' error: ${it.message}", it) }
         }
 
-        coroutineScope.launch {
-            if (project.isDisposed) return@launch
+        // Save legacy workspace (facets, javadocs, etc.)
+        application.invokeAndWait {
+            application.runWriteAction {
+                edtActions.forEach { it.invoke() }
+                legacyWorkspace.commit()
+            }
+        }
 
-            withBackgroundProgress(project, "Applying post-import configurators...", true) {
+        CoroutineScope(Dispatchers.Default).launch {
+            if (context.project.isDisposed) return@launch
+            val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList
+
+            withBackgroundProgress(context.project, "Applying post-import configurators...", true) {
                 // async operations
                 supervisorScope {
                     reportProgressScope(postImportAsyncConfigurators.size) { progressReporter ->
@@ -58,7 +87,7 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                             async {
                                 progressReporter.itemStep("Applying '${configurator.name}' configurator...") {
                                     runCatching {
-                                        val duration = measureTime { configurator.postImport(importContext, workspaceModel) }
+                                        val duration = measureTime { configurator.configure(context) }
                                         logger.info("Post-configured async project [${configurator.name} | $duration]")
                                     }
                                         .exceptionOrNull()
@@ -71,7 +100,7 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
                 }
             }
 
-            notifyImportFinished(project, importContext.refresh)
+            notifyImportFinished(context.project, context.refresh)
         }
     }
 
@@ -84,10 +113,5 @@ class PostImportBulkConfigurator(private val project: Project, private val corou
         Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
             .system(true)
             .notify(project)
-    }
-
-    companion object {
-        @JvmStatic
-        fun getInstance(project: Project): PostImportBulkConfigurator = project.service()
     }
 }

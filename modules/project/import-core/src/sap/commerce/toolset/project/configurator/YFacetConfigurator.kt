@@ -24,6 +24,7 @@ import com.intellij.platform.workspace.jps.entities.FacetEntity
 import com.intellij.platform.workspace.jps.entities.ModuleId
 import com.intellij.util.xmlb.XmlSerializer
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacetConstants
 
 class YFacetConfigurator : ModuleImportConfigurator {
@@ -33,7 +34,7 @@ class YFacetConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = true
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         val moduleEntity = context.moduleEntity
         val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
         val xmlTag = XmlSerializer.serialize(context.moduleDescriptor.extensionDescriptor)

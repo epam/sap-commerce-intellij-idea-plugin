@@ -18,16 +18,15 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.DependencyScope
-import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
-import sap.commerce.toolset.java.descriptor.isNonCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isNonCustomModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 
 class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescriptor> {
@@ -36,17 +35,16 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
         get() = "Test"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
     ) = moduleDescriptor is YModuleDescriptor
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+    override suspend fun configure(context: ProjectModuleConfigurationContext<YModuleDescriptor>) {
+        val importContext = context.importContext
+        val moduleDescriptor = context.moduleDescriptor
+        val moduleEntity = context.moduleEntity
+
+        val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(moduleDescriptor.resources(virtualFileUrlManager))
 
@@ -68,7 +66,7 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
         }
 
         moduleEntity.configureLibrary(
-            importContext = importContext,
+            context = importContext,
             libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.TEST}",
             scope = DependencyScope.TEST,
             libraryRoots = libraryRoots,

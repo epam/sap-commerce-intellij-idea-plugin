@@ -19,14 +19,12 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.psi.PsiElement
@@ -46,23 +44,19 @@ var Project.importState: ProjectImportState
         this.putUserData(importInProgress, value)
     }
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
+val Module.yExtensionName
+    get() = this.yFacet
+        ?.name
+        ?: this.name.substringAfterLast(".")
 
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+val Module.yFacet
+    get() = YFacet.getState(this)
 
-fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.getInstance(project)
-    .modules
-    .firstOrNull { YFacet.getState(it)?.type == ModuleDescriptorType.PLATFORM }
-    ?.let { ModuleRootManager.getInstance(it) }
-    ?.contentRoots
-    ?.firstOrNull { it.findChild(ProjectConstants.File.EXTENSIONS_XML) != null }
+val Module.contentRoot
+    get() = this
+        .let { ModuleRootManager.getInstance(it).contentRoots }
+        .firstOrNull()
+        ?.toNioPathOrNull()
 
 val PsiElement.isHybrisModule: Boolean
     get() {

@@ -20,11 +20,11 @@ package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
-import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import java.nio.file.Path
 
 class ExcludeClassesContentEntryConfigurator : ModuleContentEntryConfigurator {
@@ -33,16 +33,16 @@ class ExcludeClassesContentEntryConfigurator : ModuleContentEntryConfigurator {
         get() = "Classes (exclusion)"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode
+    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)

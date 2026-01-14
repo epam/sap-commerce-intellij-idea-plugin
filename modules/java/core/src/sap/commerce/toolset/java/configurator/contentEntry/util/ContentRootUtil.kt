@@ -35,22 +35,22 @@ import java.nio.file.Path
 import kotlin.io.path.pathString
 
 internal fun ContentRootEntityBuilder.excludeDirectories(
-    importContext: ProjectImportContext,
+    context: ProjectImportContext,
     virtualFileUrlManager: VirtualFileUrlManager,
     excludePaths: Collection<Path>
 ) = excludePaths
-    .filter { path -> !importContext.settings.ignoreNonExistingSourceDirectories || path.directoryExists }
+    .filter { path -> !context.settings.ignoreNonExistingSourceDirectories || path.directoryExists }
     .map { virtualFileUrlManager.fromPath(it.pathString) }
     .map { ExcludeUrlEntity(it, this.entitySource) }
     .let { newExcludedUrls -> this.excludedUrls += newExcludedUrls }
 
 internal fun ContentRootEntityBuilder.addSourceRoots(
-    importContext: ProjectImportContext,
+    context: ProjectImportContext,
     virtualFileUrlManager: VirtualFileUrlManager,
     rootEntities: Collection<SourceRootEntityDescriptor>,
     pathsToIgnore: Collection<Path>,
 ) = rootEntities
-    .filter { rootEntity -> !importContext.settings.ignoreNonExistingSourceDirectories || rootEntity.path.directoryExists }
+    .filter { rootEntity -> !context.settings.ignoreNonExistingSourceDirectories || rootEntity.path.directoryExists }
     .filter { rootEntity -> pathsToIgnore.none { FileUtil.isAncestor(it.toFile(), rootEntity.path.toFile(), false) } }
     .map { rootEntity ->
         SourceRootEntity(

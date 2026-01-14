@@ -34,10 +34,10 @@ class PlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
     override val name: String
         get() = "Platform"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
@@ -55,8 +55,8 @@ class PlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
         }
 
         contentRootEntity.addSourceRoots(
-            importContext = context.importContext,
-            virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager(),
+            context = context.importContext,
+            virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager(),
             rootEntities = rootEntities,
             pathsToIgnore = pathsToIgnore,
         )

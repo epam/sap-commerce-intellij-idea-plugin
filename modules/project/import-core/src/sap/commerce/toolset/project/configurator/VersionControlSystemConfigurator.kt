@@ -23,23 +23,19 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 
 class VersionControlSystemConfigurator : ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Version Control System"
 
-    override suspend fun postImport(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ) {
-        val project = importContext.project
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val project = context.project
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)
 
-        val roots = importContext.detectedVcs
+        val roots = context.detectedVcs
             .mapNotNull { readAction { VfsUtil.findFile(it, true) } }
             .flatMap { rootDetector.detect(it) }
 

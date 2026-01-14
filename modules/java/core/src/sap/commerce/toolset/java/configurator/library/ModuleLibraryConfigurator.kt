@@ -19,23 +19,17 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface ModuleLibraryConfigurator<T : ModuleDescriptor> {
 
     val name: String
 
-    fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
+    fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
 
-    suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: T,
-        moduleEntity: ModuleEntityBuilder
-    )
+    suspend fun configure(context: ProjectModuleConfigurationContext<T>)
 
     companion object {
         val EP = ExtensionPointName.create<ModuleLibraryConfigurator<ModuleDescriptor>>("sap.commerce.toolset.project.module.libraryConfigurator")

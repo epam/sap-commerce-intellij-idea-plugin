@@ -20,12 +20,12 @@ package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
-import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Files
 import java.nio.file.Path
@@ -36,11 +36,11 @@ class ExcludeWebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConf
     override val name: String
         get() = "Web injected test sources (exclusion)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
-        && (moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode)
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
+        && (moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode)
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
@@ -48,7 +48,7 @@ class ExcludeWebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConf
         val addonPaths = childrenOf(
             moduleRootPath.resolve(ProjectConstants.Directory.ADDON_TEST_SRC),
         )
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, addonPaths)
     }

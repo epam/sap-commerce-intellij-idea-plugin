@@ -32,15 +32,15 @@ class ExcludeCommonsContentEntryConfigurator : ModuleContentEntryConfigurator {
     override val name: String
         get() = "Common (exclusion)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = true
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = true
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = context.moduleDescriptor.moduleRootPath
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val excludePaths = listOf(
             moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY),
             moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY),

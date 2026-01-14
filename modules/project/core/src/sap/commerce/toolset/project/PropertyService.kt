@@ -27,6 +27,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.removeUserData
@@ -47,6 +48,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.facet.YFacet
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -123,6 +126,13 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     fun getPlatformHome(): String? = findPlatformRootDirectory(project)
         ?.path
+
+    private fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.getInstance(project)
+        .modules
+        .firstOrNull { YFacet.getState(it)?.type == ModuleDescriptorType.PLATFORM }
+        ?.let { ModuleRootManager.getInstance(it) }
+        ?.contentRoots
+        ?.firstOrNull { it.findChild(ProjectConstants.File.EXTENSIONS_XML) != null }
 
     private fun findAllIProperties(): List<IProperty> = CachedValuesManager.getManager(project).getCachedValue(project, CACHE_KEY, {
         val result = LinkedHashMap<String, IProperty>()
@@ -277,11 +287,11 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == EiConstants.Extension.CONFIG }
+        .firstOrNull { it.yExtensionName == EiConstants.Extension.CONFIG }
 
     private fun obtainPlatformModule() = ModuleManager.getInstance(project)
         .modules
-        .firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
+        .firstOrNull { it.yExtensionName == EiConstants.Extension.PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {

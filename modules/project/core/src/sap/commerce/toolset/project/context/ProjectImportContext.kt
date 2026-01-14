@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import kotlinx.collections.immutable.toImmutableList
@@ -60,11 +61,10 @@ data class ProjectImportContext(
 
     val chosenHybrisModuleDescriptors: Collection<ModuleDescriptor>,
     val chosenOtherModuleDescriptors: Collection<ModuleDescriptor>,
-
-    // Must not be used in PostImportConfigurators as it will be cleared beforehand
-    // represents intermediate state of the storage to be persisted by ProjectImportTask
-    val mutableStorage: MutableWorkspace = MutableWorkspace(),
 ) {
+    val mutableStorage: MutableWorkspace = MutableWorkspace()
+    val workspace = WorkspaceModel.getInstance(project)
+
     val allChosenModuleDescriptors
         get() = chosenHybrisModuleDescriptors + chosenOtherModuleDescriptors
 
@@ -76,6 +76,8 @@ data class ProjectImportContext(
         private val _libraries: MutableList<LibraryEntityBuilder> = mutableListOf(),
     ) {
         private var accessAllowed = true
+        var committed: Boolean = false
+            private set
 
         private fun <T> access(exec: () -> T) = if (accessAllowed) exec()
         else throw IllegalStateException("Access is not allowed at this point.")
@@ -88,12 +90,14 @@ data class ProjectImportContext(
         fun add(entity: LibraryEntityBuilder) = access { _libraries.add(entity) }
         fun add(entity: ModuleEntityBuilder) = access { _modules.add(entity) }
 
-        fun clear() = access {
+        fun lock() = access {
             // Any access to the class must not take place after cleanup
             accessAllowed = false
 
             _modules.clear()
             _libraries.clear()
+
+            committed = true
         }
     }
 

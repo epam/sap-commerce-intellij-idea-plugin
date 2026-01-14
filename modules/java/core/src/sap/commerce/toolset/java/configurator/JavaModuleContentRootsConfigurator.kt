@@ -26,6 +26,7 @@ import sap.commerce.toolset.java.configurator.contentEntry.ModuleContentEntryCon
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 import kotlin.time.measureTime
@@ -42,13 +43,12 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         val importContext = context.importContext
-        val workspaceModel = context.workspaceModel
         val moduleDescriptor = context.moduleDescriptor
         val moduleEntity = context.moduleEntity
         val moduleRootPath = moduleDescriptor.moduleRootPath
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
 
         val pathsToIgnore = rootsToIgnore[moduleEntity.name]

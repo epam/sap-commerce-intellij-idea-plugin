@@ -29,7 +29,6 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.projectImport.ProjectImportProvider
@@ -61,9 +60,7 @@ class ProjectRefreshService(private val project: Project) {
             owner = ModalTaskOwner.guess(),
             title = "Before Refresh Configurators",
         ) {
-            val workspaceModel = WorkspaceModel.getInstance(project)
-
-            ProjectRefreshConfigurator.EP.extensionList.forEach { it.beforeRefresh(refreshContext, workspaceModel) }
+            ProjectRefreshConfigurator.EP.extensionList.forEach { it.configure(refreshContext) }
         }
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {

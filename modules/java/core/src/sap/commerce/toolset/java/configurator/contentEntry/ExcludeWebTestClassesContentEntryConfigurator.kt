@@ -34,16 +34,16 @@ class ExcludeWebTestClassesContentEntryConfigurator : ModuleContentEntryConfigur
     override val name: String
         get() = "Web test classes (exclusion)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
         || moduleDescriptor is YCommonWebSubModuleDescriptor
         || moduleDescriptor is YAcceleratorAddonSubModuleDescriptor
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES))
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)

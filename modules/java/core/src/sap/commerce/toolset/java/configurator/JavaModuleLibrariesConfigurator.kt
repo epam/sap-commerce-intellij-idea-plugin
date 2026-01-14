@@ -25,6 +25,7 @@ import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.time.measureTime
 
 class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
@@ -36,7 +37,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         val importContext = context.importContext
         val moduleDescriptor = context.moduleDescriptor
         val configurators = ModuleLibraryConfigurator.EP.extensionList
@@ -47,7 +48,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                 reporter.itemStep("Applying library '${configurator.name}' configurator...") {
                     checkCanceled()
 
-                    val duration = measureTime { configurator.configure(importContext, context.workspaceModel, moduleDescriptor, context.moduleEntity) }
+                    val duration = measureTime { configurator.configure(context) }
                     logger.info("Library configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
                 }
             }

@@ -32,16 +32,16 @@ class ExcludePlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
     override val name: String
         get() = "Platform (exclusion)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
         val moduleRootPath = context.moduleDescriptor.moduleRootPath
         val bootstrapPath = moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val excludePaths = listOf(
             bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC),
             bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES),

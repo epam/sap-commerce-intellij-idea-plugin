@@ -21,9 +21,9 @@ package sap.commerce.toolset.java.configurator
 import com.intellij.ide.BrowserUtil
 import com.intellij.jarRepository.RemoteRepositoriesConfiguration
 import com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable
-import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
@@ -31,7 +31,6 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgressScope
@@ -49,7 +48,7 @@ import sap.commerce.toolset.java.jarFinder.LibraryRootLookupScope
 import sap.commerce.toolset.java.jarFinder.LibraryRootLookupService
 import sap.commerce.toolset.java.jarFinder.LibraryRootType
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.io.IOException
@@ -64,15 +63,19 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     override val name
         get() = "Libraries Sources"
 
-    override fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+    override fun configure(
+        context: ProjectPostImportContext,
+        legacyWorkspace: IdeModifiableModelsProvider,
+        edtActions: MutableList<() -> Unit>
+    ) {
         val libraryRootTypes = buildSet {
-            if (importContext.settings.withExternalLibrarySources) add(LibraryRootType.SOURCES)
-            if (importContext.settings.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
+            if (context.settings.withExternalLibrarySources) add(LibraryRootType.SOURCES)
+            if (context.settings.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
         }
             .takeIf { it.isNotEmpty() }
             ?: return
 
-        val project = importContext.project
+        val project = context.project
         val librarySourceDir = getLibrarySourceDir() ?: return
         val lookupRepositories = getLookupRepositories(project)
 
@@ -94,21 +97,21 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
             withBackgroundProgress(project, "Fetching libraries sources...", true) {
                 supervisorScope {
-                    val libraries = processLibraries(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes)
+                    val libraries = processLibraries(context, lookupRepositories, librarySourceDir, libraryRootTypes)
 
-                    updateLibraries(project, workspaceModel, libraries, librarySourceDir)
+                    updateLibraries(context, libraries, librarySourceDir)
                 }
             }
         }
     }
 
     private suspend fun processLibraries(
-        workspaceModel: WorkspaceModel,
+        context: ProjectPostImportContext,
         lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>
     ): Map<LibraryEntity, Collection<LibraryRootLookup>> {
-        val libraryEntities = workspaceModel.currentSnapshot
+        val libraryEntities = context.storage
             .entities(LibraryEntity::class.java)
             .toList()
 
@@ -118,7 +121,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     checkCanceled()
 
                     async {
-                        libraryEntity to fetchSources(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
+                        libraryEntity to fetchSources(context, lookupRepositories, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
                     }
                 }
                 .awaitAll()
@@ -127,26 +130,20 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     }
 
     private suspend fun updateLibraries(
-        project: Project,
-        workspaceModel: WorkspaceModel,
+        context: ProjectPostImportContext,
         libraries: Map<LibraryEntity, Collection<LibraryRootLookup>>,
         librarySourceDir: Path
     ) {
         checkCanceled()
 
-        val librarySourceDirVf = backgroundWriteAction {
-            workspaceModel.updateProjectModel("Updating libraries sources") { builder ->
-                libraries.forEach { (libraryEntity, LibraryRootLookups) ->
-                    val libraryRoots = LibraryRootLookups.mapNotNull { it.libraryRoot }
-                    builder.modifyLibraryEntity(libraryEntity) {
-                        this.roots += libraryRoots
-                    }
+        context.workspace.update("Updating libraries sources") { builder ->
+            libraries.forEach { (libraryEntity, libraryRootLookups) ->
+                val libraryRoots = libraryRootLookups.mapNotNull { it.libraryRoot }
+                builder.modifyLibraryEntity(libraryEntity) {
+                    this.roots += libraryRoots
                 }
             }
-
-            LocalFileSystem.getInstance().refreshAndFindFileByNioFile(librarySourceDir)
         }
-            ?: return
 
         val updatedLibraries = libraries.size
         val details = libraries.values.flatten().groupBy { it.type }
@@ -171,13 +168,19 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     $details
                 """.trimIndent()
         )
-            .addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
+            .also {
+                val librarySourceDirVf = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(librarySourceDir)
+                    ?: return@also
+
+                it.addAction("Open Libraries Directory") { _, _ -> BrowserUtil.browse(librarySourceDirVf) }
+            }
+
             .system(true)
-            .notify(project)
+            .notify(context.project)
     }
 
     private suspend fun fetchSources(
-        workspaceModel: WorkspaceModel,
+        context: ProjectPostImportContext,
         lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>,
@@ -187,12 +190,12 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         checkCanceled()
 
         return reporter.itemStep("Fetching sources for library '${library.name}'...") {
-            library.roots.flatMap { libraryRoot -> processLibraryRoot(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes, libraryRoot) }
+            library.roots.flatMap { libraryRoot -> processLibraryRoot(context, lookupRepositories, librarySourceDir, libraryRootTypes, libraryRoot) }
         }
     }
 
     private suspend fun processLibraryRoot(
-        workspaceModel: WorkspaceModel,
+        context: ProjectPostImportContext,
         lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>,
@@ -215,7 +218,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 libraryJars.map { libraryJar ->
                     async {
                         reporter.itemStep("Fetching sources for '${libraryJar.nameWithoutExtension}'...") {
-                            fetchLibrarySourcesJars(workspaceModel, lookupRepositories, librarySourceDir, libraryRootTypes, libraryJar)
+                            fetchLibrarySourcesJars(context, lookupRepositories, librarySourceDir, libraryRootTypes, libraryJar)
                         }
                     }
                 }
@@ -226,7 +229,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     }
 
     private suspend fun fetchLibrarySourcesJars(
-        workspaceModel: WorkspaceModel,
+        context: ProjectPostImportContext,
         lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>,
@@ -234,7 +237,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     ): Collection<LibraryRootLookup> {
         checkCanceled()
 
-        val vfUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val vfUrlManager = context.workspace.getVirtualFileUrlManager()
         val libraryRootLookups = libraryRootTypes
             .map { sourceType ->
                 val targetFile = librarySourceDir

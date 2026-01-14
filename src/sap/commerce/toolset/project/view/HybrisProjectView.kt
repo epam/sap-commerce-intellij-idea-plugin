@@ -195,7 +195,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         // hide `platform/ext` node
         if (ProjectConstants.Directory.EXT == vf.name
-            && EiConstants.Extension.PLATFORM == module.yExtensionName()
+            && EiConstants.Extension.PLATFORM == module.yExtensionName
         ) return false
 
         return YFacet.getState(module)

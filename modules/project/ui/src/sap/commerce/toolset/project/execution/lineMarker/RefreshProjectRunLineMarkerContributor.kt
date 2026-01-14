@@ -53,7 +53,7 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
 
         val domManager = DomManager.getDomManager(xmlFile.project)
         val module = xmlFile.project.modules
-            .find { it.yExtensionName() == xmlAttributeValue.value }
+            .find { it.yExtensionName == xmlAttributeValue.value }
 
         if (module != null) return null
 

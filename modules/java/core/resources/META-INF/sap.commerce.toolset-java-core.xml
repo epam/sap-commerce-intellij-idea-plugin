@@ -27,7 +27,7 @@
     </extensionPoints>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.preImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
 
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.PlatformBootstrapProjectLibraryConfigurator"/>
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeProjectLibraryConfigurator"/>
@@ -36,9 +36,8 @@
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.DatabaseDriversProjectLibraryConfigurator"/>
         <project.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.LicenseProjectLibraryConfigurator"/>
 
-        <project.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavadocsProjectImportConfigurator"/>
-
         <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavaLibrarySourcesConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.java.configurator.JavadocsProjectImportConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.java.configurator.JavaCompilerConfigurator"/>
 
         <project.module.provider implementation="sap.commerce.toolset.java.configurator.JavaModuleProvider"/>

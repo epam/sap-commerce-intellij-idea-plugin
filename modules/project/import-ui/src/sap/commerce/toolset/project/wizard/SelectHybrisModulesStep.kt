@@ -64,7 +64,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
     }
 
     override fun updateStep() {
-        val importContext = context.importContext ?: return
+        val importContext = context.context ?: return
         context.list = importContext.foundModules
             .filterNot { it is ExternalModuleDescriptor }
             .sortedWith(
@@ -87,7 +87,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
     }
 
     override fun refresh(refreshContext: ProjectRefreshContext) {
-        val importContext = context.importContext
+        val importContext = context.context
             ?: return
         val projectSettings = refreshContext.project.ySettings
 

@@ -29,16 +29,16 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 @Service
 class ModuleDescriptorsSelector {
 
-    fun preselect(importContext: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
-        val foundExtensions = importContext.foundModules
+    fun preselect(context: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
+        val foundExtensions = context.foundModules
             .map { LeExtension(it.name, it.moduleRootPath) }
         val extensionsInLocalExtensions = LeExtensionsCollector.getInstance().collect(
             foundExtensions,
             configModuleDescriptor.moduleRootPath,
-            importContext.platformDistributionPath
+            context.platformDistributionPath
         )
 
-        importContext.foundModules
+        context.foundModules
             .filter { extensionsInLocalExtensions.contains(it.name) }
             .filterIsInstance<YRegularModuleDescriptor>()
             .forEach { moduleDescriptor ->
@@ -55,16 +55,16 @@ class ModuleDescriptorsSelector {
                     }
             }
 
-        importContext.foundModules
+        context.foundModules
             .filterIsInstance<ConfigModuleDescriptor>()
             .forEach { it.setPreselected(true) }
     }
 
-    fun getSelectableHybrisModules(importContext: ProjectImportContext.Mutable, settings: ProjectSettings): List<ModuleDescriptor> {
+    fun getSelectableHybrisModules(context: ProjectImportContext.Mutable, settings: ProjectSettings): List<ModuleDescriptor> {
         val moduleToImport = mutableSetOf<ModuleDescriptor>()
         val moduleToCheck = mutableSetOf<ModuleDescriptor>()
 
-        importContext.foundModules
+        context.foundModules
             .filter { it.isPreselected() }
             .forEach {
                 moduleToImport.add(it)
@@ -73,7 +73,7 @@ class ModuleDescriptorsSelector {
             }
         resolveDependencies(moduleToImport, moduleToCheck, ModuleDescriptorImportStatus.MANDATORY)
 
-        importContext.foundModules
+        context.foundModules
             .filter { settings.unusedExtensions.contains(it.name) }
             .forEach {
                 moduleToImport.add(it)
@@ -84,7 +84,7 @@ class ModuleDescriptorsSelector {
         resolveDependencies(moduleToImport, moduleToCheck, ModuleDescriptorImportStatus.UNUSED)
 
         return moduleToImport
-            .filterNot { settings.modulesOnBlackList.contains(it.getRelativePath(importContext.rootDirectory)) }
+            .filterNot { settings.modulesOnBlackList.contains(it.getRelativePath(context.rootDirectory)) }
     }
 
     private fun resolveDependencies(

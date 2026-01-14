@@ -21,17 +21,15 @@ package sap.commerce.toolset.jrebel.configurator
 import com.intellij.facet.FacetType
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.util.io.NioFiles
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.zeroturnaround.javarebel.idea.plugin.actions.ToggleRebelFacetAction
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacet
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
 import com.zeroturnaround.javarebel.idea.plugin.xml.RebelXML
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import java.io.File
@@ -41,39 +39,40 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "JRebel"
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
-
-        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val writeOperations = context.chosenHybrisModuleDescriptors
             .filter { it is YCustomRegularModuleDescriptor || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor) }
-        val modules = readAction {
-            moduleDescriptors
-                .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
-        }
+            .mapNotNull { context.modules[it.ideaModuleName()] }
+            .mapNotNull { module ->
+                readAction { JRebelFacet.getInstance(module) } ?: return@mapNotNull null
+                readAction {
+                    FacetType.findInstance(JRebelFacetType::class.java)
+                        .takeUnless { it.isSuitableModuleType(ModuleType.get(module)) }
+                } ?: return@mapNotNull null
 
-        modules.forEach { javaModule ->
-            readAction { JRebelFacet.getInstance(javaModule) } ?: return@forEach
-            readAction {
-                FacetType.findInstance(JRebelFacetType::class.java)
-                    .takeUnless { it.isSuitableModuleType(ModuleType.get(javaModule)) }
-            } ?: return@forEach
+                // To ensure regeneration of the rebel.xml,
+                // we may need to remove backup created by the JRebel plugin on module removal during the Project Refresh.
+                val xml = readAction { RebelXML.getInstance(module) }
+                val backupHash = xml.backupHash()
 
-            // To ensure regeneration of the rebel.xml,
-            // we may need to remove backup created by the JRebel plugin on module removal during the Project Refresh.
-            val xml = readAction { RebelXML.getInstance(javaModule) }
-            val backupHash = xml.backupHash()
+                val backupDirectory = readAction {
+                    File(JRebelConfiguration.getUserHomeDir(), "xml-backups/$backupHash")
+                        .takeIf { it.exists() && it.isDirectory }
+                        ?.toPath()
+                }
 
-            val backupDirectory = readAction {
-                File(JRebelConfiguration.getUserHomeDir(), "xml-backups/$backupHash")
-                    .takeIf { it.exists() && it.isDirectory }
-                    ?.toPath()
+                val writeOperation = {
+                    backupDirectory?.let { NioFiles.deleteRecursively(it) }
+
+                    ToggleRebelFacetAction.conditionalEnableJRebelFacet(module, false, false)
+                }
+
+                writeOperation
             }
 
-            backgroundWriteAction {
-                backupDirectory?.let { NioFiles.deleteRecursively(it) }
 
-                ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)
-            }
+        backgroundWriteAction {
+            writeOperations.forEach { it() }
         }
     }
 

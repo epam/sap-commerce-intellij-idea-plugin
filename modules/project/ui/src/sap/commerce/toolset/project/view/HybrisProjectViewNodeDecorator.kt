@@ -62,7 +62,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
         val extensionDescriptor = YFacet.getState(module)
 
-        if (EiConstants.Extension.KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
+        if (EiConstants.Extension.KOTLIN_NATURE == module.yExtensionName && Plugin.KOTLIN.isActive()) {
             data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)
             return
         }

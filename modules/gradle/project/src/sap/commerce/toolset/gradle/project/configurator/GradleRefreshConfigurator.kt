@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,16 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.gradle.project.configurator
 
-package sap.commerce.toolset.java.descriptor
+import org.jetbrains.plugins.gradle.settings.GradleSettings
+import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
+class GradleRefreshConfigurator : ProjectRefreshConfigurator {
 
-internal val ModuleDescriptor.isCustomModuleDescriptor
-    get() = this is YCustomRegularModuleDescriptor
-        || (this is YSubModuleDescriptor && this.owner is YCustomRegularModuleDescriptor)
+    override val name: String
+        get() = "Gradle"
 
-internal val ModuleDescriptor.isNonCustomModuleDescriptor
-    get() = !this.isCustomModuleDescriptor
+    override suspend fun configure(context: ProjectRefreshContext) {
+        if (!context.removeExternalModules) return
+
+        val project = context.project
+
+        GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
+    }
+}

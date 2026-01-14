@@ -19,15 +19,11 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
 
 interface ProjectImportConfigurator : Configurator {
 
-    suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    )
+    suspend fun configure(context: ProjectImportContext)
 
     companion object {
         val EP = ExtensionPointName.create<ProjectImportConfigurator>("sap.commerce.toolset.project.importConfigurator")

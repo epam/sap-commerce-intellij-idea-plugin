@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryTableId
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
@@ -28,16 +27,17 @@ import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 
+// TODO: maybe merge into storage save configurators, but only when I'll be ready to support pure "update"
 class CleanupProjectRefreshConfigurator : ProjectRefreshConfigurator {
 
     override val name: String
         get() = "Cleanup"
 
-    override suspend fun beforeRefresh(refreshContext: ProjectRefreshContext, workspaceModel: WorkspaceModel) {
-        if (!refreshContext.removeOldProjectData && !refreshContext.removeExternalModules) return
+    override suspend fun configure(context: ProjectRefreshContext) {
+        if (!context.removeOldProjectData && !context.removeExternalModules) return
 
         backgroundWriteAction {
-            workspaceModel.updateProjectModel("Cleanup current project") { storage ->
+            context.workspace.updateProjectModel("Cleanup current project") { storage ->
                 // remove project libraries
                 storage.entities(LibraryEntity::class.java)
                     .filter { it.tableId == LibraryTableId.ProjectLibraryTableId }
@@ -53,7 +53,7 @@ class CleanupProjectRefreshConfigurator : ProjectRefreshConfigurator {
                                     && it.type != ModuleDescriptorType.MAVEN
                                     && it.type != ModuleDescriptorType.GRADLE
                             }
-                            ?: refreshContext.removeExternalModules
+                            ?: context.removeExternalModules
                     }
                     .forEach { storage.removeEntity(it) }
             }

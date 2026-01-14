@@ -18,20 +18,26 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.preImportConfigurator order="first" id="applicationSettingsConfigurator"
-                                       implementation="sap.commerce.toolset.project.configurator.ApplicationSettingsConfigurator"/>
-        <project.preImportConfigurator order="after applicationSettingsConfigurator" id="projectSettingsConfigurator"
-                                       implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
-        <project.preImportConfigurator order="after projectSettingsConfigurator"
-                                       implementation="sap.commerce.toolset.project.configurator.ProjectModulesDirectoryConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.GroupModuleConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectDictionaryConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectLibrariesConfigurator"/>
-
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ModuleDependenciesConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
+        <project.importConfigurator order="first" id="applicationSettingsConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ApplicationSettingsConfigurator"/>
+        <project.importConfigurator order="after applicationSettingsConfigurator" id="projectSettingsConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
+        <project.importConfigurator order="after projectSettingsConfigurator" id="projectModulesDirectoryConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ProjectModulesDirectoryConfigurator"/>
+        <project.importConfigurator order="after projectModulesDirectoryConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ProjectPostImportBulkConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.GroupModuleConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectDictionaryConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectLibrariesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.LoadedModulesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectEncodingConfigurator"/>
+
+        <project.importConfigurator order="before modulesDependenciesConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ModulesConfigurator"/>
+        <project.importConfigurator order="last" id="modulesDependenciesConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ModulesDependenciesConfigurator"/>
+
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
 
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
@@ -78,7 +84,7 @@
 
         <project.storageConfigurator order="first" id="libraryEntitiesStorageConfigurator"
                                      implementation="sap.commerce.toolset.project.configurator.entities.LibraryEntitiesStorageConfigurator"/>
-        <project.storageConfigurator order="after libraryEntitiesStorageConfigurator"
+        <project.storageConfigurator order="after libraryEntitiesStorageConfigurator" id="moduleEntitiesStorageConfigurator"
                                      implementation="sap.commerce.toolset.project.configurator.entities.ModuleEntitiesStorageConfigurator"/>
     </extensions>
 

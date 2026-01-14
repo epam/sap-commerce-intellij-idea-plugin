@@ -35,17 +35,17 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptorsSelector
 class LookupModuleDescriptorsTask() {
 
     @Throws(HybrisConfigurationException::class)
-    fun execute(importContext: ProjectImportContext.Mutable) = runWithModalProgressBlocking(
+    fun execute(context: ProjectImportContext.Mutable) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.scanning"),
     ) {
-        val moduleDescriptors = ModuleDescriptorsCollector.getInstance().collect(importContext)
-        moduleDescriptors.forEach { importContext.addModule(it) }
+        val moduleDescriptors = ModuleDescriptorsCollector.getInstance().collect(context)
+        moduleDescriptors.forEach { context.addModule(it) }
 
         val mainConfigModuleDescriptor: ConfigModuleDescriptor = MainConfigModuleDescriptorResolver.getInstance()
-            .resolve(importContext)
+            .resolve(context)
 
-        ModuleDescriptorsSelector.getInstance().preselect(importContext, mainConfigModuleDescriptor)
+        ModuleDescriptorsSelector.getInstance().preselect(context, mainConfigModuleDescriptor)
     }
 
     companion object {

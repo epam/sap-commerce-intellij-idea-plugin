@@ -29,11 +29,8 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT
-import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
-import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.tasks.ProjectImportTask
 import sap.commerce.toolset.util.directoryExists
@@ -47,7 +44,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     private var _openProjectSettingsAfterImport = false
     private var _selectableModuleDescriptors: MutableList<ModuleDescriptor> = mutableListOf()
 
-    var importContext: ProjectImportContext.Mutable? = null
+    var context: ProjectImportContext.Mutable? = null
 
     override val isOpenProjectSettingsAfter
         get() = _openProjectSettingsAfterImport
@@ -59,7 +56,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     }
 
     override fun createProject(name: String, path: String) = super.createProject(name, path).also {
-        importContext?.project = it
+        context?.project = it
     }
 
     override fun isMarked(element: ModuleDescriptor?): Boolean = element
@@ -72,22 +69,11 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         modulesProvider: ModulesProvider?,
         artifactModel: ModifiableArtifactModel?
     ): List<Module> {
-        val context = importContext
+        val context = context
             ?.immutable(project)
             ?: return emptyList()
 
-        try {
-            project.importState = ProjectImportState.IN_PROGRESS
-            ProjectImportTask.getInstance(project).execute(context)
-        } finally {
-            project.importState = ProjectImportState.IMPORTED
-        }
-
-        if (context.refresh) {
-            PostImportBulkConfigurator.getInstance(project).configure(context)
-        } else {
-            project.putUserData(KEY_FINALIZE_PROJECT_IMPORT, context)
-        }
+        ProjectImportTask.getInstance(project).execute(context)
 
         notifyImportNotFinishedYet(project)
 
@@ -95,7 +81,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
     }
 
     override fun cleanup() = super.cleanup().also {
-        importContext = null
+        context = null
         _openProjectSettingsAfterImport = false
     }
 
@@ -114,7 +100,7 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         refresh = isUpdate,
         project = getCurrentProject(),
     ).also {
-        importContext = it
+        context = it
     }
 
     private fun notifyImportNotFinishedYet(project: Project) = Notifications.create(

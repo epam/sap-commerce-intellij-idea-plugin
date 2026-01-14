@@ -17,57 +17,65 @@
  */
 package sap.commerce.toolset.kotlin.configurator
 
-import com.intellij.facet.FacetTypeRegistry
-import com.intellij.openapi.util.JDOMUtil
-import com.intellij.platform.workspace.jps.entities.FacetEntity
-import com.intellij.platform.workspace.jps.entities.FacetEntityTypeId
-import com.intellij.platform.workspace.jps.entities.ModuleId
-import com.intellij.util.xmlb.XmlSerializer
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.Module
+import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
-import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 
-class KotlinFacetConfigurator : ModuleImportConfigurator {
+class KotlinFacetConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Kotlin Facet"
 
-    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
-
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
-        val moduleDescriptor = context.moduleDescriptor
-        val moduleEntity = context.moduleEntity
-        if (moduleDescriptor !is YModuleDescriptor) return
-
-        context.importContext.chosenHybrisModuleDescriptors
+    override fun configure(
+        context: ProjectPostImportContext,
+        legacyWorkspace: IdeModifiableModelsProvider,
+        edtActions: MutableList<() -> Unit>
+    ) {
+        context.chosenHybrisModuleDescriptors
             .firstOrNull { EiConstants.Extension.KOTLIN_NATURE == it.name }
             ?: return
 
-        val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
+        val modules = context.modules
 
-        if (!hasKotlinDirectories) return
+        context.chosenHybrisModuleDescriptors
+            .filter { it.isCustomModuleDescriptor }
+            .filter { it.hasKotlinDirectories }
+            .forEach { moduleDescriptor ->
+                val ideaModuleName = moduleDescriptor.ideaModuleName()
+                val module = modules[ideaModuleName] ?: return@forEach
 
-        val facetType = FacetTypeRegistry.getInstance().findFacetType(KotlinFacetType.TYPE_ID)
-        val xmlTag = XmlSerializer.serialize(KotlinFacetType.INSTANCE.createDefaultConfiguration())
-            .let { JDOMUtil.writeElement(it) }
-        val facetEntityTypeId = FacetEntityTypeId(KotlinFacetType.ID)
+                val modifiableFacetModel = legacyWorkspace.getModifiableFacetModel(module)
 
-        moduleEntity.facets += FacetEntity(
-            moduleId = ModuleId(moduleEntity.name),
-            name = facetType.presentableName,
-            typeId = facetEntityTypeId,
-            entitySource = moduleEntity.entitySource
-        ) {
-            this.configurationXmlTag = xmlTag
-        }
+                // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
+                modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
+                    ?.let { modifiableFacetModel.removeFacet(it) }
+
+                val facet = KotlinFacet.get(module)
+                    ?: createFacet(module)
+
+                modifiableFacetModel.addFacet(facet)
+            }
     }
 
-    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists
-        || descriptor.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_TEST_SRC).directoryExists
+    private fun createFacet(module: Module) = with(KotlinFacetType.INSTANCE) {
+        createFacet(
+            module,
+            defaultFacetName,
+            createDefaultConfiguration(),
+            null
+        )
+    }
+
+    private val ModuleDescriptor.hasKotlinDirectories
+        get() = this.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_SRC).directoryExists
+            || this.moduleRootPath.resolve(ProjectConstants.Directory.KOTLIN_TEST_SRC).directoryExists
 
 }

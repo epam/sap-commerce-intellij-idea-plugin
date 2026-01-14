@@ -18,42 +18,36 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
-import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.JavaModuleExternalPaths
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.context.ProjectPostImportContext
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isNonCustomModuleDescriptor
 
-class JavadocsProjectImportConfigurator : ProjectImportConfigurator {
+class JavadocsProjectImportConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Javadocs"
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
+    override fun configure(
+        context: ProjectPostImportContext,
+        legacyWorkspace: IdeModifiableModelsProvider,
+        edtActions: MutableList<() -> Unit>
     ) {
-        val javadocUrl = importContext.javadocUrl ?: return
-        val modifiableModelsProvider = IdeModifiableModelsProviderImpl(importContext.project)
+        val javadocUrl = context.javadocUrl ?: return
 
-        ModuleManager.getInstance(importContext.project).modules
-            .filterNot { module ->
-                YFacet.getState(module)
-                    ?.type
-                    ?.let { it != ModuleDescriptorType.CUSTOM && it == ModuleDescriptorType.CONFIG }
-                    ?: false
-            }
-            .forEach {
-                val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(it)
+        context.chosenHybrisModuleDescriptors
+            .filter { it.isNonCustomModuleDescriptor }
+            .filterNot { it is ConfigModuleDescriptor }
+            .forEach { moduleDescriptor ->
+                val ideaModuleName = moduleDescriptor.ideaModuleName()
+                val module = context.modules[ideaModuleName] ?: return@forEach
+
+                val modifiableRootModel = legacyWorkspace.getModifiableRootModel(module)
                 val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
                 javaModuleExternalPaths.javadocUrls = listOf(javadocUrl).toTypedArray()
             }
-
-        backgroundWriteAction { modifiableModelsProvider.commit() }
     }
 }

@@ -53,7 +53,7 @@ abstract class ExtensionLineMarkerProvider : HybrisLineMarkerProvider<XmlAttribu
             .find { it.name == psi.value }
             ?: return emptyList()
         val extensionInfoName = psi.project.modules
-            .find { it.yExtensionName() == psi.value }
+            .find { it.yExtensionName == psi.value }
             ?.let { EiModelAccess.getInstance().getExtensionInfo(it) }
             ?.xmlTag
             ?: return emptyList()

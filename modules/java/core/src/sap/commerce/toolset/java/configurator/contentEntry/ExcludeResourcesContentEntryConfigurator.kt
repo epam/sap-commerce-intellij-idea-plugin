@@ -31,15 +31,15 @@ class ExcludeResourcesContentEntryConfigurator : ModuleContentEntryConfigurator 
     override val name: String
         get() = "Resources (exclusion)"
 
-    override fun isApplicable(importContext: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = importContext.settings
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = context.settings
         .extensionsResourcesToExclude.contains(moduleDescriptor.name)
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)

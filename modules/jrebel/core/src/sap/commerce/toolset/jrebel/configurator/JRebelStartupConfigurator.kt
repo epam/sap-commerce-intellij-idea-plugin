@@ -28,7 +28,7 @@ import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
@@ -40,9 +40,7 @@ class JRebelStartupConfigurator : ProjectStartupConfigurator {
 
     override suspend fun onStartup(project: Project) {
         val module = ModuleManager.getInstance(project).modules
-            .find {
-                YFacet.getState(it)?.name == EiConstants.Extension.PLATFORM
-            }
+            .find { it.yExtensionName == EiConstants.Extension.PLATFORM }
             ?: return
 
         val compilingXml = readAction {

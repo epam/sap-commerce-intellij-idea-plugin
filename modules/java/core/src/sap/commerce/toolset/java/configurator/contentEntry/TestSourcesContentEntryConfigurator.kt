@@ -21,11 +21,11 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
 import sap.commerce.toolset.java.configurator.contentEntry.util.testSources
-import sap.commerce.toolset.java.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import java.nio.file.Path
 
 class TestSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
@@ -34,12 +34,12 @@ class TestSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
         get() = "Test sources"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor.isCustomModuleDescriptor || importContext.settings.importOOTBModulesInWriteMode
+    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
-        context: ProjectModuleConfigurationContext,
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
@@ -48,8 +48,8 @@ class TestSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
             .map { context.moduleEntity.testSources(path = it) }
 
         contentRootEntity.addSourceRoots(
-            importContext = context.importContext,
-            virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager(),
+            context = context.importContext,
+            virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager(),
             rootEntities = rootEntities,
             pathsToIgnore = pathsToIgnore,
         )
