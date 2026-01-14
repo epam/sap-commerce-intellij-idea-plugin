@@ -191,8 +191,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 ?.takeIf { it.fileExists }
 
             this.ccv2Token = importCoreContext.ccv2Token.get()
-
-            thisLogger().info("importing a project with the following settings: $this")
         }
 
         searchModuleRoots(importContext)
@@ -304,7 +302,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             this.excludedFromScanning = projectSettings.excludedFromScanning
         }
 
-        thisLogger().info("Refreshing a project with the following settings: $importContext")
         searchModuleRoots(importContext)
     }
 
