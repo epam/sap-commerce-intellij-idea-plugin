@@ -142,6 +142,10 @@ object ProjectConstants {
         val HYBRIS_SERVER_BASH_SCRIPT_NAME = Path("bin", "platform", "hybrisserver.bat")
     }
 
+    object ModuleManifestAttribute {
+        const val EXTENSION_NAME = "extensionName"
+    }
+
     val PLATFORM_EXTENSION_NAMES = setOf(
         EiConstants.Extension.ADVANCED_SAVED_QUERY,
         EiConstants.Extension.CATALOG,

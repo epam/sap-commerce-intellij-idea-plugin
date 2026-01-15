@@ -90,7 +90,8 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
 
         context.moduleEntity.configureLibrary(
             context = importContext,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.COMPILE}",
+            moduleDescriptor = moduleDescriptor,
+            libraryNameSuffix = JavaConstants.ModuleLibrary.COMPILE,
             libraryRoots = libraryRoots,
             excludedRoots = excludedRoots,
         )

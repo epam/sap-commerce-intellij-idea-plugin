@@ -27,7 +27,6 @@ data class ProjectRefreshContext(
     val project: Project,
     val projectPath: Path,
     val importSettings: ProjectImportSettings,
-    val removeOldProjectData: Boolean,
     val removeExternalModules: Boolean,
 ) {
     val workspace = WorkspaceModel.getInstance(project)
@@ -36,7 +35,6 @@ data class ProjectRefreshContext(
         project = project,
         projectPath = projectPath,
         importSettings = this@ProjectRefreshContext.importSettings.mutable(),
-        removeOldProjectData = AtomicBooleanProperty(removeOldProjectData),
         removeExternalModules = AtomicBooleanProperty(removeExternalModules),
     )
 
@@ -44,14 +42,12 @@ data class ProjectRefreshContext(
         val project: Project,
         val projectPath: Path,
         val importSettings: ProjectImportSettings.Mutable,
-        val removeOldProjectData: AtomicBooleanProperty,
         val removeExternalModules: AtomicBooleanProperty,
     ) {
         fun immutable() = ProjectRefreshContext(
             project = project,
             projectPath = projectPath,
             importSettings = importSettings.immutable(),
-            removeOldProjectData = removeOldProjectData.get(),
             removeExternalModules = removeExternalModules.get(),
         )
     }

@@ -67,7 +67,8 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
 
         moduleEntity.configureLibrary(
             context = importContext,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.TEST}",
+            moduleDescriptor = moduleDescriptor,
+            libraryNameSuffix = JavaConstants.ModuleLibrary.TEST,
             scope = DependencyScope.TEST,
             libraryRoots = libraryRoots,
             excludedRoots = excludedRoots,

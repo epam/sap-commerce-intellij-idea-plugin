@@ -160,7 +160,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         _ui.apply()
 
         val importSettings = importCoreContext.importSettings.immutable()
-        val importContext = importBuilder().initContext(importSettings)
+        val importContext = importBuilder().initContext(importSettings, removeExternalModules = false)
 
         wizardContext.projectName = importCoreContext.projectName.get()
 
@@ -270,7 +270,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
     override fun refresh(refreshContext: ProjectRefreshContext) {
         val importSettings = refreshContext.importSettings
         val projectSettings = refreshContext.project.ySettings
-        val importContext = importBuilder().initContext(importSettings)
+        val importContext = importBuilder().initContext(importSettings, refreshContext.removeExternalModules)
 
         with(importContext) {
             val resolvedPlatformDistributionPath = (projectSettings.platformRelativePath

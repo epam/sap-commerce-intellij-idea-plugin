@@ -17,8 +17,14 @@
  */
 package sap.commerce.toolset.project.configurator.entities
 
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.java.workspace.entities.javaSettings
+import com.intellij.platform.workspace.jps.entities.LibraryEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.getModuleLibraries
+import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
+import com.intellij.platform.workspace.storage.entities
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
@@ -27,8 +33,50 @@ class LibraryEntitiesStorageConfigurator : ProjectStorageConfigurator {
     override val name: String
         get() = "Libraries"
 
-    val logger = thisLogger()
+    override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
+        cleanupCurrentStorage(context, storage)
 
-    override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) = context.mutableStorage
-        .libraries.forEach { libraryEntity -> storage.addEntity(libraryEntity) }
+        val currentEntities = storage.entities<LibraryEntity>()
+            .associateBy { it.name }
+
+        context.mutableStorage.libraries.forEach { newEntity ->
+            val currentEntity = currentEntities[newEntity.name]
+
+            if (currentEntity != null) {
+                storage.modifyLibraryEntity(currentEntity) {
+                    this.name = newEntity.name
+                    this.typeId = newEntity.typeId
+                    this.tableId = newEntity.tableId
+                    this.excludedRoots = newEntity.excludedRoots
+                    this.roots = newEntity.roots
+                    this.entitySource = newEntity.entitySource
+                }
+            } else {
+                storage.addEntity(newEntity)
+            }
+        }
+    }
+
+    private fun cleanupCurrentStorage(context: ProjectImportContext, storage: MutableEntityStorage) {
+        val yExtensionNames = context.chosenHybrisModuleDescriptors
+            .map { it.name }
+
+        // Cleanup
+        storage.entities<ModuleEntity>()
+            .mapNotNull { moduleEntity ->
+                // skip non-hybris
+                val extensionName = moduleEntity.javaSettings
+                    ?.manifestAttributes[ProjectConstants.ModuleManifestAttribute.EXTENSION_NAME]
+                    ?: return@mapNotNull null
+                // skip unused (manually imported)
+                if (context.unusedExtensions.contains(extensionName)) return@mapNotNull null
+                // skip selected for import (localextensions.xml and dependencies)
+                if (yExtensionNames.contains(extensionName)) return@mapNotNull null
+
+                moduleEntity.getModuleLibraries(storage)
+            }
+            .flatten()
+            // remove module libraries
+            .forEach { storage.removeEntity(it) }
+    }
 }

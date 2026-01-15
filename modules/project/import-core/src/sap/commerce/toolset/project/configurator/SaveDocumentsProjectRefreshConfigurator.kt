@@ -18,22 +18,19 @@
 
 package sap.commerce.toolset.project.configurator
 
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
-import sap.commerce.toolset.project.settings.ProjectSettings
+import com.intellij.openapi.application.backgroundWriteAction
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-class LoadedModulesConfigurator : ProjectImportConfigurator {
+class SaveDocumentsProjectRefreshConfigurator : ProjectRefreshConfigurator {
 
     override val name: String
-        get() = "Loaded Modules"
+        get() = "Save Documents"
 
-    override suspend fun configure(context: ProjectImportContext) {
-        val project = context.project
-        val unusedModuleNames = context.chosenHybrisModuleDescriptors
-            .filter { it.importStatus == ModuleDescriptorImportStatus.UNUSED }
-            .map { it.name }
-            .toMutableSet()
-
-        ProjectSettings.getInstance(project).unusedExtensions = unusedModuleNames
+    /*
+    Required for use case when user changed extension.xml or localextensions.xml, did not save, but requested "refresh"
+     */
+    override suspend fun configure(context: ProjectRefreshContext) {
+        backgroundWriteAction { FileDocumentManager.getInstance().saveAllDocuments() }
     }
 }

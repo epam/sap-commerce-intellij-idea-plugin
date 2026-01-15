@@ -36,6 +36,7 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
@@ -123,7 +124,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             if (child is PsiDirectoryNode) {
                 val nodeCategory = getNodeCategory(child, projectRootManager)
 
-                if (nodeCategory == NodeCategory.OTHER) {
+                if (nodeCategory == ModuleGroup.OTHER) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)
@@ -138,14 +139,14 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         return treeNodes
     }
 
-    private fun getNodeCategory(node: PsiDirectoryNode, projectRootManager: ProjectRootManager): NodeCategory {
-        val vf = node.virtualFile ?: return NodeCategory.Y
-        val module = projectRootManager.fileIndex.getModuleForFile(vf) ?: return NodeCategory.Y
-        if (YFacet.getState(module) != null) return NodeCategory.Y
+    private fun getNodeCategory(node: PsiDirectoryNode, projectRootManager: ProjectRootManager): ModuleGroup {
+        val vf = node.virtualFile ?: return ModuleGroup.HYBRIS
+        val module = projectRootManager.fileIndex.getModuleForFile(vf) ?: return ModuleGroup.HYBRIS
+        if (YFacet.getState(module) != null) return ModuleGroup.HYBRIS
         ModuleRootManager.getInstance(module).contentRoots.find { it == vf }
-            ?: return NodeCategory.Y
+            ?: return ModuleGroup.HYBRIS
 
-        return NodeCategory.OTHER
+        return ModuleGroup.OTHER
     }
 
     private fun isExternalModuleParent(child: AbstractTreeNode<*>): Boolean {
@@ -350,5 +351,4 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         .name
         .endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
 
-    private enum class NodeCategory { Y, OTHER }
 }

@@ -25,6 +25,7 @@ import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 internal suspend fun WorkspaceModel.removeProjectLibrary(
     libraryName: String
@@ -64,12 +65,14 @@ internal fun ModuleEntityBuilder.linkProjectLibrary(
 
 internal fun ModuleEntityBuilder.configureLibrary(
     context: ProjectImportContext,
-    libraryName: String,
+    moduleDescriptor: ModuleDescriptor,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
+    libraryNameSuffix: String,
     libraryRoots: Collection<LibraryRoot>,
     excludedRoots: Collection<VirtualFileUrl> = emptyList(),
 ) {
+    val libraryName = "${moduleDescriptor.name} - $libraryNameSuffix"
     if (libraryRoots.isEmpty()) {
         thisLogger().debug("No library roots for: $libraryName")
         return
@@ -85,6 +88,7 @@ internal fun ModuleEntityBuilder.configureLibrary(
         roots = libraryRoots.toList(),
         entitySource = this.entitySource,
     ) {
+        this.typeId = LibraryTypeId("SAP CX")
         this.excludedRoots = this.excludedRoots(excludedRoots)
     }
 

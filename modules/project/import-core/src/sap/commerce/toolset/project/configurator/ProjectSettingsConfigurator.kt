@@ -67,6 +67,10 @@ class ProjectSettingsConfigurator : ProjectImportConfigurator {
         projectSettings.javadocUrl = context.javadocUrl
 
         projectSettings.sourceCodePath = context.sourceCodePath?.toSystemIndependentName
+
+        projectSettings.removeExternalModulesOnRefresh = context.removeExternalModules
+
+        projectSettings.unusedExtensions = context.unusedExtensions.toSet()
     }
 
     private fun saveCustomDirectoryLocation(context: ProjectImportContext) {

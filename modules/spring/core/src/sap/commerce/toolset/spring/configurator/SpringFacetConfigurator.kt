@@ -73,11 +73,9 @@ class SpringFacetConfigurator : ProjectPostImportConfigurator {
         module: Module,
         additionalFileSet: Set<String>
     ): SpringFacet? {
-        val springFacet = SpringFacet.getInstance(module)
-            ?.also { it.removeFileSets() }
-            ?: SpringFacet.getSpringFacetType()
-                .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
-                ?.let { it.createFacet(module, it.defaultFacetName, it.createDefaultConfiguration(), null) }
+        val springFacet = SpringFacet.getSpringFacetType()
+            .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
+            ?.let { it.createFacet(module, it.defaultFacetName, it.createDefaultConfiguration(), null) }
             ?: return null
 
         val facetName = moduleDescriptor.name + " - " + SpringFacet.FACET_TYPE_ID

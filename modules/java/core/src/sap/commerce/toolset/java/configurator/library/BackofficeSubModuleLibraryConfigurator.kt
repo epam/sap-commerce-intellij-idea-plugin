@@ -85,7 +85,8 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
         libraryRootsProvider: (VirtualFileUrlManager) -> Collection<LibraryRoot>
     ) = moduleEntity.configureLibrary(
         context = context,
-        libraryName = "${moduleDescriptor.name} - $libraryNameSuffix",
+        moduleDescriptor = moduleDescriptor,
+        libraryNameSuffix = libraryNameSuffix,
         scope = DependencyScope.PROVIDED,
         exported = false,
         libraryRoots = libraryRootsProvider(virtualFileUrlManager),

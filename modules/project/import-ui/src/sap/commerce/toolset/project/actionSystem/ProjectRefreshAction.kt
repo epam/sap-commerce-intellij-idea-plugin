@@ -29,7 +29,9 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.path
 import sap.commerce.toolset.project.ProjectRefreshService
 import sap.commerce.toolset.project.context.ProjectImportSettings
+import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.importState
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.ui.ProjectRefreshDialog
 import sap.commerce.toolset.settings.ApplicationSettings
@@ -51,7 +53,6 @@ class ProjectRefreshAction : DumbAwareAction(
             project = project,
             projectPath = projectPath,
             importSettings = ProjectImportSettings.of(applicationSettings, projectSettings),
-            removeOldProjectData = projectSettings.removeOldProjectData,
             removeExternalModules = projectSettings.removeExternalModulesOnRefresh,
         )
             .mutable()
@@ -74,6 +75,8 @@ class ProjectRefreshAction : DumbAwareAction(
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
+
+        e.presentation.isEnabled = project.importState == ProjectImportState.IMPORTED
 
         with(e.presentation) {
             putClientProperty(SHOW_TEXT_IN_TOOLBAR, true)

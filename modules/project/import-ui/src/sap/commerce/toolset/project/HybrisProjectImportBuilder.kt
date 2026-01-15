@@ -94,11 +94,15 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         }
     }
 
-    fun initContext(importSettings: ProjectImportSettings) = ProjectImportContext.Mutable(
+    fun initContext(
+        importSettings: ProjectImportSettings,
+        removeExternalModules: Boolean,
+    ) = ProjectImportContext.Mutable(
         rootDirectory = Path(fileToImport),
         settings = importSettings,
         refresh = isUpdate,
         project = getCurrentProject(),
+        removeExternalModules = removeExternalModules,
     ).also {
         context = it
     }

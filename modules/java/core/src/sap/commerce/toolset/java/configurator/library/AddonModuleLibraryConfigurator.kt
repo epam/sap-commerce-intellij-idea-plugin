@@ -69,7 +69,8 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
 
         context.moduleEntity.configureLibrary(
             context = importContext,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.ADDON}",
+            moduleDescriptor = moduleDescriptor,
+            libraryNameSuffix = JavaConstants.ModuleLibrary.ADDON,
             exported = false,
             libraryRoots = libraryRoots,
         )
@@ -109,10 +110,11 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
 
         context.moduleEntity.configureLibrary(
             context = importContext,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.ADDON_TEST}",
+            moduleDescriptor = moduleDescriptor,
+            libraryNameSuffix = JavaConstants.ModuleLibrary.ADDON_TEST,
             exported = false,
             libraryRoots = libraryRoots,
-            excludedRoots = excludedRoots
+            excludedRoots = excludedRoots,
         )
     }
 }

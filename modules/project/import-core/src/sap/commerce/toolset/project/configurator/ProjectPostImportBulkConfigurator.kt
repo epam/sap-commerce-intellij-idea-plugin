@@ -91,6 +91,9 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
                                         logger.info("Post-configured async project [${configurator.name} | $duration]")
                                     }
                                         .exceptionOrNull()
+                                        // TODO: cancel by DB
+                                        // Control-flow exceptions (e.g. this class com.intellij.openapi.progress.CeProcessCanceledException) should never be logged.
+                                        // Instead, these should have been rethrown if caught.
                                         ?.let { logger.warn("Post-configurator '${configurator.name}' error: ${it.message}", it) }
                                 }
                             }

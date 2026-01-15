@@ -27,6 +27,7 @@ import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
 
@@ -35,6 +36,7 @@ data class ProjectImportContext(
     val rootDirectory: Path,
     val platformDirectory: Path,
     val refresh: Boolean,
+    val removeExternalModules: Boolean,
     val settings: ProjectImportSettings,
 
     val modulesFilesDirectory: Path? = null,
@@ -67,6 +69,10 @@ data class ProjectImportContext(
 
     val allChosenModuleDescriptors
         get() = chosenHybrisModuleDescriptors + chosenOtherModuleDescriptors
+    val unusedExtensions
+        get() = chosenHybrisModuleDescriptors
+            .filter { it.importStatus == ModuleDescriptorImportStatus.UNUSED }
+            .map { it.name }
 
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
@@ -105,6 +111,7 @@ data class ProjectImportContext(
         val rootDirectory: Path,
         val refresh: Boolean,
         val settings: ProjectImportSettings,
+        val removeExternalModules: Boolean,
 
         var project: Project? = null,
         var modulesFilesDirectory: Path? = null,
@@ -150,6 +157,7 @@ data class ProjectImportContext(
             rootDirectory = rootDirectory,
             refresh = refresh,
             settings = settings,
+            removeExternalModules = removeExternalModules,
 
             modulesFilesDirectory = modulesFilesDirectory,
             ccv2Token = ccv2Token,

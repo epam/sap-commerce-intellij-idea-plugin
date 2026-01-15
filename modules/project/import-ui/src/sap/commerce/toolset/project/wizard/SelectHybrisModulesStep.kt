@@ -25,7 +25,6 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.ProjectRefreshService
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.*
@@ -43,7 +42,6 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         ModuleDescriptorType.EXT to 4,
     )
 
-    // TODO: restore previous manual selection
     init {
         fileChooser.addElementsMarkListener(ElementsChooser.ElementsMarkListener { element, isMarked ->
             if (element is YModuleDescriptor) {
@@ -92,13 +90,7 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         val projectSettings = refreshContext.project.ySettings
 
         try {
-            val chosenHybrisModuleDescriptors = buildList {
-                val moduleDescriptors = ModuleDescriptorsSelector.getInstance().getSelectableHybrisModules(importContext, projectSettings)
-                val openModuleDescriptors = ProjectRefreshService.getInstance(refreshContext.project).openModuleDescriptors(importContext)
-
-                addAll(moduleDescriptors)
-                removeAll(openModuleDescriptors)
-            }
+            val chosenHybrisModuleDescriptors = ModuleDescriptorsSelector.getInstance().getSelectableHybrisModules(importContext, projectSettings)
 
             importContext.chooseModuleDescriptors(moduleGroup, chosenHybrisModuleDescriptors)
         } catch (_: ConfigurationException) {

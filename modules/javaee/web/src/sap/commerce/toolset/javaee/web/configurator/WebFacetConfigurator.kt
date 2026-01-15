@@ -73,10 +73,6 @@ class WebFacetConfigurator : ProjectPostImportConfigurator {
         }
 
         val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
-            ?.also {
-                it.removeAllWebRoots()
-                it.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
-            }
             ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
                 .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
                 ?.let { FacetManager.getInstance(module).createFacet(it, it.defaultFacetName, null) }
@@ -84,6 +80,9 @@ class WebFacetConfigurator : ProjectPostImportConfigurator {
             ?: return null
 
         return {
+            webFacet.removeAllWebRoots()
+            webFacet.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
+
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
             webFacet.addWebRootNoFire(VfsUtil.pathToUrl(webRoot.toSystemIndependentName), "/")
 
