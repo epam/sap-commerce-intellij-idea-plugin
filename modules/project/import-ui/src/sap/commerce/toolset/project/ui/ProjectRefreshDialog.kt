@@ -26,19 +26,17 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.asSafely
 import com.intellij.util.text.VersionComparatorUtil
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.settings.WorkspaceSettings
 import sap.commerce.toolset.ui.banner
-import java.awt.Dimension
 import javax.swing.Icon
 import javax.swing.ScrollPaneConstants
 
@@ -50,11 +48,8 @@ class ProjectRefreshDialog(
     private val canRefresh by lazy {
         val importedByVersion = WorkspaceSettings.getInstance(project).importedByVersion
             ?: return@lazy false
-        val currentVersion = Plugin.HYBRIS.pluginDescriptor
-            ?.version
-            ?: return@lazy false
 
-        return@lazy VersionComparatorUtil.compare(currentVersion, importedByVersion) <= 0
+        return@lazy VersionComparatorUtil.compare(ProjectImportConstants.MIN_IMPORT_API_VERSION, importedByVersion) <= 0
     }
 
     private var ui = panel {
@@ -179,7 +174,6 @@ class ProjectRefreshDialog(
 
     init {
         title = "Refresh the Project"
-        isResizable = false
         super.init()
         isOKActionEnabled = canRefresh
     }
@@ -264,7 +258,6 @@ contact <a href="https://www.linkedin.com/in/michaellytvyn/">Mykhailo Lytvyn</a>
         status = EditorNotificationPanel.Status.Error
     )
 
-    override fun getPreferredSize() = Dimension(JBUI.DialogSizes.medium().width, JBUIScale.scale(500))
     override fun getStyle(): DialogStyle = DialogStyle.COMPACT
     override fun doValidateAll() = ui.validateAll()
         .filter { it.component?.isVisible ?: false }

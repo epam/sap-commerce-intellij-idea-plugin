@@ -22,6 +22,7 @@ object ProjectImportConstants {
 
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
+    const val MIN_IMPORT_API_VERSION = "2025.3.1"
 
     val excludedFromScanningDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)
