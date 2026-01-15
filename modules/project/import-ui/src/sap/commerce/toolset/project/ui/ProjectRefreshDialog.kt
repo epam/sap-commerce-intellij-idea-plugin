@@ -18,29 +18,44 @@
 
 package sap.commerce.toolset.project.ui
 
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.asSafely
+import com.intellij.util.text.VersionComparatorUtil
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.settings.WorkspaceSettings
 import sap.commerce.toolset.ui.banner
 import java.awt.Dimension
 import javax.swing.Icon
 import javax.swing.ScrollPaneConstants
 
-// TODO: restrict refresh for old versions!!!
 class ProjectRefreshDialog(
-    project: Project,
+    private val project: Project,
     private val refreshContext: ProjectRefreshContext.Mutable,
 ) : DialogWrapper(project) {
+
+    private val canRefresh by lazy {
+        val importedByVersion = WorkspaceSettings.getInstance(project).importedByVersion
+            ?: return@lazy false
+        val currentVersion = Plugin.HYBRIS.pluginDescriptor
+            ?.version
+            ?: return@lazy false
+
+        return@lazy VersionComparatorUtil.compare(currentVersion, importedByVersion) <= 0
+    }
 
     private var ui = panel {
         group("Cleanup") {
@@ -164,26 +179,89 @@ class ProjectRefreshDialog(
 
     init {
         title = "Refresh the Project"
+        isResizable = false
         super.init()
+        isOKActionEnabled = canRefresh
     }
 
     override fun createCenterPanel() = panel {
-        row {
-            scrollCell(ui)
-                .align(Align.FILL)
-                .applyToComponent {
-                    parent.parent.asSafely<JBScrollPane>()
-                        ?.apply {
-                            horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-                            border = JBEmptyBorder(0)
-                        }
-                }
-
-        }.resizableRow()
+        if (canRefresh) refreshScrollableUi()
+        else row {
+            cell(onlyImportUi())
+        }
     }
 
-    override fun createNorthPanel() = banner(
+    private fun onlyImportUi() = panel {
+        row {
+            text(
+                """
+This project cannot be refreshed using the current version of the plugin.
+<br>
+The plugin’s project import and refresh implementation has changed in a way that is not compatible with projects imported by earlier plugin versions.
+<br><br>
+Due to internal API and project model changes in the plugin, existing project configurations cannot be safely updated through a Refresh Project operation.
+<br>
+Attempting to refresh may result in an incomplete project model, incorrect indexing, or build configuration issues.
+<br><br>
+You must re-import it from scratch using the current plugin version.
+<br>
+This will recreate the IntelliJ IDEA project model using the updated import logic.
+<br><br>
+If you encounter any issues, please submit <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues">new bug-report on GitHub</a> or
+<br>
+contact <a href="https://www.linkedin.com/in/michaellytvyn/">Mykhailo Lytvyn</a> in the project <a href="https://join.slack.com/t/sapcommercede-0kz9848/shared_invite/zt-29gnz3fd2-mz_69mla52NOFqGGsG1Zjw">Slack</a>.
+""".trimIndent()
+            )
+                .align(Align.FILL)
+        }
+
+        separator()
+
+        row {
+            text(
+                """
+                    Technical references:<br>
+                    - <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699">Project Import & Refresh 3.0</a><br>
+                    - <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704">Project Import & Refresh 3.1</a>
+                """.trimIndent()
+            )
+                .align(Align.FILL)
+        }
+
+        separator()
+
+        row {
+            link("Re-import the project...") {
+                this@ProjectRefreshDialog.doCancelAction()
+                invokeLater {
+                    project.triggerAction("CloseProject")
+                    project.triggerAction("ImportProject")
+                }
+            }
+                .align(Align.CENTER)
+        }
+    }.apply {
+        border = JBUI.Borders.empty(8, 16, 32, 16)
+    }
+
+    private fun Panel.refreshScrollableUi() = row {
+        scrollCell(ui)
+            .align(Align.FILL)
+            .applyToComponent {
+                parent.parent.asSafely<JBScrollPane>()
+                    ?.apply {
+                        horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+                        border = JBEmptyBorder(0)
+                    }
+            }
+
+    }.resizableRow()
+
+    override fun createNorthPanel() = if (canRefresh) banner(
         text = "Other settings can be found under SAP CX Settings.",
+    ) else banner(
+        text = "Project refresh is not supported due to major api changes",
+        status = EditorNotificationPanel.Status.Error
     )
 
     override fun getPreferredSize() = Dimension(JBUI.DialogSizes.medium().width, JBUIScale.scale(500))
