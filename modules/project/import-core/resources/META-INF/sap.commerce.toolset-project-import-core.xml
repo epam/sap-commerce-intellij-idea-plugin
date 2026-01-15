@@ -39,6 +39,8 @@
 
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
 
+        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
+
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
         <project.postImportAsyncConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
@@ -48,9 +50,6 @@
         <project.refreshConfigurator order="after cleanupProjectRefreshConfigurator" id="projectSettingsRefreshConfigurator"
                                      implementation="sap.commerce.toolset.project.configurator.ProjectSettingsRefreshConfigurator"/>
         <project.refreshConfigurator implementation="sap.commerce.toolset.project.configurator.ResetCacheProjectRefreshConfigurator"/>
-
-        <project.module.importConfigurator order="last" id="yFacetConfigurator"
-                                           implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
 
         <project.module.descriptorProvider order="first" id="configModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.ConfigModuleDescriptorProvider"/>

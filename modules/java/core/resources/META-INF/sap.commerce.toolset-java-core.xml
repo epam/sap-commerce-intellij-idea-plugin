@@ -45,7 +45,9 @@
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleReadonlyConfigurator"/>
         <project.module.importConfigurator order="after javaModuleReadonlyConfigurator" id="javaModuleSdkConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleSdkConfigurator"/>
-        <project.module.importConfigurator order="after javaModuleSdkConfigurator" id="javaModuleSettingsConfigurator"
+        <project.module.importConfigurator order="after javaModuleSdkConfigurator" id="javaModuleSourceConfigurator"
+                                           implementation="sap.commerce.toolset.java.configurator.JavaModuleSourceConfigurator"/>
+        <project.module.importConfigurator order="after javaModuleSourceConfigurator" id="javaModuleSettingsConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleSettingsConfigurator"/>
         <project.module.importConfigurator order="after javaModuleSettingsConfigurator" id="javaModuleLibrariesConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleLibrariesConfigurator"/>

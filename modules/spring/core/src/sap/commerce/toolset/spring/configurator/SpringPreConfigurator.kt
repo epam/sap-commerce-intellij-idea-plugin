@@ -310,8 +310,13 @@ class SpringPreConfigurator : ProjectImportConfigurator {
         moduleDescriptor: YModuleDescriptor,
         resourcesDir: Path,
         fileName: String
-    ) = resourcesDir.resolve(fileName)
-        .takeIf { it.fileExists }
-        ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
-        ?: false
+    ): Boolean {
+        val fileNamePath = fileName.removePrefix("/")
+            .split("/")
+            .let { Path(it.first(), *it.drop(1).toTypedArray()) }
+        return resourcesDir.resolve(fileNamePath)
+            .takeIf { it.fileExists }
+            ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
+            ?: false
+    }
 }
