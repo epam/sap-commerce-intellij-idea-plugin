@@ -25,6 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.CompilerProjectExtension
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.openapi.util.Disposer
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.projectImport.ProjectImportProvider
@@ -55,6 +56,19 @@ class ProjectRefreshService(private val project: Project) {
             override fun init() = Unit
         }
 
+        try {
+            doRefresh(project, wizard, refreshContext, compilerProjectExtension)
+        } finally {
+            Disposer.dispose(wizard.disposable)
+        }
+    }
+
+    private fun doRefresh(
+        project: Project,
+        wizard: AddModuleWizard,
+        refreshContext: ProjectRefreshContext,
+        compilerProjectExtension: CompilerProjectExtension
+    ) {
         wizard.wizardContext.also {
             it.projectJdk = ProjectRootManager.getInstance(project).projectSdk
             it.projectName = project.name
