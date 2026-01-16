@@ -19,14 +19,20 @@
 package sap.commerce.toolset.project.ui
 
 import com.intellij.CommonBundle
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUiKind
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.actionSystem.triggerAction
+import sap.commerce.toolset.path
 import sap.commerce.toolset.ui.banner
 import javax.swing.Action
 
@@ -102,9 +108,23 @@ contact <a href="https://www.linkedin.com/in/michaellytvyn/">Mykhailo Lytvyn</a>
         row {
             link("Re-import the project...") {
                 this@ProjectReImportDialog.doCancelAction()
+
+                val projectDirectory = project.path
+                    ?.let { path -> VfsUtil.findFile(path, true) }
+                    ?: return@link
+
+                project.triggerAction("CloseProject")
+
                 invokeLater {
-                    project.triggerAction("CloseProject")
-                    project.triggerAction("ImportProject")
+                    triggerAction(
+                        actionId = "sap.commerce.toolset.reimport",
+                        place = ActionPlaces.NEW_PROJECT_WIZARD,
+                        uiKind = ActionUiKind.POPUP,
+                        dataContextProvider = {
+                            SimpleDataContext.builder()
+                                .add(CommonDataKeys.VIRTUAL_FILE, projectDirectory)
+                                .build()
+                        })
                 }
             }
                 .align(Align.CENTER)

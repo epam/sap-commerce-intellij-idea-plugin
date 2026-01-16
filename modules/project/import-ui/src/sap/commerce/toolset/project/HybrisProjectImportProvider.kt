@@ -39,8 +39,8 @@ class HybrisProjectImportProvider : ProjectImportProvider() {
         .findExtensionOrFail(HybrisProjectImportBuilder::class.java)
 
     override fun createSteps(context: WizardContext) = arrayOf(
-        CheckRequiredPluginsStep(context),
         InformationStep(context),
+        CheckRequiredPluginsStep(context),
         ProjectImportCoreContextStep(context),
         SelectHybrisModulesStep(context),
         SelectOtherModulesStep(context),
