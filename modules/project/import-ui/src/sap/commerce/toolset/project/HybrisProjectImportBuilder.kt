@@ -25,7 +25,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.packaging.artifacts.ModifiableArtifactModel
 import com.intellij.projectImport.ProjectImportBuilder
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
@@ -33,11 +32,7 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.tasks.ProjectImportTask
-import sap.commerce.toolset.util.directoryExists
-import java.nio.file.Path
 import kotlin.io.path.Path
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.name
 
 open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>() {
 
@@ -114,11 +109,5 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         content = i18n("hybris.notification.import.or.refresh.process.not.finished.yet.content")
     )
         .notify(project)
-
-    private fun getAllImlFiles(dir: Path) = dir
-        .takeIf { it.directoryExists }
-        ?.listDirectoryEntries()
-        ?.filter { it.name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
-        ?: emptyList()
 
 }

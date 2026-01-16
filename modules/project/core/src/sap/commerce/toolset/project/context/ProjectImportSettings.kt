@@ -42,6 +42,7 @@ data class ProjectImportSettings(
     val groupCCv2: String,
     val groupNameExternalModules: String,
     val extensionsResourcesToExclude: Collection<String>,
+    val unusedExtensions: Collection<String> = emptyList(),
 ) {
     val importOOTBModulesInWriteMode
         get() = !importOOTBModulesInReadOnlyMode
@@ -65,6 +66,7 @@ data class ProjectImportSettings(
         groupCCv2 = AtomicProperty(groupCCv2),
         groupNameExternalModules = AtomicProperty(groupNameExternalModules),
         extensionsResourcesToExclude = AtomicProperty(extensionsResourcesToExclude),
+        unusedExtensions = AtomicProperty(extensionsResourcesToExclude),
     )
 
     data class Mutable(
@@ -86,6 +88,7 @@ data class ProjectImportSettings(
         val groupCCv2: AtomicProperty<String>,
         val groupNameExternalModules: AtomicProperty<String>,
         val extensionsResourcesToExclude: AtomicProperty<Collection<String>>,
+        val unusedExtensions: AtomicProperty<Collection<String>>,
     ) {
         fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
@@ -106,6 +109,7 @@ data class ProjectImportSettings(
             groupCCv2 = groupCCv2.get(),
             groupNameExternalModules = groupNameExternalModules.get(),
             extensionsResourcesToExclude = extensionsResourcesToExclude.get(),
+            unusedExtensions = unusedExtensions.get(),
         )
     }
 
@@ -134,6 +138,7 @@ data class ProjectImportSettings(
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
             importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles,
+            unusedExtensions = projectSettings.unusedExtensions,
 
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,

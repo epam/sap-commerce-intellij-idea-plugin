@@ -74,7 +74,7 @@ class ModuleDescriptorsSelector {
         resolveDependencies(moduleToImport, moduleToCheck, ModuleDescriptorImportStatus.MANDATORY)
 
         context.foundModules
-            .filter { settings.unusedExtensions.contains(it.name) }
+            .filter { context.settings.unusedExtensions.contains(it.name) }
             .forEach {
                 moduleToImport.add(it)
                 moduleToCheck.add(it)

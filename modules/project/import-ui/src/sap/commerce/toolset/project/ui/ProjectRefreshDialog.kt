@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.ui
 
+import com.intellij.ide.util.ElementsChooser
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.project.Project
@@ -26,23 +27,38 @@ import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.scale.JBUIScale
+import com.intellij.ui.table.JBTable
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.ui.banner
 import java.awt.Dimension
 import javax.swing.Icon
 import javax.swing.ScrollPaneConstants
 
 class ProjectRefreshDialog(
-    project: Project,
+    private val project: Project,
     private val refreshContext: ProjectRefreshContext.Mutable,
 ) : DialogWrapper(project) {
 
-    private var ui = ClearableLazyValue.create {
+    private val orderByType = mapOf(
+        ModuleDescriptorType.CONFIG to 0,
+        ModuleDescriptorType.NONE to 0,
+        ModuleDescriptorType.CUSTOM to 1,
+        ModuleDescriptorType.OOTB to 2,
+        ModuleDescriptorType.PLATFORM to 3,
+        ModuleDescriptorType.EXT to 4,
+    )
+
+    private val elementsChooser = ClearableLazyValue.create { additionalExtensions() }
+
+    private val ui = ClearableLazyValue.create {
         panel {
             group("Cleanup") {
                 row {
@@ -158,6 +174,18 @@ class ProjectRefreshDialog(
                     }
                 }.visibleIf(refreshContext.importSettings.groupExternalModules)
             }
+
+            collapsibleGroup("Additional Extensions (Unused)") {
+                row {
+                    cell(elementsChooser.value)
+                        .onApply {
+                            val newAdditionalElements = elementsChooser.value.markedElements
+                                .map { it.name }
+                            refreshContext.importSettings.unusedExtensions.set(newAdditionalElements)
+                        }
+                        .align(Align.FILL)
+                }
+            }
         }.apply {
             border = JBUI.Borders.empty(8, 16, 32, 16)
             registerValidators(disposable)
@@ -185,7 +213,7 @@ class ProjectRefreshDialog(
         }.resizableRow()
     }
         .apply {
-            preferredSize = Dimension(JBUIScale.scale(600), JBUIScale.scale(350))
+            preferredSize = Dimension(JBUIScale.scale(600), JBUIScale.scale(400))
         }
 
     override fun createNorthPanel() = banner(
@@ -203,6 +231,7 @@ class ProjectRefreshDialog(
 
     override fun dispose() {
         super.dispose()
+        elementsChooser.drop()
         ui.drop()
     }
 
@@ -232,5 +261,33 @@ class ProjectRefreshDialog(
             .addValidationRule(i18n("hybris.settings.validations.notBlank")) { it.text.isBlank() }
             .enabledIf(enabledIf)
             .applyIfEnabled()
+    }
+
+    private fun additionalExtensions(): ElementsChooser<ExtensionDescriptor> {
+        val chooser = ExtensionElementsChooser()
+        val settings = project.ySettings
+
+        val module2extensionMapping = settings.module2extensionMapping.entries
+            .associate { it.value to it.key }
+        val selectableExtensions = settings.extensionDescriptors
+            .filterNot { settings.modulesOnBlackList.contains(it.name) }
+            .filter { settings.unusedExtensions.contains(it.name) || !module2extensionMapping.containsKey(it.name) }
+        val sortedExtensions = selectableExtensions
+            .sortedWith(
+                compareBy<ExtensionDescriptor> {
+                    !settings.unusedExtensions.contains(it.name)
+                }
+                    .thenComparing { orderByType[it.type] ?: Integer.MAX_VALUE }
+                    .thenComparing { it.name }
+            )
+
+        sortedExtensions.forEach {
+            chooser.addElement(it, settings.unusedExtensions.contains(it.name))
+        }
+        return chooser.also {
+            it.component
+                ?.asSafely<JBTable>()
+                ?.changeSelection(0, 0, false, false)
+        }
     }
 }

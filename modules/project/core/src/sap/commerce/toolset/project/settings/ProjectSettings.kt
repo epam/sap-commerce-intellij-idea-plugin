@@ -144,6 +144,7 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(showFullModuleName = value) }
         }
+    // IDEA module name <-> extension name
     var module2extensionMapping
         get() = state.modulesMapping
         set(value) {
