@@ -138,12 +138,15 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         checkCanceled()
 
         context.workspace.update("Updating libraries sources") { storage ->
-            libraries.forEach { (libraryEntity, libraryRootLookups) ->
-                val libraryRoots = libraryRootLookups.mapNotNull { it.libraryRoot }
-                storage.modifyLibraryEntity(libraryEntity) {
-                    this.roots += libraryRoots
+            libraries
+                .filter { storage.contains(it.key.symbolicId) }
+                .forEach { (libraryEntity, libraryRootLookups) ->
+                    val libraryRoots = libraryRootLookups.mapNotNull { it.libraryRoot }
+
+                    storage.modifyLibraryEntity(libraryEntity) {
+                        this.roots += libraryRoots
+                    }
                 }
-            }
         }
 
         val updatedLibraries = libraries.size
