@@ -37,6 +37,7 @@ import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
+import com.intellij.platform.workspace.storage.entities
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.SystemProperties
 import com.intellij.util.io.HttpRequests
@@ -112,7 +113,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         libraryRootTypes: Set<LibraryRootType>
     ): Map<LibraryEntity, Collection<LibraryRootLookup>> {
         val libraryEntities = context.storage
-            .entities(LibraryEntity::class.java)
+            .entities<LibraryEntity>()
             .toList()
 
         return reportProgressScope(libraryEntities.size) { reporter ->

@@ -22,6 +22,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.storage.entities
 import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -30,7 +31,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 internal suspend fun WorkspaceModel.removeProjectLibrary(
     libraryName: String
 ) {
-    val libraryEntity = this.currentSnapshot.entities(LibraryEntity::class.java)
+    val libraryEntity = this.currentSnapshot.entities<LibraryEntity>()
         .find { it.name == libraryName }
         ?: return
 

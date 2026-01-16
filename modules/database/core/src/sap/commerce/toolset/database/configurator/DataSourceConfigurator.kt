@@ -33,6 +33,7 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
+import com.intellij.platform.workspace.storage.entities
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -107,7 +108,7 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
         // let's try to pick up a suitable driver located in the Database Drivers library
 
         context.storage
-            .entities(LibraryEntity::class.java)
+            .entities<LibraryEntity>()
             .find { it.name == JavaConstants.ProjectLibrary.DATABASE_DRIVERS }
             ?.roots
             ?.asSequence()
