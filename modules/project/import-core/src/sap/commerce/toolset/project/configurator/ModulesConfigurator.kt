@@ -58,7 +58,7 @@ class ModulesConfigurator : ProjectImportConfigurator {
                 val provider = moduleProviders.find { provider -> provider.isApplicable(moduleDescriptor) }
                 if (provider == null) {
                     moduleReporter.itemStep("Skipping '${moduleDescriptor.name}' module...") {
-                        logger.warn("Unable to find suitable module provider for '${moduleDescriptor}' module...")
+                        logger.warn("Unable to find suitable module provider for '${moduleDescriptor}' module.")
                     }
                     return@mapNotNull null
                 }
@@ -71,7 +71,7 @@ class ModulesConfigurator : ProjectImportConfigurator {
                     val moduleEntity = timedValue.value
                     logger.info("Created module [${moduleDescriptor.name} | ${timedValue.duration}].")
 
-                    context.mutableStorage.add(moduleEntity)
+                    context.mutableStorage.add(moduleDescriptor, moduleEntity)
 
                     return@itemStep ProjectModuleConfigurationContext(
                         importContext = context,

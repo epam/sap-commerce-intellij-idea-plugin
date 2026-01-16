@@ -30,7 +30,8 @@ import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportSequentialProgress
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.importState
@@ -72,7 +73,12 @@ class ProjectImportTask(private val project: Project) {
 
     private suspend fun saveWorkspace(context: ProjectImportContext) {
         context.workspace.update("Saving Workspace Model") { storage ->
-            ProjectStorageConfigurator.EP.extensionList.forEach { configurator ->
+            ProjectStorageCleanupConfigurator.EP.extensionList.forEach { configurator ->
+                logger.info("Cleaning workspace using ${configurator.name} configurator...")
+                configurator.configure(context, storage)
+            }
+
+            ProjectStorageSaveConfigurator.EP.extensionList.forEach { configurator ->
                 logger.info("Saving workspace using ${configurator.name} configurator...")
                 configurator.configure(context, storage)
             }

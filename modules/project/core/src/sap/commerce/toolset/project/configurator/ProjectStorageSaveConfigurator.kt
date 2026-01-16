@@ -22,7 +22,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-interface ProjectStorageConfigurator {
+interface ProjectStorageSaveConfigurator {
 
     val name: String
 
@@ -32,6 +32,6 @@ interface ProjectStorageConfigurator {
     )
 
     companion object {
-        val EP = ExtensionPointName.create<ProjectStorageConfigurator>("sap.commerce.toolset.project.storageConfigurator")
+        val EP = ExtensionPointName.create<ProjectStorageSaveConfigurator>("sap.commerce.toolset.project.storage.saveConfigurator")
     }
 }

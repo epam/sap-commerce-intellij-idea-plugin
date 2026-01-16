@@ -45,7 +45,7 @@ data class ProjectSettingsState(
     @JvmField val modulesOnBlackList: Set<String> = emptySet(),
 
     // by BaseState.property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
-//    @JvmField val availableExtensions: Map<String, ExtensionDescriptor> = emptyMap(),
+    @JvmField val modulesMapping: Map<String, String> = emptyMap(),
     @JvmField val extensionDescriptors: Collection<ExtensionDescriptor> = emptySet(),
     @JvmField val excludedFromScanning: Set<String> = emptySet(),
     @JvmField @OptionTag val useFakeOutputPathForCustomExtensions: Boolean = false,

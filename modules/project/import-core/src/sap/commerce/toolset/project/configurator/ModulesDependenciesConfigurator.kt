@@ -33,13 +33,12 @@ class ModulesDependenciesConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(context: ProjectImportContext) {
         val modules = context.mutableStorage.modules
-            .associateBy { it.name }
         val extModules = context.chosenHybrisModuleDescriptors
             .filterIsInstance<YPlatformExtModuleDescriptor>()
             .toSet()
 
         context.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
-            modules[moduleDescriptor.ideaModuleName()]
+            modules[moduleDescriptor]
                 ?.let { moduleEntity ->
                     moduleDescriptor.getDirectDependencies()
                         .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
@@ -49,7 +48,7 @@ class ModulesDependenciesConfigurator : ProjectImportConfigurator {
                 }
         }
 
-        modules[context.platformModuleDescriptor.ideaModuleName()]
+        modules[context.platformModuleDescriptor]
             ?.let {
                 it.dependencies += context.configModuleDescriptor.moduleDependency
             }

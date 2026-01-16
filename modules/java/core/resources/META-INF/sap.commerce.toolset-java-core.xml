@@ -79,6 +79,9 @@
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.HacModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.AddonModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeSubModuleLibraryConfigurator"/>
+
+        <project.storage.cleanupConfigurator order="after cleanupLibraryEntitiesStorageConfigurator"
+                                             implementation="sap.commerce.toolset.java.configurator.entities.CleanupProjectLibraryEntitiesStorageConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

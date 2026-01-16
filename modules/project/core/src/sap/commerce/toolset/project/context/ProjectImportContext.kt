@@ -78,7 +78,7 @@ data class ProjectImportContext(
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
 
     data class MutableWorkspace(
-        private val _modules: MutableList<ModuleEntityBuilder> = mutableListOf(),
+        private val _modules: MutableMap<ModuleDescriptor, ModuleEntityBuilder> = mutableMapOf(),
         private val _libraries: MutableList<LibraryEntityBuilder> = mutableListOf(),
     ) {
         private var accessAllowed = true
@@ -91,10 +91,10 @@ data class ProjectImportContext(
         val libraries
             get() = access { _libraries.toList() }
         val modules
-            get() = access { _modules.toList() }
+            get() = access { _modules.toMap() }
 
         fun add(entity: LibraryEntityBuilder) = access { _libraries.add(entity) }
-        fun add(entity: ModuleEntityBuilder) = access { _modules.add(entity) }
+        fun add(descriptor: ModuleDescriptor, entity: ModuleEntityBuilder) = access { _modules[descriptor] = entity }
 
         fun lock() = access {
             // Any access to the class must not take place after cleanup

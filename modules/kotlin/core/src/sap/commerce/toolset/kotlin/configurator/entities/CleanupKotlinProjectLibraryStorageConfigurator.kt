@@ -15,39 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurator.entities
+package sap.commerce.toolset.kotlin.configurator.entities
 
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
-import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
+import com.intellij.platform.workspace.jps.entities.LibraryTableId
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
-import sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator
+import org.jetbrains.kotlin.idea.projectConfiguration.JavaRuntimeLibraryDescription
+import sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class LibraryEntitiesStorageConfigurator : ProjectStorageSaveConfigurator {
+class CleanupKotlinProjectLibraryStorageConfigurator : ProjectStorageCleanupConfigurator {
 
     override val name: String
-        get() = "Libraries"
+        get() = "Cleanup Kotlin Project Library"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
-        val currentEntities = storage.entities<LibraryEntity>()
-            .associateBy { it.name }
-
-        context.mutableStorage.libraries.forEach { newEntity ->
-            val currentEntity = currentEntities[newEntity.name]
-
-            if (currentEntity != null) {
-                storage.modifyLibraryEntity(currentEntity) {
-                    this.name = newEntity.name
-                    this.typeId = newEntity.typeId
-                    this.tableId = newEntity.tableId
-                    this.excludedRoots = newEntity.excludedRoots
-                    this.roots = newEntity.roots
-                    this.entitySource = newEntity.entitySource
-                }
-            } else {
-                storage.addEntity(newEntity)
-            }
-        }
+        val removableLibraries = setOf(
+            JavaRuntimeLibraryDescription.LIBRARY_NAME,
+        )
+        storage.entities<LibraryEntity>()
+            .filter { it.tableId == LibraryTableId.ProjectLibraryTableId }
+            .filter { removableLibraries.contains(it.name) }
+            .forEach { storage.removeEntity(it) }
     }
 }

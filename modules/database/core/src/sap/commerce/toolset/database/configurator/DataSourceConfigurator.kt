@@ -29,21 +29,35 @@ import com.intellij.database.util.LoaderContext
 import com.intellij.database.util.performAutoIntrospection
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 
-class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
+class DataSourceConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Database - Data Sources"
 
-    override suspend fun configure(context: ProjectPostImportContext) {
+    override fun configure(
+        context: ProjectPostImportContext,
+        legacyWorkspace: IdeModifiableModelsProvider,
+        edtActions: MutableList<() -> Unit>
+    ) {
+        CoroutineScope(Dispatchers.Default).launch {
+            configure(context)
+        }
+    }
+
+    suspend fun configure(context: ProjectPostImportContext) {
         val project = context.project
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()

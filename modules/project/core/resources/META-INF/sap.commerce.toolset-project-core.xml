@@ -36,8 +36,11 @@
         <extensionPoint qualifiedName="sap.commerce.toolset.project.refreshConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator"
                         dynamic="true"/>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.storageConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectStorageConfigurator"
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.storage.cleanupConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator"
+                        dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.storage.saveConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator"
                         dynamic="true"/>
 
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.importConfigurator"

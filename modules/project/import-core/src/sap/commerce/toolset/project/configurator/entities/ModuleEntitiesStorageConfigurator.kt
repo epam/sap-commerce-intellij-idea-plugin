@@ -23,34 +23,32 @@ import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import com.intellij.platform.workspace.jps.entities.sourceRoots
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectStorageConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.settings.ySettings
 
-class ModuleEntitiesStorageConfigurator : ProjectStorageConfigurator {
+class ModuleEntitiesStorageConfigurator : ProjectStorageSaveConfigurator {
 
     override val name: String
         get() = "Modules"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
-        cleanupCurrentStorage(context, storage)
+        // idea module name <-> extension name
+        val previouslyLoadedExtensions = context.project.ySettings.module2extensionMapping
 
         val currentEntities = storage.entities<ModuleEntity>()
             // remove all facets, they will be re-created with legacy API in scope of the post-import configurator
             .onEach { currentEntity -> currentEntity.facets.forEach { storage.removeEntity(it) } }
             .mapNotNull { currentEntity ->
-                val extensionName = currentEntity.javaSettings
-                    ?.manifestAttributes[ProjectConstants.ModuleManifestAttribute.EXTENSION_NAME]
+                val extensionName = previouslyLoadedExtensions[currentEntity.name]
                     ?: return@mapNotNull null
+
                 extensionName to currentEntity
             }
             .associate { it.first to it.second }
 
-        context.mutableStorage.modules.forEach { newEntity ->
-            val extensionName = newEntity.javaSettings
-                ?.manifestAttributes[ProjectConstants.ModuleManifestAttribute.EXTENSION_NAME]
-                ?: return@forEach
-            val currentEntity = currentEntities[extensionName]
+        context.mutableStorage.modules.entries.forEach { (extensionName, newEntity) ->
+            val currentEntity = currentEntities[extensionName.name]
 
             if (currentEntity != null) {
                 storage.modifyModuleEntity(currentEntity) {
@@ -67,23 +65,5 @@ class ModuleEntitiesStorageConfigurator : ProjectStorageConfigurator {
                 storage.addEntity(newEntity)
             }
         }
-    }
-
-    private fun cleanupCurrentStorage(context: ProjectImportContext, storage: MutableEntityStorage) {
-        val yExtensionNames = context.chosenHybrisModuleDescriptors
-            .map { it.name }
-
-        storage.entities<ModuleEntity>()
-            .forEach { moduleEntity ->
-                val extensionName = moduleEntity.javaSettings
-                    ?.manifestAttributes[ProjectConstants.ModuleManifestAttribute.EXTENSION_NAME]
-
-                when {
-                    // remove external module when requested
-                    extensionName == null && context.removeExternalModules -> storage.removeEntity(moduleEntity)
-                    // remove NOT selected for import (localextensions.xml and dependencies)
-                    extensionName != null && !yExtensionNames.contains(extensionName) -> storage.removeEntity(moduleEntity)
-                }
-            }
     }
 }

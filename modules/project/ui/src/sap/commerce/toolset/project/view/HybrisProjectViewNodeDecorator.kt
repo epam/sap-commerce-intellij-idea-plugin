@@ -74,6 +74,8 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         }
 
         if (extensionDescriptor == null) {
+            if (projectSettings.module2extensionMapping.contains(module.name)) return
+
             val descriptorType = when (ExternalSystemModulePropertyManager.getInstance(module).getExternalSystemId()) {
                 "GRADLE" -> ModuleDescriptorType.GRADLE
                 "Maven" -> ModuleDescriptorType.MAVEN

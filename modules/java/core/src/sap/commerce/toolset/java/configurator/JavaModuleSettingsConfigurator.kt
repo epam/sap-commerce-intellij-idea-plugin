@@ -55,12 +55,8 @@ class JavaModuleSettingsConfigurator : ModuleImportConfigurator {
             excludeOutput = true,
             entitySource = moduleEntity.entitySource
         ) {
-            this.excludeOutput = true
             this.compilerOutput = virtualFileUrlManager.fromPath(outputDirectory.pathString)
             this.compilerOutputForTests = virtualFileUrlManager.fromPath(outputDirectory.pathString)
-            this.manifestAttributes = mapOf(
-                ProjectConstants.ModuleManifestAttribute.EXTENSION_NAME to moduleDescriptor.name
-            )
         }
 
         moduleEntity.javaSettings = javaSettingsEntity

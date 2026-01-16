@@ -32,6 +32,7 @@ import com.intellij.psi.PsiFile
 import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 import kotlin.io.path.pathString
@@ -45,8 +46,9 @@ var Project.importState: ProjectImportState
     }
 
 val Module.yExtensionName
-    get() = this.yFacet
-        ?.name
+    get() = this.project.ySettings.module2extensionMapping[this.name]
+        ?: yFacet
+            ?.name
         ?: this.name.substringAfterLast(".")
 
 val Module.yFacet

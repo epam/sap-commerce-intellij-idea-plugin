@@ -22,6 +22,9 @@
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
+
+        <project.storage.cleanupConfigurator order="after cleanupLibraryEntitiesStorageConfigurator"
+                                             implementation="sap.commerce.toolset.kotlin.configurator.entities.CleanupKotlinProjectLibraryStorageConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

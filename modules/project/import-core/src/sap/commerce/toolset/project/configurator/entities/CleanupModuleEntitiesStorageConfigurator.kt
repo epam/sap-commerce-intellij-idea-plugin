@@ -17,37 +17,35 @@
  */
 package sap.commerce.toolset.project.configurator.entities
 
-import com.intellij.platform.workspace.jps.entities.LibraryEntity
-import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
-import sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.settings.ySettings
 
-class LibraryEntitiesStorageConfigurator : ProjectStorageSaveConfigurator {
+class CleanupModuleEntitiesStorageConfigurator : ProjectStorageCleanupConfigurator {
 
     override val name: String
-        get() = "Libraries"
+        get() = "Cleanup Modules"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
-        val currentEntities = storage.entities<LibraryEntity>()
-            .associateBy { it.name }
+        // idea module name <-> extension name
+        val previouslyLoadedExtensions = context.project.ySettings.module2extensionMapping
 
-        context.mutableStorage.libraries.forEach { newEntity ->
-            val currentEntity = currentEntities[newEntity.name]
+        val yExtensionNames = context.chosenHybrisModuleDescriptors
+            .map { it.name }
 
-            if (currentEntity != null) {
-                storage.modifyLibraryEntity(currentEntity) {
-                    this.name = newEntity.name
-                    this.typeId = newEntity.typeId
-                    this.tableId = newEntity.tableId
-                    this.excludedRoots = newEntity.excludedRoots
-                    this.roots = newEntity.roots
-                    this.entitySource = newEntity.entitySource
+        storage.entities<ModuleEntity>()
+            .forEach { moduleEntity ->
+                val extensionName = previouslyLoadedExtensions[moduleEntity.name]
+
+                when {
+                    // remove external module when requested
+                    extensionName == null && context.removeExternalModules -> storage.removeEntity(moduleEntity)
+                    // remove NOT selected for import (localextensions.xml and dependencies)
+                    extensionName != null && !yExtensionNames.contains(extensionName) -> storage.removeEntity(moduleEntity)
                 }
-            } else {
-                storage.addEntity(newEntity)
             }
-        }
     }
 }

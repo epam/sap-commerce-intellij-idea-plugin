@@ -119,13 +119,11 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
-
     var extensionDescriptors: Collection<ExtensionDescriptor>
         get() = state.extensionDescriptors
         set(value) {
             updateState { it.copy(extensionDescriptors = value) }
         }
-
     var generateCodeOnRebuild
         get() = state.generateCodeOnRebuild
         set(value) {
@@ -145,6 +143,11 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         get() = state.showFullModuleName
         set(value) {
             updateState { it.copy(showFullModuleName = value) }
+        }
+    var module2extensionMapping
+        get() = state.modulesMapping
+        set(value) {
+            updateState { it.copy(modulesMapping = value) }
         }
 
     override fun getModificationCount() = stateModificationCount
