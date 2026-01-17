@@ -62,9 +62,12 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
 
     override suspend fun configure(context: ProjectPostImportContext) {
         val project = context.project
-        context.chosenHybrisModuleDescriptors
-            .find { EiConstants.Extension.KOTLIN_NATURE == it.name }
-            ?: return
+        val hasKotlinnatureExtension = context.chosenHybrisModuleDescriptors
+            .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
+        if (!hasKotlinnatureExtension) {
+            removeKotlinFacets(project)
+            return
+        }
 
         smartReadAction(project) {
             val compilerVersion = PropertyService.getInstance(project)
@@ -75,6 +78,28 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         }
 
         registerKotlinLibrary(project)
+    }
+
+    private suspend fun removeKotlinFacets(project: Project) {
+        val writeActions = readAction {
+            ModuleManager.getInstance(project).modules
+                .mapNotNull { module ->
+                    val facetManager = FacetManager.getInstance(module)
+                    val kotlinFacet = facetManager.getFacetByType(KotlinFacetType.TYPE_ID)
+                        ?: return@mapNotNull null
+                    val createModifiableModel = facetManager.createModifiableModel()
+
+                    val writeAction = {
+                        createModifiableModel.removeFacet(kotlinFacet)
+                        createModifiableModel.commit()
+                    }
+                    writeAction
+                }
+        }
+
+        backgroundWriteAction {
+            writeActions.forEach { it() }
+        }
     }
 
     private suspend fun registerKotlinLibrary(project: Project) {
