@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.spring.configurator
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
@@ -47,8 +48,10 @@ class SpringFacetConfigurator : ProjectPostImportConfigurator {
         if (Plugin.SPRING.isDisabled()) return
 
         val moduleFacets = context.chosenHybrisModuleDescriptors.mapNotNull { moduleDescriptor ->
-            val ideaModuleName = moduleDescriptor.ideaModuleName()
-            val module = context.modules[ideaModuleName] ?: return@mapNotNull null
+            val module = context.modules[moduleDescriptor.name] ?: run {
+                thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
+                return@mapNotNull null
+            }
 
             val facet = when (moduleDescriptor) {
                 is YBackofficeSubModuleDescriptor -> null

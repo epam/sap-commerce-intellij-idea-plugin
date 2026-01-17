@@ -18,39 +18,19 @@
 package sap.commerce.toolset.project.configurator.entities
 
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.getModuleLibraries
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
 import sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.settings.ySettings
 
-class CleanupLibraryEntitiesStorageConfigurator : ProjectStorageCleanupConfigurator {
+class CleanupFacetsStorageConfigurator : ProjectStorageCleanupConfigurator {
 
     override val name: String
-        get() = "Cleanup Libraries"
+        get() = "Cleanup Facets"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
-        // idea module name <-> extension name
-        val currentModule2extension = context.project.ySettings.module2extensionMapping
-        val yExtensionNames = context.chosenHybrisModuleDescriptors
-            .map { it.name }
-
-        // Cleanup
         storage.entities<ModuleEntity>()
-            .mapNotNull { moduleEntity ->
-                // skip non-hybris
-                val extensionName = currentModule2extension[moduleEntity.name]
-                    ?: return@mapNotNull null
-                // skip unused (manually imported)
-                if (context.unusedExtensions.contains(extensionName)) return@mapNotNull null
-                // skip selected for import (localextensions.xml and dependencies)
-                if (yExtensionNames.contains(extensionName)) return@mapNotNull null
-
-                moduleEntity.getModuleLibraries(storage)
-            }
-            .flatten()
-            // remove module libraries
-            .forEach { storage.removeEntity(it) }
+            // remove all facets, they will be re-created with legacy API in scope of the post-import configurator
+            .onEach { currentEntity -> currentEntity.facets.forEach { storage.removeEntity(it) } }
     }
 }

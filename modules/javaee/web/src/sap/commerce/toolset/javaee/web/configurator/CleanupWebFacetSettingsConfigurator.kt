@@ -15,39 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurator.entities
+package sap.commerce.toolset.javaee.web.configurator
 
-import com.intellij.platform.workspace.jps.entities.LibraryEntity
-import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
+import com.intellij.javaee.web.workspaceModel.WebSettingsEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
-import sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 
-class LibraryEntitiesStorageConfigurator : ProjectStorageSaveConfigurator {
+class CleanupWebFacetSettingsConfigurator : ProjectStorageCleanupConfigurator {
 
     override val name: String
-        get() = "Libraries"
+        get() = "Cleanup Web Facet Settings"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
-        val currentEntities = storage.entities<LibraryEntity>()
-            .associateBy { it.name }
-
-        context.mutableStorage.libraries.forEach { newEntity ->
-            val currentEntity = currentEntities[newEntity.name]
-
-            if (currentEntity != null) {
-                storage.modifyLibraryEntity(currentEntity) {
-                    this.name = newEntity.name
-                    this.typeId = newEntity.typeId
-                    this.tableId = newEntity.tableId
-                    this.excludedRoots = newEntity.excludedRoots
-                    this.roots = newEntity.roots
-                    this.entitySource = newEntity.entitySource
-                }
-            } else {
-                storage.addEntity(newEntity)
-            }
-        }
+        storage.entities<WebSettingsEntity>()
+            .forEach { storage.removeEntity(it) }
     }
 }

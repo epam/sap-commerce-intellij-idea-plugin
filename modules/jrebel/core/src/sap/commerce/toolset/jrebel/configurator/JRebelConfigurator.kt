@@ -21,6 +21,7 @@ package sap.commerce.toolset.jrebel.configurator
 import com.intellij.facet.FacetType
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.util.io.NioFiles
 import com.zeroturnaround.javarebel.idea.plugin.actions.ToggleRebelFacetAction
@@ -42,7 +43,12 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator {
     override suspend fun configure(context: ProjectPostImportContext) {
         val writeOperations = context.chosenHybrisModuleDescriptors
             .filter { it is YCustomRegularModuleDescriptor || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor) }
-            .mapNotNull { context.modules[it.ideaModuleName()] }
+            .mapNotNull { moduleDescriptor ->
+                context.modules[moduleDescriptor.name] ?: run {
+                    thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
+                    return@mapNotNull null
+                }
+            }
             .mapNotNull { module ->
                 readAction { JRebelFacet.getInstance(module) } ?: return@mapNotNull null
                 readAction {

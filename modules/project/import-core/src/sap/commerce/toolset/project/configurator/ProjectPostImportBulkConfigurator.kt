@@ -42,18 +42,20 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(context: ProjectImportContext) {
         CoroutineScope(Dispatchers.Default).launch {
-            context.workspace.eventLog.collectIndexed { index, value ->
-                logger.info("Handling workspace event: $index")
-
+            context.workspace.eventLog.collectIndexed { index, versionedStorage ->
                 if (context.mutableStorage.committed) {
-                    configure(ProjectPostImportContext.from(context, value.storageAfter))
+                    val postImportContext = ProjectPostImportContext.from(context, versionedStorage.storageAfter)
+
+                    configureLegacy(postImportContext)
+                    configureWorkspace(postImportContext)
+
                     cancel("post-import configurators started, do not listen for new events")
                 }
             }
         }
     }
 
-    private fun configure(context: ProjectPostImportContext) {
+    private fun configureLegacy(context: ProjectPostImportContext) {
         val legacyWorkspace = IdeModifiableModelsProviderImpl(context.project)
         val edtActions = mutableListOf<() -> Unit>()
 
@@ -74,7 +76,9 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
                 legacyWorkspace.commit()
             }
         }
+    }
 
+    private fun configureWorkspace(context: ProjectPostImportContext) {
         CoroutineScope(Dispatchers.Default).launch {
             if (context.project.isDisposed) return@launch
             val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList

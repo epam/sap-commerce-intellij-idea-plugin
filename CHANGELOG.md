@@ -1,7 +1,7 @@
 ## [2025.3.1]
 
 <cite>Release contributors</cite>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 - 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 

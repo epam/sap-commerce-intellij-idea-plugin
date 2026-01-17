@@ -15,26 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.workspace.storage.MutableEntityStorage
-import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.settings.ySettings
+package sap.commerce.toolset.jrebel
 
-/*
-Modules mapping: ModuleEntity.name <-> [y] extension name.
-Must be invoked as last step of the Workspace Storage configurators
+import kotlin.io.path.Path
 
-Example:
-    Custom.training.trainingcore - trainingcore
- */
-class ModulesMappingConfigurator : ProjectStorageSaveConfigurator {
-
-    override val name: String
-        get() = "Modules mapping"
-
-    override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
-        context.project.ySettings.module2extensionMapping = context.mutableStorage.modules.entries
-            .associate { it.value.name to it.key.name }
-    }
+object JRebelConstants {
+    val PATH_ANT_COMPILING_XML = Path("resources", "ant", "compiling.xml")
 }

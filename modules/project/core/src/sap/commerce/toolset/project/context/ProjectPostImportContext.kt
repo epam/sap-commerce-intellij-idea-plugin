@@ -18,13 +18,19 @@
 
 package sap.commerce.toolset.project.context
 
-import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.workspace.WorkspaceModel
+import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.storage.ImmutableEntityStorage
+import com.intellij.platform.workspace.storage.entities
+import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
+import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.project.yExtensionName
 import java.nio.file.Path
 
 data class ProjectPostImportContext(
@@ -61,14 +67,26 @@ data class ProjectPostImportContext(
     val chosenOtherModuleDescriptors: Collection<ModuleDescriptor>,
 ) {
     val workspace = WorkspaceModel.getInstance(project)
-    val modules = ModuleManager.getInstance(project).modules
-        .associateBy { it.name }
 
-    val allChosenModuleDescriptors
-        get() = chosenHybrisModuleDescriptors + chosenOtherModuleDescriptors
+    // extension name <-> module
+    val modules: Map<String, Module> by lazy {
+        val moduleMapping = project.ySettings.module2extensionMapping
 
-    fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
-    fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
+        storage.entities<ModuleEntity>()
+        .mapNotNull {
+            val module = it.findModule(storage)
+                ?: run {
+                    thisLogger().warn("Module bridge not found: ${it.name}")
+                    return@mapNotNull null
+                }
+            val extensionName = it.yExtensionName(moduleMapping) ?: run {
+                thisLogger().warn("Extension name not found: ${it.name}")
+                return@mapNotNull null
+            }
+            extensionName to module
+        }
+        .associate { it.first to it.second }
+    }
 
     companion object {
         fun from(context: ProjectImportContext, storage: ImmutableEntityStorage) = ProjectPostImportContext(

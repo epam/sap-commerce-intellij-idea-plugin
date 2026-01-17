@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.java.configurator
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.JavaModuleExternalPaths
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
@@ -41,8 +42,10 @@ class JavadocsProjectImportConfigurator : ProjectPostImportConfigurator {
             .filter { it.isNonCustomModuleDescriptor }
             .filterNot { it is ConfigModuleDescriptor }
             .forEach { moduleDescriptor ->
-                val ideaModuleName = moduleDescriptor.ideaModuleName()
-                val module = context.modules[ideaModuleName] ?: return@forEach
+                val module = context.modules[moduleDescriptor.name] ?: run {
+                    thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
+                    return@forEach
+                }
 
                 val modifiableRootModel = legacyWorkspace.getModifiableRootModel(module)
                 val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)

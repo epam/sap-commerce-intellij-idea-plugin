@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.execution.lineMarker
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.project.modules
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.*
@@ -34,7 +33,7 @@ import sap.commerce.toolset.localextensions.model.Extensions
 import sap.commerce.toolset.localextensions.model.Hybrisconfig
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ProjectSettings
-import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.project.yModule
 
 class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
 
@@ -43,17 +42,18 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
         if (element !is XmlToken || element.tokenType != XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN) return null
         val xmlAttributeValue = PsiTreeUtil.getParentOfType(element, XmlAttributeValue::class.java) ?: return null
         val xmlFile = element.containingFile as? XmlFile ?: return null
-        if (xmlAttributeValue.value == EiConstants.Extension.PLATFORM) return null
-        val descriptor = ProjectSettings.getInstance(xmlFile.project).extensionDescriptors
-            .find { it.name == xmlAttributeValue.value }
+        val extensionName = xmlAttributeValue.value
+        if (extensionName == EiConstants.Extension.PLATFORM) return null
+        val project = xmlFile.project
+        val descriptor = ProjectSettings.getInstance(project).extensionDescriptors
+            .find { it.name == extensionName }
             ?: return null
         if (descriptor.type != ModuleDescriptorType.OOTB && descriptor.type != ModuleDescriptorType.CUSTOM) return null
         val parentTagName = PsiTreeUtil.getParentOfType(xmlAttributeValue, XmlTag::class.java)?.localName
             ?: return null
 
-        val domManager = DomManager.getDomManager(xmlFile.project)
-        val module = xmlFile.project.modules
-            .find { it.yExtensionName == xmlAttributeValue.value }
+        val domManager = DomManager.getDomManager(project)
+        val module = project.yModule(extensionName)
 
         if (module != null) return null
 

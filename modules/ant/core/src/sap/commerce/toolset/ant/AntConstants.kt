@@ -18,14 +18,24 @@
 
 package sap.commerce.toolset.ant
 
+import sap.commerce.toolset.HybrisConstants
 import java.util.regex.Pattern
 import kotlin.io.path.Path
 
 object AntConstants {
 
     val PATH_ANT_LIB = Path("resources", "ant", "lib")
-
     val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
+
+    const val ANT_ENCODING = "-Dfile.encoding=UTF-8"
+    const val ANT_HYBRIS_CONFIG_DIR = "-J-D${HybrisConstants.PROPERTY_HYBRIS_CONFIG_DIR}="
+    const val ANT_XMX = "-Xmx"
+    const val ANT_PLATFORM_HOME = "PLATFORM_HOME"
+    const val ANT_OPTS = "ANT_OPTS"
+    const val ANT_HOME = "ANT_HOME"
+    const val ANT_BUILD_XML = "build.xml"
+    const val ANT_HEAP_SIZE_MB = 512
+    const val ANT_STACK_SIZE_MB = 128
 
     val DESIRABLE_PLATFORM_TARGETS = listOf(
         "clean",

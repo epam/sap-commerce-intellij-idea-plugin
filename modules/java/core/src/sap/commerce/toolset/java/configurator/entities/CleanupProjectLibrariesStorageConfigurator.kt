@@ -15,37 +15,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurator.entities
+package sap.commerce.toolset.java.configurator.entities
 
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
+import com.intellij.platform.workspace.jps.entities.LibraryEntity
+import com.intellij.platform.workspace.jps.entities.LibraryTableId
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.settings.ySettings
 
-class CleanupModuleEntitiesStorageConfigurator : ProjectStorageCleanupConfigurator {
+class CleanupProjectLibrariesStorageConfigurator : ProjectStorageCleanupConfigurator {
 
     override val name: String
-        get() = "Cleanup Modules"
+        get() = "Cleanup Project Libraries"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
-        // idea module name <-> extension name
-        val previouslyLoadedExtensions = context.project.ySettings.module2extensionMapping
-
-        val yExtensionNames = context.chosenHybrisModuleDescriptors
-            .map { it.name }
-
-        storage.entities<ModuleEntity>()
-            .forEach { moduleEntity ->
-                val extensionName = previouslyLoadedExtensions[moduleEntity.name]
-
-                when {
-                    // remove external module when requested
-                    extensionName == null && context.removeExternalModules -> storage.removeEntity(moduleEntity)
-                    // remove NOT selected for import (localextensions.xml and dependencies)
-                    extensionName != null && !yExtensionNames.contains(extensionName) -> storage.removeEntity(moduleEntity)
-                }
-            }
+        val removableLibraries = setOf(
+            JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP,
+            JavaConstants.ProjectLibrary.PLATFORM_LICENSE,
+            JavaConstants.ProjectLibrary.HAC,
+            JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
+            "KotlinJavaRuntime",
+        )
+        storage.entities<LibraryEntity>()
+            .filter { it.tableId == LibraryTableId.ProjectLibraryTableId }
+            .filter { removableLibraries.contains(it.name) }
+            .forEach { storage.removeEntity(it) }
     }
 }

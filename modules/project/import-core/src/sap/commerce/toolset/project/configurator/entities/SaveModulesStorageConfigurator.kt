@@ -27,7 +27,7 @@ import sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.settings.ySettings
 
-class ModuleEntitiesStorageConfigurator : ProjectStorageSaveConfigurator {
+class SaveModulesStorageConfigurator : ProjectStorageSaveConfigurator {
 
     override val name: String
         get() = "Modules"
@@ -47,8 +47,8 @@ class ModuleEntitiesStorageConfigurator : ProjectStorageSaveConfigurator {
             }
             .associate { it.first to it.second }
 
-        context.mutableStorage.modules.entries.forEach { (extensionName, newEntity) ->
-            val currentEntity = currentEntities[extensionName.name]
+        context.mutableStorage.modules.entries.forEach { (moduleDescriptor, newEntity) ->
+            val currentEntity = currentEntities[moduleDescriptor.name]
 
             if (currentEntity != null) {
                 storage.modifyModuleEntity(currentEntity) {

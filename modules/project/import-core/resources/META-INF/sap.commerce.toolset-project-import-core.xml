@@ -78,15 +78,17 @@
         <project.module.rootResolver order="after yConfigModuleRootResolver" id="yCustomModuleRootResolver"
                                      implementation="sap.commerce.toolset.project.module.YCustomModuleRootResolver"/>
 
-        <project.storage.cleanupConfigurator order="first" id="cleanupLibraryEntitiesStorageConfigurator"
-                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupLibraryEntitiesStorageConfigurator"/>
-        <project.storage.cleanupConfigurator order="after cleanupLibraryEntitiesStorageConfigurator" id="cleanupModuleEntitiesStorageConfigurator"
-                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupModuleEntitiesStorageConfigurator"/>
+        <project.storage.cleanupConfigurator order="first" id="cleanupLibrariesStorageConfigurator"
+                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupLibrariesStorageConfigurator"/>
+        <project.storage.cleanupConfigurator order="after cleanupLibrariesStorageConfigurator" id="cleanupModulesStorageConfigurator"
+                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupModulesStorageConfigurator"/>
+        <project.storage.cleanupConfigurator order="after cleanupModulesStorageConfigurator" id="cleanupFacetsStorageConfigurator"
+                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupFacetsStorageConfigurator"/>
 
-        <project.storage.saveConfigurator order="first" id="libraryEntitiesStorageConfigurator"
-                                          implementation="sap.commerce.toolset.project.configurator.entities.LibraryEntitiesStorageConfigurator"/>
-        <project.storage.saveConfigurator order="after libraryEntitiesStorageConfigurator" id="moduleEntitiesStorageConfigurator"
-                                          implementation="sap.commerce.toolset.project.configurator.entities.ModuleEntitiesStorageConfigurator"/>
+        <project.storage.saveConfigurator order="first" id="saveLibrariesStorageConfigurator"
+                                          implementation="sap.commerce.toolset.project.configurator.entities.SaveLibrariesStorageConfigurator"/>
+        <project.storage.saveConfigurator order="after saveLibrariesStorageConfigurator" id="saveModulesStorageConfigurator"
+                                          implementation="sap.commerce.toolset.project.configurator.entities.SaveModulesStorageConfigurator"/>
         <project.storage.saveConfigurator order="last"
                                           implementation="sap.commerce.toolset.project.configurator.ModulesMappingConfigurator"/>
     </extensions>

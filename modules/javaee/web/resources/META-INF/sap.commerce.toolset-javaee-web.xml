@@ -20,6 +20,8 @@
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.postImportConfigurator order="last"
                                         implementation="sap.commerce.toolset.javaee.web.configurator.WebFacetConfigurator"/>
+
+        <project.storage.cleanupConfigurator implementation="sap.commerce.toolset.javaee.web.configurator.CleanupWebFacetSettingsConfigurator"/>
     </extensions>
 
 </idea-plugin>

@@ -119,7 +119,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator {
     }
 
     private suspend fun getBuildVirtualFile(descriptor: ModuleDescriptor) = readAction {
-        descriptor.moduleRootPath.resolve(HybrisConstants.ANT_BUILD_XML)
+        descriptor.moduleRootPath.resolve(AntConstants.ANT_BUILD_XML)
             .takeIf { it.fileExists }
             ?.let { VfsUtil.findFile(it, true) }
     }
@@ -143,8 +143,8 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator {
             ANT_INSTALLATION[this] = antInstallation
             ANT_REFERENCE[this] = antInstallation.reference
             RUN_WITH_ANT[this] = antInstallation
-            MAX_HEAP_SIZE[this] = HybrisConstants.ANT_HEAP_SIZE_MB
-            MAX_STACK_SIZE[this] = HybrisConstants.ANT_STACK_SIZE_MB
+            MAX_HEAP_SIZE[this] = AntConstants.ANT_HEAP_SIZE_MB
+            MAX_STACK_SIZE[this] = AntConstants.ANT_STACK_SIZE_MB
             RUN_IN_BACKGROUND[this] = false
             VERBOSE[this] = false
 
@@ -153,21 +153,21 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator {
 
             externalConfigDirectory
                 ?.pathString
-                ?.let { HybrisConstants.ANT_HYBRIS_CONFIG_DIR + it }
+                ?.let { AntConstants.ANT_HYBRIS_CONFIG_DIR + it }
                 ?.let { ANT_COMMAND_LINE_PARAMETERS[this] = it }
 
             val platformHomeProperty = BuildFileProperty().apply {
-                this.propertyName = HybrisConstants.ANT_PLATFORM_HOME
+                this.propertyName = AntConstants.ANT_PLATFORM_HOME
                 this.propertyValue = platformDir.pathString
             }
 
             val antHomeProperty = BuildFileProperty().apply {
-                this.propertyName = HybrisConstants.ANT_HOME
+                this.propertyName = AntConstants.ANT_HOME
                 this.propertyValue = antInstallation.homeDir
             }
 
             val antOptsProperty = BuildFileProperty().apply {
-                this.propertyName = HybrisConstants.ANT_OPTS
+                this.propertyName = AntConstants.ANT_OPTS
                 this.propertyValue = getAntOpts(configDescriptor)
             }
 
@@ -199,7 +199,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator {
                     propertiesFile.inputStream().use { fis ->
                         val antOptsText = Properties()
                             .also { it.load(fis) }
-                            .getProperty(HybrisConstants.ANT_OPTS)
+                            .getProperty(AntConstants.ANT_OPTS)
                         if (antOptsText != null && antOptsText.trim { it <= ' ' }.isNotEmpty()) {
                             return antOptsText.trim { it <= ' ' }
                         }
@@ -209,7 +209,7 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator {
                 }
             }
         }
-        return HybrisConstants.ANT_XMX + HybrisConstants.ANT_HEAP_SIZE_MB + "m " + HybrisConstants.ANT_ENCODING
+        return AntConstants.ANT_XMX + AntConstants.ANT_HEAP_SIZE_MB + "m " + AntConstants.ANT_ENCODING
     }
 
     private fun createAntClassPath(platformDescriptor: PlatformModuleDescriptor, extHybrisModuleDescriptors: List<ModuleDescriptor>): List<AntClasspathEntry> {

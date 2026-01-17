@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import sap.commerce.toolset.project.context.ProjectPostImportContext
@@ -36,8 +37,10 @@ class YFacetConfigurator : ProjectPostImportConfigurator {
         edtActions: MutableList<() -> Unit>
     ) {
         context.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
-            val ideaModuleName = moduleDescriptor.ideaModuleName()
-            val module = context.modules[ideaModuleName] ?: return@forEach
+            val module = context.modules[moduleDescriptor.name] ?: run {
+                thisLogger().warn("Could not find module: ${moduleDescriptor.name}")
+                return@forEach
+            }
 
             configure(legacyWorkspace, moduleDescriptor, module)
         }

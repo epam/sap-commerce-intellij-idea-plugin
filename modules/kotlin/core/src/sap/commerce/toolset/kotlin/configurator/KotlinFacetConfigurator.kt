@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.kotlin.configurator
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
@@ -49,8 +50,10 @@ class KotlinFacetConfigurator : ProjectPostImportConfigurator {
             .filter { it.isCustomModuleDescriptor }
             .filter { it.hasKotlinDirectories }
             .forEach { moduleDescriptor ->
-                val ideaModuleName = moduleDescriptor.ideaModuleName()
-                val module = modules[ideaModuleName] ?: return@forEach
+                val module = modules[moduleDescriptor.name] ?: run {
+                    thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
+                    return@forEach
+                }
 
                 val modifiableFacetModel = legacyWorkspace.getModifiableFacetModel(module)
 

@@ -31,10 +31,9 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.importState
 import sap.commerce.toolset.project.settings.ProjectSettings
-import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.project.yExtensionDescriptor
 
 class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
@@ -60,9 +59,9 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         ModuleRootManager.getInstance(module).contentRoots.find { it == vf }
             ?: return
 
-        val extensionDescriptor = YFacet.getState(module)
+        val extensionDescriptor = module.yExtensionDescriptor
 
-        if (EiConstants.Extension.KOTLIN_NATURE == module.yExtensionName && Plugin.KOTLIN.isActive()) {
+        if (EiConstants.Extension.KOTLIN_NATURE == extensionDescriptor?.name && Plugin.KOTLIN.isActive()) {
             data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)
             return
         }

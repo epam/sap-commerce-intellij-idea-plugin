@@ -93,17 +93,6 @@ object HybrisConstants {
     const val X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport="
     const val ADDRESS = "address="
 
-    const val ANT_ENCODING = "-Dfile.encoding=UTF-8"
-    const val ANT_HYBRIS_CONFIG_DIR = "-J-D$PROPERTY_HYBRIS_CONFIG_DIR="
-    const val ANT_XMX = "-Xmx"
-    const val ANT_PLATFORM_HOME = "PLATFORM_HOME"
-    const val ANT_OPTS = "ANT_OPTS"
-    const val ANT_HOME = "ANT_HOME"
-    const val ANT_COMPILING_XML = "resources/ant/compiling.xml"
-    const val ANT_BUILD_XML = "build.xml"
-    const val ANT_HEAP_SIZE_MB = 512
-    const val ANT_STACK_SIZE_MB = 128
-
     const val JAVA_LANG_PREFIX = "java.lang."
 
     const val TS_TYPE_ITEM = "Item"

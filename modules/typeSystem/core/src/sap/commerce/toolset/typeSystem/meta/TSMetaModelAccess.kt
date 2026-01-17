@@ -20,20 +20,19 @@ package sap.commerce.toolset.typeSystem.meta
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.contentRoot
-import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.project.yModule
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.impl.TSMetaModelNameProvider
 import sap.commerce.toolset.typeSystem.meta.model.*
 import sap.commerce.toolset.typeSystem.model.EnumType
 import sap.commerce.toolset.typeSystem.model.ItemType
+import sap.commerce.toolset.util.fileExists
 import java.util.*
-import kotlin.io.path.exists
 import kotlin.io.path.inputStream
 
 /**
@@ -52,12 +51,10 @@ import kotlin.io.path.inputStream
 class TSMetaModelAccess(private val project: Project) : Disposable {
 
     private val myReservedTypeCodes by lazy {
-        ModuleManager.getInstance(project)
-            .modules
-            .firstOrNull { it.yExtensionName == EiConstants.Extension.CORE }
+        project.yModule(EiConstants.Extension.CORE)
             ?.contentRoot
             ?.resolve(ProjectConstants.Paths.RESERVED_TYPE_CODES_FILE)
-            ?.takeIf { it.exists() }
+            ?.takeIf { it.fileExists }
             ?.let {
                 it.inputStream().use { fis ->
                     Properties().also { p -> p.load(fis) }

@@ -97,7 +97,7 @@ contact <a href="https://www.linkedin.com/in/michaellytvyn/">Mykhailo Lytvyn</a>
                 """
                     Technical references:<br>
                     - Migration to Workspace API  <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699">Project Import & Refresh 3.0</a> | ~533 changed files<br>
-                    - Enhanced project refresh <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704">Project Import & Refresh 3.1</a> | ~173 changed files
+                    - Enhanced project refresh <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704">Project Import & Refresh 3.1</a> | ~187 changed files
                 """.trimIndent()
             )
                 .align(Align.FILL)

@@ -81,7 +81,7 @@
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeSubModuleLibraryConfigurator"/>
 
         <project.storage.cleanupConfigurator order="after cleanupLibraryEntitiesStorageConfigurator"
-                                             implementation="sap.commerce.toolset.java.configurator.entities.CleanupProjectLibraryEntitiesStorageConfigurator"/>
+                                             implementation="sap.commerce.toolset.java.configurator.entities.CleanupProjectLibrariesStorageConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

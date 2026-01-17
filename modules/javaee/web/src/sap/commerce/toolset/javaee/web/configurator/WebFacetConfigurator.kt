@@ -21,6 +21,7 @@ import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
@@ -49,8 +50,10 @@ class WebFacetConfigurator : ProjectPostImportConfigurator {
         edtActions: MutableList<() -> Unit>
     ) {
         context.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
-            val ideaModuleName = moduleDescriptor.ideaModuleName()
-            val module = context.modules[ideaModuleName] ?: return@forEach
+            val module = context.modules[moduleDescriptor.name] ?: run {
+                thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
+                return@forEach
+            }
 
             configure(legacyWorkspace, moduleDescriptor, module)
                 ?.let(edtActions::add)
@@ -72,11 +75,10 @@ class WebFacetConfigurator : ProjectPostImportConfigurator {
             else -> return null
         }
 
-        val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
-            ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
-                .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
-                ?.let { FacetManager.getInstance(module).createFacet(it, it.defaultFacetName, null) }
-                ?.also { modifiableFacetModel.addFacet(it) }
+        val webFacet = FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
+            .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
+            ?.let { FacetManager.getInstance(module).createFacet(it, it.defaultFacetName, null) }
+            ?.also { modifiableFacetModel.addFacet(it) }
             ?: return null
 
         return {

@@ -19,16 +19,14 @@ package sap.commerce.toolset.jrebel.configurator
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.jrebel.JRebelConstants
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.project.contentRootPath
+import sap.commerce.toolset.project.yModuleEntity
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
@@ -39,18 +37,11 @@ class JRebelStartupConfigurator : ProjectStartupConfigurator {
         get() = "JRebel"
 
     override suspend fun onStartup(project: Project) {
-        val module = ModuleManager.getInstance(project).modules
-            .find { it.yExtensionName == EiConstants.Extension.PLATFORM }
-            ?: return
-
         val compilingXml = readAction {
-            ModuleRootManager.getInstance(module)
-                .contentRoots
-                .firstNotNullOfOrNull { root ->
-                    root.findFileByRelativePath(HybrisConstants.ANT_COMPILING_XML)
-                }
+            project.yModuleEntity(EiConstants.Extension.PLATFORM)
+                ?.contentRootPath
+                ?.resolve(JRebelConstants.PATH_ANT_COMPILING_XML)
         }
-            ?.toNioPathOrNull()
             ?.takeIf { it.fileExists }
             ?: return
 

@@ -31,6 +31,7 @@ import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
+import sap.commerce.toolset.project.yExtensionDescriptor
 import java.util.*
 
 class YFacetEditorTab(
@@ -75,9 +76,9 @@ class YFacetEditorTab(
             group("Installed Into Extensions") {
                 ModuleManager.getInstance(editorContext.project)
                     .modules
-                    .mapNotNull { YFacet.getState(it) }
+                    .mapNotNull { it.yExtensionDescriptor }
                     .filter { this@YFacetEditorTab.extensionDescriptor.installedIntoExtensions.contains(it.name) }
-                    .map {
+                    .forEach {
                         row {
                             icon(it.type.icon)
                             label(it.name)
