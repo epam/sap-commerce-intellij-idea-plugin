@@ -21,6 +21,7 @@ package sap.commerce.toolset.java.configurator.library
 import com.intellij.platform.workspace.jps.entities.DependencyScope
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
+import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor

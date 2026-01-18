@@ -17,15 +17,6 @@
   -->
 <idea-plugin>
 
-    <extensionPoints>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.contentEntryConfigurator"
-                        interface="sap.commerce.toolset.java.configurator.contentEntry.ModuleContentEntryConfigurator"
-                        dynamic="true"/>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.libraryConfigurator"
-                        interface="sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator"
-                        dynamic="true"/>
-    </extensionPoints>
-
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaSdkConfigurator"/>
 
@@ -54,22 +45,22 @@
         <project.module.importConfigurator order="after javaModuleLibrariesConfigurator" id="javaModuleContentRootsConfigurator"
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleContentRootsConfigurator"/>
 
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeAcceleratorAddonWebContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeClassesContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeCommonsContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeResourcesContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebTestClassesContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludePlatformContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebInjectedSourcesContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.PlatformContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ResourcesContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.SourcesContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.TestSourcesContentEntryConfigurator"/>
-        <project.module.contentEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.WebInjectedSourcesContentEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeAcceleratorAddonWebContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeClassesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeCommonsContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeResourcesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebTestClassesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludePlatformContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeWebInjectedSourcesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.PlatformContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ResourcesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.SourcesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.TestSourcesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.WebInjectedSourcesContentRootEntryConfigurator"/>
 
-        <project.module.libraryConfigurator order="first" id="ootbModuleLibraryConfigurator"
+        <project.module.libraryConfigurator order="first" id="compileModuleLibraryConfigurator"
                                             implementation="sap.commerce.toolset.java.configurator.library.CompileModuleLibraryConfigurator"/>
-        <project.module.libraryConfigurator order="after ootbModuleLibraryConfigurator"
+        <project.module.libraryConfigurator order="after compileModuleLibraryConfigurator" id="testModuleLibraryConfigurator"
                                             implementation="sap.commerce.toolset.java.configurator.library.TestModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.CoreModuleLibraryConfigurator"/>
@@ -80,7 +71,7 @@
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.AddonModuleLibraryConfigurator"/>
         <project.module.libraryConfigurator implementation="sap.commerce.toolset.java.configurator.library.BackofficeSubModuleLibraryConfigurator"/>
 
-        <project.storage.cleanupConfigurator order="after cleanupLibraryEntitiesStorageConfigurator"
+        <project.storage.cleanupConfigurator order="after cleanupLibrariesStorageConfigurator"
                                              implementation="sap.commerce.toolset.java.configurator.entities.CleanupProjectLibrariesStorageConfigurator"/>
     </extensions>
 

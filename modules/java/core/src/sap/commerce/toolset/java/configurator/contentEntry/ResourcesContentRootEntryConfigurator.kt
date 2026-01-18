@@ -19,45 +19,44 @@
 package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
+import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
+import sap.commerce.toolset.java.configurator.contentEntry.util.resources
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
-import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 
-class ExcludeAcceleratorAddonWebContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ResourcesContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Accelerator addon web (exclusion)"
+        get() = "Resources"
 
-    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isWebModuleDescriptor
-        && (
-        moduleDescriptor.isCustomModuleDescriptor
-            || (context.settings.importOOTBModulesInWriteMode && moduleDescriptor.moduleRootPath.testSrcDirectoriesExists)
-        )
+    override fun isApplicable(
+        context: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor
+    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
-        val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ACCELERATOR_ADDON_WEB))
+        val moduleDescriptor = context.moduleDescriptor
+        val resourcesPath = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES)
+        val relativeOutputPath = if (moduleDescriptor is YBackofficeSubModuleDescriptor) "cockpitng" else ""
+        val rootEntities = resourcesPath
+            .let { context.moduleEntity.resources(path = it, relativeOutputPath = relativeOutputPath) }
+            .let { listOf(it) }
 
-        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
+        contentRootEntity.addSourceRoots(
+            context = context.importContext,
+            virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
+        )
     }
-
-    private val ModuleDescriptor.isWebModuleDescriptor: Boolean
-        get() = this is YWebSubModuleDescriptor
-            || this is YCommonWebSubModuleDescriptor
-            || this is YAcceleratorAddonSubModuleDescriptor
-
-    private val Path.testSrcDirectoriesExists
-        get() = ProjectConstants.Directory.TEST_SRC_DIR_NAMES.any { this.resolve(it).directoryExists }
 }

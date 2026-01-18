@@ -56,6 +56,9 @@ object ProjectImportConstants {
         add(ProjectConstants.Directory.NODE_MODULES)
 
         add(ProjectConstants.Directory.GEN_SRC)
+        add(ProjectConstants.Directory.KOTLIN_SRC)
+        add(ProjectConstants.Directory.KOTLIN_TEST_SRC)
+
         addAll(ProjectConstants.Directory.SRC_DIR_NAMES)
         addAll(ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
     }

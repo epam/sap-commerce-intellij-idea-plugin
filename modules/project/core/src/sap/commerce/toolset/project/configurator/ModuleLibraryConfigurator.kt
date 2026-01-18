@@ -16,28 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.contentEntry
+package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import java.nio.file.Path
 
-interface ModuleContentEntryConfigurator {
+interface ModuleLibraryConfigurator<T : ModuleDescriptor> {
 
     val name: String
 
     fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
 
-    suspend fun configure(
-        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
-        contentRootEntity: ContentRootEntityBuilder,
-        pathsToIgnore: Collection<Path>
-    )
+    suspend fun configure(context: ProjectModuleConfigurationContext<T>)
 
     companion object {
-        val EP = ExtensionPointName.create<ModuleContentEntryConfigurator>("sap.commerce.toolset.project.module.contentEntryConfigurator")
+        val EP = ExtensionPointName.create<ModuleLibraryConfigurator<ModuleDescriptor>>("sap.commerce.toolset.project.module.libraryConfigurator")
     }
 }

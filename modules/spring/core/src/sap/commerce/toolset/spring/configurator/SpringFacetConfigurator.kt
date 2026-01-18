@@ -48,7 +48,7 @@ class SpringFacetConfigurator : ProjectPostImportConfigurator {
         if (Plugin.SPRING.isDisabled()) return
 
         val moduleFacets = context.chosenHybrisModuleDescriptors.mapNotNull { moduleDescriptor ->
-            val module = context.modules[moduleDescriptor.name] ?: run {
+            val module = context.moduleBridges[moduleDescriptor.name] ?: run {
                 thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
                 return@mapNotNull null
             }
@@ -64,7 +64,7 @@ class SpringFacetConfigurator : ProjectPostImportConfigurator {
 
             moduleDescriptor to facet
         }
-            .associate { it.first to it.second }
+            .toMap()
 
         context.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
             configureDependencies(moduleDescriptor, moduleFacets)

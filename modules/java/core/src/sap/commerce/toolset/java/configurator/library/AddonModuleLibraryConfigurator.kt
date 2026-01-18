@@ -20,6 +20,7 @@ package sap.commerce.toolset.java.configurator.library
 
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
+import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -62,6 +63,7 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
                     addAll(yModule.resources(virtualFileUrlManager))
 
                     if (attachSources) {
+                        addAll(yModule.genSources(virtualFileUrlManager))
                         addAll(yModule.sources(virtualFileUrlManager))
                     }
                 }

@@ -33,7 +33,7 @@ class SaveLibrariesStorageConfigurator : ProjectStorageSaveConfigurator {
         val currentEntities = storage.entities<LibraryEntity>()
             .associateBy { it.name }
 
-        context.mutableStorage.libraries.forEach { newEntity ->
+        context.mutableStorage.libraries.forEach { (_, newEntity) ->
             val currentEntity = currentEntities[newEntity.name]
 
             if (currentEntity != null) {

@@ -25,6 +25,7 @@ import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
+import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -60,7 +61,10 @@ class BackofficeSubModuleLibraryConfigurator : ModuleLibraryConfigurator<YRegula
                 addAll(backofficeSubModuleDescriptor.classes(it))
                 addAll(backofficeSubModuleDescriptor.resources(it))
 
-                if (attachSources) addAll(backofficeSubModuleDescriptor.sources(it))
+                if (attachSources) {
+                    addAll(backofficeSubModuleDescriptor.genSources(it))
+                    addAll(backofficeSubModuleDescriptor.sources(it))
+                }
             }
         }
 

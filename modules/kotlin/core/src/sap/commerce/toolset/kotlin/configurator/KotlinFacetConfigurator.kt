@@ -22,7 +22,6 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.module.Module
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
@@ -40,11 +39,9 @@ class KotlinFacetConfigurator : ProjectPostImportConfigurator {
         legacyWorkspace: IdeModifiableModelsProvider,
         edtActions: MutableList<() -> Unit>
     ) {
-        context.chosenHybrisModuleDescriptors
-            .firstOrNull { EiConstants.Extension.KOTLIN_NATURE == it.name }
-            ?: return
+        if (!context.hasKotlinNatureExtension) return
 
-        val modules = context.modules
+        val modules = context.moduleBridges
 
         context.chosenHybrisModuleDescriptors
             .filter { it.isCustomModuleDescriptor }

@@ -23,8 +23,16 @@
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
 
-        <project.storage.cleanupConfigurator order="after cleanupLibraryEntitiesStorageConfigurator"
+        <project.storage.cleanupConfigurator order="after cleanupLibrariesStorageConfigurator"
                                              implementation="sap.commerce.toolset.kotlin.configurator.entities.CleanupKotlinProjectLibraryStorageConfigurator"/>
+
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.kotlin.configurator.contentEntry.KotlinSourcesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.kotlin.configurator.contentEntry.KotlinTestSourcesContentRootEntryConfigurator"/>
+
+        <project.module.libraryConfigurator order="after compileModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.kotlin.configurator.library.KotlinCompileModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator order="after testModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.kotlin.configurator.library.KotlinTestModuleLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

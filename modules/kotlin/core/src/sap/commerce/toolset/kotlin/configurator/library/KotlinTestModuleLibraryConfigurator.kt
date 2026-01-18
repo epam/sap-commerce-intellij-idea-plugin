@@ -15,64 +15,58 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package sap.commerce.toolset.java.configurator.library
+package sap.commerce.toolset.kotlin.configurator.library
 
 import com.intellij.platform.workspace.jps.entities.DependencyScope
+import com.intellij.util.asSafely
 import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.*
+import sap.commerce.toolset.java.configurator.library.util.configureLibrary
+import sap.commerce.toolset.java.configurator.library.util.sources
+import sap.commerce.toolset.kotlin.configurator.hasKotlinNatureExtension
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ifNonCustomModuleDescriptor
-import sap.commerce.toolset.util.directoryExists
+import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isNonCustomModuleDescriptor
+import kotlin.io.path.Path
 
-class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescriptor> {
+class KotlinTestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescriptor> {
 
     override val name: String
-        get() = "Test"
+        get() = "Kotlin Test Sources"
 
     override fun isApplicable(
         context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is YModuleDescriptor
+    ) = context.hasKotlinNatureExtension
+        && moduleDescriptor is YModuleDescriptor
+        && moduleDescriptor.isNonCustomModuleDescriptor
+        && context.settings.importOOTBModulesInReadOnlyMode
 
     override suspend fun configure(context: ProjectModuleConfigurationContext<YModuleDescriptor>) {
         val importContext = context.importContext
         val moduleDescriptor = context.moduleDescriptor
-        val moduleEntity = context.moduleEntity
-
         val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
+        val kotlinTestSrcPath = Path(ProjectConstants.Directory.KOTLIN_TEST_SRC)
         val libraryRoots = buildList {
-            addAll(moduleDescriptor.resources(virtualFileUrlManager))
+            addAll(moduleDescriptor.sources(virtualFileUrlManager, kotlinTestSrcPath))
 
-            moduleDescriptor.ifNonCustomModuleDescriptor {
-                if (importContext.settings.importOOTBModulesInReadOnlyMode) {
-                    addAll(moduleDescriptor.classes(virtualFileUrlManager))
-                    addAll(moduleDescriptor.testSources(virtualFileUrlManager))
-                    addAll(moduleDescriptor.testClasses(virtualFileUrlManager))
-                } else {
-                    if (!moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_SRC).directoryExists) {
-                        addAll(moduleDescriptor.classes(virtualFileUrlManager))
-                        addAll(moduleDescriptor.testClasses(virtualFileUrlManager))
-                    }
+            moduleDescriptor.asSafely<YCommonWebSubModuleDescriptor>()
+                ?.dependantWebExtensions
+                ?.forEach { dependantModuleDescriptor ->
+                    addAll(dependantModuleDescriptor.sources(virtualFileUrlManager, kotlinTestSrcPath))
                 }
-            }
-        }
-        val excludedRoots = buildList {
-            addAll(moduleDescriptor.excludedResources(virtualFileUrlManager))
         }
 
-        moduleEntity.configureLibrary(
+        context.moduleEntity.configureLibrary(
             context = importContext,
             moduleDescriptor = moduleDescriptor,
             libraryNameSuffix = JavaConstants.ModuleLibrary.TEST,
             scope = DependencyScope.TEST,
             libraryRoots = libraryRoots,
-            excludedRoots = excludedRoots,
         )
     }
 }

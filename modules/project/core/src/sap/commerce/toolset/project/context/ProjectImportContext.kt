@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.context
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
+import com.intellij.platform.workspace.jps.entities.LibraryId
 import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
@@ -79,7 +80,7 @@ data class ProjectImportContext(
 
     data class MutableWorkspace(
         private val _modules: MutableMap<ModuleDescriptor, ModuleEntityBuilder> = mutableMapOf(),
-        private val _libraries: MutableList<LibraryEntityBuilder> = mutableListOf(),
+        private val _libraries: MutableMap<LibraryId, LibraryEntityBuilder> = mutableMapOf(),
     ) {
         private var accessAllowed = true
         var committed: Boolean = false
@@ -89,11 +90,11 @@ data class ProjectImportContext(
         else throw IllegalStateException("Access is not allowed at this point.")
 
         val libraries
-            get() = access { _libraries.toList() }
+            get() = access { _libraries.toMap() }
         val modules
             get() = access { _modules.toMap() }
 
-        fun add(entity: LibraryEntityBuilder) = access { _libraries.add(entity) }
+        fun add(libraryId: LibraryId, entity: LibraryEntityBuilder) = access { _libraries[libraryId] = entity }
         fun add(descriptor: ModuleDescriptor, entity: ModuleEntityBuilder) = access { _modules[descriptor] = entity }
 
         fun lock() = access {

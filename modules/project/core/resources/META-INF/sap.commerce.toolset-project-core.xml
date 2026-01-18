@@ -55,6 +55,13 @@
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.rootResolver"
                         interface="sap.commerce.toolset.project.module.ModuleRootResolver"
                         dynamic="true"/>
+
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.contentRootEntryConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator"
+                        dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.libraryConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator"
+                        dynamic="true"/>
     </extensionPoints>
 
     <extensions defaultExtensionNs="com.intellij">

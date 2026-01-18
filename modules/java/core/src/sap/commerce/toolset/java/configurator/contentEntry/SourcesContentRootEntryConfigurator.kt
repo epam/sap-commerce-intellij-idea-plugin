@@ -19,41 +19,51 @@
 package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
+import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
+import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
+import sap.commerce.toolset.java.configurator.contentEntry.util.sources
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import java.nio.file.Path
 
-class ExcludePlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
+class SourcesContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Platform (exclusion)"
+        get() = "Sources"
 
-    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
+    override fun isApplicable(
+        context: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor
+    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
+        val moduleEntity = context.moduleEntity
         val moduleRootPath = context.moduleDescriptor.moduleRootPath
-        val bootstrapPath = moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
-        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
-        val excludePaths = listOf(
-            bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC),
-            bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES),
 
-            moduleRootPath.resolve(ProjectConstants.Directory.TOMCAT_6),
-            moduleRootPath.resolve(ProjectConstants.Directory.TOMCAT)
-        )
+        val rootEntities = buildList {
+            ProjectConstants.Directory.SRC_DIR_NAMES
+                .map { moduleRootPath.resolve(it) }
+                .map { moduleEntity.sources(path = it) }
+                .forEach { add(it) }
 
-        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
-
-        if ("apache-ant-*" !in contentRootEntity.excludedPatterns) {
-            contentRootEntity.excludedPatterns += "apache-ant-*"
+            moduleRootPath.resolve(ProjectConstants.Directory.GEN_SRC)
+                .let { moduleEntity.generatedSources(path = it) }
+                .also { add(it) }
         }
+
+        contentRootEntity.addSourceRoots(
+            context = context.importContext,
+            virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager(),
+            rootEntities = rootEntities,
+            pathsToIgnore = pathsToIgnore,
+        )
     }
 }

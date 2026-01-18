@@ -44,7 +44,7 @@ class JRebelConfigurator : ProjectPostImportAsyncConfigurator {
         val writeOperations = context.chosenHybrisModuleDescriptors
             .filter { it is YCustomRegularModuleDescriptor || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor) }
             .mapNotNull { moduleDescriptor ->
-                context.modules[moduleDescriptor.name] ?: run {
+                context.moduleBridges[moduleDescriptor.name] ?: run {
                     thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
                     return@mapNotNull null
                 }

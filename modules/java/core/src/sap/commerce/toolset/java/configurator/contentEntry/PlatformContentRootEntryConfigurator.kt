@@ -21,25 +21,21 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
 import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
-import sap.commerce.toolset.java.configurator.contentEntry.util.testGeneratedSources
+import sap.commerce.toolset.java.configurator.contentEntry.util.resources
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
-import sap.commerce.toolset.util.directoryExists
-import java.nio.file.Files
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
-import kotlin.io.path.isDirectory
 
-class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
+class PlatformContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Web injected sources (addons, common web)"
+        get() = "Platform"
 
-    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
-        && (moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode)
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
@@ -47,17 +43,16 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
         pathsToIgnore: Collection<Path>
     ) {
         val moduleEntity = context.moduleEntity
-        val moduleRootPath = context.moduleDescriptor.moduleRootPath
-        val generatedSourcePaths = childrenOf(
-            moduleRootPath.resolve(ProjectConstants.Directory.COMMON_WEB_SRC),
-            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_SRC)
-        )
-        val generatedTestSourcePaths = childrenOf(
-            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_TEST_SRC),
-        )
+        val bootstrapPath = context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
         val rootEntities = buildList {
-            addAll(generatedSourcePaths.map { moduleEntity.generatedSources(it) })
-            addAll(generatedTestSourcePaths.map { moduleEntity.testGeneratedSources(it) })
+            // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
+            bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
+                .let { moduleEntity.generatedSources(it) }
+                .also { add(it) }
+
+            bootstrapPath.resolve(ProjectConstants.Directory.RESOURCES)
+                .let { moduleEntity.resources(path = it) }
+                .also { add(it) }
         }
 
         contentRootEntity.addSourceRoots(
@@ -67,12 +62,4 @@ class WebInjectedSourcesContentEntryConfigurator : ModuleContentEntryConfigurato
             pathsToIgnore = pathsToIgnore,
         )
     }
-
-    private fun childrenOf(vararg paths: Path): List<Path> = paths
-        .filter { it.directoryExists }
-        .flatMap { path ->
-            Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
-                directoryStream.toList()
-            }
-        }
 }

@@ -22,8 +22,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
-import sap.commerce.toolset.java.configurator.contentEntry.ModuleContentEntryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -55,7 +55,7 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
             ?.map { moduleRootPath.resolve(it) }
             ?: emptyList()
 
-        val configurators = ModuleContentEntryConfigurator.EP.extensionList
+        val configurators = ModuleContentRootEntryConfigurator.EP.extensionList
             .filter { configurator -> configurator.isApplicable(importContext, moduleDescriptor) }
 
         val contentRootEntity = ContentRootEntity(

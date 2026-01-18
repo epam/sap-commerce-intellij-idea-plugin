@@ -21,21 +21,27 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
+import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 
-class ExcludeClassesContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ExcludeAcceleratorAddonWebContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Classes (exclusion)"
+        get() = "Accelerator addon web (exclusion)"
 
-    override fun isApplicable(
-        context: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor.isWebModuleDescriptor
+        && (
+        moduleDescriptor.isCustomModuleDescriptor
+            || (context.settings.importOOTBModulesInWriteMode && moduleDescriptor.moduleRootPath.testSrcDirectoriesExists)
+        )
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
@@ -43,8 +49,16 @@ class ExcludeClassesContentEntryConfigurator : ModuleContentEntryConfigurator {
         pathsToIgnore: Collection<Path>
     ) {
         val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
-        val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
+        val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ACCELERATOR_ADDON_WEB))
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
     }
+
+    private val ModuleDescriptor.isWebModuleDescriptor: Boolean
+        get() = this is YWebSubModuleDescriptor
+            || this is YCommonWebSubModuleDescriptor
+            || this is YAcceleratorAddonSubModuleDescriptor
+
+    private val Path.testSrcDirectoriesExists
+        get() = ProjectConstants.Directory.TEST_SRC_DIR_NAMES.any { this.resolve(it).directoryExists }
 }

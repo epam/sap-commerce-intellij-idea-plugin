@@ -19,50 +19,30 @@
 package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
-import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
-import sap.commerce.toolset.java.configurator.contentEntry.util.sources
+import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import java.nio.file.Path
 
-class SourcesContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ExcludeResourcesContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Sources"
+        get() = "Resources (exclusion)"
 
-    override fun isApplicable(
-        context: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
+    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = context.settings
+        .extensionsResourcesToExclude.contains(moduleDescriptor.name)
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleEntity = context.moduleEntity
-        val moduleRootPath = context.moduleDescriptor.moduleRootPath
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
+        val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.RESOURCES))
 
-        val rootEntities = buildList {
-            ProjectConstants.Directory.SRC_DIR_NAMES
-                .map { moduleRootPath.resolve(it) }
-                .map { moduleEntity.sources(path = it) }
-                .forEach { add(it) }
-
-            moduleRootPath.resolve(ProjectConstants.Directory.GEN_SRC)
-                .let { moduleEntity.generatedSources(path = it) }
-                .also { add(it) }
-        }
-
-        contentRootEntity.addSourceRoots(
-            context = context.importContext,
-            virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager(),
-            rootEntities = rootEntities,
-            pathsToIgnore = pathsToIgnore,
-        )
+        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
     }
 }

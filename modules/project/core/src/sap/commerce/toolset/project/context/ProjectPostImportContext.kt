@@ -69,23 +69,23 @@ data class ProjectPostImportContext(
     val workspace = WorkspaceModel.getInstance(project)
 
     // extension name <-> module
-    val modules: Map<String, Module> by lazy {
+    val moduleBridges: Map<String, Module> by lazy {
         val moduleMapping = project.ySettings.module2extensionMapping
 
         storage.entities<ModuleEntity>()
-        .mapNotNull {
-            val module = it.findModule(storage)
-                ?: run {
-                    thisLogger().warn("Module bridge not found: ${it.name}")
+            .mapNotNull {
+                val module = it.findModule(storage)
+                    ?: run {
+                        thisLogger().warn("Module bridge not found: ${it.name}")
+                        return@mapNotNull null
+                    }
+                val extensionName = it.yExtensionName(moduleMapping) ?: run {
+                    thisLogger().warn("Extension name not found: ${it.name}")
                     return@mapNotNull null
                 }
-            val extensionName = it.yExtensionName(moduleMapping) ?: run {
-                thisLogger().warn("Extension name not found: ${it.name}")
-                return@mapNotNull null
+                extensionName to module
             }
-            extensionName to module
-        }
-        .associate { it.first to it.second }
+            .toMap()
     }
 
     companion object {

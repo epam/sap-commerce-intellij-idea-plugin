@@ -65,7 +65,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
                 val key = it.key.toString().toIntOrNull() ?: return@mapNotNull null
                 key to it.value.toString()
             }
-            ?.associate { it.first to it.second }
+            ?.toMap()
             ?: emptyMap()
     }
 

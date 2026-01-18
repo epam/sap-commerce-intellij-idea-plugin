@@ -16,22 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.library
+package sap.commerce.toolset.kotlin.configurator
 
-import com.intellij.openapi.extensions.ExtensionPointName
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-interface ModuleLibraryConfigurator<T : ModuleDescriptor> {
+val ProjectImportContext.hasKotlinNatureExtension
+    get() = hasKotlinNatureExtension(this.chosenHybrisModuleDescriptors)
 
-    val name: String
+val ProjectPostImportContext.hasKotlinNatureExtension
+    get() = hasKotlinNatureExtension(this.chosenHybrisModuleDescriptors)
 
-    fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
-
-    suspend fun configure(context: ProjectModuleConfigurationContext<T>)
-
-    companion object {
-        val EP = ExtensionPointName.create<ModuleLibraryConfigurator<ModuleDescriptor>>("sap.commerce.toolset.project.module.libraryConfigurator")
-    }
-}
+private fun hasKotlinNatureExtension(descriptors: Collection<ModuleDescriptor>) = descriptors
+    .any { EiConstants.Extension.KOTLIN_NATURE == it.name }

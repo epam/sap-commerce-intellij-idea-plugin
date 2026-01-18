@@ -21,9 +21,9 @@ package sap.commerce.toolset.java.configurator
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.util.progress.reportProgressScope
-import sap.commerce.toolset.java.configurator.library.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
+import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.time.measureTime

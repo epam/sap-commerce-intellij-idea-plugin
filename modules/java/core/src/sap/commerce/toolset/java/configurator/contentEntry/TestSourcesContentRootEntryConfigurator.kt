@@ -20,39 +20,33 @@ package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.addSourceRoots
-import sap.commerce.toolset.java.configurator.contentEntry.util.generatedSources
-import sap.commerce.toolset.java.configurator.contentEntry.util.resources
+import sap.commerce.toolset.java.configurator.contentEntry.util.testSources
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import java.nio.file.Path
 
-class PlatformContentEntryConfigurator : ModuleContentEntryConfigurator {
+class TestSourcesContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Platform"
+        get() = "Test sources"
 
-    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is PlatformModuleDescriptor
+    override fun isApplicable(
+        context: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor
+    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleEntity = context.moduleEntity
-        val bootstrapPath = context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.BOOTSTRAP)
-        val rootEntities = buildList {
-            // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
-            bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
-                .let { moduleEntity.generatedSources(it) }
-                .also { add(it) }
-
-            bootstrapPath.resolve(ProjectConstants.Directory.RESOURCES)
-                .let { moduleEntity.resources(path = it) }
-                .also { add(it) }
-        }
+        val rootEntities = ProjectConstants.Directory.TEST_SRC_DIR_NAMES
+            .map { context.moduleDescriptor.moduleRootPath.resolve(it) }
+            .map { context.moduleEntity.testSources(path = it) }
 
         contentRootEntity.addSourceRoots(
             context = context.importContext,

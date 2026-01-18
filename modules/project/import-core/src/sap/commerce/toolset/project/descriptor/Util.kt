@@ -26,3 +26,6 @@ val ModuleDescriptor.isCustomModuleDescriptor
 
 val ModuleDescriptor.isNonCustomModuleDescriptor
     get() = !this.isCustomModuleDescriptor
+
+fun <T> ModuleDescriptor.ifNonCustomModuleDescriptor(operation: () -> T): T? = if (isNonCustomModuleDescriptor) operation()
+else null

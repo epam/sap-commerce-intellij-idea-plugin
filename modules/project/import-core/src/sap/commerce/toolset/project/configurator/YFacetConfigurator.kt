@@ -37,7 +37,7 @@ class YFacetConfigurator : ProjectPostImportConfigurator {
         edtActions: MutableList<() -> Unit>
     ) {
         context.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
-            val module = context.modules[moduleDescriptor.name] ?: run {
+            val module = context.moduleBridges[moduleDescriptor.name] ?: run {
                 thisLogger().warn("Could not find module: ${moduleDescriptor.name}")
                 return@forEach
             }

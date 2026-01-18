@@ -19,38 +19,32 @@
 package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import java.nio.file.Path
 
-class ExcludeCommonsContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ExcludeClassesContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Common (exclusion)"
+        get() = "Classes (exclusion)"
 
-    override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = true
+    override fun isApplicable(
+        context: ProjectImportContext,
+        moduleDescriptor: ModuleDescriptor
+    ) = moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
-        val moduleRootPath = context.moduleDescriptor.moduleRootPath
         val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
-        val excludePaths = listOf(
-            moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY),
-            moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY),
-            moduleRootPath.resolve(HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY),
-            moduleRootPath.resolve(ProjectConstants.Directory.NODE_MODULES),
-            moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
-            moduleRootPath.resolve(ProjectConstants.Directory.ECLIPSE_BIN),
-            moduleRootPath.resolve(ProjectConstants.Directory.BOWER_COMPONENTS),
-            moduleRootPath.resolve(ProjectConstants.Directory.JS_TARGET),
-        )
+        val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.CLASSES))
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
     }

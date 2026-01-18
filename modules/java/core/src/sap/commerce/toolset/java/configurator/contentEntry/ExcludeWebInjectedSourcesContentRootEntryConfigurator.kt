@@ -21,31 +21,44 @@ package sap.commerce.toolset.java.configurator.contentEntry
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
+import sap.commerce.toolset.util.directoryExists
+import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
 
-class ExcludeWebTestClassesContentEntryConfigurator : ModuleContentEntryConfigurator {
+class ExcludeWebInjectedSourcesContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
     override val name: String
-        get() = "Web test classes (exclusion)"
+        get() = "Web injected test sources (exclusion)"
 
     override fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor) = moduleDescriptor is YWebSubModuleDescriptor
-        || moduleDescriptor is YCommonWebSubModuleDescriptor
-        || moduleDescriptor is YAcceleratorAddonSubModuleDescriptor
+        && (moduleDescriptor.isCustomModuleDescriptor || context.settings.importOOTBModulesInWriteMode)
 
     override suspend fun configure(
         context: ProjectModuleConfigurationContext<ModuleDescriptor>,
         contentRootEntity: ContentRootEntityBuilder,
         pathsToIgnore: Collection<Path>
     ) {
+        val moduleRootPath = context.moduleDescriptor.moduleRootPath
+        val addonPaths = childrenOf(
+            moduleRootPath.resolve(ProjectConstants.Directory.ADDON_TEST_SRC),
+        )
         val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
-        val excludePaths = listOf(context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES))
 
-        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
+        contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, addonPaths)
     }
+
+    private fun childrenOf(vararg paths: Path): List<Path> = paths
+        .filter { it.directoryExists }
+        .flatMap { path ->
+            Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
+                directoryStream.toList()
+            }
+        }
 }

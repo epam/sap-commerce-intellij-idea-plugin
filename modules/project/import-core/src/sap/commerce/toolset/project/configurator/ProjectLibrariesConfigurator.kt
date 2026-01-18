@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.util.progress.reportProgressScope
+import com.intellij.platform.workspace.jps.entities.LibraryId
 import sap.commerce.toolset.project.context.ProjectImportContext
 import kotlin.time.measureTimedValue
 
@@ -42,7 +43,9 @@ class ProjectLibrariesConfigurator : ProjectImportConfigurator {
                     logger.info("Library configurator [${configurator.name} | ${timedValue.duration}]")
                     val libraryEntity = timedValue.value ?: return@itemStep
 
-                    context.mutableStorage.add(libraryEntity)
+                    val libraryId = LibraryId(libraryEntity.name, libraryEntity.tableId)
+
+                    context.mutableStorage.add(libraryId, libraryEntity)
                 }
             }
         }

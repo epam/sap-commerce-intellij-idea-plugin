@@ -45,9 +45,9 @@ class SaveModulesStorageConfigurator : ProjectStorageSaveConfigurator {
 
                 extensionName to currentEntity
             }
-            .associate { it.first to it.second }
+            .toMap()
 
-        context.mutableStorage.modules.entries.forEach { (moduleDescriptor, newEntity) ->
+        context.mutableStorage.modules.forEach { (moduleDescriptor, newEntity) ->
             val currentEntity = currentEntities[moduleDescriptor.name]
 
             if (currentEntity != null) {

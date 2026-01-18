@@ -35,7 +35,6 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.kotlin.KotlinConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
@@ -50,9 +49,8 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
 
     override suspend fun configure(context: ProjectImportContext) {
         val project = context.project
-        val hasKotlinnatureExtension = context.chosenHybrisModuleDescriptors
-            .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
-        if (!hasKotlinnatureExtension) return
+        val hasKotlinNatureExtension = context.hasKotlinNatureExtension
+        if (!hasKotlinNatureExtension) return
 
         readAction {
             setKotlinCompilerVersion(project, KotlinConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
@@ -62,9 +60,8 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
 
     override suspend fun configure(context: ProjectPostImportContext) {
         val project = context.project
-        val hasKotlinnatureExtension = context.chosenHybrisModuleDescriptors
-            .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
-        if (!hasKotlinnatureExtension) {
+        val hasKotlinNatureExtension = context.hasKotlinNatureExtension
+        if (!hasKotlinNatureExtension) {
             removeKotlinFacets(project)
             return
         }

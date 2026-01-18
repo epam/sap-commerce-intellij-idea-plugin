@@ -50,7 +50,7 @@ class WebFacetConfigurator : ProjectPostImportConfigurator {
         edtActions: MutableList<() -> Unit>
     ) {
         context.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
-            val module = context.modules[moduleDescriptor.name] ?: run {
+            val module = context.moduleBridges[moduleDescriptor.name] ?: run {
                 thisLogger().warn("Could not find module for ${moduleDescriptor.name}")
                 return@forEach
             }

@@ -126,7 +126,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     }
                 }
                 .awaitAll()
-                .associate { it.first to it.second }
+                .toMap()
         }
     }
 

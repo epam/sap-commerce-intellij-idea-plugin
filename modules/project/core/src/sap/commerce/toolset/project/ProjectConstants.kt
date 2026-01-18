@@ -85,9 +85,8 @@ object ProjectConstants {
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 
-        val SRC_DIR_NAMES = arrayOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-        val ALL_SRC_DIR_NAMES = arrayOf(GEN_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-        val TEST_SRC_DIR_NAMES = arrayOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
+        val SRC_DIR_NAMES = arrayOf(SRC, GROOVY_SRC, SCALA_SRC)
+        val TEST_SRC_DIR_NAMES = arrayOf(TEST_SRC, GROOVY_TEST_SRC, SCALA_TEST_SRC)
     }
 
     object File {

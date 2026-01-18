@@ -16,29 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.configurator.library
+package sap.commerce.toolset.project.configurator
 
-import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
-import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor
+import java.nio.file.Path
 
-class HmcModuleLibraryConfigurator : ModuleLibraryConfigurator<YHmcSubModuleDescriptor> {
+interface ModuleContentRootEntryConfigurator {
 
-    override val name: String
-        get() = "Hmc Sub Module"
+    val name: String
 
-    override fun isApplicable(
-        context: ProjectImportContext,
-        moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is YHmcSubModuleDescriptor
+    fun isApplicable(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor): Boolean
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext<YHmcSubModuleDescriptor>) = context.moduleEntity
-        .linkProjectLibrary(
-            libraryName = JavaConstants.ProjectLibrary.HMC,
-            exported = false,
-        )
+    suspend fun configure(
+        context: ProjectModuleConfigurationContext<ModuleDescriptor>,
+        contentRootEntity: ContentRootEntityBuilder,
+        pathsToIgnore: Collection<Path>
+    )
+
+    companion object {
+        val EP = ExtensionPointName.create<ModuleContentRootEntryConfigurator>("sap.commerce.toolset.project.module.contentRootEntryConfigurator")
+    }
 }
