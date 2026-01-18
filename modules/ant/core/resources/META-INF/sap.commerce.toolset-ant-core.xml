@@ -18,6 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.refreshConfigurator implementation="sap.commerce.toolset.ant.configurator.AntRefreshConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.ant.configurator.AntConfigurator"/>
     </extensions>
 

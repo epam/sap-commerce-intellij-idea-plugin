@@ -26,7 +26,6 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
@@ -36,26 +35,22 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.kotlin.KotlinConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 
 class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConfigurator {
 
     override val name: String
         get() = "Kotlin"
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ) {
-        val project = importContext.project
-        val hasKotlinnatureExtension = importContext.chosenHybrisModuleDescriptors
-            .any { EiConstants.Extension.KOTLIN_NATURE == it.name }
-        if (!hasKotlinnatureExtension) return
+    override suspend fun configure(context: ProjectImportContext) {
+        val project = context.project
+        val hasKotlinNatureExtension = context.hasKotlinNatureExtension
+        if (!hasKotlinNatureExtension) return
 
         readAction {
             setKotlinCompilerVersion(project, KotlinConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
@@ -63,11 +58,13 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         setKotlinJvmTarget(project)
     }
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
-        importContext.chosenHybrisModuleDescriptors
-            .find { EiConstants.Extension.KOTLIN_NATURE == it.name }
-            ?: return
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val project = context.project
+        val hasKotlinNatureExtension = context.hasKotlinNatureExtension
+        if (!hasKotlinNatureExtension) {
+            removeKotlinFacets(project)
+            return
+        }
 
         smartReadAction(project) {
             val compilerVersion = PropertyService.getInstance(project)
@@ -78,6 +75,28 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportAsyncConf
         }
 
         registerKotlinLibrary(project)
+    }
+
+    private suspend fun removeKotlinFacets(project: Project) {
+        val writeActions = readAction {
+            ModuleManager.getInstance(project).modules
+                .mapNotNull { module ->
+                    val facetManager = FacetManager.getInstance(module)
+                    val kotlinFacet = facetManager.getFacetByType(KotlinFacetType.TYPE_ID)
+                        ?: return@mapNotNull null
+                    val createModifiableModel = facetManager.createModifiableModel()
+
+                    val writeAction = {
+                        createModifiableModel.removeFacet(kotlinFacet)
+                        createModifiableModel.commit()
+                    }
+                    writeAction
+                }
+        }
+
+        backgroundWriteAction {
+            writeActions.forEach { it() }
+        }
     }
 
     private suspend fun registerKotlinLibrary(project: Project) {

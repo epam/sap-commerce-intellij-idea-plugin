@@ -23,6 +23,6 @@ import sap.commerce.toolset.settings.toIdeaGroup
 
 interface PlatformModuleDescriptor : ModuleDescriptor {
 
-    override fun groupName(importContext: ProjectImportContext) = importContext.settings.groupPlatform.toIdeaGroup()
+    override fun groupName(context: ProjectImportContext) = context.settings.groupPlatform.toIdeaGroup()
 
 }

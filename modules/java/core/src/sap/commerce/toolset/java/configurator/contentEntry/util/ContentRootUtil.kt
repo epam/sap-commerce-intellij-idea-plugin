@@ -34,23 +34,23 @@ import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 import kotlin.io.path.pathString
 
-internal fun ContentRootEntityBuilder.excludeDirectories(
-    importContext: ProjectImportContext,
+fun ContentRootEntityBuilder.excludeDirectories(
+    context: ProjectImportContext,
     virtualFileUrlManager: VirtualFileUrlManager,
     excludePaths: Collection<Path>
 ) = excludePaths
-    .filter { path -> !importContext.settings.ignoreNonExistingSourceDirectories || path.directoryExists }
+    .filter { path -> !context.settings.ignoreNonExistingSourceDirectories || path.directoryExists }
     .map { virtualFileUrlManager.fromPath(it.pathString) }
     .map { ExcludeUrlEntity(it, this.entitySource) }
     .let { newExcludedUrls -> this.excludedUrls += newExcludedUrls }
 
-internal fun ContentRootEntityBuilder.addSourceRoots(
-    importContext: ProjectImportContext,
+fun ContentRootEntityBuilder.addSourceRoots(
+    context: ProjectImportContext,
     virtualFileUrlManager: VirtualFileUrlManager,
     rootEntities: Collection<SourceRootEntityDescriptor>,
     pathsToIgnore: Collection<Path>,
 ) = rootEntities
-    .filter { rootEntity -> !importContext.settings.ignoreNonExistingSourceDirectories || rootEntity.path.directoryExists }
+    .filter { rootEntity -> !context.settings.ignoreNonExistingSourceDirectories || rootEntity.path.directoryExists }
     .filter { rootEntity -> pathsToIgnore.none { FileUtil.isAncestor(it.toFile(), rootEntity.path.toFile(), false) } }
     .map { rootEntity ->
         SourceRootEntity(
@@ -67,23 +67,23 @@ internal fun ContentRootEntityBuilder.addSourceRoots(
     .let { newSourceRoots -> this.sourceRoots += newSourceRoots }
 
 
-internal fun ModuleEntityBuilder.generatedSources(path: Path) = this.sources(
+fun ModuleEntityBuilder.generatedSources(path: Path) = this.sources(
     path = path,
     generated = true
 )
 
-internal fun ModuleEntityBuilder.testGeneratedSources(path: Path) = this.sources(
+fun ModuleEntityBuilder.testGeneratedSources(path: Path) = this.sources(
     sourceRootTypeId = JAVA_TEST_ROOT_ENTITY_TYPE_ID,
     path = path,
     generated = true
 )
 
-internal fun ModuleEntityBuilder.testSources(path: Path) = this.sources(
+fun ModuleEntityBuilder.testSources(path: Path) = this.sources(
     sourceRootTypeId = JAVA_TEST_ROOT_ENTITY_TYPE_ID,
     path = path
 )
 
-internal fun ModuleEntityBuilder.sources(
+fun ModuleEntityBuilder.sources(
     sourceRootTypeId: SourceRootTypeId = JAVA_SOURCE_ROOT_ENTITY_TYPE_ID,
     path: Path,
     generated: Boolean = false,
@@ -95,7 +95,7 @@ internal fun ModuleEntityBuilder.sources(
     javaSourceRoot = { JavaSourceRootPropertiesEntity(generated, packagePrefix, it.entitySource) }
 )
 
-internal fun ModuleEntityBuilder.resources(
+fun ModuleEntityBuilder.resources(
     sourceRootTypeId: SourceRootTypeId = JAVA_RESOURCE_ROOT_ENTITY_TYPE_ID,
     path: Path,
     generated: Boolean = false,

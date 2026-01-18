@@ -24,7 +24,7 @@
     </extensionPoints>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.preImportConfigurator implementation="sap.commerce.toolset.impex.configurator.ImpExCodeStyleConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.impex.configurator.ImpExCodeStyleConfigurator"/>
         <editor.toolbarProvider implementation="sap.commerce.toolset.impex.actionSystem.ImpExEditorToolbarProvider"/>
     </extensions>
 

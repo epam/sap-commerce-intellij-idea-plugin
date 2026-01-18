@@ -102,7 +102,7 @@ class SimpleSpringService(private val project: Project, private val coroutineSco
                     id to tag
                 }
         }
-        .associate { it.first to it.second }
+        .toMap()
 
     private fun processAliases(xmlFiles: List<XmlFile>) = xmlFiles
         .mapNotNull { it.rootTag }
@@ -116,7 +116,7 @@ class SimpleSpringService(private val project: Project, private val coroutineSco
                     alias to name
                 }
         }
-        .associate { it.first to it.second }
+        .toMap()
 
     private fun collectFiles(): List<XmlFile> {
         val psiManager = PsiManager.getInstance(project)

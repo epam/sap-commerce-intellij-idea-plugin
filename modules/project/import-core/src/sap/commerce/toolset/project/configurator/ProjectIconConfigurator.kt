@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -31,11 +30,8 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Project Icon"
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ) {
-        val ideaDirectory = importContext.rootDirectory.resolve(".idea")
+    override suspend fun configure(context: ProjectImportContext) {
+        val ideaDirectory = context.rootDirectory.resolve(".idea")
 
         val target = ideaDirectory.resolve("icon.svg")
         val targetDark = ideaDirectory.resolve("icon_dark.svg")
@@ -43,7 +39,7 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
         // do not override existing Icon
         if (target.fileExists) return
 
-        val projectIconFile = importContext.projectIconFile
+        val projectIconFile = context.projectIconFile
         if (projectIconFile == null) {
             this::class.java.getResourceAsStream("/icons/hybrisIcon.svg")
                 ?.use { input ->

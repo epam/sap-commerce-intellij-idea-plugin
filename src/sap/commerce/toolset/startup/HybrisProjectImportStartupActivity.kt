@@ -22,14 +22,11 @@ import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import com.intellij.openapi.util.removeUserData
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.isNotHybrisProject
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.PostImportBulkConfigurator
 import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisProjectImportStartupActivity : ProjectActivity {
@@ -61,13 +58,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
         }
 
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
-            project.getUserData(ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT)
-                ?.let {
-                    project.removeUserData(ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT)
-
-                    PostImportBulkConfigurator.getInstance(project).configure(it)
-                }
-
             HybrisConsoleService.getInstance(project).activateToolWindow()
         }
     }

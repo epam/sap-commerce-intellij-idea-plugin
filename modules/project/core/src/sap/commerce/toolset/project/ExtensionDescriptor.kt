@@ -30,6 +30,10 @@ import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import java.io.Serial
 import kotlin.io.path.Path
 
+/*
+ <!> IMPORTANT <!>
+ Ensure that field names (serialized to xml) are the same here and in the custom JPS serialization JpsHybrisFacetConfigurationSerializer
+ */
 data class ExtensionDescriptor(
     @OptionTag val name: String = "",
     @OptionTag val path: String = "",

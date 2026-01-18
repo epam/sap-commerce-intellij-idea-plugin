@@ -24,11 +24,11 @@ import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.yExtensionDescriptor
 
 fun VirtualFile.isCustomExtensionFile(project: Project): Boolean {
     val descriptorType = ModuleUtilCore.findModuleForFile(this, project)
-        ?.let { YFacet.getState(it) }
+        ?.yExtensionDescriptor
         ?.type
         ?: return false
 

@@ -28,7 +28,7 @@ import com.intellij.openapi.project.Project
 fun Project.triggerAction(
     actionId: String,
     place: String = ActionPlaces.UNKNOWN,
-    uiKind: ActionUiKind = ActionUiKind.Companion.NONE,
+    uiKind: ActionUiKind = ActionUiKind.NONE,
     dataContextProvider: () -> DataContext = { SimpleDataContext.getProjectContext(this) }
 ) {
     val action = ActionManager.getInstance().getAction(actionId)
@@ -43,6 +43,22 @@ fun Project.triggerAction(
     if (action == null) {
         thisLogger().warn("Could not find action $actionId")
     }
+}
+
+fun triggerAction(
+    actionId: String,
+    place: String = ActionPlaces.UNKNOWN,
+    uiKind: ActionUiKind = ActionUiKind.NONE,
+    dataContextProvider: () -> DataContext = { SimpleDataContext.builder().build() }
+) {
+    ActionManager.getInstance().getAction(actionId)
+        ?.let {
+            val event = AnActionEvent.createEvent(
+                it, dataContextProvider.invoke(),
+                null, place, uiKind, null
+            );
+            ActionUtil.performAction(it, event)
+        }
 }
 
 fun triggerAction(

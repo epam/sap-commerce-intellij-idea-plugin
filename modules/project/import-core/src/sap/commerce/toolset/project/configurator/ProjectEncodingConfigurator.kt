@@ -18,7 +18,6 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
 
 /**
@@ -30,11 +29,8 @@ class ProjectEncodingConfigurator : ProjectImportConfigurator {
     override val name: String
         get() = "Project Encoding"
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ) {
-        val project = importContext.project
+    override suspend fun configure(context: ProjectImportContext) {
+        val project = context.project
 
         EncodingProjectManager.getInstance(project)
             .setDefaultCharsetForPropertiesFiles(null, Charsets.UTF_8)

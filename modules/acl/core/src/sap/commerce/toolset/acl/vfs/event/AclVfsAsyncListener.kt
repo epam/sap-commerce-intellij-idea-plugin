@@ -34,6 +34,7 @@ class AclVfsAsyncListener : AsyncFileListener {
     override fun prepareChange(events: MutableList<out VFileEvent>): ChangeApplier? {
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = events
+            .asSequence()
             .mapNotNull { it.file }
             .filter { it.extension == HybrisConstants.Languages.Acl.EXTENSION }
             .distinct()
@@ -45,10 +46,11 @@ class AclVfsAsyncListener : AsyncFileListener {
                     ?.asSafely<AclFile>()
                     ?: return@mapNotNull null
 
-                editor to psiFile
+                psiFile to editor
             }
+            .toList()
             .takeIf { it.isNotEmpty() }
-            ?.associate { it.second to it.first }
+            ?.toMap()
             ?: return null
 
         return object : ChangeApplier {

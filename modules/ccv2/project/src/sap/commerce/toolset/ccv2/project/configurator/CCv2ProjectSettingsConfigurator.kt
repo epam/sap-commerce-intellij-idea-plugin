@@ -19,24 +19,23 @@ package sap.commerce.toolset.ccv2.project.configurator
 
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ySettings
 
-class CCv2ProjectSettingsConfigurator : ProjectPreImportConfigurator {
+class CCv2ProjectSettingsConfigurator : ProjectImportConfigurator {
 
     override val name: String
         get() = "CCv2 Project Settings"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
+    override suspend fun configure(context: ProjectImportContext) {
+        val project = context.project
         val credentialAttributes = CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
 
-        PasswordSafe.instance.setPassword(credentialAttributes, importContext.ccv2Token)
+        PasswordSafe.instance.setPassword(credentialAttributes, context.ccv2Token)
 
         with(project.ySettings) {
             extensionDescriptors = buildList {

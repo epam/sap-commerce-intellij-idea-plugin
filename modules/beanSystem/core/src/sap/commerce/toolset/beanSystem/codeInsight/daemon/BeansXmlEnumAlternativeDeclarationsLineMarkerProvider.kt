@@ -59,7 +59,7 @@ class BeansXmlEnumAlternativeDeclarationsLineMarkerProvider : BeansXmlLineMarker
             ?.retrieveAllDoms()
             ?.filter { it != dom }
             ?.map { it.clazz }
-            ?.sortedBy { it.module?.yExtensionName() }
+            ?.sortedBy { it.module?.yExtensionName }
             ?.mapNotNull { it.xmlAttributeValue }
             ?.takeIf { it.isNotEmpty() }
             ?.let {

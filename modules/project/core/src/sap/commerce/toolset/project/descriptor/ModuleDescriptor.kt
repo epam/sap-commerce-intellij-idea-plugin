@@ -32,9 +32,9 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
 
     val extensionDescriptor: ExtensionDescriptor
     fun ideaModuleName(): String = (if (groupNames.isEmpty()) "" else groupNames.joinToString(separator = ".", postfix = ".")) + name
-    fun groupName(importContext: ProjectImportContext): Array<String>? = null
+    fun groupName(context: ProjectImportContext): Array<String>? = null
     fun isPreselected(): Boolean
-    fun ideaModuleFile(importContext: ProjectImportContext): Path
+    fun ideaModuleFile(context: ProjectImportContext): Path
     fun getRelativePath(rootDirectory: Path): String
     fun getRequiredExtensionNames(): Set<String>
     fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean

@@ -17,18 +17,17 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Files
 import kotlin.io.path.exists
 
-class ProjectModulesDirectoryConfigurator : ProjectPreImportConfigurator {
+class ProjectModulesDirectoryConfigurator : ProjectImportConfigurator {
 
     override val name: String
         get() = "Modules Directory"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        importContext.modulesFilesDirectory
+    override suspend fun configure(context: ProjectImportContext) {
+        context.modulesFilesDirectory
             ?.takeUnless { it.exists() }
             ?.let { Files.createDirectories(it) }
     }

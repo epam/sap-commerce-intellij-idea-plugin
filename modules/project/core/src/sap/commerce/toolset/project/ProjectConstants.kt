@@ -19,15 +19,11 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.module.JavaModuleType
-import com.intellij.openapi.util.Key
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.project.context.ProjectImportContext
 import kotlin.io.path.Path
 
 object ProjectConstants {
 
-    @JvmStatic
-    val KEY_FINALIZE_PROJECT_IMPORT: Key<ProjectImportContext> = Key.create("hybrisProjectImportFinalize")
     val Y_MODULE_TYPE_ID = JavaModuleType.getModuleType().id
 
     object Directory {
@@ -89,9 +85,8 @@ object ProjectConstants {
         const val ACCELERATOR_ADDON = "acceleratoraddon"
         const val WEB_ROOT = "webroot"
 
-        val SRC_DIR_NAMES = arrayOf(SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-        val ALL_SRC_DIR_NAMES = arrayOf(GEN_SRC, SRC, GROOVY_SRC, KOTLIN_SRC, SCALA_SRC)
-        val TEST_SRC_DIR_NAMES = arrayOf(TEST_SRC, GROOVY_TEST_SRC, KOTLIN_TEST_SRC, SCALA_TEST_SRC)
+        val SRC_DIR_NAMES = arrayOf(SRC, GROOVY_SRC, SCALA_SRC)
+        val TEST_SRC_DIR_NAMES = arrayOf(TEST_SRC, GROOVY_TEST_SRC, SCALA_TEST_SRC)
     }
 
     object File {

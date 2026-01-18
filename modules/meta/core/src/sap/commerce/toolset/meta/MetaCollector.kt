@@ -63,7 +63,10 @@ abstract class MetaCollector<T : DomElement>(
                         val xmlFile = psiFile.asSafely<XmlFile>() ?: return true
                         val virtualFile = xmlFile.virtualFile ?: return true
                         val metaContainer = projectFileIndex.getModuleForFile(virtualFile)
-                            ?.let { it.name to it.yExtensionName() }
+                            ?.let {
+                                val extensionName = it.yExtensionName ?: return@let null
+                                it.name to extensionName
+                            }
                         // Some files are part of the Library and, as a result, aren't associated with any Module
                             ?: libraryTable.libraries
                                 .firstNotNullOfOrNull { library ->

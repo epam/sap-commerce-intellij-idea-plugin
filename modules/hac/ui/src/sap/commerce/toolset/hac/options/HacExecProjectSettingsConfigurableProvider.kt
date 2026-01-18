@@ -98,7 +98,7 @@ class HacExecProjectSettingsConfigurableProvider(private val project: Project) :
             val connectionService = HacExecConnectionService.getInstance(project)
             val newSettings = connectionsListPanel.data.map { it.immutable() }
 
-            connectionService.save(newSettings.associate { it.first to it.second })
+            connectionService.save(newSettings.toMap())
 
             if (newSettings.isEmpty()) {
                 originalConnections = connectionService.connections.map { it.mutable() }

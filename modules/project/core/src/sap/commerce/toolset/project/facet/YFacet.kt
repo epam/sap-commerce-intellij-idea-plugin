@@ -39,9 +39,5 @@ class YFacet(
             if (module.isDisposed) return null
             return FacetManager.getInstance(module).getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
         }
-
-        fun getState(module: Module) = get(module)
-            ?.configuration
-            ?.state
     }
 }

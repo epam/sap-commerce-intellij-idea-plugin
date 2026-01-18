@@ -29,7 +29,7 @@ import java.nio.file.Path
 
 class YCustomModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
+    override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
         resolve(EiConstants.EXTENSION_INFO_XML).fileExists
     }
 

@@ -34,6 +34,7 @@ class ImpExVfsAsyncListener : AsyncFileListener {
     override fun prepareChange(events: MutableList<out VFileEvent>): ChangeApplier? {
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = events
+            .asSequence()
             .mapNotNull { it.file }
             .filter { it.extension == HybrisConstants.Languages.ImpEx.EXTENSION }
             .distinct()
@@ -45,10 +46,11 @@ class ImpExVfsAsyncListener : AsyncFileListener {
                     ?.asSafely<ImpExFile>()
                     ?: return@mapNotNull null
 
-                editor to psiFile
+                psiFile to editor
             }
+            .toList()
             .takeIf { it.isNotEmpty() }
-            ?.associate { it.second to it.first }
+            ?.toMap()
             ?: return null
 
         return object : ChangeApplier {

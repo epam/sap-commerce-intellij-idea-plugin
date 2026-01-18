@@ -48,7 +48,7 @@ class ModuleRootsScanner {
     private val logger = thisLogger()
 
     suspend fun execute(
-        importContext: ProjectImportContext.Mutable,
+        context: ProjectImportContext.Mutable,
         rootDirectory: Path,
         skipDirectories: Collection<Path>
     ): Collection<ModuleRoot> {
@@ -92,10 +92,10 @@ class ModuleRootsScanner {
                                 else -> {
                                     reporter.indeterminateStep("Processing: $path")
 
-                                    processVcsRoot(path, importContext)
+                                    processVcsRoot(path, context)
 
                                     moduleRootResolvers
-                                        .firstOrNull { it.isApplicable(importContext, rootDirectory, path) }
+                                        .firstOrNull { it.isApplicable(context, rootDirectory, path) }
                                         ?.resolve(path)
                                         ?.also {
                                             it.moduleRoot?.let { moduleRoot ->
@@ -121,29 +121,29 @@ class ModuleRootsScanner {
     }
 
     fun processModuleRootsByTypePriority(
-        importContext: ProjectImportContext.Mutable,
+        context: ProjectImportContext.Mutable,
         rootDirectory: Path,
         moduleRoots: Collection<ModuleRoot>
     ): Collection<ModuleRoot> {
         val moduleRootDirectories = mutableMapOf<String, ModuleRoot>()
 
         moduleRoots.filter { it.moduleGroup == ModuleGroup.HYBRIS }
-            .forEach { file -> addIfNotExists(importContext, rootDirectory, file, moduleRootDirectories) }
+            .forEach { file -> addIfNotExists(context, rootDirectory, file, moduleRootDirectories) }
 
         moduleRoots.filter { it.moduleGroup == ModuleGroup.OTHER }
-            .forEach { file -> addIfNotExists(importContext, rootDirectory, file, moduleRootDirectories) }
+            .forEach { file -> addIfNotExists(context, rootDirectory, file, moduleRootDirectories) }
 
         return moduleRootDirectories.values
     }
 
     private fun addIfNotExists(
-        importContext: ProjectImportContext.Mutable,
+        context: ProjectImportContext.Mutable,
         rootDirectory: Path,
         moduleRoot: ModuleRoot,
         moduleRoots: MutableMap<String, ModuleRoot>
     ) {
-        val hybrisDistributionDirectory = importContext.platformDistributionPath
-        val externalExtensionsDirectory = importContext.externalExtensionsDirectory
+        val hybrisDistributionDirectory = context.platformDistributionPath
+        val externalExtensionsDirectory = context.externalExtensionsDirectory
         try {
             // this will resolve symlinks
             val moduleRootPath = moduleRoot.path
@@ -177,10 +177,10 @@ class ModuleRootsScanner {
     }
 
 
-    private fun processVcsRoot(directory: Path, importContext: ProjectImportContext.Mutable) {
+    private fun processVcsRoot(directory: Path, context: ProjectImportContext.Mutable) {
         if (directory.isVcs) {
             thisLogger().info("Detected version control system: $directory")
-            importContext.addVcs(directory)
+            context.addVcs(directory)
         }
     }
 

@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 
@@ -25,7 +24,7 @@ class ResetCacheProjectRefreshConfigurator : ProjectRefreshConfigurator {
     override val name: String
         get() = "Reset Cache"
 
-    override suspend fun beforeRefresh(refreshContext: ProjectRefreshContext, workspaceModel: WorkspaceModel) {
-        PropertyService.getInstance(refreshContext.project).resetCache()
+    override suspend fun configure(context: ProjectRefreshContext) {
+        PropertyService.getInstance(context.project).resetCache()
     }
 }

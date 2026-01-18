@@ -25,5 +25,5 @@ interface ConfigModuleDescriptor : ModuleDescriptor {
     var isMainConfig: Boolean
 
     fun setPreselected(preselected: Boolean)
-    override fun groupName(importContext: ProjectImportContext) = importContext.settings.groupCustom.toIdeaGroup()
+    override fun groupName(context: ProjectImportContext) = context.settings.groupCustom.toIdeaGroup()
 }

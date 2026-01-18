@@ -22,6 +22,7 @@ object ProjectImportConstants {
 
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
+    const val MIN_IMPORT_API_VERSION = "2025.3.1"
 
     val excludedFromScanningDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)
@@ -55,6 +56,9 @@ object ProjectImportConstants {
         add(ProjectConstants.Directory.NODE_MODULES)
 
         add(ProjectConstants.Directory.GEN_SRC)
+        add(ProjectConstants.Directory.KOTLIN_SRC)
+        add(ProjectConstants.Directory.KOTLIN_TEST_SRC)
+
         addAll(ProjectConstants.Directory.SRC_DIR_NAMES)
         addAll(ProjectConstants.Directory.TEST_SRC_DIR_NAMES)
     }

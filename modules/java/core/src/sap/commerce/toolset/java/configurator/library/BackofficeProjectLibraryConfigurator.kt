@@ -37,31 +37,28 @@ class BackofficeProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ): LibraryEntityBuilder? {
-        val backofficeWebDescriptor = importContext.chosenHybrisModuleDescriptors
+    override suspend fun configure(context: ProjectImportContext): LibraryEntityBuilder? {
+        val backofficeWebDescriptor = context.chosenHybrisModuleDescriptors
             .filterIsInstance<YWebSubModuleDescriptor>()
             .find { it.owner is YBackofficeModuleDescriptor }
 
         if (backofficeWebDescriptor == null) {
             thisLogger().info("Project library '${JavaConstants.ProjectLibrary.BACKOFFICE}' will not be created because ${EiConstants.Extension.BACK_OFFICE} extension is not used.")
-            workspaceModel.removeProjectLibrary(JavaConstants.ProjectLibrary.BACKOFFICE)
+            context.workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.BACKOFFICE)
             return null
         }
 
-        val workspaceModel = WorkspaceModel.Companion.getInstance(importContext.project)
+        val workspaceModel = WorkspaceModel.Companion.getInstance(context.project)
         val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(backofficeWebDescriptor.webRootClasses(virtualFileUrlManager))
             addAll(backofficeWebDescriptor.webRootJars(virtualFileUrlManager))
             addAll(backofficeWebDescriptor.docSources(virtualFileUrlManager))
 
-            addAll(importContext.backofficeJars(virtualFileUrlManager))
+            addAll(context.backofficeJars(virtualFileUrlManager))
         }
 
-        return importContext.project.configureProjectLibrary(
+        return context.project.configureProjectLibrary(
             libraryName = JavaConstants.ProjectLibrary.BACKOFFICE,
             libraryRoots = libraryRoots,
         )

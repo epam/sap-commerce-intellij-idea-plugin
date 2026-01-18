@@ -19,7 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.FrameworkDetectionConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ExcludeFrameworkDetectionConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

@@ -27,6 +27,8 @@
         <action id="sap.commerce.toolset.yRefresh" class="sap.commerce.toolset.project.actionSystem.ProjectRefreshAction">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
+
+        <action id="sap.commerce.toolset.reimport" class="sap.commerce.toolset.project.actionSystem.ProjectReimportAction"/>
     </actions>
 
 </idea-plugin>

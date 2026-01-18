@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import com.intellij.platform.workspace.jps.entities.ModuleTypeId
@@ -35,15 +34,11 @@ interface ModuleProvider {
 
     suspend fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
 
-    suspend fun create(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: ModuleDescriptor,
-    ): ModuleEntityBuilder {
-        val project = importContext.project
-        val ideaModuleParentPath = moduleDescriptor.ideaModuleFile(importContext).parent
+    suspend fun create(context: ProjectImportContext, moduleDescriptor: ModuleDescriptor): ModuleEntityBuilder {
+        val project = context.project
+        val ideaModuleParentPath = moduleDescriptor.ideaModuleFile(context).parent
 
-        val baseModuleDir = workspaceModel.getVirtualFileUrlManager().fromPath(ideaModuleParentPath.normalize().pathString)
+        val baseModuleDir = context.workspace.getVirtualFileUrlManager().fromPath(ideaModuleParentPath.normalize().pathString)
         val entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(project).createEntitySourceForModule(
             baseModuleDir = baseModuleDir,
             externalSource = null

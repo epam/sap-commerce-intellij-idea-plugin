@@ -20,11 +20,10 @@ package sap.commerce.toolset.javaee.configurator
 import com.intellij.javaee.ExternalResourceManagerEx
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
@@ -38,10 +37,10 @@ class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
     override val name: String
         get() = "XSD Schema"
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val project = context.project
         val cockpitJarToFile = readAction {
-            importContext.chosenHybrisModuleDescriptors
+            context.chosenHybrisModuleDescriptors
                 .find { it is YWebSubModuleDescriptor && it.owner is YBackofficeModuleDescriptor }
                 ?.moduleRootPath
                 ?.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)

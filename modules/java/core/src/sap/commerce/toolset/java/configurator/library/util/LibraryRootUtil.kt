@@ -52,8 +52,12 @@ fun ModuleDescriptor.resources(virtualFileUrlManager: VirtualFileUrlManager) = t
     virtualFileUrlManager, Path(ProjectConstants.Directory.RESOURCES)
 )
 
+fun ModuleDescriptor.genSources(virtualFileUrlManager: VirtualFileUrlManager) = this.sources(
+    virtualFileUrlManager, Path(ProjectConstants.Directory.GEN_SRC)
+)
+
 fun ModuleDescriptor.sources(virtualFileUrlManager: VirtualFileUrlManager) = this.sources(
-    virtualFileUrlManager, *ProjectConstants.Directory.ALL_SRC_DIR_NAMES.map { Path(it) }.toTypedArray()
+    virtualFileUrlManager, *ProjectConstants.Directory.SRC_DIR_NAMES.map { Path(it) }.toTypedArray()
 )
 
 fun ModuleDescriptor.testSources(virtualFileUrlManager: VirtualFileUrlManager) = this.sources(

@@ -32,7 +32,7 @@ import java.nio.file.Path
 
 class EclipseModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.ECLIPSE.ifActive {
+    override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.ECLIPSE.ifActive {
         rootDirectory != path && path.resolve(EclipseConstants.DOT_PROJECT).fileExists
     } ?: false
 

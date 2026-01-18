@@ -160,7 +160,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         _ui.apply()
 
         val importSettings = importCoreContext.importSettings.immutable()
-        val importContext = importBuilder().initContext(importSettings)
+        val importContext = importBuilder().initContext(importSettings, removeExternalModules = false)
 
         wizardContext.projectName = importCoreContext.projectName.get()
 
@@ -191,8 +191,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 ?.takeIf { it.fileExists }
 
             this.ccv2Token = importCoreContext.ccv2Token.get()
-
-            thisLogger().info("importing a project with the following settings: $this")
         }
 
         searchModuleRoots(importContext)
@@ -272,7 +270,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
     override fun refresh(refreshContext: ProjectRefreshContext) {
         val importSettings = refreshContext.importSettings
         val projectSettings = refreshContext.project.ySettings
-        val importContext = importBuilder().initContext(importSettings)
+        val importContext = importBuilder().initContext(importSettings, refreshContext.removeExternalModules)
 
         with(importContext) {
             val resolvedPlatformDistributionPath = (projectSettings.platformRelativePath
@@ -304,7 +302,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             this.excludedFromScanning = projectSettings.excludedFromScanning
         }
 
-        thisLogger().info("Refreshing a project with the following settings: $importContext")
         searchModuleRoots(importContext)
     }
 

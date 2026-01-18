@@ -32,7 +32,7 @@ import java.nio.file.Path
 
 class MavenModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.MAVEN.ifActive {
+    override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.MAVEN.ifActive {
         rootDirectory != path && path.resolve(MavenConstants.POM_XML).fileExists
     } ?: false
 

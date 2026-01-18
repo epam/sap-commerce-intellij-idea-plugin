@@ -36,7 +36,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisConstants.PROPERTY_PLATFORMHOME
 import sap.commerce.toolset.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.yExtensionDescriptor
 import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisJUnitExtension : RunConfigurationExtension() {
@@ -91,7 +91,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         val modules: Array<Module> = ModuleManager.getInstance(project).modules
         for (module in modules) {
 
-            if (YFacet.getState(module)?.type?.name.equals("CCV2")) {
+            if (module.yExtensionDescriptor?.type?.name.equals("CCV2")) {
                 continue
             }
 

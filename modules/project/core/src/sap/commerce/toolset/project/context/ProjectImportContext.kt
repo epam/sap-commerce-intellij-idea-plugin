@@ -19,13 +19,16 @@
 package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
+import com.intellij.platform.workspace.jps.entities.LibraryId
 import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import java.nio.file.Path
 
@@ -34,6 +37,7 @@ data class ProjectImportContext(
     val rootDirectory: Path,
     val platformDirectory: Path,
     val refresh: Boolean,
+    val removeExternalModules: Boolean,
     val settings: ProjectImportSettings,
 
     val modulesFilesDirectory: Path? = null,
@@ -60,40 +64,47 @@ data class ProjectImportContext(
 
     val chosenHybrisModuleDescriptors: Collection<ModuleDescriptor>,
     val chosenOtherModuleDescriptors: Collection<ModuleDescriptor>,
-
-    // Must not be used in PostImportConfigurators as it will be cleared beforehand
-    // represents intermediate state of the storage to be persisted by ProjectImportTask
-    val mutableStorage: MutableWorkspace = MutableWorkspace(),
 ) {
+    val mutableStorage: MutableWorkspace = MutableWorkspace()
+    val workspace = WorkspaceModel.getInstance(project)
+
     val allChosenModuleDescriptors
         get() = chosenHybrisModuleDescriptors + chosenOtherModuleDescriptors
+    val unusedExtensions
+        get() = chosenHybrisModuleDescriptors
+            .filter { it.importStatus == ModuleDescriptorImportStatus.UNUSED }
+            .map { it.name }
 
     fun <T> ifRefresh(operation: () -> T): T? = if (refresh) operation() else null
     fun <T> ifImport(operation: () -> T): T? = if (!refresh) operation() else null
 
     data class MutableWorkspace(
-        private val _modules: MutableList<ModuleEntityBuilder> = mutableListOf(),
-        private val _libraries: MutableList<LibraryEntityBuilder> = mutableListOf(),
+        private val _modules: MutableMap<ModuleDescriptor, ModuleEntityBuilder> = mutableMapOf(),
+        private val _libraries: MutableMap<LibraryId, LibraryEntityBuilder> = mutableMapOf(),
     ) {
         private var accessAllowed = true
+        var committed: Boolean = false
+            private set
 
         private fun <T> access(exec: () -> T) = if (accessAllowed) exec()
         else throw IllegalStateException("Access is not allowed at this point.")
 
         val libraries
-            get() = access { _libraries.toList() }
+            get() = access { _libraries.toMap() }
         val modules
-            get() = access { _modules.toList() }
+            get() = access { _modules.toMap() }
 
-        fun add(entity: LibraryEntityBuilder) = access { _libraries.add(entity) }
-        fun add(entity: ModuleEntityBuilder) = access { _modules.add(entity) }
+        fun add(libraryId: LibraryId, entity: LibraryEntityBuilder) = access { _libraries[libraryId] = entity }
+        fun add(descriptor: ModuleDescriptor, entity: ModuleEntityBuilder) = access { _modules[descriptor] = entity }
 
-        fun clear() = access {
+        fun lock() = access {
             // Any access to the class must not take place after cleanup
             accessAllowed = false
 
             _modules.clear()
             _libraries.clear()
+
+            committed = true
         }
     }
 
@@ -101,6 +112,7 @@ data class ProjectImportContext(
         val rootDirectory: Path,
         val refresh: Boolean,
         val settings: ProjectImportSettings,
+        val removeExternalModules: Boolean,
 
         var project: Project? = null,
         var modulesFilesDirectory: Path? = null,
@@ -146,6 +158,7 @@ data class ProjectImportContext(
             rootDirectory = rootDirectory,
             refresh = refresh,
             settings = settings,
+            removeExternalModules = removeExternalModules,
 
             modulesFilesDirectory = modulesFilesDirectory,
             ccv2Token = ccv2Token,

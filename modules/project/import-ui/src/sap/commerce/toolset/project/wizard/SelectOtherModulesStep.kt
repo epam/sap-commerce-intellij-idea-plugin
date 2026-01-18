@@ -34,7 +34,7 @@ class SelectOtherModulesStep(context: WizardContext) : AbstractSelectModulesStep
 
     // TODO: restore previous selections
     override fun updateStep() {
-        val importContext = context.importContext ?: return
+        val importContext = context.context ?: return
 
         context.list = importContext.foundModules
             .filterIsInstance<ExternalModuleDescriptor>()
@@ -61,7 +61,7 @@ class SelectOtherModulesStep(context: WizardContext) : AbstractSelectModulesStep
     @Throws(ConfigurationException::class)
     override fun validate() = validateCommon()
 
-    override fun isStepVisible() = context.importContext
+    override fun isStepVisible() = context.context
         ?.foundModules
         ?.filterIsInstance<ExternalModuleDescriptor>()
         ?.isNotEmpty()

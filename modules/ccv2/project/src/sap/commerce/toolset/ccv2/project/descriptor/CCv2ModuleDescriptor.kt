@@ -37,6 +37,6 @@ abstract class CCv2ModuleDescriptor(
     }
 
     override fun isPreselected() = true
-    override fun groupName(importContext: ProjectImportContext) = importContext.settings.groupCCv2.toIdeaGroup()
+    override fun groupName(context: ProjectImportContext) = context.settings.groupCCv2.toIdeaGroup()
 
 }

@@ -42,8 +42,9 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.root
+import sap.commerce.toolset.project.contentRoot
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.yExtensionName
 import java.io.BufferedOutputStream
 import java.io.File
@@ -73,14 +74,15 @@ class GenerateCodeCompilerTask : CompileTask {
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
 
         val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
-        val platformModule = modules.firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
+        val moduleMapping = project.ySettings.module2extensionMapping
+        val platformModule = modules.firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.PLATFORM }
             ?: return true
 
-        val platformModuleRoot = platformModule.root()
+        val platformModuleRoot = platformModule.contentRoot
             ?: return true
         val coreModuleRoot = modules
-            .firstOrNull { it.yExtensionName() == EiConstants.Extension.CORE }
-            ?.root()
+            .firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.CORE }
+            ?.contentRoot
             ?: return true
 
         val sdk = ModuleRootManager.getInstance(platformModule).sdk
