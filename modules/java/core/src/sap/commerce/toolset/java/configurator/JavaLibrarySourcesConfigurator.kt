@@ -50,6 +50,7 @@ import sap.commerce.toolset.java.jarFinder.LibraryRootLookupService
 import sap.commerce.toolset.java.jarFinder.LibraryRootType
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
+import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.io.IOException
@@ -254,16 +255,18 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         val missingLibraryRootLookups = libraryRootLookups.filter { it.libraryRoot == null }
             .onEach { it.scope = LibraryRootLookupScope.MISSING }
 
-        // find and set urls for each not yet downloaded source jar
-        LibraryRootLookupService.getService().findJarUrls(lookupRepositories, libraryJar, missingLibraryRootLookups)
+        if (context.settings.librarySourcesFetchMode == LibrarySourcesFetchMode.REMOTE) {
+            // find and set urls for each not yet downloaded source jar
+            LibraryRootLookupService.getService().findJarUrls(lookupRepositories, libraryJar, missingLibraryRootLookups)
 
-        // download not yet downloaded source jars
-        missingLibraryRootLookups.forEach { libraryRootLookup ->
-            downloadSourceJar(librarySourceDir, vfUrlManager, libraryRootLookup)
-                ?.let {
-                    libraryRootLookup.libraryRoot = it
-                    libraryRootLookup.scope = LibraryRootLookupScope.NEW
-                }
+            // download not yet downloaded source jars
+            missingLibraryRootLookups.forEach { libraryRootLookup ->
+                downloadSourceJar(librarySourceDir, vfUrlManager, libraryRootLookup)
+                    ?.let {
+                        libraryRootLookup.libraryRoot = it
+                        libraryRootLookup.scope = LibraryRootLookupScope.NEW
+                    }
+            }
         }
 
         // we're operating on the same objects, so it should be safe to return local

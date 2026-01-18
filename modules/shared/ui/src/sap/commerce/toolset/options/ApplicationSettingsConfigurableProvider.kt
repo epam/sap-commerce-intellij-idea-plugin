@@ -20,6 +20,8 @@ package sap.commerce.toolset.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.ComponentPredicate
 import com.intellij.ui.layout.selected
@@ -27,6 +29,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.equalsIgnoreOrder
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 import sap.commerce.toolset.ui.CRUDListPanel
 import javax.swing.Icon
 import javax.swing.JCheckBox
@@ -88,6 +91,15 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 }
 
                 row {
+                    comboBox(
+                        model = EnumComboBoxModel(LibrarySourcesFetchMode::class.java),
+                        renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                    )
+                        .bindItem(
+                            { applicationSettings.librarySourcesFetchMode },
+                            { applicationSettings.librarySourcesFetchMode = it!! }
+                        )
+
                     label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                     checkBox(i18n("hybris.project.import.withExternalLibrarySources"))

@@ -24,6 +24,8 @@ import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.ClearableLazyValue
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.scale.JBUIScale
@@ -37,6 +39,7 @@ import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 import sap.commerce.toolset.ui.banner
 import java.awt.Dimension
 import javax.swing.Icon
@@ -94,6 +97,12 @@ class ProjectRefreshDialog(
                 }
 
                 row {
+                    comboBox(
+                        model = EnumComboBoxModel(LibrarySourcesFetchMode::class.java),
+                        renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                    )
+                        .bindItem(refreshContext.importSettings.librarySourcesFetchMode)
+
                     label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                     checkBox(i18n("hybris.project.import.withExternalLibrarySources"))

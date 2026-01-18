@@ -21,6 +21,7 @@ package sap.commerce.toolset.settings.state
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 
 @Tag("HybrisApplicationSettings")
 data class ApplicationSettingsState(
@@ -30,6 +31,7 @@ data class ApplicationSettingsState(
     @JvmField @OptionTag val hideEmptyMiddleFolders: Boolean = true,
     @JvmField @OptionTag val defaultPlatformInReadOnly: Boolean = true,
     @JvmField @OptionTag val ignoreNonExistingSourceDirectories: Boolean = false,
+    @JvmField @OptionTag val librarySourcesFetchMode: LibrarySourcesFetchMode = LibrarySourcesFetchMode.REMOTE,
     @JvmField @OptionTag val withExternalLibrarySources: Boolean = true,
     @JvmField @OptionTag val withExternalLibraryJavadocs: Boolean = false,
     @JvmField @OptionTag val useFakeOutputPathForCustomExtensions: Boolean = true,

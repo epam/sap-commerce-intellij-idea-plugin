@@ -59,6 +59,11 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(ignoreNonExistingSourceDirectories = value) }
         }
+    var librarySourcesFetchMode: LibrarySourcesFetchMode
+        get() = state.librarySourcesFetchMode
+        set(value) {
+            updateState { it.copy(librarySourcesFetchMode = value) }
+        }
     var withExternalLibrarySources: Boolean
         get() = state.withExternalLibrarySources
         set(value) {
