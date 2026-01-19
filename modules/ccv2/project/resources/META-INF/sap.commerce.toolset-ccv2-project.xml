@@ -18,6 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.postImportConfigurator implementation="sap.commerce.toolset.ccv2.project.configurator.CCv2YFacetConfigurator"/>
+
         <project.module.rootResolver order="after yCustomModuleRootResolver" id="ccv2CoreCustomizeModuleRootResolver"
                                      implementation="sap.commerce.toolset.ccv2.project.module.CCv2CoreCustomizeModuleRootResolver"/>
         <project.module.rootResolver order="after yCustomModuleRootResolver" id="ccv2DataHubModuleRootResolver"

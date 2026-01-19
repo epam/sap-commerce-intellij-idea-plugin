@@ -19,11 +19,14 @@
 package sap.commerce.toolset.project.facet
 
 import com.intellij.facet.Facet
+import com.intellij.facet.FacetTypeRegistry
 import com.intellij.facet.impl.FacetUtil
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.JDOMExternalizable
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.util.WriteExternalException
 import com.intellij.util.asSafely
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 val Facet<*>.configurationXmlTag
     get() = try {
@@ -33,3 +36,17 @@ val Facet<*>.configurationXmlTag
         null
     }
         ?.let { JDOMUtil.write(it) }
+
+fun ModuleDescriptor.createYFacet(module: Module): YFacet {
+    val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
+
+    val facet = facetType.createFacet(
+        module,
+        facetType.defaultFacetName,
+        facetType.createDefaultConfiguration(),
+        null
+    )
+    facet.configuration.loadState(this.extensionDescriptor)
+
+    return facet
+}
