@@ -43,7 +43,7 @@ class HacProjectLibraryConfigurator : ProjectLibraryConfigurator {
             ?.firstOrNull()
 
         if (hacWebModuleDescriptor == null) {
-            thisLogger().info("Project library '${JavaConstants.ProjectLibrary.HAC}' will not be created because ${EiConstants.Extension.HAC} extension is not used.")
+            thisLogger().debug("Project library '${JavaConstants.ProjectLibrary.HAC}' will not be created because ${EiConstants.Extension.HAC} extension is not used.")
             workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.HAC)
             return null
         }

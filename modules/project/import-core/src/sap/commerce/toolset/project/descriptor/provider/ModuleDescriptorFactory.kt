@@ -44,7 +44,7 @@ class ModuleDescriptorFactory {
         return ModuleDescriptorProvider.EP.extensionList
             .firstOrNull { it.isApplicable(context) }
             ?.create(context)
-            ?.also { thisLogger().info("Created module descriptor [${it.type} | ${it.name} | $path]") }
+            ?.also { thisLogger().debug("Created module descriptor [${it.type} | ${it.name} | $path]") }
             ?: throw HybrisConfigurationException("Could not find suitable module descriptor provider for $path")
     }
 

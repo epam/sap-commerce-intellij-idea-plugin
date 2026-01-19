@@ -16,39 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.runConfigurations
+package sap.commerce.toolset.project.configurator
 
 import com.intellij.execution.RunManager
-import com.intellij.execution.RunnerAndConfigurationSettings
-import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.ConfigurationTypeUtil
-import com.intellij.openapi.application.backgroundWriteAction
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.context.ProjectPostImportContext
+import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
 
-suspend fun <T : ConfigurationType> createRunConfiguration(
-    runManager: RunManager,
-    configurationType: Class<T>,
-    configurationName: String,
-    activate: Boolean = false,
-    configurationConsumer: (RunnerAndConfigurationSettings) -> Unit = {}
-) {
-    if (runManager.findConfigurationByName(configurationName) != null) return
+class LocalServerRunConfigurationWhenSmartConfigurator : ProjectImportWhenSmartConfigurator {
 
-    val confType = ConfigurationTypeUtil.findConfigurationType(configurationType)
-    val configurationFactory = confType.configurationFactories.first()
+    override val name: String
+        get() = "Run Configurations - Local SAP CX"
 
-    return backgroundWriteAction {
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val runManager = RunManager.getInstance(context.project)
+        val configurationName = i18n("hybris.project.run.configuration.localserver")
+
+        if (runManager.findConfigurationByName(configurationName) != null) return
+
+        val confType = ConfigurationTypeUtil.findConfigurationType(LocalSapCXConfigurationType::class.java)
+        val configurationFactory = confType.configurationFactories.first()
         val runner = runManager.createConfiguration(
             configurationName,
             configurationFactory
         )
 
-        configurationConsumer.invoke(runner)
-
         runner.isActivateToolWindowBeforeRun = true
         runner.storeInDotIdeaFolder()
 
         runManager.addConfiguration(runner)
-
-        if (activate) runManager.selectedConfiguration = runner
     }
 }

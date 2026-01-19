@@ -26,6 +26,8 @@ import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigura
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isNonCustomModuleDescriptor
+import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
 
 class ExcludeCommonsContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
@@ -42,16 +44,21 @@ class ExcludeCommonsContentRootEntryConfigurator : ModuleContentRootEntryConfigu
     ) {
         val moduleRootPath = context.moduleDescriptor.moduleRootPath
         val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
-        val excludePaths = listOf(
-            moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY),
-            moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY),
-            moduleRootPath.resolve(HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY),
-            moduleRootPath.resolve(ProjectConstants.Directory.NODE_MODULES),
-            moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES),
-            moduleRootPath.resolve(ProjectConstants.Directory.ECLIPSE_BIN),
-            moduleRootPath.resolve(ProjectConstants.Directory.BOWER_COMPONENTS),
-            moduleRootPath.resolve(ProjectConstants.Directory.JS_TARGET),
-        )
+        val excludePaths = buildList {
+            add(moduleRootPath.resolve(HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY))
+            add(moduleRootPath.resolve(HybrisConstants.SETTINGS_DIRECTORY))
+            add(moduleRootPath.resolve(HybrisConstants.SPOCK_META_INF_SERVICES_DIRECTORY))
+            add(moduleRootPath.resolve(ProjectConstants.Directory.NODE_MODULES))
+            add(moduleRootPath.resolve(ProjectConstants.Directory.TEST_CLASSES))
+            add(moduleRootPath.resolve(ProjectConstants.Directory.ECLIPSE_BIN))
+            add(moduleRootPath.resolve(ProjectConstants.Directory.BOWER_COMPONENTS))
+            add(moduleRootPath.resolve(ProjectConstants.Directory.JS_TARGET))
+
+            moduleRootPath.resolve(ProjectConstants.Directory.APPS)
+                .takeIf { context.moduleDescriptor.isNonCustomModuleDescriptor && context.importContext.settings.importOOTBModulesInReadOnlyMode }
+                ?.takeIf { it.directoryExists }
+                ?.let { add(it) }
+        }
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)
     }

@@ -49,7 +49,7 @@ class JavaModuleLibrariesConfigurator : ModuleImportConfigurator {
                     checkCanceled()
 
                     val duration = measureTime { configurator.configure(context) }
-                    logger.info("Library configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
+                    logger.debug("Library configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
                 }
             }
         }

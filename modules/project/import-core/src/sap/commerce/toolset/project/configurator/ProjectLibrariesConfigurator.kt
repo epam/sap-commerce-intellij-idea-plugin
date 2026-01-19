@@ -40,7 +40,7 @@ class ProjectLibrariesConfigurator : ProjectImportConfigurator {
                     checkCanceled()
 
                     val timedValue = measureTimedValue { configurator.configure(context) }
-                    logger.info("Library configurator [${configurator.name} | ${timedValue.duration}]")
+                    logger.debug("Library configurator [${configurator.name} | ${timedValue.duration}]")
                     val libraryEntity = timedValue.value ?: return@itemStep
 
                     val libraryId = LibraryId(libraryEntity.name, libraryEntity.tableId)

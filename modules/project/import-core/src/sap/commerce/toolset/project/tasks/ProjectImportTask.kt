@@ -65,7 +65,7 @@ class ProjectImportTask(private val project: Project) {
                     checkCanceled()
 
                     val duration = measureTime { configurator.configure(context) }
-                    logger.info("Pre-configured project [${configurator.name} | $duration]")
+                    logger.debug("Pre-configured project [${configurator.name} | $duration]")
                 }
             }
         }
@@ -74,12 +74,12 @@ class ProjectImportTask(private val project: Project) {
     private suspend fun saveWorkspace(context: ProjectImportContext) {
         context.workspace.update("Saving Workspace Model") { storage ->
             ProjectStorageCleanupConfigurator.EP.extensionList.forEach { configurator ->
-                logger.info("Cleaning workspace using ${configurator.name} configurator...")
+                logger.debug("Cleaning workspace using ${configurator.name} configurator...")
                 configurator.configure(context, storage)
             }
 
             ProjectStorageSaveConfigurator.EP.extensionList.forEach { configurator ->
-                logger.info("Saving workspace using ${configurator.name} configurator...")
+                logger.debug("Saving workspace using ${configurator.name} configurator...")
                 configurator.configure(context, storage)
             }
 

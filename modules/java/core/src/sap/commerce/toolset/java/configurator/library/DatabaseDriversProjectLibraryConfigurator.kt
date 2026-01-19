@@ -45,7 +45,7 @@ class DatabaseDriversProjectLibraryConfigurator : ProjectLibraryConfigurator {
             ?.let { LibraryRoot(it, LibraryRootTypeId.COMPILED, LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT) }
 
         if (libraryRoot == null) {
-            thisLogger().info("Project library '${JavaConstants.ProjectLibrary.DATABASE_DRIVERS}' will not be created because database drivers location cannot be identified.")
+            thisLogger().debug("Project library '${JavaConstants.ProjectLibrary.DATABASE_DRIVERS}' will not be created because database drivers location cannot be identified.")
             workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.DATABASE_DRIVERS)
             return null
         }

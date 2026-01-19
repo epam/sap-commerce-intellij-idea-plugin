@@ -54,6 +54,8 @@ object ProjectConstants {
         const val TEST_CLASSES = "testclasses"
         const val MODEL_CLASSES = "modelclasses"
 
+        const val APPS = "apps"
+
         const val SRC = "src"
         const val GEN_SRC = "gensrc"
         const val ADDON_SRC = "addonsrc"

@@ -190,6 +190,8 @@ object HybrisConstants {
         "temp",
         "log",
         "data",
+        ".angular",
+        "dist",
     )
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")

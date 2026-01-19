@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.configurator
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
@@ -48,6 +49,7 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
 
                     configureLegacy(postImportContext)
                     configureWorkspace(postImportContext)
+                    configureWorkspaceWhenSmart(postImportContext)
 
                     cancel("post-import configurators started, do not listen for new events")
                 }
@@ -63,7 +65,7 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
         ProjectPostImportConfigurator.EP.extensionList.forEach { configurator ->
             runCatching {
                 val duration = measureTime { configurator.configure(context, legacyWorkspace, edtActions) }
-                logger.info("Post-configured project [${configurator.name} | $duration]")
+                logger.debug("Post-configured project [${configurator.name} | $duration]")
             }
                 .exceptionOrNull()
                 ?.let { logger.warn("Post-configurator '${configurator.name}' error: ${it.message}", it) }
@@ -81,23 +83,20 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
     private fun configureWorkspace(context: ProjectPostImportContext) {
         CoroutineScope(Dispatchers.Default).launch {
             if (context.project.isDisposed) return@launch
-            val postImportAsyncConfigurators = ProjectPostImportAsyncConfigurator.EP.extensionList
+            val configurators = ProjectPostImportAsyncConfigurator.EP.extensionList
 
             withBackgroundProgress(context.project, "Applying post-import configurators...", true) {
                 // async operations
                 supervisorScope {
-                    reportProgressScope(postImportAsyncConfigurators.size) { progressReporter ->
-                        postImportAsyncConfigurators.map { configurator ->
+                    reportProgressScope(configurators.size) { progressReporter ->
+                        configurators.map { configurator ->
                             async {
                                 progressReporter.itemStep("Applying '${configurator.name}' configurator...") {
                                     runCatching {
                                         val duration = measureTime { configurator.configure(context) }
-                                        logger.info("Post-configured async project [${configurator.name} | $duration]")
+                                        logger.debug("Post-configured async project [${configurator.name} | $duration]")
                                     }
                                         .exceptionOrNull()
-                                        // TODO: cancel by DB
-                                        // Control-flow exceptions (e.g. this class com.intellij.openapi.progress.CeProcessCanceledException) should never be logged.
-                                        // Instead, these should have been rethrown if caught.
                                         ?.let { logger.warn("Post-configurator '${configurator.name}' error: ${it.message}", it) }
                                 }
                             }
@@ -108,6 +107,36 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
             }
 
             notifyImportFinished(context.project, context.refresh)
+        }
+    }
+
+    private fun configureWorkspaceWhenSmart(context: ProjectPostImportContext) {
+        DumbService.getInstance(context.project).runWhenSmart {
+            CoroutineScope(Dispatchers.Default).launch {
+                if (context.project.isDisposed) return@launch
+
+                val configurators = ProjectImportWhenSmartConfigurator.EP.extensionList
+
+                withBackgroundProgress(context.project, "Applying index-aware configurators...", true) {
+                    supervisorScope {
+                        reportProgressScope(configurators.size) { progressReporter ->
+                            configurators.map { configurator ->
+                                async {
+                                    progressReporter.itemStep("Applying '${configurator.name}' configurator...") {
+                                        runCatching {
+                                            val duration = measureTime { configurator.configure(context) }
+                                            logger.debug("Post-configured index-aware project [${configurator.name} | $duration]")
+                                        }
+                                            .exceptionOrNull()
+                                            ?.let { logger.warn("Post-import index-aware configurator '${configurator.name}' error: ${it.message}", it) }
+                                    }
+                                }
+                            }
+                                .awaitAll()
+                        }
+                    }
+                }
+            }
         }
     }
 

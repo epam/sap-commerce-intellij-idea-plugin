@@ -37,7 +37,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ant.AntConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectImportWhenSmartConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -53,7 +53,7 @@ import java.util.*
 import kotlin.io.path.inputStream
 import kotlin.io.path.pathString
 
-class AntConfigurator : ProjectPostImportAsyncConfigurator {
+class AntWhenSmartConfigurator : ProjectImportWhenSmartConfigurator {
 
     override val name: String
         get() = "Ant"
@@ -118,11 +118,10 @@ class AntConfigurator : ProjectPostImportAsyncConfigurator {
         }
     }
 
-    private suspend fun getBuildVirtualFile(descriptor: ModuleDescriptor) = readAction {
-        descriptor.moduleRootPath.resolve(AntConstants.ANT_BUILD_XML)
-            .takeIf { it.fileExists }
-            ?.let { VfsUtil.findFile(it, true) }
-    }
+    private suspend fun getBuildVirtualFile(descriptor: ModuleDescriptor) = descriptor.moduleRootPath
+        .resolve(AntConstants.ANT_BUILD_XML)
+        .takeIf { it.fileExists }
+        ?.let { readAction { VfsUtil.findFile(it, true) } }
 
     private fun registerAntInstallation(
         context: ProjectPostImportContext,

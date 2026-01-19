@@ -101,7 +101,7 @@ class ModuleRootsScanner {
                                             it.moduleRoot?.let { moduleRoot ->
                                                 val pathMessage = if (path.isSymbolicLink()) "$path -> (${path.readSymbolicLink()})"
                                                 else path
-                                                logger.info("Detected module [${moduleRoot.type} | $pathMessage]")
+                                                logger.debug("Detected module [${moduleRoot.type} | $pathMessage]")
                                                 moduleRoots.add(moduleRoot)
                                             }
                                         }
@@ -179,7 +179,7 @@ class ModuleRootsScanner {
 
     private fun processVcsRoot(directory: Path, context: ProjectImportContext.Mutable) {
         if (directory.isVcs) {
-            thisLogger().info("Detected version control system: $directory")
+            thisLogger().debug("Detected version control system: $directory")
             context.addVcs(directory)
         }
     }

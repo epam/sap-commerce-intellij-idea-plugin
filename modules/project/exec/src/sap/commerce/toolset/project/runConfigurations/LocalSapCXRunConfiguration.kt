@@ -30,9 +30,12 @@ import com.intellij.execution.target.TargetEnvironmentConfiguration
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import org.jdom.Element
+import java.io.Serial
 
-class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory) :
-    ModuleBasedConfiguration<RunConfigurationModule, Element>(RunConfigurationModule(project), factory), TargetEnvironmentAwareRunProfile {
+class LocalSapCXRunConfiguration(
+    project: Project,
+    factory: ConfigurationFactory
+) : ModuleBasedConfiguration<RunConfigurationModule, Element>(RunConfigurationModule(project), factory), TargetEnvironmentAwareRunProfile {
 
     override fun getValidModules(): MutableCollection<Module> = allModules
     override fun getConfigurationEditor() = LocalSapCXRunSettingsEditor(this)
@@ -48,6 +51,7 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
     fun getRemoteConnection() = RemoteConnection(true, getSapCXOptions().remoteDebugHost, getSapCXOptions().remoteDebugPort, false)
 
     companion object {
+        @Serial
         private const val serialVersionUID: Long = 3578963582172536206L
     }
 }

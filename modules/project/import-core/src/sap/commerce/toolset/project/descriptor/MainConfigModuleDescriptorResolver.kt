@@ -87,7 +87,7 @@ class MainConfigModuleDescriptorResolver {
             ?.moduleRoot
             ?.takeIf { it.type == ModuleDescriptorType.CONFIG }
             ?.let {
-                thisLogger().info("Creating Overridden Config module in local.properties for: $configDir")
+                thisLogger().debug("Creating Overridden Config module in local.properties for: $configDir")
                 ModuleDescriptorFactory.getInstance().createDescriptor(context, it)
             }
             ?.let { it as? ConfigModuleDescriptor }

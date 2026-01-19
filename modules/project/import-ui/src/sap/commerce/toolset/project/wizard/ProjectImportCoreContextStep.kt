@@ -22,7 +22,6 @@ import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBScrollPane
@@ -52,86 +51,8 @@ import java.util.*
 import javax.swing.ScrollPaneConstants
 import kotlin.io.path.*
 
-
-/*
-2026-01-13 15:51:33,912 [ 868663] SEVERE - #c.i.o.u.ObjectTree - Memory leak detected: 'newDisposable' (class com.intellij.openapi.util.Disposer$1) was registered in Disposer as a child of 'ROOT_DISPOSABLE' (class com.intellij.openapi.util.Disposer$2) but wasn't disposed.
-Register it with a proper 'parentDisposable' or ensure that it's always disposed by direct Disposer.dispose() call.
-See https://plugins.jetbrains.com/docs/intellij/disposers.html for more details.
-The corresponding Disposer.register() stacktrace is shown as the cause:
-
-java.lang.RuntimeException: Memory leak detected: 'newDisposable' (class com.intellij.openapi.util.Disposer$1) was registered in Disposer as a child of 'ROOT_DISPOSABLE' (class com.intellij.openapi.util.Disposer$2) but wasn't disposed.
-Register it with a proper 'parentDisposable' or ensure that it's always disposed by direct Disposer.dispose() call.
-See https://plugins.jetbrains.com/docs/intellij/disposers.html for more details.
-The corresponding Disposer.register() stacktrace is shown as the cause:
-
-	at com.intellij.openapi.util.ObjectNode.assertNoChildren(ObjectNode.java:47)
-	at com.intellij.openapi.util.ObjectTree.assertIsEmpty(ObjectTree.java:227)
-	at com.intellij.openapi.util.Disposer.assertIsEmpty(Disposer.java:228)
-	at com.intellij.openapi.util.Disposer.assertIsEmpty(Disposer.java:222)
-	at com.intellij.openapi.application.impl.ApplicationImpl.disposeContainer(ApplicationImpl.java:281)
-	at com.intellij.openapi.application.impl.ApplicationImpl.destructApplication(ApplicationImpl.java:846)
-	at com.intellij.openapi.application.impl.ApplicationImpl.doExit(ApplicationImpl.java:742)
-	at com.intellij.openapi.application.impl.ApplicationImpl.exit(ApplicationImpl.java:727)
-	at com.intellij.openapi.application.impl.ApplicationImpl.exit(ApplicationImpl.java:716)
-	at com.intellij.openapi.application.ex.ApplicationEx.exit(ApplicationEx.java:65)
-	at com.intellij.ui.mac.MacOSApplicationProviderKt$initMacApplication$3$1$1.invokeSuspend(MacOSApplicationProvider.kt:109)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith$$$capture(ContinuationImpl.kt:34)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt)
-	at --- Async.Stack.Trace --- (captured by IntelliJ IDEA debugger)
-	at kotlinx.coroutines.debug.internal.DebugProbesImpl$CoroutineOwner.<init>(DebugProbesImpl.kt:531)
-	at kotlinx.coroutines.debug.internal.DebugProbesImpl.createOwner(DebugProbesImpl.kt:510)
-	at kotlinx.coroutines.debug.internal.DebugProbesImpl.probeCoroutineCreated$kotlinx_coroutines_core(DebugProbesImpl.kt:497)
-	at kotlin.coroutines.jvm.internal.DebugProbesKt.probeCoroutineCreated(DebugProbes.kt:7)
-	at kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsJvmKt.createCoroutineUnintercepted(IntrinsicsJvm.kt:161)
-	at kotlinx.coroutines.intrinsics.CancellableKt.startCoroutineCancellable(Cancellable.kt:26)
-	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:358)
-	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:134)
-	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:52)
-	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
-	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch$default(Builders.common.kt:43)
-	at kotlinx.coroutines.BuildersKt.launch$default(Unknown Source)
-	at com.intellij.ui.mac.MacOSApplicationProviderKt.submit(MacOSApplicationProvider.kt:217)
-	at com.intellij.ui.mac.MacOSApplicationProviderKt.initMacApplication$lambda$2(MacOSApplicationProvider.kt:106)
-	at java.desktop/com.apple.eawt._AppEventHandler$_QuitDispatcher.performUsing(_AppEventHandler.java:447)
-	at java.desktop/com.apple.eawt._AppEventHandler$_QuitDispatcher.performUsing(_AppEventHandler.java:436)
-	at java.desktop/com.apple.eawt._AppEventHandler$_AppEventDispatcher$1.run(_AppEventHandler.java:568)
-	at java.desktop/java.awt.event.InvocationEvent.dispatch$$$capture(InvocationEvent.java:318)
-	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java)
-	at --- Async.Stack.Trace --- (captured by IntelliJ IDEA debugger)
-	at java.desktop/java.awt.event.InvocationEvent.<init>(InvocationEvent.java:291)
-	at java.desktop/java.awt.event.InvocationEvent.<init>(InvocationEvent.java:217)
-	at java.desktop/sun.awt.PeerEvent.<init>(PeerEvent.java:45)
-	at java.desktop/sun.awt.PeerEvent.<init>(PeerEvent.java:40)
-	at java.desktop/sun.awt.SunToolkit.invokeLaterOnAppContext(SunToolkit.java:611)
-	at java.desktop/com.apple.eawt._AppEventHandler$_AppEventDispatcher.dispatch(_AppEventHandler.java:566)
-	at java.desktop/com.apple.eawt._AppEventHandler.handleNativeNotification(_AppEventHandler.java:238)
-Caused by: java.lang.Throwable
-	at com.intellij.openapi.util.ObjectNode.<init>(ObjectNode.java:25)
-	at com.intellij.openapi.util.ObjectNode.findOrCreateChildNode(ObjectNode.java:150)
-	at com.intellij.openapi.util.ObjectTree.register(ObjectTree.java:52)
-	at com.intellij.openapi.util.Disposer.register(Disposer.java:162)
-	at com.intellij.util.containers.DisposableWrapperList.createDisposableWrapper(DisposableWrapperList.java:246)
-	at com.intellij.util.containers.DisposableWrapperList.add(DisposableWrapperList.java:62)
-	at com.intellij.openapi.ui.DialogPanelValidator.registerPanel(DialogPanelValidator.kt:32)
-	at com.intellij.openapi.ui.DialogPanelValidator.<init>(DialogPanelValidator.kt:28)
-	at com.intellij.openapi.ui.DialogPanel.registerValidators(DialogPanel.kt:54)
-	at sap.commerce.toolset.project.wizard.ProjectImportCoreContextStep._ui_delegate$lambda$2(ProjectImportCoreContextStep.kt:65)
-	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:86)
-	at sap.commerce.toolset.project.wizard.ProjectImportCoreContextStep.get_ui(ProjectImportCoreContextStep.kt:63)
-	at sap.commerce.toolset.project.wizard.ProjectImportCoreContextStep.getComponent(ProjectImportCoreContextStep.kt:68)
-	at sap.commerce.toolset.project.wizard.ProjectImportCoreContextStep.getComponent(ProjectImportCoreContextStep.kt:55)
-	at com.intellij.ide.wizard.AbstractWizard.addStep(AbstractWizard.java:336)
-	at com.intellij.ide.wizard.AbstractWizard.addStep(AbstractWizard.java:326)
-	at com.intellij.ide.util.newProjectWizard.AddModuleWizard.initModuleWizard(AddModuleWizard.java:84)
-	at com.intellij.ide.util.newProjectWizard.AddModuleWizard.<init>(AddModuleWizard.java:44)
-	at sap.commerce.toolset.project.ProjectRefreshService$refresh$wizard$1.<init>(ProjectRefreshService.kt:69)
-	at sap.commerce.toolset.project.ProjectRefreshService.refresh(ProjectRefreshService.kt:69)
-	at sap.commerce.toolset.project.actionSystem.ProjectRefreshAction.actionPerformed(ProjectRefreshAction.kt:63)
-	at com.intellij.openapi.actionSystem.ex.ActionUtil.doPerformActionOrShowPopup(ActionUtil.kt:437)
- */
 class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizardStep(context), RefreshSupport {
 
-    private val disposable = Disposer.newDisposable()
     private val importCoreContext by lazy {
         ProjectImportCoreContext(
             importSettings = ProjectImportSettings.of(ApplicationSettings.getInstance()).mutable()
@@ -139,7 +60,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
     }
     private val _ui by lazy {
         uiCoreStep(importCoreContext)
-            .also { it.registerValidators(disposable) }
+            .also { it.registerValidators(wizardContext.disposable) }
     }
 
     override fun getComponent() = JBScrollPane(_ui).apply {
@@ -149,11 +70,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         CCv2ProjectSettings.getInstance().loadDefaultCCv2Token { ccv2Token ->
             if (ccv2Token != null) importCoreContext.ccv2Token.set(ccv2Token)
         }
-    }
-
-    override fun disposeUIResources() {
-        super.disposeUIResources()
-        disposable.dispose()
     }
 
     override fun updateDataModel() {
@@ -366,7 +282,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
     private fun searchModuleRoots(importContext: ProjectImportContext.Mutable) {
         try {
-            thisLogger().info("Setting RootProjectDirectory to ${importContext.rootDirectory}")
+            thisLogger().debug("Setting RootProjectDirectory to ${importContext.rootDirectory}")
 
             LookupModuleDescriptorsTask.getInstance().execute(importContext)
         } catch (e: Exception) {

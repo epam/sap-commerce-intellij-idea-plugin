@@ -40,7 +40,7 @@
 
         <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
 
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
+        <project.whenSmartConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
         <project.postImportAsyncConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
 

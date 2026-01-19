@@ -214,7 +214,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
                                     moduleDescriptor.addSpringFile(springFile)
                                 }
                             } catch (e: Exception) {
-                                thisLogger().warn("Could not load web app from ${entry.name}", e)
+                                thisLogger().warn("Could not load web app from ${entry.name} due: ${e.message}")
                             }
                         }
                     }

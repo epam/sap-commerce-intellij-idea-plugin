@@ -43,7 +43,7 @@ class HmcProjectLibraryConfigurator : ProjectLibraryConfigurator {
             ?.firstOrNull()
 
         if (hmcWebModuleDescriptor == null) {
-            thisLogger().info("Project library '${JavaConstants.ProjectLibrary.HMC}' will not be created because ${EiConstants.Extension.HMC} extension is not used.")
+            thisLogger().debug("Project library '${JavaConstants.ProjectLibrary.HMC}' will not be created because ${EiConstants.Extension.HMC} extension is not used.")
             workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.HMC)
             return null
         }

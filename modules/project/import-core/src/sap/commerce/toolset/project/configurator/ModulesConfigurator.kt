@@ -43,7 +43,7 @@ class ModulesConfigurator : ProjectImportConfigurator {
 
                     logger.debug("Configuring module [${context.moduleDescriptor.name}].")
                     val duration = measureTime { configureModule(context) }
-                    logger.info("Configured module [${context.moduleDescriptor.name} | ${duration}].")
+                    logger.debug("Configured module [${context.moduleDescriptor.name} | ${duration}].")
                 }
             }
         }
@@ -69,7 +69,7 @@ class ModulesConfigurator : ProjectImportConfigurator {
                     logger.debug("Creating module [${moduleDescriptor.name}].")
                     val timedValue = measureTimedValue { provider.create(context, moduleDescriptor) }
                     val moduleEntity = timedValue.value
-                    logger.info("Created module [${moduleDescriptor.name} | ${timedValue.duration}].")
+                    logger.debug("Created module [${moduleDescriptor.name} | ${timedValue.duration}].")
 
                     context.mutableStorage.add(moduleDescriptor, moduleEntity)
 
@@ -95,7 +95,7 @@ class ModulesConfigurator : ProjectImportConfigurator {
 
                     runCatching {
                         val duration = measureTime { configurator.configure(context) }
-                        logger.info("Applied module configurator [${context.moduleDescriptor.name} | ${configurator.name} | ${duration}].")
+                        logger.debug("Applied module configurator [${context.moduleDescriptor.name} | ${configurator.name} | ${duration}].")
                     }
                         .exceptionOrNull()
                         ?.let { logger.warn("Module configurator '${configurator.name}' error: ${it.message}", it) }

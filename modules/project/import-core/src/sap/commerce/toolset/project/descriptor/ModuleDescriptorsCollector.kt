@@ -53,7 +53,7 @@ class ModuleDescriptorsCollector {
         val foundModuleRoots = mutableListOf<ModuleRoot>()
 
         withProgressText("Scanning for modules & vcs...") {
-            logger.info("Scanning for modules & vcs: $rootDirectory")
+            logger.debug("Scanning for modules & vcs: $rootDirectory")
             moduleRootsScanner.execute(context, rootDirectory, skipDirectories)
                 .apply { foundModuleRoots.addAll(this) }
         }
@@ -62,7 +62,7 @@ class ModuleDescriptorsCollector {
             ?.takeUnless { it.isDescendantOf(rootDirectory) }
             ?.let {
                 withProgressText("Scanning for modules & vcs in: ${it.name}") {
-                    logger.info("Scanning external extensions directory: $it")
+                    logger.debug("Scanning external extensions directory: $it")
                     moduleRootsScanner.execute(context, it, skipDirectories)
                 }
             }
@@ -72,7 +72,7 @@ class ModuleDescriptorsCollector {
             ?.takeUnless { it.isDescendantOf(rootDirectory) }
             ?.let {
                 withProgressText("Scanning for modules & vcs in: ${it.name}") {
-                    logger.info("Scanning for hybris modules out of the project: $it")
+                    logger.debug("Scanning for hybris modules out of the project: $it")
                     moduleRootsScanner.execute(context, it, skipDirectories)
                 }
             }

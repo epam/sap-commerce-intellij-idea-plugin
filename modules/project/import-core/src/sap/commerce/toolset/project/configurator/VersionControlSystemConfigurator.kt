@@ -25,7 +25,7 @@ import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 
-class VersionControlSystemConfigurator : ProjectPostImportAsyncConfigurator {
+class VersionControlSystemConfigurator : ProjectImportWhenSmartConfigurator {
 
     override val name: String
         get() = "Version Control System"

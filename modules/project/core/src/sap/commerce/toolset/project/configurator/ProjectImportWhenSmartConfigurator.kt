@@ -18,25 +18,14 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.execution.RunManager
-import sap.commerce.toolset.i18n
+import com.intellij.openapi.extensions.ExtensionPointName
 import sap.commerce.toolset.project.context.ProjectPostImportContext
-import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
-import sap.commerce.toolset.project.runConfigurations.createRunConfiguration
 
-class LocalSapCxRunConfigurationConfigurator : ProjectPostImportAsyncConfigurator {
+interface ProjectImportWhenSmartConfigurator : Configurator {
 
-    override val name: String
-        get() = "Run Configurations - Local SAP CX"
+    suspend fun configure(context: ProjectPostImportContext)
 
-    override suspend fun configure(context: ProjectPostImportContext) {
-        val project = context.project
-        val runManager = RunManager.getInstance(project)
-
-        createRunConfiguration(
-            runManager,
-            LocalSapCXConfigurationType::class.java,
-            i18n("hybris.project.run.configuration.localserver")
-        )
+    companion object {
+        val EP = ExtensionPointName.create<ProjectImportWhenSmartConfigurator>("sap.commerce.toolset.project.whenSmartConfigurator")
     }
 }

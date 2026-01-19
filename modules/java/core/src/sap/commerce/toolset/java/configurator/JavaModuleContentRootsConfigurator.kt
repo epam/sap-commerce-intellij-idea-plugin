@@ -71,7 +71,7 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
                     checkCanceled()
 
                     val duration = measureTime { configurator.configure(context, contentRootEntity, pathsToIgnore) }
-                    logger.info("Content root configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
+                    logger.debug("Content root configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
                 }
             }
         }
