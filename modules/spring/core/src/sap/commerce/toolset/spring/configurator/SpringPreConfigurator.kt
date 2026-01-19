@@ -205,11 +205,16 @@ class SpringPreConfigurator : ProjectImportConfigurator {
                     val name = entry.name
                     if (name.startsWith("META-INF") && name.endsWith(".xml")) {
                         zipFile.getInputStream(entry).use { inputStream ->
-                            val element = JDOMUtil.load(inputStream)
-                            if (!element.isEmpty && element.name == "beans") {
-                                // as for now, imports are not scanned
-                                val springFile = "jar://${file.absolutePath}!/$name"
-                                moduleDescriptor.addSpringFile(springFile)
+                            try {
+                                val element = JDOMUtil.load(inputStream)
+
+                                if (!element.isEmpty && element.name == "beans") {
+                                    // as for now, imports are not scanned
+                                    val springFile = "jar://${file.absolutePath}!/$name"
+                                    moduleDescriptor.addSpringFile(springFile)
+                                }
+                            } catch (e: Exception) {
+                                thisLogger().warn("Could not load web app from ${entry.name}", e)
                             }
                         }
                     }
