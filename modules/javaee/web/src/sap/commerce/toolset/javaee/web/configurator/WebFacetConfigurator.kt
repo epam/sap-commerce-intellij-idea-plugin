@@ -39,7 +39,7 @@ import sap.commerce.toolset.util.toSystemIndependentName
  * No need to migrate to the new Workspace API or use the {@code webSettings} storage builder at the moment.
  * See <a href="https://platform.jetbrains.com/t/how-to-properly-manage-javasettings-and-websettings-in-workspace-api/3471">How to properly manage javaSettings and webSettings in Workspace API</a>.
  */
-class WebFaceConfigurator : ProjectPostImportLegacyConfigurator {
+class WebFacetConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "Web Facets"
