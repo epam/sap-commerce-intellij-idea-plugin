@@ -30,9 +30,7 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YHmcSubModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.module.ModuleRootsScanner
 import sap.commerce.toolset.util.directoryExists
@@ -110,6 +108,7 @@ class ModuleDescriptorsCollector {
         }
 
         buildDependencies(moduleDescriptors)
+        processWebSubModules(moduleDescriptors)
         val addons = processAddons(moduleDescriptors)
         removeNotInstalledAddons(moduleDescriptors, addons)
         removeHmcSubModules(moduleDescriptors)
@@ -172,6 +171,22 @@ class ModuleDescriptorsCollector {
                 }
         }
         ?: emptyList()
+
+    private fun processWebSubModules(moduleDescriptors: Collection<ModuleDescriptor>) {
+        moduleDescriptors
+            .filterIsInstance<YWebSubModuleDescriptor>()
+            .forEach { webSubModuleDescriptor ->
+                webSubModuleDescriptor.getDirectDependencies()
+                    .asSequence()
+                    .filterIsInstance<YModuleDescriptor>()
+                    .flatMap { it.getAllDependencies() }
+                    .filterIsInstance<YCustomRegularModuleDescriptor>()
+                    .flatMap { it.getSubModules() }
+                    .filterIsInstance<YCommonWebSubModuleDescriptor>()
+                    .toList()
+                    .forEach { it.addDependantWebExtension(webSubModuleDescriptor) }
+            }
+    }
 
     private fun processAddons(moduleDescriptors: MutableList<ModuleDescriptor>): Collection<YAcceleratorAddonSubModuleDescriptor> {
         val addons = moduleDescriptors

@@ -37,9 +37,7 @@ import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ModuleGroup
-import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.importState
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
 import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
@@ -82,7 +80,6 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         settings: ViewSettings
     ): Collection<AbstractTreeNode<*>> {
         if (project.isNotHybrisProject) return children
-        if (project.importState != ProjectImportState.IMPORTED) return children
 
         if (parent is ProjectViewProjectNode) {
             children.clear()
