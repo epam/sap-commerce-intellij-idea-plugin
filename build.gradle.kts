@@ -61,6 +61,7 @@ changelog {
 
 val projectJvmArguments = mutableListOf<String>().apply {
     add(properties("intellij.jvm.args").get())
+    add("-Didea.log.debug.categories=#sap.commerce.toolset")
 
     if (OperatingSystem.current().isMacOsX) {
         add("-Xdock:name=${project.name}")

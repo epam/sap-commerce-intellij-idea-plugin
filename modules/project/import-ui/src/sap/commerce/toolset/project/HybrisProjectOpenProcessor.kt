@@ -154,7 +154,7 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
                 }
 
                 !hybrisFile
-            }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6)
+            }, VirtualFileVisitor.limit(6)
         )
 
         return java.lang.Boolean.TRUE == root.getUserData(keyHybrisProjectDirectory)

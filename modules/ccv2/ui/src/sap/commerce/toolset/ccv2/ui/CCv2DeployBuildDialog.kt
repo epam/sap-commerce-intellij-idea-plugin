@@ -116,7 +116,7 @@ class CCv2DeployBuildDialog(
         group("Deployment Details") {
             row {
                 subscriptionComboBox = comboBox(
-                    CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
+                    model = CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                         label.icon = HybrisIcons.Module.CCV2
                         label.text = value.presentableName

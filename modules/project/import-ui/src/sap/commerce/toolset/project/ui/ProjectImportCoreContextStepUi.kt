@@ -25,6 +25,8 @@ import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.observable.util.and
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
@@ -34,6 +36,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.project.context.findSourceCodeFile
+import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 import sap.commerce.toolset.ui.CRUDListPanel
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
@@ -308,6 +311,12 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
             }
 
             row {
+                comboBox(
+                    model = EnumComboBoxModel(LibrarySourcesFetchMode::class.java),
+                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                )
+                    .bindItem(context.importSettings.librarySourcesFetchMode)
+
                 label(i18n("hybris.project.import.downloadAndAttachLibraryResources.title"))
 
                 checkBox(i18n("hybris.project.import.withExternalLibrarySources"))

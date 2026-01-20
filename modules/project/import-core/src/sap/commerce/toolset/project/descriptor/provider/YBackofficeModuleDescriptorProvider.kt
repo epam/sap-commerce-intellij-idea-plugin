@@ -32,7 +32,7 @@ class YBackofficeModuleDescriptorProvider : ModuleDescriptorProvider {
 
     override fun create(context: ModuleDescriptorProviderContext): YBackofficeModuleDescriptor {
         val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootPath)
-            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for $context")
+            ?: throw HybrisConfigurationException("Cannot unmarshall extensioninfo.xml for ${context.moduleRootPath}")
 
         return YBackofficeModuleDescriptor(context.moduleRootPath, extensionInfo).apply {
             SubModuleDescriptorFactory.getInstance().buildAll(this)

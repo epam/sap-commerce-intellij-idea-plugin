@@ -88,9 +88,9 @@ abstract class AbstractModuleDescriptor(
 
     override fun isPreselected() = false
 
-    override fun ideaModuleFile(importContext: ProjectImportContext): Path {
+    override fun ideaModuleFile(context: ProjectImportContext): Path {
         val futureModuleName = ideaModuleName()
-        val modulesFilesDirectory = importContext.modulesFilesDirectory
+        val modulesFilesDirectory = context.modulesFilesDirectory
         return modulesFilesDirectory
             ?.let { modulesFilesDirectory.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
             ?: moduleRootPath.resolve( futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)

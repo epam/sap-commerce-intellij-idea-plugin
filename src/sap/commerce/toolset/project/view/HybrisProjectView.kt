@@ -36,15 +36,16 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.importState
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
 import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
 import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
 import sap.commerce.toolset.project.view.nodes.YProjectViewModuleGroupNode
+import sap.commerce.toolset.project.yExtensionDescriptor
 import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.io.File
@@ -123,7 +124,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             if (child is PsiDirectoryNode) {
                 val nodeCategory = getNodeCategory(child, projectRootManager)
 
-                if (nodeCategory == NodeCategory.OTHER) {
+                if (nodeCategory == ModuleGroup.OTHER) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)
@@ -138,14 +139,14 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         return treeNodes
     }
 
-    private fun getNodeCategory(node: PsiDirectoryNode, projectRootManager: ProjectRootManager): NodeCategory {
-        val vf = node.virtualFile ?: return NodeCategory.Y
-        val module = projectRootManager.fileIndex.getModuleForFile(vf) ?: return NodeCategory.Y
-        if (YFacet.getState(module) != null) return NodeCategory.Y
+    private fun getNodeCategory(node: PsiDirectoryNode, projectRootManager: ProjectRootManager): ModuleGroup {
+        val vf = node.virtualFile ?: return ModuleGroup.HYBRIS
+        val module = projectRootManager.fileIndex.getModuleForFile(vf) ?: return ModuleGroup.HYBRIS
+        if (module.yExtensionDescriptor != null) return ModuleGroup.HYBRIS
         ModuleRootManager.getInstance(module).contentRoots.find { it == vf }
-            ?: return NodeCategory.Y
+            ?: return ModuleGroup.HYBRIS
 
-        return NodeCategory.OTHER
+        return ModuleGroup.OTHER
     }
 
     private fun isExternalModuleParent(child: AbstractTreeNode<*>): Boolean {
@@ -195,10 +196,10 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         // hide `platform/ext` node
         if (ProjectConstants.Directory.EXT == vf.name
-            && EiConstants.Extension.PLATFORM == module.yExtensionName()
+            && EiConstants.Extension.PLATFORM == module.yExtensionName
         ) return false
 
-        return YFacet.getState(module)
+        return module.yExtensionDescriptor
             ?.let {
                 // show CCv2 Angular modules only under js-storefront
                 if (it.type == ModuleDescriptorType.ANGULAR && module.name.contains(CCv2Constants.JS_STOREFRONT_NAME)) parent !is YProjectViewModuleGroupNode
@@ -350,5 +351,4 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         .name
         .endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
 
-    private enum class NodeCategory { Y, OTHER }
 }

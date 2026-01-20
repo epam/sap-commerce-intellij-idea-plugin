@@ -28,7 +28,7 @@ import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import java.nio.file.Path
 import kotlin.io.path.pathString
 
-internal class SourceRootEntityDescriptor(
+class SourceRootEntityDescriptor(
     val sourceRootTypeId: SourceRootTypeId,
     val moduleEntity: ModuleEntityBuilder,
     val path: Path,

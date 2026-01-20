@@ -20,20 +20,21 @@ package sap.commerce.toolset.project.context
 
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.workspace.WorkspaceModel
 import java.nio.file.Path
 
 data class ProjectRefreshContext(
     val project: Project,
     val projectPath: Path,
     val importSettings: ProjectImportSettings,
-    val removeOldProjectData: Boolean,
     val removeExternalModules: Boolean,
 ) {
+    val workspace = WorkspaceModel.getInstance(project)
+
     fun mutable() = Mutable(
         project = project,
         projectPath = projectPath,
         importSettings = this@ProjectRefreshContext.importSettings.mutable(),
-        removeOldProjectData = AtomicBooleanProperty(removeOldProjectData),
         removeExternalModules = AtomicBooleanProperty(removeExternalModules),
     )
 
@@ -41,14 +42,12 @@ data class ProjectRefreshContext(
         val project: Project,
         val projectPath: Path,
         val importSettings: ProjectImportSettings.Mutable,
-        val removeOldProjectData: AtomicBooleanProperty,
         val removeExternalModules: AtomicBooleanProperty,
     ) {
         fun immutable() = ProjectRefreshContext(
             project = project,
             projectPath = projectPath,
             importSettings = importSettings.immutable(),
-            removeOldProjectData = removeOldProjectData.get(),
             removeExternalModules = removeExternalModules.get(),
         )
     }

@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.codeInsight.daemon
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.project.modules
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
@@ -33,7 +32,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.daemon.HybrisLineMarkerProvider
 import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.project.settings.ProjectSettings
-import sap.commerce.toolset.project.yExtensionName
+import sap.commerce.toolset.project.yModule
 import javax.swing.Icon
 
 abstract class ExtensionLineMarkerProvider : HybrisLineMarkerProvider<XmlAttributeValue>() {
@@ -49,11 +48,12 @@ abstract class ExtensionLineMarkerProvider : HybrisLineMarkerProvider<XmlAttribu
             .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN }
             ?: return emptyList()
         if (PsiTreeUtil.getParentOfType(psi, XmlTag::class.java)?.localName != getParentTagName()) return emptyList()
-        val descriptor = ProjectSettings.getInstance(psi.project).extensionDescriptors
-            .find { it.name == psi.value }
+        val project = psi.project
+        val extensionName = psi.value
+        val descriptor = ProjectSettings.getInstance(project).extensionDescriptors
+            .find { it.name == extensionName }
             ?: return emptyList()
-        val extensionInfoName = psi.project.modules
-            .find { it.yExtensionName() == psi.value }
+        val extensionInfoName = project.yModule(extensionName)
             ?.let { EiModelAccess.getInstance().getExtensionInfo(it) }
             ?.xmlTag
             ?: return emptyList()

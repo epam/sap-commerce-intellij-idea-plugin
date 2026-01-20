@@ -48,7 +48,7 @@ enum class CCv2ServiceProperties(val title: String, val id: String, val document
 
                 uid to password
             }
-            ?.associate { it.first to it.second }
+            ?.toMap()
     },
 
     GREEN_DEPLOYMENT_SUPPORTED(

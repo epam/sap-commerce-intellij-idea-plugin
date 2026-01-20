@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
+import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
@@ -34,27 +34,19 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
         get() = "Addon"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
     ) = moduleDescriptor is YAcceleratorAddonSubModuleDescriptor
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        configureAddonLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
-        configureAddonTestLibrary(importContext, workspaceModel, moduleDescriptor, moduleEntity)
+    override suspend fun configure(context: ProjectModuleConfigurationContext<YAcceleratorAddonSubModuleDescriptor>) {
+        configureAddonLibrary(context)
+        configureAddonTestLibrary(context)
     }
 
-    private fun configureAddonLibrary(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+    private fun configureAddonLibrary(context: ProjectModuleConfigurationContext<YAcceleratorAddonSubModuleDescriptor>) {
+        val importContext = context.importContext
+        val moduleDescriptor = context.moduleDescriptor
+        val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
         val libraryRoots = buildList {
             importContext.chosenHybrisModuleDescriptors
@@ -71,26 +63,25 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
                     addAll(yModule.resources(virtualFileUrlManager))
 
                     if (attachSources) {
+                        addAll(yModule.genSources(virtualFileUrlManager))
                         addAll(yModule.sources(virtualFileUrlManager))
                     }
                 }
         }
 
-        moduleEntity.configureLibrary(
-            importContext = importContext,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.ADDON}",
+        context.moduleEntity.configureLibrary(
+            context = importContext,
+            moduleDescriptor = moduleDescriptor,
+            libraryNameSuffix = JavaConstants.ModuleLibrary.ADDON,
             exported = false,
             libraryRoots = libraryRoots,
         )
     }
 
-    private fun configureAddonTestLibrary(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YAcceleratorAddonSubModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+    private fun configureAddonTestLibrary(context: ProjectModuleConfigurationContext<YAcceleratorAddonSubModuleDescriptor>) {
+        val importContext = context.importContext
+        val moduleDescriptor = context.moduleDescriptor
+        val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val attachSources = moduleDescriptor.type == ModuleDescriptorType.CUSTOM || importContext.settings.importOOTBModulesInWriteMode
         val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
             .filterIsInstance<YModuleDescriptor>()
@@ -119,12 +110,13 @@ class AddonModuleLibraryConfigurator : ModuleLibraryConfigurator<YAcceleratorAdd
             }
         }
 
-        moduleEntity.configureLibrary(
-            importContext = importContext,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.ADDON_TEST}",
+        context.moduleEntity.configureLibrary(
+            context = importContext,
+            moduleDescriptor = moduleDescriptor,
+            libraryNameSuffix = JavaConstants.ModuleLibrary.ADDON_TEST,
             exported = false,
             libraryRoots = libraryRoots,
-            excludedRoots = excludedRoots
+            excludedRoots = excludedRoots,
         )
     }
 }

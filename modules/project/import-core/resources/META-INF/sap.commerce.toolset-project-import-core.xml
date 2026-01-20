@@ -18,33 +18,35 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.preImportConfigurator order="first" id="applicationSettingsConfigurator"
-                                       implementation="sap.commerce.toolset.project.configurator.ApplicationSettingsConfigurator"/>
-        <project.preImportConfigurator order="after applicationSettingsConfigurator" id="projectSettingsConfigurator"
-                                       implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
-        <project.preImportConfigurator order="after projectSettingsConfigurator"
-                                       implementation="sap.commerce.toolset.project.configurator.ProjectModulesDirectoryConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.GroupModuleConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectDictionaryConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectLibrariesConfigurator"/>
-
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ModuleDependenciesConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.LoadedModulesConfigurator"/>
+        <project.importConfigurator order="first" id="applicationSettingsConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ApplicationSettingsConfigurator"/>
+        <project.importConfigurator order="after applicationSettingsConfigurator" id="projectSettingsConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ProjectSettingsConfigurator"/>
+        <project.importConfigurator order="after projectSettingsConfigurator" id="projectModulesDirectoryConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ProjectModulesDirectoryConfigurator"/>
+        <project.importConfigurator order="after projectModulesDirectoryConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ProjectPostImportBulkConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.GroupModuleConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectDictionaryConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectLibrariesConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectEncodingConfigurator"/>
 
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
-        <project.postImportAsyncConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
+        <project.importConfigurator order="before modulesDependenciesConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ModulesConfigurator"/>
+        <project.importConfigurator order="last" id="modulesDependenciesConfigurator"
+                                    implementation="sap.commerce.toolset.project.configurator.ModulesDependenciesConfigurator"/>
 
-        <project.refreshConfigurator order="first" id="cleanupProjectRefreshConfigurator"
-                                     implementation="sap.commerce.toolset.project.configurator.CleanupProjectRefreshConfigurator"/>
-        <project.refreshConfigurator order="after cleanupProjectRefreshConfigurator" id="projectSettingsRefreshConfigurator"
-                                     implementation="sap.commerce.toolset.project.configurator.ProjectSettingsRefreshConfigurator"/>
-        <project.refreshConfigurator implementation="sap.commerce.toolset.project.configurator.ResetCacheProjectRefreshConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
 
-        <project.module.importConfigurator order="last" id="yFacetConfigurator"
-                                           implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
+        <project.postImportLegacyConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
+
+        <project.whenSmartConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
+        <project.postImportConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
+
+        <project.beforeRefreshConfigurator order="first" id="saveDocumentsProjectRefreshConfigurator"
+                                           implementation="sap.commerce.toolset.project.configurator.SaveDocumentsProjectBeforeRefreshConfigurator"/>
+        <project.beforeRefreshConfigurator implementation="sap.commerce.toolset.project.configurator.ResetCacheProjectBeforeRefreshConfigurator"/>
 
         <project.module.descriptorProvider order="first" id="configModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.ConfigModuleDescriptorProvider"/>
@@ -76,10 +78,19 @@
         <project.module.rootResolver order="after yConfigModuleRootResolver" id="yCustomModuleRootResolver"
                                      implementation="sap.commerce.toolset.project.module.YCustomModuleRootResolver"/>
 
-        <project.storageConfigurator order="first" id="libraryEntitiesStorageConfigurator"
-                                     implementation="sap.commerce.toolset.project.configurator.entities.LibraryEntitiesStorageConfigurator"/>
-        <project.storageConfigurator order="after libraryEntitiesStorageConfigurator"
-                                     implementation="sap.commerce.toolset.project.configurator.entities.ModuleEntitiesStorageConfigurator"/>
+        <project.storage.cleanupConfigurator order="first" id="cleanupLibrariesStorageConfigurator"
+                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupLibrariesStorageConfigurator"/>
+        <project.storage.cleanupConfigurator order="after cleanupLibrariesStorageConfigurator" id="cleanupModulesStorageConfigurator"
+                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupModulesStorageConfigurator"/>
+        <project.storage.cleanupConfigurator order="after cleanupModulesStorageConfigurator" id="cleanupFacetsStorageConfigurator"
+                                             implementation="sap.commerce.toolset.project.configurator.entities.CleanupFacetsStorageConfigurator"/>
+
+        <project.storage.saveConfigurator order="first" id="saveLibrariesStorageConfigurator"
+                                          implementation="sap.commerce.toolset.project.configurator.entities.SaveLibrariesStorageConfigurator"/>
+        <project.storage.saveConfigurator order="after saveLibrariesStorageConfigurator" id="saveModulesStorageConfigurator"
+                                          implementation="sap.commerce.toolset.project.configurator.entities.SaveModulesStorageConfigurator"/>
+        <project.storage.saveConfigurator order="last"
+                                          implementation="sap.commerce.toolset.project.configurator.ModulesMappingConfigurator"/>
     </extensions>
 
 </idea-plugin>

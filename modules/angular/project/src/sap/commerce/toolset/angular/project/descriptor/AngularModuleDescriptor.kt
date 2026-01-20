@@ -45,11 +45,11 @@ class AngularModuleDescriptor(
         .take(1)
         .toSet()
 
-    override fun groupName(importContext: ProjectImportContext): Array<String> {
+    override fun groupName(context: ProjectImportContext): Array<String> {
         // assumption that there can be only 1 parent
         val parent = getDirectDependencies().firstOrNull()
             ?: return emptyArray()
-        val parentPath = ModuleGroupingUtil.getGroupPath(importContext, parent, listOf())
+        val parentPath = ModuleGroupingUtil.getGroupPath(context, parent, listOf())
         return parentPath + parent.name
     }
 

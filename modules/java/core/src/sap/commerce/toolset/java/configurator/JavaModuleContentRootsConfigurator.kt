@@ -22,10 +22,11 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.ContentRootEntity
-import sap.commerce.toolset.java.configurator.contentEntry.ModuleContentEntryConfigurator
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 import kotlin.time.measureTime
@@ -40,22 +41,21 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
     override val name: String
         get() = "Content Roots"
 
-    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Workspace.yModuleTypeId == moduleTypeId
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         val importContext = context.importContext
-        val workspaceModel = context.workspaceModel
         val moduleDescriptor = context.moduleDescriptor
         val moduleEntity = context.moduleEntity
         val moduleRootPath = moduleDescriptor.moduleRootPath
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(moduleDescriptor.moduleRootPath.pathString)
 
         val pathsToIgnore = rootsToIgnore[moduleEntity.name]
             ?.map { moduleRootPath.resolve(it) }
             ?: emptyList()
 
-        val configurators = ModuleContentEntryConfigurator.EP.extensionList
+        val configurators = ModuleContentRootEntryConfigurator.EP.extensionList
             .filter { configurator -> configurator.isApplicable(importContext, moduleDescriptor) }
 
         val contentRootEntity = ContentRootEntity(
@@ -71,7 +71,7 @@ class JavaModuleContentRootsConfigurator : ModuleImportConfigurator {
                     checkCanceled()
 
                     val duration = measureTime { configurator.configure(context, contentRootEntity, pathsToIgnore) }
-                    logger.info("Content root configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
+                    logger.debug("Content root configurator [${moduleDescriptor.name} | ${configurator.name} | $duration]")
                 }
             }
         }

@@ -19,15 +19,13 @@ package sap.commerce.toolset.spring.configurator
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.JDOMUtil
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
@@ -36,23 +34,24 @@ import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
 import java.util.zip.ZipFile
 import kotlin.io.path.*
 
-class SpringPreConfigurator : ProjectPreImportConfigurator {
+class SpringPreConfigurator : ProjectImportConfigurator {
 
     private val patternSplitByComma = Pattern.compile(" ,")
 
     override val name: String
         get() = "Spring"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
+    override suspend fun configure(context: ProjectImportContext) {
         if (Plugin.SPRING.isDisabled()) return
 
-        val moduleDescriptors = importContext.chosenHybrisModuleDescriptors
+        val moduleDescriptors = context.chosenHybrisModuleDescriptors
             .filterIsInstance<YModuleDescriptor>()
             .associateBy { it.name }
 
@@ -70,10 +69,10 @@ class SpringPreConfigurator : ProjectPreImportConfigurator {
         moduleDescriptors.values
             .filterIsInstance<YCoreExtModuleDescriptor>()
             .forEach { moduleDescriptor ->
-                val advancedProperties = importContext.platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ADVANCED_PROPERTIES)
+                val advancedProperties = context.platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.ADVANCED_PROPERTIES)
                 moduleDescriptor.addSpringFile(advancedProperties.pathString)
 
-                val configModuleDescriptor = importContext.configModuleDescriptor
+                val configModuleDescriptor = context.configModuleDescriptor
                 configModuleDescriptor.moduleRootPath.resolve(ProjectConstants.File.LOCAL_PROPERTIES)
                     .takeIf { it.fileExists }
                     ?.let { moduleDescriptor.addSpringFile(it.pathString) }
@@ -194,11 +193,14 @@ class SpringPreConfigurator : ProjectPreImportConfigurator {
 
         // In addition to plain xml files also scan jars in the WEB-INF/lib
         val webInfLibDir = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
-        VfsUtil.findFile(webInfLibDir, true)
-            ?.children
-            ?.filter { it.extension == "jar" }
-            ?.forEach {
-                val file = VfsUtil.virtualToIoFile(it)
+            .takeIf { it.directoryExists }
+            ?: return
+
+        Files.newDirectoryStream(webInfLibDir) { p ->
+            p.isRegularFile() && p.extension == "jar"
+        }.use { stream ->
+            stream.forEach { p ->
+                val file = p.toFile()
                 val zipFile = ZipFile(file)
                 val entries = zipFile.entries()
                 while (entries.hasMoreElements()) {
@@ -206,16 +208,22 @@ class SpringPreConfigurator : ProjectPreImportConfigurator {
                     val name = entry.name
                     if (name.startsWith("META-INF") && name.endsWith(".xml")) {
                         zipFile.getInputStream(entry).use { inputStream ->
-                            val element = JDOMUtil.load(inputStream)
-                            if (!element.isEmpty && element.name == "beans") {
-                                // as for now, imports are not scanned
-                                val springFile = "jar://${file.absolutePath}!/$name"
-                                moduleDescriptor.addSpringFile(springFile)
+                            try {
+                                val element = JDOMUtil.load(inputStream)
+
+                                if (!element.isEmpty && element.name == "beans") {
+                                    // as for now, imports are not scanned
+                                    val springFile = "jar://${file.absolutePath}!/$name"
+                                    moduleDescriptor.addSpringFile(springFile)
+                                }
+                            } catch (e: Exception) {
+                                thisLogger().warn("Could not load web app from ${entry.name} due: ${e.message}")
                             }
                         }
                     }
                 }
             }
+        }
     }
 
     private fun processSpringFile(
@@ -311,8 +319,13 @@ class SpringPreConfigurator : ProjectPreImportConfigurator {
         moduleDescriptor: YModuleDescriptor,
         resourcesDir: Path,
         fileName: String
-    ) = resourcesDir.resolve(fileName)
-        .takeIf { it.fileExists }
-        ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
-        ?: false
+    ): Boolean {
+        val fileNamePath = fileName.removePrefix("/")
+            .split("/")
+            .let { Path(it.first(), *it.drop(1).toTypedArray()) }
+        return resourcesDir.resolve(fileNamePath)
+            .takeIf { it.fileExists }
+            ?.let { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
+            ?: false
+    }
 }

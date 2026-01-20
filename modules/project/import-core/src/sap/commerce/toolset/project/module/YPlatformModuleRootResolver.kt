@@ -31,10 +31,10 @@ import kotlin.io.path.name
 
 class YPlatformModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
+    override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
         name == EiConstants.Extension.PLATFORM
             && resolve(ProjectConstants.File.EXTENSIONS_XML).fileExists
-            && importContext.platformDistributionPath
+            && context.platformDistributionPath
             ?.let { this.endsWith(it.resolve(ProjectConstants.Paths.BIN_PLATFORM)) }
             ?: false
     }

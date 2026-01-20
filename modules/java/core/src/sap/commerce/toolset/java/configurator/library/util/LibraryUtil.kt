@@ -22,15 +22,18 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.*
+import com.intellij.platform.workspace.storage.entities
 import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-internal suspend fun WorkspaceModel.removeProjectLibrary(
+suspend fun WorkspaceModel.removeProjectLibrary(
     libraryName: String
 ) {
-    val libraryEntity = this.currentSnapshot.entities(LibraryEntity::class.java)
-        .find { it.name == libraryName }
+    val libraryEntity = this.currentSnapshot.entities<LibraryEntity>()
+        .find { it.name == libraryName && it.tableId == LibraryTableId.ProjectLibraryTableId }
         ?: return
 
     this.update("Removing project library '$libraryName'") { storage ->
@@ -38,17 +41,32 @@ internal suspend fun WorkspaceModel.removeProjectLibrary(
     }
 }
 
-internal fun Project.configureProjectLibrary(
+fun Project.configureProjectLibrary(
+    context: ProjectImportContext,
     libraryName: String,
     libraryRoots: Collection<LibraryRoot>,
-) = LibraryEntity(
-    name = libraryName,
-    tableId = LibraryTableId.ProjectLibraryTableId,
-    roots = libraryRoots.toMutableList(),
-    entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(this).createEntitySourceForProjectLibrary(null),
-)
+) {
+    val libraryId = LibraryId(libraryName, LibraryTableId.ProjectLibraryTableId)
 
-internal fun ModuleEntityBuilder.linkProjectLibrary(
+    context.mutableStorage.libraries[libraryId]
+        ?.let {
+            it.roots = libraryRoots.toMutableList()
+        }
+        ?: run {
+            val libraryEntity = LibraryEntity(
+                name = libraryName,
+                tableId = LibraryTableId.ProjectLibraryTableId,
+                roots = libraryRoots.toMutableList(),
+                entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(this).createEntitySourceForProjectLibrary(null),
+            ) {
+                typeId = ProjectConstants.Workspace.yLibraryTypeId
+            }
+
+            context.mutableStorage.add(libraryId, libraryEntity)
+        }
+}
+
+fun ModuleEntityBuilder.linkProjectLibrary(
     libraryName: String,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
@@ -62,14 +80,16 @@ internal fun ModuleEntityBuilder.linkProjectLibrary(
     this.dependencies += libraryDependency
 }
 
-internal fun ModuleEntityBuilder.configureLibrary(
-    importContext: ProjectImportContext,
-    libraryName: String,
+fun ModuleEntityBuilder.configureLibrary(
+    context: ProjectImportContext,
+    moduleDescriptor: ModuleDescriptor,
     scope: DependencyScope = DependencyScope.COMPILE,
     exported: Boolean = true,
+    libraryNameSuffix: String,
     libraryRoots: Collection<LibraryRoot>,
     excludedRoots: Collection<VirtualFileUrl> = emptyList(),
 ) {
+    val libraryName = "${moduleDescriptor.name} - $libraryNameSuffix"
     if (libraryRoots.isEmpty()) {
         thisLogger().debug("No library roots for: $libraryName")
         return
@@ -79,18 +99,26 @@ internal fun ModuleEntityBuilder.configureLibrary(
     val libraryTableId = LibraryTableId.ModuleLibraryTableId(moduleId)
     val libraryId = LibraryId(libraryName, libraryTableId)
 
-    val libraryEntity = LibraryEntity(
-        name = libraryName,
-        tableId = libraryTableId,
-        roots = libraryRoots.toList(),
-        entitySource = this.entitySource,
-    ) {
-        this.excludedRoots = this.excludedRoots(excludedRoots)
-    }
+    context.mutableStorage.libraries[libraryId]
+        ?.let {
+            it.roots += libraryRoots
+            it.excludedRoots += it.excludedRoots(excludedRoots)
+        }
+        ?: run {
+            val libraryEntity = LibraryEntity(
+                name = libraryName,
+                tableId = libraryTableId,
+                roots = libraryRoots.toList(),
+                entitySource = this.entitySource,
+            ) {
+                this.typeId = ProjectConstants.Workspace.yLibraryTypeId
+                this.excludedRoots = this.excludedRoots(excludedRoots)
+            }
 
-    this.dependencies += LibraryDependency(libraryId, exported, scope)
+            this.dependencies += LibraryDependency(libraryId, exported, scope)
 
-    importContext.mutableStorage.add(libraryEntity)
+            context.mutableStorage.add(libraryId, libraryEntity)
+        }
 }
 
 private fun LibraryEntityBuilder.excludedRoots(

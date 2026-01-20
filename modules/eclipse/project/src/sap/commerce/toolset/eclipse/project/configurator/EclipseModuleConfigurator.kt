@@ -19,25 +19,24 @@
 package sap.commerce.toolset.eclipse.project.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import kotlin.io.path.pathString
 
-class EclipseModuleConfigurator : ProjectPostImportAsyncConfigurator {
+class EclipseModuleConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Eclipse"
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
-        val eclipseModules = importContext.chosenOtherModuleDescriptors
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val project = context.project
+        val eclipseModules = context.chosenOtherModuleDescriptors
             .filterIsInstance<EclipseModuleDescriptor>()
 
         val eclipseImportBuilder = EclipseImportBuilder()
-        importContext.modulesFilesDirectory?.let {
+        context.modulesFilesDirectory?.let {
             eclipseImportBuilder.parameters.converterOptions.commonModulesDirectory = it.pathString
         }
         eclipseImportBuilder.list = eclipseModules.map { it.moduleRootPath.pathString }

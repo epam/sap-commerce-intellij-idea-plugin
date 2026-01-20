@@ -23,14 +23,20 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil.SHOW_TEXT_IN_TOOLBAR
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import com.intellij.util.text.VersionComparatorUtil
 import sap.commerce.toolset.HybrisI18nBundle.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.path
+import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.ProjectRefreshService
 import sap.commerce.toolset.project.context.ProjectImportSettings
+import sap.commerce.toolset.project.context.ProjectImportState
 import sap.commerce.toolset.project.context.ProjectRefreshContext
+import sap.commerce.toolset.project.importState
 import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.project.ui.ProjectReImportDialog
 import sap.commerce.toolset.project.ui.ProjectRefreshDialog
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
@@ -45,13 +51,19 @@ class ProjectRefreshAction : DumbAwareAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val projectPath = project.path ?: return
+
+        if (!project.canRefresh) {
+            ProjectReImportDialog(project).show()
+            return
+        }
+
         val applicationSettings = ApplicationSettings.getInstance()
         val projectSettings = project.ySettings
+
         val refreshContext = ProjectRefreshContext(
             project = project,
             projectPath = projectPath,
             importSettings = ProjectImportSettings.of(applicationSettings, projectSettings),
-            removeOldProjectData = projectSettings.removeOldProjectData,
             removeExternalModules = projectSettings.removeExternalModulesOnRefresh,
         )
             .mutable()
@@ -75,9 +87,16 @@ class ProjectRefreshAction : DumbAwareAction(
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
 
-        with(e.presentation) {
-            putClientProperty(SHOW_TEXT_IN_TOOLBAR, true)
-            setVisible(WorkspaceSettings.getInstance(project).hybrisProject)
-        }
+        e.presentation.putClientProperty(SHOW_TEXT_IN_TOOLBAR, true)
+        e.presentation.isEnabled = project.importState == ProjectImportState.IMPORTED
+        e.presentation.isVisible = WorkspaceSettings.getInstance(project).hybrisProject
     }
+
+    private val Project.canRefresh: Boolean
+        get() {
+            val importedByVersion = WorkspaceSettings.getInstance(this).importedByVersion
+                ?: return false
+
+            return VersionComparatorUtil.compare(ProjectImportConstants.MIN_IMPORT_API_VERSION, importedByVersion) <= 0
+        }
 }

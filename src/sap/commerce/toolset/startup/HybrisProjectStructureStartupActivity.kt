@@ -78,7 +78,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     private suspend fun continueOpening(project: Project) {
         if (project.isDisposed) return
 
-        ProjectStartupConfigurator.EP.extensionList.forEach { it.onStartup(project) }
+        ProjectStartupConfigurator.EP.extensionList.forEach { it.configure(project) }
     }
 
 }

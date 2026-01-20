@@ -88,7 +88,7 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
 
     @Override
     protected String getElementText(final ModuleDescriptor item) {
-        final var importContext = getContext().getImportContext();
+        final var importContext = getContext().getContext();
         if (importContext == null) return item.getName();
         return getModuleNameAndPath(importContext.getRootDirectory(), item);
     }
@@ -111,7 +111,7 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
     public void onStepLeaving() {
         super.onStepLeaving();
         final var markedElements = new ArrayList<>(fileChooser.getMarkedElements());
-        final var importContext = getContext().getImportContext();
+        final var importContext = getContext().getContext();
 
         if (importContext != null) {
             importContext.chooseModuleDescriptors(moduleGroup, markedElements);
@@ -119,7 +119,7 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
     }
 
     protected boolean validateCommon() throws ConfigurationException {
-        final var importContext = getContext().getImportContext();
+        final var importContext = getContext().getContext();
         if (importContext == null) return false;
         final var rootDirectory = importContext.getRootDirectory();
 

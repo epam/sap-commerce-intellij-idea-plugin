@@ -1,12 +1,17 @@
 ## [2025.3.1]
 
 <cite>Release contributors</cite>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 - 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 
+### `<!>` BREAKING CHANGE `<!>`
+
+Due severe API changes it is highly advised to backup the project and import it from the scratch. Please, report any issues via project's Slack or GitHub.
+
 ### `Project Import` enhancements
 - Project import & refresh 3.0 [#1699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699)
+- Project import & refresh 3.1 [#1704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704)
 - Lazy dependency on `java-el` plugin [#1700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1700)
 
 ### `SAP CX Logging` enhancements

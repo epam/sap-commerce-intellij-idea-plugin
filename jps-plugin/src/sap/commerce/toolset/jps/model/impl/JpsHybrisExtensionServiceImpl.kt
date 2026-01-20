@@ -38,6 +38,7 @@ class JpsHybrisExtensionServiceImpl : JpsHybrisExtensionService {
 
             when {
                 facetSettings.readonly -> false
+                // see SubModuleDescriptorType.BACKOFFICE
                 facetSettings.backofficeModule && facetSettings.subType == "BACKOFFICE" -> true
                 else -> false
             }

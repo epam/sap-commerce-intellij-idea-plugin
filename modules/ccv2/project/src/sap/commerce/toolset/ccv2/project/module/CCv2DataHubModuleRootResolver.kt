@@ -31,7 +31,7 @@ import kotlin.io.path.name
 
 class CCv2DataHubModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
+    override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
         name == CCv2Constants.DATAHUB_NAME && isCCv2ManifestFileExists
     }
 

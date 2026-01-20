@@ -30,22 +30,31 @@ import com.intellij.database.util.performAutoIntrospection
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.vfs.VirtualFileManager
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
+import com.intellij.platform.workspace.storage.entities
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
-import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 
-class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
+class DataSourceConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Database - Data Sources"
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
+    override suspend fun configure(context: ProjectPostImportContext) {
+        CoroutineScope(Dispatchers.Default).launch {
+            configureNonBlocking(context)
+        }
+    }
+
+    private suspend fun configureNonBlocking(context: ProjectPostImportContext) {
+        val project = context.project
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
@@ -76,7 +85,7 @@ class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
             for (dataSource in dataSources) {
                 LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
 
-                loadDatabaseDriver(workspaceModel, dataSource)
+                loadDatabaseDriver(context, dataSource)
             }
         }
 
@@ -86,15 +95,15 @@ class DataSourceConfigurator : ProjectPostImportAsyncConfigurator {
         }
     }
 
-    private fun loadDatabaseDriver(workspaceModel: WorkspaceModel, dataSource: LocalDataSource) {
+    private fun loadDatabaseDriver(context: ProjectPostImportContext, dataSource: LocalDataSource) {
         val driver = dataSource.databaseDriver ?: return
 
         if (driver.additionalClasspathElements.isNotEmpty()) return
 
         // let's try to pick up a suitable driver located in the Database Drivers library
 
-        workspaceModel.currentSnapshot
-            .entities(LibraryEntity::class.java)
+        context.storage
+            .entities<LibraryEntity>()
             .find { it.name == JavaConstants.ProjectLibrary.DATABASE_DRIVERS }
             ?.roots
             ?.asSequence()

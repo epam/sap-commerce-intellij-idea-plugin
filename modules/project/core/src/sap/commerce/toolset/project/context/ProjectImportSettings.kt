@@ -22,6 +22,7 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 
 data class ProjectImportSettings(
     val importOOTBModulesInReadOnlyMode: Boolean,
@@ -29,6 +30,7 @@ data class ProjectImportSettings(
     val ignoreNonExistingSourceDirectories: Boolean,
     val hideEmptyMiddleFolders: Boolean,
     val useFakeOutputPathForCustomExtensions: Boolean,
+    val librarySourcesFetchMode: LibrarySourcesFetchMode,
     val withExternalLibrarySources: Boolean,
     val withExternalLibraryJavadocs: Boolean,
     val groupModules: Boolean,
@@ -42,6 +44,7 @@ data class ProjectImportSettings(
     val groupCCv2: String,
     val groupNameExternalModules: String,
     val extensionsResourcesToExclude: Collection<String>,
+    val unusedExtensions: Collection<String> = emptyList(),
 ) {
     val importOOTBModulesInWriteMode
         get() = !importOOTBModulesInReadOnlyMode
@@ -52,6 +55,7 @@ data class ProjectImportSettings(
         ignoreNonExistingSourceDirectories = AtomicBooleanProperty(ignoreNonExistingSourceDirectories),
         hideEmptyMiddleFolders = AtomicBooleanProperty(hideEmptyMiddleFolders),
         useFakeOutputPathForCustomExtensions = AtomicBooleanProperty(useFakeOutputPathForCustomExtensions),
+        librarySourcesFetchMode = AtomicProperty(librarySourcesFetchMode),
         withExternalLibrarySources = AtomicBooleanProperty(withExternalLibrarySources),
         withExternalLibraryJavadocs = AtomicBooleanProperty(withExternalLibraryJavadocs),
         groupModules = AtomicBooleanProperty(groupModules),
@@ -65,6 +69,7 @@ data class ProjectImportSettings(
         groupCCv2 = AtomicProperty(groupCCv2),
         groupNameExternalModules = AtomicProperty(groupNameExternalModules),
         extensionsResourcesToExclude = AtomicProperty(extensionsResourcesToExclude),
+        unusedExtensions = AtomicProperty(extensionsResourcesToExclude),
     )
 
     data class Mutable(
@@ -73,6 +78,7 @@ data class ProjectImportSettings(
         val ignoreNonExistingSourceDirectories: AtomicBooleanProperty,
         val hideEmptyMiddleFolders: AtomicBooleanProperty,
         val useFakeOutputPathForCustomExtensions: AtomicBooleanProperty,
+        val librarySourcesFetchMode: AtomicProperty<LibrarySourcesFetchMode>,
         val withExternalLibrarySources: AtomicBooleanProperty,
         val withExternalLibraryJavadocs: AtomicBooleanProperty,
         val groupModules: AtomicBooleanProperty,
@@ -86,6 +92,7 @@ data class ProjectImportSettings(
         val groupCCv2: AtomicProperty<String>,
         val groupNameExternalModules: AtomicProperty<String>,
         val extensionsResourcesToExclude: AtomicProperty<Collection<String>>,
+        val unusedExtensions: AtomicProperty<Collection<String>>,
     ) {
         fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
@@ -93,6 +100,7 @@ data class ProjectImportSettings(
             ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.get(),
             hideEmptyMiddleFolders = hideEmptyMiddleFolders.get(),
             useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensions.get(),
+            librarySourcesFetchMode = librarySourcesFetchMode.get(),
             withExternalLibrarySources = withExternalLibrarySources.get(),
             withExternalLibraryJavadocs = withExternalLibraryJavadocs.get(),
             groupModules = groupModules.get(),
@@ -106,6 +114,7 @@ data class ProjectImportSettings(
             groupCCv2 = groupCCv2.get(),
             groupNameExternalModules = groupNameExternalModules.get(),
             extensionsResourcesToExclude = extensionsResourcesToExclude.get(),
+            unusedExtensions = unusedExtensions.get(),
         )
     }
 
@@ -116,6 +125,7 @@ data class ProjectImportSettings(
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
             useFakeOutputPathForCustomExtensions = applicationSettings.useFakeOutputPathForCustomExtensions,
+            librarySourcesFetchMode = applicationSettings.librarySourcesFetchMode,
             withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
             withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
             groupModules = applicationSettings.groupModules,
@@ -134,10 +144,12 @@ data class ProjectImportSettings(
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
             importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles,
+            unusedExtensions = projectSettings.unusedExtensions,
 
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
             useFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions,
+            librarySourcesFetchMode = applicationSettings.librarySourcesFetchMode,
             withExternalLibrarySources = applicationSettings.withExternalLibrarySources,
             withExternalLibraryJavadocs = applicationSettings.withExternalLibraryJavadocs,
             groupModules = applicationSettings.groupModules,

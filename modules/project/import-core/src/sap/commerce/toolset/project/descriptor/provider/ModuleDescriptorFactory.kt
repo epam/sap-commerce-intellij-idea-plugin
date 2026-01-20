@@ -33,18 +33,18 @@ import sap.commerce.toolset.project.descriptor.impl.RootModuleDescriptor
 class ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
-    fun createDescriptor(importContext: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): ModuleDescriptor {
+    fun createDescriptor(context: ProjectImportContext.Mutable, moduleRoot: ModuleRoot): ModuleDescriptor {
         val path = moduleRoot.path
         val context = ModuleDescriptorProviderContext(
-            project = importContext.project,
-            externalExtensionsDirectory = importContext.externalExtensionsDirectory,
+            project = context.project,
+            externalExtensionsDirectory = context.externalExtensionsDirectory,
             moduleRoot = moduleRoot,
         )
 
         return ModuleDescriptorProvider.EP.extensionList
             .firstOrNull { it.isApplicable(context) }
             ?.create(context)
-            ?.also { thisLogger().info("Created module descriptor [${it.type} | ${it.name} | $path]") }
+            ?.also { thisLogger().debug("Created module descriptor [${it.type} | ${it.name} | $path]") }
             ?: throw HybrisConfigurationException("Could not find suitable module descriptor provider for $path")
     }
 

@@ -21,6 +21,7 @@ import com.intellij.platform.workspace.jps.entities.ContentRootEntity
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import kotlin.io.path.pathString
 
 class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
@@ -30,9 +31,9 @@ class CCv2ModuleImportConfigurator : ModuleImportConfigurator {
 
     override fun isApplicable(moduleTypeId: String) = CCv2Constants.MODULE_TYPE_ID == moduleTypeId
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
+    override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         val moduleEntity = context.moduleEntity
-        val virtualFileUrlManager = context.workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val contentRootUrl = virtualFileUrlManager.fromPath(context.moduleDescriptor.moduleRootPath.pathString)
         val distributionPath = context.importContext.platformDirectory.pathString.replace('\\', '/')
 

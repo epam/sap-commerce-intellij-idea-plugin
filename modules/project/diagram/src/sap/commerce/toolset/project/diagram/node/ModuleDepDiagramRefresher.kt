@@ -25,8 +25,8 @@ import com.intellij.uml.java.project.*
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.diagram.ModuleDepDiagramVisibilityManager
 import sap.commerce.toolset.project.diagram.node.graph.ModuleDepGraphFactory
-import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.yExtensionDescriptor
 
 object ModuleDepDiagramRefresher {
 
@@ -52,13 +52,13 @@ object ModuleDepDiagramRefresher {
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
                 .filter {
-                    val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                    val descriptorType = it.yExtensionDescriptor?.type ?: return@filter false
                     isCustomExtension(descriptorType) || isOotbOrPlatformExtension(descriptorType)
                 }
         }
         val customExtModules = allModules
             .filter {
-                val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                val descriptorType = it.yExtensionDescriptor?.type ?: return@filter false
                 isCustomExtension(descriptorType)
             }
 
@@ -67,19 +67,19 @@ object ModuleDepDiagramRefresher {
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }
             .filter {
-                val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                val descriptorType = it.yExtensionDescriptor?.type ?: return@filter false
                 isOotbOrPlatformExtension(descriptorType)
             }
         val backwardDependencies = allModules
             .filter {
                 ModuleRootManager.getInstance(it).dependencies
                     .any { module: Module ->
-                        val descriptorType = YFacet.getState(module)?.type ?: return@any false
+                        val descriptorType = module.yExtensionDescriptor?.type ?: return@any false
                         isCustomExtension(descriptorType)
                     }
             }
             .filter {
-                val descriptorType = YFacet.getState(it)?.type ?: return@filter false
+                val descriptorType = it.yExtensionDescriptor?.type ?: return@filter false
                 isOotbOrPlatformExtension(descriptorType)
             }
         return customExtModules + dependencies + backwardDependencies

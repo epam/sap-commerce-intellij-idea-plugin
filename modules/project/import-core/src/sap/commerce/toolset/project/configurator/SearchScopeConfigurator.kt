@@ -22,7 +22,6 @@ import com.intellij.find.FindSettings
 import com.intellij.ide.projectView.impl.ModuleGroup
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.project.Project
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet
 import com.intellij.psi.search.scope.packageSet.NamedScope
 import com.intellij.psi.search.scope.packageSet.NamedScopeManager
@@ -31,18 +30,18 @@ import com.intellij.util.ArrayUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 import javax.swing.Icon
 
-class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
+class SearchScopeConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Search Scope"
 
-    override suspend fun postImport(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
-        val applicationSettings = importContext.settings
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val project = context.project
+        val applicationSettings = context.settings
         val customGroupName = applicationSettings.groupCustom
         val commerceGroupName = applicationSettings.groupHybris
         val nonHybrisGroupName = applicationSettings.groupNonHybris

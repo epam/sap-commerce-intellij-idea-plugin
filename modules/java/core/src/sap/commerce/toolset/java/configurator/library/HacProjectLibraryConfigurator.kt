@@ -19,8 +19,6 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
@@ -34,11 +32,9 @@ class HacProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.HAC
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ): LibraryEntityBuilder? {
-        val hacWebModuleDescriptor = importContext.chosenHybrisModuleDescriptors
+    override suspend fun configure(context: ProjectImportContext) {
+        val workspace = context.workspace
+        val hacWebModuleDescriptor = context.chosenHybrisModuleDescriptors
             .filterIsInstance<YHacExtModuleDescriptor>()
             .firstOrNull()
             ?.getSubModules()
@@ -46,19 +42,20 @@ class HacProjectLibraryConfigurator : ProjectLibraryConfigurator {
             ?.firstOrNull()
 
         if (hacWebModuleDescriptor == null) {
-            thisLogger().info("Project library '${JavaConstants.ProjectLibrary.HAC}' will not be created because ${EiConstants.Extension.HAC} extension is not used.")
-            workspaceModel.removeProjectLibrary(JavaConstants.ProjectLibrary.HAC)
-            return null
+            thisLogger().debug("Project library '${JavaConstants.ProjectLibrary.HAC}' will not be created because ${EiConstants.Extension.HAC} extension is not used.")
+            workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.HAC)
+            return
         }
 
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+        val virtualFileUrlManager = workspace.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(hacWebModuleDescriptor.webRootClasses(virtualFileUrlManager))
             addAll(hacWebModuleDescriptor.webRootJars(virtualFileUrlManager))
             addAll(hacWebModuleDescriptor.docSources(virtualFileUrlManager))
         }
 
-        return importContext.project.configureProjectLibrary(
+        context.project.configureProjectLibrary(
+            context = context,
             libraryName = JavaConstants.ProjectLibrary.HAC,
             libraryRoots = libraryRoots,
         )

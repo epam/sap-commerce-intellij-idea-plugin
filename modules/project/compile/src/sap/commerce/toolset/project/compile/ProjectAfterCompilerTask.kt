@@ -20,12 +20,14 @@ package sap.commerce.toolset.project.compile
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.compiler.CompilerManager
+import com.intellij.openapi.module.Module
 import com.intellij.util.application
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.root
+import sap.commerce.toolset.project.contentRoot
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.yExtensionName
 
 class ProjectAfterCompilerTask : CompileTask {
@@ -41,12 +43,13 @@ class ProjectAfterCompilerTask : CompileTask {
         // see JUnitConfigurationType
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
 
-        val modules = context.compileScope.affectedModules
-        val platformModule = modules.firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
+        val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
+        val moduleMapping = project.ySettings.module2extensionMapping
+        val platformModule = modules.firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.PLATFORM }
             ?: return@runReadAction true
 
         val bootstrapDirectory = platformModule
-            .root()
+            .contentRoot
             ?.resolve(ProjectConstants.Directory.BOOTSTRAP)
             ?: return@runReadAction true
 

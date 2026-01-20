@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.linkProjectLibrary
+import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 
@@ -32,18 +32,12 @@ class PlatformModuleLibraryConfigurator : ModuleLibraryConfigurator<PlatformModu
         get() = "Platform"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
     ) = moduleDescriptor is PlatformModuleDescriptor
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: PlatformModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        moduleEntity.linkProjectLibrary(
+    override suspend fun configure(context: ProjectModuleConfigurationContext<PlatformModuleDescriptor>) = context.moduleEntity
+        .linkProjectLibrary(
             libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
         )
-    }
 }

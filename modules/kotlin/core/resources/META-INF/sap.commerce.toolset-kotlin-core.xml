@@ -19,9 +19,21 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinPostImportConfigurator"/>
+        <project.whenSmartConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinWhenSmartConfigurator"/>
 
-        <project.module.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
+        <project.postImportLegacyConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
+
+        <project.storage.cleanupConfigurator order="after cleanupLibrariesStorageConfigurator"
+                                             implementation="sap.commerce.toolset.kotlin.configurator.entities.CleanupKotlinProjectLibraryStorageConfigurator"/>
+
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.kotlin.configurator.contentEntry.KotlinSourcesContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.kotlin.configurator.contentEntry.KotlinTestSourcesContentRootEntryConfigurator"/>
+
+        <project.module.libraryConfigurator order="after compileModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.kotlin.configurator.library.KotlinCompileModuleLibraryConfigurator"/>
+        <project.module.libraryConfigurator order="after testModuleLibraryConfigurator"
+                                            implementation="sap.commerce.toolset.kotlin.configurator.library.KotlinTestModuleLibraryConfigurator"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">

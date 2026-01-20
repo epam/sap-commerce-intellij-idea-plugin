@@ -25,8 +25,8 @@ import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.removeUserData
@@ -43,6 +43,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
+import com.intellij.util.indexing.IndexingBundle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisConstants
@@ -66,7 +67,7 @@ class PropertyService(private val project: Project, private val coroutineScope: 
 
     fun initCache() = coroutineScope.launch {
         withBackgroundProgress(project, "Init properties cache", true) {
-            withProgressText("Waiting for completion of the Index process...") {
+            withProgressText(IndexingBundle.message("progress.indexing.waiting.for.scanning.to.complete")) {
                 smartReadAction(project) { findAllIProperties() }
             }
         }
@@ -121,14 +122,20 @@ class PropertyService(private val project: Project, private val coroutineScope: 
             }
     }
 
+    @Deprecated("Use NIO Path and target system specific resolution to support WSL")
     fun getPlatformHome(): String? = findPlatformRootDirectory(project)
         ?.path
 
+    private fun findPlatformRootDirectory(project: Project): VirtualFile? = project.yModule(EiConstants.Extension.PLATFORM)
+        ?.let { ModuleRootManager.getInstance(it) }
+        ?.contentRoots
+        ?.firstOrNull { it.findChild(ProjectConstants.File.EXTENSIONS_XML) != null }
+
     private fun findAllIProperties(): List<IProperty> = CachedValuesManager.getManager(project).getCachedValue(project, CACHE_KEY, {
         val result = LinkedHashMap<String, IProperty>()
-        val configModule = obtainConfigModule()
+        val configModule = project.yModule(EiConstants.Extension.CONFIG)
             ?: return@getCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
-        val platformModule = obtainPlatformModule()
+        val platformModule = project.yModule(EiConstants.Extension.PLATFORM)
             ?: return@getCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
         val scope = createSearchScope(configModule, platformModule)
         var envPropsFile: PropertiesFile? = null
@@ -274,14 +281,6 @@ class PropertyService(private val project: Project, private val coroutineScope: 
             .or(localPropertiesScope)
             .or(projectPropertiesScope)
     }
-
-    private fun obtainConfigModule() = ModuleManager.getInstance(project)
-        .modules
-        .firstOrNull { it.yExtensionName() == EiConstants.Extension.CONFIG }
-
-    private fun obtainPlatformModule() = ModuleManager.getInstance(project)
-        .modules
-        .firstOrNull { it.yExtensionName() == EiConstants.Extension.PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {

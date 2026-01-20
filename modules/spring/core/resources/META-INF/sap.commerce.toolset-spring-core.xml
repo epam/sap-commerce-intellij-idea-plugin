@@ -29,11 +29,10 @@
         <impex.interceptorProvider implementation="sap.commerce.toolset.spring.impex.SpringInterceptorProvider"/>
 
         <project.startupConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringStartupConfigurator"/>
-        <project.preImportConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringPreConfigurator"/>
-        <project.importConfigurator id="springFacetConfigurator"
-                                    implementation="sap.commerce.toolset.spring.configurator.SpringFacetConfigurator"/>
-        <project.importConfigurator order="after springFacetConfigurator"
-                                    implementation="sap.commerce.toolset.spring.configurator.SpringDependenciesConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringPreConfigurator"/>
+
+        <project.postImportLegacyConfigurator id="springFacetConfigurator"
+                                              implementation="sap.commerce.toolset.spring.configurator.SpringFacetConfigurator"/>
 
         <shared.springService implementation="sap.commerce.toolset.spring.AdvancedSpringService"/>
     </extensions>

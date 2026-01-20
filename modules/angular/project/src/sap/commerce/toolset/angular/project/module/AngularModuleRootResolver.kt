@@ -32,7 +32,7 @@ import java.nio.file.Path
 
 class AngularModuleRootResolver : ModuleRootResolver {
 
-    override fun isApplicable(importContext: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.ANGULAR.ifActive {
+    override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = Plugin.ANGULAR.ifActive {
         path.resolve(AngularConstants.ANGULAR_JSON).fileExists
     } ?: false
 

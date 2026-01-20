@@ -18,16 +18,16 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
-import sap.commerce.toolset.java.descriptor.isNonCustomModuleDescriptor
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
+import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ifNonCustomModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
@@ -38,17 +38,14 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
         get() = "Compile"
 
     override fun isApplicable(
-        importContext: ProjectImportContext,
+        context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
     ) = moduleDescriptor is YModuleDescriptor
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel,
-        moduleDescriptor: YModuleDescriptor,
-        moduleEntity: ModuleEntityBuilder
-    ) {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
+    override suspend fun configure(context: ProjectModuleConfigurationContext<YModuleDescriptor>) {
+        val importContext = context.importContext
+        val moduleDescriptor = context.moduleDescriptor
+        val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(moduleDescriptor.serverJarFiles(virtualFileUrlManager))
             addAll(moduleDescriptor.docSources(virtualFileUrlManager))
@@ -59,7 +56,7 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
                 is YCommonWebSubModuleDescriptor -> addAll(moduleDescriptor.webRootJars(virtualFileUrlManager))
             }
 
-            if (moduleDescriptor.isNonCustomModuleDescriptor) {
+            moduleDescriptor.ifNonCustomModuleDescriptor {
                 when (moduleDescriptor) {
                     is YWebSubModuleDescriptor -> addAll(moduleDescriptor.webRootClasses(virtualFileUrlManager))
                     is YCommonWebSubModuleDescriptor -> addAll(moduleDescriptor.webRootClasses(virtualFileUrlManager))
@@ -67,6 +64,7 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
                 if (importContext.settings.importOOTBModulesInReadOnlyMode) {
                     addAll(moduleDescriptor.classes(virtualFileUrlManager))
                     addAll(moduleDescriptor.resources(virtualFileUrlManager))
+                    addAll(moduleDescriptor.genSources(virtualFileUrlManager))
                     addAll(moduleDescriptor.sources(virtualFileUrlManager))
 
                     when (moduleDescriptor) {
@@ -92,9 +90,10 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
             addAll(moduleDescriptor.excludedResources(virtualFileUrlManager))
         }
 
-        moduleEntity.configureLibrary(
-            importContext = importContext,
-            libraryName = "${moduleDescriptor.name} - ${JavaConstants.ModuleLibrary.COMPILE}",
+        context.moduleEntity.configureLibrary(
+            context = importContext,
+            moduleDescriptor = moduleDescriptor,
+            libraryNameSuffix = JavaConstants.ModuleLibrary.COMPILE,
             libraryRoots = libraryRoots,
             excludedRoots = excludedRoots,
         )
@@ -104,6 +103,7 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
         .flatMap { moduleDescriptor ->
             buildList {
                 addAll(moduleDescriptor.webRootClasses(virtualFileUrlManager))
+                addAll(moduleDescriptor.genSources(virtualFileUrlManager))
                 addAll(moduleDescriptor.sources(virtualFileUrlManager))
             }
         }

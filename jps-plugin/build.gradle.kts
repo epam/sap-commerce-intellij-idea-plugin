@@ -26,13 +26,13 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
         vendor = JvmVendorSpec.JETBRAINS
     }
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 sourceSets {

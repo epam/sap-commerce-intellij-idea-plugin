@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
-import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.compiledArchives
 import sap.commerce.toolset.java.configurator.library.util.configureProjectLibrary
@@ -33,19 +31,17 @@ class LicenseProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.PLATFORM_LICENSE
 
-    override suspend fun configure(
-        importContext: ProjectImportContext,
-        workspaceModel: WorkspaceModel
-    ): LibraryEntityBuilder {
-        val virtualFileUrlManager = workspaceModel.getVirtualFileUrlManager()
-        val configModuleDescriptor = importContext.configModuleDescriptor
+    override suspend fun configure(context: ProjectImportContext) {
+        val virtualFileUrlManager = context.workspace.getVirtualFileUrlManager()
+        val configModuleDescriptor = context.configModuleDescriptor
         val libraryRoots = configModuleDescriptor.compiledArchives(
             virtualFileUrlManager, Path(ProjectConstants.Directory.LICENCE)
         )
 
-        return importContext.project.configureProjectLibrary(
+        context.project.configureProjectLibrary(
+            context = context,
             libraryName = JavaConstants.ProjectLibrary.PLATFORM_LICENSE,
-            libraryRoots = libraryRoots
+            libraryRoots = libraryRoots,
         )
     }
 }

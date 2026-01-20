@@ -18,34 +18,31 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.facet.FacetTypeRegistry
-import com.intellij.openapi.util.JDOMUtil
-import com.intellij.platform.workspace.jps.entities.FacetEntity
-import com.intellij.platform.workspace.jps.entities.ModuleId
-import com.intellij.util.xmlb.XmlSerializer
-import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
-import sap.commerce.toolset.project.facet.YFacetConstants
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import sap.commerce.toolset.project.context.ProjectPostImportContext
+import sap.commerce.toolset.project.facet.createYFacet
 
-class YFacetConfigurator : ModuleImportConfigurator {
+class YFacetConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "SAP CX Facet"
 
-    override fun isApplicable(moduleTypeId: String) = true
+    override fun configure(
+        context: ProjectPostImportContext,
+        legacyWorkspace: IdeModifiableModelsProvider,
+        edtActions: MutableList<() -> Unit>
+    ) {
+        context.chosenHybrisModuleDescriptors.forEach { moduleDescriptor ->
+            val module = context.moduleBridges[moduleDescriptor.name] ?: run {
+                thisLogger().warn("Could not find module: ${moduleDescriptor.name}")
+                return@forEach
+            }
 
-    override suspend fun configure(context: ProjectModuleConfigurationContext) {
-        val moduleEntity = context.moduleEntity
-        val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
-        val xmlTag = XmlSerializer.serialize(context.moduleDescriptor.extensionDescriptor)
-            .let { JDOMUtil.writeElement(it) }
+            val modifiableFacetModel = legacyWorkspace.getModifiableFacetModel(module)
+            val yFacet = moduleDescriptor.createYFacet(module)
 
-        moduleEntity.facets += FacetEntity(
-            moduleId = ModuleId(moduleEntity.name),
-            name = facetType.presentableName,
-            typeId = YFacetConstants.FACET_ENTITY_TYPE_ID,
-            entitySource = moduleEntity.entitySource
-        ) {
-            this.configurationXmlTag = xmlTag
+            modifiableFacetModel.addFacet(yFacet)
         }
     }
 }

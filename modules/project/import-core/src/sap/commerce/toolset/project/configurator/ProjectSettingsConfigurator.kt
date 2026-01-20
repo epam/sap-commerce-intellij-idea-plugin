@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.platform.backend.workspace.WorkspaceModel
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.context.ProjectImportContext
@@ -27,13 +26,13 @@ import sap.commerce.toolset.settings.WorkspaceSettings
 import sap.commerce.toolset.util.toSystemIndependentName
 import kotlin.io.path.Path
 
-class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
+class ProjectSettingsConfigurator : ProjectImportConfigurator {
 
     override val name: String
         get() = "Project Settings"
 
-    override suspend fun preConfigure(importContext: ProjectImportContext, workspaceModel: WorkspaceModel) {
-        val project = importContext.project
+    override suspend fun configure(context: ProjectImportContext) {
+        val project = context.project
         val workspaceSettings = WorkspaceSettings.getInstance(project)
         val projectSettings = ProjectSettings.getInstance(project)
         workspaceSettings.hybrisProject = true
@@ -41,62 +40,66 @@ class ProjectSettingsConfigurator : ProjectPreImportConfigurator {
         Plugin.HYBRIS.pluginDescriptor
             ?.let { workspaceSettings.importedByVersion = it.version }
 
-        applySettings(importContext)
+        applySettings(context)
 
-        importContext.ifImport {
-            saveCustomDirectoryLocation(importContext)
-            projectSettings.excludedFromScanning = importContext.excludedFromScanning.toSet()
+        context.ifImport {
+            saveCustomDirectoryLocation(context)
+            projectSettings.excludedFromScanning = context.excludedFromScanning.toSet()
         }
     }
 
-    private fun applySettings(importContext: ProjectImportContext) {
-        val projectSettings = importContext.project.ySettings
-        val importSettings = importContext.settings
+    private fun applySettings(context: ProjectImportContext) {
+        val projectSettings = context.project.ySettings
+        val importSettings = context.settings
 
         projectSettings.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
         projectSettings.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
         projectSettings.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
 
-        projectSettings.externalExtensionsDirectory = importContext.externalExtensionsDirectory?.toSystemIndependentName
-        projectSettings.externalConfigDirectory = importContext.externalConfigDirectory?.toSystemIndependentName
-        projectSettings.ideModulesFilesDirectory = importContext.modulesFilesDirectory?.toSystemIndependentName
-        projectSettings.externalDbDriversDirectory = importContext.externalDbDriversDirectory?.toSystemIndependentName
-        projectSettings.configDirectory = importContext.configModuleDescriptor.moduleRootPath.toSystemIndependentName
+        projectSettings.externalExtensionsDirectory = context.externalExtensionsDirectory?.toSystemIndependentName
+        projectSettings.externalConfigDirectory = context.externalConfigDirectory?.toSystemIndependentName
+        projectSettings.ideModulesFilesDirectory = context.modulesFilesDirectory?.toSystemIndependentName
+        projectSettings.externalDbDriversDirectory = context.externalDbDriversDirectory?.toSystemIndependentName
+        projectSettings.configDirectory = context.configModuleDescriptor.moduleRootPath.toSystemIndependentName
 
-        projectSettings.modulesOnBlackList = createModulesOnBlackList(importContext)
-        projectSettings.hybrisVersion = importContext.platformVersion
-        projectSettings.javadocUrl = importContext.javadocUrl
+        projectSettings.modulesOnBlackList = createModulesOnBlackList(context)
+        projectSettings.hybrisVersion = context.platformVersion
+        projectSettings.javadocUrl = context.javadocUrl
 
-        projectSettings.sourceCodePath = importContext.sourceCodePath?.toSystemIndependentName
+        projectSettings.sourceCodePath = context.sourceCodePath?.toSystemIndependentName
+
+        projectSettings.removeExternalModulesOnRefresh = context.removeExternalModules
+
+        projectSettings.unusedExtensions = context.unusedExtensions.toSet()
     }
 
-    private fun saveCustomDirectoryLocation(importContext: ProjectImportContext) {
-        val project = importContext.project
+    private fun saveCustomDirectoryLocation(context: ProjectImportContext) {
+        val project = context.project
         val projectDir = project.directory?.let { Path(it) } ?: return
         val projectSettings = project.ySettings
-        val platformPath = importContext.platformDirectory
+        val platformPath = context.platformDirectory
 
         projectSettings.platformRelativePath = projectDir
             .relativize(platformPath)
             .toString()
 
-        importContext.externalExtensionsDirectory
+        context.externalExtensionsDirectory
             ?.let {
                 val relativeCustomPath = platformPath.relativize(it)
                 projectSettings.customDirectory = relativeCustomPath.toString()
             }
     }
 
-    private fun createModulesOnBlackList(importContext: ProjectImportContext): Set<String> {
-        val chosenHybrisModuleDescriptors = importContext.chosenHybrisModuleDescriptors
+    private fun createModulesOnBlackList(context: ProjectImportContext): Set<String> {
+        val chosenHybrisModuleDescriptors = context.chosenHybrisModuleDescriptors
         val toBeImportedNames = chosenHybrisModuleDescriptors
             .map { it.name }
             .toSet()
 
-        return importContext.foundModules
+        return context.foundModules
             .filterNot { chosenHybrisModuleDescriptors.contains(it) }
             .filter { toBeImportedNames.contains(it.name) }
-            .map { it.getRelativePath(importContext.rootDirectory) }
+            .map { it.getRelativePath(context.rootDirectory) }
             .toSet()
     }
 }

@@ -43,7 +43,7 @@ import kotlin.io.path.pathString
 class MainConfigModuleDescriptorResolver {
 
     @Throws(HybrisConfigurationException::class)
-    fun resolve(importContext: ProjectImportContext.Mutable) = find(importContext)
+    fun resolve(context: ProjectImportContext.Mutable) = find(context)
         ?.apply {
             importStatus = ModuleDescriptorImportStatus.MANDATORY
             isMainConfig = true
@@ -58,15 +58,15 @@ class MainConfigModuleDescriptorResolver {
                  """.trimIndent()
         )
 
-    private fun find(importContext: ProjectImportContext.Mutable): ConfigModuleDescriptor? {
-        val foundConfigModules = importContext.foundModules
+    private fun find(context: ProjectImportContext.Mutable): ConfigModuleDescriptor? {
+        val foundConfigModules = context.foundModules
             .filterIsInstance<ConfigModuleDescriptor>()
-        val platformHybrisModuleDescriptor = importContext.foundModules
+        val platformHybrisModuleDescriptor = context.foundModules
             .filterIsInstance<PlatformModuleDescriptor>()
             .firstOrNull() ?: return null
 
         val configDir: Path?
-        val externalConfigDirectory = importContext.externalConfigDirectory
+        val externalConfigDirectory = context.externalConfigDirectory
         if (externalConfigDirectory != null) {
             configDir = externalConfigDirectory
             if (!configDir.directoryExists) return null
@@ -82,16 +82,16 @@ class MainConfigModuleDescriptorResolver {
         if (configHybrisModuleDescriptor != null) return configHybrisModuleDescriptor
 
         return ModuleRootResolver.EP.extensionList
-            .find { it.isApplicable(importContext, importContext.rootDirectory, configDir) }
+            .find { it.isApplicable(context, context.rootDirectory, configDir) }
             ?.resolve(configDir)
             ?.moduleRoot
             ?.takeIf { it.type == ModuleDescriptorType.CONFIG }
             ?.let {
-                thisLogger().info("Creating Overridden Config module in local.properties for: $configDir")
-                ModuleDescriptorFactory.getInstance().createDescriptor(importContext, it)
+                thisLogger().debug("Creating Overridden Config module in local.properties for: $configDir")
+                ModuleDescriptorFactory.getInstance().createDescriptor(context, it)
             }
             ?.let { it as? ConfigModuleDescriptor }
-            ?.also { importContext.addModule(it) }
+            ?.also { context.addModule(it) }
     }
 
     private fun getExpectedConfigDir(platformModuleDescriptor: PlatformModuleDescriptor): Path? {

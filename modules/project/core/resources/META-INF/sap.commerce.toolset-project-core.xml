@@ -18,29 +18,32 @@
 <idea-plugin>
 
     <extensionPoints>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.preImportConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator"
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.importConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectImportConfigurator"
+                        dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.whenSmartConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectImportWhenSmartConfigurator"
                         dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.libraryConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectLibraryConfigurator"
                         dynamic="true"/>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.importConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectImportConfigurator"
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportLegacyConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectPostImportLegacyConfigurator"
                         dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator"
                         dynamic="true"/>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportAsyncConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator"
-                        dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.startupConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectStartupConfigurator"
                         dynamic="true"/>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.refreshConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator"
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.beforeRefreshConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectBeforeRefreshConfigurator"
                         dynamic="true"/>
-        <extensionPoint qualifiedName="sap.commerce.toolset.project.storageConfigurator"
-                        interface="sap.commerce.toolset.project.configurator.ProjectStorageConfigurator"
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.storage.cleanupConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator"
+                        dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.storage.saveConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectStorageSaveConfigurator"
                         dynamic="true"/>
 
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.importConfigurator"
@@ -54,6 +57,13 @@
                         dynamic="true"/>
         <extensionPoint qualifiedName="sap.commerce.toolset.project.module.rootResolver"
                         interface="sap.commerce.toolset.project.module.ModuleRootResolver"
+                        dynamic="true"/>
+
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.contentRootEntryConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator"
+                        dynamic="true"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.module.libraryConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator"
                         dynamic="true"/>
     </extensionPoints>
 
