@@ -10,10 +10,11 @@
 Due severe API changes it is highly advised to backup the project and import it from the scratch. Please, report any issues via project's Slack or GitHub.
 
 ### `Project Import` enhancements
-- Project import & refresh 3.0 [#1699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699)
-- Project import & refresh 3.1 [#1704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704)
+- Project import & refresh 3.0 with 146 commits and ~533 changed files  [#1699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1699)
+- Project import & refresh 3.1 with 32 commits and ~246 changed files [#1704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704)
 - Lazy dependency on `java-el` plugin [#1700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1700)
 - Register `HMC` Project Library when `hmc` extension present [#1705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1705)
+- Include resolved extensions once in case of symbolic links under the same root [#1706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1706)
 
 ### `SAP CX Logging` enhancements
 - Support deletion for multiple selected custom nodes [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)

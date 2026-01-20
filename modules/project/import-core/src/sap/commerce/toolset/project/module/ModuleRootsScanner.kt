@@ -71,7 +71,12 @@ class ModuleRootsScanner {
 
                             // prevent recursion
                             if (visited.contains(path)) return FileVisitResult.SKIP_SUBTREE
-                            else visited.add(path)
+                            else {
+                                visited.add(path)
+                                if (path.isSymbolicLink()) {
+                                    visited.add(path.readSymbolicLink())
+                                }
+                            }
 
                             return when {
                                 path.isHidden() -> {
