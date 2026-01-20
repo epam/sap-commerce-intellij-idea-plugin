@@ -23,4 +23,4 @@ import java.nio.file.Path
 class YHmcExtModuleDescriptor(
     moduleRootPath: Path,
     extensionInfo: ExtensionInfoContext,
-) : YPlatformExtModuleDescriptor(moduleRootPath, extensionInfo)
+) : YOotbRegularModuleDescriptor(moduleRootPath, extensionInfo)
