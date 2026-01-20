@@ -22,7 +22,7 @@ import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.settings.ySettings
 
-class ExtensionDescriptorsConfigurator : ProjectPostImportAsyncConfigurator {
+class ExtensionDescriptorsConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Extension Descriptors"

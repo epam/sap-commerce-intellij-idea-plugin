@@ -23,13 +23,13 @@ import com.intellij.openapi.module.Module
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportLegacyConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.isCustomModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 
-class KotlinFacetConfigurator : ProjectPostImportConfigurator {
+class KotlinFacetConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "Kotlin Facet"

@@ -34,6 +34,9 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import kotlin.time.measureTime
 
+/*
+This is delayed configurator, which will listen for Workspace events and trigger post-import configurators once our mutable storage is committed
+ */
 class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
 
     private val logger = thisLogger()
@@ -43,7 +46,7 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(context: ProjectImportContext) {
         CoroutineScope(Dispatchers.Default).launch {
-            context.workspace.eventLog.collectIndexed { index, versionedStorage ->
+            context.workspace.eventLog.collectIndexed { _, versionedStorage ->
                 if (context.mutableStorage.committed) {
                     val postImportContext = ProjectPostImportContext.from(context, versionedStorage.storageAfter)
 
@@ -61,8 +64,8 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
         val legacyWorkspace = IdeModifiableModelsProviderImpl(context.project)
         val edtActions = mutableListOf<() -> Unit>()
 
-        // mostly background operations
-        ProjectPostImportConfigurator.EP.extensionList.forEach { configurator ->
+        // mostly facets and other configurations not yet available for configuration via WorkspaceModel
+        ProjectPostImportLegacyConfigurator.EP.extensionList.forEach { configurator ->
             runCatching {
                 val duration = measureTime { configurator.configure(context, legacyWorkspace, edtActions) }
                 logger.debug("Post-configured project [${configurator.name} | $duration]")
@@ -83,7 +86,7 @@ class ProjectPostImportBulkConfigurator : ProjectImportConfigurator {
     private fun configureWorkspace(context: ProjectPostImportContext) {
         CoroutineScope(Dispatchers.Default).launch {
             if (context.project.isDisposed) return@launch
-            val configurators = ProjectPostImportAsyncConfigurator.EP.extensionList
+            val configurators = ProjectPostImportConfigurator.EP.extensionList
 
             withBackgroundProgress(context.project, "Applying post-import configurators...", true) {
                 // async operations

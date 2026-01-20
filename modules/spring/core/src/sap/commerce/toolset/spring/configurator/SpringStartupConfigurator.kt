@@ -26,7 +26,7 @@ class SpringStartupConfigurator : ProjectStartupConfigurator {
     override val name: String
         get() = "Spring"
 
-    override suspend  fun onStartup(project: Project) {
+    override suspend  fun configure(project: Project) {
         Plugin.SPRING.ifActive {
             with(SpringGeneralSettings.getInstance(project)) {
                 isShowMultipleContextsPanel = false

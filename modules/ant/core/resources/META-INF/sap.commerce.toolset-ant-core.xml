@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.refreshConfigurator implementation="sap.commerce.toolset.ant.configurator.AntRefreshConfigurator"/>
+        <project.beforeRefreshConfigurator implementation="sap.commerce.toolset.ant.configurator.AntBeforeRefreshConfigurator"/>
         <project.whenSmartConfigurator implementation="sap.commerce.toolset.ant.configurator.AntWhenSmartConfigurator"/>
     </extensions>
 

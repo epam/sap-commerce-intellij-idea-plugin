@@ -25,6 +25,7 @@ import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.platform.workspace.storage.entities
 import com.intellij.platform.workspace.storage.url.VirtualFileUrl
 import com.intellij.workspaceModel.ide.legacyBridge.LegacyBridgeJpsEntitySourceFactory
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
@@ -48,7 +49,9 @@ fun Project.configureProjectLibrary(
     tableId = LibraryTableId.ProjectLibraryTableId,
     roots = libraryRoots.toMutableList(),
     entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(this).createEntitySourceForProjectLibrary(null),
-)
+) {
+    typeId = ProjectConstants.Workspace.yLibraryTypeId
+}
 
 fun ModuleEntityBuilder.linkProjectLibrary(
     libraryName: String,
@@ -95,7 +98,7 @@ fun ModuleEntityBuilder.configureLibrary(
                 roots = libraryRoots.toList(),
                 entitySource = this.entitySource,
             ) {
-                this.typeId = LibraryTypeId("SAP CX")
+                this.typeId = ProjectConstants.Workspace.yLibraryTypeId
                 this.excludedRoots = this.excludedRoots(excludedRoots)
             }
 

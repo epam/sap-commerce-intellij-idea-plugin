@@ -95,7 +95,7 @@ class LibraryRootLookupService {
                         .firstOrNull()
                 }
         } catch (e: Exception) {
-            thisLogger().debug("Solr MavenCoords not found for: ${libraryJar.nameWithoutExtension}, $url", e)
+            thisLogger().debug("Solr MavenCoords not found for: ${libraryJar.nameWithoutExtension}, $url, due: ${e.message}")
         }
         return null
     }
@@ -117,7 +117,7 @@ class LibraryRootLookupService {
                 }
                 ?: false
         } catch (e: Exception) {
-            thisLogger().debug("Resource not found for: $url", e)
+            thisLogger().debug("Resource not found for: $url, due: ${e.message}")
         }
 
         return false
@@ -194,7 +194,7 @@ class LibraryRootLookupService {
                 }
             }
         } catch (e: Exception) {
-            thisLogger().warn("no maven coordinates MF for ${libraryJar.name}", e)
+            thisLogger().warn("no maven coordinates MF for ${libraryJar.name}, due: ${e.message}")
         }
 
         return null

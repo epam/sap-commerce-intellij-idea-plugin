@@ -24,10 +24,10 @@ import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.storage.entities
 import com.intellij.workspaceModel.ide.legacyBridge.findModule
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 
-class KotlinPostImportConfigurator : ProjectPostImportAsyncConfigurator {
+class KotlinPostImportConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Kotlin"

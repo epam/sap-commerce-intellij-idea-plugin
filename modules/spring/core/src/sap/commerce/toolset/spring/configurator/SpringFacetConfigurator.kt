@@ -26,7 +26,7 @@ import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportLegacyConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
@@ -35,7 +35,7 @@ import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescript
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-class SpringFacetConfigurator : ProjectPostImportConfigurator {
+class SpringFacetConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "Spring Facets"

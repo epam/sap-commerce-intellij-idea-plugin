@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,16 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.project.configurator
 
-import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.project.context.ProjectRefreshContext
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 
-class ResetCacheProjectRefreshConfigurator : ProjectRefreshConfigurator {
-    override val name: String
-        get() = "Reset Cache"
+interface ProjectPostImportLegacyConfigurator : Configurator {
 
-    override suspend fun configure(context: ProjectRefreshContext) {
-        PropertyService.getInstance(context.project).resetCache()
+    fun configure(context: ProjectPostImportContext, legacyWorkspace: IdeModifiableModelsProvider, edtActions: MutableList<() -> Unit>)
+
+    companion object {
+        val EP = ExtensionPointName.create<ProjectPostImportLegacyConfigurator>("sap.commerce.toolset.project.postImportLegacyConfigurator")
     }
 }

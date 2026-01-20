@@ -80,6 +80,7 @@ data class ProjectPostImportContext(
                         return@mapNotNull null
                     }
                 val extensionName = it.yExtensionName(moduleMapping) ?: run {
+                    // possible case, especially for external modules
                     thisLogger().warn("Extension name not found: ${it.name}")
                     return@mapNotNull null
                 }

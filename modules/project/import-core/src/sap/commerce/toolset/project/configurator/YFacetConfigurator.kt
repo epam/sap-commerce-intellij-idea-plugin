@@ -23,7 +23,7 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.facet.createYFacet
 
-class YFacetConfigurator : ProjectPostImportConfigurator {
+class YFacetConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "SAP CX Facet"

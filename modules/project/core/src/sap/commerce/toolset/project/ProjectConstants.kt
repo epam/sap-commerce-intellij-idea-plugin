@@ -19,12 +19,16 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.module.JavaModuleType
+import com.intellij.platform.workspace.jps.entities.LibraryTypeId
 import sap.commerce.toolset.extensioninfo.EiConstants
 import kotlin.io.path.Path
 
 object ProjectConstants {
 
-    val Y_MODULE_TYPE_ID = JavaModuleType.getModuleType().id
+    object Workspace {
+        val yLibraryTypeId = LibraryTypeId("SAP CX")
+        val yModuleTypeId = JavaModuleType.getModuleType().id
+    }
 
     object Directory {
         const val BOOTSTRAP = "bootstrap"

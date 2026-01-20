@@ -30,7 +30,7 @@ import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.projectImport.ProjectImportProvider
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import sap.commerce.toolset.project.configurator.ProjectBeforeRefreshConfigurator
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.wizard.RefreshSupport
 import kotlin.io.path.absolutePathString
@@ -49,7 +49,7 @@ class ProjectRefreshService(private val project: Project) {
             owner = ModalTaskOwner.guess(),
             title = "Before Refresh Configurators",
         ) {
-            ProjectRefreshConfigurator.EP.extensionList.forEach { it.configure(refreshContext) }
+            ProjectBeforeRefreshConfigurator.EP.extensionList.forEach { it.configure(refreshContext) }
         }
 
         val wizard = object : AddModuleWizard(project, projectDirectory, provider) {

@@ -15,17 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.gradle.project.configurator
 
-package sap.commerce.toolset.project.configurator
+import org.jetbrains.plugins.gradle.settings.GradleSettings
+import sap.commerce.toolset.project.configurator.ProjectBeforeRefreshConfigurator
+import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import sap.commerce.toolset.project.context.ProjectPostImportContext
+class GradleBeforeRefreshConfigurator : ProjectBeforeRefreshConfigurator {
 
-interface ProjectPostImportAsyncConfigurator : Configurator {
+    override val name: String
+        get() = "Gradle"
 
-    suspend fun configure(context: ProjectPostImportContext)
+    override suspend fun configure(context: ProjectRefreshContext) {
+        if (!context.removeExternalModules) return
 
-    companion object {
-        val EP = ExtensionPointName.create<ProjectPostImportAsyncConfigurator>("sap.commerce.toolset.project.postImportAsyncConfigurator")
+        val project = context.project
+
+        GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
     }
 }

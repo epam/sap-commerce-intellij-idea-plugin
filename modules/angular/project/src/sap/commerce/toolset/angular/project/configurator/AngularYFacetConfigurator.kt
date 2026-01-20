@@ -20,11 +20,11 @@ package sap.commerce.toolset.angular.project.configurator
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.angular.project.descriptor.AngularModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportLegacyConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.facet.createYFacet
 
-class AngularYFacetConfigurator : ProjectPostImportConfigurator {
+class AngularYFacetConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "YFacet for Angular"

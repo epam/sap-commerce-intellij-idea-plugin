@@ -36,7 +36,7 @@ class JRebelStartupConfigurator : ProjectStartupConfigurator {
     override val name: String
         get() = "JRebel"
 
-    override suspend fun onStartup(project: Project) {
+    override suspend fun configure(project: Project) {
         val compilingXml = readAction {
             project.yModuleEntity(EiConstants.Extension.PLATFORM)
                 ?.contentRootPath

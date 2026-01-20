@@ -19,10 +19,10 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinPostImportConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinPostImportConfigurator"/>
         <project.whenSmartConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinWhenSmartConfigurator"/>
 
-        <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
+        <project.postImportLegacyConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinFacetConfigurator"/>
 
         <project.storage.cleanupConfigurator order="after cleanupLibrariesStorageConfigurator"
                                              implementation="sap.commerce.toolset.kotlin.configurator.entities.CleanupKotlinProjectLibraryStorageConfigurator"/>

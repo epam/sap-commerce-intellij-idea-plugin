@@ -20,11 +20,11 @@ package sap.commerce.toolset.ccv2.project.configurator
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.ccv2.project.descriptor.CCv2ModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportLegacyConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.facet.createYFacet
 
-class CCv2YFacetConfigurator : ProjectPostImportConfigurator {
+class CCv2YFacetConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "YFacet for CCv2"

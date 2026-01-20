@@ -22,7 +22,7 @@ import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-class SaveDocumentsProjectRefreshConfigurator : ProjectRefreshConfigurator {
+class SaveDocumentsProjectBeforeRefreshConfigurator : ProjectBeforeRefreshConfigurator {
 
     override val name: String
         get() = "Save Documents"

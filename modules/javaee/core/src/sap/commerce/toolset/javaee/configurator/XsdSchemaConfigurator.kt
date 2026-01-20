@@ -22,7 +22,7 @@ import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.application.readAction
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.impl.YBackofficeModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
@@ -32,7 +32,7 @@ import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.io.path.pathString
 
-class XsdSchemaConfigurator : ProjectPostImportAsyncConfigurator {
+class XsdSchemaConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "XSD Schema"

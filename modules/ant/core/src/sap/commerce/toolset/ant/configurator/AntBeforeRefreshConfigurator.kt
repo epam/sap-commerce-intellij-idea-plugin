@@ -15,22 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.gradle.project.configurator
+package sap.commerce.toolset.ant.configurator
 
-import org.jetbrains.plugins.gradle.settings.GradleSettings
-import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+import com.intellij.lang.ant.config.AntConfigurationBase
+import com.intellij.openapi.application.readAction
+import sap.commerce.toolset.project.configurator.ProjectBeforeRefreshConfigurator
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-class GradleRefreshConfigurator : ProjectRefreshConfigurator {
+class AntBeforeRefreshConfigurator : ProjectBeforeRefreshConfigurator {
 
     override val name: String
-        get() = "Gradle"
+        get() = "Ant"
 
     override suspend fun configure(context: ProjectRefreshContext) {
-        if (!context.removeExternalModules) return
-
         val project = context.project
+        val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
 
-        GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
+
+        for (antBuildFile in antConfiguration.buildFiles) {
+            readAction { antConfiguration.removeBuildFile(antBuildFile) }
+        }
     }
 }

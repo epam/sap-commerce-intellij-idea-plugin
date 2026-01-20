@@ -15,25 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.ant.configurator
 
-import com.intellij.lang.ant.config.AntConfigurationBase
-import com.intellij.openapi.application.readAction
-import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
+package sap.commerce.toolset.project.configurator
+
+import com.intellij.openapi.extensions.ExtensionPointName
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 
-class AntRefreshConfigurator : ProjectRefreshConfigurator {
+interface ProjectBeforeRefreshConfigurator : Configurator {
 
-    override val name: String
-        get() = "Ant"
+    suspend fun configure(context: ProjectRefreshContext)
 
-    override suspend fun configure(context: ProjectRefreshContext) {
-        val project = context.project
-        val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
-
-
-        for (antBuildFile in antConfiguration.buildFiles) {
-            readAction { antConfiguration.removeBuildFile(antBuildFile) }
-        }
+    companion object {
+        val EP = ExtensionPointName.create<ProjectBeforeRefreshConfigurator>("sap.commerce.toolset.project.beforeRefreshConfigurator")
     }
 }

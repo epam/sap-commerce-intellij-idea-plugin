@@ -19,12 +19,11 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 
 interface ProjectPostImportConfigurator : Configurator {
 
-    fun configure(context: ProjectPostImportContext, legacyWorkspace: IdeModifiableModelsProvider, edtActions: MutableList<() -> Unit>)
+    suspend fun configure(context: ProjectPostImportContext)
 
     companion object {
         val EP = ExtensionPointName.create<ProjectPostImportConfigurator>("sap.commerce.toolset.project.postImportConfigurator")

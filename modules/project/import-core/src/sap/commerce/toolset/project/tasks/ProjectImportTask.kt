@@ -65,7 +65,7 @@ class ProjectImportTask(private val project: Project) {
                     checkCanceled()
 
                     val duration = measureTime { configurator.configure(context) }
-                    logger.debug("Pre-configured project [${configurator.name} | $duration]")
+                    logger.debug("Configured project [${configurator.name} | $duration]")
                 }
             }
         }

@@ -27,12 +27,12 @@ import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProjec
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.gradle.project.descriptor.GradleModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.pathString
 
-class GradleConfigurator : ProjectPostImportAsyncConfigurator {
+class GradleConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Gradle"

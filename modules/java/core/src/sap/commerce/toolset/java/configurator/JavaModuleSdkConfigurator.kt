@@ -29,7 +29,7 @@ class JavaModuleSdkConfigurator : ModuleImportConfigurator {
     override val name: String
         get() = "Sdk"
 
-    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Y_MODULE_TYPE_ID == moduleTypeId
+    override fun isApplicable(moduleTypeId: String) = ProjectConstants.Workspace.yModuleTypeId == moduleTypeId
 
     override suspend fun configure(context: ProjectModuleConfigurationContext<ModuleDescriptor>) {
         context.moduleEntity.dependencies += InheritedSdkDependency

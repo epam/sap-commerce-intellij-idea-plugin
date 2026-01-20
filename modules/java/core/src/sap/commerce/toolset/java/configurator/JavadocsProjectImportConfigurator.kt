@@ -21,12 +21,12 @@ package sap.commerce.toolset.java.configurator
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.JavaModuleExternalPaths
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportLegacyConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.isNonCustomModuleDescriptor
 
-class JavadocsProjectImportConfigurator : ProjectPostImportConfigurator {
+class JavadocsProjectImportConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "Javadocs"

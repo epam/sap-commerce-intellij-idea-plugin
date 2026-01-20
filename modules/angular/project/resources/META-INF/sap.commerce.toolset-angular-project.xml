@@ -18,8 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.postImportConfigurator implementation="sap.commerce.toolset.angular.project.configurator.AngularYFacetConfigurator"/>
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.angular.project.configurator.AngularConfigurator"/>
+        <project.postImportLegacyConfigurator implementation="sap.commerce.toolset.angular.project.configurator.AngularYFacetConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.angular.project.configurator.AngularConfigurator"/>
 
         <project.module.provider implementation="sap.commerce.toolset.angular.project.configurator.AngularModuleProvider"/>
         <project.module.importConfigurator implementation="sap.commerce.toolset.angular.project.configurator.AngularModuleImportConfigurator"/>

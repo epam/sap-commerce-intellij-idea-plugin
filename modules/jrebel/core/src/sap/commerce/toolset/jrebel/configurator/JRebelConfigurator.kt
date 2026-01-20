@@ -29,13 +29,13 @@ import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacet
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
 import com.zeroturnaround.javarebel.idea.plugin.xml.RebelXML
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import java.io.File
 
-class JRebelConfigurator : ProjectPostImportAsyncConfigurator {
+class JRebelConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "JRebel"

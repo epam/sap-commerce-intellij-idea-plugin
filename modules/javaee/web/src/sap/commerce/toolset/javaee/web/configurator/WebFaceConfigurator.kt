@@ -27,7 +27,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportLegacyConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
@@ -39,7 +39,7 @@ import sap.commerce.toolset.util.toSystemIndependentName
  * No need to migrate to the new Workspace API or use the {@code webSettings} storage builder at the moment.
  * See <a href="https://platform.jetbrains.com/t/how-to-properly-manage-javasettings-and-websettings-in-workspace-api/3471">How to properly manage javaSettings and webSettings in Workspace API</a>.
  */
-class WebFacetConfigurator : ProjectPostImportConfigurator {
+class WebFaceConfigurator : ProjectPostImportLegacyConfigurator {
 
     override val name: String
         get() = "Web Facets"

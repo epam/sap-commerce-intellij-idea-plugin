@@ -34,7 +34,7 @@ import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import javax.swing.Icon
 
-class SearchScopeConfigurator : ProjectPostImportAsyncConfigurator {
+class SearchScopeConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Search Scope"

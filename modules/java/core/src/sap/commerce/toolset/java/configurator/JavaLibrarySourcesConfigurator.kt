@@ -23,7 +23,6 @@ import com.intellij.jarRepository.RemoteRepositoriesConfiguration
 import com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
@@ -35,6 +34,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
+import com.intellij.platform.workspace.jps.entities.LibraryId
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
 import com.intellij.platform.workspace.storage.entities
@@ -48,6 +48,7 @@ import sap.commerce.toolset.java.jarFinder.LibraryRootLookup
 import sap.commerce.toolset.java.jarFinder.LibraryRootLookupScope
 import sap.commerce.toolset.java.jarFinder.LibraryRootLookupService
 import sap.commerce.toolset.java.jarFinder.LibraryRootType
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.settings.LibrarySourcesFetchMode
@@ -65,11 +66,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
     override val name
         get() = "Libraries Sources"
 
-    override fun configure(
-        context: ProjectPostImportContext,
-        legacyWorkspace: IdeModifiableModelsProvider,
-        edtActions: MutableList<() -> Unit>
-    ) {
+    override suspend fun configure(context: ProjectPostImportContext) {
         val libraryRootTypes = buildSet {
             if (context.settings.withExternalLibrarySources) add(LibraryRootType.SOURCES)
             if (context.settings.withExternalLibraryJavadocs) add(LibraryRootType.JAVADOC)
@@ -112,9 +109,10 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
         lookupRepositories: List<String>,
         librarySourceDir: Path,
         libraryRootTypes: Set<LibraryRootType>
-    ): Map<LibraryEntity, Collection<LibraryRootLookup>> {
+    ): Map<LibraryId, Collection<LibraryRootLookup>> {
         val libraryEntities = context.storage
             .entities<LibraryEntity>()
+            .filter { it.typeId == ProjectConstants.Workspace.yLibraryTypeId }
             .toList()
 
         return reportProgressScope(libraryEntities.size) { reporter ->
@@ -123,7 +121,11 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                     checkCanceled()
 
                     async {
-                        libraryEntity to fetchSources(context, lookupRepositories, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
+                        val libraryId = LibraryId(
+                            libraryEntity.name,
+                            libraryEntity.tableId
+                        )
+                        libraryId to fetchSources(context, lookupRepositories, librarySourceDir, libraryRootTypes, libraryEntity, reporter)
                     }
                 }
                 .awaitAll()
@@ -133,16 +135,19 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
 
     private suspend fun updateLibraries(
         context: ProjectPostImportContext,
-        libraries: Map<LibraryEntity, Collection<LibraryRootLookup>>,
+        libraries: Map<LibraryId, Collection<LibraryRootLookup>>,
         librarySourceDir: Path
     ) {
         checkCanceled()
 
         context.workspace.update("Updating libraries sources") { storage ->
-            libraries
-                .filter { storage.contains(it.key.symbolicId) }
-                .forEach { (libraryEntity, libraryRootLookups) ->
-                    val libraryRoots = libraryRootLookups.mapNotNull { it.libraryRoot }
+            storage
+                .entities<LibraryEntity>()
+                .forEach { libraryEntity ->
+                    val libraryRoots = LibraryId(libraryEntity.name, libraryEntity.tableId)
+                        .let { libraries[it] }
+                        ?.mapNotNull { it.libraryRoot }
+                        ?: return@forEach
 
                     storage.modifyLibraryEntity(libraryEntity) {
                         this.roots += libraryRoots

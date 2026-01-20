@@ -21,11 +21,11 @@ package sap.commerce.toolset.eclipse.project.configurator
 import com.intellij.openapi.application.backgroundWriteAction
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
 import sap.commerce.toolset.eclipse.project.descriptor.EclipseModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import kotlin.io.path.pathString
 
-class EclipseModuleConfigurator : ProjectPostImportAsyncConfigurator {
+class EclipseModuleConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Eclipse"

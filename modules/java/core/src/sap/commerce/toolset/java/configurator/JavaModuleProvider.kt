@@ -27,7 +27,7 @@ class JavaModuleProvider : ModuleProvider {
     override val name: String
         get() = "Java"
     override val moduleTypeId: String
-        get() = ProjectConstants.Y_MODULE_TYPE_ID
+        get() = ProjectConstants.Workspace.yModuleTypeId
 
     override suspend fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
 }

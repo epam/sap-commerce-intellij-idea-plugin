@@ -38,15 +38,15 @@
 
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
 
-        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
+        <project.postImportLegacyConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
 
         <project.whenSmartConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
-        <project.postImportAsyncConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
-        <project.postImportAsyncConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
+        <project.postImportConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
 
-        <project.refreshConfigurator order="first" id="saveDocumentsProjectRefreshConfigurator"
-                                     implementation="sap.commerce.toolset.project.configurator.SaveDocumentsProjectRefreshConfigurator"/>
-        <project.refreshConfigurator implementation="sap.commerce.toolset.project.configurator.ResetCacheProjectRefreshConfigurator"/>
+        <project.beforeRefreshConfigurator order="first" id="saveDocumentsProjectRefreshConfigurator"
+                                           implementation="sap.commerce.toolset.project.configurator.SaveDocumentsProjectBeforeRefreshConfigurator"/>
+        <project.beforeRefreshConfigurator implementation="sap.commerce.toolset.project.configurator.ResetCacheProjectBeforeRefreshConfigurator"/>
 
         <project.module.descriptorProvider order="first" id="configModuleDescriptorProvider"
                                            implementation="sap.commerce.toolset.project.descriptor.provider.ConfigModuleDescriptorProvider"/>

@@ -29,7 +29,6 @@ import com.intellij.database.util.LoaderContext
 import com.intellij.database.util.performAutoIntrospection
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.smartReadAction
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
@@ -48,17 +47,13 @@ class DataSourceConfigurator : ProjectPostImportConfigurator {
     override val name: String
         get() = "Database - Data Sources"
 
-    override fun configure(
-        context: ProjectPostImportContext,
-        legacyWorkspace: IdeModifiableModelsProvider,
-        edtActions: MutableList<() -> Unit>
-    ) {
+    override suspend fun configure(context: ProjectPostImportContext) {
         CoroutineScope(Dispatchers.Default).launch {
-            configure(context)
+            configureNonBlocking(context)
         }
     }
 
-    suspend fun configure(context: ProjectPostImportContext) {
+    private suspend fun configureNonBlocking(context: ProjectPostImportContext) {
         val project = context.project
         val projectProperties = smartReadAction(project) { PropertyService.getInstance(project).findAllProperties() }
         val dataSources = mutableListOf<LocalDataSource>()

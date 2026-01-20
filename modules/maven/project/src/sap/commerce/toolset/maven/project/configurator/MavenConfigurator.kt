@@ -24,11 +24,11 @@ import org.jetbrains.idea.maven.model.MavenConstants
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
 import sap.commerce.toolset.maven.project.descriptor.MavenModuleDescriptor
-import sap.commerce.toolset.project.configurator.ProjectPostImportAsyncConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.util.fileExists
 
-class MavenConfigurator : ProjectPostImportAsyncConfigurator {
+class MavenConfigurator : ProjectPostImportConfigurator {
 
     override val name: String
         get() = "Maven"
