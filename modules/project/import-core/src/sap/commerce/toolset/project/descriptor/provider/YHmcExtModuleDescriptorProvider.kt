@@ -21,14 +21,12 @@ import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.project.context.ModuleDescriptorProviderContext
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.YHmcExtModuleDescriptor
 import kotlin.io.path.name
 
 class YHmcExtModuleDescriptorProvider : ModuleDescriptorProvider {
 
-    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.type == ModuleDescriptorType.EXT
-        && context.moduleRoot.path.name == EiConstants.Extension.HMC
+    override fun isApplicable(context: ModuleDescriptorProviderContext) = context.moduleRoot.path.name == EiConstants.Extension.HMC
 
     override fun create(context: ModuleDescriptorProviderContext): YHmcExtModuleDescriptor {
         val extensionInfo = EiModelAccess.getInstance().getContext(context.moduleRootPath)

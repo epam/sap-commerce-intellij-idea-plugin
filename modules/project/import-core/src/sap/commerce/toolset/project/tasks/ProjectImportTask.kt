@@ -61,7 +61,7 @@ class ProjectImportTask(private val project: Project) {
 
         reportProgressScope(configurators.size) { reporter ->
             configurators.forEach { configurator ->
-                reporter.itemStep("Configuring project using '${configurator.name}' configurator...") {
+                reporter.itemStep("Applying project '${configurator.name}' configurator...") {
                     checkCanceled()
 
                     val duration = measureTime { configurator.configure(context) }
