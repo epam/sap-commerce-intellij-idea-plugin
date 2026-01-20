@@ -20,9 +20,12 @@ package sap.commerce.toolset.gradle.project.configurator
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import sap.commerce.toolset.actionSystem.triggerAction
@@ -41,24 +44,29 @@ class GradleConfigurator : ProjectPostImportConfigurator {
         val project = context.project
         PropertiesComponent.getInstance(project).setValue("show.inlinked.gradle.project.popup", false)
 
-        try {
-            context.chosenOtherModuleDescriptors
-                .filterIsInstance<GradleModuleDescriptor>()
-                .filter { it.gradleFile.fileExists }
-                .map { it.gradleFile.pathString }
-                .forEach { externalProjectPath -> linkAndSyncGradleProject(project, externalProjectPath) }
-        } catch (e: Exception) {
-            thisLogger().error("Can not import Gradle modules due to an error.", e)
-        }
+        val gradleProjectPaths = context.chosenOtherModuleDescriptors
+            .filterIsInstance<GradleModuleDescriptor>()
+            .filter { it.gradleFile.fileExists }
+            .map { it.gradleFile.pathString }
+            .takeIf { it.isNotEmpty() }
+            ?: return
 
-        if (!context.refresh) return
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                gradleProjectPaths.forEach { externalProjectPath -> linkAndSyncGradleProject(project, externalProjectPath) }
+            } catch (e: Exception) {
+                thisLogger().error("Can not import Gradle modules due to an error.", e)
+            }
 
-        edtWriteAction {
-            project.triggerAction("ExternalSystem.RefreshAllProjects") {
-                SimpleDataContext.builder()
-                    .add(CommonDataKeys.PROJECT, project)
-                    .add(ExternalSystemDataKeys.EXTERNAL_SYSTEM_ID, GradleConstants.SYSTEM_ID)
-                    .build()
+            if (!context.refresh) return@launch
+
+            backgroundWriteAction {
+                project.triggerAction("ExternalSystem.RefreshAllProjects") {
+                    SimpleDataContext.builder()
+                        .add(CommonDataKeys.PROJECT, project)
+                        .add(ExternalSystemDataKeys.EXTERNAL_SYSTEM_ID, GradleConstants.SYSTEM_ID)
+                        .build()
+                }
             }
         }
     }
