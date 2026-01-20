@@ -19,7 +19,6 @@ package sap.commerce.toolset.spring.configurator
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.JDOMUtil
-import com.intellij.openapi.vfs.VfsUtil
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
@@ -35,6 +34,7 @@ import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
@@ -193,11 +193,12 @@ class SpringPreConfigurator : ProjectImportConfigurator {
 
         // In addition to plain xml files also scan jars in the WEB-INF/lib
         val webInfLibDir = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
-        VfsUtil.findFile(webInfLibDir, true)
-            ?.children
-            ?.filter { it.extension == "jar" }
-            ?.forEach {
-                val file = VfsUtil.virtualToIoFile(it)
+
+        Files.newDirectoryStream(webInfLibDir) { p ->
+            p.isRegularFile() && p.extension == "jar"
+        }.use { stream ->
+            stream.forEach { p ->
+                val file = p.toFile()
                 val zipFile = ZipFile(file)
                 val entries = zipFile.entries()
                 while (entries.hasMoreElements()) {
@@ -220,6 +221,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
                     }
                 }
             }
+        }
     }
 
     private fun processSpringFile(
