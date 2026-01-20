@@ -193,6 +193,8 @@ class SpringPreConfigurator : ProjectImportConfigurator {
 
         // In addition to plain xml files also scan jars in the WEB-INF/lib
         val webInfLibDir = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_LIB)
+            .takeIf { it.directoryExists }
+            ?: return
 
         Files.newDirectoryStream(webInfLibDir) { p ->
             p.isRegularFile() && p.extension == "jar"
