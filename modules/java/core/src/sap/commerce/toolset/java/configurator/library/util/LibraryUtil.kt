@@ -33,7 +33,7 @@ suspend fun WorkspaceModel.removeProjectLibrary(
     libraryName: String
 ) {
     val libraryEntity = this.currentSnapshot.entities<LibraryEntity>()
-        .find { it.name == libraryName }
+        .find { it.name == libraryName && it.tableId == LibraryTableId.ProjectLibraryTableId }
         ?: return
 
     this.update("Removing project library '$libraryName'") { storage ->
