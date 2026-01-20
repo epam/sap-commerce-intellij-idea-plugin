@@ -19,7 +19,6 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
@@ -33,7 +32,7 @@ class HmcProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.HMC
 
-    override suspend fun configure(context: ProjectImportContext): LibraryEntityBuilder? {
+    override suspend fun configure(context: ProjectImportContext) {
         val workspace = context.workspace
         val hmcWebModuleDescriptor = context.chosenHybrisModuleDescriptors
             .filterIsInstance<YHmcExtModuleDescriptor>()
@@ -45,7 +44,7 @@ class HmcProjectLibraryConfigurator : ProjectLibraryConfigurator {
         if (hmcWebModuleDescriptor == null) {
             thisLogger().debug("Project library '${JavaConstants.ProjectLibrary.HMC}' will not be created because ${EiConstants.Extension.HMC} extension is not used.")
             workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.HMC)
-            return null
+            return
         }
 
         val virtualFileUrlManager = workspace.getVirtualFileUrlManager()
@@ -55,7 +54,8 @@ class HmcProjectLibraryConfigurator : ProjectLibraryConfigurator {
             addAll(hmcWebModuleDescriptor.docSources(virtualFileUrlManager))
         }
 
-        return context.project.configureProjectLibrary(
+        context.project.configureProjectLibrary(
+            context = context,
             libraryName = JavaConstants.ProjectLibrary.HMC,
             libraryRoots = libraryRoots,
         )

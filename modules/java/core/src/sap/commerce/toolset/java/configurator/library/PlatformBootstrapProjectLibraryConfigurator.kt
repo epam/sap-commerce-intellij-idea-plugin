@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.java.configurator.library
 
-import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
@@ -40,7 +39,7 @@ class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP
 
-    override suspend fun configure(context: ProjectImportContext): LibraryEntityBuilder {
+    override suspend fun configure(context: ProjectImportContext) {
         val virtualFileUrlManager = context.workspace.getVirtualFileUrlManager()
         val platformModuleDescriptor = context.platformModuleDescriptor
 
@@ -51,7 +50,8 @@ class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
             addIfNotNull(context.sourceCode(virtualFileUrlManager))
         }
 
-        return context.project.configureProjectLibrary(
+        context.project.configureProjectLibrary(
+            context = context,
             libraryName = JavaConstants.ProjectLibrary.PLATFORM_BOOTSTRAP,
             libraryRoots = libraryRoots,
         )

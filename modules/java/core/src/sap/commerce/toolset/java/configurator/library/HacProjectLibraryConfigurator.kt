@@ -19,7 +19,6 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
@@ -33,7 +32,7 @@ class HacProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.HAC
 
-    override suspend fun configure(context: ProjectImportContext): LibraryEntityBuilder? {
+    override suspend fun configure(context: ProjectImportContext) {
         val workspace = context.workspace
         val hacWebModuleDescriptor = context.chosenHybrisModuleDescriptors
             .filterIsInstance<YHacExtModuleDescriptor>()
@@ -45,7 +44,7 @@ class HacProjectLibraryConfigurator : ProjectLibraryConfigurator {
         if (hacWebModuleDescriptor == null) {
             thisLogger().debug("Project library '${JavaConstants.ProjectLibrary.HAC}' will not be created because ${EiConstants.Extension.HAC} extension is not used.")
             workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.HAC)
-            return null
+            return
         }
 
         val virtualFileUrlManager = workspace.getVirtualFileUrlManager()
@@ -55,7 +54,8 @@ class HacProjectLibraryConfigurator : ProjectLibraryConfigurator {
             addAll(hacWebModuleDescriptor.docSources(virtualFileUrlManager))
         }
 
-        return context.project.configureProjectLibrary(
+        context.project.configureProjectLibrary(
+            context = context,
             libraryName = JavaConstants.ProjectLibrary.HAC,
             libraryRoots = libraryRoots,
         )

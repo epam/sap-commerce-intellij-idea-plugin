@@ -19,7 +19,6 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.platform.workspace.jps.entities.LibraryEntityBuilder
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import sap.commerce.toolset.java.JavaConstants
@@ -35,7 +34,7 @@ class DatabaseDriversProjectLibraryConfigurator : ProjectLibraryConfigurator {
     override val name: String
         get() = JavaConstants.ProjectLibrary.DATABASE_DRIVERS
 
-    override suspend fun configure(context: ProjectImportContext): LibraryEntityBuilder? {
+    override suspend fun configure(context: ProjectImportContext) {
         val workspace = context.workspace
         val virtualFileUrlManager = workspace.getVirtualFileUrlManager()
         val dbDriversPath = context.externalDbDriversDirectory
@@ -47,12 +46,13 @@ class DatabaseDriversProjectLibraryConfigurator : ProjectLibraryConfigurator {
         if (libraryRoot == null) {
             thisLogger().debug("Project library '${JavaConstants.ProjectLibrary.DATABASE_DRIVERS}' will not be created because database drivers location cannot be identified.")
             workspace.removeProjectLibrary(JavaConstants.ProjectLibrary.DATABASE_DRIVERS)
-            return null
+            return
         }
 
-        return context.project.configureProjectLibrary(
+        context.project.configureProjectLibrary(
+            context = context,
             libraryName = JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
-            libraryRoots = listOf(libraryRoot)
+            libraryRoots = listOf(libraryRoot),
         )
     }
 }

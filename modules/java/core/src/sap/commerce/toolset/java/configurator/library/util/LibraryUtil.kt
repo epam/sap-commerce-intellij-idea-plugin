@@ -42,15 +42,28 @@ suspend fun WorkspaceModel.removeProjectLibrary(
 }
 
 fun Project.configureProjectLibrary(
+    context: ProjectImportContext,
     libraryName: String,
     libraryRoots: Collection<LibraryRoot>,
-) = LibraryEntity(
-    name = libraryName,
-    tableId = LibraryTableId.ProjectLibraryTableId,
-    roots = libraryRoots.toMutableList(),
-    entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(this).createEntitySourceForProjectLibrary(null),
 ) {
-    typeId = ProjectConstants.Workspace.yLibraryTypeId
+    val libraryId = LibraryId(libraryName, LibraryTableId.ProjectLibraryTableId)
+
+    context.mutableStorage.libraries[libraryId]
+        ?.let {
+            it.roots = libraryRoots.toMutableList()
+        }
+        ?: run {
+            val libraryEntity = LibraryEntity(
+                name = libraryName,
+                tableId = LibraryTableId.ProjectLibraryTableId,
+                roots = libraryRoots.toMutableList(),
+                entitySource = LegacyBridgeJpsEntitySourceFactory.getInstance(this).createEntitySourceForProjectLibrary(null),
+            ) {
+                typeId = ProjectConstants.Workspace.yLibraryTypeId
+            }
+
+            context.mutableStorage.add(libraryId, libraryEntity)
+        }
 }
 
 fun ModuleEntityBuilder.linkProjectLibrary(
