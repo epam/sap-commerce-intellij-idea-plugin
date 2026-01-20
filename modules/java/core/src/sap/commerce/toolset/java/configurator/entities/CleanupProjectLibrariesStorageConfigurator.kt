@@ -36,7 +36,6 @@ class CleanupProjectLibrariesStorageConfigurator : ProjectStorageCleanupConfigur
             JavaConstants.ProjectLibrary.PLATFORM_LICENSE,
             JavaConstants.ProjectLibrary.HAC,
             JavaConstants.ProjectLibrary.DATABASE_DRIVERS,
-            "KotlinJavaRuntime",
         )
         storage.entities<LibraryEntity>()
             .filter { it.tableId == LibraryTableId.ProjectLibraryTableId }
