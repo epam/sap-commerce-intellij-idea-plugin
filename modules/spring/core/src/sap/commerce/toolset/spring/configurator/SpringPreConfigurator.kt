@@ -273,6 +273,11 @@ class SpringPreConfigurator : ProjectImportConfigurator {
     ) {
         val resource = import.getAttributeValue("resource")
 
+        if (resource.startsWith("classpath:*")) {
+            // TODO: unsupported multiple import
+            return
+        }
+
         if (resource.startsWith("classpath:")) {
             addSpringOnClasspath(moduleDescriptorMap, moduleDescriptor, resource.substring("classpath:".length))
         } else {
