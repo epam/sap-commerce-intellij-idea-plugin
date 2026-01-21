@@ -1,7 +1,7 @@
 ## [2025.3.1]
 
 <cite>Release contributors</cite>
-- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
+- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 - 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 
@@ -17,6 +17,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Include resolved extensions once in case of symbolic links under the same root [#1706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1706)
 - Register dependant web extensions after building complete extensions dependency graph [#1707](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1707), fixes [#579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/579)
 - Include modules `resources` in the JUnit run classpath [#1708](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1708), fixes [#1702](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1702)
+- Show `i18n` icon for `resources/localization` [#1709](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1709)
 
 ### `SAP CX Logging` enhancements
 - Support deletion for multiple selected custom nodes [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)
