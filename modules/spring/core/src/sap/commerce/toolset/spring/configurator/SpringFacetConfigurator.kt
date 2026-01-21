@@ -91,11 +91,10 @@ class SpringFacetConfigurator : ProjectPostImportLegacyConfigurator {
         springFileSet.isAutodetected = true
 
         additionalFileSet
-            .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
-            .forEach { springFileSet.addFile(it) }
-        additionalFileSet
-            .filter { it.startsWith("jar://") }
-            .forEach { springFileSet.addFile(it) }
+            .forEach {
+                if (it.startsWith("jar://")) springFileSet.addFile(it)
+                else VfsUtil.findFileByIoFile(File(it), true)
+            }
 
         springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED)?.let {
             it.booleanValue = false
