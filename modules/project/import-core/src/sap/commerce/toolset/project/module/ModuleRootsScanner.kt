@@ -79,7 +79,7 @@ class ModuleRootsScanner {
                             }
 
                             return when {
-                                path.isHidden() -> {
+                                 path.isHidden -> {
                                     logger.debug("Skipping hidden directory: $path")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
@@ -197,6 +197,15 @@ class ModuleRootsScanner {
         get() = resolve(ProjectConstants.Directory.GIT).directoryExists
             || resolve(ProjectConstants.Directory.SVN).directoryExists
             || resolve(ProjectConstants.Directory.HG).directoryExists
+
+    private val Path.isHidden
+        get() = try {
+            this.isHidden()
+        } catch (e: IOException) {
+            // possible case for WSL2 on Windows
+            thisLogger().trace("Unable to detect hidden path: $this due: ${e.message}")
+            false
+        }
 
     companion object {
         fun getInstance(): ModuleRootsScanner = application.service()
