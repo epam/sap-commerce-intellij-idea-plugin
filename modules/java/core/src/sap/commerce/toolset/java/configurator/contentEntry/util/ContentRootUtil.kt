@@ -56,7 +56,7 @@ fun ContentRootEntityBuilder.addSourceRoots(
         SourceRootEntity(
             url = rootEntity.url(virtualFileUrlManager),
             rootTypeId = rootEntity.sourceRootTypeId,
-            entitySource = rootEntity.moduleEntity.entitySource
+            entitySource = rootEntity.moduleEntity.entitySource,
         ) {
             rootEntity.javaSourceRoot?.let { it(this) }
                 ?.let { this.javaSourceRoots += it }

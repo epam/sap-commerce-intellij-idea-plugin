@@ -32,18 +32,18 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.OrderEnumerator
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.jps.model.java.JavaResourceRootType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisConstants.PROPERTY_PLATFORMHOME
 import sap.commerce.toolset.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
+import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.yExtensionDescriptor
-import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisJUnitExtension : RunConfigurationExtension() {
 
-    override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
-        if (configuration !is JUnitConfiguration) false
-        else WorkspaceSettings.getInstance(configuration.project).hybrisProject
+    override fun isApplicableFor(configuration: RunConfigurationBase<*>) = configuration is JUnitConfiguration
+        && configuration.project.isHybrisProject
 
     private fun updateSapCXJVMProperties(project: Project, params: JavaParameters) {
         val vmParameters = params.vmParametersList
@@ -68,6 +68,11 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 
         val junitConfig = (configuration as JUnitConfiguration)
         val project = configuration.project
+
+        ModuleManager.getInstance(project).modules
+            .flatMap { module -> ModuleRootManager.getInstance(module).getSourceRoots(JavaResourceRootType.RESOURCE) }
+            .map { it.presentableUrl }
+            .forEach { params.classPath.add(it) }
 
         if (isPureUnitTest(junitConfig, project)) return
 
