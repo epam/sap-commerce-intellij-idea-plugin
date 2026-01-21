@@ -16,6 +16,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Register `HMC` Project Library when `hmc` extension present [#1705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1705)
 - Include resolved extensions once in case of symbolic links under the same root [#1706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1706)
 - Register dependant web extensions after building complete extensions dependency graph [#1707](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1707), fixes [#579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/579)
+- Include modules `resources` in the JUnit run classpath [#1708](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1708), fixes [#1702](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1702)
 
 ### `SAP CX Logging` enhancements
 - Support deletion for multiple selected custom nodes [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)

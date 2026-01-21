@@ -20,14 +20,17 @@ package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.workspace.jps.entities.DependencyScope
 import sap.commerce.toolset.java.JavaConstants
-import sap.commerce.toolset.java.configurator.library.util.*
+import sap.commerce.toolset.java.configurator.library.util.classes
+import sap.commerce.toolset.java.configurator.library.util.configureLibrary
+import sap.commerce.toolset.java.configurator.library.util.testClasses
+import sap.commerce.toolset.java.configurator.library.util.testSources
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ifNonCustomModuleDescriptor
+import sap.commerce.toolset.project.descriptor.isNonCustomModuleDescriptor
 import sap.commerce.toolset.util.directoryExists
 
 class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescriptor> {
@@ -38,7 +41,7 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
     override fun isApplicable(
         context: ProjectImportContext,
         moduleDescriptor: ModuleDescriptor
-    ) = moduleDescriptor is YModuleDescriptor
+    ) = moduleDescriptor is YModuleDescriptor && moduleDescriptor.isNonCustomModuleDescriptor
 
     override suspend fun configure(context: ProjectModuleConfigurationContext<YModuleDescriptor>) {
         val importContext = context.importContext
@@ -47,23 +50,16 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
 
         val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val libraryRoots = buildList {
-            addAll(moduleDescriptor.resources(virtualFileUrlManager))
-
-            moduleDescriptor.ifNonCustomModuleDescriptor {
-                if (importContext.settings.importOOTBModulesInReadOnlyMode) {
+            if (importContext.settings.importOOTBModulesInReadOnlyMode) {
+                addAll(moduleDescriptor.classes(virtualFileUrlManager))
+                addAll(moduleDescriptor.testSources(virtualFileUrlManager))
+                addAll(moduleDescriptor.testClasses(virtualFileUrlManager))
+            } else {
+                if (!moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_SRC).directoryExists) {
                     addAll(moduleDescriptor.classes(virtualFileUrlManager))
-                    addAll(moduleDescriptor.testSources(virtualFileUrlManager))
                     addAll(moduleDescriptor.testClasses(virtualFileUrlManager))
-                } else {
-                    if (!moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Directory.TEST_SRC).directoryExists) {
-                        addAll(moduleDescriptor.classes(virtualFileUrlManager))
-                        addAll(moduleDescriptor.testClasses(virtualFileUrlManager))
-                    }
                 }
             }
-        }
-        val excludedRoots = buildList {
-            addAll(moduleDescriptor.excludedResources(virtualFileUrlManager))
         }
 
         moduleEntity.configureLibrary(
@@ -72,7 +68,7 @@ class TestModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescripto
             libraryNameSuffix = JavaConstants.ModuleLibrary.TEST,
             scope = DependencyScope.TEST,
             libraryRoots = libraryRoots,
-            excludedRoots = excludedRoots,
+//            excludedRoots = excludedRoots,
         )
     }
 }
