@@ -18,36 +18,37 @@
 
 package sap.commerce.toolset.java.configurator
 
-import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.LibraryOrderEntry
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.roots.OrderRootType
-import com.intellij.openapi.roots.libraries.Library
-import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.progress.checkCanceled
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
+import com.intellij.platform.workspace.jps.entities.LibraryEntity
+import com.intellij.platform.workspace.jps.entities.LibraryRoot
+import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
+import com.intellij.platform.workspace.jps.entities.LibraryTableId
+import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
+import com.intellij.platform.workspace.storage.entities
+import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.application
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.jetbrains.java.decompiler.IdeaDecompiler
+import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.java.decompilation.DecompilerService
+import sap.commerce.toolset.java.decompilation.JarDecompileContext
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.fromPath
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
-import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.project.facet.YFacet
 import java.io.File
 import java.util.jar.JarFile
 
@@ -60,229 +61,283 @@ class DecompiledOotbSourcesConfigurator : ProjectPostImportConfigurator {
         get() = "OOTB Decompiled Sources"
 
     override suspend fun configure(context: ProjectPostImportContext) {
-        val appSettings = ApplicationSettings.getInstance()
+        val importSettings = context.settings
 
-        appSettings.withDecompiledOotbSources = context.settings.withDecompiledOotbSources
-
-        if (!appSettings.withDecompiledOotbSources) return
-        if (!isDecompilerPluginEnabled()) return
+        if (!importSettings.withDecompiledOotbSources) return
+        if (Plugin.JAVA_DECOMPILER.isDisabled()) return
 
         val project = context.project
 
-        if (!appSettings.decompiledOotbSourcesConsentAsked) {
-            application.invokeAndWait({
-                val accepted = Messages.showYesNoDialog(
-                    project,
-                    "Attach decompiled sources for OOTB modules (bin/*.jar) into doc/decompiledsrc so they become searchable. This may take time and disk space. Continue?",
-                    "Decompile OOTB Binaries",
-                    Messages.getYesButton(),
-                    Messages.getNoButton(),
-                    null
-                ) == Messages.YES
+        val decompilerService = DecompilerService.getInstance()
 
-                appSettings.decompiledOotbSourcesConsentAsked = true
-                appSettings.withDecompiledOotbSources = accepted
+        if (!decompilerService.isConsentGranted()) {
+            var consentAccepted = false
+            application.invokeAndWait({
+                consentAccepted = decompilerService.ensureConsentAccepted()
             }, ModalityState.defaultModalityState())
 
-            if (!appSettings.withDecompiledOotbSources) return
+            if (!consentAccepted) return
         }
 
-        val decompiler = IdeaDecompiler()
-        val tasks = collectTargets(context)
+        val contexts = collectDecompileContexts(project)
             .ifEmpty { return }
 
-        val logger = thisLogger()
-        logger.info("Decompiling ${tasks.size} OOTB bin jars")
-        val results = withContext(Dispatchers.IO) {
-            reportProgressScope(tasks.size) { progress ->
-                tasks.map { task ->
-                    logger.debug("Decompiling ${task.jar.name}")
-                    progress.itemStep("Decompiling ${task.jar.name}") {
-                        runCatching { decompileJar(task, decompiler) }
-                            .onFailure { logger.warn("Decompilation failed for ${task.jar}", it) }
-                            .getOrDefault(false)
+        CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
+            withBackgroundProgress(project, "Decompiling OOTB binaries...", true) {
+                val logger = thisLogger()
+                logger.info("Decompiling ${contexts.size} OOTB bin jars")
+                val decompileResults: List<DecompileResult> = withContext(Dispatchers.IO) {
+                    reportProgressScope(contexts.size) { progress ->
+                        contexts.map { decompileContext ->
+                            async {
+                                ensureActive()
+                                logger.debug("Decompiling ${decompileContext.jar.name}")
+                                progress.itemStep("Decompiling ${decompileContext.jar.name}") {
+                                    checkCanceled()
+                                    runCatching { decompileJar(decompileContext, decompilerService) }
+                                        .onFailure { logger.warn("Decompilation failed for ${decompileContext.jar}", it) }
+                                        .getOrElse { DecompileResult.Failed }
+                                }
+                            }
+                        }.awaitAll()
                     }
+                }
+
+                val successfulContexts = contexts.zip(decompileResults)
+                    .filter { it.second == DecompileResult.Completed }
+                    .map { it.first }
+
+                runCatching {
+                    attachDecompiledSources(context, successfulContexts)
+                }.onFailure {
+                    if (it is CancellationException) throw it
+                    logger.warn("Failed to attach decompiled sources", it)
+                }
+
+                val completed = decompileResults.count { it == DecompileResult.Completed }
+                val failed = decompileResults.count { it == DecompileResult.Failed }
+                val skipped = decompileResults.count { it == DecompileResult.Skipped }
+
+                if (completed > 0 || failed > 0 || skipped > 0) {
+                    logger.info("Decompiled sources: $completed succeeded, $failed failed")
+                    val details = buildList {
+                        if (completed > 0) add("Completed: $completed")
+                        if (failed > 0) add("Failed: $failed")
+                        if (skipped > 0) add("Skipped: $skipped")
+                    }.joinToString(", ")
+                    Notifications.info(
+                        "OOTB decompiled sources finished",
+                        "$details. Some classes may fail to decompile, but sources will still be generated and attached when possible. Output: 'doc/decompiledsrc' folder in each module."
+                    ).hideAfter(10).notify(project)
                 }
             }
         }
-
-        val successfulTasks = tasks.zip(results)
-            .filter { it.second }
-            .map { it.first }
-
-        attachDecompiledSources(project, successfulTasks)
-
-        val succeeded = results.count { it }
-        val failed = results.size - succeeded
-        if (succeeded > 0 || failed > 0) {
-            logger.info("Decompiled sources: $succeeded succeeded, $failed failed")
-            Notifications.info(
-                "OOTB decompiled sources finished",
-                "Completed: $succeeded, Failed: $failed. Output: doc/decompiledsrc"
-            ).hideAfter(10).notify(project)
-        }
     }
 
-    private fun isDecompilerPluginEnabled(): Boolean {
-        val pluginId = PluginId.getId("org.jetbrains.java.decompiler")
-        val pluginPresent = PluginManagerCore.getPlugin(pluginId) != null
-        return pluginPresent && !PluginManagerCore.isDisabled(pluginId)
+    private fun collectDecompileContexts(project: Project): List<JarDecompileContext> {
+        return ModuleManager.getInstance(project).modules
+            .flatMap { module ->
+                val facet = YFacet.get(module) ?: return@flatMap emptyList()
+                val descriptor = facet.configuration.state ?: return@flatMap emptyList()
+
+                if (descriptor.type != ModuleDescriptorType.OOTB &&
+                    descriptor.type != ModuleDescriptorType.PLATFORM &&
+                    descriptor.type != ModuleDescriptorType.EXT
+                ) return@flatMap emptyList()
+
+                val moduleRoot = descriptor.path.takeIf { it.isNotEmpty() }?.let { File(it) } ?: return@flatMap emptyList()
+                val hasSources = ProjectConstants.Directory.SRC_DIR_NAMES
+                    .asSequence()
+                    .map { File(moduleRoot, it) }
+                    .filter { it.isDirectory }
+                    .flatMap { (it.listFiles() ?: emptyArray()).asSequence() }
+                    .any()
+
+                if (hasSources) return@flatMap emptyList()
+
+                val binDir = File(moduleRoot, ProjectConstants.Directory.BIN)
+                if (!binDir.isDirectory) return@flatMap emptyList()
+
+                val targetRoot = File(moduleRoot, "doc/decompiledsrc")
+                binDir.listFiles { _, name: String -> name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
+                    ?.map { jar -> JarDecompileContext(module.name, jar, targetRoot) }
+                    ?: emptyList()
+            }
     }
 
-    private fun collectTargets(context: ProjectPostImportContext): List<JarTask> {
-        val modules = context.chosenHybrisModuleDescriptors
-            .filterIsInstance<YModuleDescriptor>()
-            .filter { it.type === ModuleDescriptorType.OOTB || it.type === ModuleDescriptorType.PLATFORM || it.type === ModuleDescriptorType.EXT }
-
-        val tasks = mutableListOf<JarTask>()
-        modules.forEach { descriptor ->
-            if (descriptor is YSubModuleDescriptor) return@forEach
-
-            val moduleRoot = descriptor.moduleRootPath.toFile()
-            val hasSources = ProjectConstants.Directory.SRC_DIR_NAMES
-                .asSequence()
-                .map { File(moduleRoot, it) }
-                .filter { it.isDirectory }
-                .flatMap { (it.listFiles() ?: emptyArray()).asSequence() }
-                .any()
-
-            if (hasSources) return@forEach
-
-            val binDir = File(moduleRoot, ProjectConstants.Directory.BIN)
-            if (!binDir.isDirectory) return@forEach
-
-            val targetRoot = File(moduleRoot, "doc/decompiledsrc")
-
-            binDir
-                .listFiles { _, name: String -> name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
-                ?.takeIf { it.isNotEmpty() }
-                ?.forEach { jar ->
-                    tasks.add(JarTask(descriptor, jar, targetRoot))
-                }
-        }
-        return tasks
-    }
-
-    private fun decompileJar(task: JarTask, decompiler: IdeaDecompiler): Boolean {
-        val jar = task.jar
-        val targetRoot = task.targetRoot
+    private suspend fun decompileJar(context: JarDecompileContext, decompilerService: DecompilerService): DecompileResult {
+        val logger = thisLogger()
+        val jar = context.jar
+        val targetRoot = context.targetRoot
 
         val outputRoot = File(targetRoot, jar.nameWithoutExtension)
         val marker = File(outputRoot, ".timestamp")
         val markerValue = jarMarkerValue(jar)
 
-        if (outputRoot.isDirectory && marker.isFile && runCatching { marker.readText() }.getOrNull() == markerValue) {
-            return true
+        val previousMarkerValue = try {
+            marker.takeIf { it.isFile }?.readText()
+        } catch (_: Exception) {
+            null
+        }
+        if (outputRoot.isDirectory && previousMarkerValue == markerValue) {
+            return DecompileResult.Skipped
         }
 
-        val jarRoot = JarFileSystem.getInstance().findFileByPath(jar.path + "!/") ?: return false
+        val localJarFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(jar)
+            ?: return DecompileResult.Failed
+        val jarRoot = JarFileSystem.getInstance().getJarRootForLocalFile(localJarFile)
+            ?: return DecompileResult.Failed
 
         if (outputRoot.exists()) FileUtil.delete(outputRoot)
         outputRoot.mkdirs()
 
-        JarFile(jar).use { jf ->
-            val entries = jf.entries()
-            while (entries.hasMoreElements()) {
-                val entry = entries.nextElement()
-                if (!entry.name.endsWith(".class")) continue
-                val vFile = jarRoot.findFileByRelativePath(entry.name) ?: continue
-                val source = decompiler.getText(vFile)
-                val outFile = File(outputRoot, entry.name.removeSuffix(".class") + ".java")
-                outFile.parentFile.mkdirs()
-                outFile.writeText(source.toString())
+        var decompiledCount = 0
+        var failedCount = 0
+
+        withContext(Dispatchers.IO) {
+            JarFile(jar).use { jf ->
+                val entries = jf.entries()
+                while (entries.hasMoreElements()) {
+                    checkCanceled()
+                    val entry = entries.nextElement()
+                    if (!entry.name.endsWith(".class")) continue
+                    val vFile = jarRoot.findFileByRelativePath(entry.name) ?: continue
+
+                    val source = runCatching { decompilerService.decompile(vFile) }
+                        .onFailure {
+                            failedCount++
+                            logger.debug("Failed to decompile ${vFile.path}", it)
+                        }
+                        .getOrNull()
+                        ?: continue
+
+                    val outFile = File(outputRoot, entry.name.removeSuffix(".class") + ".java")
+                    outFile.parentFile.mkdirs()
+                    outFile.writeText(source)
+                    decompiledCount++
+                }
             }
+        }
+
+        if (decompiledCount == 0) {
+            logger.warn("No classes could be decompiled for ${jar.path} (failed=$failedCount)")
+            FileUtil.delete(outputRoot)
+            return DecompileResult.Failed
+        }
+
+        if (failedCount > 0) {
+            logger.info("Partially decompiled ${jar.path}: ok=$decompiledCount, failed=$failedCount")
         }
 
         marker.writeText(markerValue)
         LocalFileSystem.getInstance().refreshAndFindFileByIoFile(outputRoot)
-        return true
+        return DecompileResult.Completed
     }
 
     private fun jarMarkerValue(jar: File): String = "${jar.lastModified()}:${jar.length()}"
 
-    private suspend fun attachDecompiledSources(project: Project, tasks: List<JarTask>) {
-        val perModuleTasks = tasks
-            .distinctBy { runCatching { it.jar.canonicalPath }.getOrNull() ?: it.jar.path }
-            .groupBy { it.moduleDescriptor.ideaModuleName() }
-            .ifEmpty { return }
+    private suspend fun attachDecompiledSources(
+        context: ProjectPostImportContext,
+        contexts: List<JarDecompileContext>
+    ) {
+        if (contexts.isEmpty()) return
 
         val logger = thisLogger()
+        val vfUrlManager = context.workspace.getVirtualFileUrlManager()
 
-        withContext(Dispatchers.Default) {
-            edtWriteAction {
-                val moduleManager = ModuleManager.getInstance(project)
-                val localFileSystem = LocalFileSystem.getInstance()
+        val moduleLibraryEntities = context.storage.entities<LibraryEntity>()
+            .filter { it.typeId == ProjectConstants.Workspace.yLibraryTypeId }
+            .filter { it.tableId is LibraryTableId.ModuleLibraryTableId }
+            .toList()
 
-                perModuleTasks.forEach { (moduleName, moduleTasks) ->
-                    val module = moduleManager.findModuleByName(moduleName) ?: return@forEach
-                    val rootModel = ModuleRootManager.getInstance(module).modifiableModel
+        val contextsByJarPath = contexts
+            .distinctBy { it.jar.canonicalPathOrPath() }
+            .associateBy { it.jar.canonicalPathOrPath() }
 
-                    try {
-                        val libraries = rootModel.orderEntries
-                            .mapNotNull { it as? LibraryOrderEntry }
-                            .mapNotNull { it.library }
+        val updatesByLibraryId = moduleLibraryEntities.mapNotNull { libraryEntity ->
+            checkCanceled()
 
-                        val urlsToAttachByLibrary = linkedMapOf<Library, MutableSet<String>>()
+            val moduleName = (libraryEntity.tableId as? LibraryTableId.ModuleLibraryTableId)
+                ?.moduleId
+                ?.name
+                ?: return@mapNotNull null
 
-                        moduleTasks.forEach { task ->
-                            val decompiledRoot = File(task.targetRoot, task.jar.nameWithoutExtension)
-                                .takeIf { it.isDirectory }
-                                ?: return@forEach
-                            val decompiledVf = localFileSystem.refreshAndFindFileByIoFile(decompiledRoot)
-                                ?: return@forEach
+            val rootsToAttach: List<LibraryRoot> = buildList {
+                val compiledJarRoots = libraryEntity.roots
+                    .asSequence()
+                    .mapNotNull { it.toCompiledJarFilePathOrNull() }
+                    .toList()
 
-                            val targetLibrary = chooseTargetLibrary(task, libraries)
-                            if (targetLibrary == null) {
-                                logger.debug("No library found for jar ${task.jar} in module $moduleName")
-                                return@forEach
-                            }
+                compiledJarRoots.forEach { jarPath ->
+                    val decompileContext = contextsByJarPath[jarPath] ?: return@forEach
+                    if (decompileContext.moduleName != moduleName) return@forEach
 
-                            urlsToAttachByLibrary
-                                .getOrPut(targetLibrary) { linkedSetOf() }
-                                .add(decompiledVf.url)
-                        }
+                    val outputRoot = File(decompileContext.targetRoot, decompileContext.jar.nameWithoutExtension)
+                        .takeIf { it.isDirectory }
+                        ?: return@forEach
 
-                        urlsToAttachByLibrary.forEach { (library, urlsToAttach) ->
-                            val libraryModel = library.modifiableModel
-                            val existingSourceUrls = libraryModel.getUrls(OrderRootType.SOURCES).toSet()
-                            urlsToAttach
-                                .filterNot { existingSourceUrls.contains(it) }
-                                .forEach { libraryModel.addRoot(it, OrderRootType.SOURCES) }
-                            libraryModel.commit()
-                        }
-                    } finally {
-                        rootModel.commit()
+                    val libraryRoot = outputRoot.toSourcesLibraryRoot(vfUrlManager)
+                        ?: return@forEach
+
+                    val alreadyAttached = libraryEntity.roots.any { existing ->
+                        existing.type == LibraryRootTypeId.SOURCES && existing.url == libraryRoot.url
                     }
+                    if (!alreadyAttached) add(libraryRoot)
+                }
+            }
+
+            if (rootsToAttach.isEmpty()) return@mapNotNull null
+
+            logger.debug("Attaching ${rootsToAttach.size} decompiled roots to library '${libraryEntity.name}'")
+
+            LibraryId(libraryEntity.name, libraryEntity.tableId) to rootsToAttach
+        }.toMap()
+
+        if (updatesByLibraryId.isEmpty()) return
+
+        context.workspace.update("Attaching decompiled sources") { storage ->
+            storage.entities<LibraryEntity>().forEach { entity ->
+                val newRoots = updatesByLibraryId[LibraryId(entity.name, entity.tableId)] ?: return@forEach
+                storage.modifyLibraryEntity(entity) {
+                    this.roots += newRoots
                 }
             }
         }
     }
 
-    private fun chooseTargetLibrary(
-        task: JarTask,
-        libraries: List<Library>
-    ): Library? {
-        val jarPath = runCatching { task.jar.canonicalPath }.getOrNull() ?: return null
-        val jarName = task.jar.name
+    private data class LibraryId(
+        val name: String,
+        val tableId: LibraryTableId
+    )
 
-        return libraries.firstOrNull { library ->
-            library.getUrls(OrderRootType.CLASSES)
-                .any { url ->
-                    val file = libraryClassRootToFile(url) ?: return@any false
-                    val canonicalPath = runCatching { file.canonicalPath }.getOrNull() ?: return@any false
-                    canonicalPath == jarPath || canonicalPath.contains(jarName)
-                }
-        }
+    private fun LibraryRoot.toCompiledJarFilePathOrNull(): String? {
+        if (type != LibraryRootTypeId.COMPILED) return null
+
+        val rawPath = VfsUtil.urlToPath(url.url)
+        val localPath = rawPath
+            .substringBefore('!')
+            .removeSuffix("/")
+            .removeSuffix("\\")
+            .takeIf { it.endsWith(".jar") }
+            ?: return null
+
+        return File(localPath).canonicalPathOrPath()
     }
 
-    private fun libraryClassRootToFile(url: String): File? {
-        val path = VfsUtil.urlToPath(url)
-        val localPath = path.substringBefore('!')
-        if (localPath.isBlank()) return null
-
-        return runCatching { File(localPath) }.getOrNull()
+    private fun File.canonicalPathOrPath(): String = try {
+        canonicalPath
+    } catch (_: Exception) {
+        path
     }
 
+    private fun File.toSourcesLibraryRoot(vfUrlManager: VirtualFileUrlManager): LibraryRoot? {
+        val url = vfUrlManager.fromPath(toPath()) ?: return null
+        return LibraryRoot(url, LibraryRootTypeId.SOURCES)
+    }
 
-    private data class JarTask(val moduleDescriptor: YModuleDescriptor, val jar: File, val targetRoot: File)
+    private enum class DecompileResult {
+        Completed,
+        Failed,
+        Skipped
+    }
 }

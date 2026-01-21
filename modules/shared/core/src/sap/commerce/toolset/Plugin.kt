@@ -48,7 +48,8 @@ enum class Plugin(val id: String, val url: String? = null, val dependencies: Set
     SPRING("com.intellij.spring", url = "https://plugins.jetbrains.com/plugin/20221-spring", dependencies = setOf(ULTIMATE)),
     CRON("com.intellij.cron", url = "https://plugins.jetbrains.com/plugin/24438-cron-expressions", dependencies = setOf(ULTIMATE)),
     GRID("intellij.grid.plugin"),
-    JAVA_I18N("com.intellij.java-i18n");
+    JAVA_I18N("com.intellij.java-i18n"),
+    JAVA_DECOMPILER("org.jetbrains.java.decompiler");
 
     val pluginId: PluginId
         get() = PluginId.getId(id)

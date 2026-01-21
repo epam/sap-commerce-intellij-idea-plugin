@@ -55,6 +55,7 @@ class ProjectSettingsConfigurator : ProjectImportConfigurator {
         projectSettings.importOotbModulesInReadOnlyMode = importSettings.importOOTBModulesInReadOnlyMode
         projectSettings.importCustomAntBuildFiles = importSettings.importCustomAntBuildFiles
         projectSettings.useFakeOutputPathForCustomExtensions = importSettings.useFakeOutputPathForCustomExtensions
+        projectSettings.withDecompiledOotbSources = importSettings.withDecompiledOotbSources
 
         projectSettings.externalExtensionsDirectory = context.externalExtensionsDirectory?.toSystemIndependentName
         projectSettings.externalConfigDirectory = context.externalConfigDirectory?.toSystemIndependentName
