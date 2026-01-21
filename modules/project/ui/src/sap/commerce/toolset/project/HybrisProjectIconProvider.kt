@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project
 
+import com.intellij.icons.AllIcons
 import com.intellij.ide.IconProvider
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
@@ -54,10 +55,12 @@ class HybrisProjectIconProvider : IconProvider() {
 
     private fun getIcon(directory: PsiDirectory): Icon? {
         val parentName = directory.parentDirectory?.name
-        return when (directory.name) {
-            "tomcat" if (parentName == EiConstants.Extension.CONFIG || parentName == EiConstants.Extension.PLATFORM) -> HybrisIcons.Tools.TOMCAT
-            "solr" if parentName == EiConstants.Extension.CONFIG -> HybrisIcons.Tools.SOLR
-            "lib" if (directory.parentDirectory?.childrenOfType<XmlFile>()?.any { it.name == EiConstants.EXTENSION_INFO_XML } ?: false) -> HybrisIcons.Module.LIB
+        val directoryName = directory.name
+        return when {
+            directoryName == "tomcat" && (parentName == EiConstants.Extension.CONFIG || parentName == EiConstants.Extension.PLATFORM) -> HybrisIcons.Tools.TOMCAT
+            directoryName == "solr" && parentName == EiConstants.Extension.CONFIG -> HybrisIcons.Tools.SOLR
+            parentName == ProjectConstants.Directory.RESOURCES && (directoryName == "localization" || directoryName.endsWith("-backoffice-labels")) -> AllIcons.FileTypes.I18n
+            directoryName == "lib" && (directory.parentDirectory?.childrenOfType<XmlFile>()?.any { it.name == EiConstants.EXTENSION_INFO_XML } ?: false) -> HybrisIcons.Module.LIB
             else -> null
         }
     }
