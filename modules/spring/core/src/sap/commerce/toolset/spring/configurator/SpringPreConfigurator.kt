@@ -273,7 +273,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
     ) {
         val resource = import.getAttributeValue("resource")
 
-        if (resource.startsWith("classpath:*")) {
+        if (resource.startsWith("classpath*:")) {
             // TODO: unsupported multiple import
             return
         }
