@@ -27,6 +27,7 @@ import com.intellij.util.application
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
+import org.jdom.filter2.Filters.element
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.ModuleGroup
@@ -74,7 +75,12 @@ class ModuleRootsScanner {
                             else {
                                 visited.add(path)
                                 if (path.isSymbolicLink()) {
-                                    visited.add(path.readSymbolicLink())
+                                    val link = path.readSymbolicLink()
+                                    val resolvedLink = if (link.isAbsolute) link
+                                    else path.resolveSibling(link).normalize()
+
+                                    if (visited.contains(resolvedLink)) return FileVisitResult.SKIP_SUBTREE
+                                    else visited.add(resolvedLink)
                                 }
                             }
 
