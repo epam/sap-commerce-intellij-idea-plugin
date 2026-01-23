@@ -19,6 +19,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Include modules `resources` in the JUnit run classpath [#1708](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1708), fixes [#1702](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1702)
 - Show `i18n` icon for `resources/localization` [#1709](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1709)
 - Support relative symlinks [#1710](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1710)
+- Target Java 8 for `jps-plugin` module [#1711](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1711)
 
 ### `SAP CX Logging` enhancements
 - Support deletion for multiple selected custom nodes [#1695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1695)
