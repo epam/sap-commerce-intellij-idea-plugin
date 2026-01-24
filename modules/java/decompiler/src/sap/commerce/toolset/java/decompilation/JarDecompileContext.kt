@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.java.decompilation
 
-import java.io.File
+import java.nio.file.Path
 
 /**
  * Context for decompiling a single JAR file.
@@ -27,4 +27,4 @@ import java.io.File
  * @param jar The JAR file to decompile.
  * @param targetRoot The root directory where decompiled sources should be placed.
  */
-data class JarDecompileContext(val moduleName: String, val jar: File, val targetRoot: File)
+data class JarDecompileContext(val moduleName: String, val jar: Path, val targetRoot: Path)
