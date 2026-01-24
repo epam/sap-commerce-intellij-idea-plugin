@@ -35,10 +35,10 @@ import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.isDescendantOf
+import sap.commerce.toolset.util.isHidden
 import java.io.IOException
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
-import kotlin.io.path.isHidden
 import kotlin.io.path.isSymbolicLink
 import kotlin.io.path.name
 import kotlin.io.path.readSymbolicLink
@@ -85,7 +85,7 @@ class ModuleRootsScanner {
                             }
 
                             return when {
-                                path.isHidden() -> {
+                                path.isHidden -> {
                                     logger.debug("Skipping hidden directory: $path")
                                     FileVisitResult.SKIP_SUBTREE
                                 }

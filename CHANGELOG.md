@@ -29,6 +29,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ### `WSL` enhancements
 - Ensure correctness of classpath during build execution [#1663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1663)
+- Support hidden files on Windows WSL2 [#1713](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1713)
 
 ## [2025.3.0]
 
