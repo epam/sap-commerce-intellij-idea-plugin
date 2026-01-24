@@ -81,6 +81,15 @@ val Path.directoryExists
 val Path.fileExists
     get() = this.exists() && this.isRegularFile()
 
+val Path.isHidden
+    get() = try {
+        this.isHidden()
+    } catch (e: IOException) {
+        // possible case for WSL2 on Windows
+        thisLogger().trace("Unable to detect hidden path: $this due: ${e.message}")
+        false
+    }
+
 fun Path?.isDescendantOf(parent: Path): Boolean =
     try {
         val realParent = parent.toRealPath().normalize()

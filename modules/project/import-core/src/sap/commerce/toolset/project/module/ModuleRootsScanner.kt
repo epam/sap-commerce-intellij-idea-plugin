@@ -34,10 +34,10 @@ import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.isDescendantOf
+import sap.commerce.toolset.util.isHidden
 import java.io.IOException
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
-import kotlin.io.path.isHidden
 import kotlin.io.path.isSymbolicLink
 import kotlin.io.path.name
 import kotlin.io.path.readSymbolicLink
@@ -79,7 +79,7 @@ class ModuleRootsScanner {
                             }
 
                             return when {
-                                 path.isHidden -> {
+                                path.isHidden -> {
                                     logger.debug("Skipping hidden directory: $path")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
@@ -197,15 +197,6 @@ class ModuleRootsScanner {
         get() = resolve(ProjectConstants.Directory.GIT).directoryExists
             || resolve(ProjectConstants.Directory.SVN).directoryExists
             || resolve(ProjectConstants.Directory.HG).directoryExists
-
-    private val Path.isHidden
-        get() = try {
-            this.isHidden()
-        } catch (e: IOException) {
-            // possible case for WSL2 on Windows
-            thisLogger().trace("Unable to detect hidden path: $this due: ${e.message}")
-            false
-        }
 
     companion object {
         fun getInstance(): ModuleRootsScanner = application.service()
