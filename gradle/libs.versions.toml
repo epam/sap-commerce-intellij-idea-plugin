@@ -1,7 +1,7 @@
 [versions]
 # libraries
 # https://mvnrepository.com/artifact/org.jsoup/jsoup
-jsoup = "1.21.2"
+jsoup = "1.22.1"
 # https://mvnrepository.com/artifact/com.wutka/dtdparser
 dtdparser = "1.21"
 # https://mvnrepository.com/artifact/commons-io/commons-io
@@ -9,7 +9,7 @@ commonsIO = "2.21.0"
 # https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
 jsr305 = "3.0.2"
 # https://mvnrepository.com/artifact/org.apache.maven/maven-model
-mavenModel = "3.9.11"
+mavenModel = "3.9.12"
 # https://mvnrepository.com/artifact/commons-codec/commons-codec
 commonsCodec = "1.20.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
@@ -39,7 +39,7 @@ kotlin = "2.2.0-RC2"
 changelog = "2.5.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
 # Generator: https://openapi-generator.tech/docs/generators/kotlin
-openAPIGenerator = "7.17.0"
+openAPIGenerator = "7.19.0"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }
