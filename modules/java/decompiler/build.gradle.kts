@@ -31,6 +31,8 @@ sourceSets {
 }
 
 dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":project-core"))
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
             useInstaller = false

@@ -22,58 +22,44 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.LegalNoticeDialog
 import com.intellij.ide.plugins.PluginManagerCore
 import org.jetbrains.java.decompiler.IdeaDecompilerBundle
-import org.jetbrains.java.decompiler.IdeaDecompiler
 
 /**
- * Service to wrap IdeaDecompiler.
+ * Service to handle IdeaDecompiler legal notice consent.
  */
 @Service(Service.Level.APP)
 class DecompilerService {
 
     private val consentKey = "decompiler.legal.notice.accepted"
 
-    private val decompiler by lazy { IdeaDecompiler() }
+    fun isConsentGranted(): Boolean = PropertiesComponent.getInstance().isValueSet(consentKey)
 
-    /**
-     * Decompile the given class file.
-     *
-     * @param file The virtual file of the class.
-     * @return The decompiled source code.
-     */
-    fun decompile(file: VirtualFile): String {
-        return decompiler.getText(file).toString()
-    }
-
-    fun isConsentGranted(): Boolean {
+    fun ensureConsentAccepted(): ConsentResult {
         val properties = PropertiesComponent.getInstance()
-        return properties.isValueSet(consentKey)
-    }
-
-    fun ensureConsentAccepted(): Boolean {
-        val properties = PropertiesComponent.getInstance()
-        if (properties.isValueSet(consentKey)) return true
+        if (properties.isValueSet(consentKey)) return ConsentResult.Accepted
 
         val title = IdeaDecompilerBundle.message("legal.notice.title", "sap-commerce-ootb")
         val message = IdeaDecompilerBundle.message("legal.notice.text")
         val result = LegalNoticeDialog.build(title, message)
             .withCancelText(IdeaDecompilerBundle.message("legal.notice.action.postpone"))
-            .withCustomAction(IdeaDecompilerBundle.message("legal.notice.action.reject"), 2)
+            .withCustomAction(IdeaDecompilerBundle.message("legal.notice.action.reject"), DialogWrapper.NEXT_USER_EXIT_CODE)
             .show()
 
         return when (result) {
-            0 -> {
+            DialogWrapper.OK_EXIT_CODE -> {
                 properties.setValue(consentKey, true)
-                true
+                ConsentResult.Accepted
             }
-            2 -> {
+
+            DialogWrapper.NEXT_USER_EXIT_CODE -> {
                 disableDecompilerPlugin()
-                false
+                ConsentResult.Rejected
             }
-            else -> false
+
+            else -> ConsentResult.Postponed
         }
     }
 
@@ -82,7 +68,13 @@ class DecompilerService {
         PluginManagerCore.disablePlugin(pluginId)
     }
 
+    enum class ConsentResult {
+        Accepted,
+        Postponed,
+        Rejected,
+    }
+
     companion object {
-        fun getInstance(): DecompilerService = service()
+        fun getInstance() = service<DecompilerService>()
     }
 }
