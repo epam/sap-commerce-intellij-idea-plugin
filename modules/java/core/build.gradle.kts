@@ -39,7 +39,6 @@ dependencies {
     implementation(project(":project-core"))
     implementation(project(":project-extensioninfo"))
     implementation(project(":project-import-core"))
-    implementation(project(":java-decompiler"))
     implementation(project(":typeSystem-core"))
     implementation(libs.kotlinxJson)
 
