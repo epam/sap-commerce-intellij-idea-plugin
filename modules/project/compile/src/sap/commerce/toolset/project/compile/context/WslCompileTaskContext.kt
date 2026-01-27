@@ -19,18 +19,8 @@
 package sap.commerce.toolset.project.compile.context
 
 import com.intellij.execution.wsl.WSLDistribution
-import com.intellij.openapi.compiler.CompileContext
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.projectRoots.JavaSdkVersion
-import java.nio.file.Path
 
 data class WslCompileTaskContext(
-    override val context: CompileContext,
-    override val sdkVersion: JavaSdkVersion,
-    override val platformModule: Module,
-    override val platformModulePath: Path,
-    override val coreModulePath: Path,
-    override val vmExecutablePath: String,
-    val vmBinPath: String,
     val wslDistribution: WSLDistribution,
-) : TaskContext
+    val vmBinPath: String,
+)

@@ -21,13 +21,17 @@ package sap.commerce.toolset.project.compile.context
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdkVersion
+import sap.commerce.toolset.project.ProjectConstants
 import java.nio.file.Path
 
 data class CompileTaskContext(
-    override val context: CompileContext,
-    override val sdkVersion: JavaSdkVersion,
-    override val platformModule: Module,
-    override val platformModulePath: Path,
-    override val coreModulePath: Path,
-    override val vmExecutablePath: String,
-) : TaskContext
+    val context: CompileContext,
+    val sdkVersion: JavaSdkVersion,
+    val platformModule: Module,
+    val platformModulePath: Path,
+    val coreModulePath: Path,
+    val vmExecutablePath: String,
+) {
+    val bootstrapPath: Path
+        get() = platformModulePath.resolve(ProjectConstants.Directory.BOOTSTRAP)
+}

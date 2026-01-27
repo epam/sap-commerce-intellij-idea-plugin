@@ -31,7 +31,6 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.compile.context.CompileTaskContext
-import sap.commerce.toolset.project.compile.context.TaskContext
 import sap.commerce.toolset.project.compile.context.WslCompileTaskContext
 import sap.commerce.toolset.project.compile.tasks.GenerateCodePreCompileTask
 import sap.commerce.toolset.project.compile.tasks.PreCompileTask
@@ -58,26 +57,20 @@ class GenerateCodeCompilerTask : CompileTask {
         // see JUnitConfigurationType
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
 
-        val task = getPreCompileTask(context)
-            ?: return true
+        val preCompileTask = getPreCompileTask(context) ?: return true
 
-        if (!task.invokeCodeGeneration()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapPath)
-            return false
-        }
-        if (!task.invokeCodeCompilation()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapPath)
-            return false
-        }
-        if (!task.invokeModelsJarCreation()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapPath)
+        if (!preCompileTask.invokeCodeGeneration()
+            || !preCompileTask.invokeCodeCompilation()
+            || !preCompileTask.invokeModelsJarCreation()
+        ) {
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(preCompileTask.taskContext.bootstrapPath)
             return false
         }
 
         return true
     }
 
-    private fun getPreCompileTask(context: CompileContext): PreCompileTask<out TaskContext>? {
+    private fun getPreCompileTask(context: CompileContext): PreCompileTask? {
         val moduleMapping = context.project.ySettings.module2extensionMapping
         val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
             .associateBy { it.yExtensionName(moduleMapping) }
@@ -90,33 +83,24 @@ class GenerateCodeCompilerTask : CompileTask {
         val javaSdkType = sdk.sdkType.asSafely<JavaSdkType>() ?: return null
         val vmExecutablePath = javaSdkType.getVMExecutablePath(sdk) ?: return null
 
+        val taskContext = CompileTaskContext(
+            context = context,
+            sdkVersion = sdkVersion,
+            platformModule = platformModule,
+            platformModulePath = platformModuleRoot,
+            coreModulePath = coreModuleRoot,
+            vmExecutablePath = vmExecutablePath,
+        )
+
         return WslPath.parseWindowsUncPath(platformModuleRoot.pathString)
             ?.distribution
-            ?.let {
-                val vmBinPath = javaSdkType.getBinPath(sdk) ?: return null
+            ?.let { wslDistribution ->
+                val wslContext = javaSdkType.getBinPath(sdk)
+                    ?.let { WslCompileTaskContext(wslDistribution, it) }
+                    ?: return null
 
-                WslGenerateCodePreCompileTask(
-                    WslCompileTaskContext(
-                        context = context,
-                        sdkVersion = sdkVersion,
-                        platformModule = platformModule,
-                        platformModulePath = platformModuleRoot,
-                        coreModulePath = coreModuleRoot,
-                        vmExecutablePath = vmExecutablePath,
-                        vmBinPath = vmBinPath,
-                        wslDistribution = it,
-                    )
-                )
+                WslGenerateCodePreCompileTask(taskContext, wslContext)
             }
-            ?: GenerateCodePreCompileTask(
-                CompileTaskContext(
-                    context = context,
-                    sdkVersion = sdkVersion,
-                    platformModule = platformModule,
-                    platformModulePath = platformModuleRoot,
-                    coreModulePath = coreModuleRoot,
-                    vmExecutablePath = vmExecutablePath,
-                )
-            )
+            ?: GenerateCodePreCompileTask(taskContext)
     }
 }

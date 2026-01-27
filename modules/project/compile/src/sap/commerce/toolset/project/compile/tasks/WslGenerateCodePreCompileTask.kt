@@ -24,6 +24,7 @@ import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.roots.ModuleRootManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.compile.context.CompileTaskContext
 import sap.commerce.toolset.project.compile.context.WslCompileTaskContext
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -31,7 +32,10 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
-class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskContext) : PreCompileTask<WslCompileTaskContext>() {
+class WslGenerateCodePreCompileTask(
+    taskContext: CompileTaskContext,
+    val wslContext: WslCompileTaskContext
+) : PreCompileTask(taskContext) {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
         val platformModuleRoot = taskContext.platformModulePath
@@ -52,21 +56,17 @@ class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskCont
     }
 
     override fun invokeCodeCompilation() = startProcess(
-        "Code compilation",
-        before = {
+        "code compilation",
+        beforeProcessStart = {
             val pathToBeDeleted = taskContext.bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES)
             cleanDirectory(pathToBeDeleted)
         }
     ) {
-        val wslDistribution = taskContext.wslDistribution
-        val platformModule = taskContext.platformModule
-        val bootstrapPath = taskContext.bootstrapPath
-        val platformModuleRoot = taskContext.platformModulePath
-        val vmBinPath = taskContext.vmBinPath
-        val rootManager = ModuleRootManager.getInstance(platformModule)
-        val classpathSeparator = ":"
-        val classpath = rootManager.orderEntries().compileOnly().recursively().exportedOnly().withoutSdk().pathsList.pathList
-            .joinToString(classpathSeparator) { osSpecificPath(it) }
+        val wslDistribution = wslContext.wslDistribution
+        val classpath = ModuleRootManager.getInstance(taskContext.platformModule)
+            .orderEntries().compileOnly().recursively().exportedOnly().withoutSdk()
+            .pathsList.pathList
+            .joinToString(":") { osSpecificPath(it) }
 
         val mntClasspathFile = Files.createTempFile("compile", "cx")
             .also { it.toFile().deleteOnExit() }
@@ -79,17 +79,17 @@ class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskCont
             .also { it.toFile().deleteOnExit() }
             .apply { Files.writeString(this, sourceFiles, StandardCharsets.UTF_8) }
             .let { wslDistribution.getWslPath(it) }
-        val outputDir = osSpecificPath(bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES))
+        val outputDir = osSpecificPath(taskContext.bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES))
 
         GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkingDirectory(platformModuleRoot)
-            .withExePath(osSpecificPath("$vmBinPath\\javac"))
+            .withWorkingDirectory(taskContext.platformModulePath)
+            .withExePath(osSpecificPath("${wslContext.vmBinPath}\\javac"))
             .withCharset(Charsets.UTF_8)
             .withParameters("-nowarn", "-d", outputDir, "-cp", "@$mntClasspathFile", "@$mntSourceFilesFile")
             .apply {
                 val context = taskContext.context
-                val wslDistribution = taskContext.wslDistribution
+                val wslDistribution = wslDistribution
                 val options = WSLCommandLineOptions()
                     .setExecuteCommandInShell(true)
                     .setLaunchWithWslExe(true)
@@ -99,9 +99,7 @@ class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskCont
 
     override fun invokeModelsJarCreation() = startProcess("models.jar creation") {
         val bootstrapPath = taskContext.bootstrapPath
-        val platformModuleRoot = taskContext.platformModulePath
-        val wslDistribution = taskContext.wslDistribution
-        val vmBinPath = taskContext.vmBinPath
+        val wslDistribution = wslContext.wslDistribution
         val outputDir = osSpecificPath(bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES))
         val modelsFile = osSpecificPath(bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS))
 
@@ -112,13 +110,12 @@ class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskCont
 
         GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkingDirectory(platformModuleRoot)
-            .withExePath(osSpecificPath("$vmBinPath\\jar"))
+            .withWorkingDirectory(taskContext.platformModulePath)
+            .withExePath(osSpecificPath("${wslContext.vmBinPath}\\jar"))
             .withCharset(Charsets.UTF_8)
             .withParameters("cf", modelsFile, "-C", outputDir, ".")
             .apply {
                 val context = taskContext.context
-                val wslDistribution = taskContext.wslDistribution
                 val options = WSLCommandLineOptions()
                     .setExecuteCommandInShell(true)
                     .setLaunchWithWslExe(true)

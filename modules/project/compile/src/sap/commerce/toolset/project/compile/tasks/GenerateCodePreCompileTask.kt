@@ -36,7 +36,7 @@ import java.nio.file.Paths
 import java.util.jar.JarOutputStream
 import kotlin.io.path.pathString
 
-open class GenerateCodePreCompileTask(override val taskContext: CompileTaskContext) : PreCompileTask<CompileTaskContext>() {
+open class GenerateCodePreCompileTask(taskContext: CompileTaskContext) : PreCompileTask(taskContext) {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
         val platformModuleRoot = taskContext.platformModulePath

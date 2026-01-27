@@ -29,7 +29,7 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.lang.JavaVersion
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.compile.context.TaskContext
+import sap.commerce.toolset.project.compile.context.CompileTaskContext
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.util.directoryExists
 import java.io.File
@@ -41,35 +41,33 @@ import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.extension
 import kotlin.io.path.name
 
-abstract class PreCompileTask<T : TaskContext> {
-
-    abstract val taskContext: T
-
-    fun invokeCodeGeneration() = startProcess(
-        action = "Code generation",
-        before = {
-            val pathToBeDeleted = taskContext.bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
-            cleanDirectory(pathToBeDeleted)
-        }
-    ) { getCodeGenerationCommandLine() }
+abstract class PreCompileTask(val taskContext: CompileTaskContext) {
 
     abstract fun invokeCodeCompilation(): Boolean
     abstract fun invokeModelsJarCreation(): Boolean
 
     protected abstract fun getCodeGenerationCommandLine(): GeneralCommandLine
 
+    fun invokeCodeGeneration() = startProcess(
+        action = "Code generation",
+        beforeProcessStart = {
+            val pathToBeDeleted = taskContext.bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
+            cleanDirectory(pathToBeDeleted)
+        }
+    ) { getCodeGenerationCommandLine() }
+
     protected fun startProcess(
         action: String,
-        before: () -> Unit = {},
-        gcl: () -> GeneralCommandLine,
+        beforeProcessStart: () -> Unit = {},
+        commandLineProvider: () -> GeneralCommandLine,
     ): Boolean {
         val context = taskContext.context
         val settings = context.project.ySettings
 
-        before()
+        beforeProcessStart()
 
         var result = false
-        val handler = JavaCommandLineStateUtil.startProcess(gcl(), true)
+        val handler = JavaCommandLineStateUtil.startProcess(commandLineProvider(), true)
         handler.addProcessListener(object : ProcessListener {
 
             override fun startNotified(event: ProcessEvent) {
