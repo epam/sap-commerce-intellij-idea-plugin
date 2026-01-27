@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.project.compile
 
-import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
@@ -105,8 +104,8 @@ class GenerateCodeCompilerTask : CompileTask {
             ?: return null
 
         val bootstrapDirectory = platformModuleRoot.resolve(ProjectConstants.Directory.BOOTSTRAP)
-        val wslDistribution = WslDistributionManager.getInstance().installedDistributions.firstOrNull()
-            ?.takeIf { WslPath.parseWindowsUncPath(bootstrapDirectory.pathString) != null }
+        val wslDistribution = WslPath.parseWindowsUncPath(bootstrapDirectory.pathString)
+            ?.distribution
 
         return if (wslDistribution != null) {
             WslGenerateCodePreCompileTask(
