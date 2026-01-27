@@ -37,7 +37,7 @@ import kotlin.io.path.pathString
 
 open class GenerateCodeTask(override val taskContext: CompileTaskContext) : CodeTask<CompileTaskContext>() {
 
-    override fun getCodeGenerationCommandLine( ): GeneralCommandLine {
+    override fun getCodeGenerationCommandLine(): GeneralCommandLine {
         val platformModuleRoot = taskContext.platformModuleRoot
         val classpath = setOf(
             taskContext.coreModuleRoot.resolve("lib").pathString + "/*",

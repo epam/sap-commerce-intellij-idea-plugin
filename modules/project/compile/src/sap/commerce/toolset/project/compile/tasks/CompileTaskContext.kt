@@ -31,6 +31,6 @@ data class CompileTaskContext(
     override val coreModuleRoot: Path,
     override val vmExecutablePath: String,
     override val settings: ProjectSettings,
-   override val sdkVersion: JavaSdkVersion,
-   override val platformModule: Module,
+    override val sdkVersion: JavaSdkVersion,
+    override val platformModule: Module,
 ) : TaskContext
