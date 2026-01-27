@@ -72,7 +72,7 @@ class WebInjectedSourcesContentRootEntryConfigurator : ModuleContentRootEntryCon
     private fun childrenOf(vararg paths: Path): List<Path> = paths
         .filter { it.directoryExists }
         .flatMap { path ->
-            Files.newDirectoryStream(path) { it.isDirectory() }.use { directoryStream ->
+            Files.newDirectoryStream(path) { path.resolve(it.fileName).isDirectory() }.use { directoryStream ->
                 directoryStream.toList()
             }
         }
