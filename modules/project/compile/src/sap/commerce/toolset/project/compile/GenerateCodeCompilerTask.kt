@@ -104,33 +104,34 @@ class GenerateCodeCompilerTask : CompileTask {
             ?: return null
 
         val bootstrapDirectory = platformModuleRoot.resolve(ProjectConstants.Directory.BOOTSTRAP)
-        val wslDistribution = WslPath.parseWindowsUncPath(bootstrapDirectory.pathString)
-            ?.distribution
 
-        return if (wslDistribution != null) {
-            WslGenerateCodePreCompileTask(
-                WslCompileTaskContext(
+        return WslPath.parseWindowsUncPath(bootstrapDirectory.pathString)
+            ?.distribution
+            ?.let {
+                WslGenerateCodePreCompileTask(
+                    WslCompileTaskContext(
+                        context = context,
+                        wslDistribution = it,
+                        platformModuleRoot = platformModuleRoot,
+                        bootstrapDirectory = bootstrapDirectory,
+                        coreModuleRoot = coreModuleRoot,
+                        vmExecutablePath = vmExecutablePath,
+                        sdkVersion = sdkVersion,
+                        vmBinPath = vmBinPath,
+                        platformModule = platformModule
+                    )
+                )
+            }
+            ?: GenerateCodePreCompileTask(
+                CompileTaskContext(
                     context = context,
-                    wslDistribution = wslDistribution,
                     platformModuleRoot = platformModuleRoot,
                     bootstrapDirectory = bootstrapDirectory,
                     coreModuleRoot = coreModuleRoot,
                     vmExecutablePath = vmExecutablePath,
                     sdkVersion = sdkVersion,
-                    vmBinPath = vmBinPath,
                     platformModule = platformModule
                 )
             )
-        } else GenerateCodePreCompileTask(
-            CompileTaskContext(
-                context = context,
-                platformModuleRoot = platformModuleRoot,
-                bootstrapDirectory = bootstrapDirectory,
-                coreModuleRoot = coreModuleRoot,
-                vmExecutablePath = vmExecutablePath,
-                sdkVersion = sdkVersion,
-                platformModule = platformModule
-            )
-        )
     }
 }
