@@ -24,13 +24,14 @@ import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.roots.ModuleRootManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.compile.context.WslCompileTaskContext
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
-class WslGenerateCodeTask(override val taskContext: WslCompileTaskContext) : CodeTask<WslCompileTaskContext>() {
+class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskContext) : PreCompileTask<WslCompileTaskContext>() {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
         val platformModuleRoot = taskContext.platformModuleRoot
@@ -45,13 +46,7 @@ class WslGenerateCodeTask(override val taskContext: WslCompileTaskContext) : Cod
             .withWorkingDirectory(platformModuleRoot)
             .withExePath(osSpecificPath(taskContext.vmExecutablePath))
             .withCharset(Charsets.UTF_8)
-            .withParameters(
-                "-Dfile.encoding=UTF-8",
-                "-cp",
-                classpath,
-                HybrisConstants.CLASS_FQN_CODE_GENERATOR,
-                osSpecificPath(platformModuleRoot)
-            )
+            .withParameters("-Dfile.encoding=UTF-8", "-cp", classpath, HybrisConstants.CLASS_FQN_CODE_GENERATOR, osSpecificPath(platformModuleRoot))
 
         return commandLine
     }

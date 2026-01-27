@@ -16,24 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.compile.tasks
+package sap.commerce.toolset.project.compile.context
 
-import com.intellij.execution.wsl.WSLDistribution
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdkVersion
-import sap.commerce.toolset.project.settings.ProjectSettings
 import java.nio.file.Path
 
-data class WslCompileTaskContext(
-    override val context: CompileContext,
-    override val platformModuleRoot: Path,
-    override val bootstrapDirectory: Path,
-    override val coreModuleRoot: Path,
-    override val vmExecutablePath: String,
-    override val sdkVersion: JavaSdkVersion,
-    override val settings: ProjectSettings,
-    override val platformModule: Module,
-    val wslDistribution: WSLDistribution,
-    val vmBinPath: String,
-) : TaskContext
+interface TaskContext {
+    val context: CompileContext
+    val platformModuleRoot: Path
+    val bootstrapDirectory: Path
+    val coreModuleRoot: Path
+    val vmExecutablePath: String
+    val sdkVersion: JavaSdkVersion
+    val platformModule: Module
+}

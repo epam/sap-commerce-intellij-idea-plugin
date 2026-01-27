@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,10 +31,12 @@ import com.intellij.util.application
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.compile.tasks.CompileTaskContext
-import sap.commerce.toolset.project.compile.tasks.GenerateCodeTask
-import sap.commerce.toolset.project.compile.tasks.WslCompileTaskContext
-import sap.commerce.toolset.project.compile.tasks.WslGenerateCodeTask
+import sap.commerce.toolset.project.compile.context.CompileTaskContext
+import sap.commerce.toolset.project.compile.context.TaskContext
+import sap.commerce.toolset.project.compile.context.WslCompileTaskContext
+import sap.commerce.toolset.project.compile.tasks.GenerateCodePreCompileTask
+import sap.commerce.toolset.project.compile.tasks.PreCompileTask
+import sap.commerce.toolset.project.compile.tasks.WslGenerateCodePreCompileTask
 import sap.commerce.toolset.project.contentRoot
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
@@ -57,36 +59,57 @@ class GenerateCodeCompilerTask : CompileTask {
         // see JUnitConfigurationType
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
 
-        val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
-        val moduleMapping = project.ySettings.module2extensionMapping
-        val platformModule = modules.firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.PLATFORM }
+        val task = getPreCompileTask(context)
             ?: return true
 
+        if (!task.invokeCodeGeneration()) {
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapDirectory)
+            return false
+        }
+        if (!task.invokeCodeCompilation()) {
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapDirectory)
+            return false
+        }
+        if (!task.invokeModelsJarCreation()) {
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapDirectory)
+            return false
+        }
+
+        return true
+    }
+
+    private fun getPreCompileTask(context: CompileContext): PreCompileTask<out TaskContext>? {
+        val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
+        val moduleMapping = context.project.ySettings.module2extensionMapping
+        val platformModule = modules.firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.PLATFORM }
+            ?: return null
+
         val platformModuleRoot = platformModule.contentRoot
-            ?: return true
+            ?: return null
         val coreModuleRoot = modules
             .firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.CORE }
             ?.contentRoot
-            ?: return true
+            ?: return null
 
         val sdk = ModuleRootManager.getInstance(platformModule).sdk
-            ?: return true
+            ?: return null
         val sdkVersion = JavaSdk.getInstance().getVersion(sdk)
-            ?: return true
+            ?: return null
         val javaSdkType = sdk.sdkType as? JavaSdkType
-            ?: return true
+            ?: return null
         val vmExecutablePath = javaSdkType
             .getVMExecutablePath(sdk)
-            ?: return true
+            ?: return null
         val vmBinPath = javaSdkType
             .getBinPath(sdk)
-            ?: return true
+            ?: return null
 
         val bootstrapDirectory = platformModuleRoot.resolve(ProjectConstants.Directory.BOOTSTRAP)
         val wslDistribution = WslDistributionManager.getInstance().installedDistributions.firstOrNull()
             ?.takeIf { WslPath.parseWindowsUncPath(bootstrapDirectory.pathString) != null }
-        val task = if (wslDistribution != null) {
-            WslGenerateCodeTask(
+
+        return if (wslDistribution != null) {
+            WslGenerateCodePreCompileTask(
                 WslCompileTaskContext(
                     context = context,
                     wslDistribution = wslDistribution,
@@ -96,36 +119,19 @@ class GenerateCodeCompilerTask : CompileTask {
                     vmExecutablePath = vmExecutablePath,
                     sdkVersion = sdkVersion,
                     vmBinPath = vmBinPath,
-                    settings = settings,
                     platformModule = platformModule
                 )
             )
-        } else GenerateCodeTask(
+        } else GenerateCodePreCompileTask(
             CompileTaskContext(
                 context = context,
                 platformModuleRoot = platformModuleRoot,
                 bootstrapDirectory = bootstrapDirectory,
                 coreModuleRoot = coreModuleRoot,
                 vmExecutablePath = vmExecutablePath,
-                settings = settings,
                 sdkVersion = sdkVersion,
                 platformModule = platformModule
             )
         )
-
-        if (!task.invokeCodeGeneration()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
-            return false
-        }
-        if (!task.invokeCodeCompilation()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
-            return false
-        }
-        if (!task.invokeModelsJarCreation()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
-            return false
-        }
-
-        return true
     }
 }

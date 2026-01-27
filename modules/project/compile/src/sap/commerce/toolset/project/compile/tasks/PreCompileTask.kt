@@ -29,6 +29,8 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.lang.JavaVersion
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.compile.context.TaskContext
+import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.util.directoryExists
 import java.io.File
 import java.nio.file.FileVisitResult
@@ -39,7 +41,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.extension
 import kotlin.io.path.name
 
-abstract class CodeTask<T : TaskContext> {
+abstract class PreCompileTask<T : TaskContext> {
 
     abstract val taskContext: T
 
@@ -62,7 +64,7 @@ abstract class CodeTask<T : TaskContext> {
         gcl: () -> GeneralCommandLine,
     ): Boolean {
         val context = taskContext.context
-        val settings = taskContext.settings
+        val settings = context.project.ySettings
 
         before()
 
@@ -145,19 +147,17 @@ abstract class CodeTask<T : TaskContext> {
         }
     }
 
-    protected fun collectSourceFiles(): Set<Path> {
-        val sourceFiles = mutableSetOf<Path>()
+    protected fun collectSourceFiles() = buildSet {
         Files.walkFileTree(
             taskContext.bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC),
             object : SimpleFileVisitor<Path>() {
                 override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-                    if (file.extension == "java" && file.name != "package-info.java") sourceFiles.add(file)
+                    if (file.extension == "java" && file.name != "package-info.java") add(file)
                     return super.visitFile(file, attrs)
                 }
             })
-        return sourceFiles
     }
 
-    private fun JavaVersion.complianceOption() = if (feature < 5) "1.$feature" else feature.toString()
-
+    private fun JavaVersion.complianceOption() = if (feature < 5) "1.$feature"
+    else feature.toString()
 }

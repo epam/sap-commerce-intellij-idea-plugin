@@ -27,6 +27,7 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.io.ZipUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.compile.context.CompileTaskContext
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -35,7 +36,7 @@ import java.nio.file.Paths
 import java.util.jar.JarOutputStream
 import kotlin.io.path.pathString
 
-open class GenerateCodeTask(override val taskContext: CompileTaskContext) : CodeTask<CompileTaskContext>() {
+open class GenerateCodePreCompileTask(override val taskContext: CompileTaskContext) : PreCompileTask<CompileTaskContext>() {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
         val platformModuleRoot = taskContext.platformModuleRoot
@@ -50,13 +51,7 @@ open class GenerateCodeTask(override val taskContext: CompileTaskContext) : Code
             .withWorkingDirectory(platformModuleRoot)
             .withExePath(taskContext.vmExecutablePath)
             .withCharset(Charsets.UTF_8)
-            .withParameters(
-                "-Dfile.encoding=UTF-8",
-                "-cp",
-                classpath,
-                HybrisConstants.CLASS_FQN_CODE_GENERATOR,
-                platformModuleRoot.pathString
-            )
+            .withParameters("-Dfile.encoding=UTF-8", "-cp", classpath, HybrisConstants.CLASS_FQN_CODE_GENERATOR, platformModuleRoot.pathString)
 
         return commandLine
     }
