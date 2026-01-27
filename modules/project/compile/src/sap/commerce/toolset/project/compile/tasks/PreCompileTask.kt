@@ -48,7 +48,7 @@ abstract class PreCompileTask<T : TaskContext> {
     fun invokeCodeGeneration() = startProcess(
         action = "Code generation",
         before = {
-            val pathToBeDeleted = taskContext.bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC)
+            val pathToBeDeleted = taskContext.bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
             cleanDirectory(pathToBeDeleted)
         }
     ) { getCodeGenerationCommandLine() }
@@ -149,7 +149,7 @@ abstract class PreCompileTask<T : TaskContext> {
 
     protected fun collectSourceFiles() = buildSet {
         Files.walkFileTree(
-            taskContext.bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC),
+            taskContext.bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC),
             object : SimpleFileVisitor<Path>() {
                 override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
                     if (file.extension == "java" && file.name != "package-info.java") add(file)

@@ -39,10 +39,10 @@ import kotlin.io.path.pathString
 open class GenerateCodePreCompileTask(override val taskContext: CompileTaskContext) : PreCompileTask<CompileTaskContext>() {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
-        val platformModuleRoot = taskContext.platformModuleRoot
+        val platformModuleRoot = taskContext.platformModulePath
         val classpath = setOf(
-            taskContext.coreModuleRoot.resolve("lib").pathString + "/*",
-            taskContext.bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
+            taskContext.coreModulePath.resolve("lib").pathString + "/*",
+            taskContext.bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
         )
             .joinToString(File.pathSeparator)
 
@@ -58,8 +58,8 @@ open class GenerateCodePreCompileTask(override val taskContext: CompileTaskConte
 
     override fun invokeCodeCompilation(): Boolean {
         val context = taskContext.context
-        val bootstrapDirectory = taskContext.bootstrapDirectory
-        val pathToBeDeleted = bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES)
+        val bootstrapPath = taskContext.bootstrapPath
+        val pathToBeDeleted = bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES)
         cleanDirectory(pathToBeDeleted)
 
         try {
@@ -78,9 +78,9 @@ open class GenerateCodePreCompileTask(override val taskContext: CompileTaskConte
                 classpath,
                 emptyList(),
                 emptyList(),
-                listOf(bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC).toFile()),
+                listOf(bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC).toFile()),
                 sourceFiles,
-                bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES).toFile()
+                bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES).toFile()
             )
             context.addMessage(CompilerMessageCategory.STATISTICS, "[y] Compiled ${classes.size} generated classes.", null, -1, -1)
             val flushedClasses = classes
@@ -102,12 +102,12 @@ open class GenerateCodePreCompileTask(override val taskContext: CompileTaskConte
 
     override fun invokeModelsJarCreation(): Boolean {
         val context = taskContext.context
-        val bootstrapDirectory = taskContext.bootstrapDirectory
+        val bootstrapPath = taskContext.bootstrapPath
         context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started creation of the models.jar file...", null, -1, -1)
 
         val bootstrapDir = System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
             ?.let { Paths.get(it) }
-            ?: bootstrapDirectory.resolve(ProjectConstants.Directory.BIN)
+            ?: bootstrapPath.resolve(ProjectConstants.Directory.BIN)
 
         val modelsFile = bootstrapDir.resolve(HybrisConstants.JAR_MODELS).toFile()
         if (modelsFile.exists()) modelsFile.delete()
@@ -118,7 +118,7 @@ open class GenerateCodePreCompileTask(override val taskContext: CompileTaskConte
                 ZipUtil.addFileOrDirRecursively(
                     jos,
                     null,
-                    bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES).toFile(),
+                    bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES).toFile(),
                     "",
                     null,
                     null

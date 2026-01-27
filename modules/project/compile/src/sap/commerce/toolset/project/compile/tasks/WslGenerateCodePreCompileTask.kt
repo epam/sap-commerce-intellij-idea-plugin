@@ -34,10 +34,10 @@ import kotlin.io.path.pathString
 class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskContext) : PreCompileTask<WslCompileTaskContext>() {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
-        val platformModuleRoot = taskContext.platformModuleRoot
+        val platformModuleRoot = taskContext.platformModulePath
         val classpath = setOf(
-            osSpecificPath(taskContext.coreModuleRoot.resolve("lib").pathString + "/*"),
-            osSpecificPath(taskContext.bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").pathString)
+            osSpecificPath(taskContext.coreModulePath.resolve("lib").pathString + "/*"),
+            osSpecificPath(taskContext.bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").pathString)
         )
             .joinToString(":")
 
@@ -54,14 +54,14 @@ class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskCont
     override fun invokeCodeCompilation() = startProcess(
         "Code compilation",
         before = {
-            val pathToBeDeleted = taskContext.bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES)
+            val pathToBeDeleted = taskContext.bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES)
             cleanDirectory(pathToBeDeleted)
         }
     ) {
         val wslDistribution = taskContext.wslDistribution
         val platformModule = taskContext.platformModule
-        val bootstrapDirectory = taskContext.bootstrapDirectory
-        val platformModuleRoot = taskContext.platformModuleRoot
+        val bootstrapPath = taskContext.bootstrapPath
+        val platformModuleRoot = taskContext.platformModulePath
         val vmBinPath = taskContext.vmBinPath
         val rootManager = ModuleRootManager.getInstance(platformModule)
         val classpathSeparator = ":"
@@ -79,7 +79,7 @@ class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskCont
             .also { it.toFile().deleteOnExit() }
             .apply { Files.writeString(this, sourceFiles, StandardCharsets.UTF_8) }
             .let { wslDistribution.getWslPath(it) }
-        val outputDir = osSpecificPath(bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES))
+        val outputDir = osSpecificPath(bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES))
 
         GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
@@ -98,14 +98,14 @@ class WslGenerateCodePreCompileTask(override val taskContext: WslCompileTaskCont
     }
 
     override fun invokeModelsJarCreation() = startProcess("models.jar creation") {
-        val bootstrapDirectory = taskContext.bootstrapDirectory
-        val platformModuleRoot = taskContext.platformModuleRoot
+        val bootstrapPath = taskContext.bootstrapPath
+        val platformModuleRoot = taskContext.platformModulePath
         val wslDistribution = taskContext.wslDistribution
         val vmBinPath = taskContext.vmBinPath
-        val outputDir = osSpecificPath(bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES))
-        val modelsFile = osSpecificPath(bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS))
+        val outputDir = osSpecificPath(bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES))
+        val modelsFile = osSpecificPath(bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS))
 
-        bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS)
+        bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS)
             .let { wslDistribution.getWslPath(it) }
             ?.let { Path(it) }
             ?.let { Files.deleteIfExists(it) }

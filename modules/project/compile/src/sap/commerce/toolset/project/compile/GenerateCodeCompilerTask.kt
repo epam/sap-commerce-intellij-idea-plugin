@@ -27,9 +27,9 @@ import com.intellij.openapi.projectRoots.JavaSdk
 import com.intellij.openapi.projectRoots.JavaSdkType
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.util.application
+import com.intellij.util.asSafely
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.compile.context.CompileTaskContext
 import sap.commerce.toolset.project.compile.context.TaskContext
 import sap.commerce.toolset.project.compile.context.WslCompileTaskContext
@@ -62,15 +62,15 @@ class GenerateCodeCompilerTask : CompileTask {
             ?: return true
 
         if (!task.invokeCodeGeneration()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapDirectory)
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapPath)
             return false
         }
         if (!task.invokeCodeCompilation()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapDirectory)
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapPath)
             return false
         }
         if (!task.invokeModelsJarCreation()) {
-            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapDirectory)
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(task.taskContext.bootstrapPath)
             return false
         }
 
@@ -78,59 +78,44 @@ class GenerateCodeCompilerTask : CompileTask {
     }
 
     private fun getPreCompileTask(context: CompileContext): PreCompileTask<out TaskContext>? {
-        val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
         val moduleMapping = context.project.ySettings.module2extensionMapping
-        val platformModule = modules.firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.PLATFORM }
-            ?: return null
+        val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
+            .associateBy { it.yExtensionName(moduleMapping) }
 
-        val platformModuleRoot = platformModule.contentRoot
-            ?: return null
-        val coreModuleRoot = modules
-            .firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.CORE }
-            ?.contentRoot
-            ?: return null
+        val platformModule = modules[EiConstants.Extension.PLATFORM] ?: return null
+        val coreModuleRoot = modules[EiConstants.Extension.CORE]?.contentRoot ?: return null
+        val platformModuleRoot = platformModule.contentRoot ?: return null
+        val sdk = ModuleRootManager.getInstance(platformModule).sdk ?: return null
+        val sdkVersion = JavaSdk.getInstance().getVersion(sdk) ?: return null
+        val javaSdkType = sdk.sdkType.asSafely<JavaSdkType>() ?: return null
+        val vmExecutablePath = javaSdkType.getVMExecutablePath(sdk) ?: return null
 
-        val sdk = ModuleRootManager.getInstance(platformModule).sdk
-            ?: return null
-        val sdkVersion = JavaSdk.getInstance().getVersion(sdk)
-            ?: return null
-        val javaSdkType = sdk.sdkType as? JavaSdkType
-            ?: return null
-        val vmExecutablePath = javaSdkType
-            .getVMExecutablePath(sdk)
-            ?: return null
-        val vmBinPath = javaSdkType
-            .getBinPath(sdk)
-            ?: return null
-
-        val bootstrapDirectory = platformModuleRoot.resolve(ProjectConstants.Directory.BOOTSTRAP)
-
-        return WslPath.parseWindowsUncPath(bootstrapDirectory.pathString)
+        return WslPath.parseWindowsUncPath(platformModuleRoot.pathString)
             ?.distribution
             ?.let {
+                val vmBinPath = javaSdkType.getBinPath(sdk) ?: return null
+
                 WslGenerateCodePreCompileTask(
                     WslCompileTaskContext(
                         context = context,
-                        wslDistribution = it,
-                        platformModuleRoot = platformModuleRoot,
-                        bootstrapDirectory = bootstrapDirectory,
-                        coreModuleRoot = coreModuleRoot,
-                        vmExecutablePath = vmExecutablePath,
                         sdkVersion = sdkVersion,
+                        platformModule = platformModule,
+                        platformModulePath = platformModuleRoot,
+                        coreModulePath = coreModuleRoot,
+                        vmExecutablePath = vmExecutablePath,
                         vmBinPath = vmBinPath,
-                        platformModule = platformModule
+                        wslDistribution = it,
                     )
                 )
             }
             ?: GenerateCodePreCompileTask(
                 CompileTaskContext(
                     context = context,
-                    platformModuleRoot = platformModuleRoot,
-                    bootstrapDirectory = bootstrapDirectory,
-                    coreModuleRoot = coreModuleRoot,
-                    vmExecutablePath = vmExecutablePath,
                     sdkVersion = sdkVersion,
-                    platformModule = platformModule
+                    platformModule = platformModule,
+                    platformModulePath = platformModuleRoot,
+                    coreModulePath = coreModuleRoot,
+                    vmExecutablePath = vmExecutablePath,
                 )
             )
     }

@@ -25,10 +25,9 @@ import java.nio.file.Path
 
 data class CompileTaskContext(
     override val context: CompileContext,
-    override val platformModuleRoot: Path,
-    override val bootstrapDirectory: Path,
-    override val coreModuleRoot: Path,
-    override val vmExecutablePath: String,
     override val sdkVersion: JavaSdkVersion,
     override val platformModule: Module,
+    override val platformModulePath: Path,
+    override val coreModulePath: Path,
+    override val vmExecutablePath: String,
 ) : TaskContext
