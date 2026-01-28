@@ -330,6 +330,13 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
             }
 
             row {
+                checkBox(i18n("hybris.project.import.withDecompiledOotbSources"))
+                    .bindSelected(context.importSettings.withDecompiledOotbSources)
+                contextHelp(i18n("hybris.project.import.withDecompiledOotbSources.help.description"))
+                    .customize(rightGaps)
+            }
+
+            row {
                 checkBox(i18n("hybris.project.import.isExcludedFromScanning"))
                     .bindSelected(context.isExcludedFromScanning)
                 contextHelp(i18n("hybris.project.import.isExcludedFromScanning.help.description"))

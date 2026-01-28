@@ -99,6 +99,11 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(removeExternalModulesOnRefresh = value) }
         }
+    var withDecompiledOotbSources
+        get() = state.withDecompiledOotbSources
+        set(value) {
+            updateState { it.copy(withDecompiledOotbSources = value) }
+        }
     var unusedExtensions
         get() = state.unusedExtensions
         set(value) {
