@@ -39,7 +39,7 @@ import kotlin.io.path.pathString
 open class GenerateCodePreCompileTask(taskContext: CompileTaskContext) : PreCompileTask(taskContext) {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
-        val platformModuleRoot = taskContext.platformModulePath
+        val platformModulePath = taskContext.platformModulePath
         val classpath = setOf(
             taskContext.coreModulePath.resolve("lib").pathString + "/*",
             taskContext.bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").toString()
@@ -48,10 +48,10 @@ open class GenerateCodePreCompileTask(taskContext: CompileTaskContext) : PreComp
 
         val commandLine = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkingDirectory(platformModuleRoot)
+            .withWorkingDirectory(platformModulePath)
             .withExePath(taskContext.vmExecutablePath)
             .withCharset(Charsets.UTF_8)
-            .withParameters("-Dfile.encoding=UTF-8", "-cp", classpath, HybrisConstants.CLASS_FQN_CODE_GENERATOR, platformModuleRoot.pathString)
+            .withParameters("-Dfile.encoding=UTF-8", "-cp", classpath, HybrisConstants.CLASS_FQN_CODE_GENERATOR, platformModulePath.pathString)
 
         return commandLine
     }
@@ -63,7 +63,7 @@ open class GenerateCodePreCompileTask(taskContext: CompileTaskContext) : PreComp
         cleanDirectory(pathToBeDeleted)
 
         try {
-            context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started compilation of the generated code...", null, -1, -1)
+            context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Compiling generated code...", null, -1, -1)
             val sourceFiles = collectSourceFiles().map { it.toFile() }
 
             val rootManager = ModuleRootManager.getInstance(taskContext.platformModule)
@@ -88,12 +88,12 @@ open class GenerateCodePreCompileTask(taskContext: CompileTaskContext) : PreComp
                 .map { it.path to it.content!! }
                 .onEach { (path, bytes) -> FileUtil.writeToFile(File(path), bytes) }
             context.addMessage(CompilerMessageCategory.STATISTICS, "[y] Flushed ${flushedClasses.size} compiled classes.", null, -1, -1)
-            context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Completed compilation of the generated code.", null, -1, -1)
+            context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Compiled generated code.", null, -1, -1)
         } catch (e: CompilationException) {
             e.messages.forEach {
                 context.addMessage(CompilerMessageCategory.WARNING, it.text, null, -1, -1)
             }
-            context.addMessage(CompilerMessageCategory.ERROR, "[y] Generated code compilation failed.", null, -1, -1)
+            context.addMessage(CompilerMessageCategory.ERROR, "[y] Failed to compile generated codex.", null, -1, -1)
             return false
         }
 
@@ -103,7 +103,7 @@ open class GenerateCodePreCompileTask(taskContext: CompileTaskContext) : PreComp
     override fun invokeModelsJarCreation(): Boolean {
         val context = taskContext.context
         val bootstrapPath = taskContext.bootstrapPath
-        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started creation of the models.jar file...", null, -1, -1)
+        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Creating models.jar file...", null, -1, -1)
 
         val bootstrapDir = System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
             ?.let { Paths.get(it) }
@@ -126,10 +126,10 @@ open class GenerateCodePreCompileTask(taskContext: CompileTaskContext) : PreComp
             }
         } catch (e: IOException) {
             context.addMessage(CompilerMessageCategory.ERROR, e.toString(), null, -1, -1)
-            context.addMessage(CompilerMessageCategory.ERROR, "[y] Generated code compilation failed.", null, -1, -1)
+            context.addMessage(CompilerMessageCategory.ERROR, "[y] Failed to compile generated code.", null, -1, -1)
             return false
         }
-        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Completed creation of the models.jar file.", null, -1, -1)
+        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Created models.jar file.", null, -1, -1)
 
         return true
     }

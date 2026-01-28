@@ -38,7 +38,7 @@ class WslGenerateCodePreCompileTask(
 ) : PreCompileTask(taskContext) {
 
     override fun getCodeGenerationCommandLine(): GeneralCommandLine {
-        val platformModuleRoot = taskContext.platformModulePath
+        val platformModulePath = taskContext.platformModulePath
         val classpath = setOf(
             osSpecificPath(taskContext.coreModulePath.resolve("lib").pathString + "/*"),
             osSpecificPath(taskContext.bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve("ybootstrap.jar").pathString)
@@ -47,10 +47,10 @@ class WslGenerateCodePreCompileTask(
 
         val commandLine = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
-            .withWorkingDirectory(platformModuleRoot)
+            .withWorkingDirectory(platformModulePath)
             .withExePath(osSpecificPath(taskContext.vmExecutablePath))
             .withCharset(Charsets.UTF_8)
-            .withParameters("-Dfile.encoding=UTF-8", "-cp", classpath, HybrisConstants.CLASS_FQN_CODE_GENERATOR, osSpecificPath(platformModuleRoot))
+            .withParameters("-Dfile.encoding=UTF-8", "-cp", classpath, HybrisConstants.CLASS_FQN_CODE_GENERATOR, osSpecificPath(platformModulePath))
 
         return commandLine
     }

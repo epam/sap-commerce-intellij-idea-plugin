@@ -76,8 +76,8 @@ class GenerateCodeCompilerTask : CompileTask {
             .associateBy { it.yExtensionName(moduleMapping) }
 
         val platformModule = modules[EiConstants.Extension.PLATFORM] ?: return null
-        val coreModuleRoot = modules[EiConstants.Extension.CORE]?.contentRoot ?: return null
-        val platformModuleRoot = platformModule.contentRoot ?: return null
+        val coreModulePath = modules[EiConstants.Extension.CORE]?.contentRoot ?: return null
+        val platformModulePath = platformModule.contentRoot ?: return null
         val sdk = ModuleRootManager.getInstance(platformModule).sdk ?: return null
         val sdkVersion = JavaSdk.getInstance().getVersion(sdk) ?: return null
         val javaSdkType = sdk.sdkType.asSafely<JavaSdkType>() ?: return null
@@ -87,12 +87,12 @@ class GenerateCodeCompilerTask : CompileTask {
             context = context,
             sdkVersion = sdkVersion,
             platformModule = platformModule,
-            platformModulePath = platformModuleRoot,
-            coreModulePath = coreModuleRoot,
+            platformModulePath = platformModulePath,
+            coreModulePath = coreModulePath,
             vmExecutablePath = vmExecutablePath,
         )
 
-        return WslPath.parseWindowsUncPath(platformModuleRoot.pathString)
+        return WslPath.parseWindowsUncPath(platformModulePath.pathString)
             ?.distribution
             ?.let { wslDistribution ->
                 val wslContext = javaSdkType.getBinPath(sdk)

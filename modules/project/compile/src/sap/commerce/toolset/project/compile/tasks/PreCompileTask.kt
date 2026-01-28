@@ -100,7 +100,7 @@ abstract class PreCompileTask(val taskContext: CompileTaskContext) {
     protected fun cleanDirectory(pathToBeDeleted: Path) {
         if (!pathToBeDeleted.directoryExists) return
         val context = taskContext.context
-        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started cleaning the: $pathToBeDeleted", null, -1, -1)
+        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Cleaning: $pathToBeDeleted", null, -1, -1)
 
         Files.walk(pathToBeDeleted)
             .sorted(Comparator.reverseOrder())
