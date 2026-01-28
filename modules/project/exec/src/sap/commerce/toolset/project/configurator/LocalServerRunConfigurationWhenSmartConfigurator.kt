@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,9 +20,11 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationTypeUtil
+import com.intellij.execution.wsl.WslPath
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType
+import kotlin.io.path.pathString
 
 class LocalServerRunConfigurationWhenSmartConfigurator : ProjectImportWhenSmartConfigurator {
 
@@ -34,6 +36,7 @@ class LocalServerRunConfigurationWhenSmartConfigurator : ProjectImportWhenSmartC
         val configurationName = i18n("hybris.project.run.configuration.localserver")
 
         if (runManager.findConfigurationByName(configurationName) != null) return
+        if (WslPath.isWslUncPath(context.platformDirectory.pathString)) return
 
         val confType = ConfigurationTypeUtil.findConfigurationType(LocalSapCXConfigurationType::class.java)
         val configurationFactory = confType.configurationFactories.first()
