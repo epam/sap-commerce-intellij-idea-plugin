@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,7 +26,6 @@ import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.contentRoot
-import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.yExtensionName
 
@@ -34,7 +33,7 @@ class ProjectAfterCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean = application.runReadAction<Boolean> {
         val project = context.project
-        val settings = ProjectSettings.getInstance(project)
+        val settings = project.ySettings
         if (!project.isHybrisProject) return@runReadAction true
         if (!settings.generateCodeOnRebuild) return@runReadAction true
 
@@ -44,16 +43,15 @@ class ProjectAfterCompilerTask : CompileTask {
         if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
 
         val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
-        val moduleMapping = project.ySettings.module2extensionMapping
+        val moduleMapping = settings.module2extensionMapping
         val platformModule = modules.firstOrNull { it.yExtensionName(moduleMapping) == EiConstants.Extension.PLATFORM }
             ?: return@runReadAction true
 
-        val bootstrapDirectory = platformModule
-            .contentRoot
+        val bootstrapPath = platformModule.contentRoot
             ?.resolve(ProjectConstants.Directory.BOOTSTRAP)
             ?: return@runReadAction true
 
-        ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
+        ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapPath)
 
         return@runReadAction true
     }

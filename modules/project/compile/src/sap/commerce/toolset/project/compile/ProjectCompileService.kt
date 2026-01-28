@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,12 +33,12 @@ import java.nio.file.Path
 @Service(Service.Level.PROJECT)
 internal class ProjectCompileService(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun triggerRefreshGeneratedFiles(bootstrapDirectory: Path) {
+    fun triggerRefreshGeneratedFiles(bootstrapPath: Path) {
         coroutineScope.launch(Dispatchers.IO) {
             val paths = listOf(
-                bootstrapDirectory.resolve(ProjectConstants.Directory.GEN_SRC),
-                bootstrapDirectory.resolve(ProjectConstants.Directory.MODEL_CLASSES),
-                bootstrapDirectory.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS),
+                bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC),
+                bootstrapPath.resolve(ProjectConstants.Directory.MODEL_CLASSES),
+                bootstrapPath.resolve(ProjectConstants.Directory.BIN).resolve(HybrisConstants.JAR_MODELS),
             )
 
             withBackgroundProgress(project, "Refreshing generated files") {

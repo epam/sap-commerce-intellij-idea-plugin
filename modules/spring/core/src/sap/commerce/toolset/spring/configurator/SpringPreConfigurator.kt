@@ -197,7 +197,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
             ?: return
 
         Files.newDirectoryStream(webInfLibDir) { p ->
-            p.isRegularFile() && p.extension == "jar"
+            webInfLibDir.resolve(p.fileName).isRegularFile() && p.extension == "jar"
         }.use { stream ->
             stream.forEach { p ->
                 val file = p.toFile()
