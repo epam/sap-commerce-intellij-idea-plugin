@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.project.configurator.entities
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
@@ -37,15 +38,20 @@ class CleanupModulesStorageConfigurator : ProjectStorageCleanupConfigurator {
             .map { it.name }
 
         storage.entities<ModuleEntity>()
-            .forEach { moduleEntity ->
+            .mapNotNull { moduleEntity ->
                 val extensionName = previouslyLoadedExtensions[moduleEntity.name]
 
                 when {
                     // remove external module when requested
-                    extensionName == null && context.removeExternalModules -> storage.removeEntity(moduleEntity)
+                    extensionName == null && context.removeExternalModules -> moduleEntity
                     // remove NOT selected for import (localextensions.xml and dependencies)
-                    extensionName != null && !yExtensionNames.contains(extensionName) -> storage.removeEntity(moduleEntity)
+                    extensionName != null && !yExtensionNames.contains(extensionName) -> moduleEntity
+                    else -> null
                 }
+            }
+            .forEach { moduleEntity ->
+                thisLogger().debug("Removed loaded module: ${moduleEntity.name}")
+                storage.removeEntity(moduleEntity)
             }
     }
 }

@@ -2,7 +2,7 @@
 
 <cite>Release contributors</cite>
 
-- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
+- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 - 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 
@@ -30,8 +30,9 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ### `WSL` enhancements
 - Ensure correctness of classpath during build execution [#1663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1663)
-- Support hidden files on Windows WSL2 [#1713](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1713)
-- Support code generation on Windows WSL2 [#1715](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1715)
+- Support hidden files [#1713](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1713)
+- Support code generation [#1715](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1715)
+- Do not configure `Local SAP CX Server` [#1717](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1717)
 
 ### Other
 - Updated libraries [#1714](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1714)
