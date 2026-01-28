@@ -67,7 +67,8 @@ abstract class PreCompileTask(val taskContext: CompileTaskContext) {
         beforeProcessStart()
 
         var result = false
-        val handler = JavaCommandLineStateUtil.startProcess(commandLineProvider(), true)
+        val commandLine = commandLineProvider()
+        val handler = JavaCommandLineStateUtil.startProcess(commandLine, true)
         handler.addProcessListener(object : ProcessListener {
 
             override fun startNotified(event: ProcessEvent) {

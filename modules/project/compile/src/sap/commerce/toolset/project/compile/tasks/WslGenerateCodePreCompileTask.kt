@@ -45,14 +45,13 @@ class WslGenerateCodePreCompileTask(
         )
             .joinToString(":")
 
-        val commandLine = GeneralCommandLine()
+        return GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
             .withWorkingDirectory(platformModulePath)
             .withExePath(osSpecificPath(taskContext.vmExecutablePath))
             .withCharset(Charsets.UTF_8)
             .withParameters("-Dfile.encoding=UTF-8", "-cp", classpath, HybrisConstants.CLASS_FQN_CODE_GENERATOR, osSpecificPath(platformModulePath))
-
-        return commandLine
+            .apply { patchCommandLine(this) }
     }
 
     override fun invokeCodeCompilation() = startProcess(
@@ -87,14 +86,7 @@ class WslGenerateCodePreCompileTask(
             .withExePath(osSpecificPath("${wslContext.vmBinPath}\\javac"))
             .withCharset(Charsets.UTF_8)
             .withParameters("-nowarn", "-d", outputDir, "-cp", "@$mntClasspathFile", "@$mntSourceFilesFile")
-            .apply {
-                val context = taskContext.context
-                val wslDistribution = wslDistribution
-                val options = WSLCommandLineOptions()
-                    .setExecuteCommandInShell(true)
-                    .setLaunchWithWslExe(true)
-                wslDistribution.patchCommandLine<GeneralCommandLine>(this, context.project, options)
-            }
+            .apply { patchCommandLine(this) }
     }
 
     override fun invokeModelsJarCreation() = startProcess("models.jar creation") {
@@ -114,13 +106,16 @@ class WslGenerateCodePreCompileTask(
             .withExePath(osSpecificPath("${wslContext.vmBinPath}\\jar"))
             .withCharset(Charsets.UTF_8)
             .withParameters("cf", modelsFile, "-C", outputDir, ".")
-            .apply {
-                val context = taskContext.context
-                val options = WSLCommandLineOptions()
-                    .setExecuteCommandInShell(true)
-                    .setLaunchWithWslExe(true)
-                wslDistribution.patchCommandLine<GeneralCommandLine>(this, context.project, options)
-            }
+            .apply { patchCommandLine(this) }
+    }
+
+    private fun patchCommandLine(line: GeneralCommandLine) {
+        val context = taskContext.context
+        val wslDistribution = wslContext.wslDistribution
+        val options = WSLCommandLineOptions()
+            .setExecuteCommandInShell(true)
+            .setLaunchWithWslExe(true)
+        wslDistribution.patchCommandLine<GeneralCommandLine>(line, context.project, options)
     }
 
     private fun osSpecificPath(path: Path) = path
