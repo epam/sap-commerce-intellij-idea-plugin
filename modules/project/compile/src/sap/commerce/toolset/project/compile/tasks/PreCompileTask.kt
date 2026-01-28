@@ -49,7 +49,7 @@ abstract class PreCompileTask(val taskContext: CompileTaskContext) {
     protected abstract fun getCodeGenerationCommandLine(): GeneralCommandLine
 
     fun invokeCodeGeneration() = startProcess(
-        action = "Code generation",
+        action = "code generation",
         beforeProcessStart = {
             val pathToBeDeleted = taskContext.bootstrapPath.resolve(ProjectConstants.Directory.GEN_SRC)
             cleanDirectory(pathToBeDeleted)
