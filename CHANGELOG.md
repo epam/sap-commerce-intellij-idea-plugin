@@ -1,7 +1,8 @@
 ## [2025.3.1]
 
 <cite>Release contributors</cite>
-- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
+
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Aekalenchuk+is%3Apr++is%3Apr)
 - 1 PR by [Maksym Shyshkin](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3ASomewhereInBetween+is%3Apr+)
 
@@ -34,6 +35,8 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ### Other
 - Updated libraries [#1714](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1714)
+- New flag to not re-generate code before
+  `Local SAP CX Server` run configuration [#1716](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1716)
 
 ## [2025.3.0]
 

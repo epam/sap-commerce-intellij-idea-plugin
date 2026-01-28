@@ -28,6 +28,7 @@ import com.intellij.openapi.projectRoots.JavaSdkType
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.compile.context.CompileTaskContext
@@ -54,8 +55,8 @@ class GenerateCodeCompilerTask : CompileTask {
 
         val typeId = context.compileScope.getUserData(CompilerManager.RUN_CONFIGURATION_TYPE_ID_KEY)
         // do not rebuild sources in case of JUnit
-        // see JUnitConfigurationType
-        if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
+        if (HybrisConstants.RunConfiguration.JUNIT == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
+        if (HybrisConstants.RunConfiguration.SAP_CX == typeId && !settings.generateCodeOnServerRunConfiguration) return true
 
         val preCompileTask = getPreCompileTask(context) ?: return true
 
