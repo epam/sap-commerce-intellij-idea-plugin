@@ -22,6 +22,7 @@ import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.compiler.CompilerManager
 import com.intellij.openapi.module.Module
 import com.intellij.util.application
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
@@ -39,8 +40,8 @@ class ProjectAfterCompilerTask : CompileTask {
 
         val typeId = context.compileScope.getUserData(CompilerManager.RUN_CONFIGURATION_TYPE_ID_KEY)
         // do not rebuild sources in case of JUnit
-        // see JUnitConfigurationType
-        if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
+        if (HybrisConstants.RunConfiguration.JUNIT == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
+        if (HybrisConstants.RunConfiguration.SAP_CX == typeId && !settings.generateCodeOnServerRunConfiguration) return@runReadAction true
 
         val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
         val moduleMapping = settings.module2extensionMapping

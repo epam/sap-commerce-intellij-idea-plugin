@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -98,6 +98,11 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                 row {
                     checkBox("Generate code before execution of the JUnit Run Configuration")
                         .bindSelected(projectSettings::generateCodeOnJUnitRunConfiguration)
+                        .enabledIf(generateCodeOnRebuildCheckBox.selected)
+                }
+                row {
+                    checkBox("Generate code before execution of the SAP CX Server Run Configuration")
+                        .bindSelected(projectSettings::generateCodeOnServerRunConfiguration)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)
                 }
                 row("Code generation timeout:") {

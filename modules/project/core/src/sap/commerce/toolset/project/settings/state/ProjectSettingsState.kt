@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -36,6 +36,7 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val ideModulesFilesDirectory: String? = null,
     @JvmField @OptionTag val generateCodeOnRebuild: Boolean = true,
     @JvmField @OptionTag val generateCodeOnJUnitRunConfiguration: Boolean = false,
+    @JvmField @OptionTag val generateCodeOnServerRunConfiguration: Boolean = false,
     @JvmField @OptionTag val generateCodeTimeoutSeconds: Int = 60,
     @JvmField @OptionTag val importOotbModulesInReadOnlyMode: Boolean = true,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
