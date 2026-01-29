@@ -18,14 +18,15 @@
 
 package sap.commerce.toolset.java.decompilation
 
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.LegalNoticeDialog
-import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.util.application
 import org.jetbrains.java.decompiler.IdeaDecompilerBundle
+import sap.commerce.toolset.Plugin
 
 /**
  * Service to handle IdeaDecompiler legal notice consent.
@@ -64,8 +65,7 @@ class DecompilerService {
     }
 
     private fun disableDecompilerPlugin() {
-        val pluginId = PluginId.getId("org.jetbrains.java.decompiler")
-        PluginManagerCore.disablePlugin(pluginId)
+        PluginManagerCore.disablePlugin(Plugin.JAVA_DECOMPILER.pluginId)
     }
 
     enum class ConsentResult {
@@ -75,6 +75,6 @@ class DecompilerService {
     }
 
     companion object {
-        fun getInstance() = service<DecompilerService>()
+        fun getInstance(): DecompilerService = application.service()
     }
 }

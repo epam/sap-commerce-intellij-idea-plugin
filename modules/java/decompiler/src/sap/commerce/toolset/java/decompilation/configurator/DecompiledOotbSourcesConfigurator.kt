@@ -16,9 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.decompilation
+package sap.commerce.toolset.java.decompilation.configurator
 
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.java.decompilation.OotbDecompiledSourcesService
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 
