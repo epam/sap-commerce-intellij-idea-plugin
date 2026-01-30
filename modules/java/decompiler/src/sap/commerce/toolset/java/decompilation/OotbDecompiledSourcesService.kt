@@ -24,10 +24,10 @@ import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.asContextElement
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.virtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
@@ -196,12 +196,17 @@ class OotbDecompiledSourcesService {
                     checkCanceled()
                     val entry = entries.nextElement()
                     if (!entry.name.endsWith(".class")) continue
-                    val vFile = jarRoot.findFileByRelativePath(entry.name) ?: continue
 
-                    val source = runCatching { ideaDecompiler.getText(vFile).toString() }
+                    val source = runCatching {
+                        readAction {
+                            ProgressManager.checkCanceled()
+                            val vFile = jarRoot.findFileByRelativePath(entry.name) ?: return@readAction null
+                            ideaDecompiler.getText(vFile).toString()
+                        }
+                    }
                         .onFailure {
                             failedCount++
-                            logger.debug("Failed to decompile ${vFile.path}", it)
+                            logger.debug("Failed to decompile ${jarPath.fileName}!/${entry.name}", it)
                         }
                         .getOrNull()
                         ?: continue
@@ -222,7 +227,7 @@ class OotbDecompiledSourcesService {
             if (failedCount > 0) logger.debug("Partially decompiled ${jarPath.fileName}: ok=$decompiledCount, failed=$failedCount")
 
             Files.writeString(marker, "ok")
-            LocalFileSystem.getInstance().refreshAndFindFileByIoFile(outputRoot.toFile())
+            VfsUtil.markDirtyAndRefresh(true, true, true, outputRoot.toFile())
             DecompileResult.Completed
         }
     }
