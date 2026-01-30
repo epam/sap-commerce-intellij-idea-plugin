@@ -190,11 +190,25 @@ class OotbDecompiledSourcesService {
             var failedCount = 0
 
             JarFile(jarPath.toFile()).use { jf ->
+                val classEntryNames = buildSet {
+                    val allEntries = jf.entries()
+                    while (allEntries.hasMoreElements()) {
+                        val entry = allEntries.nextElement()
+                        if (entry.name.endsWith(".class")) add(entry.name)
+                    }
+                }
+
                 val entries = jf.entries()
                 while (entries.hasMoreElements()) {
                     checkCanceled()
                     val entry = entries.nextElement()
                     if (!entry.name.endsWith(".class")) continue
+
+                    // Decompile only top-level classes.
+                    // Inner/nested/anonymous classes are separate *.class entries (Outer$Inner.class, Outer$1.class, ...).
+                    // IntelliJ decompiler reconstructs them into the outer class output anyway, so writing them separately
+                    // produces duplicate-looking sources (Outer.java and Outer$Inner.java).
+                    if (shouldSkipInnerClassEntry(entry.name, classEntryNames)) continue
 
                     val source = runCatching {
                         readAction {
@@ -229,6 +243,14 @@ class OotbDecompiledSourcesService {
             VfsUtil.markDirtyAndRefresh(true, true, true, outputRoot.toFile())
             DecompileResult.Completed
         }
+    }
+
+    private fun shouldSkipInnerClassEntry(entryName: String, classEntryNames: Set<String>): Boolean {
+        val dollarIndex = entryName.indexOf('$')
+        if (dollarIndex < 0) return false
+
+        val outerClassEntryName = entryName.substring(0, dollarIndex) + ".class"
+        return classEntryNames.contains(outerClassEntryName)
     }
 
     private fun JarDecompileContext.outputRoot(): Path = moduleDescriptor.moduleRootPath
