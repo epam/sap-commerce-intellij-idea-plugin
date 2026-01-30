@@ -94,6 +94,7 @@ class SpringFacetConfigurator : ProjectPostImportLegacyConfigurator {
             .forEach {
                 if (it.startsWith("jar://")) springFileSet.addFile(it)
                 else VfsUtil.findFileByIoFile(File(it), true)
+                    ?.let { vf -> springFileSet.addFile(vf) }
             }
 
         springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED)?.let {

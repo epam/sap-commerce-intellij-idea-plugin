@@ -2,10 +2,11 @@
 
 <cite>Release contributors</cite>
 
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.2+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.2+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Update language level in BGT write thread [#1719](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1719)
+- Altered Spring Facet configuration to respect in-module XML files [#1721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1721)
 
 ## [2025.3.1]
 
