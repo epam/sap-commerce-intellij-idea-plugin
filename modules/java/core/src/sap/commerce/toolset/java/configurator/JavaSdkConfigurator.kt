@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.java.configurator
 
+import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.LanguageLevelProjectExtension
 import com.intellij.openapi.roots.ProjectRootManager
@@ -38,7 +39,9 @@ class JavaSdkConfigurator : ProjectImportConfigurator {
         val languageLevelExt = LanguageLevelProjectExtension.getInstance(project)
 
         if (sdkVersion.maxLanguageLevel != languageLevelExt.languageLevel) {
-            languageLevelExt.languageLevel = sdkVersion.maxLanguageLevel
+            backgroundWriteAction {
+                languageLevelExt.languageLevel = sdkVersion.maxLanguageLevel
+            }
         }
     }
 }
