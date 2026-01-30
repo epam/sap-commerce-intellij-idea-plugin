@@ -113,6 +113,12 @@ class ProjectRefreshDialog(
 
                     contextHelp(i18n("hybris.project.import.withExternalLibrarySources.help.description"))
                 }
+
+                row {
+                    checkBox(i18n("hybris.project.import.withDecompiledOotbSources"))
+                        .bindSelected(refreshContext.importSettings.withDecompiledOotbSources)
+                    contextHelp(i18n("hybris.project.import.withDecompiledOotbSources.help.description"))
+                }
             }
 
             collapsibleGroup(i18n("hybris.project.import.projectStructure.title")) {

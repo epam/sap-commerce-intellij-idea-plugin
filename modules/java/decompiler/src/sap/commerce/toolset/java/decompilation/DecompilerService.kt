@@ -75,6 +75,6 @@ class DecompilerService {
     }
 
     companion object {
-        fun getInstance(): DecompilerService = application.service()
+        fun getInstance(): DecompilerService = application.service<DecompilerService>()
     }
 }
