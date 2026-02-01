@@ -8,6 +8,7 @@
 ### `Project Import` enhancements
 - Update language level in BGT write thread [#1719](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1719)
 - Altered Spring Facet configuration to respect in-module XML files [#1721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1721)
+- Decompile OOTB bin jars and attach sources [#1712](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1712)
 
 ## [2025.3.1]
 

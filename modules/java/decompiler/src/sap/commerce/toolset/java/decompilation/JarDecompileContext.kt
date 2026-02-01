@@ -19,6 +19,7 @@
 package sap.commerce.toolset.java.decompilation
 
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.workspace.jps.entities.LibraryId
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
@@ -26,11 +27,13 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
  * Context for decompiling a single JAR file.
  *
  * @param moduleDescriptor Module owning this JAR (used to resolve the output directory).
+ * @param libraryId The library id used to attach sources back.
  * @param libraryRoot The COMPILED library root representing this JAR.
  * @param jar Jar root in the VFS.
  */
 data class JarDecompileContext(
     val moduleDescriptor: ModuleDescriptor,
+    val libraryId: LibraryId,
     val libraryRoot: LibraryRoot,
     val jar: VirtualFile,
 )

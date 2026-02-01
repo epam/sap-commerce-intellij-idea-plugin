@@ -34,6 +34,7 @@ import com.intellij.platform.backend.workspace.virtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
+import com.intellij.platform.workspace.jps.entities.LibraryId
 import com.intellij.platform.workspace.jps.entities.LibraryRoot
 import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
 import com.intellij.platform.workspace.jps.entities.LibraryTableId
@@ -42,6 +43,7 @@ import com.intellij.platform.workspace.jps.entities.getModuleLibraries
 import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
 import com.intellij.platform.workspace.storage.entities
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
+import com.intellij.workspaceModel.ide.toPath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -135,35 +137,35 @@ class OotbDecompiledSourcesService {
         val moduleDescriptorByName = context.chosenHybrisModuleDescriptors
             .associateBy { it.ideaModuleName() }
 
-        return context.storage.entities<ModuleEntity>()
-            .mapNotNull { moduleEntity ->
-                val moduleDescriptor = moduleDescriptorByName[moduleEntity.name]
-                    ?: return@mapNotNull null
+        return buildList {
+            for (moduleEntity in context.storage.entities<ModuleEntity>()) {
+                val moduleDescriptor = moduleDescriptorByName[moduleEntity.name] ?: continue
 
                 // PLATFORM has sources, decompilation is not needed.
-                if (moduleDescriptor.type == ModuleDescriptorType.PLATFORM) return@mapNotNull null
-                if (moduleDescriptor.type != ModuleDescriptorType.OOTB && moduleDescriptor.type != ModuleDescriptorType.EXT) return@mapNotNull null
+                if (moduleDescriptor.type == ModuleDescriptorType.PLATFORM) continue
+                if (moduleDescriptor.type != ModuleDescriptorType.OOTB && moduleDescriptor.type != ModuleDescriptorType.EXT) continue
 
-                if (moduleEntity.hasNonGeneratedJavaSources()) return@mapNotNull null
+                if (moduleEntity.hasNonGeneratedJavaSources()) continue
 
-                moduleDescriptor to moduleEntity
-            }
-            .flatMap { (moduleDescriptor, moduleEntity) ->
-                moduleEntity.getModuleLibraries(context.storage)
-                    .flatMap { it.roots.asSequence() }
-                    .filter { it.type == LibraryRootTypeId.COMPILED }
-                    .mapNotNull { libraryRoot ->
-                        val jarRoot = libraryRoot.url.virtualFile ?: return@mapNotNull null
-                        if (!jarRoot.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX)) return@mapNotNull null
+                for (libraryEntity in moduleEntity.getModuleLibraries(context.storage)) {
+                    val libraryId = libraryEntity.symbolicId
+                    for (libraryRoot in libraryEntity.roots) {
+                        if (libraryRoot.type != LibraryRootTypeId.COMPILED) continue
+                        val jarRoot = libraryRoot.url.virtualFile ?: continue
+                        if (!jarRoot.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX)) continue
 
-                        JarDecompileContext(
-                            moduleDescriptor = moduleDescriptor,
-                            libraryRoot = libraryRoot,
-                            jar = jarRoot,
+                        add(
+                            JarDecompileContext(
+                                moduleDescriptor = moduleDescriptor,
+                                libraryId = libraryId,
+                                libraryRoot = libraryRoot,
+                                jar = jarRoot,
+                            )
                         )
                     }
+                }
             }
-            .toList()
+        }
     }
 
     private fun ModuleEntity.hasNonGeneratedJavaSources(): Boolean = contentRoots
@@ -212,14 +214,13 @@ class OotbDecompiledSourcesService {
 
                     val source = runCatching {
                         readAction {
-                            ProgressManager.checkCanceled()
                             val vFile = jarRoot.findFileByRelativePath(entry.name) ?: return@readAction null
                             LoadTextUtil.loadText(vFile)
                         }
                     }
                         .onFailure {
                             failedCount++
-                            logger.debug("Failed to decompile ${jarPath.fileName}!/${entry.name}", it)
+                            logger.debug("Failed to decompile ${jarPath.fileName}!/${entry.name} due: ${it.message}")
                         }
                         .getOrNull()
                         ?: continue
@@ -262,51 +263,38 @@ class OotbDecompiledSourcesService {
         context: ProjectPostImportContext,
         contexts: List<JarDecompileContext>
     ) {
-        if (contexts.isEmpty()) return
-
         val vfUrlManager = context.workspace.getVirtualFileUrlManager()
-
-        val sourcesRootByCompiledUrl = contexts
-            .asSequence()
+        val sourcesRootsByLibraryId = contexts
             .mapNotNull { decompileContext ->
                 val outputRoot = decompileContext.outputRoot()
-                    .takeIf { Files.isDirectory(it) }
+                    .takeIf { it.directoryExists }
                     ?: return@mapNotNull null
-
                 val sourcesRoot = outputRoot.toSourcesLibraryRoot(vfUrlManager)
                     ?: return@mapNotNull null
 
-                decompileContext.libraryRoot.url.url to sourcesRoot
+                decompileContext.libraryId to sourcesRoot
             }
-            .toMap()
-
-        if (sourcesRootByCompiledUrl.isEmpty()) return
+            .groupBy(
+                keySelector = { it.first },
+                valueTransform = { it.second }
+            )
+            .takeIf { it.isNotEmpty() }
+            ?: return
 
         context.workspace.update("Attaching decompiled sources") { storage ->
             storage.entities<LibraryEntity>()
-                .filter { it.typeId == ProjectConstants.Workspace.yLibraryTypeId }
-                .filter { it.tableId is LibraryTableId.ModuleLibraryTableId }
                 .forEach { entity ->
-                    ProgressManager.checkCanceled()
-
-                    val existingSourcesUrls = entity.roots
-                        .asSequence()
+                    val sourceLibraryRoots = sourcesRootsByLibraryId[entity.symbolicId]
+                        ?: return@forEach
+                    val existingSources = entity.roots
                         .filter { it.type == LibraryRootTypeId.SOURCES }
-                        .map { it.url.url }
-                        .toSet()
-
-                    val newRoots = entity.roots
-                        .asSequence()
-                        .filter { it.type == LibraryRootTypeId.COMPILED }
-                        .mapNotNull { compiledRoot -> sourcesRootByCompiledUrl[compiledRoot.url.url] }
-                        .filterNot { existingSourcesUrls.contains(it.url.url) }
-                        .distinctBy { it.url.url }
-                        .toList()
-
-                    if (newRoots.isEmpty()) return@forEach
+                    val newSourceRoots = sourceLibraryRoots
+                        .filterNot { existingSources.contains(it) }
+                        .takeIf { it.isNotEmpty() }
+                        ?: return@forEach
 
                     storage.modifyLibraryEntity(entity) {
-                        this.roots += newRoots
+                        this.roots += newSourceRoots
                     }
                 }
         }
@@ -315,7 +303,7 @@ class OotbDecompiledSourcesService {
     private fun LibraryRoot.toCompiledJarPathOrNull(): Path? {
         if (type != LibraryRootTypeId.COMPILED) return null
 
-        val rawPath = VfsUtil.urlToPath(url.url)
+        val rawPath = url.toPath().toString()
         val localPath = rawPath
             .substringBefore('!')
             .removeSuffix("/")
@@ -323,17 +311,11 @@ class OotbDecompiledSourcesService {
             .takeIf { it.endsWith(".jar") }
             ?: return null
 
-        return try {
-            Path.of(localPath).normalize()
-        } catch (_: Exception) {
-            null
-        }
+        return runCatching { Path.of(localPath).normalize() }.getOrNull()
     }
 
-    private fun Path.toSourcesLibraryRoot(vfUrlManager: VirtualFileUrlManager): LibraryRoot? {
-        val url = vfUrlManager.fromPath(this) ?: return null
-        return LibraryRoot(url, LibraryRootTypeId.SOURCES)
-    }
+    private fun Path.toSourcesLibraryRoot(vfUrlManager: VirtualFileUrlManager): LibraryRoot? = vfUrlManager.fromPath(this)
+        ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
 
     private fun notifyFinished(project: Project, results: List<DecompileResult>) {
         val completed = results.count { it == DecompileResult.Completed }
