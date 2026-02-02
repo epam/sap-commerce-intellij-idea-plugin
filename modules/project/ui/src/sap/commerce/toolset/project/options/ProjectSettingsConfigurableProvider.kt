@@ -119,6 +119,11 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .comment("If checked, complete module name will be represented as <code>[Platform.core]</code> instead of <code>core</code>.")
                         .bindSelected(projectSettings::showFullModuleName)
                 }
+                row {
+                    checkBox(i18n("hybris.project.import.withDecompiledOotbSources"))
+                        .bindSelected(projectSettings::withDecompiledOotbSources)
+                    contextHelp(i18n("hybris.project.import.withDecompiledOotbSources.help.description"))
+                }
             }
 
             group(i18n("hybris.project.import.isExcludedFromScanning"), false) {
