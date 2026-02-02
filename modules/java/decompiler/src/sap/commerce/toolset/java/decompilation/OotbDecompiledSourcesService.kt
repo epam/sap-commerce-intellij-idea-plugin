@@ -303,15 +303,7 @@ class OotbDecompiledSourcesService {
     private fun LibraryRoot.toCompiledJarPathOrNull(): Path? {
         if (type != LibraryRootTypeId.COMPILED) return null
 
-        val rawPath = url.toPath().toString()
-        val localPath = rawPath
-            .substringBefore('!')
-            .removeSuffix("/")
-            .removeSuffix("\\")
-            .takeIf { it.endsWith(".jar") }
-            ?: return null
-
-        return runCatching { Path.of(localPath).normalize() }.getOrNull()
+        return runCatching { url.toPath().normalize() }.getOrNull()
     }
 
     private fun Path.toSourcesLibraryRoot(vfUrlManager: VirtualFileUrlManager): LibraryRoot? = vfUrlManager.fromPath(this)
