@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,16 +18,17 @@
 
 package sap.commerce.toolset.project.module
 
+import com.intellij.execution.wsl.WslPath
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.io.toCanonicalPath
+import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.platform.util.progress.reportSequentialProgress
 import com.intellij.util.application
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
-import org.jdom.filter2.Filters.element
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.ModuleGroup
@@ -41,6 +42,7 @@ import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.isSymbolicLink
 import kotlin.io.path.name
+import kotlin.io.path.pathString
 import kotlin.io.path.readSymbolicLink
 
 @Service
@@ -70,48 +72,56 @@ class ModuleRootsScanner {
                         override fun preVisitDirectory(path: Path, attrs: BasicFileAttributes): FileVisitResult {
                             ensureActive()
 
+                            var resolvedPath = path
+
                             // prevent recursion
                             if (visited.contains(path)) return FileVisitResult.SKIP_SUBTREE
                             else {
                                 visited.add(path)
                                 if (path.isSymbolicLink()) {
                                     val link = path.readSymbolicLink()
-                                    val resolvedLink = if (link.isAbsolute) link
-                                    else path.resolveSibling(link).normalize()
+                                    val resolvedLink = if (link.isAbsolute) WslPath.parseWindowsUncPath(path.pathString)
+                                        ?.distribution
+                                        ?.getWindowsPath(link.pathString)
+                                        ?.toNioPathOrNull()
+                                        ?: link
+                                    else path.resolveSibling(link.pathString).normalize()
 
                                     if (visited.contains(resolvedLink)) return FileVisitResult.SKIP_SUBTREE
                                     else visited.add(resolvedLink)
+
+                                    resolvedPath = resolvedLink
                                 }
                             }
 
                             return when {
-                                path.isHidden -> {
-                                    logger.debug("Skipping hidden directory: $path")
+                                resolvedPath.isHidden -> {
+                                    logger.debug("Skipping hidden directory: $resolvedPath")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
 
-                                skipDirectories.contains(path) -> {
-                                    logger.debug("Skipping manually excluded directory: $path")
+                                skipDirectories.contains(resolvedPath) -> {
+                                    logger.debug("Skipping manually excluded directory: $resolvedPath")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
 
-                                path.isDirectoryExcluded -> {
-                                    logger.debug("Skipping excluded directory: $path")
+                                resolvedPath.isDirectoryExcluded -> {
+                                    logger.debug("Skipping excluded directory: $resolvedPath")
                                     FileVisitResult.SKIP_SUBTREE
                                 }
 
                                 else -> {
-                                    reporter.indeterminateStep("Processing: $path")
+                                    reporter.indeterminateStep("Processing: $resolvedPath")
 
-                                    processVcsRoot(path, context)
+                                    processVcsRoot(resolvedPath, context)
 
                                     moduleRootResolvers
-                                        .firstOrNull { it.isApplicable(context, rootDirectory, path) }
-                                        ?.resolve(path)
+                                        .firstOrNull { it.isApplicable(context, rootDirectory, resolvedPath) }
+                                        ?.resolve(resolvedPath)
                                         ?.also {
                                             it.moduleRoot?.let { moduleRoot ->
-                                                val pathMessage = if (path.isSymbolicLink()) "$path -> (${path.readSymbolicLink()})"
-                                                else path
+                                                val pathMessage = if (path.isSymbolicLink()) "$resolvedPath -> (${path.readSymbolicLink()})"
+                                                else resolvedPath
                                                 logger.debug("Detected module [${moduleRoot.type} | $pathMessage]")
                                                 moduleRoots.add(moduleRoot)
                                             }
