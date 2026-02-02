@@ -77,7 +77,7 @@ class ModuleRootsScanner {
                                 if (path.isSymbolicLink()) {
                                     val link = path.readSymbolicLink()
                                     val resolvedLink = if (link.isAbsolute) link
-                                    else path.fileSystem.getPath(path.pathString, link.pathString).normalize()
+                                    else path.resolveSibling(link.pathString).normalize()
 
                                     if (visited.contains(resolvedLink)) return FileVisitResult.SKIP_SUBTREE
                                     else visited.add(resolvedLink)
