@@ -30,11 +30,12 @@ import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.MainConfigModuleDescriptorResolver
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorsCollector
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorsSelector
+import sap.commerce.toolset.project.exceptions.ModuleNotFoundException
 
 @Service
 class LookupModuleDescriptorsTask() {
 
-    @Throws(HybrisConfigurationException::class)
+    @Throws(HybrisConfigurationException::class, ModuleNotFoundException::class)
     fun execute(context: ProjectImportContext.Mutable) = runWithModalProgressBlocking(
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.scanning"),

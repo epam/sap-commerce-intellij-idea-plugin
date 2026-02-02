@@ -32,6 +32,7 @@ import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
+import sap.commerce.toolset.project.exceptions.PlatformModuleNotFoundException
 import sap.commerce.toolset.project.module.ModuleRootsScanner
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.isDescendantOf
@@ -98,7 +99,7 @@ class ModuleDescriptorsCollector {
         }
 
         if (moduleDescriptors.none { it is PlatformModuleDescriptor }) {
-            throw HybrisConfigurationException(i18n("hybris.project.import.scan.platform.not.found"))
+            throw PlatformModuleNotFoundException(moduleDescriptors)
         }
 
         if (moduleRootsFailedToImport.isNotEmpty()) {
