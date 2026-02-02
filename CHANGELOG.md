@@ -2,13 +2,17 @@
 
 <cite>Release contributors</cite>
 
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.2+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.2+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.2+author%3AMihaiSprinceana+is%3Apr)
 
 ### `Project Import` enhancements
 - Update language level in BGT write thread [#1719](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1719)
 - Altered Spring Facet configuration to respect in-module XML files [#1721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1721)
 - Decompile OOTB bin jars and attach sources [#1712](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1712)
+
+### `WSL` enhancements
+
+- Support resolution of the relative symbolic links on WSL [#1724](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1724)
 
 ## [2025.3.1]
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,6 @@ import com.intellij.util.application
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
-import org.jdom.filter2.Filters.element
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.ModuleGroup
@@ -41,6 +40,7 @@ import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.isSymbolicLink
 import kotlin.io.path.name
+import kotlin.io.path.pathString
 import kotlin.io.path.readSymbolicLink
 
 @Service
@@ -77,7 +77,7 @@ class ModuleRootsScanner {
                                 if (path.isSymbolicLink()) {
                                     val link = path.readSymbolicLink()
                                     val resolvedLink = if (link.isAbsolute) link
-                                    else path.resolveSibling(link).normalize()
+                                    else path.fileSystem.getPath(path.pathString, link.pathString).normalize()
 
                                     if (visited.contains(resolvedLink)) return FileVisitResult.SKIP_SUBTREE
                                     else visited.add(resolvedLink)
