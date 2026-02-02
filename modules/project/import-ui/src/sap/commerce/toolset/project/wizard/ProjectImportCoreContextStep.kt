@@ -36,9 +36,11 @@ import sap.commerce.toolset.project.HybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.*
+import sap.commerce.toolset.project.exceptions.ModuleNotFoundException
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.tasks.LookupModuleDescriptorsTask
 import sap.commerce.toolset.project.tasks.LookupPlatformDirectoryTask
+import sap.commerce.toolset.project.ui.ModuleNotFoundDialog
 import sap.commerce.toolset.project.ui.uiCoreStep
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.util.directoryExists
@@ -285,6 +287,11 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             thisLogger().debug("Setting RootProjectDirectory to ${importContext.rootDirectory}")
 
             LookupModuleDescriptorsTask.getInstance().execute(importContext)
+        } catch (e: ModuleNotFoundException) {
+            importContext.clear()
+            thisLogger().error(e.message, e)
+
+            ModuleNotFoundDialog(e.message!!, e.moduleDescriptors).showAndGet()
         } catch (e: Exception) {
             importContext.clear()
             thisLogger().error(e.message, e)
