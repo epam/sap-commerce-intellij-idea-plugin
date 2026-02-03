@@ -25,7 +25,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.LegalNoticeDialog
 import com.intellij.util.application
-import org.jetbrains.java.decompiler.IdeaDecompilerBundle
+import org.jetbrains.java.decompiler.IdeaDecompilerBundle.message
 import sap.commerce.toolset.Plugin
 
 /**
@@ -38,40 +38,35 @@ class DecompilerService {
 
     fun isConsentGranted(): Boolean = PropertiesComponent.getInstance().isValueSet(consentKey)
 
-    fun ensureConsentAccepted(): ConsentResult {
+    fun ensureConsentAccepted(): DecompilerConsent {
         val properties = PropertiesComponent.getInstance()
-        if (properties.isValueSet(consentKey)) return ConsentResult.Accepted
+        if (properties.isValueSet(consentKey)) return DecompilerConsent.Accepted
 
-        val title = IdeaDecompilerBundle.message("legal.notice.title", "sap-commerce-ootb")
-        val message = IdeaDecompilerBundle.message("legal.notice.text")
-        val result = LegalNoticeDialog.build(title, message)
-            .withCancelText(IdeaDecompilerBundle.message("legal.notice.action.postpone"))
-            .withCustomAction(IdeaDecompilerBundle.message("legal.notice.action.reject"), DialogWrapper.NEXT_USER_EXIT_CODE)
+        val result = LegalNoticeDialog.build(
+            message("legal.notice.title", "sap-commerce-ootb"),
+            message("legal.notice.text")
+        )
+            .withCancelText(message("legal.notice.action.postpone"))
+            .withCustomAction(message("legal.notice.action.reject"), DialogWrapper.NEXT_USER_EXIT_CODE)
             .show()
 
         return when (result) {
             DialogWrapper.OK_EXIT_CODE -> {
                 properties.setValue(consentKey, true)
-                ConsentResult.Accepted
+                DecompilerConsent.Accepted
             }
 
             DialogWrapper.NEXT_USER_EXIT_CODE -> {
                 disableDecompilerPlugin()
-                ConsentResult.Rejected
+                DecompilerConsent.Rejected
             }
 
-            else -> ConsentResult.Postponed
+            else -> DecompilerConsent.Postponed
         }
     }
 
     private fun disableDecompilerPlugin() {
         PluginManagerCore.disablePlugin(Plugin.JAVA_DECOMPILER.pluginId)
-    }
-
-    enum class ConsentResult {
-        Accepted,
-        Postponed,
-        Rejected,
     }
 
     companion object {

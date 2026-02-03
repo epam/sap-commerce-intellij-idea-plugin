@@ -20,6 +20,6 @@
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.postImportConfigurator implementation="sap.commerce.toolset.java.decompilation.configurator.DecompiledOotbSourcesConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.java.decompilation.configurator.DecompileOotbBinariesConfigurator"/>
     </extensions>
 </idea-plugin>

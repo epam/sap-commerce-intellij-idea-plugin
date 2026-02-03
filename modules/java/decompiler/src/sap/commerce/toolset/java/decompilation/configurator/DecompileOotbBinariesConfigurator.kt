@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,16 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.java.decompilation
+package sap.commerce.toolset.java.decompilation.configurator
 
 import com.intellij.java.workspace.entities.javaSourceRoots
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.asContextElement
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileEditor.impl.LoadTextUtil
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtilRt
@@ -33,29 +33,19 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.backend.workspace.virtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
-import com.intellij.platform.workspace.jps.entities.LibraryEntity
-import com.intellij.platform.workspace.jps.entities.LibraryId
-import com.intellij.platform.workspace.jps.entities.LibraryRoot
-import com.intellij.platform.workspace.jps.entities.LibraryRootTypeId
-import com.intellij.platform.workspace.jps.entities.LibraryTableId
-import com.intellij.platform.workspace.jps.entities.ModuleEntity
-import com.intellij.platform.workspace.jps.entities.getModuleLibraries
-import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
+import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.platform.workspace.storage.entities
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.workspaceModel.ide.toPath
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.java.decompilation.DecompilerConsent
+import sap.commerce.toolset.java.decompilation.DecompilerService
+import sap.commerce.toolset.java.decompilation.JarDecompileContext
+import sap.commerce.toolset.java.decompilation.JarDecompileResult
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.fromPath
@@ -64,11 +54,22 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.jar.JarFile
 
-class OotbDecompiledSourcesService {
+/**
+ * Decompile OOTB bin jars into doc/decompiledsrc and attach as additional sources.
+ */
+class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
 
-    fun start(context: ProjectPostImportContext) {
+    private val logger = thisLogger()
+
+    override val name: String
+        get() = "Decompile OOTB Binaries"
+
+    override suspend fun configure(context: ProjectPostImportContext) {
+        val importSettings = context.settings
         val project = context.project
-        val logger = thisLogger()
+
+        if (!importSettings.withDecompiledOotbSources) return
+        if (Plugin.JAVA_DECOMPILER.isDisabled()) return
 
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
             val consentAccepted = ensureConsentAccepted()
@@ -88,7 +89,7 @@ class OotbDecompiledSourcesService {
                                     checkCanceled()
                                     runCatching { decompileJar(decompileContext) }
                                         .onFailure { logger.warn("Decompilation failed for ${decompileContext.jar.name}", it) }
-                                        .getOrElse { DecompileResult.Failed }
+                                        .getOrElse { JarDecompileResult.Failed }
                                 }
                             }
                         }.awaitAll()
@@ -96,7 +97,7 @@ class OotbDecompiledSourcesService {
                 }
 
                 val contextsToAttach = contexts.zip(decompileResults)
-                    .filter { it.second != DecompileResult.Failed }
+                    .filter { it.second != JarDecompileResult.Failed }
                     .map { it.first }
 
                 runCatching {
@@ -120,9 +121,9 @@ class OotbDecompiledSourcesService {
         }
 
         return when (result) {
-            DecompilerService.ConsentResult.Accepted -> true
-            DecompilerService.ConsentResult.Postponed -> false
-            DecompilerService.ConsentResult.Rejected -> {
+            DecompilerConsent.Accepted -> true
+            DecompilerConsent.Postponed -> false
+            DecompilerConsent.Rejected -> {
                 Notifications.warning(
                     "Idea Decompiler disabled",
                     "You rejected the Idea Decompiler legal notice, so the bundled 'Java Decompiler' plugin was disabled. " +
@@ -174,14 +175,14 @@ class OotbDecompiledSourcesService {
         .flatMap { it.javaSourceRoots.asSequence() }
         .any { !it.generated }
 
-    private suspend fun decompileJar(context: JarDecompileContext): DecompileResult {
+    private suspend fun decompileJar(context: JarDecompileContext): JarDecompileResult {
         val logger = thisLogger()
-        val jarPath = context.libraryRoot.toCompiledJarPathOrNull() ?: return DecompileResult.Failed
+        val jarPath = context.libraryRoot.toCompiledJarPathOrNull() ?: return JarDecompileResult.Failed
 
         return withContext(Dispatchers.IO) {
             val outputRoot = context.outputRoot()
             val marker = outputRoot.resolve(".decompiled")
-            if (Files.isRegularFile(marker)) return@withContext DecompileResult.Skipped
+            if (Files.isRegularFile(marker)) return@withContext JarDecompileResult.Skipped
 
             val jarRoot = context.jar
 
@@ -201,48 +202,56 @@ class OotbDecompiledSourcesService {
                 }
 
                 val entries = jf.entries()
-                while (entries.hasMoreElements()) {
-                    checkCanceled()
-                    val entry = entries.nextElement()
-                    if (!entry.name.endsWith(".class")) continue
 
-                    // Decompile only top-level classes.
-                    // Inner/nested/anonymous classes are separate *.class entries (Outer$Inner.class, Outer$1.class, ...).
-                    // IntelliJ decompiler reconstructs them into the outer class output anyway, so writing them separately
-                    // produces duplicate-looking sources (Outer.java and Outer$Inner.java).
-                    if (shouldSkipInnerClassEntry(entry.name, classEntryNames)) continue
+                reportProgressScope {
+                    while (entries.hasMoreElements()) {
+                        checkCanceled()
+                        val entry = entries.nextElement()
+                        val entryName = entry.name
+                        if (!entryName.endsWith(".class")) continue
 
-                    val source = runCatching {
-                        readAction {
-                            val vFile = jarRoot.findFileByRelativePath(entry.name) ?: return@readAction null
-                            LoadTextUtil.loadText(vFile)
+                        // Decompile only top-level classes.
+                        // Inner/nested/anonymous classes are separate *.class entries (Outer$Inner.class, Outer$1.class, ...).
+                        // IntelliJ decompiler reconstructs them into the outer class output anyway, so writing them separately
+                        // produces duplicate-looking sources (Outer.java and Outer$Inner.java).
+                        if (shouldSkipInnerClassEntry(entryName, classEntryNames)) continue
+
+                        it.indeterminateStep("Decompiling class: $entryName") {
+                            val source = runCatching {
+                                readAction {
+                                    jarRoot.findFileByRelativePath(entryName)
+                                        ?.let { LoadTextUtil.loadText(it) }
+                                        ?: return@readAction null
+                                }
+                            }
+                                .onFailure {
+                                    failedCount++
+                                    logger.debug("Failed to decompile ${jarPath.fileName}!/$entryName due: ${it.message}")
+                                }
+                                .getOrNull()
+
+                            if (source != null) {
+                                val outFile = outputRoot.resolve(entryName.removeSuffix(".class") + ".java")
+                                Files.createDirectories(outFile.parent)
+                                Files.writeString(outFile, source)
+                                decompiledCount++
+                            }
                         }
                     }
-                        .onFailure {
-                            failedCount++
-                            logger.debug("Failed to decompile ${jarPath.fileName}!/${entry.name} due: ${it.message}")
-                        }
-                        .getOrNull()
-                        ?: continue
-
-                    val outFile = outputRoot.resolve(entry.name.removeSuffix(".class") + ".java")
-                    Files.createDirectories(outFile.parent)
-                    Files.writeString(outFile, source)
-                    decompiledCount++
                 }
             }
 
             if (decompiledCount == 0) {
                 logger.warn("No classes could be decompiled for ${jarPath.fileName} (failed=$failedCount)")
                 FileUtilRt.deleteRecursively(outputRoot)
-                return@withContext DecompileResult.Failed
+                return@withContext JarDecompileResult.Failed
             }
 
             if (failedCount > 0) logger.debug("Partially decompiled ${jarPath.fileName}: ok=$decompiledCount, failed=$failedCount")
 
             Files.writeString(marker, "ok")
             VfsUtil.markDirtyAndRefresh(true, true, true, outputRoot.toFile())
-            DecompileResult.Completed
+            JarDecompileResult.Completed
         }
     }
 
@@ -309,10 +318,10 @@ class OotbDecompiledSourcesService {
     private fun Path.toSourcesLibraryRoot(vfUrlManager: VirtualFileUrlManager): LibraryRoot? = vfUrlManager.fromPath(this)
         ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
 
-    private fun notifyFinished(project: Project, results: List<DecompileResult>) {
-        val completed = results.count { it == DecompileResult.Completed }
-        val failed = results.count { it == DecompileResult.Failed }
-        val skipped = results.count { it == DecompileResult.Skipped }
+    private fun notifyFinished(project: Project, results: List<JarDecompileResult>) {
+        val completed = results.count { it == JarDecompileResult.Completed }
+        val failed = results.count { it == JarDecompileResult.Failed }
+        val skipped = results.count { it == JarDecompileResult.Skipped }
         if (completed == 0 && failed == 0) return
 
         val details = buildList {
@@ -321,16 +330,12 @@ class OotbDecompiledSourcesService {
             if (skipped > 0) add("Skipped: $skipped")
         }.joinToString(", ")
 
-        val content = "$details. Decompiled sources are written under 'doc/decompiledsrc' in each module and attached as library sources."
-
-        (if (failed > 0) Notifications.warning("OOTB decompiled sources", content) else Notifications.info("OOTB decompiled sources", content))
+        Notifications.create(
+            type = if (failed > 0) NotificationType.WARNING else NotificationType.INFORMATION,
+            title = "Decompiled OOTB sources",
+            content = "$details. Decompiled sources are written under 'doc/decompiledsrc' in each module and attached as library sources."
+        )
             .hideAfter(10)
             .notify(project)
-    }
-
-    private enum class DecompileResult {
-        Completed,
-        Failed,
-        Skipped
     }
 }
