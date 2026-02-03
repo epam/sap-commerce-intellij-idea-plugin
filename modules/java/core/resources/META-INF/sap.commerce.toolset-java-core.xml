@@ -46,6 +46,7 @@
                                            implementation="sap.commerce.toolset.java.configurator.JavaModuleContentRootsConfigurator"/>
 
         <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeAcceleratorAddonWebContentRootEntryConfigurator"/>
+        <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeDecompiledSourcesContentRootEntryConfigurator"/>
         <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeClassesContentRootEntryConfigurator"/>
         <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeCommonsContentRootEntryConfigurator"/>
         <project.module.contentRootEntryConfigurator implementation="sap.commerce.toolset.java.configurator.contentEntry.ExcludeResourcesContentRootEntryConfigurator"/>
