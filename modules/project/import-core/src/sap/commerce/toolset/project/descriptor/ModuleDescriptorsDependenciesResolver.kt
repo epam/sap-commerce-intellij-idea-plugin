@@ -25,8 +25,6 @@ import com.intellij.util.application
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.project.descriptor.impl.*
 
-
-// TODO: improve dependencies resolution for conflicting extensions, load only first one, group by name and pick the first one, for submodules always get parent
 @Service
 class ModuleDescriptorsDependenciesResolver {
 
