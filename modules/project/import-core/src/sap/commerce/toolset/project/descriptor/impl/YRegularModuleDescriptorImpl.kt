@@ -36,7 +36,7 @@ abstract class YRegularModuleDescriptorImpl protected constructor(
 
     override fun isPreselected() = isInLocalExtensions || isNeededDependency
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = extensionInfo.requiredExtensions
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>): Set<String> = extensionInfo.requiredExtensions
         .takeIf { it.isNotEmpty() }
         ?.map { it.name }
         ?.let { directRequiredExtensions ->

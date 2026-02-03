@@ -37,7 +37,8 @@ class AngularModuleDescriptor(
     }
 
     override fun isPreselected() = true
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) = moduleDescriptors.values
+        .flatten()
         .asSequence()
         .filter { this.moduleRootPath.toString().startsWith(it.moduleRootPath.toString()) }
         .filter { this != it }

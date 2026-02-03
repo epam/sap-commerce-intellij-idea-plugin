@@ -34,7 +34,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.List;
 
 import static sap.commerce.toolset.HybrisI18nBundle.message;
 
@@ -56,20 +55,13 @@ public abstract class AbstractSelectModulesStep extends SelectImportedProjectsSt
     }
 
     protected boolean isInConflict(@NotNull final ModuleDescriptor item) {
-        return (this.fileChooser.getMarkedElements().contains(item) || getAdditionalFixedElements().contains(item))
-            && this.calculateSelectedModuleDuplicates().contains(item);
-    }
-
-    protected List<ModuleDescriptor> getAdditionalFixedElements() {
-        return Collections.emptyList();
+        return this.fileChooser.getMarkedElements().contains(item) && this.calculateSelectedModuleDuplicates().contains(item);
     }
 
     @NotNull
     protected Set<ModuleDescriptor> calculateSelectedModuleDuplicates() {
         final Set<ModuleDescriptor> duplicateModules = new HashSet<>();
         final Map<String, ModuleDescriptor> uniqueModules = new HashMap<>();
-
-        getAdditionalFixedElements().forEach(e -> uniqueModules.put(e.getName(), e));
 
         for (ModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 

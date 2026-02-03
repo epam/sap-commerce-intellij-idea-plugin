@@ -18,8 +18,13 @@
 
 package sap.commerce.toolset.project.descriptor
 
+import javax.swing.Icon
+
 interface YSubModuleDescriptor : YModuleDescriptor {
 
     val owner: YRegularModuleDescriptor
     val subModuleDescriptorType: SubModuleDescriptorType
+
+    override val icon: Icon
+        get() = subModuleDescriptorType.icon
 }

@@ -25,12 +25,10 @@ import com.intellij.platform.util.progress.withProgressText
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.descriptor.provider.ModuleDescriptorFactory
 import sap.commerce.toolset.project.exceptions.PlatformModuleNotFoundException
 import sap.commerce.toolset.project.module.ModuleRootsScanner
@@ -108,12 +106,6 @@ class ModuleDescriptorsCollector {
             throw HybrisConfigurationException(i18n("hybris.project.import.scan.failed", paths))
         }
 
-        buildDependencies(moduleDescriptors)
-        processWebSubModules(moduleDescriptors)
-        val addons = processAddons(moduleDescriptors)
-        removeNotInstalledAddons(moduleDescriptors, addons)
-        removeHmcSubModules(moduleDescriptors)
-
         return moduleDescriptors
     }
 
@@ -144,107 +136,6 @@ class ModuleDescriptorsCollector {
         .map { context.rootDirectory.resolve(it) }
         .filter { it.directoryExists }
         .toSet()
-
-    private fun buildDependencies(moduleDescriptors: MutableCollection<ModuleDescriptor>) {
-        val moduleDescriptorsMap = moduleDescriptors
-            .distinctBy { it.name }
-            .associateBy { it.name }
-        for (moduleDescriptor in moduleDescriptors) {
-            val dependencies = buildDependencies(moduleDescriptor, moduleDescriptorsMap)
-            moduleDescriptor.addDirectDependencies(dependencies)
-        }
-    }
-
-    private fun buildDependencies(
-        moduleDescriptor: ModuleDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>
-    ) = moduleDescriptor
-        .apply { computeRequiredExtensionNames(moduleDescriptors) }
-        .getRequiredExtensionNames()
-        .sorted()
-        .toSet()
-        .takeIf { it.isNotEmpty() }
-        ?.mapNotNull { requiresExtensionName ->
-            moduleDescriptors[requiresExtensionName]
-                ?: null.also {
-                    // TODO: possible case due optional sub-modules, xxx.web | xxx.backoffice | etc.
-                    logger.trace("Module '${moduleDescriptor.name}' contains unsatisfied dependency '$requiresExtensionName'.")
-                }
-        }
-        ?: emptyList()
-
-    private fun processWebSubModules(moduleDescriptors: Collection<ModuleDescriptor>) {
-        moduleDescriptors
-            .filterIsInstance<YWebSubModuleDescriptor>()
-            .forEach { webSubModuleDescriptor ->
-                webSubModuleDescriptor.getDirectDependencies()
-                    .asSequence()
-                    .filterIsInstance<YModuleDescriptor>()
-                    .flatMap { it.getAllDependencies() }
-                    .filterIsInstance<YCustomRegularModuleDescriptor>()
-                    .flatMap { it.getSubModules() }
-                    .filterIsInstance<YCommonWebSubModuleDescriptor>()
-                    .toList()
-                    .forEach { it.addDependantWebExtension(webSubModuleDescriptor) }
-            }
-    }
-
-    private fun processAddons(moduleDescriptors: MutableList<ModuleDescriptor>): Collection<YAcceleratorAddonSubModuleDescriptor> {
-        val addons = moduleDescriptors
-            .filterIsInstance<YAcceleratorAddonSubModuleDescriptor>()
-            .takeIf { it.isNotEmpty() }
-            ?: return emptyList()
-
-        moduleDescriptors
-            .filterIsInstance<YModuleDescriptor>()
-            .forEach { module ->
-                addons
-                    .filter { module != it && module.getDirectDependencies().contains(it.owner) }
-                    .forEach { addon -> addon.addTargetModule(module) }
-            }
-
-        // update direct dependencies for addons
-        addons
-            .filter { addon -> addon.getTargetModules().isNotEmpty() }
-            .forEach { addon ->
-                val targetModules = addon.getTargetModules()
-                    .flatMap { targetModule -> targetModule.getSubModules() }
-                    .filterIsInstance<YWebSubModuleDescriptor>()
-                    .toSet()
-
-                addon.addRequiredExtensionNames(targetModules)
-                addon.addDirectDependencies(targetModules)
-            }
-
-        return addons
-    }
-
-    private fun removeNotInstalledAddons(
-        moduleDescriptors: MutableList<ModuleDescriptor>,
-        addons: Collection<YAcceleratorAddonSubModuleDescriptor>
-    ) {
-        val notInstalledAddons = addons
-            .filter { it.getTargetModules().isEmpty() }
-
-        notInstalledAddons.forEach({ it.owner.removeSubModule(it) })
-        moduleDescriptors.removeAll(notInstalledAddons)
-    }
-
-    private fun removeHmcSubModules(moduleDescriptors: MutableList<ModuleDescriptor>) {
-        val hmcModulePresent = moduleDescriptors
-            .any { it.name == EiConstants.Extension.HMC }
-        if (hmcModulePresent) return
-
-        val hmcSubModuleDescriptors = moduleDescriptors
-            .filterIsInstance<YModuleDescriptor>()
-            .flatMap { moduleDescriptor ->
-                moduleDescriptor.getSubModules()
-                    .filterIsInstance<YHmcSubModuleDescriptor>()
-                    .onEach { moduleDescriptor.removeSubModule(it) }
-            }
-
-        moduleDescriptors.removeAll(hmcSubModuleDescriptors)
-    }
 
     companion object {
         fun getInstance(): ModuleDescriptorsCollector = application.service()

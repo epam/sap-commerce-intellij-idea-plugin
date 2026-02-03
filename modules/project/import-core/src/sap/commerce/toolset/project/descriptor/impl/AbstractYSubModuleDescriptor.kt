@@ -35,6 +35,6 @@ abstract class AbstractYSubModuleDescriptor(
     extensionInfo = owner.extensionInfo
 ), YSubModuleDescriptor {
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(owner.name)
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) = setOf(owner.name)
     override fun isPreselected() = owner.isPreselected()
 }

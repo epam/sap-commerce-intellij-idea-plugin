@@ -37,18 +37,27 @@ class ModuleDescriptorsSelector {
             configModuleDescriptor.moduleRootPath,
             context.platformDistributionPath
         )
+        val preselectedExtensionNames = mutableSetOf<String>()
 
         context.foundModules
+            .asSequence()
+            .filterNot { preselectedExtensionNames.contains(it.name) }
             .filter { extensionsInLocalExtensions.contains(it.name) }
             .filterIsInstance<YRegularModuleDescriptor>()
             .forEach { moduleDescriptor ->
+                preselectedExtensionNames.add(moduleDescriptor.name)
+
                 moduleDescriptor.isInLocalExtensions = true
                 moduleDescriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
                 moduleDescriptor.getSubModules()
                     .forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
                 moduleDescriptor.getAllDependencies()
+                    .asSequence()
                     .filterIsInstance<YRegularModuleDescriptor>()
+                    .filterNot { preselectedExtensionNames.contains(it.name) }
                     .forEach {
+                        preselectedExtensionNames.add(it.name)
+
                         it.isNeededDependency = true
                         it.importStatus = ModuleDescriptorImportStatus.MANDATORY
                         it.getSubModules().forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }

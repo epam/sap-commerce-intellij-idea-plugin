@@ -33,7 +33,7 @@ class YBackofficeSubModuleDescriptor(
 
     val hasWebModule = moduleRootPath.resolve(EiConstants.Extension.WEB).directoryExists
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
             .map { it + "." + EiConstants.Extension.BACK_OFFICE }
         return setOf(owner.name) + webNames

@@ -33,7 +33,8 @@ class PlatformModuleDescriptorImpl(
     override var importStatus = ModuleDescriptorImportStatus.MANDATORY
     override fun isPreselected() = true
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) = moduleDescriptors.values
+        .flatten()
         .filterIsInstance<YPlatformExtModuleDescriptor>()
         .map { it.name }
         .toSet()

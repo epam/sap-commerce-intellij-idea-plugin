@@ -108,14 +108,14 @@ abstract class AbstractModuleDescriptor(
         .map { it.name }
         .let { requiredExtensionNames.addAll(it) }
 
-    override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
+    override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) {
         requiredExtensionNames = initDependencies(moduleDescriptors).toMutableSet()
     }
 
     override fun getDirectDependencies() = directDependencies
 
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>) = this.directDependencies.addAll(dependencies)
-    open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
+    open fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>): Set<String> = emptySet()
 
     override fun toString() = "${javaClass.simpleName} {name=$name, path=$moduleRootPath}"
 
