@@ -50,7 +50,7 @@ class YAcceleratorAddonSubModuleDescriptor(
         )
     }
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
             .map { it + "." + EiConstants.Extension.WEB }
         // Strange, but acceleratoraddon may rely on another acceleratoraddon
@@ -61,5 +61,4 @@ class YAcceleratorAddonSubModuleDescriptor(
 
     fun getTargetModules(): Set<YModuleDescriptor> = yTargetModules.toImmutableSet()
     fun addTargetModule(module: YModuleDescriptor) = yTargetModules.add(module)
-
 }

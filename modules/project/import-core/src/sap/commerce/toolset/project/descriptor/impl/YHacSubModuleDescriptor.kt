@@ -30,9 +30,8 @@ class YHacSubModuleDescriptor(
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HAC,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) = setOf(
         owner.name,
         EiConstants.Extension.HAC + "." + EiConstants.Extension.WEB
     )
-
 }

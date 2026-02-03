@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.descriptor
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.context.ProjectImportContext
 import java.nio.file.Path
+import javax.swing.Icon
 
 interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
@@ -30,6 +31,9 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val type: ModuleDescriptorType
     var readonly: Boolean
 
+    val icon: Icon
+        get() = type.icon
+
     val extensionDescriptor: ExtensionDescriptor
     fun ideaModuleName(): String = (if (groupNames.isEmpty()) "" else groupNames.joinToString(separator = ".", postfix = ".")) + name
     fun groupName(context: ProjectImportContext): Array<String>? = null
@@ -38,7 +42,7 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun getRelativePath(rootDirectory: Path): String
     fun getRequiredExtensionNames(): Set<String>
     fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean
-    fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
+    fun computeRequiredExtensionNames(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>)
     fun getAllDependencies(): Set<ModuleDescriptor>
     fun getDirectDependencies(): Set<ModuleDescriptor>
     fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>): Boolean

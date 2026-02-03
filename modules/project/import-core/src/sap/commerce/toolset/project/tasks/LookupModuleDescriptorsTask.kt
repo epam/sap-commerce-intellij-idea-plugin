@@ -26,10 +26,7 @@ import com.intellij.util.application
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptor.MainConfigModuleDescriptorResolver
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorsCollector
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorsSelector
+import sap.commerce.toolset.project.descriptor.*
 import sap.commerce.toolset.project.exceptions.ModuleNotFoundException
 
 @Service
@@ -40,7 +37,8 @@ class LookupModuleDescriptorsTask() {
         owner = ModalTaskOwner.guess(),
         title = i18n("hybris.project.import.scanning"),
     ) {
-        val moduleDescriptors = ModuleDescriptorsCollector.getInstance().collect(context)
+        val foundModuleDescriptors = ModuleDescriptorsCollector.getInstance().collect(context)
+        val moduleDescriptors = ModuleDescriptorsDependenciesResolver.getInstance().resolve(foundModuleDescriptors)
         moduleDescriptors.forEach { context.addModule(it) }
 
         val mainConfigModuleDescriptor: ConfigModuleDescriptor = MainConfigModuleDescriptorResolver.getInstance()

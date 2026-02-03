@@ -28,5 +28,5 @@ class YCoreExtModuleDescriptor(
 ) : YPlatformExtModuleDescriptor(moduleRootPath, extensionInfo) {
 
     override var importStatus = ModuleDescriptorImportStatus.MANDATORY
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = emptySet<String>()
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) = emptySet<String>()
 }

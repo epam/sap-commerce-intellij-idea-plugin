@@ -28,7 +28,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.*
-import sap.commerce.toolset.project.descriptor.impl.*
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import sap.commerce.toolset.project.settings.ySettings
 
 class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesStep(context, ModuleGroup.HYBRIS), RefreshSupport {
@@ -61,15 +61,11 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         })
     }
 
+    override fun getIcon() = HybrisIcons.Y.LOGO_BLUE
+
     override fun updateStep() {
         val importContext = context.context ?: return
-        context.list = importContext.foundModules
-            .filterNot { it is ExternalModuleDescriptor }
-            .sortedWith(
-                compareBy<ModuleDescriptor> { orderByType[it.type] ?: Integer.MAX_VALUE }
-//                    .thenComparing { !it.isPreselected() }
-                    .thenComparing { it.name }
-            )
+        context.list = importContext.foundModules.filterNot { it is ExternalModuleDescriptor }
 
         // init the tree
         super.updateStep()
@@ -77,6 +73,10 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
         context.list
             .filter { it.importStatus == ModuleDescriptorImportStatus.MANDATORY }
             .forEach { if (!isInConflict(it)) fileChooser.disableElement(it) }
+
+        fileChooser.sort(compareBy<ModuleDescriptor> { orderByType[it.type] ?: Integer.MAX_VALUE }
+            .thenComparing { it.name }
+        )
 
         //scroll to top
         fileChooser.component
@@ -103,18 +103,9 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
 
         isInConflict(item) -> HybrisIcons.Extension.CONFLICT
 
-        item is YCustomRegularModuleDescriptor
+        item is YModuleDescriptor
             || item is ConfigModuleDescriptor
-            || item is PlatformModuleDescriptor
-            || item is YPlatformExtModuleDescriptor
-            || item is YOotbRegularModuleDescriptor -> item.type.icon
-
-        item is YWebSubModuleDescriptor
-            || item is YCommonWebSubModuleDescriptor
-            || item is YAcceleratorAddonSubModuleDescriptor
-            || item is YBackofficeSubModuleDescriptor
-            || item is YHacSubModuleDescriptor
-            || item is YHmcSubModuleDescriptor -> item.subModuleDescriptorType.icon
+            || item is PlatformModuleDescriptor -> item.icon
 
         else -> HybrisIcons.Y.LOGO_BLUE
     }

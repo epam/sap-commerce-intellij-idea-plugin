@@ -30,7 +30,7 @@ class YHmcSubModuleDescriptor(
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HMC,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootPath) {
 
-    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(
+    override fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) = setOf(
         owner.name,
         EiConstants.Extension.HMC + "." + EiConstants.Extension.WEB
     )

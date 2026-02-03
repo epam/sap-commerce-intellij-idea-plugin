@@ -146,13 +146,13 @@ class ModuleRootsScanner {
         rootDirectory: Path,
         moduleRoots: Collection<ModuleRoot>
     ): Collection<ModuleRoot> {
-        val moduleRootDirectories = mutableMapOf<String, ModuleRoot>()
+        val moduleRootDirectories = linkedMapOf<String, ModuleRoot>()
 
         moduleRoots.filter { it.moduleGroup == ModuleGroup.HYBRIS }
-            .forEach { file -> addIfNotExists(context, rootDirectory, file, moduleRootDirectories) }
+            .forEach { moduleRoot -> addIfNotExists(context, rootDirectory, moduleRoot, moduleRootDirectories) }
 
         moduleRoots.filter { it.moduleGroup == ModuleGroup.OTHER }
-            .forEach { file -> addIfNotExists(context, rootDirectory, file, moduleRootDirectories) }
+            .forEach { moduleRoot -> addIfNotExists(context, rootDirectory, moduleRoot, moduleRootDirectories) }
 
         return moduleRootDirectories.values
     }
