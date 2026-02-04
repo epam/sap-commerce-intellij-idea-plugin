@@ -112,7 +112,6 @@ object ProjectConstants {
     object Paths {
         val IDEA_MODULES = Path(".idea", "idea-modules")
 
-        val RELATIVE_DOC_SOURCES = Path("..", "doc", "sources")
         val RELATIVE_CONFIG = Path("..", "..", "config")
 
         val PLATFORM_BOOTSTRAP = Path("platform", "bootstrap")
@@ -133,6 +132,7 @@ object ProjectConstants {
         val TOMCAT_6_LIB = Path("tomcat-6", "lib")
 
         val DOC_SOURCES = Path("doc", "sources")
+        val DOC_DECOMPILED_SOURCES = Path("doc", "decompiledsrc")
         val ACCELERATOR_ADDON_WEB = Path("acceleratoraddon", "web")
 
         val WEBROOT_WEB_INF_LIB = Path("webroot", "WEB-INF", "lib")

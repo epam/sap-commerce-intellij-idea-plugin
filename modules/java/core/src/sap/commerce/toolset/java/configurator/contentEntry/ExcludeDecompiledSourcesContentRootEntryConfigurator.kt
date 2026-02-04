@@ -20,6 +20,7 @@ package sap.commerce.toolset.java.configurator.contentEntry
 
 import com.intellij.platform.workspace.jps.entities.ContentRootEntityBuilder
 import sap.commerce.toolset.java.configurator.contentEntry.util.excludeDirectories
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ModuleContentRootEntryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
@@ -46,7 +47,7 @@ class ExcludeDecompiledSourcesContentRootEntryConfigurator : ModuleContentRootEn
     ) {
         val virtualFileUrlManager = context.importContext.workspace.getVirtualFileUrlManager()
         val excludePaths = listOf(
-            context.moduleDescriptor.moduleRootPath.resolve("doc").resolve("decompiledsrc")
+            context.moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.DOC_DECOMPILED_SOURCES)
         )
 
         contentRootEntity.excludeDirectories(context.importContext, virtualFileUrlManager, excludePaths)

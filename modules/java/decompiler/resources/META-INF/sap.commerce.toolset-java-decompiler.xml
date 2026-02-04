@@ -17,6 +17,7 @@
   -->
 
 <idea-plugin>
+    <depends>org.jetbrains.java.decompiler</depends>
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
