@@ -45,6 +45,7 @@ import sap.commerce.toolset.java.decompilation.DecompilerConsent
 import sap.commerce.toolset.java.decompilation.DecompilerService
 import sap.commerce.toolset.java.decompilation.JarDecompileContext
 import sap.commerce.toolset.java.decompilation.JarDecompileResult
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -264,8 +265,7 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
     }
 
     private fun JarDecompileContext.outputRoot(): Path = moduleDescriptor.moduleRootPath
-        .resolve("doc")
-        .resolve("decompiledsrc")
+        .resolve(ProjectConstants.Paths.DOC_DECOMPILED_SOURCES)
         .resolve(jar.name.substringBeforeLast('.', jar.name))
 
     private suspend fun attachDecompiledSources(
