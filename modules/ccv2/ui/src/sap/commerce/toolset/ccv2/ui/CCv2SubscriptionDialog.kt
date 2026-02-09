@@ -37,9 +37,9 @@ import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv1.model.SubscriptionDTO
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.api.CCv2AuthToken
-import sap.commerce.toolset.ccv2.api.ClientAuthToken
-import sap.commerce.toolset.ccv2.api.LegacyAuthToken
+import sap.commerce.toolset.ccv2.api.ApiContext
+import sap.commerce.toolset.ccv2.api.HanaApiContext
+import sap.commerce.toolset.ccv2.api.KymaApiContext
 import sap.commerce.toolset.ccv2.event.CCv2SubscriptionsListener
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Authentication
@@ -59,8 +59,10 @@ internal class CCv2SubscriptionDialog(
     parentComponent: Component,
     private val subscription: CCv2Subscription.Mutable,
     dialogTitle: String,
-    private val ccv2LegacyTokenSupplier: () -> CCv2AuthToken?,
-    private val ccv2ClientTokenSupplier: () -> CCv2AuthToken?,
+    private val ccv2LegacyTokenSupplier: () -> ApiContext?,
+    private val ccv2ClientTokenSupplier: () -> ApiContext?,
+    private val hanaApiUrlSupplier: () -> String,
+    private val kymaApiUrlSupplier: () -> String,
 ) : DialogWrapper(null, parentComponent, false, IdeModalityType.IDE) {
 
     private val beforeModification = subscription.copy(
@@ -98,7 +100,8 @@ internal class CCv2SubscriptionDialog(
 
         override fun doAction(e: ActionEvent) {
             if (showSubscriptions.get()) {
-                val authToken = getSubscriptionToken() ?: LegacyAuthToken("")
+                val authToken = getSubscriptionToken()
+                    ?: HanaApiContext(hanaApiUrlSupplier(), "")
                 initSubscriptionsPanel(authToken)
             }
         }
@@ -124,9 +127,9 @@ internal class CCv2SubscriptionDialog(
                     enabled.set(true)
 
                     val authToken = token
-                        ?.let { LegacyAuthToken(token) }
+                        ?.let { HanaApiContext(hanaApiUrlSupplier(), token) }
                         ?: ccv2LegacyTokenSupplier()
-                        ?: LegacyAuthToken("")
+                        ?: HanaApiContext(hanaApiUrlSupplier(), "")
                     initSubscriptionsPanel(authToken)
                 }
             }
@@ -148,9 +151,9 @@ internal class CCv2SubscriptionDialog(
                     enabled.set(true)
 
                     val authToken = credentials
-                        ?.let { CCv2Service.getInstance(project).retrieveAuthToken(subscription.authentication.immutable(), it) }
+                        ?.let { CCv2Service.getInstance(project).retrieveAuthToken(kymaApiUrlSupplier(), subscription.authentication.immutable(), it) }
                         ?: ccv2ClientTokenSupplier()
-                        ?: ClientAuthToken((""))
+                        ?: KymaApiContext(kymaApiUrlSupplier(), "")
                     initSubscriptionsPanel(authToken)
                 }
             }
@@ -271,7 +274,8 @@ internal class CCv2SubscriptionDialog(
     private fun initWithNotPersistedToken() {
         enabled.set(true)
 
-        val authToken = getSubscriptionToken() ?: LegacyAuthToken("")
+        val authToken = getSubscriptionToken()
+            ?: HanaApiContext(hanaApiUrlSupplier(), "")
         initSubscriptionsPanel(authToken)
     }
 
@@ -348,11 +352,11 @@ internal class CCv2SubscriptionDialog(
         .let { scrollPanel(it) }
         .apply { preferredSize = Dimension(preferredSize.width, 180) }
 
-    private fun getSubscriptionToken(): CCv2AuthToken? = if (authModeObservable.get() == CCv2AuthenticationMode.TOKEN) {
+    private fun getSubscriptionToken(): ApiContext? = if (authModeObservable.get() == CCv2AuthenticationMode.TOKEN) {
         subscriptionCCv2TokenField.password
             ?.let { String(it) }
             ?.takeIf { it.isNotBlank() }
-            ?.let { LegacyAuthToken(it) }
+            ?.let { HanaApiContext(hanaApiUrlSupplier(), it) }
             ?: ccv2LegacyTokenSupplier()
     } else {
         val tokenEndpoint = subscriptionCCv2EndpointField.text.takeIf { it.isNotBlank() } ?: return ccv2ClientTokenSupplier()
@@ -361,11 +365,11 @@ internal class CCv2SubscriptionDialog(
         val credentials = subscription.authentication.credentials
             ?: return ccv2ClientTokenSupplier()
 
-        CCv2Service.getInstance(project).retrieveAuthToken(auth, credentials)
+        CCv2Service.getInstance(project).retrieveAuthToken(kymaApiUrlSupplier(), auth, credentials)
             ?: ccv2ClientTokenSupplier()
     }
 
-    private fun initSubscriptionsPanel(token: CCv2AuthToken) {
+    private fun initSubscriptionsPanel(token: ApiContext) {
         showSubscriptions.set(false)
         subscriptionsPanel.removeAll()
 

@@ -18,18 +18,21 @@
 
 package sap.commerce.toolset.ccv2.api
 
-sealed interface CCv2AuthToken {
-    val token: String
-    val header: String
+sealed interface ApiContext {
+    val apiUrl: String
+    val authToken: String
+    val authHeader: String
 }
 
-data class LegacyAuthToken(
-    override val token: String,
-    override val header: String = "Authorization"
-) : CCv2AuthToken
+data class HanaApiContext(
+    override val apiUrl: String,
+    override val authToken: String,
+    override val authHeader: String = "Authorization"
+) : ApiContext
 
 
-data class ClientAuthToken(
-    override val token: String,
-    override val header: String = "x-approuter-authorization"
-) : CCv2AuthToken
+data class KymaApiContext(
+    override val apiUrl: String,
+    override val authToken: String,
+    override val authHeader: String = "x-approuter-authorization"
+) : ApiContext

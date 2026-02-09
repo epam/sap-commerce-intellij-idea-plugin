@@ -26,7 +26,7 @@ import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.api.CCv2AuthToken
+import sap.commerce.toolset.ccv2.api.ApiContext
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionDialog
 import java.awt.Component
@@ -40,8 +40,10 @@ import javax.swing.event.ListDataEvent
 internal class CCv2SubscriptionListPanel(
     private val project: Project,
     disposable: Disposable?,
-    private val ccv2LegacyTokenSupplier: () -> CCv2AuthToken?,
-    private val ccv2ClientTokenSupplier: () -> CCv2AuthToken?,
+    private val ccv2LegacyTokenSupplier: () -> ApiContext?,
+    private val ccv2ClientTokenSupplier: () -> ApiContext?,
+    private val hanaApiUrlSupplier: () -> String,
+    private val kymaApiUrlSupplier: () -> String,
     listener: (ListDataEvent) -> Unit
 ) : AddEditDeleteListPanel<CCv2Subscription.Mutable>(null, emptyList()) {
 
@@ -59,7 +61,17 @@ internal class CCv2SubscriptionListPanel(
         val mutable = CCv2Subscription().mutable().apply {
             modified = true
         }
-        return if (CCv2SubscriptionDialog(project,this, mutable, "Create CCv2 Subscription", ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier).showAndGet()) mutable
+        val dialog = CCv2SubscriptionDialog(
+            project = project,
+            parentComponent = this,
+            subscription = mutable,
+            dialogTitle = "Create CCv2 Subscription",
+            ccv2LegacyTokenSupplier = ccv2LegacyTokenSupplier,
+            ccv2ClientTokenSupplier = ccv2ClientTokenSupplier,
+            hanaApiUrlSupplier = hanaApiUrlSupplier,
+            kymaApiUrlSupplier = kymaApiUrlSupplier,
+        )
+        return if (dialog.showAndGet()) mutable
         else null
     }
 
@@ -70,7 +82,18 @@ internal class CCv2SubscriptionListPanel(
             ccv2LegacyTokenLoaded = item.ccv2LegacyTokenLoaded
             ccv2ClientTokenLoaded = item.ccv2ClientTokenLoaded
         }
-        return if (CCv2SubscriptionDialog(project,this, copy, "Edit CCv2 Subscription", ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier).showAndGet()) {
+        val dialog = CCv2SubscriptionDialog(
+            project = project,
+            parentComponent = this,
+            subscription = copy,
+            dialogTitle = "Edit CCv2 Subscription",
+            ccv2LegacyTokenSupplier = ccv2LegacyTokenSupplier,
+            ccv2ClientTokenSupplier = ccv2ClientTokenSupplier,
+            hanaApiUrlSupplier = hanaApiUrlSupplier,
+            kymaApiUrlSupplier = kymaApiUrlSupplier,
+        )
+        return if (
+            dialog.showAndGet()) {
             item.apply {
                 modified = copy.modified
                 ccv2LegacyTokenLoaded = copy.ccv2LegacyTokenLoaded
@@ -86,8 +109,7 @@ internal class CCv2SubscriptionListPanel(
                     clientSecret = copy.authentication.clientSecret
                 }
             }
-        }
-        else null
+        } else null
     }
 
     override fun getListCellRenderer(): ListCellRenderer<*> {

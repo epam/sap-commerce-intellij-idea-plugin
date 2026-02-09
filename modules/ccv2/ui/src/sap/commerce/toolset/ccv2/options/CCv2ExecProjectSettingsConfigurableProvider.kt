@@ -33,8 +33,8 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.api.CCv2AuthToken
-import sap.commerce.toolset.ccv2.api.LegacyAuthToken
+import sap.commerce.toolset.ccv2.api.ApiContext
+import sap.commerce.toolset.ccv2.api.HanaApiContext
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Authentication
@@ -61,6 +61,8 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
         private lateinit var subscriptionListPanel: CCv2SubscriptionListPanel
         private lateinit var subscriptionsComboBoxModel: CCv2SubscriptionsComboBoxModel
 
+        private lateinit var hanaApiUrlTextField: JBTextField
+        private lateinit var kymaApiUrlTextField: JBTextField
         private lateinit var endpointTextField: JBTextField
         private lateinit var resourceTextField: JBTextField
         private lateinit var clientIdTextField: JBPasswordField
@@ -79,16 +81,18 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
         override fun createPanel(): DialogPanel {
             // disposable is being created only now, do not move dependant items
             subscriptionsComboBoxModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true, disposable = disposable)
-            val ccv2LegacyTokenSupplier: () -> CCv2AuthToken? = {
-                defaultCCv2TokenTextField.password?.let { LegacyAuthToken(String(it)) }
+            val ccv2LegacyTokenSupplier: () -> ApiContext? = {
+                defaultCCv2TokenTextField.password?.let { HanaApiContext(hanaApiUrlTextField.text, String(it)) }
             }
-            val ccv2ClientTokenSupplier: () -> CCv2AuthToken? = {
+            val ccv2ClientTokenSupplier: () -> ApiContext? = {
                 val auth = CCv2Authentication(endpointTextField.text, resourceTextField.text)
                 val credentials = Credentials(String(clientIdTextField.password), String(clientSecretTextField.password))
 
-                CCv2Service.getInstance(project).retrieveAuthToken(auth, credentials)
+                CCv2Service.getInstance(project).retrieveAuthToken(kymaApiUrlTextField.text, auth, credentials)
             }
-            subscriptionListPanel = CCv2SubscriptionListPanel(project, disposable, ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier) {
+            val hanaApiUrlSupplier: () -> String = { hanaApiUrlTextField.text }
+            val kymaApiUrlSupplier: () -> String = { kymaApiUrlTextField.text }
+            subscriptionListPanel = CCv2SubscriptionListPanel(project, disposable, ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier, hanaApiUrlSupplier, kymaApiUrlSupplier) {
                 val previousSelectedItem = subscriptionsComboBoxModel.selectedItem?.asSafely<CCv2Subscription>()?.uuid
                 val modifiedSubscriptions = subscriptionListPanel.data.map { it.immutable() }
 
@@ -176,6 +180,11 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                 .takeUnless { it.userName.isNullOrBlank() || it.password.isNullOrBlank() }
             projectSettings.saveDefaultCCv2Authentication(credentials)
 
+            projectSettings.authentication = CCv2Authentication(
+                tokenEndpoint = endpointTextField.text,
+                resource = resourceTextField.text,
+            )
+
             originalActiveSubscription = developerSettings.getActiveCCv2Subscription()
         }
 
@@ -211,6 +220,13 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
 
         private fun Panel.authToken() = group("Authentication via Token") {
             row {
+                hanaApiUrlTextField = textField()
+                    .label("Hana api url:")
+                    .align(AlignX.FILL)
+                    .bindText(projectSettings::hanaApiUrl)
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
+            row {
                 defaultCCv2TokenTextField = passwordField()
                     .label(i18n("hybris.settings.application.ccv2Token"))
                     .comment(i18n("hybris.settings.application.ccv2Token.tooltip"))
@@ -235,6 +251,14 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                     status = EditorNotificationPanel.Status.Warning
                 )
             }
+
+            row {
+                kymaApiUrlTextField = textField()
+                    .label("Kyma api url:")
+                    .align(AlignX.FILL)
+                    .bindText(projectSettings::kymaApiUrl)
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
 
             row {
                 endpointTextField = textField()

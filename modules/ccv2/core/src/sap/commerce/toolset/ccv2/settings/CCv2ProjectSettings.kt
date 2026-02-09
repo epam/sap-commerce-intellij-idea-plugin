@@ -52,6 +52,16 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
         set(value) {
             updateState { it.copy(authentication = value) }
         }
+    var hanaApiUrl: String
+        get() = state.hanaApiUrl
+        set(value) {
+            updateState { it.copy(hanaApiUrl = value) }
+        }
+    var kymaApiUrl: String
+        get() = state.kymaApiUrl
+        set(value) {
+            updateState { it.copy(kymaApiUrl = value) }
+        }
     var subscriptions: List<CCv2Subscription>
         get() = state.subscriptions
         set(value) {
