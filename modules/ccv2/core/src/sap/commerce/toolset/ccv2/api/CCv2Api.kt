@@ -409,7 +409,7 @@ class CCv2Api {
         link = link
     )
 
-    private fun createRequestParams(ccv2Token: ApiContext) = mapOf(ccv2Token.authHeader to "Bearer ${ccv2Token.authToken}")
+    private fun createRequestParams(apiContext: ApiContext) = mapOf(apiContext.authHeader to "Bearer ${apiContext.authToken}")
 
     private suspend fun getV1Environment(
         canAccess: Boolean,
