@@ -51,7 +51,7 @@ class CCv1Api : Disposable {
     private val _api = mutableMapOf<String, ApiClient>()
 
     private fun <T : ApiClient> api(apiContext: ApiContext, kClass: KClass<T>) = _api
-        .getOrPut(apiContext.apiUrl) {
+        .getOrPut(apiContext.apiUrl + "_$kClass") {
             val basePath = apiContext.apiUrl.removeSuffix("/") + "/v1"
             when (kClass) {
                 SubscriptionApi::class -> SubscriptionApi(basePath = basePath, client = apiClient)

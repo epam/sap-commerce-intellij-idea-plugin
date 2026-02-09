@@ -51,7 +51,7 @@ class CCv2Api {
     private val _api = mutableMapOf<String, ApiClient>()
 
     private fun <T : ApiClient> api(apiContext: ApiContext, kClass: KClass<T>) = _api
-        .getOrPut(apiContext.apiUrl) {
+        .getOrPut(apiContext.apiUrl + "_$kClass") {
             val basePath = apiContext.apiUrl.removeSuffix("/") + "/v2"
             when (kClass) {
                 EnvironmentApi::class -> EnvironmentApi(basePath = basePath, client = apiClient)
