@@ -142,18 +142,6 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                 .customize(rightGaps)
         }.layout(RowLayout.PARENT_GRID)
 
-        row {
-            passwordField()
-                .label(i18n("hybris.settings.application.ccv2Token"))
-                .bindText(context.ccv2Token)
-                .align(AlignX.FILL)
-                .comment(i18n("hybris.settings.application.ccv2Token.tooltip"))
-                .resizableColumn()
-
-            contextHelp(i18n("hybris.settings.application.ccv2Token.help.description"))
-                .customize(rightGaps)
-        }.layout(RowLayout.PARENT_GRID)
-
         group("Override") groupPanel@{
             row {
                 checkBox("Platform source code:")

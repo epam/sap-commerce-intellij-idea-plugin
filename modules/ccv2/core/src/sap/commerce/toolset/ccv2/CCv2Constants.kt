@@ -31,7 +31,8 @@ object CCv2Constants {
     const val DATAHUB_NAME = "datahub"
     const val JS_STOREFRONT_NAME = "js-storefront"
 
-    const val SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN = "SAP CX CCv2 Token"
+    const val SECURE_STORAGE_CCV2_TOKEN = "SAP CX CCv2 Token"
+    const val SECURE_STORAGE_CCV2_AUTHENTICATION = "SAP CX CCv2 Authentication"
 
     val DATE_TIME_FORMATTER_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
 
@@ -56,4 +57,9 @@ object CCv2Constants {
         "cloudstorecockpits",
         "governor",
     )
+
+    object Authentication {
+        const val TOKEN_ENDPOINT = "https://ycloudsre.accounts.ondemand.com/oauth2/token"
+        const val RESOURCE = "urn:sap:identity:application:provider:name:cp-dependency"
+    }
 }

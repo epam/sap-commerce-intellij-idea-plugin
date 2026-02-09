@@ -2,6 +2,15 @@
 
 <cite>Release contributors</cite>
 
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.3+author%3Amlytvyn+is%3Apr)
+
+### `CCv2` enhancements
+- Introduced new authentication mode via Technical User [#1731](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1731)
+
+## [2025.3.2]
+
+<cite>Release contributors</cite>
+
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.2+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.2+author%3AMihaiSprinceana+is%3Apr)
 

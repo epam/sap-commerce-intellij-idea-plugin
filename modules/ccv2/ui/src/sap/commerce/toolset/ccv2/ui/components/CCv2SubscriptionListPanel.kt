@@ -26,6 +26,7 @@ import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.api.CCv2AuthToken
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionDialog
 import java.awt.Component
@@ -39,7 +40,8 @@ import javax.swing.event.ListDataEvent
 internal class CCv2SubscriptionListPanel(
     private val project: Project,
     disposable: Disposable?,
-    private val ccv2TokenSupplier: () -> String?,
+    private val ccv2LegacyTokenSupplier: () -> CCv2AuthToken?,
+    private val ccv2ClientTokenSupplier: () -> CCv2AuthToken?,
     listener: (ListDataEvent) -> Unit
 ) : AddEditDeleteListPanel<CCv2Subscription.Mutable>(null, emptyList()) {
 
@@ -54,13 +56,37 @@ internal class CCv2SubscriptionListPanel(
     }
 
     override fun findItemToAdd(): CCv2Subscription.Mutable? {
-        val mutable = CCv2Subscription().mutable()
-        return if (CCv2SubscriptionDialog(project,this, mutable, "Create CCv2 Subscription", ccv2TokenSupplier).showAndGet()) mutable
+        val mutable = CCv2Subscription().mutable().apply {
+            modified = true
+        }
+        return if (CCv2SubscriptionDialog(project,this, mutable, "Create CCv2 Subscription", ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier).showAndGet()) mutable
         else null
     }
 
     override fun editSelectedItem(item: CCv2Subscription.Mutable): CCv2Subscription.Mutable? {
-        return if (CCv2SubscriptionDialog(project,this, item, "Edit CCv2 Subscription", ccv2TokenSupplier).showAndGet()) item
+        val copy = item.copy(
+            authentication = item.authentication.copy(),
+        ).apply {
+            ccv2LegacyTokenLoaded = item.ccv2LegacyTokenLoaded
+            ccv2ClientTokenLoaded = item.ccv2ClientTokenLoaded
+        }
+        return if (CCv2SubscriptionDialog(project,this, copy, "Edit CCv2 Subscription", ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier).showAndGet()) {
+            item.apply {
+                modified = copy.modified
+                ccv2LegacyTokenLoaded = copy.ccv2LegacyTokenLoaded
+                ccv2ClientTokenLoaded = copy.ccv2ClientTokenLoaded
+                id = copy.id
+                name = copy.name
+                ccv2Token = copy.ccv2Token
+                authenticationMode = copy.authenticationMode
+                authentication.apply {
+                    tokenEndpoint = copy.authentication.tokenEndpoint
+                    resource = copy.authentication.resource
+                    clientId = copy.authentication.clientId
+                    clientSecret = copy.authentication.clientSecret
+                }
+            }
+        }
         else null
     }
 

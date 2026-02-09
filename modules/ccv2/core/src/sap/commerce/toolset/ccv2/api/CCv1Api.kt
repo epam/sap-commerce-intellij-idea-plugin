@@ -50,7 +50,7 @@ class CCv1Api {
     private val serviceApi by lazy { ServiceApi(client = apiClient) }
 
     suspend fun fetchSubscriptions(
-        accessToken: String,
+        accessToken: CCv2AuthToken,
     ): List<SubscriptionDTO> = subscriptionApi
         .getSubscriptions(
             dollarTop = 100,
@@ -59,13 +59,13 @@ class CCv1Api {
         .value
 
     suspend fun fetchPermissions(
-        accessToken: String
+        accessToken: CCv2AuthToken
     ): List<PermissionDTO>? = permissionsApi
         .getPermissions(requestHeaders = createRequestParams(accessToken))
         .permissionDTOS
 
     suspend fun fetchEnvironment(
-        accessToken: String,
+        accessToken: CCv2AuthToken,
         v2Environment: EnvironmentDetailDTO
     ): EnvironmentDTO? {
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
@@ -80,7 +80,7 @@ class CCv1Api {
     }
 
     suspend fun fetchEnvironmentHealth(
-        accessToken: String,
+        accessToken: CCv2AuthToken,
         v2Environment: EnvironmentDetailDTO
     ): EnvironmentHealthDTO? {
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
@@ -95,7 +95,7 @@ class CCv1Api {
     }
 
     suspend fun fetchMediaStoragePublicKey(
-        accessToken: String,
+        accessToken: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         mediaStorage: CCv2MediaStorageDto,
@@ -108,7 +108,7 @@ class CCv1Api {
         )
 
     suspend fun fetchEnvironmentServices(
-        accessToken: String,
+        accessToken: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
     ): Collection<CCv2ServiceDto> = environmentApi
@@ -121,7 +121,7 @@ class CCv1Api {
         .map { CCv2ServiceDto.map(it) }
 
     suspend fun restartServiceReplica(
-        accessToken: String,
+        accessToken: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         service: CCv2ServiceDto,
@@ -135,7 +135,9 @@ class CCv1Api {
             requestHeaders = createRequestParams(accessToken)
         )
 
-    private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
+    private fun createRequestParams(ccv2Token: CCv2AuthToken) = mapOf(
+        ccv2Token.header to "Bearer ${ccv2Token.token}"
+    )
 
     companion object {
         fun getInstance(): CCv1Api = application.service()

@@ -25,12 +25,16 @@ data class CCv2Subscription(
     @JvmField @OptionTag val uuid: String = UUID.randomUUID().toString(),
     @JvmField @OptionTag val id: String? = null,
     @JvmField @OptionTag val name: String? = null,
+    @JvmField @OptionTag val authenticationMode: CCv2AuthenticationMode = CCv2AuthenticationMode.TOKEN,
+    @JvmField @OptionTag val authentication: CCv2Authentication? = null,
 ) : Comparable<CCv2Subscription> {
 
     fun mutable() = Mutable(
-        uuid,
-        id,
-        name
+        uuid = uuid,
+        id = id,
+        name = name,
+        authenticationMode = authenticationMode,
+        authentication = authentication?.mutable() ?: CCv2Authentication.Mutable(),
     )
 
     val presentableName
@@ -45,18 +49,29 @@ data class CCv2Subscription(
         var uuid: String,
         var id: String?,
         var name: String?,
+        var authenticationMode: CCv2AuthenticationMode,
+        var authentication: CCv2Authentication.Mutable,
         var ccv2Token: String? = null,
     ) {
+        var modified = false
+        var ccv2LegacyTokenLoaded = false
+        var ccv2ClientTokenLoaded = false
+
         fun immutable() = CCv2Subscription(
             uuid = uuid,
             id = id,
             name = name,
+            authenticationMode = authenticationMode,
+            authentication = authentication.immutable(),
         )
 
-        val presentableName
+        val presentableName: String
             @Transient
-            get() = name
-                ?.takeIf { it.isNotEmpty() }
-                ?: id ?: "?"
+            get() {
+                val name = (name
+                    ?.takeIf { it.isNotEmpty() }
+                    ?: id ?: "?")
+                return name + " (${authenticationMode.presentationTitle})"
+            }
     }
 }

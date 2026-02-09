@@ -54,7 +54,7 @@ class CCv2Api {
     private val dataBackupApi by lazy { DatabackupApi(client = apiClient) }
 
     suspend fun fetchEnvironmentScaling(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
     ) = environmentScalingApi.getEnvironmentScalingDetail(
@@ -65,7 +65,7 @@ class CCv2Api {
 
     suspend fun fetchEnvironments(
         progressReporter: ProgressReporter,
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         statuses: List<String>,
         requestV1Details: Boolean,
@@ -120,7 +120,7 @@ class CCv2Api {
     }
 
     suspend fun fetchEndpoints(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
     ) = endpointApi.getEndpoints(
@@ -133,7 +133,7 @@ class CCv2Api {
         ?.map { CCv2EndpointDto.map(it) }
 
     suspend fun fetchEnvironmentDataBackups(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
     ) = dataBackupApi.getDatabackups(
@@ -145,7 +145,7 @@ class CCv2Api {
         ?.map { CCv2DataBackupDto.map(it) }
 
     fun fetchEnvironmentsBuilds(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environments: Collection<CCv2EnvironmentDto>,
         coroutineScope: CoroutineScope,
@@ -161,7 +161,7 @@ class CCv2Api {
     }
 
     suspend fun fetchEnvironmentBuild(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
     ): CCv2BuildDto? = deploymentApi.getDeployments(
@@ -178,7 +178,7 @@ class CCv2Api {
         ?.also { build -> environment.deployedBuild = build }
 
     suspend fun fetchBuildForCode(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         buildCode: String
     ): CCv2BuildDto = buildApi.getBuild(
@@ -189,7 +189,7 @@ class CCv2Api {
         .let { CCv2BuildDto.map(it) }
 
     suspend fun fetchBuilds(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         statusNot: List<String>?,
         progressReporter: ProgressReporter
@@ -207,7 +207,7 @@ class CCv2Api {
     }
 
     suspend fun fetchDeployments(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         progressReporter: ProgressReporter
     ) = progressReporter.sizedStep(1, "Fetching Deployments for subscription: ${subscription.presentableName}") {
@@ -235,7 +235,7 @@ class CCv2Api {
     suspend fun fetchDeploymentsForBuild(
         subscription: CCv2Subscription,
         buildCode: String,
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         progressReporter: ProgressReporter
     ) = progressReporter.sizedStep(1, "Fetching Deployments for subscription: ${subscription.presentableName}") {
 
@@ -257,7 +257,7 @@ class CCv2Api {
     suspend fun fetchBuildProgress(
         subscription: CCv2Subscription,
         buildCode: String,
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         progressReporter: ProgressReporter
     ) = progressReporter.indeterminateStep("Fetching the Build progress...") {
         buildApi
@@ -268,7 +268,7 @@ class CCv2Api {
     suspend fun fetchDeploymentProgress(
         subscription: CCv2Subscription,
         deploymentCode: String,
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         progressReporter: ProgressReporter
     ) = progressReporter.indeterminateStep("Fetching the Deployment progress...") {
         deploymentApi
@@ -277,7 +277,7 @@ class CCv2Api {
     }
 
     suspend fun createBuild(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         buildRequest: CCv2BuildRequest
     ): String = buildApi
         .createBuild(
@@ -288,7 +288,7 @@ class CCv2Api {
         .code
 
     suspend fun deleteBuild(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         build: CCv2BuildDto
     ) = buildApi.deleteBuild(
@@ -298,7 +298,7 @@ class CCv2Api {
     )
 
     suspend fun deployBuild(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         build: CCv2BuildDto,
@@ -321,7 +321,7 @@ class CCv2Api {
     }
 
     suspend fun downloadBuildLogs(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         build: CCv2BuildDto
     ): File = buildApi
@@ -332,7 +332,7 @@ class CCv2Api {
         )
 
     suspend fun fetchServiceProperties(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         service: CCv2ServiceDto,
@@ -349,7 +349,7 @@ class CCv2Api {
         .let { serviceProperties.parseResponse(it) }
 
     suspend fun updateEndpoint(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         endpoint: CCv2EndpointDto,
@@ -363,7 +363,7 @@ class CCv2Api {
     )
 
     suspend fun deleteEndpoint(
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         endpoint: CCv2EndpointDto,
@@ -395,12 +395,12 @@ class CCv2Api {
         link = link
     )
 
-    private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
+    private fun createRequestParams(ccv2Token: CCv2AuthToken) = mapOf(ccv2Token.header to "Bearer ${ccv2Token.token}")
 
     private suspend fun getV1Environment(
         canAccess: Boolean,
         ccv1Api: CCv1Api,
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         env: EnvironmentDetailDTO
     ) = if (canAccess) {
         try {
@@ -414,7 +414,7 @@ class CCv2Api {
     private suspend fun getV1EnvironmentHealth(
         canAccess: Boolean,
         ccv1Api: CCv1Api,
-        ccv2Token: String,
+        ccv2Token: CCv2AuthToken,
         env: EnvironmentDetailDTO
     ) = if (canAccess) {
         try {
