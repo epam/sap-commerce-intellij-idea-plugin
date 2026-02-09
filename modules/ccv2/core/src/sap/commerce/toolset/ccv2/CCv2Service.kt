@@ -18,6 +18,9 @@
 
 package sap.commerce.toolset.ccv2
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.intellij.credentialStore.Credentials
 import com.intellij.ide.BrowserUtil
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
@@ -35,23 +38,27 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgressScope
+import com.intellij.util.io.HttpRequests
 import com.intellij.util.io.ZipUtil
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.actionSystem.triggerAction
-import sap.commerce.toolset.ccv2.api.CCv1Api
-import sap.commerce.toolset.ccv2.api.CCv2Api
+import sap.commerce.toolset.ccv2.api.*
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.event.*
 import sap.commerce.toolset.ccv2.model.EndpointUpdateDTO
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
+import sap.commerce.toolset.ccv2.settings.state.CCv2Authentication
+import sap.commerce.toolset.ccv2.settings.state.CCv2AuthenticationMode
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.util.directoryExists
 import java.io.Serial
 import java.net.SocketTimeoutException
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.util.*
 import kotlin.io.path.deleteIfExists
@@ -90,11 +97,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             .notify(project)
     }
 
-    fun fetchSubscriptions(ccv2Token: String) {
+    fun fetchSubscriptions(apiContext: ApiContext) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Subscriptions...", true) {
                 try {
-                    val subscriptions = CCv1Api.getInstance().fetchSubscriptions(ccv2Token)
+                    val subscriptions = CCv1Api.getInstance().fetchSubscriptions(apiContext)
 
                     project.messageBus.syncPublisher(CCv2SubscriptionsListener.TOPIC).onFetchingComplete(subscriptions)
                 } catch (e: Throwable) {
@@ -113,8 +120,8 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Scaling Details...", true) {
                 try {
-                    val ccv2Token = getCCv2Token(subscription)
-                    val scaling = if (ccv2Token != null) CCv2Api.getInstance().fetchEnvironmentScaling(ccv2Token, subscription, environment)
+                    val apiContext = getApiContext(subscription)
+                    val scaling = if (apiContext != null) CCv2Api.getInstance().fetchEnvironmentScaling(apiContext, subscription, environment)
                         .let { CCv2EnvironmentScalingDto.map(it) }
                     else null
 
@@ -153,9 +160,9 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             .map { subscription ->
                                 async {
                                     checkCanceled()
-                                    val ccv2Token = getCCv2Token(subscription) ?: return@async (subscription to emptyList())
+                                    val apiContext = getApiContext(subscription) ?: return@async (subscription to emptyList())
                                     try {
-                                        val cachedEnvironments = fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
+                                        val cachedEnvironments = fetchCacheableEnvironments(progressReporter, apiContext, subscription, statuses, requestV1Details, requestV1Health)
 
                                         cachedEnvironments
                                             .filter { it.accessible }
@@ -164,14 +171,14 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                                     if (requestServices) {
                                                         async {
                                                             checkCanceled()
-                                                            environment.services = fetchCacheableEnvironmentServices(ccv2Token, subscription, environment)
+                                                            environment.services = fetchCacheableEnvironmentServices(apiContext, subscription, environment)
                                                         }
                                                     } else null,
 
                                                     if (requestEndpoints) {
                                                         async {
                                                             checkCanceled()
-                                                            environment.endpoints = fetchCacheableEnvironmentEndpoints(ccv2Token, subscription, environment)
+                                                            environment.endpoints = fetchCacheableEnvironmentEndpoints(apiContext, subscription, environment)
                                                         }
                                                     } else null,
                                                 )
@@ -210,9 +217,9 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     coroutineScope {
                         subscriptions.forEach { (subscription, environments) ->
                             try {
-                                val ccv2Token = getCCv2Token(subscription) ?: return@forEach
+                                val apiContext = getApiContext(subscription) ?: return@forEach
 
-                                CCv2Api.getInstance().fetchEnvironmentsBuilds(ccv2Token, subscription, environments, this, progressReporter)
+                                CCv2Api.getInstance().fetchEnvironmentsBuilds(apiContext, subscription, environments, this, progressReporter)
                             } catch (e: SocketTimeoutException) {
                                 notifyOnTimeout(subscription, e)
                             } catch (e: RuntimeException) {
@@ -234,10 +241,10 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Build Details...", true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 var build: CCv2BuildDto? = null
                 try {
-                    build = CCv2Api.getInstance().fetchEnvironmentBuild(ccv2Token, subscription, environment)
+                    build = CCv2Api.getInstance().fetchEnvironmentBuild(apiContext, subscription, environment)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
@@ -256,11 +263,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Services...", true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 var services: Collection<CCv2ServiceDto>? = null
 
                 try {
-                    services = fetchCacheableEnvironmentServices(ccv2Token, subscription, environment)
+                    services = fetchCacheableEnvironmentServices(apiContext, subscription, environment)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
@@ -279,11 +286,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Endpoints...", true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 var endpoints: Collection<CCv2EndpointDto>? = null
 
                 try {
-                    endpoints = fetchCacheableEnvironmentEndpoints(ccv2Token, subscription, environment)
+                    endpoints = fetchCacheableEnvironmentEndpoints(apiContext, subscription, environment)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
@@ -302,11 +309,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Data Backups...", true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 var dataBackups: Collection<CCv2DataBackupDto>? = null
 
                 try {
-                    dataBackups = CCv2Api.getInstance().fetchEnvironmentDataBackups(ccv2Token, subscription, environment)
+                    dataBackups = CCv2Api.getInstance().fetchEnvironmentDataBackups(apiContext, subscription, environment)
                         ?.sortedByDescending { it.createdTimestamp }
                         ?: emptyList()
                 } catch (e: SocketTimeoutException) {
@@ -329,11 +336,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Service Properties...", true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 var properties: Map<String, String>? = null
 
                 try {
-                    properties = CCv2Api.getInstance().fetchServiceProperties(ccv2Token, subscription, environment, service, serviceProperties)
+                    properties = CCv2Api.getInstance().fetchServiceProperties(apiContext, subscription, environment, service, serviceProperties)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
@@ -365,10 +372,10 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             .map { subscription ->
                                 async {
                                     checkCanceled()
-                                    subscription to (getCCv2Token(subscription)
-                                        ?.let { ccv2Token ->
+                                    subscription to (getApiContext(subscription)
+                                        ?.let { apiContext ->
                                             try {
-                                                return@let CCv2Api.getInstance().fetchBuilds(ccv2Token, subscription, statusNot, progressReporter)
+                                                return@let CCv2Api.getInstance().fetchBuilds(apiContext, subscription, statusNot, progressReporter)
                                             } catch (e: SocketTimeoutException) {
                                                 notifyOnTimeout(subscription, e)
                                             } catch (e: RuntimeException) {
@@ -406,10 +413,10 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             .map { subscription ->
                                 async {
                                     checkCanceled()
-                                    subscription to (getCCv2Token(subscription)
-                                        ?.let { ccv2Token ->
+                                    subscription to (getApiContext(subscription)
+                                        ?.let { apiContext ->
                                             try {
-                                                return@let CCv2Api.getInstance().fetchDeployments(ccv2Token, subscription, progressReporter)
+                                                return@let CCv2Api.getInstance().fetchDeployments(apiContext, subscription, progressReporter)
                                             } catch (e: SocketTimeoutException) {
                                                 notifyOnTimeout(subscription, e)
                                             } catch (e: RuntimeException) {
@@ -438,10 +445,10 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             else "Creating new CCv2 Build..."
             withBackgroundProgress(project, title) {
                 project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildStarted()
-                val ccv2Token = getCCv2Token(buildRequest.subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(buildRequest.subscription) ?: return@withBackgroundProgress
 
                 try {
-                    CCv2Api.getInstance().createBuild(ccv2Token, buildRequest)
+                    CCv2Api.getInstance().createBuild(apiContext, buildRequest)
                         .also { buildCode ->
                             if (buildRequest.track) {
                                 trackBuild(project, buildRequest, buildCode)
@@ -474,15 +481,15 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             withBackgroundProgress(project, "Deleting CCv2 Build - ${build.code}...") {
                 project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildRemovalStarted(subscription, build)
 
-                val ccv2Token = getCCv2Token(subscription)
-                if (ccv2Token == null) {
+                val apiContext = getApiContext(subscription)
+                if (apiContext == null) {
                     project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildRemovalRequested(subscription, build)
                     return@withBackgroundProgress
                 }
 
                 try {
                     CCv2Api.getInstance()
-                        .deleteBuild(ccv2Token, subscription, build)
+                        .deleteBuild(apiContext, subscription, build)
                         .also {
                             Notifications.create(
                                 NotificationType.INFORMATION,
@@ -508,11 +515,11 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     fun restartServicePod(project: Project, subscription: CCv2Subscription, environment: CCv2EnvironmentDto, service: CCv2ServiceDto, replica: CCv2ServiceReplicaDto) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Restarting CCv2 Replica - ${replica.name}...") {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
 
                 try {
                     CCv1Api.getInstance()
-                        .restartServiceReplica(ccv2Token, subscription, environment, service, replica)
+                        .restartServiceReplica(apiContext, subscription, environment, service, replica)
                         .also {
                             Notifications.create(
                                 NotificationType.INFORMATION,
@@ -549,15 +556,15 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             withBackgroundProgress(project, "Deploying CCv2 Build - ${build.code}...") {
                 project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildDeploymentStarted(subscription, build)
 
-                val ccv2Token = getCCv2Token(subscription)
-                if (ccv2Token == null) {
+                val apiContext = getApiContext(subscription)
+                if (apiContext == null) {
                     project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildDeploymentRequested(subscription, build)
                     return@withBackgroundProgress
                 }
 
                 try {
                     CCv2Api.getInstance()
-                        .deployBuild(ccv2Token, subscription, deploymentRequest.environment, build, deploymentRequest.mode, deploymentRequest.strategy)
+                        .deployBuild(apiContext, subscription, deploymentRequest.environment, build, deploymentRequest.mode, deploymentRequest.strategy)
                         .also { deploymentCode ->
                             if (deploymentRequest.track) {
                                 trackDeployment(project, subscription, deploymentCode, build.code)
@@ -594,14 +601,14 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             withBackgroundProgress(project, "Downloading CCv2 Build Logs - ${build.code}...") {
                 project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildDeploymentStarted(subscription, build)
 
-                val ccv2Token = getCCv2Token(subscription)
-                if (ccv2Token == null) {
+                val apiContext = getApiContext(subscription)
+                if (apiContext == null) {
                     project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildDeploymentRequested(subscription, build)
                     return@withBackgroundProgress
                 }
 
                 try {
-                    val buildLogs = CCv2Api.getInstance().downloadBuildLogs(ccv2Token, subscription, build)
+                    val buildLogs = CCv2Api.getInstance().downloadBuildLogs(apiContext, subscription, build)
                     val buildLogsPath = buildLogs.toPath()
                     val tempDirectory = Files.createTempDirectory("ccv2_${build.code}")
                     tempDirectory.toFile().deleteOnExit()
@@ -642,12 +649,12 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         onStartCallback.invoke()
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Media Storage Public Key - ${mediaStorage.name}...") {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 var publicKey: String? = null
 
                 try {
                     publicKey = CCv1Api.getInstance()
-                        .fetchMediaStoragePublicKey(ccv2Token, subscription, environment, mediaStorage)
+                        .fetchMediaStoragePublicKey(apiContext, subscription, environment, mediaStorage)
                         .publicKey
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
@@ -667,9 +674,9 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching Build - $buildCode...", true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 try {
-                    val build = CCv2Api.getInstance().fetchBuildForCode(ccv2Token, subscription, buildCode)
+                    val build = CCv2Api.getInstance().fetchBuildForCode(apiContext, subscription, buildCode)
                     onCompleteCallback.invoke(build)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
@@ -691,9 +698,9 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching Deployment for build - $buildCode...", true) {
                 reportProgressScope(1) { progressReporter ->
-                    val ccv2Token = getCCv2Token(subscription)
+                    val apiContext = getApiContext(subscription)
                     try {
-                        deployments = CCv2Api.getInstance().fetchDeploymentsForBuild(subscription, buildCode, ccv2Token!!, progressReporter)
+                        deployments = CCv2Api.getInstance().fetchDeploymentsForBuild(subscription, buildCode, apiContext!!, progressReporter)
                         onCompleteCallback(deployments)
                     } catch (e: SocketTimeoutException) {
                         notifyOnTimeout(subscription, e)
@@ -714,7 +721,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             withBackgroundProgress(project, "Tracking Progress of the Build - $buildCode..", true) {
                 var buildStatus = CCv2BuildStatus.UNKNOWN
                 var totalProgress = 0
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
 
                 reportProgressScope { progressReporter ->
                     try {
@@ -722,7 +729,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             checkCanceled()
 
                             progressReporter.indeterminateStep("Build $buildCode scheduled, warming-up...") {
-                                val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token, progressReporter)
+                                val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, apiContext, progressReporter)
                                 buildStatus = progress.buildStatus
                                 delay(15.seconds)
                             }
@@ -731,7 +738,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                         while (buildStatus == CCv2BuildStatus.BUILDING) {
                             checkCanceled()
 
-                            val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token, progressReporter)
+                            val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, apiContext, progressReporter)
                             val reportProgress = progress.percentage - totalProgress
                             totalProgress = progress.percentage
                             buildStatus = progress.buildStatus
@@ -791,14 +798,14 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         coroutineScope.launch {
             withBackgroundProgress(project, "Tracking Progress of the Deployment - $buildCode..", true) {
                 var totalProgress = 0
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
 
                 reportProgressScope { progressReporter ->
                     while (totalProgress < 100) {
                         checkCanceled()
 
                         try {
-                            val progress = CCv2Api.getInstance().fetchDeploymentProgress(subscription, deploymentCode, ccv2Token, progressReporter)
+                            val progress = CCv2Api.getInstance().fetchDeploymentProgress(subscription, deploymentCode, apiContext, progressReporter)
                             val reportProgress = progress.percentage - totalProgress
                             totalProgress = progress.percentage
 
@@ -844,17 +851,17 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             else "Activating Maintenance Mode - ${environment.code} - ${endpoint.name}"
 
             withBackgroundProgress(project, title, true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 checkCanceled()
 
                 try {
                     val payload = EndpointUpdateDTO(
                         maintenanceMode = !endpoint.maintenanceMode,
                     )
-                    CCv2Api.getInstance().updateEndpoint(ccv2Token, subscription, environment, endpoint, payload)
+                    CCv2Api.getInstance().updateEndpoint(apiContext, subscription, environment, endpoint, payload)
 
                     environment.endpoints = null
-                    resetCache(KEY_ENDPOINTS, ccv2Token, subscription, environment)
+                    resetCache(KEY_ENDPOINTS, apiContext, subscription, environment)
 
                     project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onEndpointUpdate(environment)
                 } catch (e: SocketTimeoutException) {
@@ -875,14 +882,14 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Deleting Endpoint - ${environment.code} - ${endpoint.name}", true) {
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
                 checkCanceled()
 
                 try {
-                    CCv2Api.getInstance().deleteEndpoint(ccv2Token, subscription, environment, endpoint)
+                    CCv2Api.getInstance().deleteEndpoint(apiContext, subscription, environment, endpoint)
 
                     environment.endpoints = null
-                    resetCache(KEY_ENDPOINTS, ccv2Token, subscription, environment)
+                    resetCache(KEY_ENDPOINTS, apiContext, subscription, environment)
 
                     project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onEndpointUpdate(environment)
                 } catch (e: SocketTimeoutException) {
@@ -898,12 +905,43 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         }
     }
 
-    private fun getCCv2Token(subscription: CCv2Subscription): String? {
-        val appSettings = CCv2ProjectSettings.getInstance()
-        val ccv2Token = appSettings.getCCv2Token(subscription.uuid)
-            ?: appSettings.getCCv2Token()
+    fun retrieveAuthToken(apiUrl: String, auth: CCv2Authentication, credentials: Credentials): ApiContext? {
+        val requestBody = mapOf(
+            "client_id" to (credentials.userName ?: ""),
+            "client_secret" to (credentials.getPasswordAsString() ?: ""),
+            "grant_type" to URLEncoder.encode("client_credentials", StandardCharsets.UTF_8),
+            "resource" to URLEncoder.encode(auth.resource, StandardCharsets.UTF_8)
+        )
+            .entries
+            .joinToString("&")
 
-        if (ccv2Token != null) return ccv2Token
+        return try {
+            HttpRequests.post(auth.tokenEndpoint, "application/x-www-form-urlencoded")
+                .accept("application/json")
+                .connect { request ->
+                    request.write(requestBody)
+
+                    Gson()
+                        .fromJson(request.readString(), JsonObject::class.java)
+                        .get("access_token")?.asString
+                        ?.let { KymaApiContext(apiUrl, it) }
+                }
+        } catch (e: Exception) {
+            // Handle connection errors or non-200 responses
+            thisLogger().warn("Exception while fetching auth token", e)
+            null
+        }
+    }
+
+    private fun getApiContext(subscription: CCv2Subscription): ApiContext? {
+        val appSettings = CCv2ProjectSettings.getInstance()
+
+        val apiContext = if (subscription.authenticationMode == CCv2AuthenticationMode.TOKEN) {
+            (appSettings.getCCv2Token(subscription.uuid) ?: appSettings.getCCv2Token())
+                ?.let { HanaApiContext(appSettings.hanaApiUrl, it) }
+        } else retrieveCCv2ClientToken(subscription, appSettings)
+
+        if (apiContext != null) return apiContext
 
         Notifications
             .create(
@@ -917,6 +955,23 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             .system(true)
             .notify(project)
         return null
+    }
+
+    private fun retrieveCCv2ClientToken(subscription: CCv2Subscription, appSettings: CCv2ProjectSettings): ApiContext? {
+        val subscriptionAuth = subscription.authentication
+        val subscriptionClient = appSettings.getCCv2Authentication(subscription.uuid)
+        val apiUrl = appSettings.kymaApiUrl
+
+        val subscriptionAuthToken = if (subscriptionAuth != null && subscriptionClient != null) {
+            retrieveAuthToken(apiUrl, subscriptionAuth, subscriptionClient)
+        } else null
+
+        if (subscriptionAuthToken != null) return subscriptionAuthToken
+
+        val auth = appSettings.authentication
+        val client = appSettings.getCCv2Authentication() ?: return null
+
+        return retrieveAuthToken(apiUrl, auth, client)
     }
 
     private fun notifyOnTimeout(subscription: CCv2Subscription, e: SocketTimeoutException) = notifyOnTimeout(
@@ -966,13 +1021,13 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
     private suspend fun fetchCacheableEnvironments(
         progressReporter: ProgressReporter,
-        ccv2Token: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         statuses: List<String>,
         requestV1Details: Boolean,
         requestV1Health: Boolean
     ): Collection<CCv2EnvironmentDto> {
-        val cacheKey = getCacheKey(ccv2Token, subscription, statuses)
+        val cacheKey = getCacheKey(apiContext, subscription, statuses)
         val allCachedEnvironments = getOrCreateUserDataUnsafe(KEY_ENVIRONMENTS) { mutableMapOf() }
         val cachedEnvironments = allCachedEnvironments[cacheKey]
 
@@ -980,7 +1035,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             .also { it.forEach { it.deployedBuild = null } }
 
         val environments = CCv2Api.getInstance()
-            .fetchEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
+            .fetchEnvironments(progressReporter, apiContext, subscription, statuses, requestV1Details, requestV1Health)
             .sortedBy { it.order }
 
         allCachedEnvironments[cacheKey] = environments
@@ -989,18 +1044,18 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     }
 
     private suspend fun fetchCacheableEnvironmentServices(
-        ccv2Token: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
     ): Collection<CCv2ServiceDto> {
-        val cacheKey = getCacheKey(ccv2Token, subscription, environment)
+        val cacheKey = getCacheKey(apiContext, subscription, environment)
         val allCachedServices = getOrCreateUserDataUnsafe(KEY_SERVICES) { mutableMapOf() }
         val cachedServices = allCachedServices[cacheKey]
 
         if (cachedServices != null) return cachedServices
 
         val services = CCv1Api.getInstance()
-            .fetchEnvironmentServices(ccv2Token, subscription, environment)
+            .fetchEnvironmentServices(apiContext, subscription, environment)
 
         allCachedServices[cacheKey] = services
 
@@ -1008,18 +1063,18 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     }
 
     private suspend fun fetchCacheableEnvironmentEndpoints(
-        ccv2Token: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
     ): Collection<CCv2EndpointDto>? {
-        val cacheKey = getCacheKey(ccv2Token, subscription, environment)
+        val cacheKey = getCacheKey(apiContext, subscription, environment)
         val mutableCache = getOrCreateUserDataUnsafe(KEY_ENDPOINTS) { mutableMapOf() }
         val cachedValue = mutableCache[cacheKey]
 
         if (cachedValue != null) return cachedValue
 
         val endpoints = CCv2Api.getInstance()
-            .fetchEndpoints(ccv2Token, subscription, environment)
+            .fetchEndpoints(apiContext, subscription, environment)
 
         if (endpoints == null) mutableCache.remove(cacheKey)
         else mutableCache[cacheKey] = endpoints
@@ -1028,24 +1083,24 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     }
 
     private fun getCacheKey(
-        ccv2Token: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         statuses: List<String>
-    ): String = ccv2Token + "_" + subscription.uuid + "_" + statuses.joinToString("|")
+    ): String = apiContext.authToken + "_" + apiContext.authHeader + "_" + subscription.uuid + "_" + statuses.joinToString("|")
 
     private fun getCacheKey(
-        ccv2Token: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
-    ): String = ccv2Token + "_" + subscription.uuid + "_" + environment.code
+    ): String = apiContext.authToken + "_" + apiContext.authHeader + "_" + subscription.uuid + "_" + environment.code
 
     private fun <T : MutableMap<String, *>> resetCache(
         key: Key<T>,
-        ccv2Token: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
     ) {
-        val cacheKey = getCacheKey(ccv2Token, subscription, environment)
+        val cacheKey = getCacheKey(apiContext, subscription, environment)
         val cache = getUserData(key) ?: return
         cache.remove(cacheKey)
     }

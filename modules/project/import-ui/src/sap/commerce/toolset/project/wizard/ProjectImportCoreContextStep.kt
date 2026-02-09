@@ -29,7 +29,6 @@ import com.intellij.ui.scale.JBUIScale
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CancellationException
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.HybrisProjectImportBuilder
@@ -68,10 +67,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
     override fun getComponent() = JBScrollPane(_ui).apply {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
-
-        CCv2ProjectSettings.getInstance().loadDefaultCCv2Token { ccv2Token ->
-            if (ccv2Token != null) importCoreContext.ccv2Token.set(ccv2Token)
-        }
     }
 
     override fun updateDataModel() {
@@ -107,8 +102,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 ?.get()
                 ?.toNioPathOrNull()
                 ?.takeIf { it.fileExists }
-
-            this.ccv2Token = importCoreContext.ccv2Token.get()
         }
 
         searchModuleRoots(importContext)
@@ -216,7 +209,6 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory?.toNioPathOrNull()
                 ?: refreshContext.projectPath.resolve(ProjectConstants.Paths.IDEA_MODULES)
 
-            this.ccv2Token = CCv2ProjectSettings.getInstance().getCCv2Token()
             this.excludedFromScanning = projectSettings.excludedFromScanning
         }
 

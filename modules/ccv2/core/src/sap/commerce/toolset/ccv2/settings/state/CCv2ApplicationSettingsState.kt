@@ -24,21 +24,32 @@ import com.intellij.util.xmlb.annotations.Tag
 @Tag("HybrisApplicationSettings")
 data class CCv2ApplicationSettingsState(
     @JvmField @OptionTag val readTimeout: Int = 60,
+    @JvmField @OptionTag val authentication: CCv2Authentication = CCv2Authentication(),
+    @JvmField @OptionTag val hanaApiUrl: String = "https://portalrotapi.hana.ondemand.com",
+    @JvmField @OptionTag val kymaApiUrl: String = "https://portalrotapi.kyma.ondemand.com",
     @JvmField val subscriptions: List<CCv2Subscription> = emptyList()
 ) {
     fun mutable() = Mutable(
-        readTimeout = readTimeout,
+        origin = this,
+        hanaApiUrl = hanaApiUrl,
+        kymaApiUrl = kymaApiUrl,
+        authentication = authentication.mutable(),
         subscriptions = subscriptions
             .map { it.mutable() }
             .toMutableList()
     )
 
     data class Mutable(
-        var readTimeout: Int,
+        private val origin: CCv2ApplicationSettingsState,
+        var hanaApiUrl: String,
+        var kymaApiUrl: String,
+        var authentication: CCv2Authentication.Mutable,
         var subscriptions: MutableList<CCv2Subscription.Mutable>
     ) {
         fun immutable() = CCv2ApplicationSettingsState(
-            readTimeout = readTimeout,
+            hanaApiUrl = hanaApiUrl,
+            kymaApiUrl = kymaApiUrl,
+            authentication = authentication.immutable(),
             subscriptions = subscriptions
                 .map { it.immutable() }
         )

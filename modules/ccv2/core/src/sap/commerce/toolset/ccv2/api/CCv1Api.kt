@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.ccv2.api
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
@@ -35,107 +36,125 @@ import sap.commerce.toolset.ccv2.model.EnvironmentDetailDTO
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.KClass
+import kotlin.reflect.cast
 
 @Service
-class CCv1Api {
+class CCv1Api : Disposable {
 
     private val apiClient by lazy {
         ApiClient.builder
             .readTimeout(CCv2ProjectSettings.getInstance().readTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
-    private val subscriptionApi by lazy { SubscriptionApi(client = apiClient) }
-    private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
-    private val permissionsApi by lazy { PermissionsApi(client = apiClient) }
-    private val serviceApi by lazy { ServiceApi(client = apiClient) }
+
+    private val _api = mutableMapOf<String, ApiClient>()
+
+    private fun <T : ApiClient> api(apiContext: ApiContext, kClass: KClass<T>) = _api
+        .getOrPut(apiContext.apiUrl + "_$kClass") {
+            val basePath = apiContext.apiUrl.removeSuffix("/") + "/v1"
+            when (kClass) {
+                SubscriptionApi::class -> SubscriptionApi(basePath = basePath, client = apiClient)
+                EnvironmentApi::class -> EnvironmentApi(basePath = basePath, client = apiClient)
+                PermissionsApi::class -> PermissionsApi(basePath = basePath, client = apiClient)
+                ServiceApi::class -> ServiceApi(basePath = basePath, client = apiClient)
+                else -> throw IllegalArgumentException("${kClass.simpleName} cannot be applied to $apiContext")
+            }
+
+        }
+        .let { kClass.cast(it) }
 
     suspend fun fetchSubscriptions(
-        accessToken: String,
-    ): List<SubscriptionDTO> = subscriptionApi
+        apiContext: ApiContext,
+    ): List<SubscriptionDTO> = api(apiContext, SubscriptionApi::class)
         .getSubscriptions(
             dollarTop = 100,
-            requestHeaders = createRequestParams(accessToken)
+            requestHeaders = createRequestParams(apiContext)
         )
         .value
 
     suspend fun fetchPermissions(
-        accessToken: String
-    ): List<PermissionDTO>? = permissionsApi
-        .getPermissions(requestHeaders = createRequestParams(accessToken))
+        apiContext: ApiContext
+    ): List<PermissionDTO>? = api(apiContext, PermissionsApi::class)
+        .getPermissions(requestHeaders = createRequestParams(apiContext))
         .permissionDTOS
 
     suspend fun fetchEnvironment(
-        accessToken: String,
+        apiContext: ApiContext,
         v2Environment: EnvironmentDetailDTO
     ): EnvironmentDTO? {
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
         val environmentCode = v2Environment.code ?: return null
 
-        return environmentApi
+        return api(apiContext, EnvironmentApi::class)
             .getEnvironment(
                 subscriptionCode = subscriptionCode,
                 environmentCode = environmentCode,
-                requestHeaders = createRequestParams(accessToken)
+                requestHeaders = createRequestParams(apiContext)
             )
     }
 
     suspend fun fetchEnvironmentHealth(
-        accessToken: String,
+        apiContext: ApiContext,
         v2Environment: EnvironmentDetailDTO
     ): EnvironmentHealthDTO? {
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
         val environmentCode = v2Environment.code ?: return null
 
-        return environmentApi
+        return api(apiContext, EnvironmentApi::class)
             .getEnvironmentHealth(
                 subscriptionCode = subscriptionCode,
                 environmentCode = environmentCode,
-                requestHeaders = createRequestParams(accessToken)
+                requestHeaders = createRequestParams(apiContext)
             )
     }
 
     suspend fun fetchMediaStoragePublicKey(
-        accessToken: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         mediaStorage: CCv2MediaStorageDto,
-    ): MediaStoragePublicKeyDTO = environmentApi
+    ): MediaStoragePublicKeyDTO = api(apiContext, EnvironmentApi::class)
         .getMediaStoragePublicKey(
             subscriptionCode = subscription.id!!,
             environmentCode = environment.code,
             mediaStorageCode = mediaStorage.code,
-            requestHeaders = createRequestParams(accessToken)
+            requestHeaders = createRequestParams(apiContext)
         )
 
     suspend fun fetchEnvironmentServices(
-        accessToken: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
-    ): Collection<CCv2ServiceDto> = environmentApi
+    ): Collection<CCv2ServiceDto> = api(apiContext, EnvironmentApi::class)
         .getEnvironmentServices(
             subscriptionCode = subscription.id!!,
             environmentCode = environment.code,
-            requestHeaders = createRequestParams(accessToken)
+            requestHeaders = createRequestParams(apiContext)
         )
         .map { CCv2ServiceDto.MappingDto(subscription, environment, it) }
         .map { CCv2ServiceDto.map(it) }
 
     suspend fun restartServiceReplica(
-        accessToken: String,
+        apiContext: ApiContext,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         service: CCv2ServiceDto,
         replica: CCv2ServiceReplicaDto
-    ): ServiceReplicaStatusDTO = serviceApi
+    ): ServiceReplicaStatusDTO = api(apiContext, ServiceApi::class)
         .restartReplica(
             subscriptionCode = subscription.id!!,
             environmentCode = environment.code,
             serviceCode = service.code,
             replicaName = replica.name,
-            requestHeaders = createRequestParams(accessToken)
+            requestHeaders = createRequestParams(apiContext)
         )
 
-    private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
+    private fun createRequestParams(apiContext: ApiContext) = mapOf(
+        apiContext.authHeader to "Bearer ${apiContext.authToken}"
+    )
+
+    override fun dispose() = _api.clear()
 
     companion object {
         fun getInstance(): CCv1Api = application.service()

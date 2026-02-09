@@ -53,7 +53,5 @@ data class ProjectImportCoreContext(
     val isExcludedFromScanning: AtomicBooleanProperty = AtomicBooleanProperty(false),
     val excludedFromScanningDirectories: MutableListProperty = MutableListProperty(),
 
-    val ccv2Token: AtomicProperty<String> = AtomicProperty(""),
-
     val importSettings: ProjectImportSettings.Mutable,
 )

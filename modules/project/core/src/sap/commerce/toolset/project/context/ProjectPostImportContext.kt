@@ -42,7 +42,6 @@ data class ProjectPostImportContext(
     val storage: ImmutableEntityStorage,
 
     val modulesFilesDirectory: Path? = null,
-    val ccv2Token: String? = null,
     val sourceCodePath: Path? = null,
     val sourceCodeFile: Path? = null,
     val projectIconFile: Path? = null,
@@ -98,7 +97,6 @@ data class ProjectPostImportContext(
             refresh = context.refresh,
             settings = context.settings,
             modulesFilesDirectory = context.modulesFilesDirectory,
-            ccv2Token = context.ccv2Token,
             sourceCodePath = context.sourceCodePath,
             sourceCodeFile = context.sourceCodeFile,
             projectIconFile = context.projectIconFile,

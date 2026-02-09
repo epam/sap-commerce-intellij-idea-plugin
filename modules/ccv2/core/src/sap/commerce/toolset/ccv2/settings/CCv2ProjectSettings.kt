@@ -19,6 +19,7 @@
 package sap.commerce.toolset.ccv2.settings
 
 import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
@@ -30,6 +31,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
+import sap.commerce.toolset.ccv2.settings.state.CCv2Authentication
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 
 @State(
@@ -45,6 +47,21 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
         set(value) {
             updateState { it.copy(readTimeout = value) }
         }
+    var authentication: CCv2Authentication
+        get() = state.authentication
+        set(value) {
+            updateState { it.copy(authentication = value) }
+        }
+    var hanaApiUrl: String
+        get() = state.hanaApiUrl
+        set(value) {
+            updateState { it.copy(hanaApiUrl = value) }
+        }
+    var kymaApiUrl: String
+        get() = state.kymaApiUrl
+        set(value) {
+            updateState { it.copy(kymaApiUrl = value) }
+        }
     var subscriptions: List<CCv2Subscription>
         get() = state.subscriptions
         set(value) {
@@ -55,14 +72,24 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
                 .onChange(state)
         }
 
-    fun getCCv2Token(subscriptionUUID: String? = null) = PasswordSafe.instance.get(getCredentials(subscriptionUUID))
+    fun getCCv2Token(subscriptionUUID: String? = null) = PasswordSafe.instance[getCredentials(subscriptionUUID)]
         ?.getPasswordAsString()
         ?.takeIf { it.isNotBlank() }
+
+    fun getCCv2Authentication(subscriptionUUID: String? = null) = PasswordSafe.instance[getAuthentication(subscriptionUUID)]
 
     fun loadDefaultCCv2Token(callback: (String?) -> Unit) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
             override fun run(indicator: ProgressIndicator) {
-                callback.invoke(getCCv2Token())
+                callback(getCCv2Token())
+            }
+        })
+    }
+
+    fun loadDefaultCCv2Authentication(callback: (Credentials?) -> Unit) {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Authentication", false) {
+            override fun run(indicator: ProgressIndicator) {
+                callback(getCCv2Authentication())
             }
         })
     }
@@ -71,12 +98,23 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
         subscriptionUUID ?: return
         ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
             override fun run(indicator: ProgressIndicator) {
-                callback.invoke(getCCv2Token(subscriptionUUID))
+                callback(getCCv2Token(subscriptionUUID))
+            }
+        })
+    }
+
+    fun loadCCv2Authentication(subscriptionUUID: String?, callback: (Credentials?) -> Unit) {
+        subscriptionUUID ?: return
+        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Authentication", false) {
+            override fun run(indicator: ProgressIndicator) {
+                callback(getCCv2Authentication(subscriptionUUID))
             }
         })
     }
 
     fun saveDefaultCCv2Token(token: String?, callback: ((String?) -> Unit)? = null) = saveCCv2Token(null, token, callback)
+
+    fun saveDefaultCCv2Authentication(authentication: Credentials?, callback: ((Credentials?) -> Unit)? = null) = saveCCv2Authentication(null, authentication, callback)
 
     fun saveCCv2Token(subscriptionUUID: String?, token: String?, callback: ((String?) -> Unit)? = null) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CCv2 Token", false) {
@@ -89,15 +127,29 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
         })
     }
 
+    fun saveCCv2Authentication(subscriptionUUID: String?, credentials: Credentials?, callback: ((Credentials?) -> Unit)? = null) {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CCv2 Token", false) {
+            override fun run(indicator: ProgressIndicator) {
+                callback?.invoke(credentials)
+
+                if (credentials == null) PasswordSafe.instance[getAuthentication(subscriptionUUID)] = null
+                else PasswordSafe.instance[getAuthentication(subscriptionUUID)] = credentials
+            }
+        })
+    }
+
     fun getCCv2Subscription(uuid: String) = subscriptions
         .find { it.uuid == uuid }
-
-    private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
-    else CredentialAttributes(subscriptionUUID, CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
 
     override fun getModificationCount() = stateModificationCount
 
     fun mutable() = state.mutable()
+
+    private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_CCV2_TOKEN)
+    else CredentialAttributes(subscriptionUUID, CCv2Constants.SECURE_STORAGE_CCV2_TOKEN)
+
+    private fun getAuthentication(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_CCV2_AUTHENTICATION)
+    else CredentialAttributes(CCv2Constants.SECURE_STORAGE_CCV2_AUTHENTICATION + " - " + subscriptionUUID)
 
     companion object {
         @JvmStatic
