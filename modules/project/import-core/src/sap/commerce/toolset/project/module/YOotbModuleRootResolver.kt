@@ -37,6 +37,11 @@ class YOotbModuleRootResolver : ModuleRootResolver {
         val parentPathString = path.parent.normalize().pathString
             .replace("\\", "/")
 
+        val overrideCustomDirectory = context.externalExtensionsDirectory?.normalize()?.pathString
+            ?.replace("\\", "/")
+
+        if (overrideCustomDirectory == parentPathString) return false
+
         return parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019)
             || (parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))
     }
