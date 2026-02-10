@@ -168,7 +168,9 @@ class CCv2Api {
         environments.forEach { environment ->
             coroutineScope.launch {
                 progressReporter.sizedStep(1, "Fetching Deployment details for ${environment.name} of the ${subscription.presentableName}") {
-                    fetchEnvironmentBuild(apiContext, subscription, environment)
+                    runCatching {
+                        fetchEnvironmentBuild(apiContext, subscription, environment)
+                    }
                 }
             }
         }

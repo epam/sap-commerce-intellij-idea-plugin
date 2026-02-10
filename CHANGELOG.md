@@ -2,13 +2,14 @@
 
 <cite>Release contributors</cite>
 
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.3+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.3+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Respect custom directory override for `ext-custom`-like directories [#1732](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1732) for [#1730](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1730) 
 
 ### `CCv2` enhancements
 - Introduced new authentication mode via Technical User [#1731](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1731)
+- Handle no access in case of multi-mode setup for different subscriptions [#1733](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1733)
 
 ## [2025.3.2]
 
