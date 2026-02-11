@@ -1,3 +1,12 @@
+## [2025.3.3.1]
+
+<cite>Release contributors</cite>
+
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
+
+### `Project Import` enhancements
+- Improved custom directory override for `ext-custom`-like directories [#1734](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1734)
+
 ## [2025.3.3]
 
 <cite>Release contributors</cite>
@@ -47,7 +56,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Project import & refresh 3.1 with 32 commits and ~246 changed files [#1704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1704)
 - Lazy dependency on `java-el` plugin [#1700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1700)
 - Register `HMC` Project Library when `hmc` extension present [#1705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1705)
-- Include resolved extensions once in case of symbolic links under the same root [#1706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1706)
+- Include resolved extensions once in case of symbolic links under the same root [#1706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1706)[threadDump-20260211-123306.txt](../../../Downloads/threadDump-20260211-123306.txt)
 - Register dependant web extensions after building complete extensions dependency graph [#1707](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1707), fixes [#579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/579)
 - Include modules `resources` in the JUnit run classpath [#1708](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1708), fixes [#1702](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1702)
 - Show `i18n` icon for `resources/localization` [#1709](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1709)

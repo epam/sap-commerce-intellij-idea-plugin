@@ -25,6 +25,7 @@ import sap.commerce.toolset.project.context.ModuleRoot
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.util.isDescendantOf
 import java.nio.file.FileVisitResult
 import java.nio.file.Path
 import kotlin.io.path.pathString
@@ -34,13 +35,11 @@ class YOotbModuleRootResolver : ModuleRootResolver {
     override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path): Boolean {
         if (!path.resolve(EiConstants.EXTENSION_INFO_XML).fileExists) return false
 
+        val overrideCustomDirectory = context.externalExtensionsDirectory
+        if (overrideCustomDirectory != null && path.isDescendantOf(overrideCustomDirectory)) return false
+
         val parentPathString = path.parent.normalize().pathString
             .replace("\\", "/")
-
-        val overrideCustomDirectory = context.externalExtensionsDirectory?.normalize()?.pathString
-            ?.replace("\\", "/")
-
-        if (overrideCustomDirectory == parentPathString) return false
 
         return parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019)
             || (parentPathString.contains(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))
