@@ -5,7 +5,7 @@
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.1+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
-- Improved custom directory override for `ext-custom`-like directories [#1734](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1734)
+- Improved custom directory override for `ext-custom`-like directories [#1735](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1735)
 
 ## [2025.3.3]
 
