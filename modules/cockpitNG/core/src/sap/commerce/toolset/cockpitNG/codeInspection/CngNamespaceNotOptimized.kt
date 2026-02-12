@@ -59,11 +59,6 @@ class CngNamespaceNotOptimized : XmlSuppressableInspectionTool() {
                 .filter { it.isNamespaceDeclaration }
                 .distinctBy { it.localName }
                 .associateBy { it.localName }
-            // https://.../simple-search <-> XmlAttribute
-            val rootNamespaces = rootTag.attributes
-                .filter { it.isNamespaceDeclaration }
-                .distinctBy { it.value }
-                .associateBy { it.value }
 
             val rootXmlAttribute = rootNamespaceAliases[localName]
 
