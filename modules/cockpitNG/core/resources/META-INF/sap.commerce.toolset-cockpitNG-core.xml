@@ -63,6 +63,10 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.cng.CngNamespaceNotOptimized.key"
                          shortName="CngNamespaceNotOptimized" level="WEAK WARNING"
                          implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngNamespaceNotOptimized"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.CngDuplicateNamespace.key"
+                         shortName="CngDuplicateNamespace" level="WARNING"
+                         implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngDuplicateNamespace"/>
     </extensions>
 
 </idea-plugin>
