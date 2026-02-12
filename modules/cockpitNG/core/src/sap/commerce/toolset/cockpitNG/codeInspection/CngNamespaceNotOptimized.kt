@@ -63,7 +63,7 @@ class CngNamespaceNotOptimized : XmlSuppressableInspectionTool() {
                     attribute,
                     i18n("hybris.inspections.fix.cng.CngNamespaceNotOptimized.reuse.message", localName, localNamespaceValue),
                     ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                    XmlDeleteAttributeQuickFix(localName)
+                    XmlDeleteAttributeQuickFix(xmlAttribute.name)
                 )
                 return
             }
