@@ -24,6 +24,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.asSafely
+import com.intellij.xml.util.XmlUtil
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.psi.navigate
 
@@ -33,21 +35,20 @@ class XmlDeleteAttributeQuickFix(private val attributeName: String) : LocalQuick
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         when (val currentElement = descriptor.psiElement) {
-            is XmlTag -> {
-                currentElement.getAttribute(attributeName)?.delete()
-                navigate(descriptor, currentElement)
-            }
+            is XmlTag -> currentElement.getAttribute(attributeName)
+                ?.remove(descriptor)
 
-            is XmlAttribute -> {
-                navigate(descriptor, currentElement.parent)
-                currentElement.delete()
-            }
+            is XmlAttribute -> currentElement.remove(descriptor)
 
-            is XmlAttributeValue -> {
-                (currentElement.parent as? XmlAttribute)
-                    ?.also { navigate(descriptor, currentElement.parent) }
-                    ?.delete()
-            }
+            is XmlAttributeValue -> currentElement.parent.asSafely<XmlAttribute>()
+                ?.remove(descriptor)
         }
+    }
+
+    private fun XmlAttribute.remove(descriptor: ProblemDescriptor) {
+        navigate(descriptor, this)
+        val tag = this.parent
+        this.delete()
+        XmlUtil.reformatTagStart(tag)
     }
 }
