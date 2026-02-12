@@ -2,11 +2,12 @@
 
 <cite>Release contributors</cite>
 
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.3.2+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2025.3.3.2+author%3Amlytvyn+is%3Apr)
 
 ### `Cockpit NG` enhancements
 - Inspection: reuse already declared namespace [#1736](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1736)
 - Inspection: move namespace to the root tag [#1737](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1737)
+- Inspection: detect duplicate namespace in the root tag [#1738](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1738)
 
 ## [2025.3.3.1]
 
