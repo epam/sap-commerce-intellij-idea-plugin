@@ -27,7 +27,7 @@ open class AutoPopupInsertHandler : InsertHandler<LookupElement> {
 
     override fun handleInsert(context: InsertionContext, item: LookupElement) {
         val autoPopupController = AutoPopupController.getInstance(context.project)
-        autoPopupController.autoPopupMemberLookup(context.editor, null)
+        autoPopupController.scheduleAutoPopup(context.editor)
 
         handle(context, item)
     }
