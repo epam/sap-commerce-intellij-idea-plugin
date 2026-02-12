@@ -29,7 +29,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.cockpitNG.model.config.Config
-import sap.commerce.toolset.codeInspection.fix.XmlDeleteAttributeQuickFix
+import sap.commerce.toolset.codeInspection.fix.XmlMoveAttributeToRootQuickFix
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isNotHybrisProject
 
@@ -54,18 +54,21 @@ class CngNamespaceNotOptimized : XmlSuppressableInspectionTool() {
             val localNamespaceValue = xmlAttribute.value ?: return
             val localName = xmlAttribute.localName
 
-            val rootNamespaces = rootTag.attributes
+            // xmlns:ss <-> XmlAttribute
+            val rootNamespaceAliases = rootTag.attributes
                 .filter { it.isNamespaceDeclaration }
+                .distinctBy { it.localName }
                 .associateBy { it.localName }
 
-            if (rootNamespaces.contains(localName)) {
+            val rootXmlAttribute = rootNamespaceAliases[localName]
+
+            if (rootXmlAttribute == null || rootXmlAttribute.value == localNamespaceValue) {
                 holder.registerProblem(
                     attribute,
-                    i18n("hybris.inspections.fix.cng.CngNamespaceNotOptimized.reuse.message", localName, localNamespaceValue),
+                    i18n("hybris.inspections.fix.cng.CngNamespaceNotOptimized.move.message", localName, localNamespaceValue),
                     ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                    XmlDeleteAttributeQuickFix(xmlAttribute.name)
+                    XmlMoveAttributeToRootQuickFix(xmlAttribute.name)
                 )
-                return
             }
         }
     }
