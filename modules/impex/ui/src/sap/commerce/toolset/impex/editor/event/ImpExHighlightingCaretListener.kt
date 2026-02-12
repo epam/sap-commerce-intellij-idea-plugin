@@ -22,8 +22,7 @@ import com.intellij.codeInsight.folding.impl.FoldingUtil
 import com.intellij.codeInsight.highlighting.HighlightManager
 import com.intellij.codeInsight.highlighting.HighlightManagerImpl
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler
-import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
@@ -35,18 +34,20 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.removeUserData
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiUtilBase
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import com.intellij.util.concurrency.AppExecutorUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.actionSystem.isTypingActionInProgress
-import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 
 @Service
 class ImpExHighlightingCaretListener : CaretListener {
+
+    private val jobCache = Key.create<Job>("impex.highlighting.highlighting.caret")
 
     override fun caretAdded(e: CaretEvent) {}
     override fun caretRemoved(e: CaretEvent) {}
@@ -58,10 +59,12 @@ class ImpExHighlightingCaretListener : CaretListener {
         val project = editor.project ?: return
         if (project.isDisposed) return
 
-        ReadAction
-            .nonBlocking<List<PsiElement>> {
-                if (PsiUtilBase.getLanguageInEditor(editor, project) !is ImpExLanguage) return@nonBlocking emptyList()
+        var highlightJob = editor.getUserData(jobCache)
+        highlightJob?.cancel()
+        highlightJob = CoroutineScope(Dispatchers.Default).launch {
+            if (project.isDisposed) return@launch
 
+            val elements = readAction {
                 ImpExPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
                     ?.asSafely<ImpExFullHeaderParameter>()
                     ?.let { listOf(it) }
@@ -70,16 +73,15 @@ class ImpExHighlightingCaretListener : CaretListener {
                         ?.let { it.mapNotNull { ivg -> ivg.value } }
                     ?: emptyList()
             }
-            .withDocumentsCommitted(project)
-            .expireWhen { editor.isDisposed }
-            .finishOnUiThread(ModalityState.defaultModalityState()) {
-                it.takeIf { it.isNotEmpty() }
-                    ?.map { psiElement ->  psiElement.textRange }
-                    ?.filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
-                    ?.let { textRanges -> highlightArea(editor, textRanges, project) }
-                    ?: clearHighlightedArea(editor)
-            }
-            .submit(AppExecutorUtil.getAppExecutorService())
+
+            elements.takeIf { it.isNotEmpty() }
+                ?.map { it.textRange }
+                ?.filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
+                ?.let { textRanges -> highlightArea(editor, textRanges, project) }
+                ?: clearHighlightedArea(editor)
+        }
+
+        editor.putUserData(jobCache, highlightJob)
     }
 
     fun clearHighlightedArea(editor: Editor) {
