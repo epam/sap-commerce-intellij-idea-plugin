@@ -27,6 +27,8 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.popup.Balloon
+import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFileFactory
@@ -34,6 +36,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotifications
+import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,23 +44,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.acl.AclLanguage
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExUserRights
+import java.awt.Point
 
 class ImpExExtractAclAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
-        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
-        val project = e.project
-        e.presentation.isVisible = project != null
-            && virtualFile != null
-            && ReadonlyStatusHandler.ensureFilesWritable(project, virtualFile)
-    }
-
     override fun actionPerformed(e: AnActionEvent) {
+        val component = e.inputEvent?.component ?: return
         val project = e.project ?: return
         val impExFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val psiFile = e.getData(CommonDataKeys.PSI_FILE)
@@ -65,6 +61,22 @@ class ImpExExtractAclAction : AnAction() {
             ?: return
 
         CoroutineScope(Dispatchers.EDT).launch {
+            val isWritable = withContext(Dispatchers.IO + Dispatchers.EDT) {
+                ReadonlyStatusHandler.ensureFilesWritable(project, impExFile)
+            }
+            if (!isWritable) {
+                JBPopupFactory.getInstance()
+                    .createHtmlTextBalloonBuilder("Extraction of the Acl is not available for readonly files", null, null, null)
+                    .setFadeoutTime(3000)
+                    .createBalloon()
+                    .show(
+                        RelativePoint(component, component.size.let { Point(it.width / 2, it.height) }),
+                        Balloon.Position.below
+                    )
+
+                return@launch
+            }
+
             val userRights = withContext(Dispatchers.Default) {
                 readAction { PsiTreeUtil.collectElementsOfType(psiFile, ImpExUserRights::class.java) }
             }

@@ -50,11 +50,7 @@ class ImpExToAclEditorNotificationProvider : EditorNotificationProvider {
                 icon(HybrisIcons.Y.LOGO_GREEN)
                 text = "User rights may be extracted to an own Access Control Lists File"
 
-//                application.runWriteAction {
-//                    if (ReadonlyStatusHandler.ensureFilesWritable(project, file)) {
                 createActionLabel("Extract user rights", "hybris.impex.extractAcl")
-//                    }
-//                }
 
                 createActionLabel("Learn more..", "hybris.impex.learnMoreAcl", false)
 
