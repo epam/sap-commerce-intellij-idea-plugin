@@ -27,6 +27,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.acl.AclLanguage
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.hideFromSearchPopup
+import sap.commerce.toolset.ifNotFromSearchPopup
 import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExUserRights
 
@@ -48,7 +49,13 @@ class ImpExExtractAclAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) = e.hideFromSearchPopup()
+    override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val project = e.project
+        e.presentation.isVisible = project != null
+            && virtualFile != null
+            && ReadonlyStatusHandler.ensureFilesWritable(project, virtualFile)
+    }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
