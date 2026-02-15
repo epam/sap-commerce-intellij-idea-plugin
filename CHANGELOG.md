@@ -12,6 +12,9 @@
 ### `ImpEx` enhancements
 - Improved language detection for caret listener & performance of the columns highlighter [#1739](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1739)
 
+### `Access Control Lists` enhancements
+- Improved readonly detection for Acl promotion within ImpEx files [#1740](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1740)
+
 ## [2025.3.3.1]
 
 <cite>Release contributors</cite>

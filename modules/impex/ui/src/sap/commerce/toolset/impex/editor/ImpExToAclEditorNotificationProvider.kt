@@ -21,13 +21,11 @@ package sap.commerce.toolset.impex.editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
-import com.intellij.util.application
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.impex.file.ImpExFileType
 import sap.commerce.toolset.impex.psi.ImpExUserRights
@@ -52,11 +50,7 @@ class ImpExToAclEditorNotificationProvider : EditorNotificationProvider {
                 icon(HybrisIcons.Y.LOGO_GREEN)
                 text = "User rights may be extracted to an own Access Control Lists File"
 
-                application.runWriteAction {
-                    if (ReadonlyStatusHandler.ensureFilesWritable(project, file)) {
-                        createActionLabel("Extract user rights", "hybris.impex.extractAcl")
-                    }
-                }
+                createActionLabel("Extract user rights", "hybris.impex.extractAcl")
 
                 createActionLabel("Learn more..", "hybris.impex.learnMoreAcl", false)
 
