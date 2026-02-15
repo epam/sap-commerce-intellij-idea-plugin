@@ -20,11 +20,15 @@ package sap.commerce.toolset.impex.editor.event
 
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import sap.commerce.toolset.impex.file.ImpExFileType
+import sap.commerce.toolset.isHybrisProject
+
 
 class ImpExEditorFactoryListener : EditorFactoryListener {
 
     override fun editorCreated(editorFactoryEvent: EditorFactoryEvent) {
-        val editor = editorFactoryEvent.editor
+        val editor = editorFactoryEvent.applicableEditor ?: return
 
         with(ImpExHighlightingCaretListener.getInstance()) {
             editor.caretModel.addCaretListener(this)
@@ -32,11 +36,19 @@ class ImpExEditorFactoryListener : EditorFactoryListener {
     }
 
     override fun editorReleased(editorFactoryEvent: EditorFactoryEvent) {
-        val editor = editorFactoryEvent.editor
+        val editor = editorFactoryEvent.applicableEditor ?: return
 
         with(ImpExHighlightingCaretListener.getInstance()) {
-            this.clearHighlightedArea(editor)
             editor.caretModel.removeCaretListener(this)
         }
     }
+
+    private val EditorFactoryEvent.applicableEditor
+        get() = editor
+            .takeIf { it.project?.isHybrisProject == true }
+            ?.takeIf {
+                FileDocumentManager.getInstance().getFile(editor.document)
+                    ?.let { it.fileType == ImpExFileType }
+                    ?: false
+            }
 }

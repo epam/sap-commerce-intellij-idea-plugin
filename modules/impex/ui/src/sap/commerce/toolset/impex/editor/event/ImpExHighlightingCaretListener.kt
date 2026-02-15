@@ -19,31 +19,30 @@
 package sap.commerce.toolset.impex.editor.event
 
 import com.intellij.codeInsight.folding.impl.FoldingUtil
-import com.intellij.codeInsight.highlighting.HighlightManager
 import com.intellij.codeInsight.highlighting.HighlightManagerImpl
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandler
-import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
+import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.removeUserData
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiUtilBase
+import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import com.intellij.util.concurrency.AppExecutorUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.actionSystem.isTypingActionInProgress
-import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
+import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class ImpExHighlightingCaretListener : CaretListener {
@@ -58,107 +57,69 @@ class ImpExHighlightingCaretListener : CaretListener {
         val project = editor.project ?: return
         if (project.isDisposed) return
 
-        ReadAction
-            .nonBlocking<List<PsiElement>> {
-                if (PsiUtilBase.getLanguageInEditor(editor, project) !is ImpExLanguage) return@nonBlocking emptyList()
+        var highlightJob = editor.getUserData(KEY_JOB_CACHE)
 
-                ImpExPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
-                    ?.asSafely<ImpExFullHeaderParameter>()
-                    ?.let { listOf(it) }
-                    ?: ImpExPsiUtils.getFullHeaderParameterUnderCaret(editor)
-                        ?.valueGroups
-                        ?.let { it.mapNotNull { ivg -> ivg.value } }
-                    ?: emptyList()
+        highlightJob?.cancel()
+        highlightJob =
+            CoroutineScope(Dispatchers.Default).launch {
+                println("starting highlight")
+                if (project.isDisposed) return@launch
+
+                val elements = readAction {
+                    ImpExPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
+                        ?.asSafely<ImpExFullHeaderParameter>()
+                        ?.let { listOf(it) }
+                        ?: ImpExPsiUtils.getFullHeaderParameterUnderCaret(editor)
+                            ?.valueGroups
+                            ?.let { it.mapNotNull { ivg -> ivg.value } }
+                        ?: emptyList()
+                }
+
+                val ranges = elements.takeIf { it.isNotEmpty() }
+                    ?.map { it.textRange }
+                    ?.toSet()
+                    ?: emptySet()
+                ranges
+                    .filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
+                    .let { textRanges -> highlightArea(editor, textRanges) }
+
+                cleanup(editor, ranges)
             }
-            .withDocumentsCommitted(project)
-            .expireWhen { editor.isDisposed }
-            .finishOnUiThread(ModalityState.defaultModalityState()) {
-                it.takeIf { it.isNotEmpty() }
-                    ?.map { psiElement ->  psiElement.textRange }
-                    ?.filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
-                    ?.let { textRanges -> highlightArea(editor, textRanges, project) }
-                    ?: clearHighlightedArea(editor)
-            }
-            .submit(AppExecutorUtil.getAppExecutorService())
+        editor.putUserData(KEY_JOB_CACHE, highlightJob)
     }
 
-    fun clearHighlightedArea(editor: Editor) {
-        editor.removeUserData(CACHE_KEY)
-            ?.let {
-                editor.project
-                    ?.let { project -> modifyHighlightedArea(editor, it, project, true) }
-            }
+    private suspend fun cleanup(editor: Editor, ranges: Set<TextRange>) {
+        val markupModel = editor.markupModel
+        val cache = editor.getOrCreateUserDataUnsafe(KEY_CACHE) { ConcurrentHashMap() }
+
+        val clear = cache.keys.filterNot { ranges.contains(it) }
+        clear.forEach { highlighter ->
+            checkCanceled()
+            cache.remove(highlighter)?.let { markupModel.removeHighlighter(it) }
+        }
     }
 
-    private fun highlightArea(editor: Editor, values: List<TextRange>, project: Project) {
-        if (isAlreadyHighlighted(editor, values)) return
+    private suspend fun highlightArea(editor: Editor, textRangesToHighlight: Collection<TextRange>) {
+        val markupModel = editor.markupModel
+        val cache = editor.getOrCreateUserDataUnsafe(KEY_CACHE) { ConcurrentHashMap() }
 
-        clearHighlightedArea(editor)
+        textRangesToHighlight.forEach { range ->
+            checkCanceled()
 
-        modifyHighlightedArea(editor, values, project, false)
-
-        editor.putUserData(CACHE_KEY, values)
-    }
-
-    private fun modifyHighlightedArea(
-        editor: Editor,
-        textRanges: List<TextRange>,
-        project: Project,
-        clear: Boolean
-    ) {
-        val highlightManager = HighlightManager.getInstance(project)
-        removeInvalidRangeHighlighters(editor, highlightManager)
-
-        // This list must be modifiable
-        // https://hybris-integration.atlassian.net/browse/IIP-11
-        textRanges
-            // Do not use Collectors.toList() here because:
-            // There are no guarantees on the type, mutability, serializability,
-            // or thread-safety of the List returned; if more control over the
-            // returned List is required, use toCollection(Supplier).
-            .toMutableList()
-            .takeIf { it.isNotEmpty() }
-            ?.let {
-                HighlightUsagesHandler.highlightRanges(
-                    highlightManager,
-                    editor,
-                    EditorColors.SEARCH_RESULT_ATTRIBUTES,
-                    clear,
-                    it
+            cache.computeIfAbsent(range) {
+                markupModel.addRangeHighlighter(
+                    EditorColors.IDENTIFIER_UNDER_CARET_ATTRIBUTES, range.startOffset, range.endOffset,
+                    HighlightManagerImpl.OCCURRENCE_LAYER,
+                    HighlighterTargetArea.EXACT_RANGE
                 )
             }
+        }
     }
-
-    /**
-     * IIPS-174: It seems like sometimes when we highlight code inside "Code Preview Panel" in combination with OOTB
-     * "unchanged lines" folding from IDEA, it can end up in creating invalid highlighting ranges.
-     * E.g. when you run an inspection for an impex file and in the results panel click on an inspection result
-     * on the right, it shows you a preview of a snippet from that file, and if you have multiple inspection warnings in
-     * the same file when you click on them, the preview panel jumps into different parts of the file, which leads to
-     * creation of multiple highlight ranges while the editor stays the same, but OOTB folding messes everything up by
-     * folding many lines as the result highlight ranges created for the first inspection have invalid start and end
-     * offsets for the editor with folded lines when you click on some other inspection from the same file.
-     */
-    private fun removeInvalidRangeHighlighters(editor: Editor, highlightManager: HighlightManager) {
-        if (highlightManager !is HighlightManagerImpl) return
-
-        highlightManager.getHighlighters(editor)
-            .filter { isNotProperRangeHighlighter(it) }
-            .forEach { highlightManager.removeSegmentHighlighter(editor, it) }
-    }
-
-    /**
-     * From [TextRange#isProperRange(int, int))][TextRange.isProperRange]
-     */
-    private fun isNotProperRangeHighlighter(rangeHighlighter: RangeHighlighter) = rangeHighlighter.startOffset > rangeHighlighter.endOffset
-        || rangeHighlighter.startOffset < 0
-
-    private fun isAlreadyHighlighted(editor: Editor, ranges: List<TextRange>) = editor.getUserData(CACHE_KEY) == ranges
 
     companion object {
-        private val CACHE_KEY = Key.create<List<TextRange>>("IMPEX_COLUMN_HIGHLIGHT_CACHE")
+        private val KEY_JOB_CACHE = Key.create<Job>("impex.highlighting.highlighting.caret")
+        private val KEY_CACHE = Key.create<MutableMap<TextRange, RangeHighlighter>>("IMPEX_COLUMN_HIGHLIGHT_CACHE_")
 
         fun getInstance(): ImpExHighlightingCaretListener = application.service()
     }
-
 }
