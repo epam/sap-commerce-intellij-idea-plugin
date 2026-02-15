@@ -39,7 +39,6 @@ class ImpExEditorFactoryListener : EditorFactoryListener {
         val editor = editorFactoryEvent.applicableEditor ?: return
 
         with(ImpExHighlightingCaretListener.getInstance()) {
-            this.clearHighlightedArea(editor)
             editor.caretModel.removeCaretListener(this)
         }
     }

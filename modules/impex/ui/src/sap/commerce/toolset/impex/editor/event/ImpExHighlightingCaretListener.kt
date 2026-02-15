@@ -19,7 +19,7 @@
 package sap.commerce.toolset.impex.editor.event
 
 import com.intellij.codeInsight.folding.impl.FoldingUtil
-import com.intellij.codeInsight.highlighting.HighlightManager
+import com.intellij.codeInsight.highlighting.HighlightManagerImpl
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -27,19 +27,22 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
+import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.actionSystem.isTypingActionInProgress
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.cancellation.CancellationException
 
 @Service
 class ImpExHighlightingCaretListener : CaretListener {
@@ -55,7 +58,6 @@ class ImpExHighlightingCaretListener : CaretListener {
         if (project.isDisposed) return
 
         var highlightJob = editor.getUserData(KEY_JOB_CACHE)
-        val singleFlight = SingleFlight<TextRange, RangeHighlighter>(CoroutineScope(Dispatchers.IO))
 
         highlightJob?.cancel()
         highlightJob =
@@ -73,91 +75,51 @@ class ImpExHighlightingCaretListener : CaretListener {
                         ?: emptyList()
                 }
 
-                elements.takeIf { it.isNotEmpty() }
+                val ranges = elements.takeIf { it.isNotEmpty() }
                     ?.map { it.textRange }
-                    ?.filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
-                    ?.toMutableList()
-                    ?.let { textRanges -> highlightArea(editor, textRanges, project, singleFlight) }
-                    ?: clearHighlightedArea(editor)
-                println("completed highlight")
+                    ?.toSet()
+                    ?: emptySet()
+                ranges
+                    .filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
+                    .let { textRanges -> highlightArea(editor, textRanges) }
+
+                cleanup(editor, ranges)
             }
-        highlightJob.invokeOnCompletion { throwable ->
-            if (throwable is CancellationException) {
-                println("cancelled: ${throwable.message}")
-            }
-        }
         editor.putUserData(KEY_JOB_CACHE, highlightJob)
     }
 
-    fun clearHighlightedArea(editor: Editor) {
-        val project = editor.project ?: return
-        val cache = editor.getOrCreateUserDataUnsafe(KEY_H_CACHE) { ConcurrentHashMap() }
+    private suspend fun cleanup(editor: Editor, ranges: Set<TextRange>) {
+        val markupModel = editor.markupModel
+        val cache = editor.getOrCreateUserDataUnsafe(KEY_CACHE) { ConcurrentHashMap() }
 
-        val highlightManager = HighlightManager.getInstance(project)
-        val ranges = cache.toMap()
-        ranges.forEach { (range, highlighter) ->
-            cache.remove(range)
-            highlightManager.removeSegmentHighlighter(editor, highlighter)
+        val clear = cache.keys.filterNot { ranges.contains(it) }
+        clear.forEach { highlighter ->
+            checkCanceled()
+            cache.remove(highlighter)?.let { markupModel.removeHighlighter(it) }
         }
-
-        println("cleared ${ranges.size}")
     }
 
-    private suspend fun highlightArea(editor: Editor, textRangesToHighlight: MutableList<TextRange>, project: Project, singleFlight: SingleFlight<TextRange, RangeHighlighter>) {
-        val cache = editor.getOrCreateUserDataUnsafe(KEY_H_CACHE) { ConcurrentHashMap() }
+    private suspend fun highlightArea(editor: Editor, textRangesToHighlight: Collection<TextRange>) {
+        val markupModel = editor.markupModel
+        val cache = editor.getOrCreateUserDataUnsafe(KEY_CACHE) { ConcurrentHashMap() }
 
-        val highlightManager = HighlightManager.getInstance(project)
+        textRangesToHighlight.forEach { range ->
+            checkCanceled()
 
-        val clear = cache
-            .filterNot { textRangesToHighlight.contains(it.key) }
-        clear
-            .forEach { (range, highlighter) ->
-                cache.remove(range)
-                highlightManager.removeSegmentHighlighter(editor, highlighter)
+            cache.computeIfAbsent(range) {
+                markupModel.addRangeHighlighter(
+                    EditorColors.IDENTIFIER_UNDER_CARET_ATTRIBUTES, range.startOffset, range.endOffset,
+                    HighlightManagerImpl.OCCURRENCE_LAYER,
+                    HighlighterTargetArea.EXACT_RANGE
+                )
             }
-
-        println("cleared ${clear.size}")
-
-        val add = textRangesToHighlight
-            .filterNot { cache.contains(it) }
-
-        println("added ${add.size}")
-
-        add
-            .forEach { range ->
-                val x = mutableSetOf<RangeHighlighter>()
-                cache[range] = singleFlight.execute(range) {
-                    highlightManager.addRangeHighlight(editor, range.startOffset, range.endOffset, EditorColors.SEARCH_RESULT_ATTRIBUTES, false, x)
-                    x.last()
-                }
-            }
+        }
     }
 
     companion object {
         private val KEY_JOB_CACHE = Key.create<Job>("impex.highlighting.highlighting.caret")
-        private val KEY_H_CACHE = Key.create<MutableMap<TextRange, RangeHighlighter>>("IMPEX_COLUMN_HIGHLIGHT_CACHE_")
+        private val KEY_CACHE = Key.create<MutableMap<TextRange, RangeHighlighter>>("IMPEX_COLUMN_HIGHLIGHT_CACHE_")
 
         fun getInstance(): ImpExHighlightingCaretListener = application.service()
-    }
-
-
-    class SingleFlight<K, V>(
-        private val scope: CoroutineScope
-    ) {
-        private val inFlight = ConcurrentHashMap<K, Deferred<V>>()
-
-        suspend fun execute(key: K, block: suspend () -> V): V {
-            val deferred = inFlight.computeIfAbsent(key) {
-                scope.async(start = CoroutineStart.LAZY) {
-                    try {
-                        block()
-                    } finally {
-                        inFlight.remove(key)
-                    }
-                }
-            }
-
-            return deferred.await()
-        }
     }
 }

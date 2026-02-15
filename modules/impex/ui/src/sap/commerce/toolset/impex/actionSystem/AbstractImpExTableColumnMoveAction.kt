@@ -24,7 +24,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.startOffset
-import sap.commerce.toolset.impex.editor.event.ImpExHighlightingCaretListener
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
@@ -45,7 +44,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
         run(project, "Moving the '${headerParameter.text}' column ${direction.name.lowercase(Locale.ROOT)}") {
             WriteCommandAction.runWriteCommandAction(project) {
                 PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                    ImpExHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
+//                    ImpExHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
 
                     val headerLine = headerParameter.headerLine ?: return@disablePostprocessFormattingInside
                     val column = headerParameter.columnNumber
