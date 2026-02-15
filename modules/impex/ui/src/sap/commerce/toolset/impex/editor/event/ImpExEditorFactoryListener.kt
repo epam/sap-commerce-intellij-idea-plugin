@@ -22,6 +22,7 @@ import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import sap.commerce.toolset.impex.file.ImpExFileType
+import sap.commerce.toolset.isHybrisProject
 
 
 class ImpExEditorFactoryListener : EditorFactoryListener {
@@ -44,9 +45,11 @@ class ImpExEditorFactoryListener : EditorFactoryListener {
     }
 
     private val EditorFactoryEvent.applicableEditor
-        get() = editor.takeIf {
-            FileDocumentManager.getInstance().getFile(editor.document)
-                ?.let { it.fileType == ImpExFileType }
-                ?: false
-        }
+        get() = editor
+            .takeIf { it.project?.isHybrisProject == true }
+            ?.takeIf {
+                FileDocumentManager.getInstance().getFile(editor.document)
+                    ?.let { it.fileType == ImpExFileType }
+                    ?: false
+            }
 }

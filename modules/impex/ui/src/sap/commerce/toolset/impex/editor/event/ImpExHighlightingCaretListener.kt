@@ -20,8 +20,6 @@ package sap.commerce.toolset.impex.editor.event
 
 import com.intellij.codeInsight.folding.impl.FoldingUtil
 import com.intellij.codeInsight.highlighting.HighlightManager
-import com.intellij.codeInsight.highlighting.HighlightManagerImpl
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandler
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -33,21 +31,18 @@ import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.removeUserData
+import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.util.application
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import sap.commerce.toolset.actionSystem.isTypingActionInProgress
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.coroutines.cancellation.CancellationException
 
 @Service
 class ImpExHighlightingCaretListener : CaretListener {
-
-    private val jobCache = Key.create<Job>("impex.highlighting.highlighting.caret")
 
     override fun caretAdded(e: CaretEvent) {}
     override fun caretRemoved(e: CaretEvent) {}
@@ -59,108 +54,110 @@ class ImpExHighlightingCaretListener : CaretListener {
         val project = editor.project ?: return
         if (project.isDisposed) return
 
-        var highlightJob = editor.getUserData(jobCache)
+        var highlightJob = editor.getUserData(KEY_JOB_CACHE)
+        val singleFlight = SingleFlight<TextRange, RangeHighlighter>(CoroutineScope(Dispatchers.IO))
+
         highlightJob?.cancel()
-        highlightJob = CoroutineScope(Dispatchers.Default).launch {
-            if (project.isDisposed) return@launch
+        highlightJob =
+            CoroutineScope(Dispatchers.Default).launch {
+                println("starting highlight")
+                if (project.isDisposed) return@launch
 
-            val elements = readAction {
-                ImpExPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
-                    ?.asSafely<ImpExFullHeaderParameter>()
-                    ?.let { listOf(it) }
-                    ?: ImpExPsiUtils.getFullHeaderParameterUnderCaret(editor)
-                        ?.valueGroups
-                        ?.let { it.mapNotNull { ivg -> ivg.value } }
-                    ?: emptyList()
+                val elements = readAction {
+                    ImpExPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
+                        ?.asSafely<ImpExFullHeaderParameter>()
+                        ?.let { listOf(it) }
+                        ?: ImpExPsiUtils.getFullHeaderParameterUnderCaret(editor)
+                            ?.valueGroups
+                            ?.let { it.mapNotNull { ivg -> ivg.value } }
+                        ?: emptyList()
+                }
+
+                elements.takeIf { it.isNotEmpty() }
+                    ?.map { it.textRange }
+                    ?.filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
+                    ?.toMutableList()
+                    ?.let { textRanges -> highlightArea(editor, textRanges, project, singleFlight) }
+                    ?: clearHighlightedArea(editor)
+                println("completed highlight")
             }
-
-            elements.takeIf { it.isNotEmpty() }
-                ?.map { it.textRange }
-                ?.filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
-                ?.let { textRanges -> highlightArea(editor, textRanges, project) }
-                ?: clearHighlightedArea(editor)
+        highlightJob.invokeOnCompletion { throwable ->
+            if (throwable is CancellationException) {
+                println("cancelled: ${throwable.message}")
+            }
         }
-
-        editor.putUserData(jobCache, highlightJob)
+        editor.putUserData(KEY_JOB_CACHE, highlightJob)
     }
 
     fun clearHighlightedArea(editor: Editor) {
-        editor.removeUserData(CACHE_KEY)
-            ?.let {
-                editor.project
-                    ?.let { project -> modifyHighlightedArea(editor, it, project, true) }
-            }
-    }
+        val project = editor.project ?: return
+        val cache = editor.getOrCreateUserDataUnsafe(KEY_H_CACHE) { ConcurrentHashMap() }
 
-    private fun highlightArea(editor: Editor, values: List<TextRange>, project: Project) {
-        if (isAlreadyHighlighted(editor, values)) return
-
-        clearHighlightedArea(editor)
-
-        modifyHighlightedArea(editor, values, project, false)
-
-        editor.putUserData(CACHE_KEY, values)
-    }
-
-    private fun modifyHighlightedArea(
-        editor: Editor,
-        textRanges: List<TextRange>,
-        project: Project,
-        clear: Boolean
-    ) {
         val highlightManager = HighlightManager.getInstance(project)
-        removeInvalidRangeHighlighters(editor, highlightManager)
+        val ranges = cache.toMap()
+        ranges.forEach { (range, highlighter) ->
+            cache.remove(range)
+            highlightManager.removeSegmentHighlighter(editor, highlighter)
+        }
 
-        // This list must be modifiable
-        // https://hybris-integration.atlassian.net/browse/IIP-11
-        textRanges
-            // Do not use Collectors.toList() here because:
-            // There are no guarantees on the type, mutability, serializability,
-            // or thread-safety of the List returned; if more control over the
-            // returned List is required, use toCollection(Supplier).
-            .toMutableList()
-            .takeIf { it.isNotEmpty() }
-            ?.let {
-                HighlightUsagesHandler.highlightRanges(
-                    highlightManager,
-                    editor,
-                    EditorColors.SEARCH_RESULT_ATTRIBUTES,
-                    clear,
-                    it
-                )
+        println("cleared ${ranges.size}")
+    }
+
+    private suspend fun highlightArea(editor: Editor, textRangesToHighlight: MutableList<TextRange>, project: Project, singleFlight: SingleFlight<TextRange, RangeHighlighter>) {
+        val cache = editor.getOrCreateUserDataUnsafe(KEY_H_CACHE) { ConcurrentHashMap() }
+
+        val highlightManager = HighlightManager.getInstance(project)
+
+        val clear = cache
+            .filterNot { textRangesToHighlight.contains(it.key) }
+        clear
+            .forEach { (range, highlighter) ->
+                cache.remove(range)
+                highlightManager.removeSegmentHighlighter(editor, highlighter)
+            }
+
+        println("cleared ${clear.size}")
+
+        val add = textRangesToHighlight
+            .filterNot { cache.contains(it) }
+
+        println("added ${add.size}")
+
+        add
+            .forEach { range ->
+                val x = mutableSetOf<RangeHighlighter>()
+                cache[range] = singleFlight.execute(range) {
+                    highlightManager.addRangeHighlight(editor, range.startOffset, range.endOffset, EditorColors.SEARCH_RESULT_ATTRIBUTES, false, x)
+                    x.last()
+                }
             }
     }
-
-    /**
-     * IIPS-174: It seems like sometimes when we highlight code inside "Code Preview Panel" in combination with OOTB
-     * "unchanged lines" folding from IDEA, it can end up in creating invalid highlighting ranges.
-     * E.g. when you run an inspection for an impex file and in the results panel click on an inspection result
-     * on the right, it shows you a preview of a snippet from that file, and if you have multiple inspection warnings in
-     * the same file when you click on them, the preview panel jumps into different parts of the file, which leads to
-     * creation of multiple highlight ranges while the editor stays the same, but OOTB folding messes everything up by
-     * folding many lines as the result highlight ranges created for the first inspection have invalid start and end
-     * offsets for the editor with folded lines when you click on some other inspection from the same file.
-     */
-    private fun removeInvalidRangeHighlighters(editor: Editor, highlightManager: HighlightManager) {
-        if (highlightManager !is HighlightManagerImpl) return
-
-        highlightManager.getHighlighters(editor)
-            .filter { isNotProperRangeHighlighter(it) }
-            .forEach { highlightManager.removeSegmentHighlighter(editor, it) }
-    }
-
-    /**
-     * From [TextRange#isProperRange(int, int))][TextRange.isProperRange]
-     */
-    private fun isNotProperRangeHighlighter(rangeHighlighter: RangeHighlighter) = rangeHighlighter.startOffset > rangeHighlighter.endOffset
-        || rangeHighlighter.startOffset < 0
-
-    private fun isAlreadyHighlighted(editor: Editor, ranges: List<TextRange>) = editor.getUserData(CACHE_KEY) == ranges
 
     companion object {
-        private val CACHE_KEY = Key.create<List<TextRange>>("IMPEX_COLUMN_HIGHLIGHT_CACHE")
+        private val KEY_JOB_CACHE = Key.create<Job>("impex.highlighting.highlighting.caret")
+        private val KEY_H_CACHE = Key.create<MutableMap<TextRange, RangeHighlighter>>("IMPEX_COLUMN_HIGHLIGHT_CACHE_")
 
         fun getInstance(): ImpExHighlightingCaretListener = application.service()
     }
 
+
+    class SingleFlight<K, V>(
+        private val scope: CoroutineScope
+    ) {
+        private val inFlight = ConcurrentHashMap<K, Deferred<V>>()
+
+        suspend fun execute(key: K, block: suspend () -> V): V {
+            val deferred = inFlight.computeIfAbsent(key) {
+                scope.async(start = CoroutineStart.LAZY) {
+                    try {
+                        block()
+                    } finally {
+                        inFlight.remove(key)
+                    }
+                }
+            }
+
+            return deferred.await()
+        }
+    }
 }
