@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -379,12 +379,13 @@ object HybrisIcons {
             val BRANCH = AllIcons.Vcs.Branch
             val REVISION = AllIcons.Vcs.CommitNode
             val CREATED_BY = AllIcons.General.User
+            val DEPLOYED = AllIcons.RunConfigurations.TestPassed
 
             object Status {
                 val UNKNOWN = AllIcons.RunConfigurations.TestUnknown
                 val SCHEDULED = AllIcons.Actions.Profile
                 val BUILDING = AllIcons.RunConfigurations.TestCustom
-                val SUCCESS = AllIcons.RunConfigurations.TestPassed
+                val SUCCESS = AllIcons.General.InspectionsOKEmpty
                 val FAIL = AllIcons.RunConfigurations.TestFailed
                 val DELETED = AllIcons.Debugger.KillProcess
             }
