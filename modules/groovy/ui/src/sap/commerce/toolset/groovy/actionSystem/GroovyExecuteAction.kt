@@ -137,13 +137,10 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String {
         val psiFile = CommonDataKeys.PSI_FILE.getData(e.dataContext) ?: return content
-
         val selectionModel = editor.selectionModel
-
         var processedContent = content
 
         if (selectionModel.hasSelection() && psiFile is GroovyFile && !psiFile.importStatements.isEmpty()) {
-
             val document = editor.document
             val selectionStartLine = document.getLineNumber(selectionModel.selectionStart)
             val selectionEndLine = document.getLineNumber(selectionModel.selectionEnd)
@@ -158,7 +155,6 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 val importBlock = importStatements.joinToString(separator = "\n")
                 processedContent = "$importBlock\n\n$processedContent"
             }
-
         }
 
         processedContent = "/* ${psiFile.name} */\n$processedContent"

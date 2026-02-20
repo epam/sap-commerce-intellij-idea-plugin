@@ -48,6 +48,7 @@ dependencies {
         }
 
         bundledPlugins(
+            "com.intellij.java",
             "org.intellij.groovy",
         )
     }

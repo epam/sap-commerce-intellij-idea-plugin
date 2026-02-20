@@ -34,7 +34,7 @@ class CngWidgetConnectionWidgetIdReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
     ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
-        val references = if (element is XmlAttributeValue)
+        val references: Array<PsiReference> = if (element is XmlAttributeValue)
             if (element.value.startsWith(CngConstants.COCKPIT_NG_WIDGET_ID_STUB, true)) arrayOf(CngWidgetStubReference(element))
             else arrayOf(CngWidgetReference(element))
         else emptyArray()

@@ -50,7 +50,7 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
         val references = process(text)
             .mapNotNull {
                 val meta = metaModelAccess.findMetasByName(it.value).firstOrNull()
-                    ?: return@mapNotNull null
+                    ?: return@mapNotNull null as? PsiReference
 
                 val textRange = TextRange.from(it.key, it.value.length)
 
