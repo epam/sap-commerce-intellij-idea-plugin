@@ -38,10 +38,11 @@ data class CCv2BuildDto(
     val version: String,
     val revision: String,
     val link: String?,
+    val deployed: Boolean,
 ) : CCv2Dto {
     val duration = getTimeDiffInMinutes(startTime, endTime).takeIf { it.toInt() != -1 } ?: "N/A"
 
-    fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
+    fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN && !deployed
     fun canDownloadLogs() = status != CCv2BuildStatus.DELETED
     fun canDeploy() = status == CCv2BuildStatus.SUCCESS
     fun canTrack() = status == CCv2BuildStatus.SCHEDULED || status == CCv2BuildStatus.BUILDING || status == CCv2BuildStatus.UNKNOWN
@@ -49,6 +50,7 @@ data class CCv2BuildDto(
     companion object {
         fun map(build: BuildDetailDTO) = CCv2BuildDto(
             code = build.code ?: "N/A",
+            deployed = build.deployed ?: false,
             name = build.name ?: "N/A",
             branch = build.branch ?: "N/A",
             status = CCv2BuildStatus.tryValueOf(build.status),
