@@ -46,6 +46,10 @@ dependencies {
             useInstaller = false
         }
 
+        bundledModules(
+            "intellij.spellchecker",
+        )
+
         bundledPlugins(
             "com.intellij.java",
         )
