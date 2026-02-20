@@ -5,7 +5,7 @@
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.0+author%3Amlytvyn+is%3Apr)
 
 ### Other
-- Inspection: reuse already declared namespace [#1736](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1736)
+- Compatibility release for IDE 2026 [#1741](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1741)
 
 ## [2025.3.3.2]
 
