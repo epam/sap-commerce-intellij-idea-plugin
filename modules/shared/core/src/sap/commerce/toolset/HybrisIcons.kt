@@ -398,6 +398,7 @@ object HybrisIcons {
                 val DOWNLOAD_LOGS = AllIcons.Actions.Download
                 val SHOW_DETAILS = BUILDS
                 val WATCH = AllIcons.Debugger.Watch
+                val CLEANUP = AllIcons.Actions.ClearCash
             }
         }
 

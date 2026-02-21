@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,33 +21,50 @@ package sap.commerce.toolset.ccv2.ui
 import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBColor
+import com.intellij.ui.components.ActionLink
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.Row
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.formatTime
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
+import sap.commerce.toolset.ui.copyLink
 import java.time.OffsetDateTime
 import javax.swing.Icon
+import javax.swing.JLabel
 
 fun Row.date(label: String, dateTime: OffsetDateTime?) {
     label(formatTime(dateTime))
         .comment(label)
 }
 
-fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Created by") {
+fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Created by"): Cell<ActionLink> {
     icon(icon)
         .gap(RightGap.SMALL)
     val sUser = CCv2DeveloperSettings.getInstance(project).getSUser(sUserId)
-    link(sUser.presentableName) { SUserDetailsDialog(project, sUser).showAndGet() }
+    return link(sUser.presentableName) { SUserDetailsDialog(project, sUser).showAndGet() }
         .comment(label)
         .applyToComponent {
             HelpTooltip()
                 .setTitle("Define an alias for the S-User")
                 .installOn(this)
         }
+}
+
+fun Row.branch(project: Project, build: CCv2BuildDto): Cell<ActionLink> {
+    icon(HybrisIcons.CCv2.Build.BRANCH).gap(RightGap.SMALL)
+    return copyLink(project, "Branch", build.branch, "Build Branch copied to clipboard")
+}
+
+fun Row.status(build: CCv2BuildDto): Cell<JLabel> {
+    icon(build.statusIcon)
+        .gap(RightGap.SMALL)
+    return label(build.status.title)
+        .comment("Status")
 }
 
 fun Row.dynatrace(environment: CCv2EnvironmentDto) {

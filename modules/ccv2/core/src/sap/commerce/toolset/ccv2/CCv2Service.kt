@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -354,14 +354,19 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
     fun fetchBuilds(
         subscriptions: Collection<CCv2Subscription>,
-        onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2BuildDto>>) -> Unit
+        onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2BuildDto>>) -> Unit,
+        withoutStatuses: List<CCv2BuildStatus>? = null,
+        top: Int = 20,
+        sendEvents: Boolean = true
     ) {
-        project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingStarted(subscriptions)
+        if (sendEvents) project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingStarted(subscriptions)
 
         val ccv2Settings = CCv2DeveloperSettings.getInstance(project).ccv2Settings
-        val statusNot = CCv2BuildStatus.entries
-            .filterNot { ccv2Settings.showBuildStatuses.contains(it) }
-            .map { it.name }
+        val statusNot = withoutStatuses
+            ?.map { it.name }
+            ?: CCv2BuildStatus.entries
+                .filterNot { ccv2Settings.showBuildStatuses.contains(it) }
+                .map { it.name }
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Builds...", true) {
@@ -375,7 +380,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                     subscription to (getApiContext(subscription)
                                         ?.let { apiContext ->
                                             try {
-                                                return@let CCv2Api.getInstance().fetchBuilds(apiContext, subscription, statusNot, progressReporter)
+                                                return@let CCv2Api.getInstance().fetchBuilds(apiContext, subscription, statusNot, top, progressReporter)
                                             } catch (e: SocketTimeoutException) {
                                                 notifyOnTimeout(subscription, e)
                                             } catch (e: RuntimeException) {
@@ -393,7 +398,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 }
 
                 onCompleteCallback.invoke(builds)
-                project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingCompleted(builds)
+                if (sendEvents) project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingCompleted(builds)
             }
         }
     }
@@ -476,18 +481,37 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         }
     }
 
+    fun deleteBuilds(project: Project, subscription: CCv2Subscription, builds: Collection<CCv2BuildDto>) {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Deleting ${builds.size} CCv2 Builds...") {
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
+
+                try {
+                    reportProgressScope(builds.size) { progress ->
+                        builds.forEach { build ->
+                            progress.sizedStep(1, "Deleting - ${build.code}") {
+                                CCv2Api.getInstance().deleteBuild(apiContext, subscription, build)
+                            }
+                        }
+                    }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout(subscription, e)
+                } catch (e: RuntimeException) {
+                    notifyOnException(subscription, e)
+                }
+            }
+        }
+    }
+
     fun deleteBuild(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Deleting CCv2 Build - ${build.code}...") {
                 project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildRemovalStarted(subscription, build)
-
-                val apiContext = getApiContext(subscription)
-                if (apiContext == null) {
-                    project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildRemovalRequested(subscription, build)
-                    return@withBackgroundProgress
-                }
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
 
                 try {
+                    project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildRemovalRequested(subscription, build)
+
                     CCv2Api.getInstance()
                         .deleteBuild(apiContext, subscription, build)
                         .also {

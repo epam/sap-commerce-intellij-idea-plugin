@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,7 +59,7 @@ fun DialogWrapper.banner(
     text: String,
     status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info
 ) = EditorNotificationPanel(null as FileEditor?, status).apply {
-    this.text = text
+    this.text = if (text.contains("<html>")) text else "<html>$text</html>"
     border = JBUI.Borders.compound(
         ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER),
         border
