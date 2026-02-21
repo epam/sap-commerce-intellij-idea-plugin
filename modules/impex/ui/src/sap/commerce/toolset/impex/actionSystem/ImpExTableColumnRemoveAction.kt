@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,11 +23,14 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.currentThreadCoroutineScope
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.platform.util.progress.forEachWithProgress
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.util.asSafely
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,6 +39,7 @@ import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
 import sap.commerce.toolset.psi.PsiTreeUtilExt
+import sap.commerce.toolset.text.removeRanges
 
 class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
 
@@ -67,32 +71,44 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
                 }
             } ?: return@launch
 
-            val elements = readAction {
-                fullHeaderParameter.valueGroups
-                    .filter { it.isValid }
-                    .reversed()
-            }
+            val textRanges = buildList {
+                readAction {
+                    fullHeaderParameter.valueGroups
+                        .filter { it.isValid }
+                        .forEach { valueGroup ->
+                            val startOffset = valueGroup.textRange.startOffset
+                            val endOffset = valueGroup.nextSibling.asSafely<PsiWhiteSpace>()
+                                ?.textRange?.endOffset
+                                ?: valueGroup.textRange.endOffset
+                            add(TextRange(startOffset, endOffset))
+                        }
+                }
+
+                readAction {
+                    val startOffset = PsiTreeUtilExt.getPrevSiblingOfElementType(fullHeaderParameter, ImpExTypes.PARAMETERS_SEPARATOR)
+                        ?.textRange?.startOffset
+                        ?: fullHeaderParameter.textRange.startOffset
+                    val endOffset = fullHeaderParameter.nextSibling.asSafely<PsiWhiteSpace>()
+                        ?.textRange?.endOffset
+                        ?: fullHeaderParameter.textRange.endOffset
+
+                    add(TextRange(startOffset, endOffset))
+                }
+            }.sortedByDescending { it.startOffset }
+
+            val document = PsiDocumentManager.getInstance(project).getDocument(psiFile)
+                ?: return@launch
+
+            val newContent = psiFile.text.removeRanges(textRanges)
 
             withContext(Dispatchers.EDT) {
                 PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
                     runWithModalProgressBlocking(project, "Removing '${fullHeaderParameter.text}' column") {
-                        elements.forEachWithProgress {
-                            WriteCommandAction.runWriteCommandAction(
-                                project, commandName, groupID,
-                                { it.delete() },
-                                psiFile
-                            )
-                        }
+                        WriteCommandAction.runWriteCommandAction(project) {
+                            document.replaceString(0, document.textLength, newContent)
 
-                        WriteCommandAction.runWriteCommandAction(
-                            project, commandName, groupID,
-                            {
-                                PsiTreeUtilExt.getPrevSiblingOfElementType(fullHeaderParameter, ImpExTypes.PARAMETERS_SEPARATOR)
-                                    ?.delete()
-                                fullHeaderParameter.delete()
-                            },
-                            psiFile
-                        )
+                            PsiDocumentManager.getInstance(project).commitDocument(document)
+                        }
                     }
                 }
             }

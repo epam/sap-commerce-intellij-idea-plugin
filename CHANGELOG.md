@@ -2,7 +2,7 @@
 
 <cite>Release contributors</cite>
 
-- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.0+author%3Amlytvyn+is%3Apr)
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.0+author%3Amlytvyn+is%3Apr)
 
 ### Other
 - Compatibility release for IDE 2026 [#1741](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1741)
@@ -11,6 +11,9 @@
 - Hide `delete a build` action for deployed builds [#1742](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1742)
 - Use different icon for non/deployed builds [#1743](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1743)
 - New action for bulk-removal of the builds [#1744](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1744)
+
+### `ImpEx` enhancements
+- Optimized column delete action [#1745](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1745)
 
 ## [2025.3.3.2]
 
