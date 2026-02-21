@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -60,31 +60,29 @@ class ImpExHighlightingCaretListener : CaretListener {
         var highlightJob = editor.getUserData(KEY_JOB_CACHE)
 
         highlightJob?.cancel()
-        highlightJob =
-            CoroutineScope(Dispatchers.Default).launch {
-                println("starting highlight")
-                if (project.isDisposed) return@launch
+        highlightJob = CoroutineScope(Dispatchers.Default).launch {
+            if (project.isDisposed) return@launch
 
-                val elements = readAction {
-                    ImpExPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
-                        ?.asSafely<ImpExFullHeaderParameter>()
-                        ?.let { listOf(it) }
-                        ?: ImpExPsiUtils.getFullHeaderParameterUnderCaret(editor)
-                            ?.valueGroups
-                            ?.let { it.mapNotNull { ivg -> ivg.value } }
-                        ?: emptyList()
-                }
-
-                val ranges = elements.takeIf { it.isNotEmpty() }
-                    ?.map { it.textRange }
-                    ?.toSet()
-                    ?: emptySet()
-                ranges
-                    .filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
-                    .let { textRanges -> highlightArea(editor, textRanges) }
-
-                cleanup(editor, ranges)
+            val elements = readAction {
+                ImpExPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
+                    ?.asSafely<ImpExFullHeaderParameter>()
+                    ?.let { listOf(it) }
+                    ?: ImpExPsiUtils.getFullHeaderParameterUnderCaret(editor)
+                        ?.valueGroups
+                        ?.let { it.mapNotNull { ivg -> ivg.value } }
+                    ?: emptyList()
             }
+
+            val ranges = elements.takeIf { it.isNotEmpty() }
+                ?.map { it.textRange }
+                ?.toSet()
+                ?: emptySet()
+            ranges
+                .filterNot { textRange -> FoldingUtil.isTextRangeFolded(editor, textRange) }
+                .let { textRanges -> highlightArea(editor, textRanges) }
+
+            cleanup(editor, ranges)
+        }
         editor.putUserData(KEY_JOB_CACHE, highlightJob)
     }
 
