@@ -15,39 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.ccv2.actionSystem
 
-fun properties(key: String) = providers.gradleProperty(key)
+import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
+import sap.commerce.toolset.ccv2.ui.CCv2CleanupBuildsDialog
+import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+class CCv2CleanupBuildsAction : CCv2Action(
+    tab = CCv2ToolWindowContentTab.BUILDS,
+    text = "Cleanup Builds",
+    icon = HybrisIcons.CCv2.Build.Actions.CLEANUP
+) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val subscription = CCv2DeveloperSettings.getInstance(project).getActiveCCv2Subscription()
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":cockpitNG-core"))
-    implementation(project(":typeSystem-core"))
-
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.spring",
-            "com.intellij.javaee",
-            "com.intellij.javaee.el",
-        )
+        CCv2CleanupBuildsDialog(project, subscription).showAndGet()
     }
 }

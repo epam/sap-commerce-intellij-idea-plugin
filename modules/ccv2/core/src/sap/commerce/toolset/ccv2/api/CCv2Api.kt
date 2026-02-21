@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -208,12 +208,13 @@ class CCv2Api {
         apiContext: ApiContext,
         subscription: CCv2Subscription,
         statusNot: List<String>?,
+        top: Int,
         progressReporter: ProgressReporter
     ) = progressReporter.sizedStep(1, "Fetching Builds for subscription: ${subscription.presentableName}") {
         api(apiContext, BuildApi::class)
             .getBuilds(
                 subscriptionCode = subscription.id!!,
-                dollarTop = 20,
+                dollarTop = top,
                 statusNot = statusNot,
                 requestHeaders = createRequestParams(apiContext)
             )
