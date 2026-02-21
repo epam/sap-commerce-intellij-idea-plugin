@@ -37,10 +37,8 @@ import java.time.OffsetDateTime
 import javax.swing.Icon
 import javax.swing.JLabel
 
-fun Row.date(label: String, dateTime: OffsetDateTime?) {
-    label(formatTime(dateTime))
-        .comment(label)
-}
+fun Row.date(label: String, dateTime: OffsetDateTime?): Cell<JLabel> = label(formatTime(dateTime))
+    .comment(label)
 
 fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Created by"): Cell<ActionLink> {
     icon(icon)
@@ -74,7 +72,7 @@ fun Row.dynatrace(environment: CCv2EnvironmentDto) {
         .enabled(environment.dynatraceLink != null)
         .comment(
             environment.problems
-            ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
+                ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
 }
 
 fun Panel.ccv2ServiceStatusRow(service: CCv2ServiceDto) {

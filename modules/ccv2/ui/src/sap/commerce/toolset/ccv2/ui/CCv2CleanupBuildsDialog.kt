@@ -28,6 +28,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
@@ -160,6 +161,7 @@ class CCv2CleanupBuildsDialog(
     private fun refreshAutoDeploymentPanel(subscription: CCv2Subscription?) {
         isOKActionEnabled = false
         loadDisposable.dispose()
+        loadDisposable = Disposer.newDisposable(disposable)
         cleanableBuilds.clear()
         resultsHeaderToggle.set(false)
 
@@ -188,7 +190,7 @@ class CCv2CleanupBuildsDialog(
                 val environmentsPanel = getEnvironmentsPanel(builds, subscription)
 
                 resultsHeaderToggle.set(cleanableBuilds.isNotEmpty())
-                totalLabel.text = "Found ${cleanableBuilds.size} clearable builds"
+                totalLabel.text = "Found ${cleanableBuilds.size} removable builds"
                 placeholder.component = environmentsPanel
             },
             sendEvents = false
@@ -199,29 +201,37 @@ class CCv2CleanupBuildsDialog(
         buildsPerSubscription: SortedMap<CCv2Subscription, Collection<CCv2BuildDto>>,
         subscription: CCv2Subscription
     ): DialogPanel = buildsPerSubscription[subscription]
-        ?.filter { it.canDelete() }
         ?.takeIf { it.isNotEmpty() }
-        ?.let { builds ->
+        ?.groupBy { it.canDelete() }
+        ?.let { groupedBuilds ->
             panel {
-                builds.forEach { build ->
-                    val flag = AtomicBooleanProperty(false).apply {
-                        afterChange(loadDisposable) {
-                            isOKActionEnabled = cleanableBuilds.values.any { it.get() }
+                val selectableBuilds = groupedBuilds[true] ?: emptyList()
+                val nonSelectableBuilds = groupedBuilds[false] ?: emptyList()
+
+                selectableBuilds.forEach { build ->
+                    buildRow(build) {
+                        val flag = cleanableBuilds.computeIfAbsent(build) {
+                            AtomicBooleanProperty(false).apply {
+                                afterChange(loadDisposable) {
+                                    isOKActionEnabled = cleanableBuilds.values.any { it.get() }
+                                }
+                            }
                         }
+
+                        it.bindSelected(flag)
                     }
-                    cleanableBuilds[build] = flag
+                }
+
+                if (nonSelectableBuilds.isNotEmpty() && selectableBuilds.isNotEmpty()) {
+                    separator()
 
                     row {
-                        checkBox(StringUtil.first(build.name, 20, true))
-                            .comment(build.code)
-                            .gap(RightGap.COLUMNS)
-                            .bindSelected(flag)
-
-                        status(build).gap(RightGap.COLUMNS)
-                        sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY).gap(RightGap.COLUMNS)
-                        date("Start time", build.startTime)
-                    }.layout(RowLayout.PARENT_GRID)
+                        label("Non-removable deployed builds")
+                            .align(AlignX.CENTER)
+                    }
                 }
+
+                nonSelectableBuilds.forEach { build -> buildRow(build) }
             }
                 .apply { border = JBUI.Borders.emptyRight(16) }
                 .let { scrollPanel(it) }
@@ -231,6 +241,19 @@ class CCv2CleanupBuildsDialog(
             "No builds eligible for cleanup...",
             AllIcons.General.Warning,
         )
+
+    private fun Panel.buildRow(build: CCv2BuildDto, applyCheckBox: (Cell<JBCheckBox>) -> Unit = {}) = row {
+        checkBox(StringUtil.first(build.name, 20, true))
+            .comment(build.code)
+            .gap(RightGap.COLUMNS)
+            .enabled(build.canDelete())
+            .widthGroup("1")
+            .apply { applyCheckBox(this) }
+
+        status(build).gap(RightGap.COLUMNS).widthGroup("2")
+        sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY).gap(RightGap.COLUMNS).widthGroup("3")
+        date("Start time", build.startTime).widthGroup("FIRST").widthGroup("4")
+    }.layout(RowLayout.PARENT_GRID)
 
     private fun infoPanel(message: String, icon: Icon): DialogPanel = panel {
         row {
