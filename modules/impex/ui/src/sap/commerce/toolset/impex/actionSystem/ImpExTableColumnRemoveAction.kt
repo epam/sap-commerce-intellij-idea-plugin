@@ -75,7 +75,6 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
                 readAction {
                     fullHeaderParameter.valueGroups
                         .filter { it.isValid }
-                        .reversed()
                         .forEach { valueGroup ->
                             val startOffset = valueGroup.textRange.startOffset
                             val endOffset = valueGroup.nextSibling.asSafely<PsiWhiteSpace>()
