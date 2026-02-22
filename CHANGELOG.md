@@ -15,6 +15,7 @@
 ### Other
 - Compatibility release for IDE 2026 [#1741](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1741)
 - Reduced freeze on PsiTree changes [#1746](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1746)
+- Enable `Generate Dom` Action during sandbox development [#1747](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1747)
 
 ## [2025.3.3.2]
 

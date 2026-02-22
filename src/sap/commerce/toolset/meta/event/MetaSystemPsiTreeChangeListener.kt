@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.meta.event
 
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -30,7 +31,7 @@ import sap.commerce.toolset.beanSystem.BSDomFileDescription
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.cockpitNG.*
 import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorBase
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.psi.ImpExFile
@@ -79,7 +80,7 @@ class MetaSystemPsiTreeChangeListener(private val project: Project) : PsiTreeCha
 
             when (file) {
                 is FlexibleSearchPsiFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
-                    .filterIsInstance<FlexibleSearchSplitEditorBase>()
+                    .filterIsInstance<FlexibleSearchSplitEditorEx>()
                     .forEach { it.refreshParameters() }
 
                 is PolyglotQueryFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
@@ -91,7 +92,8 @@ class MetaSystemPsiTreeChangeListener(private val project: Project) : PsiTreeCha
                     .forEach { it.refreshParameters() }
 
                 is XmlFile -> {
-                    val domFileDescription = domManager.getDomFileDescription(file) ?: return@launch
+                    val domFileDescription = readAction { domManager.getDomFileDescription(file) }
+                        ?: return@launch
 
                     when (domFileDescription) {
                         is CngConfigDomFileDescription,
