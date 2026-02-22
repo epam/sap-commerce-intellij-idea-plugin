@@ -2,10 +2,7 @@
 
 <cite>Release contributors</cite>
 
-- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.0+author%3Amlytvyn+is%3Apr)
-
-### Other
-- Compatibility release for IDE 2026 [#1741](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1741)
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.0+author%3Amlytvyn+is%3Apr)
 
 ### `CCv2` enhancements
 - Hide `delete a build` action for deployed builds [#1742](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1742)
@@ -14,6 +11,10 @@
 
 ### `ImpEx` enhancements
 - Optimized column delete action [#1745](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1745)
+
+### Other
+- Compatibility release for IDE 2026 [#1741](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1741)
+- Reduced freeze on PsiTree changes [#1746](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1746)
 
 ## [2025.3.3.2]
 

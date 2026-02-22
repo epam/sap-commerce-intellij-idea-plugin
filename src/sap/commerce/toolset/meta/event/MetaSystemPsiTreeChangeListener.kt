@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,11 +25,12 @@ import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
+import kotlinx.coroutines.*
 import sap.commerce.toolset.beanSystem.BSDomFileDescription
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.cockpitNG.*
 import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorBase
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.psi.ImpExFile
@@ -38,6 +39,7 @@ import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
 import sap.commerce.toolset.typeSystem.TSDomFileDescription
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Psi Tree Change Listener is required to reset Meta Cache before invocation of the Inspections.
@@ -49,6 +51,7 @@ class MetaSystemPsiTreeChangeListener(private val project: Project) : PsiTreeCha
         if (project.isNotHybrisProject) throw ExtensionNotApplicableException.create()
     }
 
+    private var changeJob: Job? = null
     private val domManager by lazy { DomManager.getDomManager(project) }
     private val tsModificationTracker by lazy { TSModificationTracker.getInstance(project) }
     private val bsModificationTracker by lazy { BSModificationTracker.getInstance(project) }
@@ -70,34 +73,38 @@ class MetaSystemPsiTreeChangeListener(private val project: Project) : PsiTreeCha
     private fun doChange(event: PsiTreeChangeEvent) {
         val file = event.file ?: return
 
-        when (file) {
-            is FlexibleSearchPsiFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
-                .filterIsInstance<FlexibleSearchSplitEditorEx>()
-                .forEach { it.refreshParameters() }
+        changeJob?.cancel()
+        changeJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(250.milliseconds)
 
-            is PolyglotQueryFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
-                .filterIsInstance<PolyglotQuerySplitEditorEx>()
-                .forEach { it.refreshParameters() }
+            when (file) {
+                is FlexibleSearchPsiFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
+                    .filterIsInstance<FlexibleSearchSplitEditorBase>()
+                    .forEach { it.refreshParameters() }
 
-            is ImpExFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
-                .filterIsInstance<ImpExSplitEditorEx>()
-                .forEach { it.refreshParameters() }
+                is PolyglotQueryFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
+                    .filterIsInstance<PolyglotQuerySplitEditorEx>()
+                    .forEach { it.refreshParameters() }
 
-            is XmlFile -> {
-                val domFileDescription = domManager.getDomFileDescription(file) ?: return
+                is ImpExFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
+                    .filterIsInstance<ImpExSplitEditorEx>()
+                    .forEach { it.refreshParameters() }
 
-                when (domFileDescription) {
-                    is CngConfigDomFileDescription,
-                    is CngWidgetsDomFileDescription,
-                    is CngActionDefinitionDomFileDescription,
-                    is CngEditorDefinitionDomFileDescription,
-                    is CngWidgetDefinitionDomFileDescription -> cngModificationTracker.resetCache(file)
+                is XmlFile -> {
+                    val domFileDescription = domManager.getDomFileDescription(file) ?: return@launch
 
-                    is BSDomFileDescription -> bsModificationTracker.resetCache(file)
-                    is TSDomFileDescription -> tsModificationTracker.resetCache(file)
+                    when (domFileDescription) {
+                        is CngConfigDomFileDescription,
+                        is CngWidgetsDomFileDescription,
+                        is CngActionDefinitionDomFileDescription,
+                        is CngEditorDefinitionDomFileDescription,
+                        is CngWidgetDefinitionDomFileDescription -> cngModificationTracker.resetCache(file)
+
+                        is BSDomFileDescription -> bsModificationTracker.resetCache(file)
+                        is TSDomFileDescription -> tsModificationTracker.resetCache(file)
+                    }
                 }
             }
         }
-
     }
 }
