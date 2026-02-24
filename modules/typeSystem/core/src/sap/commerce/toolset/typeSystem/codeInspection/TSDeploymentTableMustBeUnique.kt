@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -48,9 +48,9 @@ class TSDeploymentTableMustBeUnique : TSInspection() {
         severity: HighlightSeverity
     ) {
         val deployment = TSMetaModelStateService.state(project).getDeploymentForTable(dom.table.value)
-        deployment ?: return
-
-        if (deployment.typeCode?.equals(dom.typeCode.stringValue) ?: false) return
+            ?.takeIf { it.size > 1 }
+            ?.find { it.retrieveDom() != dom }
+            ?: return
 
         holder.createProblem(
             dom.table,

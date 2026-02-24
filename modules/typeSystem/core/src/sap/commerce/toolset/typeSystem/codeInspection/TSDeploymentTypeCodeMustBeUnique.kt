@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,12 +19,10 @@
 package sap.commerce.toolset.typeSystem.codeInspection
 
 import com.intellij.openapi.project.Project
-import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaDeployment
 import sap.commerce.toolset.typeSystem.model.Deployment
 
 class TSDeploymentTypeCodeMustBeUnique : TSDeploymentTypeCodeInspection() {
 
-    override fun applicable(project: Project, dom: Deployment, deployment: TSMetaDeployment) = !StringUtils
-        .equals(dom.table.stringValue, deployment.table)
+    override fun applicable(project: Project, dom: Deployment, deployments: Collection<TSMetaDeployment>) = deployments.size > 1
 }
