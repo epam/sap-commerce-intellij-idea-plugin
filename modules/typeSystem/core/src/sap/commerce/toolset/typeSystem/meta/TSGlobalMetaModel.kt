@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,13 +28,13 @@ class TSGlobalMetaModel : GlobalMetaModel {
 
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitiveMap.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
-    private val myDeploymentTables = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>()
+    private val myDeploymentTables = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, MutableSet<TSMetaDeployment>>()
     private val myTypecode2Getters = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, Collection<String>>()
-    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>()
+    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, MutableSet<TSMetaDeployment>>()
 
-    fun getDeploymentForTable(table: String?): TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
-    fun getDeploymentForTypeCode(typeCode: Int?): TSMetaDeployment? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
-    fun getDeploymentForTypeCode(typeCode: String?): TSMetaDeployment? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
+    fun getDeploymentForTable(table: String?): Collection<TSMetaDeployment>? = if (table != null) myDeploymentTables[table] else null
+    fun getDeploymentForTypeCode(typeCode: Int?): Collection<TSMetaDeployment>? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
+    fun getDeploymentForTypeCode(typeCode: String?): Collection<TSMetaDeployment>? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
 
     @Suppress("UNCHECKED_CAST")
     fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: TSMetaType): ConcurrentMap<String, T> =
@@ -64,10 +64,10 @@ class TSGlobalMetaModel : GlobalMetaModel {
     fun getTypecode2Getters() = myTypecode2Getters
 
     fun addDeployment(deployment: TSMetaDeployment) {
-        myDeploymentTables[deployment.table] = deployment
+        myDeploymentTables.computeIfAbsent(deployment.table) { mutableSetOf() }.add(deployment)
         val typeCode = deployment.typeCode?.toIntOrNull()
         if (typeCode != null) {
-            myDeploymentTypeCodes[typeCode] = deployment
+            myDeploymentTypeCodes.computeIfAbsent(typeCode) { mutableSetOf() }.add(deployment)
         }
     }
 
