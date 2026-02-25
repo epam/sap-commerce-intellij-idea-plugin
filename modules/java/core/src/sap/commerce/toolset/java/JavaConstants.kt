@@ -23,8 +23,6 @@ object JavaConstants {
     object ModuleLibrary {
         const val COMPILE = "library"
         const val TEST = "library (test)"
-        const val BACKOFFICE = "backoffice library"
-        const val BACKOFFICE_TEST = "backoffice library (test)"
         const val ADDON = "addon library"
         const val ADDON_TEST = "addon library (test)"
     }
