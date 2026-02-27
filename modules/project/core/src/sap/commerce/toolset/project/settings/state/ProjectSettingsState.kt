@@ -39,6 +39,7 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val generateCodeOnServerRunConfiguration: Boolean = false,
     @JvmField @OptionTag val generateCodeTimeoutSeconds: Int = 60,
     @JvmField @OptionTag val importOotbModulesInReadOnlyMode: Boolean = true,
+    @JvmField @OptionTag val useRealPathForModuleRoot: Boolean = false,
     @JvmField @OptionTag val importCustomAntBuildFiles: Boolean = false,
     @JvmField @OptionTag val showFullModuleName: Boolean = false,
     @JvmField @OptionTag val removeExternalModulesOnRefresh: Boolean = false,

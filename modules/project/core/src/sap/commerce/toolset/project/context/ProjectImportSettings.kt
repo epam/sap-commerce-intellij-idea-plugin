@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 
 data class ProjectImportSettings(
     val importOOTBModulesInReadOnlyMode: Boolean,
+    val useRealPathForModuleRoot: Boolean,
     val importCustomAntBuildFiles: Boolean,
     val ignoreNonExistingSourceDirectories: Boolean,
     val hideEmptyMiddleFolders: Boolean,
@@ -52,6 +53,7 @@ data class ProjectImportSettings(
 
     fun mutable() = Mutable(
         importOOTBModulesInReadOnlyMode = AtomicBooleanProperty(importOOTBModulesInReadOnlyMode),
+        useRealPathForModuleRoot = AtomicBooleanProperty(useRealPathForModuleRoot),
         importCustomAntBuildFiles = AtomicBooleanProperty(importCustomAntBuildFiles),
         ignoreNonExistingSourceDirectories = AtomicBooleanProperty(ignoreNonExistingSourceDirectories),
         hideEmptyMiddleFolders = AtomicBooleanProperty(hideEmptyMiddleFolders),
@@ -76,6 +78,7 @@ data class ProjectImportSettings(
 
     data class Mutable(
         val importOOTBModulesInReadOnlyMode: AtomicBooleanProperty,
+        val useRealPathForModuleRoot: AtomicBooleanProperty,
         val importCustomAntBuildFiles: AtomicBooleanProperty,
         val ignoreNonExistingSourceDirectories: AtomicBooleanProperty,
         val hideEmptyMiddleFolders: AtomicBooleanProperty,
@@ -99,6 +102,7 @@ data class ProjectImportSettings(
     ) {
         fun immutable() = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = importOOTBModulesInReadOnlyMode.get(),
+            useRealPathForModuleRoot = useRealPathForModuleRoot.get(),
             importCustomAntBuildFiles = importCustomAntBuildFiles.get(),
             ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories.get(),
             hideEmptyMiddleFolders = hideEmptyMiddleFolders.get(),
@@ -125,6 +129,7 @@ data class ProjectImportSettings(
     companion object {
         fun of(applicationSettings: ApplicationSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = applicationSettings.importOOTBModulesInReadOnlyMode,
+            useRealPathForModuleRoot = applicationSettings.useRealPathForModuleRoot,
             importCustomAntBuildFiles = applicationSettings.importCustomAntBuildFiles,
             ignoreNonExistingSourceDirectories = applicationSettings.ignoreNonExistingSourceDirectories,
             hideEmptyMiddleFolders = applicationSettings.hideEmptyMiddleFolders,
@@ -148,6 +153,7 @@ data class ProjectImportSettings(
 
         fun of(applicationSettings: ApplicationSettings, projectSettings: ProjectSettings) = ProjectImportSettings(
             importOOTBModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode,
+            useRealPathForModuleRoot = projectSettings.useRealPathForModuleRoot,
             importCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles,
             unusedExtensions = projectSettings.unusedExtensions,
 
