@@ -89,6 +89,11 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(importOotbModulesInReadOnlyMode = value) }
         }
+    var useRealPathForModuleRoot
+        get() = state.useRealPathForModuleRoot
+        set(value) {
+            updateState { it.copy(useRealPathForModuleRoot = value) }
+        }
     var importCustomAntBuildFiles
         get() = state.importCustomAntBuildFiles
         set(value) {

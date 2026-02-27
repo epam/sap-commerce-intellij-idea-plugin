@@ -94,6 +94,10 @@ class ModuleRootsScanner {
                                 }
                             }
 
+                            resolvedPath = if (context.settings.useRealPathForModuleRoot) runCatching { resolvedPath.toRealPath() }
+                                .getOrElse { resolvedPath }
+                            else resolvedPath
+
                             return when {
                                 resolvedPath.isHidden -> {
                                     logger.debug("Skipping hidden directory: $resolvedPath")

@@ -1,3 +1,12 @@
+## [2026.0.1]
+
+<cite>Release contributors</cite>
+
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.1+author%3Amlytvyn+is%3Apr)
+
+### `Project Import` enhancements
+- New flag to use `Real Path` for symlinked modules [#1750](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1750)
+
 ## [2026.0.0]
 
 <cite>Release contributors</cite>

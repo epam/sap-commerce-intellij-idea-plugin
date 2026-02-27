@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -270,6 +270,13 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
         }
 
         group(i18n("hybris.project.import.projectImportSettings.title")) {
+            row {
+                checkBox(i18n("hybris.import.wizard.import.useRealPathForModuleRoot.label"))
+                    .bindSelected(context.importSettings.useRealPathForModuleRoot)
+                contextHelp(i18n("hybris.import.wizard.import.useRealPathForModuleRoot.description"))
+                    .customize(rightGaps)
+            }
+
             row {
                 checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
                     .bindSelected(context.importSettings.importOOTBModulesInReadOnlyMode)
