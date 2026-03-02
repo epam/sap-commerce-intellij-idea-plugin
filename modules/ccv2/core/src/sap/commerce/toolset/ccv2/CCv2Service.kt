@@ -357,6 +357,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2BuildDto>>) -> Unit,
         withoutStatuses: List<CCv2BuildStatus>? = null,
         top: Int = 20,
+        orderBy: String? = null,
         sendEvents: Boolean = true
     ) {
         if (sendEvents) project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingStarted(subscriptions)
@@ -380,7 +381,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                                     subscription to (getApiContext(subscription)
                                         ?.let { apiContext ->
                                             try {
-                                                return@let CCv2Api.getInstance().fetchBuilds(apiContext, subscription, statusNot, top, progressReporter)
+                                                return@let CCv2Api.getInstance().fetchBuilds(apiContext, subscription, statusNot, top, orderBy, progressReporter)
                                             } catch (e: SocketTimeoutException) {
                                                 notifyOnTimeout(subscription, e)
                                             } catch (e: RuntimeException) {

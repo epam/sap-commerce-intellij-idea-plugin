@@ -209,6 +209,7 @@ class CCv2Api {
         subscription: CCv2Subscription,
         statusNot: List<String>?,
         top: Int,
+        orderBy: String?,
         progressReporter: ProgressReporter
     ) = progressReporter.sizedStep(1, "Fetching Builds for subscription: ${subscription.presentableName}") {
         api(apiContext, BuildApi::class)
@@ -216,6 +217,7 @@ class CCv2Api {
                 subscriptionCode = subscription.id!!,
                 dollarTop = top,
                 statusNot = statusNot,
+                dollarOrderby = orderBy,
                 requestHeaders = createRequestParams(apiContext)
             )
             .value

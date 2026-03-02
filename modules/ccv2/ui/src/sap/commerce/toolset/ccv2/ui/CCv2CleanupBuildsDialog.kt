@@ -36,6 +36,7 @@ import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
+import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderField
 import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
@@ -45,6 +46,7 @@ import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.io.Serial
 import java.util.*
+import javax.swing.DefaultComboBoxModel
 import javax.swing.Icon
 import javax.swing.JLabel
 
@@ -55,6 +57,7 @@ class CCv2CleanupBuildsDialog(
 
     private lateinit var subscriptionComboBox: ComboBox<CCv2Subscription>
     private lateinit var topField: JBTextField
+    private lateinit var sortField: ComboBox<CCv2BuildOrderField>
     private lateinit var totalLabel: JLabel
     private lateinit var placeholder: Placeholder
     private var loadDisposable = Disposer.newDisposable(disposable)
@@ -115,7 +118,17 @@ class CCv2CleanupBuildsDialog(
                 .align(AlignX.FILL)
                 .text("20")
                 .component
+
+            sortField = comboBox(
+                model = DefaultComboBoxModel(CCv2BuildOrderField.entries.toTypedArray()),
+                renderer = SimpleListCellRenderer.create("...") { value -> value.title }
+            )
+                .label("Sort by:")
+                .align(Align.FILL)
+                .component
+                .apply { selectedItem = CCv2BuildOrderField.START_TIME_ASC }
         }.layout(RowLayout.PARENT_GRID)
+
 
         separator()
 
@@ -180,10 +193,12 @@ class CCv2CleanupBuildsDialog(
         )
 
         val top = topField.text.toIntOrNull() ?: 20
+        val sort = sortField.selectedItem?.asSafely<CCv2BuildOrderField>() ?: CCv2BuildOrderField.START_TIME_DESC
 
         CCv2Service.getInstance(project).fetchBuilds(
             subscriptions = listOf(subscription),
             top = top,
+            orderBy = sort.orderBy,
             withoutStatuses = CCv2BuildStatus.entries
                 .filterNot { it == CCv2BuildStatus.FAIL || it == CCv2BuildStatus.SUCCESS },
             onCompleteCallback = { builds ->
