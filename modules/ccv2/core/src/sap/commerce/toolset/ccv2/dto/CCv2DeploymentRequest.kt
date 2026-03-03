@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package sap.commerce.toolset.ccv2.dto
 data class CCv2DeploymentRequest(
     val environment: CCv2EnvironmentDto,
     val mode: CCv2DeploymentDatabaseUpdateModeEnum,
-    val strategy: CCv2DeploymentStrategyEnum,
+    val strategy: CCv2DeploymentStrategy,
     val deploy: Boolean,
     val track: Boolean
 )

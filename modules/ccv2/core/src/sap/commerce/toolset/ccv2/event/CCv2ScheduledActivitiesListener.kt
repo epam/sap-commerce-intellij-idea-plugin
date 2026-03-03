@@ -16,24 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.dto
+package sap.commerce.toolset.ccv2.event
 
-import java.time.OffsetDateTime
+import com.intellij.util.messages.Topic
+import sap.commerce.toolset.ccv2.dto.CCv2ScheduledActivityDto
 
-data class CCv2DeploymentDto(
-    val code: String,
-    val createdBy: String,
-    val createdTime: OffsetDateTime?,
-    val buildCode: String,
-    val envCode: String,
-    val updateMode: CCv2DeploymentDatabaseUpdateModeEnum,
-    val strategy: CCv2DeploymentStrategy,
-    val scheduledTime: OffsetDateTime?,
-    val deployedTime: OffsetDateTime?,
-    val failedTime: OffsetDateTime?,
-    val undeployedTime: OffsetDateTime?,
-    val status: CCv2DeploymentStatus,
-    val link: String?,
-) : CCv2Dto {
-    fun canTrack() = status == CCv2DeploymentStatus.DEPLOYING || status == CCv2DeploymentStatus.SCHEDULED
+interface CCv2ScheduledActivitiesListener : CCv2Listener<CCv2ScheduledActivityDto> {
+    companion object {
+        val TOPIC = Topic(CCv2ScheduledActivitiesListener::class.java)
+    }
 }

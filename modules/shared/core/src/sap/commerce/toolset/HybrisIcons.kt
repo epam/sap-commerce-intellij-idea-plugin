@@ -367,6 +367,7 @@ object HybrisIcons {
         val ENVIRONMENTS = Extension.CLOUD
         val BUILDS = BuildCallbacks.FILE
         val DEPLOYMENTS = AllIcons.Nodes.Deploy
+        val SCHEDULED_ACTIVITIES = getIcon("/icons/ccv2/scheduledActivities.svg")
         val BACKUPS = AllIcons.Nodes.Undeploy
         val ENDPOINTS = AllIcons.General.Web
         val SHOW = AllIcons.Actions.Show
