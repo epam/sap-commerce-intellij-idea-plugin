@@ -96,6 +96,10 @@ class TSProjectConfigurableProvider(private val project: Project) : Configurable
 
             group("Diagram - Excluded Type Names", true) {
                 row {
+                    comment("Represents case-sensitive Type Names that will be excluded from the Diagram.")
+                }
+
+                row {
                     cell(excludedTypeNamesPane)
                         .onApply { tsDiagramMutableSettings.excludedTypeNames = getNewTypeNames() }
                         .onReset { excludedTypeNamesTable.updateModel(tsDiagramMutableSettings) }
