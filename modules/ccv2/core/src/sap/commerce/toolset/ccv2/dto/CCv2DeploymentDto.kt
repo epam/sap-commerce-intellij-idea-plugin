@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,13 +27,13 @@ data class CCv2DeploymentDto(
     val buildCode: String,
     val envCode: String,
     val updateMode: CCv2DeploymentDatabaseUpdateModeEnum,
-    val strategy: CCv2DeploymentStrategyEnum,
+    val strategy: CCv2DeploymentStrategy,
     val scheduledTime: OffsetDateTime?,
     val deployedTime: OffsetDateTime?,
     val failedTime: OffsetDateTime?,
     val undeployedTime: OffsetDateTime?,
-    val status: CCv2DeploymentStatusEnum,
+    val status: CCv2DeploymentStatus,
     val link: String?,
 ) : CCv2Dto {
-    fun canTrack() = status == CCv2DeploymentStatusEnum.DEPLOYING || status == CCv2DeploymentStatusEnum.SCHEDULED
+    fun canTrack() = status == CCv2DeploymentStatus.DEPLOYING || status == CCv2DeploymentStatus.SCHEDULED
 }

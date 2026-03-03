@@ -74,7 +74,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 * Fork and checkout most-active `main` branch the project
 * Refresh gradle dependencies
-* Execute gradle task `Run IDE - Ultimate` or `Run IDE - Community` for community edition
+* Execute gradle task `Run IDE`
 
 ### Build process debugging
 

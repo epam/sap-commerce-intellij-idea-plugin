@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,7 @@ import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2UiConstants
-import sap.commerce.toolset.ccv2.dto.CCv2DeploymentStatusEnum
+import sap.commerce.toolset.ccv2.dto.CCv2DeploymentStatus
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2ToolWindowContentTab
@@ -169,7 +169,7 @@ object CCv2EnvironmentsDataView : CCv2DataView<CCv2EnvironmentDto>() {
                         .comment("Build branch")
                 }
             }
-        } else if (!EnumSet.of(CCv2DeploymentStatusEnum.UNDEPLOYED, CCv2DeploymentStatusEnum.UNKNOWN).contains(environment.deploymentStatus)) {
+        } else if (!EnumSet.of(CCv2DeploymentStatus.UNDEPLOYED, CCv2DeploymentStatus.UNKNOWN).contains(environment.deploymentStatus)) {
             panel {
                 row {
                     icon(AnimatedIcon.Default.INSTANCE)

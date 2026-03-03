@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,5 +42,7 @@ object CCv2UiConstants {
         val Deployment = DataKey.create<CCv2DeploymentDto>("CCv2_Deployment")
 
         val Endpoint = DataKey.create<CCv2EndpointDto>("CCv2_Endpoint")
+
+        val ScheduledActivity = DataKey.create<CCv2ScheduledActivityDto>("CCv2_scheduledActivity")
     }
 }

@@ -291,6 +291,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
                 try {
                     endpoints = fetchCacheableEnvironmentEndpoints(apiContext, subscription, environment)
+                        ?.takeIf { it.isNotEmpty() }
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
@@ -314,8 +315,8 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
 
                 try {
                     dataBackups = CCv2Api.getInstance().fetchEnvironmentDataBackups(apiContext, subscription, environment)
+                        ?.takeIf { it.isNotEmpty() }
                         ?.sortedByDescending { it.createdTimestamp }
-                        ?: emptyList()
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription, e)
                 } catch (e: RuntimeException) {
@@ -323,6 +324,31 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 }
 
                 onCompleteCallback.invoke(dataBackups)
+            }
+        }
+    }
+
+    fun fetchEnvironmentScheduledActivities(
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        onCompleteCallback: (Collection<CCv2ScheduledActivityDto>?) -> Unit
+    ) {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Environment Scheduled Activities...", true) {
+                val apiContext = getApiContext(subscription) ?: return@withBackgroundProgress
+                var scheduledActivities: Collection<CCv2ScheduledActivityDto>? = null
+
+                try {
+                    scheduledActivities = CCv2Api.getInstance().fetchScheduledActivities(apiContext, subscription, environment)
+                        ?.takeIf { it.isNotEmpty() }
+                        ?.sortedByDescending { it.createdTimestamp }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout(subscription, e)
+                } catch (e: RuntimeException) {
+                    notifyOnException(subscription, e)
+                }
+
+                onCompleteCallback.invoke(scheduledActivities)
             }
         }
     }
@@ -834,7 +860,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                             val reportProgress = progress.percentage - totalProgress
                             totalProgress = progress.percentage
 
-                            if (progress.deploymentStatus == CCv2DeploymentStatusEnum.FAIL) {
+                            if (progress.deploymentStatus == CCv2DeploymentStatus.FAIL) {
                                 cancel(CancellationException("Deployment failed"))
                             }
 

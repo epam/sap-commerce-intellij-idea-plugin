@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ data class CCv2EnvironmentDto(
     val name: String,
     val type: CCv2EnvironmentType,
     val status: CCv2EnvironmentStatus,
-    val deploymentStatus: CCv2DeploymentStatusEnum,
+    val deploymentStatus: CCv2DeploymentStatus,
     val deploymentAllowed: Boolean = false,
     var deployedBuild: CCv2BuildDto? = null,
     val dynatraceLink: String? = null,
@@ -38,6 +38,7 @@ data class CCv2EnvironmentDto(
     val mediaStorages: Collection<CCv2MediaStorageDto>,
     var services: Collection<CCv2ServiceDto>? = null,
     var dataBackups: Collection<CCv2DataBackupDto>? = null,
+    var scheduledActivities: Collection<CCv2ScheduledActivityDto>? = null,
     var endpoints: Collection<CCv2EndpointDto>? = null,
     var scaling: CCv2EnvironmentScalingDto? = null,
 ) : CCv2Dto, Comparable<CCv2EnvironmentDto> {
@@ -53,7 +54,7 @@ data class CCv2EnvironmentDto(
         }
 
     fun canDeploy() = (status in listOf(CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT, CCv2EnvironmentStatus.AVAILABLE))
-        && deploymentStatus in listOf(CCv2DeploymentStatusEnum.DEPLOYED, CCv2DeploymentStatusEnum.FAIL)
+        && deploymentStatus in listOf(CCv2DeploymentStatus.DEPLOYED, CCv2DeploymentStatus.FAIL)
 
     override fun compareTo(other: CCv2EnvironmentDto) = name.compareTo(other.name)
 
@@ -88,7 +89,7 @@ data class CCv2EnvironmentDto(
                 name = environment.name ?: "N/A",
                 status = status,
                 type = CCv2EnvironmentType.tryValueOf(environment.type),
-                deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
+                deploymentStatus = CCv2DeploymentStatus.tryValueOf(environment.deploymentStatus),
                 deploymentAllowed = canAccess && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT) && link != null,
                 dynatraceLink = v1Environment?.dynatraceUrl,
                 loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,6 +61,7 @@ class CCv2EnvironmentDetailsView(
     private val showServices = AtomicBooleanProperty(environment.services != null)
     private val showEndpoints = AtomicBooleanProperty(environment.endpoints != null)
     private val showDataBackups = AtomicBooleanProperty(environment.dataBackups != null)
+    private val showScheduledActivities = AtomicBooleanProperty(environment.scheduledActivities != null)
     private val showScaling = AtomicBooleanProperty(environment.scaling != null)
 
     private val buildPanel = JBPanel<JBPanel<*>>(GridBagLayout())
@@ -70,6 +71,8 @@ class CCv2EnvironmentDetailsView(
     private val endpointsPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private val dataBackupsPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+        .also { border = JBUI.Borders.empty() }
+    private val scheduledActivitiesPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private val scalingPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
@@ -124,6 +127,7 @@ class CCv2EnvironmentDetailsView(
             it.endpoints = null
             it.services = null
             it.dataBackups = null
+            it.scheduledActivities = null
             it.deployedBuild = null
 
             initPanel(it)
@@ -157,6 +161,7 @@ class CCv2EnvironmentDetailsView(
         initEndpointsPanel(environment)
         initServicesPanel(environment)
         initDataBackupsPanel(environment)
+        initScheduledActivitiesPanel(environment)
     }
 
     private fun initScalingPanel(environment: CCv2EnvironmentDto) {
@@ -230,21 +235,18 @@ class CCv2EnvironmentDetailsView(
 
         showEndpoints.set(false)
 
-        CCv2Service.getInstance(project).fetchEnvironmentEndpoints(
-            subscription, environment,
-            {
-                environment.endpoints = it
+        CCv2Service.getInstance(project).fetchEnvironmentEndpoints(subscription, environment) {
+            environment.endpoints = it
 
-                invokeLater {
-                    val panel = if (it != null) endpointsPanel(it)
-                    else CCv2ToolWindowUtil.noDataPanel("No public endpoints found")
+            invokeLater {
+                val panel = if (it != null) endpointsPanel(it)
+                else CCv2ToolWindowUtil.noDataPanel("No public endpoints found")
 
-                    endpointsPanel.removeAll()
-                    endpointsPanel.add(panel)
-                    showEndpoints.set(true)
-                }
+                endpointsPanel.removeAll()
+                endpointsPanel.add(panel)
+                showEndpoints.set(true)
             }
-        )
+        }
     }
 
     private fun initDataBackupsPanel(environment: CCv2EnvironmentDto) {
@@ -257,21 +259,42 @@ class CCv2EnvironmentDetailsView(
 
         showDataBackups.set(false)
 
-        CCv2Service.getInstance(project).fetchEnvironmentDataBackups(
-            subscription, environment,
-            {
-                environment.dataBackups = it
+        CCv2Service.getInstance(project).fetchEnvironmentDataBackups(subscription, environment) {
+            environment.dataBackups = it
 
-                invokeLater {
-                    val panel = if (it != null) dataBackupsPanel(it)
-                    else CCv2ToolWindowUtil.noDataPanel("No data backups found")
+            invokeLater {
+                val panel = if (it != null) dataBackupsPanel(it)
+                else CCv2ToolWindowUtil.noDataPanel("No data backups found")
 
-                    dataBackupsPanel.removeAll()
-                    dataBackupsPanel.add(panel)
-                    showDataBackups.set(true)
-                }
+                dataBackupsPanel.removeAll()
+                dataBackupsPanel.add(panel)
+                showDataBackups.set(true)
             }
-        )
+        }
+    }
+
+    private fun initScheduledActivitiesPanel(environment: CCv2EnvironmentDto) {
+        val scheduledActivities = environment.scheduledActivities
+        if (scheduledActivities != null) {
+            scheduledActivitiesPanel.removeAll()
+            scheduledActivitiesPanel.add(scheduledActivitiesPanel(scheduledActivities))
+            return
+        }
+
+        showScheduledActivities.set(false)
+
+        CCv2Service.getInstance(project).fetchEnvironmentScheduledActivities(subscription, environment) {
+            environment.scheduledActivities = it
+
+            invokeLater {
+                val panel = if (it != null) scheduledActivitiesPanel(it)
+                else CCv2ToolWindowUtil.noDataPanel("No scheduled activities found")
+
+                scheduledActivitiesPanel.removeAll()
+                scheduledActivitiesPanel.add(panel)
+                showScheduledActivities.set(true)
+            }
+        }
     }
 
     private fun scalingPanel(data: CCv2EnvironmentScalingDto) = panel {
@@ -520,6 +543,28 @@ class CCv2EnvironmentDetailsView(
         }
     }
 
+    private fun scheduledActivitiesPanel(scheduledActivities: Collection<CCv2ScheduledActivityDto>) = panel {
+        scheduledActivities.forEach { scheduledActivity ->
+            row {
+                icon(scheduledActivity.status.icon)
+                    .gap(RightGap.SMALL)
+                label(scheduledActivity.status.title)
+                    .comment("Status")
+                    .gap(RightGap.COLUMNS)
+
+                sUser(project, scheduledActivity.createdBy, HybrisIcons.CCv2.Build.CREATED_BY).gap(RightGap.COLUMNS)
+
+                contextHelp(scheduledActivity.activityType.description).gap(RightGap.SMALL)
+                label(scheduledActivity.activityType.title)
+                    .comment(scheduledActivity.activityName)
+                    .gap(RightGap.COLUMNS)
+
+                date("Created", scheduledActivity.createdTimestamp)
+                date("Scheduled", scheduledActivity.scheduledTimestamp)
+            }.layout(RowLayout.PARENT_GRID)
+        }
+    }
+
     private fun rootPanel(environment: CCv2EnvironmentDto) = panel {
         indent {
             row {
@@ -741,6 +786,21 @@ class CCv2EnvironmentDetailsView(
                         }
                     }.align(Align.CENTER)
                 }.visibleIf(showServices.not())
+            }.expanded = true
+
+            collapsibleGroup("Scheduled Activities") {
+                row {
+                    cell(scheduledActivitiesPanel)
+                }.visibleIf(showScheduledActivities)
+
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving scheduled activities...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showScheduledActivities.not())
             }.expanded = true
 
             collapsibleGroup("Data Backups") {
