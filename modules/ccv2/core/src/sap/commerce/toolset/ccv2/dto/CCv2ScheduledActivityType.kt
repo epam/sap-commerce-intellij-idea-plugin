@@ -19,11 +19,26 @@
 package sap.commerce.toolset.ccv2.dto
 
 enum class CCv2ScheduledActivityType(val title: String, val description: String) {
-    UPGRADE_PREMIUM_DR("Upgrade premium dr", "Changes the Disaster Recovery package from Standard to Premium."),
-    DOWNGRADE_TO_STANDARD_DR("Downgrade to standard dr", "Changes the Disaster Recovery package back from Premium to Standard."),
-    HIBERNATE_COMMERCE_ENVIRONMENT("Hibernate commerce environment", "If you have environments that are inactive, but you still want to keep them, you can place them in hibernation. This process archives the environment, and downgrades the databases and storage."),
-    WAKE_UP_COMMERCE_ENVIRONMENT("Wake up commerce environment", "If you have any hibernated environments, you can re-activate them with this activity type. This process wakes up the environment, restoring its database and any related media."),
-    UNKNOWN("Unknown", "Unknown scheduled activity type. Not yet supported by the Plugin.");
+    UPGRADE_PREMIUM_DR(
+        title = "Upgrade premium dr",
+        description = "Changes the Disaster Recovery package from Standard to Premium."
+    ),
+    DOWNGRADE_TO_STANDARD_DR(
+        title = "Downgrade to standard dr",
+        description = "Changes the Disaster Recovery package back from Premium to Standard."
+    ),
+    HIBERNATE_COMMERCE_ENVIRONMENT(
+        title = "Hibernate commerce environment",
+        description = "If you have environments that are inactive, but you still want to keep them, you can place them in hibernation. This process archives the environment, and downgrades the databases and storage."
+    ),
+    WAKE_UP_COMMERCE_ENVIRONMENT(
+        title = "Wake up commerce environment",
+        description = "If you have any hibernated environments, you can re-activate them with this activity type. This process wakes up the environment, restoring its database and any related media."
+    ),
+    UNKNOWN(
+        title = "Unknown",
+        description = "Unknown scheduled activity type. Not yet supported by the Plugin."
+    );
 
     companion object {
         fun tryValueOf(name: String?) = entries
