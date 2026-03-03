@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@ import sap.commerce.toolset.ccv2.model.CreateDeploymentRequestDTO
 import sap.commerce.toolset.ccv2.model.DeploymentDetailDTO
 import javax.swing.Icon
 
-enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon, val apiStrategy: CreateDeploymentRequestDTO.Strategy) {
+enum class CCv2DeploymentStrategy(val title: String, val icon: Icon, val apiStrategy: CreateDeploymentRequestDTO.Strategy) {
     ROLLING_UPDATE("Rolling update", HybrisIcons.CCv2.Deployment.Strategy.ROLLING_UPDATE, CreateDeploymentRequestDTO.Strategy.ROLLING_UPDATE),
     RECREATE("Recreate", HybrisIcons.CCv2.Deployment.Strategy.RECREATE, CreateDeploymentRequestDTO.Strategy.RECREATE),
     GREEN("Blue / Green", HybrisIcons.CCv2.Deployment.Strategy.GREEN, CreateDeploymentRequestDTO.Strategy.GREEN),

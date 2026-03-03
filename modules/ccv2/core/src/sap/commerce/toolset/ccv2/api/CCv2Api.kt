@@ -59,6 +59,7 @@ class CCv2Api {
                 EndpointApi::class -> EndpointApi(basePath = basePath, client = apiClient)
                 DeploymentApi::class -> DeploymentApi(basePath = basePath, client = apiClient)
                 BuildApi::class -> BuildApi(basePath = basePath, client = apiClient)
+                ScheduledActivityApi::class -> ScheduledActivityApi(basePath = basePath, client = apiClient)
                 ServicePropertiesApi::class -> ServicePropertiesApi(basePath = basePath, client = apiClient)
                 DatabackupApi::class -> DatabackupApi(basePath = basePath, client = apiClient)
                 else -> throw IllegalArgumentException("${kClass.simpleName} is not supported")
@@ -223,6 +224,21 @@ class CCv2Api {
             ?: emptyList()
     }
 
+    suspend fun fetchScheduledActivities(
+        apiContext: ApiContext,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        top: Int = 20,
+    ) = api(apiContext, ScheduledActivityApi::class)
+        .getScheduledActivities(
+            subscriptionCode = subscription.id!!,
+            dollarTop = top,
+            environmentCode = environment.code,
+            requestHeaders = createRequestParams(apiContext)
+        )
+        .value
+        ?.map { scheduledActivity -> CCv2ScheduledActivityDto.map(scheduledActivity) }
+
     suspend fun fetchDeployments(
         apiContext: ApiContext,
         subscription: CCv2Subscription,
@@ -320,7 +336,7 @@ class CCv2Api {
         environment: CCv2EnvironmentDto,
         build: CCv2BuildDto,
         mode: CCv2DeploymentDatabaseUpdateModeEnum,
-        strategy: CCv2DeploymentStrategyEnum
+        strategy: CCv2DeploymentStrategy
     ): String {
         val request = CreateDeploymentRequestDTO(
             buildCode = build.code,
@@ -403,12 +419,12 @@ class CCv2Api {
         buildCode = deployment.buildCode ?: "N/A",
         envCode = environmentCode ?: "N/A",
         updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(deployment.databaseUpdateMode),
-        strategy = CCv2DeploymentStrategyEnum.tryValueOf(deployment.strategy),
+        strategy = CCv2DeploymentStrategy.tryValueOf(deployment.strategy),
         scheduledTime = deployment.scheduledTimestamp,
         deployedTime = deployment.deployedTimestamp,
         failedTime = deployment.failedTimestamp,
         undeployedTime = deployment.undeployedTimestamp,
-        status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status),
+        status = CCv2DeploymentStatus.tryValueOf(deployment.status),
         link = link
     )
 

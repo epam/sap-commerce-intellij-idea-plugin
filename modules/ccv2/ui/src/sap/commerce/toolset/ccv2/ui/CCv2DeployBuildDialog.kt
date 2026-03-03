@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -53,7 +53,7 @@ class CCv2DeployBuildDialog(
     private lateinit var subscriptionComboBox: ComboBox<CCv2Subscription>
     private lateinit var environmentComboBox: ComboBox<CCv2EnvironmentDto>
     private lateinit var modeComboBox: ComboBox<CCv2DeploymentDatabaseUpdateModeEnum>
-    private lateinit var strategyComboBox: ComboBox<CCv2DeploymentStrategyEnum>
+    private lateinit var strategyComboBox: ComboBox<CCv2DeploymentStrategy>
     private lateinit var fetchingLabel: JLabel
     private lateinit var trackCheckBox: JBCheckBox
 
@@ -62,7 +62,7 @@ class CCv2DeployBuildDialog(
         CollectionComboBoxModel(CCv2DeploymentDatabaseUpdateModeEnum.allowedOptions())
     }
     private val strategyModel by lazy {
-        CollectionComboBoxModel(CCv2DeploymentStrategyEnum.allowedOptions())
+        CollectionComboBoxModel(CCv2DeploymentStrategy.allowedOptions())
     }
 
     init {
@@ -208,7 +208,7 @@ class CCv2DeployBuildDialog(
         val deploymentRequest = CCv2DeploymentRequest(
             environmentComboBox.selectedItem as CCv2EnvironmentDto,
             modeComboBox.selectedItem as CCv2DeploymentDatabaseUpdateModeEnum,
-            strategyComboBox.selectedItem as CCv2DeploymentStrategyEnum,
+            strategyComboBox.selectedItem as CCv2DeploymentStrategy,
             true,
             trackCheckBox.isSelected
         )

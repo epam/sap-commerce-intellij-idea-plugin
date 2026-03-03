@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,13 +49,13 @@ class CCv2CreateBuildDialog(
     private class DeploymentOption(
         val environment: CCv2EnvironmentDto,
         val modeComboBox: ComboBox<CCv2DeploymentDatabaseUpdateModeEnum>,
-        val strategyComboBox: ComboBox<CCv2DeploymentStrategyEnum>,
+        val strategyComboBox: ComboBox<CCv2DeploymentStrategy>,
         val deployCheckBox: JBCheckBox
     ) {
         fun toRequest(track: Boolean) = CCv2DeploymentRequest(
             environment,
             modeComboBox.selectedItem as CCv2DeploymentDatabaseUpdateModeEnum,
-            strategyComboBox.selectedItem as CCv2DeploymentStrategyEnum,
+            strategyComboBox.selectedItem as CCv2DeploymentStrategy,
             deployCheckBox.isSelected,
             track
         )
@@ -202,7 +202,7 @@ class CCv2CreateBuildDialog(
             panel {
                 environments.forEach { environment ->
                     var modeComboBox: ComboBox<CCv2DeploymentDatabaseUpdateModeEnum>? = null
-                    var strategyComboBox: ComboBox<CCv2DeploymentStrategyEnum>? = null
+                    var strategyComboBox: ComboBox<CCv2DeploymentStrategy>? = null
                     var deployCheckBox: JBCheckBox? = null
                     row {
                         panel {
@@ -244,7 +244,7 @@ class CCv2CreateBuildDialog(
                         panel {
                             row {
                                 strategyComboBox = comboBox(
-                                    CollectionComboBoxModel(CCv2DeploymentStrategyEnum.allowedOptions()),
+                                    CollectionComboBoxModel(CCv2DeploymentStrategy.allowedOptions()),
                                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                                         label.text = value.title
                                         label.icon = value.icon
