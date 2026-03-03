@@ -51,3 +51,4 @@
 - Mihai Botofei
 - Alessandro Antonini
 - Mihai Sprinceana
+- Patrick Gäckle

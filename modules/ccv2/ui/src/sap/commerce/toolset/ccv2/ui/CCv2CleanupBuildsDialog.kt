@@ -36,7 +36,9 @@ import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderField
+import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByDirection
+import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByDto
+import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByField
 import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
@@ -57,7 +59,8 @@ class CCv2CleanupBuildsDialog(
 
     private lateinit var subscriptionComboBox: ComboBox<CCv2Subscription>
     private lateinit var topField: JBTextField
-    private lateinit var sortField: ComboBox<CCv2BuildOrderField>
+    private lateinit var sortField: ComboBox<CCv2BuildOrderByField>
+    private lateinit var sortDirectionField: ComboBox<CCv2BuildOrderByDirection>
     private lateinit var totalLabel: JLabel
     private lateinit var placeholder: Placeholder
     private var loadDisposable = Disposer.newDisposable(disposable)
@@ -120,13 +123,21 @@ class CCv2CleanupBuildsDialog(
                 .component
 
             sortField = comboBox(
-                model = DefaultComboBoxModel(CCv2BuildOrderField.entries.toTypedArray()),
+                model = DefaultComboBoxModel(CCv2BuildOrderByField.entries.toTypedArray()),
                 renderer = SimpleListCellRenderer.create("...") { value -> value.title }
             )
                 .label("Sort by:")
-                .align(Align.FILL)
+                .align(AlignX.CENTER)
                 .component
-                .apply { selectedItem = CCv2BuildOrderField.START_TIME_ASC }
+                .apply { selectedItem = CCv2BuildOrderByField.START_TIME }
+
+            sortDirectionField = comboBox(
+                model = DefaultComboBoxModel(CCv2BuildOrderByDirection.entries.toTypedArray()),
+                renderer = SimpleListCellRenderer.create("...") { value -> value.title }
+            )
+//                .align(AlignX.RIGHT)
+                .component
+                .apply { selectedItem = "asc" }
         }.layout(RowLayout.PARENT_GRID)
 
 
@@ -193,12 +204,13 @@ class CCv2CleanupBuildsDialog(
         )
 
         val top = topField.text.toIntOrNull() ?: 20
-        val sort = sortField.selectedItem?.asSafely<CCv2BuildOrderField>() ?: CCv2BuildOrderField.START_TIME_DESC
+        val sort = sortField.selectedItem?.asSafely<CCv2BuildOrderByField>() ?: CCv2BuildOrderByField.START_TIME
+        val sortDirection = sortDirectionField.selectedItem.asSafely<CCv2BuildOrderByDirection>() ?: CCv2BuildOrderByDirection.ASC
 
         CCv2Service.getInstance(project).fetchBuilds(
             subscriptions = listOf(subscription),
             top = top,
-            orderBy = sort.orderBy,
+            orderedBy = listOf(CCv2BuildOrderByDto(sort, sortDirection)),
             withoutStatuses = CCv2BuildStatus.entries
                 .filterNot { it == CCv2BuildStatus.FAIL || it == CCv2BuildStatus.SUCCESS },
             onCompleteCallback = { builds ->

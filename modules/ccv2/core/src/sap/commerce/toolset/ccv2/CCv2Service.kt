@@ -383,7 +383,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
         onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2BuildDto>>) -> Unit,
         withoutStatuses: List<CCv2BuildStatus>? = null,
         top: Int = 20,
-        orderBy: String? = null,
+        orderedBy: List<CCv2BuildOrderByDto>? = null,
         sendEvents: Boolean = true
     ) {
         if (sendEvents) project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingStarted(subscriptions)
@@ -394,6 +394,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
             ?: CCv2BuildStatus.entries
                 .filterNot { ccv2Settings.showBuildStatuses.contains(it) }
                 .map { it.name }
+        val orderBy = orderedBy?.joinToString(separator = ",") { it.field.orderBy + " " + it.direction.direction }
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Builds...", true) {
