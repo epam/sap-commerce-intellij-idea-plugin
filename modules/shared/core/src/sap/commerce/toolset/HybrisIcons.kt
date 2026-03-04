@@ -41,6 +41,8 @@ object HybrisIcons {
     val CODE_NOT_GENERATED = AllIcons.General.ExclMark
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
+    val SORT = getIcon("/icons/sort.svg")
+
     object Y {
         val LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
         val LOGO_BLUE = getIcon("/icons/hybrisIcon.svg")
