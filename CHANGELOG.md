@@ -3,6 +3,7 @@
 <cite>Release contributors</cite>
 
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.2+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Patrick Gäckle](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.2+author%3ALostKatana+is%3Apr)
 
 ### `CCv2` enhancements
 - Display scheduled activities within environment details [#1753](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1753)
