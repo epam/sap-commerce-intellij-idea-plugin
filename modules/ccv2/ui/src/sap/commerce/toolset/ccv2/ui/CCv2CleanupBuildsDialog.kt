@@ -21,25 +21,23 @@ package sap.commerce.toolset.ccv2.ui
 import com.intellij.icons.AllIcons
 import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByDirection
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByDto
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByField
-import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
+import sap.commerce.toolset.ccv2.dto.*
+import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ui.banner
@@ -48,7 +46,6 @@ import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.io.Serial
 import java.util.*
-import javax.swing.DefaultComboBoxModel
 import javax.swing.Icon
 import javax.swing.JLabel
 
@@ -58,14 +55,19 @@ class CCv2CleanupBuildsDialog(
 ) : DialogWrapper(project) {
 
     private lateinit var subscriptionComboBox: ComboBox<CCv2Subscription>
-    private lateinit var topField: JBTextField
-    private lateinit var sortField: ComboBox<CCv2BuildOrderByField>
-    private lateinit var sortDirectionField: ComboBox<CCv2BuildOrderByDirection>
     private lateinit var totalLabel: JLabel
     private lateinit var placeholder: Placeholder
     private var loadDisposable = Disposer.newDisposable(disposable)
     private val resultsHeaderToggle = AtomicBooleanProperty(false)
     private val cleanableBuilds = mutableMapOf<CCv2BuildDto, AtomicBooleanProperty>()
+
+    private val ccv2DeveloperSettings = CCv2DeveloperSettings.getInstance(project)
+    private val top = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.top)
+        .also { it.afterChange { saveSettings() } }
+    private val sortByField = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortBy ?: CCv2BuildSortBy.START_TIME)
+        .also { it.afterChange { saveSettings() } }
+    private val sortDirection = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortDirection ?: CCv2BuildSortDirection.ASC)
+        .also { it.afterChange { saveSettings() } }
 
     private val fetchBuildsButton = object : DialogWrapperAction("Fetch Builds") {
         @Serial
@@ -115,31 +117,24 @@ class CCv2CleanupBuildsDialog(
         }.layout(RowLayout.PARENT_GRID)
 
         row {
-            topField = intTextField(1..100)
+            intTextField(1..100)
                 .label("Get last:")
                 .commentRight("Builds")
-                .align(AlignX.FILL)
-                .text("20")
-                .component
+                .bindIntText(top)
 
-            sortField = comboBox(
-                model = DefaultComboBoxModel(CCv2BuildOrderByField.entries.toTypedArray()),
+            comboBox(
+                model = EnumComboBoxModel(CCv2BuildSortBy::class.java),
                 renderer = SimpleListCellRenderer.create("...") { value -> value.title }
             )
                 .label("Sort by:")
-                .align(AlignX.CENTER)
-                .component
-                .apply { selectedItem = CCv2BuildOrderByField.START_TIME }
+                .bindItem(sortByField)
 
-            sortDirectionField = comboBox(
-                model = DefaultComboBoxModel(CCv2BuildOrderByDirection.entries.toTypedArray()),
+            comboBox(
+                model = EnumComboBoxModel(CCv2BuildSortDirection::class.java),
                 renderer = SimpleListCellRenderer.create("...") { value -> value.title }
             )
-//                .align(AlignX.RIGHT)
-                .component
-                .apply { selectedItem = "asc" }
+                .bindItem(sortDirection)
         }.layout(RowLayout.PARENT_GRID)
-
 
         separator()
 
@@ -182,6 +177,13 @@ class CCv2CleanupBuildsDialog(
     override fun createLeftSideActions() = arrayOf(fetchBuildsButton)
     override fun getPreferredFocusedComponent() = subscriptionComboBox
 
+    private fun saveSettings() {
+        ccv2DeveloperSettings.cleanupBuildsSettings = ccv2DeveloperSettings.cleanupBuildsSettings.copy(
+            top = top.get(),
+            sortBy = listOf(CCv2BuildSortOrder(sortByField.get(), sortDirection.get()))
+        )
+    }
+
     private fun refreshAutoDeploymentPanel(subscription: CCv2Subscription?) {
         isOKActionEnabled = false
         loadDisposable.dispose()
@@ -203,21 +205,18 @@ class CCv2CleanupBuildsDialog(
             AnimatedIcon.Default.INSTANCE
         )
 
-        val top = topField.text.toIntOrNull() ?: 20
-        val sort = sortField.selectedItem?.asSafely<CCv2BuildOrderByField>() ?: CCv2BuildOrderByField.START_TIME
-        val sortDirection = sortDirectionField.selectedItem.asSafely<CCv2BuildOrderByDirection>() ?: CCv2BuildOrderByDirection.ASC
 
         CCv2Service.getInstance(project).fetchBuilds(
             subscriptions = listOf(subscription),
-            top = top,
-            orderedBy = listOf(CCv2BuildOrderByDto(sort, sortDirection)),
+            top = top.get(),
+            sortOrder = listOf(CCv2BuildSortOrder(sortByField.get(), sortDirection.get())),
             withoutStatuses = CCv2BuildStatus.entries
                 .filterNot { it == CCv2BuildStatus.FAIL || it == CCv2BuildStatus.SUCCESS },
             onCompleteCallback = { builds ->
                 val environmentsPanel = getEnvironmentsPanel(builds, subscription)
 
                 resultsHeaderToggle.set(cleanableBuilds.isNotEmpty())
-                totalLabel.text = "Found ${cleanableBuilds.size} removable builds"
+                totalLabel.text = "<html>Found <strong>${cleanableBuilds.size}</strong> eligible for removal builds</html>"
                 placeholder.component = environmentsPanel
             },
             sendEvents = false

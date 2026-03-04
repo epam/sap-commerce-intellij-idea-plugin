@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.ccv2.dto
 
-enum class CCv2BuildOrderByDirection(val title: String, val direction: String) {
-    ASC("ascending", "asc"),
-    DESC("descending", "desc"),
-}
+data class CCv2BuildSortOrder(
+    val sortBy: CCv2BuildSortBy,
+    val sortDirection: CCv2BuildSortDirection
+)

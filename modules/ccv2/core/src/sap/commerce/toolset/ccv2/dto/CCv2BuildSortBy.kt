@@ -16,15 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.settings.state
+package sap.commerce.toolset.ccv2.dto
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
-
-@Tag("HybrisDeveloperSpecificProjectSettings")
-data class CCv2DeveloperSettingsState(
-
-    @JvmField @OptionTag val activeCCv2SubscriptionID: String? = null,
-    @JvmField @OptionTag val ccv2Settings: CCv2SettingsState = CCv2SettingsState(),
-    @JvmField @OptionTag val cleanupBuildsSettings: CCv2CleanupBuildsSettingsState = CCv2CleanupBuildsSettingsState(),
-)
+enum class CCv2BuildSortBy(val title: String, val field: String) {
+    BRANCH("Branch", "branch"),
+    END_TIME("End time", "buildEndTimestamp"),
+    NAME("Name", "name"),
+    START_TIME("Start time", "buildStartTimestamp"),
+    STATUS("Status", "status"),
+}

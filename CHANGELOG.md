@@ -7,6 +7,11 @@
 
 ### `CCv2` enhancements
 - Display scheduled activities within environment details [#1753](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1753)
+- Add sorting to bulk removal of builds [#1752](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1752)
+- Persist `builds cleanup` dialog settings [#1754](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1754)
+
+### Other
+- Update Type System Diagram, Contribution and Readme documentation and align Type System Settings Dialog [#1751](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1751)
 
 ## [2026.0.1]
 

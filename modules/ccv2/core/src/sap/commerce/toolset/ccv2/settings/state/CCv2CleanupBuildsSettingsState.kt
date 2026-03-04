@@ -16,12 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.dto
+package sap.commerce.toolset.ccv2.settings.state
 
-enum class CCv2BuildOrderByField(val title: String, val orderBy: String) {
-    BRANCH("Branch", "branch"),
-    END_TIME("End time", "buildEndTimestamp"),
-    NAME("Name", "name"),
-    START_TIME("Start time", "buildStartTimestamp"),
-    STATUS("Status", "status"),
-}
+import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.ccv2.dto.CCv2BuildSortOrder
+
+@Tag("CCv2CleanupBuildSettings")
+data class CCv2CleanupBuildsSettingsState(
+    @JvmField val top: Int = 20,
+    @JvmField val sortBy: List<CCv2BuildSortOrder> = listOf(),
+)
+

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -48,6 +48,11 @@ class CCv2DeveloperSettings(private val project: Project) : SerializablePersiste
         get() = state.ccv2Settings
         set(value) {
             updateState { it.copy(ccv2Settings = value) }
+        }
+    var cleanupBuildsSettings
+        get() = state.cleanupBuildsSettings
+        set(value) {
+            updateState { it.copy(cleanupBuildsSettings = value) }
         }
 
     fun getActiveCCv2Subscription() = activeCCv2SubscriptionID
