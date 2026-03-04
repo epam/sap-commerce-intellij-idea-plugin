@@ -18,10 +18,7 @@
 
 package sap.commerce.toolset.ccv2.dto
 
-enum class CCv2BuildOrderByField(val title: String, val orderBy: String) {
-    BRANCH("Branch", "branch"),
-    END_TIME("End time", "buildEndTimestamp"),
-    NAME("Name", "name"),
-    START_TIME("Start time", "buildStartTimestamp"),
-    STATUS("Status", "status"),
-}
+data class CCv2BuildSortOrder(
+    val sortBy: CCv2BuildSortBy,
+    val sortDirection: CCv2BuildSortDirection
+)

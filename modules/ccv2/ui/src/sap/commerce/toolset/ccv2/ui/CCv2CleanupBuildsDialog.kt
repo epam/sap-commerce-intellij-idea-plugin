@@ -64,9 +64,9 @@ class CCv2CleanupBuildsDialog(
     private val ccv2DeveloperSettings = CCv2DeveloperSettings.getInstance(project)
     private val top = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.top)
         .also { it.afterChange { saveSettings() } }
-    private val orderByField = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.orderBy.firstOrNull()?.field ?: CCv2BuildOrderByField.START_TIME)
+    private val sortByField = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortBy ?: CCv2BuildSortBy.START_TIME)
         .also { it.afterChange { saveSettings() } }
-    private val orderByDirection = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.orderBy.firstOrNull()?.direction ?: CCv2BuildOrderByDirection.ASC)
+    private val sortDirection = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.sortBy.firstOrNull()?.sortDirection ?: CCv2BuildSortDirection.ASC)
         .also { it.afterChange { saveSettings() } }
 
     private val fetchBuildsButton = object : DialogWrapperAction("Fetch Builds") {
@@ -123,17 +123,17 @@ class CCv2CleanupBuildsDialog(
                 .bindIntText(top)
 
             comboBox(
-                model = EnumComboBoxModel(CCv2BuildOrderByField::class.java),
+                model = EnumComboBoxModel(CCv2BuildSortBy::class.java),
                 renderer = SimpleListCellRenderer.create("...") { value -> value.title }
             )
                 .label("Sort by:")
-                .bindItem(orderByField)
+                .bindItem(sortByField)
 
             comboBox(
-                model = EnumComboBoxModel(CCv2BuildOrderByDirection::class.java),
+                model = EnumComboBoxModel(CCv2BuildSortDirection::class.java),
                 renderer = SimpleListCellRenderer.create("...") { value -> value.title }
             )
-                .bindItem(orderByDirection)
+                .bindItem(sortDirection)
         }.layout(RowLayout.PARENT_GRID)
 
         separator()
@@ -180,7 +180,7 @@ class CCv2CleanupBuildsDialog(
     private fun saveSettings() {
         ccv2DeveloperSettings.cleanupBuildsSettings = ccv2DeveloperSettings.cleanupBuildsSettings.copy(
             top = top.get(),
-            orderBy = listOf(CCv2BuildOrderBy(orderByField.get(), orderByDirection.get()))
+            sortBy = listOf(CCv2BuildSortOrder(sortByField.get(), sortDirection.get()))
         )
     }
 
@@ -205,14 +205,11 @@ class CCv2CleanupBuildsDialog(
             AnimatedIcon.Default.INSTANCE
         )
 
-        val top = top.get()
-        val sort = orderByField.get()
-        val sortDirection = orderByDirection.get()
 
         CCv2Service.getInstance(project).fetchBuilds(
             subscriptions = listOf(subscription),
-            top = top,
-            orderedBy = listOf(CCv2BuildOrderBy(sort, sortDirection)),
+            top = top.get(),
+            sortOrder = listOf(CCv2BuildSortOrder(sortByField.get(), sortDirection.get())),
             withoutStatuses = CCv2BuildStatus.entries
                 .filterNot { it == CCv2BuildStatus.FAIL || it == CCv2BuildStatus.SUCCESS },
             onCompleteCallback = { builds ->
