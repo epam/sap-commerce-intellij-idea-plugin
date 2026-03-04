@@ -16,19 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.settings.state
+package sap.commerce.toolset.ccv2.dto
 
-import com.intellij.util.xmlb.annotations.Tag
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByDirection
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByField
-
-@Tag("CCv2BuildSettings")
-data class CCv2BuildSettingsState(
-    @JvmField val cleanupTop: Int = 20,
-    @JvmField val cleanupSortBy: List<CCv2BuildOrderByDto> = listOf(),
-)
-
-data class CCv2BuildOrderByDto(
+data class CCv2BuildOrderBy(
     val field: CCv2BuildOrderByField,
     val direction: CCv2BuildOrderByDirection
 )

@@ -18,13 +18,12 @@
 
 package sap.commerce.toolset.ccv2.settings.state
 
-import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderBy
 
-@Tag("HybrisDeveloperSpecificProjectSettings")
-data class CCv2DeveloperSettingsState(
-
-    @JvmField @OptionTag val activeCCv2SubscriptionID: String? = null,
-    @JvmField @OptionTag val ccv2Settings: CCv2SettingsState = CCv2SettingsState(),
-    @JvmField @OptionTag val cleanupBuildsSettings: CCv2CleanupBuildsSettingsState = CCv2CleanupBuildsSettingsState(),
+@Tag("CCv2CleanupBuildSettings")
+data class CCv2CleanupBuildsSettingsState(
+    @JvmField val top: Int = 20,
+    @JvmField val orderBy: List<CCv2BuildOrderBy> = listOf(),
 )
+

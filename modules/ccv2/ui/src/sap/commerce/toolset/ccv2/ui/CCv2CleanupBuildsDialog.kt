@@ -36,12 +36,8 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByDirection
-import sap.commerce.toolset.ccv2.dto.CCv2BuildOrderByField
-import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
+import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
-import sap.commerce.toolset.ccv2.settings.state.CCv2BuildOrderByDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ui.banner
@@ -66,11 +62,11 @@ class CCv2CleanupBuildsDialog(
     private val cleanableBuilds = mutableMapOf<CCv2BuildDto, AtomicBooleanProperty>()
 
     private val ccv2DeveloperSettings = CCv2DeveloperSettings.getInstance(project)
-    private val top = AtomicProperty(ccv2DeveloperSettings.buildSettings.cleanupTop)
+    private val top = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.top)
         .also { it.afterChange { saveSettings() } }
-    private val orderByField = AtomicProperty(ccv2DeveloperSettings.buildSettings.cleanupSortBy.firstOrNull()?.field ?: CCv2BuildOrderByField.START_TIME)
+    private val orderByField = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.orderBy.firstOrNull()?.field ?: CCv2BuildOrderByField.START_TIME)
         .also { it.afterChange { saveSettings() } }
-    private val orderByDirection = AtomicProperty(ccv2DeveloperSettings.buildSettings.cleanupSortBy.firstOrNull()?.direction ?: CCv2BuildOrderByDirection.ASC)
+    private val orderByDirection = AtomicProperty(ccv2DeveloperSettings.cleanupBuildsSettings.orderBy.firstOrNull()?.direction ?: CCv2BuildOrderByDirection.ASC)
         .also { it.afterChange { saveSettings() } }
 
     private val fetchBuildsButton = object : DialogWrapperAction("Fetch Builds") {
@@ -182,9 +178,9 @@ class CCv2CleanupBuildsDialog(
     override fun getPreferredFocusedComponent() = subscriptionComboBox
 
     private fun saveSettings() {
-        ccv2DeveloperSettings.buildSettings = ccv2DeveloperSettings.buildSettings.copy(
-            cleanupTop = top.get(),
-            cleanupSortBy = listOf(CCv2BuildOrderByDto(orderByField.get(), orderByDirection.get()))
+        ccv2DeveloperSettings.cleanupBuildsSettings = ccv2DeveloperSettings.cleanupBuildsSettings.copy(
+            top = top.get(),
+            orderBy = listOf(CCv2BuildOrderBy(orderByField.get(), orderByDirection.get()))
         )
     }
 
@@ -216,7 +212,7 @@ class CCv2CleanupBuildsDialog(
         CCv2Service.getInstance(project).fetchBuilds(
             subscriptions = listOf(subscription),
             top = top,
-            orderedBy = listOf(CCv2BuildOrderByDto(sort, sortDirection)),
+            orderedBy = listOf(CCv2BuildOrderBy(sort, sortDirection)),
             withoutStatuses = CCv2BuildStatus.entries
                 .filterNot { it == CCv2BuildStatus.FAIL || it == CCv2BuildStatus.SUCCESS },
             onCompleteCallback = { builds ->

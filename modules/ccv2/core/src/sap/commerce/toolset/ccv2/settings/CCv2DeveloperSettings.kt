@@ -49,10 +49,10 @@ class CCv2DeveloperSettings(private val project: Project) : SerializablePersiste
         set(value) {
             updateState { it.copy(ccv2Settings = value) }
         }
-    var buildSettings
-        get() = state.buildSettings
+    var cleanupBuildsSettings
+        get() = state.cleanupBuildsSettings
         set(value) {
-            updateState { it.copy(buildSettings = value) }
+            updateState { it.copy(cleanupBuildsSettings = value) }
         }
 
     fun getActiveCCv2Subscription() = activeCCv2SubscriptionID
