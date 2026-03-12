@@ -1,8 +1,17 @@
+## [2026.0.3]
+
+<cite>Release contributors</cite>
+
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.3+author%3Amlytvyn+is%3Apr)
+
+### `SAP CX Logging` enhancements
+- Ensure that log level can be changed from the code for Java 21 projects [#1755](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1755)
+
 ## [2026.0.2]
 
 <cite>Release contributors</cite>
 
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.2+author%3Amlytvyn+is%3Apr)
+- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.2+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Patrick Gäckle](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.2+author%3ALostKatana+is%3Apr)
 
 ### `CCv2` enhancements
@@ -38,6 +47,8 @@
 
 ### `ImpEx` enhancements
 - Optimized column delete action [#1745](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1745)
+
+### `items.xml` inspection rules
 - Inspection: improved detection of the unique type code & deployment table name [#1748](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1748)
 
 ### Other

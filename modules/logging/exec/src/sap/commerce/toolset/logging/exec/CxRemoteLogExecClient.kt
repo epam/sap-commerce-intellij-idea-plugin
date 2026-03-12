@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,7 +49,7 @@ class CxRemoteLogExecClient(project: Project, coroutineScope: CoroutineScope) : 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val actionUrl = connectionSettings.generatedURL + "/platform/log4j/changeLevel/"
+        val actionUrl = connectionSettings.generatedURL + "/platform/log4j/changeLevel"
         val response = HacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, connectionSettings, null)
 
