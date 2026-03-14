@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,6 @@ object CCv2Constants {
     const val DATAHUB_NAME = "datahub"
     const val JS_STOREFRONT_NAME = "js-storefront"
 
-    const val SECURE_STORAGE_CCV2_TOKEN = "SAP CX CCv2 Token"
     const val SECURE_STORAGE_CCV2_AUTHENTICATION = "SAP CX CCv2 Authentication"
 
     val DATE_TIME_FORMATTER_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
@@ -59,7 +58,7 @@ object CCv2Constants {
     )
 
     object Authentication {
-        const val TOKEN_ENDPOINT = "https://ycloudsre.accounts.ondemand.com/oauth2/token"
+        const val TOKEN_ENDPOINT = "https://ycloud.accounts.ondemand.com/oauth2/token"
         const val RESOURCE = "urn:sap:identity:application:provider:name:cp-dependency"
     }
 }

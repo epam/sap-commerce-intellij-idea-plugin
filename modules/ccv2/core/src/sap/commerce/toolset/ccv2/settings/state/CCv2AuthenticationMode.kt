@@ -19,6 +19,5 @@
 package sap.commerce.toolset.ccv2.settings.state
 
 enum class CCv2AuthenticationMode(val presentationTitle: String) {
-    TOKEN("Token (legacy)"),
     TECHNICAL_USER("Technical User"),
 }

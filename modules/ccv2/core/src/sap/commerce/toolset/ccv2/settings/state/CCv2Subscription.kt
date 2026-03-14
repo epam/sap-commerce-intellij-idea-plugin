@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,7 +25,6 @@ data class CCv2Subscription(
     @JvmField @OptionTag val uuid: String = UUID.randomUUID().toString(),
     @JvmField @OptionTag val id: String? = null,
     @JvmField @OptionTag val name: String? = null,
-    @JvmField @OptionTag val authenticationMode: CCv2AuthenticationMode = CCv2AuthenticationMode.TOKEN,
     @JvmField @OptionTag val authentication: CCv2Authentication? = null,
 ) : Comparable<CCv2Subscription> {
 
@@ -33,7 +32,6 @@ data class CCv2Subscription(
         uuid = uuid,
         id = id,
         name = name,
-        authenticationMode = authenticationMode,
         authentication = authentication?.mutable() ?: CCv2Authentication.Mutable(),
     )
 
@@ -49,19 +47,15 @@ data class CCv2Subscription(
         var uuid: String,
         var id: String?,
         var name: String?,
-        var authenticationMode: CCv2AuthenticationMode,
         var authentication: CCv2Authentication.Mutable,
-        var ccv2Token: String? = null,
     ) {
         var modified = false
-        var ccv2LegacyTokenLoaded = false
         var ccv2ClientTokenLoaded = false
 
         fun immutable() = CCv2Subscription(
             uuid = uuid,
             id = id,
             name = name,
-            authenticationMode = authenticationMode,
             authentication = authentication.immutable(),
         )
 
@@ -71,7 +65,7 @@ data class CCv2Subscription(
                 val name = (name
                     ?.takeIf { it.isNotEmpty() }
                     ?: id ?: "?")
-                return name + " (${authenticationMode.presentationTitle})"
+                return name
             }
     }
 }

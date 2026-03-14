@@ -1,4 +1,4 @@
-## Contribution guidelines
+q## Contribution guidelines
 
 * Please read [Contributor License Agreement](http://developercertificate.org)
 * Available tasks are in our [project board](https://github.com/epam/sap-commerce-intellij-idea-plugin/projects) 
@@ -52,3 +52,4 @@
 - Alessandro Antonini
 - Mihai Sprinceana
 - Patrick Gäckle
+- Sina Bastani
