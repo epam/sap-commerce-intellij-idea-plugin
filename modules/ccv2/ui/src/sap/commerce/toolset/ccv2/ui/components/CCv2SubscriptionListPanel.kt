@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.ccv2.ui.components
 
+import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.util.whenListChanged
 import com.intellij.openapi.project.Project
@@ -42,6 +43,7 @@ internal class CCv2SubscriptionListPanel(
     disposable: Disposable?,
     private val ccv2LegacyTokenSupplier: () -> ApiContext?,
     private val ccv2ClientTokenSupplier: () -> ApiContext?,
+    private val ccv2ClientCredentialsSupplier: () -> Credentials?,
     private val hanaApiUrlSupplier: () -> String,
     private val kymaApiUrlSupplier: () -> String,
     listener: (ListDataEvent) -> Unit
@@ -68,6 +70,7 @@ internal class CCv2SubscriptionListPanel(
             dialogTitle = "Create CCv2 Subscription",
             ccv2LegacyTokenSupplier = ccv2LegacyTokenSupplier,
             ccv2ClientTokenSupplier = ccv2ClientTokenSupplier,
+            ccv2ClientCredentialsSupplier = ccv2ClientCredentialsSupplier,
             hanaApiUrlSupplier = hanaApiUrlSupplier,
             kymaApiUrlSupplier = kymaApiUrlSupplier,
         )
@@ -89,6 +92,7 @@ internal class CCv2SubscriptionListPanel(
             dialogTitle = "Edit CCv2 Subscription",
             ccv2LegacyTokenSupplier = ccv2LegacyTokenSupplier,
             ccv2ClientTokenSupplier = ccv2ClientTokenSupplier,
+            ccv2ClientCredentialsSupplier = ccv2ClientCredentialsSupplier,
             hanaApiUrlSupplier = hanaApiUrlSupplier,
             kymaApiUrlSupplier = kymaApiUrlSupplier,
         )

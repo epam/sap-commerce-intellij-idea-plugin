@@ -25,8 +25,8 @@ import com.intellij.util.xmlb.annotations.Tag
 data class CCv2ApplicationSettingsState(
     @JvmField @OptionTag val readTimeout: Int = 60,
     @JvmField @OptionTag val authentication: CCv2Authentication = CCv2Authentication(),
-    @JvmField @OptionTag val hanaApiUrl: String = "https://portalrotapi.hana.ondemand.com",
-    @JvmField @OptionTag val kymaApiUrl: String = "https://portalrotapi.kyma.ondemand.com",
+    @JvmField @OptionTag val hanaApiUrl: String = "https://portalapi.commerce.ondemand.com",
+    @JvmField @OptionTag val kymaApiUrl: String = "https://portalapi.commerce.ondemand.com",
     @JvmField val subscriptions: List<CCv2Subscription> = emptyList()
 ) {
     fun mutable() = Mutable(

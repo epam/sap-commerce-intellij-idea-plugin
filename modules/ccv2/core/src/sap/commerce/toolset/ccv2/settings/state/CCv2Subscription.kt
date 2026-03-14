@@ -25,7 +25,7 @@ data class CCv2Subscription(
     @JvmField @OptionTag val uuid: String = UUID.randomUUID().toString(),
     @JvmField @OptionTag val id: String? = null,
     @JvmField @OptionTag val name: String? = null,
-    @JvmField @OptionTag val authenticationMode: CCv2AuthenticationMode = CCv2AuthenticationMode.TOKEN,
+    @JvmField @OptionTag val authenticationMode: CCv2AuthenticationMode = CCv2AuthenticationMode.TECHNICAL_USER,
     @JvmField @OptionTag val authentication: CCv2Authentication? = null,
 ) : Comparable<CCv2Subscription> {
 

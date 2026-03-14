@@ -90,9 +90,13 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
 
                 CCv2Service.getInstance(project).retrieveAuthToken(kymaApiUrlTextField.text, auth, credentials)
             }
+            val ccv2ClientCredentialsSupplier: () -> Credentials? = {
+                Credentials(String(clientIdTextField.password), String(clientSecretTextField.password))
+                    .takeUnless { it.userName.isNullOrBlank() || it.password.isNullOrBlank() }
+            }
             val hanaApiUrlSupplier: () -> String = { hanaApiUrlTextField.text }
             val kymaApiUrlSupplier: () -> String = { kymaApiUrlTextField.text }
-            subscriptionListPanel = CCv2SubscriptionListPanel(project, disposable, ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier, hanaApiUrlSupplier, kymaApiUrlSupplier) {
+            subscriptionListPanel = CCv2SubscriptionListPanel(project, disposable, ccv2LegacyTokenSupplier, ccv2ClientTokenSupplier, ccv2ClientCredentialsSupplier, hanaApiUrlSupplier, kymaApiUrlSupplier) {
                 val previousSelectedItem = subscriptionsComboBoxModel.selectedItem?.asSafely<CCv2Subscription>()?.uuid
                 val modifiedSubscriptions = subscriptionListPanel.data.map { it.immutable() }
 
@@ -133,8 +137,8 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                         .component
                 }.layout(RowLayout.PARENT_GRID)
 
-                authToken()
                 authClient()
+                authToken()
 
                 group("Subscriptions", false) {
                     row {
@@ -218,10 +222,19 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
             }
         }
 
-        private fun Panel.authToken() = group("Authentication via Token") {
+        private fun Panel.authToken() = collapsibleGroup("Authentication via Token (Deprecated)") {
+            row {
+                inlineBanner(
+                    message = """API tokens have stopped working after the Kyma runtime migration.
+                        |<br>You will need to create and use technical users instead.
+                        |<br>See <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/edcfd89aa5154be59910ebb7081030e3.html?locale=en-US">Migration of Cloud Portal to Kyma Runtime</a>."""
+                        .trimMargin(),
+                    status = EditorNotificationPanel.Status.Warning
+                ).align(AlignX.FILL)
+            }.resizableRow().topGap(TopGap.MEDIUM)
             row {
                 hanaApiUrlTextField = textField()
-                    .label("Hana api url:")
+                    .label("Api URL link (Neo Runtime):")
                     .align(AlignX.FILL)
                     .bindText(projectSettings::hanaApiUrl)
                     .component
@@ -240,21 +253,12 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
                     .component
                 contextHelp(i18n("hybris.settings.application.ccv2Token.help.description"))
             }.layout(RowLayout.PARENT_GRID)
-        }
+        }.apply { expanded = false }
 
         private fun Panel.authClient() = group("Authentication via Technical User") {
             row {
-                inlineBanner(
-                    message = """
-                        Experimental authentication mode, see more here <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/edcfd89aa5154be59910ebb7081030e3.html">Migration of Cloud Portal to Kyma Runtime</a>.
-                        """.trimIndent(),
-                    status = EditorNotificationPanel.Status.Warning
-                )
-            }
-
-            row {
                 kymaApiUrlTextField = textField()
-                    .label("Kyma api url:")
+                    .label("Api URL link (Kyma Runtime):")
                     .align(AlignX.FILL)
                     .bindText(projectSettings::kymaApiUrl)
                     .component
@@ -288,6 +292,7 @@ class CCv2ExecProjectSettingsConfigurableProvider(private val project: Project) 
             row {
                 clientSecretTextField = passwordField()
                     .label("Client secret:")
+                    .comment(i18n("hybris.settings.application.ccv2AuthToken.tooltip"))
                     .align(AlignX.FILL)
                     .onIsModified { (originalClientSecret ?: "") != String(clientSecretTextField.password) }
                     .onApply { originalClientSecret = String(clientSecretTextField.password) }

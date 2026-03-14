@@ -15,7 +15,7 @@ servers:
     description: Environment URL
     variables:
       uri:
-        default: 'portalrotapi.hana.ondemand.com'
+        default: 'portalapi.commerce.ondemand.com'
         description: Environment URI
 tags:
   - name: build

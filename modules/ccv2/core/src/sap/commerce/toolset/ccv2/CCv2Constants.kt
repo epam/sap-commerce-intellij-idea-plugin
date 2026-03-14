@@ -59,7 +59,7 @@ object CCv2Constants {
     )
 
     object Authentication {
-        const val TOKEN_ENDPOINT = "https://ycloudsre.accounts.ondemand.com/oauth2/token"
+        const val TOKEN_ENDPOINT = "https://ycloud.accounts.ondemand.com/oauth2/token"
         const val RESOURCE = "urn:sap:identity:application:provider:name:cp-dependency"
     }
 }

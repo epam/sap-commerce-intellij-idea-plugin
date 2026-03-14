@@ -46,8 +46,11 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Authentication
 import sap.commerce.toolset.ccv2.settings.state.CCv2AuthenticationMode
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ui.contextHelp
+import sap.commerce.toolset.ui.inlineBanner
 import sap.commerce.toolset.ui.repackDialog
 import sap.commerce.toolset.ui.scrollPanel
+import com.intellij.credentialStore.Credentials
+import com.intellij.openapi.diagnostic.thisLogger
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagLayout
@@ -61,6 +64,7 @@ internal class CCv2SubscriptionDialog(
     dialogTitle: String,
     private val ccv2LegacyTokenSupplier: () -> ApiContext?,
     private val ccv2ClientTokenSupplier: () -> ApiContext?,
+    private val ccv2ClientCredentialsSupplier: () -> Credentials?,
     private val hanaApiUrlSupplier: () -> String,
     private val kymaApiUrlSupplier: () -> String,
 ) : DialogWrapper(null, parentComponent, false, IdeModalityType.IDE) {
@@ -70,6 +74,8 @@ internal class CCv2SubscriptionDialog(
     )
     private val enabled by lazy { AtomicBooleanProperty(subscription.id == null) }
     private val showSubscriptions = AtomicBooleanProperty(false)
+    private val isFetching = AtomicBooleanProperty(false)
+    private val showIdle = AtomicBooleanProperty(true)
 
     private lateinit var idTextField: JBTextField
     private lateinit var nameTextField: JBTextField
@@ -90,6 +96,10 @@ internal class CCv2SubscriptionDialog(
             subscriptionsPanel.removeAll()
             subscriptionsPanel.add(panel)
 
+            if (!showIdle.get()) {
+                isFetching.set(false)
+                showSubscriptions.set(true)
+            }
             repackDialog()
         }
     }
@@ -99,11 +109,8 @@ internal class CCv2SubscriptionDialog(
         private val serialVersionUID: Long = -6131274561037160651L
 
         override fun doAction(e: ActionEvent) {
-            if (showSubscriptions.get()) {
-                val authToken = getSubscriptionToken()
-                    ?: HanaApiContext(hanaApiUrlSupplier(), "")
-                initSubscriptionsPanel(authToken)
-            }
+            val authToken = getSubscriptionToken() ?: return
+            initSubscriptionsPanel(authToken)
         }
     }
 
@@ -137,9 +144,10 @@ internal class CCv2SubscriptionDialog(
 
         if (!subscription.ccv2ClientTokenLoaded) {
             CCv2ProjectSettings.getInstance().loadCCv2Authentication(subscription.uuid) { credentials ->
+                val effectiveCredentials = credentials ?: ccv2ClientCredentialsSupplier()
                 subscription.ccv2ClientTokenLoaded = true
-                subscription.authentication.clientId = credentials?.userName ?: ""
-                subscription.authentication.clientSecret = credentials?.getPasswordAsString() ?: ""
+                subscription.authentication.clientId = effectiveCredentials?.userName ?: ""
+                subscription.authentication.clientSecret = effectiveCredentials?.getPasswordAsString() ?: ""
 
                 subscriptionCCv2ClientIdField.text = subscription.authentication.clientId
                 subscriptionCCv2ClientSecretField.text = subscription.authentication.clientSecret
@@ -150,11 +158,10 @@ internal class CCv2SubscriptionDialog(
                 if (subscription.authenticationMode == CCv2AuthenticationMode.TECHNICAL_USER) {
                     enabled.set(true)
 
-                    val authToken = credentials
+                    val authToken = effectiveCredentials
                         ?.let { CCv2Service.getInstance(project).retrieveAuthToken(kymaApiUrlSupplier(), subscription.authentication.immutable(), it) }
                         ?: ccv2ClientTokenSupplier()
-                        ?: KymaApiContext(kymaApiUrlSupplier(), "")
-                    initSubscriptionsPanel(authToken)
+                    if (authToken != null) initSubscriptionsPanel(authToken)
                 }
             }
         } else if (subscription.authenticationMode == CCv2AuthenticationMode.TECHNICAL_USER) initWithNotPersistedToken()
@@ -218,11 +225,23 @@ internal class CCv2SubscriptionDialog(
                         label("Retrieving subscriptions...")
                     }
                 }.align(Align.CENTER)
-            }.visibleIf(showSubscriptions.not())
+            }.visibleIf(isFetching)
+
+            row {
+                comment("Fill in credentials and click <b>Fetch Subscriptions</b>.")
+            }.visibleIf(showIdle)
         }
     }
 
     private fun Panel.authToken() = indent {
+        row {
+            inlineBanner(
+                message = """API tokens have stopped working.
+                    |<br>Create and use technical users instead."""
+                    .trimMargin(),
+                status = EditorNotificationPanel.Status.Warning
+            ).align(AlignX.FILL)
+        }.resizableRow().topGap(TopGap.MEDIUM)
         row {
             subscriptionCCv2TokenField = passwordField()
                 .label("CCv2 token:")
@@ -274,9 +293,14 @@ internal class CCv2SubscriptionDialog(
     private fun initWithNotPersistedToken() {
         enabled.set(true)
 
-        val authToken = getSubscriptionToken()
-            ?: HanaApiContext(hanaApiUrlSupplier(), "")
+        val authToken = getSubscriptionToken() ?: return
         initSubscriptionsPanel(authToken)
+    }
+
+    private fun emptyApiContext(): ApiContext = if (authModeObservable.get() == CCv2AuthenticationMode.TECHNICAL_USER) {
+        KymaApiContext(kymaApiUrlSupplier(), "")
+    } else {
+        HanaApiContext(hanaApiUrlSupplier(), "")
     }
 
     private fun subscribe() {
@@ -286,13 +310,16 @@ internal class CCv2SubscriptionDialog(
                 else CCv2ToolWindowUtil.noDataPanel("No subscriptions found for the given token.")
 
                 subscriptionsPanel.add(panel)
+                isFetching.set(false)
                 showSubscriptions.set(true)
                 peer.window?.pack()
             }
 
             override fun onFetchingError(e: Throwable) {
+                thisLogger().warn("CCv2: Failed to fetch subscriptions", e)
                 val panel = CCv2ToolWindowUtil.noDataPanel("Unable to get subscriptions due: </br>${e.message}", EditorNotificationPanel.Status.Error)
                 subscriptionsPanel.add(panel)
+                isFetching.set(false)
                 showSubscriptions.set(true)
                 peer.window?.pack()
             }
@@ -362,14 +389,18 @@ internal class CCv2SubscriptionDialog(
         val tokenEndpoint = subscriptionCCv2EndpointField.text.takeIf { it.isNotBlank() } ?: return ccv2ClientTokenSupplier()
         val resource = subscriptionCCv2ResourceField.text.takeIf { it.isNotBlank() } ?: return ccv2ClientTokenSupplier()
         val auth = CCv2Authentication(tokenEndpoint, resource)
-        val credentials = subscription.authentication.credentials
-            ?: return ccv2ClientTokenSupplier()
+        val clientId = String(subscriptionCCv2ClientIdField.password).takeIf { it.isNotBlank() }
+        val clientSecret = String(subscriptionCCv2ClientSecretField.password).takeIf { it.isNotBlank() }
+        val credentials = if (clientId != null && clientSecret != null) Credentials(clientId, clientSecret)
+            else return ccv2ClientTokenSupplier()
 
         CCv2Service.getInstance(project).retrieveAuthToken(kymaApiUrlSupplier(), auth, credentials)
             ?: ccv2ClientTokenSupplier()
     }
 
     private fun initSubscriptionsPanel(token: ApiContext) {
+        isFetching.set(true)
+        showIdle.set(false)
         showSubscriptions.set(false)
         subscriptionsPanel.removeAll()
 
