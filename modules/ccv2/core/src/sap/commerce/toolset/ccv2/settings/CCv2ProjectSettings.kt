@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -52,11 +52,6 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
         set(value) {
             updateState { it.copy(authentication = value) }
         }
-    var hanaApiUrl: String
-        get() = state.hanaApiUrl
-        set(value) {
-            updateState { it.copy(hanaApiUrl = value) }
-        }
     var kymaApiUrl: String
         get() = state.kymaApiUrl
         set(value) {
@@ -72,33 +67,12 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
                 .onChange(state)
         }
 
-    fun getCCv2Token(subscriptionUUID: String? = null) = PasswordSafe.instance[getCredentials(subscriptionUUID)]
-        ?.getPasswordAsString()
-        ?.takeIf { it.isNotBlank() }
-
     fun getCCv2Authentication(subscriptionUUID: String? = null) = PasswordSafe.instance[getAuthentication(subscriptionUUID)]
-
-    fun loadDefaultCCv2Token(callback: (String?) -> Unit) {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
-            override fun run(indicator: ProgressIndicator) {
-                callback(getCCv2Token())
-            }
-        })
-    }
 
     fun loadDefaultCCv2Authentication(callback: (Credentials?) -> Unit) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Authentication", false) {
             override fun run(indicator: ProgressIndicator) {
                 callback(getCCv2Authentication())
-            }
-        })
-    }
-
-    fun loadCCv2Token(subscriptionUUID: String?, callback: (String?) -> Unit) {
-        subscriptionUUID ?: return
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
-            override fun run(indicator: ProgressIndicator) {
-                callback(getCCv2Token(subscriptionUUID))
             }
         })
     }
@@ -112,20 +86,7 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
         })
     }
 
-    fun saveDefaultCCv2Token(token: String?, callback: ((String?) -> Unit)? = null) = saveCCv2Token(null, token, callback)
-
     fun saveDefaultCCv2Authentication(authentication: Credentials?, callback: ((Credentials?) -> Unit)? = null) = saveCCv2Authentication(null, authentication, callback)
-
-    fun saveCCv2Token(subscriptionUUID: String?, token: String?, callback: ((String?) -> Unit)? = null) {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CCv2 Token", false) {
-            override fun run(indicator: ProgressIndicator) {
-                callback?.invoke(token)
-
-                if (token.isNullOrEmpty()) PasswordSafe.instance.setPassword(getCredentials(subscriptionUUID), null)
-                else PasswordSafe.instance.setPassword(getCredentials(subscriptionUUID), token)
-            }
-        })
-    }
 
     fun saveCCv2Authentication(subscriptionUUID: String?, credentials: Credentials?, callback: ((Credentials?) -> Unit)? = null) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CCv2 Token", false) {
@@ -144,9 +105,6 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<CCv2Application
     override fun getModificationCount() = stateModificationCount
 
     fun mutable() = state.mutable()
-
-    private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_CCV2_TOKEN)
-    else CredentialAttributes(subscriptionUUID, CCv2Constants.SECURE_STORAGE_CCV2_TOKEN)
 
     private fun getAuthentication(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_CCV2_AUTHENTICATION)
     else CredentialAttributes(CCv2Constants.SECURE_STORAGE_CCV2_AUTHENTICATION + " - " + subscriptionUUID)

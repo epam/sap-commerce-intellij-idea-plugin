@@ -52,7 +52,6 @@ import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Authentication
-import sap.commerce.toolset.ccv2.settings.state.CCv2AuthenticationMode
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.util.directoryExists
 import java.io.Serial
@@ -988,10 +987,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
     private fun getApiContext(subscription: CCv2Subscription): ApiContext? {
         val appSettings = CCv2ProjectSettings.getInstance()
 
-        val apiContext = if (subscription.authenticationMode == CCv2AuthenticationMode.TOKEN) {
-            (appSettings.getCCv2Token(subscription.uuid) ?: appSettings.getCCv2Token())
-                ?.let { HanaApiContext(appSettings.hanaApiUrl, it) }
-        } else retrieveCCv2ClientToken(subscription, appSettings)
+        val apiContext = retrieveCCv2ClientToken(subscription, appSettings)
 
         if (apiContext != null) return apiContext
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,13 +25,11 @@ import com.intellij.util.xmlb.annotations.Tag
 data class CCv2ApplicationSettingsState(
     @JvmField @OptionTag val readTimeout: Int = 60,
     @JvmField @OptionTag val authentication: CCv2Authentication = CCv2Authentication(),
-    @JvmField @OptionTag val hanaApiUrl: String = "https://portalapi.commerce.ondemand.com",
     @JvmField @OptionTag val kymaApiUrl: String = "https://portalapi.commerce.ondemand.com",
     @JvmField val subscriptions: List<CCv2Subscription> = emptyList()
 ) {
     fun mutable() = Mutable(
         origin = this,
-        hanaApiUrl = hanaApiUrl,
         kymaApiUrl = kymaApiUrl,
         authentication = authentication.mutable(),
         subscriptions = subscriptions
@@ -41,13 +39,11 @@ data class CCv2ApplicationSettingsState(
 
     data class Mutable(
         private val origin: CCv2ApplicationSettingsState,
-        var hanaApiUrl: String,
         var kymaApiUrl: String,
         var authentication: CCv2Authentication.Mutable,
         var subscriptions: MutableList<CCv2Subscription.Mutable>
     ) {
         fun immutable() = CCv2ApplicationSettingsState(
-            hanaApiUrl = hanaApiUrl,
             kymaApiUrl = kymaApiUrl,
             authentication = authentication.immutable(),
             subscriptions = subscriptions

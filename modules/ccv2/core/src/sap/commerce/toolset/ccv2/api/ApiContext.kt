@@ -24,12 +24,6 @@ sealed interface ApiContext {
     val authHeader: String
 }
 
-data class HanaApiContext(
-    override val apiUrl: String,
-    override val authToken: String,
-    override val authHeader: String = "Authorization"
-) : ApiContext
-
 
 data class KymaApiContext(
     override val apiUrl: String,

@@ -2,6 +2,11 @@
 
 <cite>Release contributors</cite>
 
+- 1 PR(s) by [Sina Bastani](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.3+author%3Asina96+is%3Apr)
+
+### `CCv2` Technical User Authentication enhancements
+- Fixed CCv2 authentication to Technical User via Kyma runtime; deprecate token-based auth [#1756](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1756)
+
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.3+author%3Amlytvyn+is%3Apr)
 
 ### `SAP CX Logging` enhancements

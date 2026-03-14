@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -41,10 +41,8 @@ import javax.swing.event.ListDataEvent
 internal class CCv2SubscriptionListPanel(
     private val project: Project,
     disposable: Disposable?,
-    private val ccv2LegacyTokenSupplier: () -> ApiContext?,
     private val ccv2ClientTokenSupplier: () -> ApiContext?,
     private val ccv2ClientCredentialsSupplier: () -> Credentials?,
-    private val hanaApiUrlSupplier: () -> String,
     private val kymaApiUrlSupplier: () -> String,
     listener: (ListDataEvent) -> Unit
 ) : AddEditDeleteListPanel<CCv2Subscription.Mutable>(null, emptyList()) {
@@ -68,10 +66,8 @@ internal class CCv2SubscriptionListPanel(
             parentComponent = this,
             subscription = mutable,
             dialogTitle = "Create CCv2 Subscription",
-            ccv2LegacyTokenSupplier = ccv2LegacyTokenSupplier,
             ccv2ClientTokenSupplier = ccv2ClientTokenSupplier,
             ccv2ClientCredentialsSupplier = ccv2ClientCredentialsSupplier,
-            hanaApiUrlSupplier = hanaApiUrlSupplier,
             kymaApiUrlSupplier = kymaApiUrlSupplier,
         )
         return if (dialog.showAndGet()) mutable
@@ -82,7 +78,6 @@ internal class CCv2SubscriptionListPanel(
         val copy = item.copy(
             authentication = item.authentication.copy(),
         ).apply {
-            ccv2LegacyTokenLoaded = item.ccv2LegacyTokenLoaded
             ccv2ClientTokenLoaded = item.ccv2ClientTokenLoaded
         }
         val dialog = CCv2SubscriptionDialog(
@@ -90,22 +85,17 @@ internal class CCv2SubscriptionListPanel(
             parentComponent = this,
             subscription = copy,
             dialogTitle = "Edit CCv2 Subscription",
-            ccv2LegacyTokenSupplier = ccv2LegacyTokenSupplier,
             ccv2ClientTokenSupplier = ccv2ClientTokenSupplier,
             ccv2ClientCredentialsSupplier = ccv2ClientCredentialsSupplier,
-            hanaApiUrlSupplier = hanaApiUrlSupplier,
             kymaApiUrlSupplier = kymaApiUrlSupplier,
         )
         return if (
             dialog.showAndGet()) {
             item.apply {
                 modified = copy.modified
-                ccv2LegacyTokenLoaded = copy.ccv2LegacyTokenLoaded
                 ccv2ClientTokenLoaded = copy.ccv2ClientTokenLoaded
                 id = copy.id
                 name = copy.name
-                ccv2Token = copy.ccv2Token
-                authenticationMode = copy.authenticationMode
                 authentication.apply {
                     tokenEndpoint = copy.authentication.tokenEndpoint
                     resource = copy.authentication.resource
