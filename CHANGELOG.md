@@ -1,13 +1,19 @@
+## [2026.0.4]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.4+author%3Amlytvyn+is%3Apr)
+
+### `ImpEx` enhancements
+- New folding flag `collapse data rows by default` [#1757](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1757)
+
 ## [2026.0.3]
 
 <cite>Release contributors</cite>
-
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.3+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Sina Bastani](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.3+author%3Asina96+is%3Apr)
 
-### `CCv2` Technical User Authentication enhancements
+### `CCv2` enhancements
 - Fixed CCv2 authentication to Technical User via Kyma runtime; deprecate token-based auth [#1756](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1756)
-
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.3+author%3Amlytvyn+is%3Apr)
 
 ### `SAP CX Logging` enhancements
 - Ensure that log level can be changed from the code for Java 21 projects [#1755](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1755)
