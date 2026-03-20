@@ -6,6 +6,9 @@
 ### `Project Import` enhancements
 - Adjusted dependencies on Angular2 modules [#1758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1758)
 
+### `xDebugger` enhancements
+- Added `toString` for `ContentSlotNameModel` [#1759](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1759)
+
 ## [2026.0.4]
 
 <cite>Release contributors</cite>
