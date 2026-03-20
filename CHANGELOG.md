@@ -1,10 +1,13 @@
 ## [2026.0.5]
 
 <cite>Release contributors</cite>
-- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.5+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.5+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - Adjusted dependencies on Angular2 modules [#1758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1758)
+
+### `ImpEx` enhancements
+- Added reference resolution for data cells of the `many` relation end of `ComposedType` [#1760](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1760)
 
 ### `xDebugger` enhancements
 - Added `toString` for `ContentSlotNameModel` [#1759](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1759)

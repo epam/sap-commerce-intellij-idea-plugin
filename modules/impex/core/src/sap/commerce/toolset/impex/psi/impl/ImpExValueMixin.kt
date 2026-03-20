@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -85,7 +85,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 
         val metaModelAccess = TSMetaModelAccess.getInstance(project)
         return collectDocIdValuesReferences(fullHeaderParameter, meta, attributeType, metaModelAccess)
-            ?: collectTSReferences(fullHeaderParameter, attributeType, metaModelAccess)
+            ?: collectTSReferences(fullHeaderParameter, meta, attributeType, metaModelAccess)
             ?: emptyArray()
     }
 
@@ -143,6 +143,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 
     private fun collectTSReferences(
         fullHeaderParameter: ImpExFullHeaderParameter,
+        meta: TSMetaClassifier<out DomElement>,
         attributeType: String,
         metaModelAccess: TSMetaModelAccess
     ) = metaModelAccess.findMetaClassifierByName(attributeType)
@@ -150,14 +151,14 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             when (it) {
                 is TSGlobalMetaAtomic -> collectTSReferencesForMetaAtomic(attributeType)
                 is TSGlobalMetaEnum -> collectTSReferencesForMetaEnum(fullHeaderParameter, it, attributeType)
-                is TSGlobalMetaItem -> collectTSReferencesForMetaItem(fullHeaderParameter, attributeType)
+                is TSGlobalMetaItem -> collectTSReferencesForMetaItem(fullHeaderParameter, meta, attributeType)
                 is TSGlobalMetaCollection -> collectTSReferencesForMetaCollection(fullHeaderParameter, it, metaModelAccess)
                 else -> null
             }
                 ?.toTypedArray()
         }
 
-    private fun collectTSReferencesForMetaItem(fullHeaderParameter: ImpExFullHeaderParameter, attributeType: String): List<PsiReference>? {
+    private fun collectTSReferencesForMetaItem(fullHeaderParameter: ImpExFullHeaderParameter, meta: TSMetaClassifier<out DomElement>, attributeType: String): List<PsiReference>? {
         val parameters = fullHeaderParameter
             .parametersList
             .firstOrNull()
@@ -165,18 +166,28 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             ?: return null
 
         if (TSConstants.Type.COMPOSED_TYPE == attributeType) {
-            /**
-             * UPDATE BundleTemplateStatus[batchmode = true]; itemtype(code)[unique = true]
-             *                                              ; Address
-             *
-             * To be injected into -> Address
-             */
             return parameters
                 .takeIf { it.size == 1 }
                 ?.firstOrNull()
                 ?.takeIf { TSConstants.Attribute.CODE == it.text }
-                ?.let { ImpExValueTSClassifierReference(this, TextRange.create(0, textLength)) }
-                ?.let { listOf(it) }
+                ?.let { _ ->
+                    if (meta is TSMetaRelation.TSMetaRelationElement && meta.cardinality == Cardinality.MANY) {
+                        /**
+                         * UPDATE CatalogVersionSyncJob; rootTypes(code)
+                         *                             ; CMSItem, CMSRelation, Media, MediaContainer
+                         */
+                        collectRanges(fullHeaderParameter, AttributeModifier.COLLECTION_DELIMITER, ",")
+                            .map { ImpExValueTSClassifierReference(this, it) }
+                    } else {
+                        /**
+                         * UPDATE BundleTemplateStatus[batchmode = true]; itemtype(code)[unique = true]
+                         *                                              ; Address
+                         *
+                         * To be injected into -> Address
+                         */
+                        listOf(ImpExValueTSClassifierReference(this, TextRange.create(0, textLength)))
+                    }
+                }
         }
 
         /**
