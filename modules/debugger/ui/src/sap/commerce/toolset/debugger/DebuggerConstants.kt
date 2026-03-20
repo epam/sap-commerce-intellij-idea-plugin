@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -83,6 +83,7 @@ internal object DebuggerConstants {
 
         "de.hybris.platform.solrfacetsearch.model.config.SolrServerConfigModel" to NAME,
         "de.hybris.platform.solrfacetsearch.model.config.SolrIndexConfigModel" to NAME,
+        "de.hybris.platform.cms2.model.contents.ContentSlotNameModel" to NAME,
 
         "de.hybris.platform.cms2.model.contents.CMSItemModel" to CMS_ITEM,
         "de.hybris.platform.solrfacetsearch.model.config.SolrIndexedPropertyModel" to SOLR_INDEXED_PROPERTY,
