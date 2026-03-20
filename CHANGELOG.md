@@ -1,3 +1,11 @@
+## [2026.0.5]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.5+author%3Amlytvyn+is%3Apr)
+
+### `Project Import` enhancements
+- Adjusted dependencies on Angular2 modules [#1758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1758)
+
 ## [2026.0.4]
 
 <cite>Release contributors</cite>
