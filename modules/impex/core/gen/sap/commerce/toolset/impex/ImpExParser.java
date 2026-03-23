@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -91,6 +91,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //   ATTRIBUTE_VALUE
   //   | DIGIT
   //   | BOOLEAN
+  // //  | DOUBLE_QUOTE
   //   | string
   //   | macro_usage_dec
   // )+
@@ -111,6 +112,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   // ATTRIBUTE_VALUE
   //   | DIGIT
   //   | BOOLEAN
+  // //  | DOUBLE_QUOTE
   //   | string
   //   | macro_usage_dec
   private static boolean any_attribute_value_0(PsiBuilder b, int l) {
@@ -212,6 +214,45 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, DOCUMENT_ID);
     exit_section_(b, m, DOCUMENT_ID_USAGE, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // DOUBLE_QUOTE_ESCAPE
+  //     | CRLF
+  //     | STRING_LITERAL
+  static boolean double_quoted_string_content(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "double_quoted_string_content")) return false;
+    boolean r;
+    r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
+    if (!r) r = consumeToken(b, CRLF);
+    if (!r) r = consumeToken(b, STRING_LITERAL);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // DOUBLE_QUOTE_OPEN double_quoted_string_content* DOUBLE_QUOTE_CLOSE
+  static boolean double_string_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "double_string_dec")) return false;
+    if (!nextTokenIs(b, DOUBLE_QUOTE_OPEN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, DOUBLE_QUOTE_OPEN);
+    p = r; // pin = 1
+    r = r && report_error_(b, double_string_dec_1(b, l + 1));
+    r = p && consumeToken(b, DOUBLE_QUOTE_CLOSE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // double_quoted_string_content*
+  private static boolean double_string_dec_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "double_string_dec_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!double_quoted_string_content(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "double_string_dec_1", c)) break;
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -376,7 +417,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // macro_name_dec ASSIGN_VALUE (
   //       macro_value_dec
-  //     | string
+  // //    | SINGLE_QUOTE
+  // //    | DOUBLE_QUOTE
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -409,7 +451,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   // (
   //       macro_value_dec
-  //     | string
+  // //    | SINGLE_QUOTE
+  // //    | DOUBLE_QUOTE
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -438,7 +481,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   // macro_value_dec
-  //     | string
+  // //    | SINGLE_QUOTE
+  // //    | DOUBLE_QUOTE
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -459,7 +503,6 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "macro_declaration_2_0")) return false;
     boolean r;
     r = macro_value_dec(b, l + 1);
-    if (!r) r = string(b, l + 1);
     if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
     if (!r) r = macro_usage_dec(b, l + 1);
     if (!r) r = consumeToken(b, LEFT_ROUND_BRACKET);
@@ -1127,14 +1170,44 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SINGLE_STRING | DOUBLE_STRING
+  // SINGLE_QUOTE_OPEN double_quoted_string_content* SINGLE_QUOTE_CLOSE
+  static boolean single_string_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_string_dec")) return false;
+    if (!nextTokenIs(b, SINGLE_QUOTE_OPEN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, SINGLE_QUOTE_OPEN);
+    p = r; // pin = 1
+    r = r && report_error_(b, single_string_dec_1(b, l + 1));
+    r = p && consumeToken(b, SINGLE_QUOTE_CLOSE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // double_quoted_string_content*
+  private static boolean single_string_dec_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_string_dec_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!double_quoted_string_content(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "single_string_dec_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // SINGLE_STRING
+  //     | DOUBLE_STRING
+  //     | single_string_dec
+  //     | double_string_dec
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
-    if (!nextTokenIs(b, "<string>", DOUBLE_STRING, SINGLE_STRING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
     r = consumeToken(b, SINGLE_STRING);
     if (!r) r = consumeToken(b, DOUBLE_STRING);
+    if (!r) r = single_string_dec(b, l + 1);
+    if (!r) r = double_string_dec(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1724,6 +1797,9 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   // //    | FIELD_VALUE_URL
   //     | BOOLEAN
   //     | DIGIT
+  // //    | TAG
+  // //    | DOUBLE_QUOTE
+  // //    | SINGLE_QUOTE
   //     | string
   //     | macro_usage_dec
   //     | FIELD_LIST_ITEM_SEPARATOR

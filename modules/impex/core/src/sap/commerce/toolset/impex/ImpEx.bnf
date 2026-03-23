@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -187,7 +187,8 @@ macro_value_dec ::= MACRO_VALUE
 
 macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
       macro_value_dec
-    | string
+//    | SINGLE_QUOTE
+//    | DOUBLE_QUOTE
     | HEADER_SPECIAL_PARAMETER_NAME
     | macro_usage_dec
     | LEFT_ROUND_BRACKET
@@ -225,11 +226,38 @@ private script_body ::= (SCRIPT_BODY_VALUE
     | DOUBLE_STRING
     )*
 
-string ::= SINGLE_STRING | DOUBLE_STRING
+string ::= SINGLE_STRING
+    | DOUBLE_STRING
+    | single_string_dec
+    | double_string_dec
 {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExStringMixin"
     methods=[getValueGroup]
 }
+
+private single_string_dec ::= SINGLE_QUOTE_OPEN double_quoted_string_content* SINGLE_QUOTE_CLOSE
+{
+    pin=1
+}
+
+private double_string_dec ::= DOUBLE_QUOTE_OPEN double_quoted_string_content* DOUBLE_QUOTE_CLOSE
+{
+    pin=1
+}
+
+private double_quoted_string_content ::=
+//      macro_usage_dec
+//    | COMMA
+//    | TAG
+//    | BOOLEAN
+//    | DIGIT
+//    | FIELD_LIST_ITEM_SEPARATOR
+//    | DEFAULT_PATH_DELIMITER
+//    | ALTERNATIVE_MAP_DELIMITER
+//    | DEFAULT_KEY_VALUE_DELIMITER
+     DOUBLE_QUOTE_ESCAPE
+    | CRLF
+    | STRING_LITERAL
 
 // Value line rules
 value_line ::= (sub_type_name value_group*) | (value_group+) {
@@ -262,6 +290,9 @@ private value_dec ::= FIELD_VALUE
 //    | FIELD_VALUE_URL
     | BOOLEAN
     | DIGIT
+//    | TAG
+//    | DOUBLE_QUOTE
+//    | SINGLE_QUOTE
     | string
     | macro_usage_dec
     | FIELD_LIST_ITEM_SEPARATOR
@@ -368,6 +399,7 @@ any_attribute_value ::= (
   ATTRIBUTE_VALUE
   | DIGIT
   | BOOLEAN
+//  | DOUBLE_QUOTE
   | string
   | macro_usage_dec
 )+

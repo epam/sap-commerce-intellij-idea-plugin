@@ -1,3 +1,11 @@
+## [2026.0.6]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+
+### `ImpEx` enhancements
+- Improved handling of the double-quoted `"` strings in the data row value fields [#1761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1761)
+
 ## [2026.0.5]
 
 <cite>Release contributors</cite>

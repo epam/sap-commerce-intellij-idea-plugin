@@ -72,6 +72,11 @@ comma         = [,]
 dot           = [.]
 assign_value  = [=]
 
+double_quote   = [\"]
+double_quote_escaped = [\"][\"]
+single_quote   = [']
+string_literal = ({not_crlf}|{identifier}+)
+
 // see - CollectionValueTranslator
 // value must start with this prefix
 collection_append_prefix = "(+)"
@@ -110,6 +115,7 @@ field_value        = ({not_crlf}|{identifier}+)
 field_value_ignore = "<ignore>"
 field_value_null   = "<null>"
 field_value_prefix_password_encoding = "*:" | "plain:" | "sha-256:" | "sha-512:" | "md5:" | "pbkdf2:"
+tag    = [<]({identifier})+[/]?[>]
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
@@ -119,6 +125,8 @@ end_userrights                    = [$]END_USERRIGHTS
 %state HEADER_TYPE
 %state HEADER_LINE
 %state FIELD_VALUE
+%state DOUBLE_STRING
+%state FIELD_VALUE_START
 %state BEAN_SHELL
 %state SCRIPT
 %state SCRIPT_BODY
@@ -193,7 +201,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {header_mode_remove}                                    { yybegin(HEADER_TYPE); return ImpExTypes.HEADER_MODE_REMOVE; }
 
     {value_subtype}                                         { yybegin(FIELD_VALUE); return ImpExTypes.VALUE_SUBTYPE; }
-    {semicolon}                                             { yybegin(FIELD_VALUE); return ImpExTypes.FIELD_VALUE_SEPARATOR; }
+    {semicolon}                                             { yybegin(FIELD_VALUE_START); return ImpExTypes.FIELD_VALUE_SEPARATOR; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
@@ -258,6 +266,40 @@ end_userrights                    = [$]END_USERRIGHTS
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
+<FIELD_VALUE_START> {
+    [\"] {
+        yybegin(DOUBLE_STRING);
+        return ImpExTypes.DOUBLE_QUOTE_OPEN;
+    }
+
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
+
+    /* anything else → fallback to normal FIELD_VALUE */
+    . {
+        yypushback(1);
+        yybegin(FIELD_VALUE);
+    }
+}
+
+<DOUBLE_STRING> {
+    {double_quote}                                          { yybegin(FIELD_VALUE); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
+    {double_quote_escaped}                                  { return ImpExTypes.DOUBLE_QUOTE_ESCAPE; }
+    {white_space}+                                          { return TokenType.WHITE_SPACE; }
+
+//    {tag}                                                   { return ImpExTypes.TAG; }
+//    {boolean}                                               { return ImpExTypes.BOOLEAN; }
+//    {digit}                                                 { return ImpExTypes.DIGIT; }
+//    {comma}                                                 { return ImpExTypes.FIELD_LIST_ITEM_SEPARATOR; }
+//    {default_path_delimiter}                                { return ImpExTypes.DEFAULT_PATH_DELIMITER; }
+//    {alternative_map_delimiter}                             { return ImpExTypes.ALTERNATIVE_MAP_DELIMITER; }
+//    {default_key_value_delimiter}                           { return ImpExTypes.DEFAULT_KEY_VALUE_DELIMITER; }
+
+//    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+
+    {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
+    {crlf}                                                  { return ImpExTypes.CRLF; }
+}
+
 <FIELD_VALUE> {
     {field_value_prefix_password_encoding}                  { return ImpExTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX; }
     "zip:"                                                  { return ImpExTypes.FIELD_VALUE_ZIP_PREFIX; }
@@ -269,11 +311,13 @@ end_userrights                    = [$]END_USERRIGHTS
                                                                     yypushback(4);
                                                                     return ImpExTypes.FIELD_VALUE_HTTP_PREFIX;
                                                                 }
-    {semicolon}                                             { return ImpExTypes.FIELD_VALUE_SEPARATOR; }
+    {semicolon}                                             { yybegin(FIELD_VALUE_START); return ImpExTypes.FIELD_VALUE_SEPARATOR; }
     {multiline_separator}                                   { return ImpExTypes.MULTILINE_SEPARATOR; }
-    {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
+//    {single_quote}                                          { return ImpExTypes.SINGLE_QUOTE; }
+//    {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
     {field_value_ignore}                                    { return ImpExTypes.FIELD_VALUE_IGNORE; }
     {field_value_null}                                      { return ImpExTypes.FIELD_VALUE_NULL; }
+//    {tag}                                                   { return ImpExTypes.TAG; }
     {boolean}                                               { return ImpExTypes.BOOLEAN; }
     {digit}                                                 { return ImpExTypes.DIGIT; }
 
@@ -345,6 +389,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {digit}                                                 { return ImpExTypes.DIGIT; }
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
     {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
+//    {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
     {comma}                                                 { yybegin(MODIFIERS_BLOCK); return ImpExTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpExTypes.ATTRIBUTE_VALUE; }
@@ -360,6 +405,8 @@ end_userrights                    = [$]END_USERRIGHTS
 <WAITING_MACRO_VALUE> {
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
     {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
+//    {single_quote}                                         { return ImpExTypes.SINGLE_QUOTE; }
+//    {double_quote}                                         { return ImpExTypes.DOUBLE_QUOTE; }
 
     {macro_usage}                                           { yypushback(yylength()); yybegin(WAITING_MACRO_CONFIG_USAGE); }
     {special_parameter_name}                                { return ImpExTypes.HEADER_SPECIAL_PARAMETER_NAME; }
