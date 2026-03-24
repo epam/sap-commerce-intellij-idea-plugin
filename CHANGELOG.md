@@ -1,7 +1,7 @@
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
-- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Improved handling of the double-quoted `"` strings in the data row value fields [#1761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1761)
@@ -11,6 +11,7 @@
 - Support macro usages in the double-quoted string [#1765](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1765)
 - Do not parse double-quoted string in the header attribute value [#1766](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1766)
 - Do not parse double-quoted string in the value of the macro declaration [#1767](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1767)
+- Apply color scheme for new tokens [#1768](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1768)
 
 ## [2026.0.5]
 
