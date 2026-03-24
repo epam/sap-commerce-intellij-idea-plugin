@@ -19,6 +19,7 @@
 
 package sap.commerce.toolset.impex;
 
+import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import sap.commerce.toolset.impex.psi.ImpExTypes;
 import com.intellij.psi.TokenType;
@@ -313,8 +314,8 @@ end_userrights                    = [$]END_USERRIGHTS
                                                                 }
     {semicolon}                                             { yybegin(FIELD_VALUE_START); return ImpExTypes.FIELD_VALUE_SEPARATOR; }
     {multiline_separator}                                   { return ImpExTypes.MULTILINE_SEPARATOR; }
-//    {single_quote}                                          { return ImpExTypes.SINGLE_QUOTE; }
-//    {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
+    {single_quote}                                          { return ImpExTypes.SINGLE_QUOTE; }
+    {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
     {field_value_ignore}                                    { return ImpExTypes.FIELD_VALUE_IGNORE; }
     {field_value_null}                                      { return ImpExTypes.FIELD_VALUE_NULL; }
 //    {tag}                                                   { return ImpExTypes.TAG; }
