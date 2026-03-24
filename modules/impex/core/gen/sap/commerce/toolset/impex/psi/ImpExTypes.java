@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -91,6 +91,9 @@ public interface ImpExTypes {
   IElementType DIGIT = new ImpExTokenType("DIGIT");
   IElementType DOCUMENT_ID = new ImpExTokenType("DOCUMENT_ID");
   IElementType DOT = new ImpExTokenType("DOT");
+  IElementType DOUBLE_QUOTE_CLOSE = new ImpExTokenType("DOUBLE_QUOTE_CLOSE");
+  IElementType DOUBLE_QUOTE_ESCAPE = new ImpExTokenType("DOUBLE_QUOTE_ESCAPE");
+  IElementType DOUBLE_QUOTE_OPEN = new ImpExTokenType("DOUBLE_QUOTE_OPEN");
   IElementType DOUBLE_STRING = new ImpExTokenType("DOUBLE_STRING");
   IElementType END_USERRIGHTS = new ImpExTokenType("END_USERRIGHTS");
   IElementType FIELD_LIST_ITEM_SEPARATOR = new ImpExTokenType("FIELD_LIST_ITEM_SEPARATOR");
@@ -132,8 +135,11 @@ public interface ImpExTypes {
   IElementType RIGHT_SQUARE_BRACKET = new ImpExTokenType("RIGHT_SQUARE_BRACKET");
   IElementType SCRIPT_ACTION = new ImpExTokenType("SCRIPT_ACTION");
   IElementType SCRIPT_BODY_VALUE = new ImpExTokenType("SCRIPT_BODY_VALUE");
+  IElementType SINGLE_QUOTE_CLOSE = new ImpExTokenType("SINGLE_QUOTE_CLOSE");
+  IElementType SINGLE_QUOTE_OPEN = new ImpExTokenType("SINGLE_QUOTE_OPEN");
   IElementType SINGLE_STRING = new ImpExTokenType("SINGLE_STRING");
   IElementType START_USERRIGHTS = new ImpExTokenType("START_USERRIGHTS");
+  IElementType STRING_LITERAL = new ImpExTokenType("STRING_LITERAL");
   IElementType TARGET = new ImpExTokenType("TARGET");
   IElementType TYPE = new ImpExTokenType("TYPE");
   IElementType UID = new ImpExTokenType("UID");

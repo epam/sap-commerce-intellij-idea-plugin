@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,8 @@
  */
 package sap.commerce.toolset.impex.psi;
 
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
 public interface ImpExRootMacroUsage extends PsiElement {
