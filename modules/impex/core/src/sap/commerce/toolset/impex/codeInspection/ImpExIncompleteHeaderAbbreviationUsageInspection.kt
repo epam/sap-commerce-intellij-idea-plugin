@@ -19,18 +19,17 @@
 package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalInspectionToolSession
-import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.*
 import com.intellij.lang.properties.IProperty
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.parentOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
-import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
-import sap.commerce.toolset.impex.psi.ImpExVisitor
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
 
 class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
@@ -46,7 +45,10 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
             .let { cachedMacros.addAll(it) }
     }
 
-    private class ImpExHeaderLineVisitor(private val problemsHolder: ProblemsHolder, private val cachedMacros: Set<String>) : ImpExVisitor() {
+    private class ImpExHeaderLineVisitor(
+        private val problemsHolder: ProblemsHolder,
+        private val cachedMacros: Set<String>
+    ) : ImpExVisitor() {
 
         override fun visitAnyHeaderParameterName(parameter: ImpExAnyHeaderParameterName) {
             val reference = parameter.reference.asSafely<ImpExHeaderAbbreviationReference>() ?: return
@@ -72,7 +74,35 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
                 reference,
                 ProblemHighlightType.ERROR,
                 i18n("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", parameter.text, missingExpectedMacros.joinToString()),
+                *missingExpectedMacros
+                    .map { LocalFix(parameter, it) }
+                    .toTypedArray()
             )
+        }
+
+        private class LocalFix(
+            parameter: ImpExAnyHeaderParameterName,
+            private val macroName: String
+        ) : LocalQuickFixOnPsiElement(parameter) {
+
+            override fun getFamilyName() = "[y] Missing macro declarations"
+            override fun getText() = "Add macro declaration '$macroName'"
+
+            override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+                val firstLeaf = startElement
+                    .asSafely<ImpExAnyHeaderParameterName>()
+                    ?.parentOfType<ImpExHeaderLine>()
+                    ?: return
+
+                val snippetFile = ImpExElementFactory.createFile(
+                    project, """
+                    $macroName =  
+
+                """.trimIndent()
+                )
+
+                file.addBefore(snippetFile, firstLeaf)
+            }
         }
     }
 }
