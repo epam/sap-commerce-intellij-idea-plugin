@@ -291,12 +291,12 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {tag_open}                                              { return ImpExTypes.TAG_OPEN; }
     {tag_close}                                             { return ImpExTypes.TAG_CLOSE; }
-//    {boolean}                                               { return ImpExTypes.BOOLEAN; }
-//    {digit}                                                 { return ImpExTypes.DIGIT; }
-//    {comma}                                                 { return ImpExTypes.FIELD_LIST_ITEM_SEPARATOR; }
-//    {default_path_delimiter}                                { return ImpExTypes.DEFAULT_PATH_DELIMITER; }
-//    {alternative_map_delimiter}                             { return ImpExTypes.ALTERNATIVE_MAP_DELIMITER; }
-//    {default_key_value_delimiter}                           { return ImpExTypes.DEFAULT_KEY_VALUE_DELIMITER; }
+    {boolean}                                               { return ImpExTypes.BOOLEAN; }
+    {digit}                                                 { return ImpExTypes.DIGIT; }
+    {comma}                                                 { return ImpExTypes.FIELD_LIST_ITEM_SEPARATOR; }
+    {default_path_delimiter}                                { return ImpExTypes.DEFAULT_PATH_DELIMITER; }
+    {alternative_map_delimiter}                             { return ImpExTypes.ALTERNATIVE_MAP_DELIMITER; }
+    {default_key_value_delimiter}                           { return ImpExTypes.DEFAULT_KEY_VALUE_DELIMITER; }
 
 //    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
 

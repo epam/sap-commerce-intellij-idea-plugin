@@ -219,15 +219,15 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // DOUBLE_QUOTE_ESCAPE
   // //      macro_usage_dec
-  // //    | COMMA
   //     | TAG_OPEN
   //     | TAG_CLOSE
-  // //    | BOOLEAN
-  // //    | DIGIT
-  // //    | FIELD_LIST_ITEM_SEPARATOR
-  // //    | DEFAULT_PATH_DELIMITER
-  // //    | ALTERNATIVE_MAP_DELIMITER
-  // //    | DEFAULT_KEY_VALUE_DELIMITER
+  //     | COMMA
+  //     | BOOLEAN
+  //     | DIGIT
+  //     | FIELD_LIST_ITEM_SEPARATOR
+  //     | DEFAULT_PATH_DELIMITER
+  //     | ALTERNATIVE_MAP_DELIMITER
+  //     | DEFAULT_KEY_VALUE_DELIMITER
   //     | CRLF
   //     | STRING_LITERAL
   static boolean double_quoted_string_content(PsiBuilder b, int l) {
@@ -236,6 +236,13 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
     if (!r) r = consumeToken(b, TAG_OPEN);
     if (!r) r = consumeToken(b, TAG_CLOSE);
+    if (!r) r = consumeToken(b, COMMA);
+    if (!r) r = consumeToken(b, BOOLEAN);
+    if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, FIELD_LIST_ITEM_SEPARATOR);
+    if (!r) r = consumeToken(b, DEFAULT_PATH_DELIMITER);
+    if (!r) r = consumeToken(b, ALTERNATIVE_MAP_DELIMITER);
+    if (!r) r = consumeToken(b, DEFAULT_KEY_VALUE_DELIMITER);
     if (!r) r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, STRING_LITERAL);
     return r;
