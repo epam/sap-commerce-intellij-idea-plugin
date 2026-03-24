@@ -142,17 +142,50 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | document_id_dec | FUNCTION
+  // document_id_dec
+  //  | (HEADER_PARAMETER_NAME
+  //   | HEADER_SPECIAL_PARAMETER_NAME
+  //   | macro_usage_dec
+  //   | FUNCTION)+
   public static boolean any_header_parameter_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_parameter_name")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ANY_HEADER_PARAMETER_NAME, "<any header parameter name>");
+    r = document_id_dec(b, l + 1);
+    if (!r) r = any_header_parameter_name_1(b, l + 1);
+    exit_section_(b, l, m, r, false, ImpExParser::recover_parameter_name);
+    return r;
+  }
+
+  // (HEADER_PARAMETER_NAME
+  //   | HEADER_SPECIAL_PARAMETER_NAME
+  //   | macro_usage_dec
+  //   | FUNCTION)+
+  private static boolean any_header_parameter_name_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "any_header_parameter_name_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = any_header_parameter_name_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!any_header_parameter_name_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "any_header_parameter_name_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // HEADER_PARAMETER_NAME
+  //   | HEADER_SPECIAL_PARAMETER_NAME
+  //   | macro_usage_dec
+  //   | FUNCTION
+  private static boolean any_header_parameter_name_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "any_header_parameter_name_1_0")) return false;
+    boolean r;
     r = consumeToken(b, HEADER_PARAMETER_NAME);
     if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
     if (!r) r = macro_usage_dec(b, l + 1);
-    if (!r) r = document_id_dec(b, l + 1);
     if (!r) r = consumeToken(b, FUNCTION);
-    exit_section_(b, l, m, r, false, ImpExParser::recover_parameter_name);
     return r;
   }
 

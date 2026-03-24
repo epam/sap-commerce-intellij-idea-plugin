@@ -342,7 +342,11 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
     methods=[getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups]
 }
 
-any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | document_id_dec | FUNCTION
+any_header_parameter_name ::= document_id_dec
+ | (HEADER_PARAMETER_NAME
+  | HEADER_SPECIAL_PARAMETER_NAME
+  | macro_usage_dec
+  | FUNCTION)+
 {
     recoverWhile = recover_parameter_name
     mixin = "sap.commerce.toolset.impex.psi.impl.ImpExAnyHeaderParameterNameMixin"

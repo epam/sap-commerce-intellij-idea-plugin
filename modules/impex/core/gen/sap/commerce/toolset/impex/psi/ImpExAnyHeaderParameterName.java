@@ -32,8 +32,8 @@ public interface ImpExAnyHeaderParameterName extends PsiElement {
   @Nullable
   ImpExDocumentIdDec getDocumentIdDec();
 
-  @Nullable
-  ImpExMacroUsageDec getMacroUsageDec();
+  @NotNull
+  List<ImpExMacroUsageDec> getMacroUsageDecList();
 
   @Nullable
   ImpExHeaderTypeName getHeaderItemTypeName();
