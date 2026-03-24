@@ -153,50 +153,50 @@ end_userrights                    = [$]END_USERRIGHTS
     {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
 
     {line_comment}                                          {
-                                                                    final String text = yytext().toString().trim();
-                                                                    int index = text.indexOf("#%groovy%");
+                                                                final String text = yytext().toString().trim();
+                                                                int index = text.indexOf("#%groovy%");
 
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 9);
-                                                                        return ImpExTypes.GROOVY_MARKER;
-                                                                    }
-
-                                                                    index = text.indexOf("#%javascript%");
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 13);
-                                                                        return ImpExTypes.JAVASCRIPT_MARKER;
-                                                                    }
-
-                                                                    index = text.indexOf("#%bsh%");
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 6);
-                                                                        return ImpExTypes.BEAN_SHELL_MARKER;
-                                                                    }
-
-                                                                    index = text.indexOf("#%");
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 2);
-                                                                        return ImpExTypes.BEAN_SHELL_MARKER;
-                                                                    }
-
-                                                                    return ImpExTypes.LINE_COMMENT;
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 9);
+                                                                    return ImpExTypes.GROOVY_MARKER;
                                                                 }
+
+                                                                index = text.indexOf("#%javascript%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 13);
+                                                                    return ImpExTypes.JAVASCRIPT_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%bsh%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 6);
+                                                                    return ImpExTypes.BEAN_SHELL_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 2);
+                                                                    return ImpExTypes.BEAN_SHELL_MARKER;
+                                                                }
+
+                                                                return ImpExTypes.LINE_COMMENT;
+                                                            }
 
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return ImpExTypes.START_USERRIGHTS; }
     {root_macro_usage}                                      { return ImpExTypes.MACRO_USAGE; }
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
     {macro_name_declaration}                                {
-                                                                  yybegin(MACRO_DECLARATION);
-                                                                  /* Push back '='. */
-                                                                  yypushback(1);
-                                                                  /* Push back spaces. */
-                                                                  yypushback(yylength() - yytext().toString().trim().length());
-                                                                  return ImpExTypes.MACRO_NAME_DECLARATION;
-                                                                }
+                                                              yybegin(MACRO_DECLARATION);
+                                                              /* Push back '='. */
+                                                              yypushback(1);
+                                                              /* Push back spaces. */
+                                                              yypushback(yylength() - yytext().toString().trim().length());
+                                                              return ImpExTypes.MACRO_NAME_DECLARATION;
+                                                            }
 
     {header_mode_insert}                                    { yybegin(HEADER_TYPE); return ImpExTypes.HEADER_MODE_INSERT; }
     {header_mode_update}                                    { yybegin(HEADER_TYPE); return ImpExTypes.HEADER_MODE_UPDATE; }
