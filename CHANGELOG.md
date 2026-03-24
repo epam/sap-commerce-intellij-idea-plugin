@@ -16,6 +16,9 @@
 - Ensure that last attribute of the same name is taken into evaluation in the header [#1770](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1770)
 - Unquote only `'` default values set via header [#1771](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1771)
 
+### `ImpEx` inspection rules
+- Inspection: detect and delete unused macro declarations [#1772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1772)
+
 ## [2026.0.5]
 
 <cite>Release contributors</cite>
