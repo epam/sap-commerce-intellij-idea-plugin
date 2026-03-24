@@ -407,10 +407,8 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <WAITING_MACRO_VALUE> {
-    {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
-    {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
-//    {single_quote}                                         { return ImpExTypes.SINGLE_QUOTE; }
-//    {double_quote}                                         { return ImpExTypes.DOUBLE_QUOTE; }
+    {single_quote}                                         { return ImpExTypes.SINGLE_QUOTE; }
+    {double_quote}                                         { return ImpExTypes.DOUBLE_QUOTE; }
 
     {macro_usage}                                           { yypushback(yylength()); yybegin(WAITING_MACRO_CONFIG_USAGE); }
     {special_parameter_name}                                { return ImpExTypes.HEADER_SPECIAL_PARAMETER_NAME; }

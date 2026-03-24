@@ -438,8 +438,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // macro_name_dec ASSIGN_VALUE (
   //       macro_value_dec
-  // //    | SINGLE_QUOTE
-  // //    | DOUBLE_QUOTE
+  //     | SINGLE_QUOTE
+  //     | DOUBLE_QUOTE
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -472,8 +472,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   // (
   //       macro_value_dec
-  // //    | SINGLE_QUOTE
-  // //    | DOUBLE_QUOTE
+  //     | SINGLE_QUOTE
+  //     | DOUBLE_QUOTE
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -502,8 +502,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   // macro_value_dec
-  // //    | SINGLE_QUOTE
-  // //    | DOUBLE_QUOTE
+  //     | SINGLE_QUOTE
+  //     | DOUBLE_QUOTE
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -524,6 +524,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "macro_declaration_2_0")) return false;
     boolean r;
     r = macro_value_dec(b, l + 1);
+    if (!r) r = consumeToken(b, SINGLE_QUOTE);
+    if (!r) r = consumeToken(b, DOUBLE_QUOTE);
     if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
     if (!r) r = macro_usage_dec(b, l + 1);
     if (!r) r = consumeToken(b, LEFT_ROUND_BRACKET);
