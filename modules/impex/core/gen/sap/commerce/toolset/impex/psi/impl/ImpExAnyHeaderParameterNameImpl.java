@@ -55,9 +55,9 @@ public class ImpExAnyHeaderParameterNameImpl extends ImpExAnyHeaderParameterName
   }
 
   @Override
-  @Nullable
-  public ImpExMacroUsageDec getMacroUsageDec() {
-    return findChildByClass(ImpExMacroUsageDec.class);
+  @NotNull
+  public List<ImpExMacroUsageDec> getMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
   }
 
   @Override
