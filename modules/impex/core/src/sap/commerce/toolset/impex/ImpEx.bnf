@@ -246,8 +246,8 @@ private double_string_dec ::= DOUBLE_QUOTE_OPEN double_quoted_string_content* DO
 }
 
 private double_quoted_string_content ::=
-      DOUBLE_QUOTE_ESCAPE
-//      macro_usage_dec
+      macro_usage_dec
+    | DOUBLE_QUOTE_ESCAPE
     | TAG_OPEN
     | TAG_CLOSE
     | COMMA

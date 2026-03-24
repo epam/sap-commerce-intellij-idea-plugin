@@ -217,8 +217,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // DOUBLE_QUOTE_ESCAPE
-  // //      macro_usage_dec
+  // macro_usage_dec
+  //     | DOUBLE_QUOTE_ESCAPE
   //     | TAG_OPEN
   //     | TAG_CLOSE
   //     | COMMA
@@ -233,7 +233,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   static boolean double_quoted_string_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "double_quoted_string_content")) return false;
     boolean r;
-    r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
+    r = macro_usage_dec(b, l + 1);
+    if (!r) r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
     if (!r) r = consumeToken(b, TAG_OPEN);
     if (!r) r = consumeToken(b, TAG_CLOSE);
     if (!r) r = consumeToken(b, COMMA);

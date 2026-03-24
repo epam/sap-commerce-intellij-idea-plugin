@@ -298,7 +298,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {alternative_map_delimiter}                             { return ImpExTypes.ALTERNATIVE_MAP_DELIMITER; }
     {default_key_value_delimiter}                           { return ImpExTypes.DEFAULT_KEY_VALUE_DELIMITER; }
 
-//    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
 
     {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
     {crlf}                                                  { return ImpExTypes.CRLF; }
