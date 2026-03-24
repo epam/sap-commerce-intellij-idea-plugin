@@ -287,7 +287,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {double_quote_escaped}                                  { return ImpExTypes.DOUBLE_QUOTE_ESCAPE; }
     {white_space}+                                          { return TokenType.WHITE_SPACE; }
 
-//    {tag}                                                   { return ImpExTypes.TAG; }
+    {tag}                                                   { return ImpExTypes.TAG; }
 //    {boolean}                                               { return ImpExTypes.BOOLEAN; }
 //    {digit}                                                 { return ImpExTypes.DIGIT; }
 //    {comma}                                                 { return ImpExTypes.FIELD_LIST_ITEM_SEPARATOR; }
@@ -318,7 +318,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
     {field_value_ignore}                                    { return ImpExTypes.FIELD_VALUE_IGNORE; }
     {field_value_null}                                      { return ImpExTypes.FIELD_VALUE_NULL; }
-//    {tag}                                                   { return ImpExTypes.TAG; }
+    {tag}                                                   { return ImpExTypes.TAG; }
     {boolean}                                               { return ImpExTypes.BOOLEAN; }
     {digit}                                                 { return ImpExTypes.DIGIT; }
 
