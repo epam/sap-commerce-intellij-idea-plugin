@@ -218,7 +218,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // DOUBLE_QUOTE_ESCAPE
-  // //      macro_usage_dec
+  //       macro_usage_dec
   //     | TAG_OPEN
   //     | TAG_CLOSE
   //     | COMMA
@@ -233,7 +233,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   static boolean double_quoted_string_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "double_quoted_string_content")) return false;
     boolean r;
-    r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
+    Marker m = enter_section_(b);
+    r = double_quoted_string_content_0(b, l + 1);
     if (!r) r = consumeToken(b, TAG_OPEN);
     if (!r) r = consumeToken(b, TAG_CLOSE);
     if (!r) r = consumeToken(b, COMMA);
@@ -245,6 +246,19 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, DEFAULT_KEY_VALUE_DELIMITER);
     if (!r) r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, STRING_LITERAL);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // DOUBLE_QUOTE_ESCAPE
+  //       macro_usage_dec
+  private static boolean double_quoted_string_content_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "double_quoted_string_content_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
+    r = r && macro_usage_dec(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

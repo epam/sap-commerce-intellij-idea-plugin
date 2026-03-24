@@ -49,6 +49,12 @@ public class ImpExStringImpl extends ImpExStringMixin implements ImpExString {
   }
 
   @Override
+  @NotNull
+  public List<ImpExMacroUsageDec> getMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
+  }
+
+  @Override
   @Nullable
   public ImpExValueGroup getValueGroup() {
     return ImpExPsiUtil.getValueGroup(this);
