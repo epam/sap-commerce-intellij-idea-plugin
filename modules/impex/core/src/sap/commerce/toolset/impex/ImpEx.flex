@@ -124,8 +124,8 @@ field_value_ignore = "<ignore>"
 field_value_null   = "<null>"
 field_value_prefix_password_encoding = "*:" | "plain:" | "sha-256:" | "sha-512:" | "md5:" | "pbkdf2:"
 
-tag_open    = [<]({identifier})+{white_space}*[^/][>]
-tag_close    = [<]({identifier})+{white_space}*[/][>]
+tag_open    = [<][^/]({identifier})+{white_space}*[>]
+tag_close    = [<][/]({identifier})+{white_space}*[>]
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
