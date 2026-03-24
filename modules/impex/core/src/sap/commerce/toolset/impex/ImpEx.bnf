@@ -249,7 +249,8 @@ private double_quoted_string_content ::=
       DOUBLE_QUOTE_ESCAPE
 //      macro_usage_dec
 //    | COMMA
-    | TAG
+    | TAG_OPEN
+    | TAG_CLOSE
 //    | BOOLEAN
 //    | DIGIT
 //    | FIELD_LIST_ITEM_SEPARATOR
@@ -290,7 +291,8 @@ private value_dec ::= FIELD_VALUE
 //    | FIELD_VALUE_URL
     | BOOLEAN
     | DIGIT
-    | TAG
+    | TAG_OPEN
+    | TAG_CLOSE
     | DOUBLE_QUOTE
     | SINGLE_QUOTE
     | string
