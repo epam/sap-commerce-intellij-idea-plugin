@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,16 +24,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
 open class ImpExDeletePsiElementFix internal constructor(
-    element: PsiElement,
     private val myFamilyName: String,
     private val myText: String,
-) : LocalQuickFixOnPsiElement(element) {
+    startElement: PsiElement,
+    endElement: PsiElement? = null,
+) : LocalQuickFixOnPsiElement(startElement, endElement ?: startElement) {
 
     override fun getFamilyName() = myFamilyName
     override fun getText() = myText
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+        if (startElement != endElement) endElement.delete()
         startElement.delete()
     }
 }
-

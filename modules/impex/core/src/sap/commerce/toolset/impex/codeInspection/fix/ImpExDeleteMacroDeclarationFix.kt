@@ -20,11 +20,15 @@ package sap.commerce.toolset.impex.codeInspection.fix
 
 import com.intellij.psi.PsiElement
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 
-class ImpExDeleteValueGroupFix(element: PsiElement, valueGroupPreview: String) : ImpExDeletePsiElementFix(
-    i18n("hybris.inspections.fix.impex.DeleteValueGroup"),
-    i18n(
-        "hybris.inspections.fix.impex.DeleteValueGroup.key", valueGroupPreview
-    ),
-    element
+open class ImpExDeleteMacroDeclarationFix internal constructor(
+    macroName: String,
+    macroDeclaration: ImpExMacroDeclaration,
+    endElement: PsiElement?,
+) : ImpExDeletePsiElementFix(
+    i18n("hybris.inspections.fix.impex.DeleteMacro"),
+    i18n("hybris.inspections.fix.impex.DeleteMacro.key", macroName),
+    macroDeclaration,
+    endElement
 )

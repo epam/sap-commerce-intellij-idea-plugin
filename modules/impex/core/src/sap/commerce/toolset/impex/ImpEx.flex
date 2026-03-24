@@ -150,7 +150,9 @@ end_userrights                    = [$]END_USERRIGHTS
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 
 <YYINITIAL> {
-    {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
+    {double_string}                                         {
+                                                                return ImpExTypes.DOUBLE_STRING;
+                                                            }
 
     {line_comment}                                          {
                                                                 final String text = yytext().toString().trim();
