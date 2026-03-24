@@ -91,7 +91,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //   ATTRIBUTE_VALUE
   //   | DIGIT
   //   | BOOLEAN
-  // //  | DOUBLE_QUOTE
+  //   | DOUBLE_QUOTE
   //   | string
   //   | macro_usage_dec
   // )+
@@ -112,7 +112,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   // ATTRIBUTE_VALUE
   //   | DIGIT
   //   | BOOLEAN
-  // //  | DOUBLE_QUOTE
+  //   | DOUBLE_QUOTE
   //   | string
   //   | macro_usage_dec
   private static boolean any_attribute_value_0(PsiBuilder b, int l) {
@@ -121,6 +121,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, ATTRIBUTE_VALUE);
     if (!r) r = consumeToken(b, DIGIT);
     if (!r) r = consumeToken(b, BOOLEAN);
+    if (!r) r = consumeToken(b, DOUBLE_QUOTE);
     if (!r) r = string(b, l + 1);
     if (!r) r = macro_usage_dec(b, l + 1);
     return r;

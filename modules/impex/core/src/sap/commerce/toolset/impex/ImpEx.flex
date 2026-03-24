@@ -270,10 +270,10 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <FIELD_VALUE_START> {
-    [\"] {
-        yybegin(DOUBLE_STRING);
-        return ImpExTypes.DOUBLE_QUOTE_OPEN;
-    }
+    {double_quote}                                          {
+                                                                yybegin(DOUBLE_STRING);
+                                                                return ImpExTypes.DOUBLE_QUOTE_OPEN;
+                                                            }
 
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 
@@ -312,9 +312,9 @@ end_userrights                    = [$]END_USERRIGHTS
     "model://"                                              { return ImpExTypes.FIELD_VALUE_SCRIPT_PREFIX; }
     "/medias/"                                              { return ImpExTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX; }
     "http:http"                                             {
-                                                                    yypushback(4);
-                                                                    return ImpExTypes.FIELD_VALUE_HTTP_PREFIX;
-                                                                }
+                                                                yypushback(4);
+                                                                return ImpExTypes.FIELD_VALUE_HTTP_PREFIX;
+                                                            }
     {semicolon}                                             { yybegin(FIELD_VALUE_START); return ImpExTypes.FIELD_VALUE_SEPARATOR; }
     {multiline_separator}                                   { return ImpExTypes.MULTILINE_SEPARATOR; }
     {single_quote}                                          { return ImpExTypes.SINGLE_QUOTE; }
@@ -355,10 +355,10 @@ end_userrights                    = [$]END_USERRIGHTS
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
     {document_id}                                           { return ImpExTypes.DOCUMENT_ID; }
     {parameter_name}{white_space}?+{left_round_bracket}     {
-                                                                  yybegin(HEADER_LINE);
-                                                                  yypushback(1);
-                                                                  return ImpExTypes.FUNCTION;
-                                                                }
+                                                              yybegin(HEADER_LINE);
+                                                              yypushback(1);
+                                                              return ImpExTypes.FUNCTION;
+                                                            }
     {parameter_name}                                        { return ImpExTypes.HEADER_PARAMETER_NAME; }
     {alternative_pattern}                                   { return ImpExTypes.ALTERNATIVE_PATTERN; }
     {special_parameter_name}                                { return ImpExTypes.HEADER_SPECIAL_PARAMETER_NAME; }
@@ -393,8 +393,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {boolean}                                               { return ImpExTypes.BOOLEAN; }
     {digit}                                                 { return ImpExTypes.DIGIT; }
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
-    {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
-//    {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
+    {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
     {comma}                                                 { yybegin(MODIFIERS_BLOCK); return ImpExTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpExTypes.ATTRIBUTE_VALUE; }
@@ -441,13 +440,13 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <WAITING_MACRO_CONFIG_USAGE> {
-    {macro_config_usage}                                     { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_USAGE; }
+    {macro_config_usage}                                    { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_USAGE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
    .                                                        { yypushback(yylength()); yybegin(MACRO_USAGE); }
 }
 
 <MACRO_USAGE> {
-    {macro_usage}                                            { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_USAGE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 

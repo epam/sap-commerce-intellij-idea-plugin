@@ -322,7 +322,6 @@ macro_name_dec ::= MACRO_NAME_DECLARATION
 /*                                 Header Line                                     */
 /*#################################################################################*/
 
-
 any_header_mode ::= HEADER_MODE_INSERT | HEADER_MODE_UPDATE | HEADER_MODE_INSERT_UPDATE | HEADER_MODE_REMOVE
 
 
@@ -401,7 +400,7 @@ any_attribute_value ::= (
   ATTRIBUTE_VALUE
   | DIGIT
   | BOOLEAN
-//  | DOUBLE_QUOTE
+  | DOUBLE_QUOTE
   | string
   | macro_usage_dec
 )+
