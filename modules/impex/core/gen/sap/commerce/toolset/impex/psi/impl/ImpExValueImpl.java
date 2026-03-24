@@ -55,12 +55,6 @@ public class ImpExValueImpl extends ImpExValueMixin implements ImpExValue {
   }
 
   @Override
-  @NotNull
-  public List<ImpExString> getStringList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExString.class);
-  }
-
-  @Override
   @Nullable
   public ImpExValueGroup getValueGroup() {
     return ImpExPsiUtil.getValueGroup(this);

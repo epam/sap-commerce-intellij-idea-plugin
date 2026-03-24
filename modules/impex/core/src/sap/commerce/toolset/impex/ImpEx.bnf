@@ -273,7 +273,8 @@ value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
-value ::= (MULTILINE_SEPARATOR? value_dec)+
+value ::= double_string_dec
+    | (MULTILINE_SEPARATOR? value_dec)+
     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
 {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExValueMixin"
@@ -295,7 +296,6 @@ private value_dec ::= FIELD_VALUE
     | TAG_CLOSE
     | DOUBLE_QUOTE
     | SINGLE_QUOTE
-    | string
     | macro_usage_dec
     | FIELD_LIST_ITEM_SEPARATOR
     | DEFAULT_PATH_DELIMITER

@@ -1502,36 +1502,36 @@ class ImpExLexer implements FlexLexer {
           case 96: break;
           case 4:
             { final String text = yytext().toString().trim();
-                                                                    int index = text.indexOf("#%groovy%");
+                                                                int index = text.indexOf("#%groovy%");
 
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 9);
-                                                                        return ImpExTypes.GROOVY_MARKER;
-                                                                    }
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 9);
+                                                                    return ImpExTypes.GROOVY_MARKER;
+                                                                }
 
-                                                                    index = text.indexOf("#%javascript%");
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 13);
-                                                                        return ImpExTypes.JAVASCRIPT_MARKER;
-                                                                    }
+                                                                index = text.indexOf("#%javascript%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 13);
+                                                                    return ImpExTypes.JAVASCRIPT_MARKER;
+                                                                }
 
-                                                                    index = text.indexOf("#%bsh%");
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 6);
-                                                                        return ImpExTypes.BEAN_SHELL_MARKER;
-                                                                    }
+                                                                index = text.indexOf("#%bsh%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 6);
+                                                                    return ImpExTypes.BEAN_SHELL_MARKER;
+                                                                }
 
-                                                                    index = text.indexOf("#%");
-                                                                    if (index > -1) {
-                                                                        yybegin(SCRIPT_BODY);
-                                                                        yypushback(yylength() - 2);
-                                                                        return ImpExTypes.BEAN_SHELL_MARKER;
-                                                                    }
+                                                                index = text.indexOf("#%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 2);
+                                                                    return ImpExTypes.BEAN_SHELL_MARKER;
+                                                                }
 
-                                                                    return ImpExTypes.LINE_COMMENT;
+                                                                return ImpExTypes.LINE_COMMENT;
             }
           // fall through
           case 97: break;
@@ -1831,11 +1831,11 @@ class ImpExLexer implements FlexLexer {
           case 155: break;
           case 63:
             { yybegin(MACRO_DECLARATION);
-                                                                  /* Push back '='. */
-                                                                  yypushback(1);
-                                                                  /* Push back spaces. */
-                                                                  yypushback(yylength() - yytext().toString().trim().length());
-                                                                  return ImpExTypes.MACRO_NAME_DECLARATION;
+                                                              /* Push back '='. */
+                                                              yypushback(1);
+                                                              /* Push back spaces. */
+                                                              yypushback(yylength() - yytext().toString().trim().length());
+                                                              return ImpExTypes.MACRO_NAME_DECLARATION;
             }
           // fall through
           case 156: break;
