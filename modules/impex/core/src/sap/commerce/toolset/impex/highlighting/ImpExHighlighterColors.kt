@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -45,7 +45,15 @@ object ImpExHighlighterColors {
     val FIELD_LIST_ITEM_SEPARATOR = key("FIELD_LIST_ITEM_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
     val FIELD_VALUE = key("FIELD_VALUE", HighlighterColors.TEXT)
     val SINGLE_STRING = key("SINGLE_STRING", DefaultLanguageHighlighterColors.STRING)
+    val SINGLE_QUOTE = key("SINGLE_QUOTE", HighlighterColors.TEXT)
     val DOUBLE_STRING = key("DOUBLE_STRING", DefaultLanguageHighlighterColors.STRING)
+    val DOUBLE_QUOTE = key("DOUBLE_QUOTE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
+    val DOUBLE_QUOTE_OPEN = key("DOUBLE_QUOTE_OPEN", DefaultLanguageHighlighterColors.STRING)
+    val DOUBLE_QUOTE_CLOSE = key("DOUBLE_QUOTE_CLOSE", DefaultLanguageHighlighterColors.STRING)
+    val DOUBLE_QUOTE_ESCAPE = key("DOUBLE_QUOTE_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
+    val STRING_LITERAL = key("STRING_LITERAL", DefaultLanguageHighlighterColors.STRING)
+    val TAG_OPEN = key("TAG_OPEN", DefaultLanguageHighlighterColors.MARKUP_TAG)
+    val TAG_CLOSE = key("TAG_CLOSE", DefaultLanguageHighlighterColors.MARKUP_TAG)
     val FIELD_VALUE_IGNORE = key("FIELD_VALUE_IGNORE", DefaultLanguageHighlighterColors.KEYWORD)
     val FIELD_VALUE_NULL = key("FIELD_VALUE_NULL", FIELD_VALUE_IGNORE)
     val SQUARE_BRACKETS = key("SQUARE_BRACKETS", DefaultLanguageHighlighterColors.KEYWORD)
@@ -90,6 +98,8 @@ object ImpExHighlighterColors {
     val FIELD_VALUE_HTTP_PREFIX = key("IMPEX_FIELD_VALUE_HTTP_PREFIX", FIELD_VALUE_PREFIX)
     val FIELD_VALUE_PASSWORD_ENCODING_PREFIX = key("IMPEX_FIELD_VALUE_PASSWORD_ENCODING_PREFIX", FIELD_VALUE_PREFIX)
     val FIELD_VALUE_SCRIPT_PREFIX = key("IMPEX_FIELD_VALUE_SCRIPT_PREFIX", FIELD_VALUE_PREFIX)
+
+    val TAG = key("TAG", DefaultLanguageHighlighterColors.CONSTANT)
 
     val SCRIPT_MARKER = key("IMPEX_SCRIPT_MARKER", DefaultLanguageHighlighterColors.KEYWORD)
     val SCRIPT_ACTION = key("IMPEX_SCRIPT_ACTION", DefaultLanguageHighlighterColors.KEYWORD)

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -55,6 +55,7 @@ class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpExTypes.FIELD_VALUE_HTTP_PREFIX to pack(ImpExHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
             ImpExTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX to pack(ImpExHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
             ImpExTypes.FIELD_VALUE_SCRIPT_PREFIX to pack(ImpExHighlighterColors.FIELD_VALUE_SCRIPT_PREFIX),
+//            ImpExTypes.TAG to pack(ImpExHighlighterColors.TAG),
 
             ImpExTypes.COLLECTION_APPEND_PREFIX to pack(ImpExHighlighterColors.COLLECTION_APPEND_PREFIX),
             ImpExTypes.COLLECTION_REMOVE_PREFIX to pack(ImpExHighlighterColors.COLLECTION_REMOVE_PREFIX),
@@ -87,7 +88,20 @@ class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpExTypes.LINE_COMMENT to pack(ImpExHighlighterColors.PROPERTY_COMMENT),
             ImpExTypes.DEFAULT_PATH_DELIMITER to pack(ImpExHighlighterColors.DEFAULT_PATH_DELIMITER),
             ImpExTypes.DIGIT to pack(ImpExHighlighterColors.DIGIT),
+
             ImpExTypes.DOUBLE_STRING to pack(ImpExHighlighterColors.DOUBLE_STRING),
+            ImpExTypes.DOUBLE_QUOTE to pack(ImpExHighlighterColors.DOUBLE_QUOTE),
+            ImpExTypes.DOUBLE_QUOTE_OPEN to pack(ImpExHighlighterColors.DOUBLE_QUOTE_OPEN),
+            ImpExTypes.DOUBLE_QUOTE_CLOSE to pack(ImpExHighlighterColors.DOUBLE_QUOTE_CLOSE),
+            ImpExTypes.DOUBLE_QUOTE_ESCAPE to pack(ImpExHighlighterColors.DOUBLE_QUOTE_ESCAPE),
+
+            ImpExTypes.SINGLE_STRING to pack(ImpExHighlighterColors.SINGLE_STRING),
+            ImpExTypes.SINGLE_QUOTE to pack(ImpExHighlighterColors.SINGLE_QUOTE),
+
+            ImpExTypes.STRING_LITERAL to pack(ImpExHighlighterColors.STRING_LITERAL),
+
+            ImpExTypes.TAG_OPEN to pack(ImpExHighlighterColors.TAG_OPEN),
+            ImpExTypes.TAG_CLOSE to pack(ImpExHighlighterColors.TAG_CLOSE),
 
             ImpExTypes.FIELD_LIST_ITEM_SEPARATOR to pack(ImpExHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
             ImpExTypes.FIELD_VALUE to pack(ImpExHighlighterColors.FIELD_VALUE),
@@ -108,7 +122,6 @@ class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpExTypes.MACRO_VALUE to pack(ImpExHighlighterColors.MACRO_VALUE),
 
             ImpExTypes.PARAMETERS_SEPARATOR to pack(ImpExHighlighterColors.PARAMETERS_SEPARATOR),
-            ImpExTypes.SINGLE_STRING to pack(ImpExHighlighterColors.SINGLE_STRING),
             ImpExTypes.VALUE_SUBTYPE to pack(ImpExHighlighterColors.VALUE_SUBTYPE),
             ImpExTypes.ALTERNATIVE_PATTERN to pack(ImpExHighlighterColors.ALTERNATIVE_PATTERN),
             ImpExTypes.DOCUMENT_ID to pack(ImpExHighlighterColors.DOCUMENT_ID),
