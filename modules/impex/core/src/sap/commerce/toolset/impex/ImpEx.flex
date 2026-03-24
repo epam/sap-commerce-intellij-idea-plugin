@@ -23,6 +23,8 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import sap.commerce.toolset.impex.psi.ImpExTypes;
 import com.intellij.psi.TokenType;
+import java.util.Collection;
+import java.util.HashSet;
 
 %%
 
@@ -31,6 +33,11 @@ import com.intellij.psi.TokenType;
 %unicode
 %function advance
 %type IElementType
+%{
+
+  private Collection<String> macroDeclarations = new HashSet<String>();
+%}
+
 %eof{
     return;
 %eof}
@@ -196,7 +203,9 @@ end_userrights                    = [$]END_USERRIGHTS
                                                               /* Push back '='. */
                                                               yypushback(1);
                                                               /* Push back spaces. */
-                                                              yypushback(yylength() - yytext().toString().trim().length());
+                                                              var macroName = yytext().toString().trim();
+                                                              yypushback(yylength() - macroName.length());
+                                                              macroDeclarations.add(macroName);
                                                               return ImpExTypes.MACRO_NAME_DECLARATION;
                                                             }
 
@@ -300,7 +309,12 @@ end_userrights                    = [$]END_USERRIGHTS
     {alternative_map_delimiter}                             { return ImpExTypes.ALTERNATIVE_MAP_DELIMITER; }
     {default_key_value_delimiter}                           { return ImpExTypes.DEFAULT_KEY_VALUE_DELIMITER; }
 
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           {
+                                                                var macroName = yytext().toString().trim();
+                                                                return macroDeclarations.contains(macroName)
+                                                                    ? ImpExTypes.MACRO_USAGE
+                                                                    : ImpExTypes.STRING_LITERAL;
+                                                            }
 
     {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
     {crlf}                                                  { return ImpExTypes.CRLF; }
