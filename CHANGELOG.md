@@ -1,7 +1,7 @@
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
-- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Improved handling of the double-quoted `"` strings in the data row fields [#1761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1761)
@@ -23,6 +23,7 @@
 - Inspection: detect and delete unused macro declarations [#1772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1772)
 - Inspection: resolve expected macro declarations by abbreviations [#1776](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1776)
 - Local Fix: added possibility to define missing macro declaration expected by abbreviation [#1777](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1777)
+- Local Fix: improved `Inject Config import processor` fix [#1778](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1778)
 
 ## [2026.0.5]
 
