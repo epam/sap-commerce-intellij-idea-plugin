@@ -21,6 +21,7 @@
 
 package sap.commerce.toolset.impex;
 
+import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import sap.commerce.toolset.impex.psi.ImpExTypes;
 import com.intellij.psi.TokenType;
