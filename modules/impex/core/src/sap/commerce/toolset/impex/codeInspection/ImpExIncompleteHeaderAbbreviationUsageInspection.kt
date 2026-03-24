@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,7 +49,7 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
     private class ImpExHeaderLineVisitor(private val problemsHolder: ProblemsHolder, private val cachedMacros: Set<String>) : ImpExVisitor() {
 
         override fun visitAnyHeaderParameterName(parameter: ImpExAnyHeaderParameterName) {
-            val reference = parameter.reference as? ImpExHeaderAbbreviationReference ?: return
+            val reference = parameter.reference.asSafely<ImpExHeaderAbbreviationReference>() ?: return
 
             val headerAbbreviationValue = reference
                 .resolve()
@@ -58,14 +58,15 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
                 ?: return
 
             val missingExpectedMacros = headerAbbreviationValue.split("...", " ", "'", "\\\\", "]", "[", ":")
+                .asSequence()
                 .map { it.trim() }
                 .filter { it.isNotBlank() }
                 .filter { it.startsWith('$') }
                 .distinct()
                 .filterNot { cachedMacros.contains(it) }
+                .toList()
                 .takeIf { it.isNotEmpty() }
                 ?: return
-
 
             problemsHolder.registerProblemForReference(
                 reference,

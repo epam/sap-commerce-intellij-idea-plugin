@@ -20,30 +20,58 @@ package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.lang.properties.IProperty
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
 import com.intellij.psi.util.parentOfType
+import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpExDeleteMacroDeclarationFix
-import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
-import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
-import sap.commerce.toolset.impex.psi.ImpExTypes
-import sap.commerce.toolset.impex.psi.ImpExVisitor
-
+import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
 
 class ImpExUnusedMacroInspection : LocalInspectionTool() {
-    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = UnknownMacrosVisitor(holder)
 
-    private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder) : ImpExVisitor() {
+    private val expectedMacrosByAbbreviations = mutableSetOf<String>()
+
+    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = UnknownMacrosVisitor(holder, expectedMacrosByAbbreviations)
+
+    override fun inspectionStarted(session: LocalInspectionToolSession, isOnTheFly: Boolean) {
+        expectedMacrosByAbbreviations.clear()
+
+        PsiTreeUtil.findChildrenOfType(session.file, ImpExAnyHeaderParameterName::class.java)
+            .forEach { parameter ->
+                parameter.reference.asSafely<ImpExHeaderAbbreviationReference>()
+                    ?.resolve()
+                    ?.asSafely<IProperty>()
+                    ?.value
+                    ?.split("...", " ", "'", "\\\\", "]", "[", ":")
+                    ?.asSequence()
+                    ?.map { it.trim() }
+                    ?.filter { it.isNotBlank() }
+                    ?.filter { it.startsWith('$') }
+                    ?.forEach { expectedMacrosByAbbreviations.add(it) }
+            }
+    }
+
+    private class UnknownMacrosVisitor(
+        private val problemsHolder: ProblemsHolder,
+        private val expectedMacrosByAbbreviations: MutableSet<String>
+    ) : ImpExVisitor() {
 
         override fun visitMacroNameDec(macro: ImpExMacroNameDec) {
+            val macroName = macro.text
+            if (expectedMacrosByAbbreviations.contains(macroName)) return
+
             val macroDeclaration = macro.parentOfType<ImpExMacroDeclaration>()
                 ?: return
             val endElement = macroDeclaration.nextLeaf({ it.elementType == ImpExTypes.CRLF })
@@ -54,8 +82,6 @@ class ImpExUnusedMacroInspection : LocalInspectionTool() {
                 .findFirst()
 
             if (usages == null) {
-                val macroName = macro.text
-
                 problemsHolder.registerProblem(
                     macro,
                     i18n("hybris.inspections.impex.ImpExUnusedMacroInspection.key", macroName),
