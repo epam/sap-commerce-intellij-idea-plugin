@@ -93,7 +93,7 @@ fun addValueGroups(element: ImpExValueLine, groupsToAdd: Int) {
 fun getAttribute(element: ImpExFullHeaderParameter, attributeModifier: AttributeModifier): ImpExAttribute? = element
     .modifiersList
     .flatMap { it.attributeList }
-    .last { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
+    .lastOrNull { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
 
 fun getHeaderTypeName(element: ImpExSubTypeName): ImpExHeaderTypeName? = element
     .valueLine
