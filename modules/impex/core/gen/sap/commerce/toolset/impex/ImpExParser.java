@@ -218,12 +218,24 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // DOUBLE_QUOTE_ESCAPE
+  // //      macro_usage_dec
+  // //    | COMMA
+  //     | TAG_OPEN
+  //     | TAG_CLOSE
+  // //    | BOOLEAN
+  // //    | DIGIT
+  // //    | FIELD_LIST_ITEM_SEPARATOR
+  // //    | DEFAULT_PATH_DELIMITER
+  // //    | ALTERNATIVE_MAP_DELIMITER
+  // //    | DEFAULT_KEY_VALUE_DELIMITER
   //     | CRLF
   //     | STRING_LITERAL
   static boolean double_quoted_string_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "double_quoted_string_content")) return false;
     boolean r;
     r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
+    if (!r) r = consumeToken(b, TAG_OPEN);
+    if (!r) r = consumeToken(b, TAG_CLOSE);
     if (!r) r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, STRING_LITERAL);
     return r;
@@ -1797,7 +1809,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   // //    | FIELD_VALUE_URL
   //     | BOOLEAN
   //     | DIGIT
-  // //    | TAG
+  //     | TAG_OPEN
+  //     | TAG_CLOSE
   //     | DOUBLE_QUOTE
   //     | SINGLE_QUOTE
   //     | string
@@ -1822,6 +1835,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FIELD_VALUE_SCRIPT_PREFIX);
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, TAG_OPEN);
+    if (!r) r = consumeToken(b, TAG_CLOSE);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE);
     if (!r) r = consumeToken(b, SINGLE_QUOTE);
     if (!r) r = string(b, l + 1);

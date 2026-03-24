@@ -1,11 +1,12 @@
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Improved handling of the double-quoted `"` strings in the data row value fields [#1761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1761)
 - Parse `'` & `"` as dedicated tokens in the data row value [#1762](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1762)
+- Parse `<*>` as Tag tokens in the data row value & double-quoted string [#1763](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1763)
 
 ## [2026.0.5]
 

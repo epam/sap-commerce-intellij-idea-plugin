@@ -142,6 +142,8 @@ public interface ImpExTypes {
   IElementType SINGLE_STRING = new ImpExTokenType("SINGLE_STRING");
   IElementType START_USERRIGHTS = new ImpExTokenType("START_USERRIGHTS");
   IElementType STRING_LITERAL = new ImpExTokenType("STRING_LITERAL");
+  IElementType TAG_CLOSE = new ImpExTokenType("TAG_CLOSE");
+  IElementType TAG_OPEN = new ImpExTokenType("TAG_OPEN");
   IElementType TARGET = new ImpExTokenType("TARGET");
   IElementType TYPE = new ImpExTokenType("TYPE");
   IElementType UID = new ImpExTokenType("UID");
