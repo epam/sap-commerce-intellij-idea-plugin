@@ -291,8 +291,8 @@ private value_dec ::= FIELD_VALUE
     | BOOLEAN
     | DIGIT
 //    | TAG
-//    | DOUBLE_QUOTE
-//    | SINGLE_QUOTE
+    | DOUBLE_QUOTE
+    | SINGLE_QUOTE
     | string
     | macro_usage_dec
     | FIELD_LIST_ITEM_SEPARATOR

@@ -1798,8 +1798,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //     | BOOLEAN
   //     | DIGIT
   // //    | TAG
-  // //    | DOUBLE_QUOTE
-  // //    | SINGLE_QUOTE
+  //     | DOUBLE_QUOTE
+  //     | SINGLE_QUOTE
   //     | string
   //     | macro_usage_dec
   //     | FIELD_LIST_ITEM_SEPARATOR
@@ -1822,6 +1822,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FIELD_VALUE_SCRIPT_PREFIX);
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, DOUBLE_QUOTE);
+    if (!r) r = consumeToken(b, SINGLE_QUOTE);
     if (!r) r = string(b, l + 1);
     if (!r) r = macro_usage_dec(b, l + 1);
     if (!r) r = consumeToken(b, FIELD_LIST_ITEM_SEPARATOR);

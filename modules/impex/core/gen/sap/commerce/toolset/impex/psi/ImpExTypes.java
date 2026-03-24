@@ -91,6 +91,7 @@ public interface ImpExTypes {
   IElementType DIGIT = new ImpExTokenType("DIGIT");
   IElementType DOCUMENT_ID = new ImpExTokenType("DOCUMENT_ID");
   IElementType DOT = new ImpExTokenType("DOT");
+  IElementType DOUBLE_QUOTE = new ImpExTokenType("DOUBLE_QUOTE");
   IElementType DOUBLE_QUOTE_CLOSE = new ImpExTokenType("DOUBLE_QUOTE_CLOSE");
   IElementType DOUBLE_QUOTE_ESCAPE = new ImpExTokenType("DOUBLE_QUOTE_ESCAPE");
   IElementType DOUBLE_QUOTE_OPEN = new ImpExTokenType("DOUBLE_QUOTE_OPEN");
@@ -135,6 +136,7 @@ public interface ImpExTypes {
   IElementType RIGHT_SQUARE_BRACKET = new ImpExTokenType("RIGHT_SQUARE_BRACKET");
   IElementType SCRIPT_ACTION = new ImpExTokenType("SCRIPT_ACTION");
   IElementType SCRIPT_BODY_VALUE = new ImpExTokenType("SCRIPT_BODY_VALUE");
+  IElementType SINGLE_QUOTE = new ImpExTokenType("SINGLE_QUOTE");
   IElementType SINGLE_QUOTE_CLOSE = new ImpExTokenType("SINGLE_QUOTE_CLOSE");
   IElementType SINGLE_QUOTE_OPEN = new ImpExTokenType("SINGLE_QUOTE_OPEN");
   IElementType SINGLE_STRING = new ImpExTokenType("SINGLE_STRING");
