@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -272,23 +272,18 @@ class PropertyService(private val project: Project, private val coroutineScope: 
     private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
             .filter { it.name == ProjectConstants.File.PROJECT_PROPERTIES || it.name == ProjectConstants.File.PLATFORM_HOME_PROPERTIES }
-        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == ProjectConstants.File.ENV_PROPERTIES }
-        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == ProjectConstants.File.ADVANCED_PROPERTIES }
+        val platformPropertiesScope =
+            platformModule.moduleContentScope.filter { it.name == ProjectConstants.File.ENV_PROPERTIES || it.name == ProjectConstants.File.ADVANCED_PROPERTIES }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == ProjectConstants.File.LOCAL_PROPERTIES }
 
-        return envPropertiesScope
-            .or(advancedPropertiesScope)
-            .or(localPropertiesScope)
-            .or(projectPropertiesScope)
+        return platformPropertiesScope
+            .union(localPropertiesScope)
+            .union(projectPropertiesScope)
     }
 
-    fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
-        override fun contains(file: VirtualFile): Boolean {
-            return filter(file) && super.contains(file)
-        }
+    private fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
+        override fun contains(file: VirtualFile) = filter(file) && super.contains(file)
     }
-
-    fun GlobalSearchScope.or(otherScope: GlobalSearchScope): GlobalSearchScope = union(otherScope)
 
     companion object {
         private val CACHE_KEY = Key.create<CachedValue<List<IProperty>>>("sap.commerce.toolset.propertiesCache")
