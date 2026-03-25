@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,8 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.localextensions.LeConstants
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 
 class SaveDocumentsProjectBeforeRefreshConfigurator : ProjectBeforeRefreshConfigurator {
@@ -28,9 +30,18 @@ class SaveDocumentsProjectBeforeRefreshConfigurator : ProjectBeforeRefreshConfig
         get() = "Save Documents"
 
     /*
-    Required for use case when user changed extension.xml or localextensions.xml, did not save, but requested "refresh"
+    Required for use case when user changed extensioninfo.xml or localextensions.xml, did not save, but requested "refresh"
      */
     override suspend fun configure(context: ProjectRefreshContext) {
-        backgroundWriteAction { FileDocumentManager.getInstance().saveAllDocuments() }
+        val dependencies = setOf(LeConstants.LOCAL_EXTENSIONS_XML, EiConstants.EXTENSION_INFO_XML)
+
+        val unsavedDocuments = FileDocumentManager.getInstance().unsavedDocuments
+            .filter { dependencies.contains(FileDocumentManager.getInstance().getFile(it)?.name) }
+
+        if (unsavedDocuments.isEmpty()) return
+
+        backgroundWriteAction {
+            unsavedDocuments.forEach { FileDocumentManager.getInstance().saveDocument(it) }
+        }
     }
 }
