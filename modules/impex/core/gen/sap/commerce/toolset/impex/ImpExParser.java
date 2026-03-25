@@ -728,7 +728,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec))? modifiers*
+  // (HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))? modifiers*
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r, p;
@@ -752,20 +752,21 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (sub_parameters | ((DOT)? macro_usage_dec))?
+  // (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))?
   private static boolean parameter_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1")) return false;
     parameter_1_0(b, l + 1);
     return true;
   }
 
-  // sub_parameters | ((DOT)? macro_usage_dec)
+  // sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME)
   private static boolean parameter_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = sub_parameters(b, l + 1);
     if (!r) r = parameter_1_0_1(b, l + 1);
+    if (!r) r = parameter_1_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -784,6 +785,24 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   // (DOT)?
   private static boolean parameter_1_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1_0_1_0")) return false;
+    consumeToken(b, DOT);
+    return true;
+  }
+
+  // DOT? HEADER_PARAMETER_NAME
+  private static boolean parameter_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_1_0_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parameter_1_0_2_0(b, l + 1);
+    r = r && consumeToken(b, HEADER_PARAMETER_NAME);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // DOT?
+  private static boolean parameter_1_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_1_0_2_0")) return false;
     consumeToken(b, DOT);
     return true;
   }

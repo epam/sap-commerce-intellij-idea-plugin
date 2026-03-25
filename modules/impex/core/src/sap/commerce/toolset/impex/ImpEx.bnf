@@ -381,7 +381,7 @@ document_id_usage ::= DOCUMENT_ID
 parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
 {pin = 1 recoverWhile = recover_parameters}
 
-parameter ::= (HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec))? modifiers*
+parameter ::= (HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))? modifiers*
 {
     pin=1
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExParameterMixin"
