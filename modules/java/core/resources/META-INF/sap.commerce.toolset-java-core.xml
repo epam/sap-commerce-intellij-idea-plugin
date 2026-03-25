@@ -77,6 +77,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="liveTemplates/Java.xml"/>
+        <liveTemplateSubstitutor implementation="sap.commerce.toolset.java.codeInsight.template.JavaTemplateSubstitutor"/>
 
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.java.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
 

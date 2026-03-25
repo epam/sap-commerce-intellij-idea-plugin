@@ -1,7 +1,7 @@
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
-- 23 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+- 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - On Refresh - save only modified `locaextensions.xml` & `extensioninfo.xml` files [#1783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1783)
@@ -31,6 +31,9 @@
 - Inspection: resolve expected macro declarations by abbreviations [#1776](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1776)
 - Local Fix: added possibility to define missing macro declaration expected by abbreviation [#1777](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1777)
 - Local Fix: improved `Inject Config import processor` fix [#1778](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1778)
+
+### `Java` enhancements
+- Support Jakarta `@Resource` annotation in the `ysri` live template for Java 21 [#1784](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1784)
 
 ## [2026.0.5]
 
