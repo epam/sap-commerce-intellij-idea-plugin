@@ -72,7 +72,7 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
 
             problemsHolder.registerProblemForReference(
                 reference,
-                ProblemHighlightType.ERROR,
+                ProblemHighlightType.WARNING,
                 i18n("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", parameter.text, missingExpectedMacros.joinToString()),
                 *missingExpectedMacros
                     .map { LocalFix(parameter, it) }

@@ -143,7 +143,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // document_id_dec
-  //   | special_parameter
+  //   | (special_parameter | HEADER_PARAMETER_NAME special_parameter)
   //   | (HEADER_PARAMETER_NAME
   //   | macro_usage_dec
   //   | FUNCTION)+
@@ -152,9 +152,31 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ANY_HEADER_PARAMETER_NAME, "<any header parameter name>");
     r = document_id_dec(b, l + 1);
-    if (!r) r = special_parameter(b, l + 1);
+    if (!r) r = any_header_parameter_name_1(b, l + 1);
     if (!r) r = any_header_parameter_name_2(b, l + 1);
     exit_section_(b, l, m, r, false, ImpExParser::recover_parameter_name);
+    return r;
+  }
+
+  // special_parameter | HEADER_PARAMETER_NAME special_parameter
+  private static boolean any_header_parameter_name_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "any_header_parameter_name_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = special_parameter(b, l + 1);
+    if (!r) r = any_header_parameter_name_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // HEADER_PARAMETER_NAME special_parameter
+  private static boolean any_header_parameter_name_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "any_header_parameter_name_1_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, HEADER_PARAMETER_NAME);
+    r = r && special_parameter(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

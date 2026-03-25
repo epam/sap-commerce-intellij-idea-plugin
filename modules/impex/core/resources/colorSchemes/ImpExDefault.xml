@@ -131,13 +131,13 @@
     </option>
     <option name="SPECIAL_PARAMETER_MARKER">
         <value>
-            <option name="FOREGROUND" value="6A598D"/>
-            <option name="FONT_TYPE" value="2"/>
+            <option name="FOREGROUND" value="156BA1FF"/>
+            <option name="FONT_TYPE" value="3"/>
         </value>
     </option>
     <option name="SPECIAL_PARAMETER_VALUE">
         <value>
-            <option name="FOREGROUND" value="6A598D"/>
+            <option name="FOREGROUND" value="AA88FBFF"/>
             <option name="FONT_TYPE" value="2"/>
         </value>
     </option>

@@ -101,12 +101,12 @@ boolean = ("true"|"false"|"ja"|"nein"|"wahr"|"falsch"|"y"|"n"|-|\+)
 digit   = [-+]?[0-9]+([.][0-9]+)?
 //class_with_package = ({identifier}+[.]{identifier}+)+
 
-parameter_name = ({identifier}+([.@]?{identifier}*)*)+
+parameter_name = {identifier}+
 alternative_pattern = [|]
 
 special_parameter_marker = [@]
-special_parameter_value = [^\;\[\"\r\n\\\$]+
-special_parameter_end = [\;\[\"\r\n\\\$]
+special_parameter_value = [^(\;\[\"\r\n\\\ \t\f$]+
+special_parameter_end = [(\;\[\"\r\n\\\$]
 
 attribute_name  = ({identifier}|[.])+
 attribute_value = [^, \t\f\]\r\n]+
