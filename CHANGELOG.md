@@ -19,7 +19,8 @@
 - Improved tag detection in the double-quoted strings [#1774](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1774)
 - Resolve header abbreviations defined via `advanced.properties` [#1775](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1775)
 - Enhanced support of the abbreviations [#1779](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1779)
-- Support complex `special` values, such as `@some value` for special value translator [#1780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1780)
+- Support complex `@` header values, such as `@some value` for special value translator [#1780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1780)
+- Support macros in the `@` header values, such as `@some value` [#1781](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1781)
 
 ### `ImpEx` inspection rules
 - Inspection: detect and delete unused macro declarations [#1772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1772)

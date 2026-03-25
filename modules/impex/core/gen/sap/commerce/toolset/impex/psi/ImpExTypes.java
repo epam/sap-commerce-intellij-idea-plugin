@@ -54,6 +54,7 @@ public interface ImpExTypes {
   IElementType PARAMETERS = new ImpExElementType("PARAMETERS");
   IElementType ROOT_MACRO_USAGE = new ImpExElementType("ROOT_MACRO_USAGE");
   IElementType SCRIPT = new ImpExElementType("SCRIPT");
+  IElementType SPECIAL_PARAMETER = new ImpExElementType("SPECIAL_PARAMETER");
   IElementType STRING = new ImpExElementType("STRING");
   IElementType SUB_PARAMETERS = new ImpExElementType("SUB_PARAMETERS");
   IElementType SUB_TYPE_NAME = new ImpExElementType("SUB_TYPE_NAME");
@@ -116,7 +117,6 @@ public interface ImpExTypes {
   IElementType HEADER_MODE_REMOVE = new ImpExTokenType("HEADER_MODE_REMOVE");
   IElementType HEADER_MODE_UPDATE = new ImpExTokenType("HEADER_MODE_UPDATE");
   IElementType HEADER_PARAMETER_NAME = new ImpExTokenType("HEADER_PARAMETER_NAME");
-  IElementType HEADER_SPECIAL_PARAMETER_NAME = new ImpExTokenType("HEADER_SPECIAL_PARAMETER_NAME");
   IElementType HEADER_TYPE = new ImpExTokenType("HEADER_TYPE");
   IElementType JAVASCRIPT_MARKER = new ImpExTokenType("JAVASCRIPT_MARKER");
   IElementType LEFT_ROUND_BRACKET = new ImpExTokenType("LEFT_ROUND_BRACKET");
@@ -140,6 +140,8 @@ public interface ImpExTypes {
   IElementType SINGLE_QUOTE_CLOSE = new ImpExTokenType("SINGLE_QUOTE_CLOSE");
   IElementType SINGLE_QUOTE_OPEN = new ImpExTokenType("SINGLE_QUOTE_OPEN");
   IElementType SINGLE_STRING = new ImpExTokenType("SINGLE_STRING");
+  IElementType SPECIAL_PARAMETER_MARKER = new ImpExTokenType("SPECIAL_PARAMETER_MARKER");
+  IElementType SPECIAL_PARAMETER_VALUE = new ImpExTokenType("SPECIAL_PARAMETER_VALUE");
   IElementType START_USERRIGHTS = new ImpExTokenType("START_USERRIGHTS");
   IElementType STRING_LITERAL = new ImpExTokenType("STRING_LITERAL");
   IElementType TAG_CLOSE = new ImpExTokenType("TAG_CLOSE");
@@ -223,6 +225,9 @@ public interface ImpExTypes {
       }
       else if (type == SCRIPT) {
         return new ImpExScriptImpl(node);
+      }
+      else if (type == SPECIAL_PARAMETER) {
+        return new ImpExSpecialParameterImpl(node);
       }
       else if (type == STRING) {
         return new ImpExStringImpl(node);

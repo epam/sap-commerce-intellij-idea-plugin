@@ -342,8 +342,8 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
 }
 
 any_header_parameter_name ::= document_id_dec
- | (HEADER_PARAMETER_NAME
-  | HEADER_SPECIAL_PARAMETER_NAME
+  | special_parameter
+  | (HEADER_PARAMETER_NAME
   | macro_usage_dec
   | FUNCTION)+
 {
@@ -351,6 +351,15 @@ any_header_parameter_name ::= document_id_dec
     mixin = "sap.commerce.toolset.impex.psi.impl.ImpExAnyHeaderParameterNameMixin"
     methods=[getHeaderItemTypeName]
 }
+
+special_parameter ::= SPECIAL_PARAMETER_MARKER special_parameter_value
+{
+    pin = 1
+}
+
+private special_parameter_value ::= (
+      SPECIAL_PARAMETER_VALUE
+    | macro_usage_dec)+
 
 document_id_dec ::= DOCUMENT_ID
 {

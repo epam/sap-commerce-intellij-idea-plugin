@@ -143,8 +143,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // document_id_dec
-  //  | (HEADER_PARAMETER_NAME
-  //   | HEADER_SPECIAL_PARAMETER_NAME
+  //   | special_parameter
+  //   | (HEADER_PARAMETER_NAME
   //   | macro_usage_dec
   //   | FUNCTION)+
   public static boolean any_header_parameter_name(PsiBuilder b, int l) {
@@ -152,38 +152,36 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ANY_HEADER_PARAMETER_NAME, "<any header parameter name>");
     r = document_id_dec(b, l + 1);
-    if (!r) r = any_header_parameter_name_1(b, l + 1);
+    if (!r) r = special_parameter(b, l + 1);
+    if (!r) r = any_header_parameter_name_2(b, l + 1);
     exit_section_(b, l, m, r, false, ImpExParser::recover_parameter_name);
     return r;
   }
 
   // (HEADER_PARAMETER_NAME
-  //   | HEADER_SPECIAL_PARAMETER_NAME
   //   | macro_usage_dec
   //   | FUNCTION)+
-  private static boolean any_header_parameter_name_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "any_header_parameter_name_1")) return false;
+  private static boolean any_header_parameter_name_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "any_header_parameter_name_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = any_header_parameter_name_1_0(b, l + 1);
+    r = any_header_parameter_name_2_0(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!any_header_parameter_name_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "any_header_parameter_name_1", c)) break;
+      if (!any_header_parameter_name_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "any_header_parameter_name_2", c)) break;
     }
     exit_section_(b, m, null, r);
     return r;
   }
 
   // HEADER_PARAMETER_NAME
-  //   | HEADER_SPECIAL_PARAMETER_NAME
   //   | macro_usage_dec
   //   | FUNCTION
-  private static boolean any_header_parameter_name_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "any_header_parameter_name_1_0")) return false;
+  private static boolean any_header_parameter_name_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "any_header_parameter_name_2_0")) return false;
     boolean r;
     r = consumeToken(b, HEADER_PARAMETER_NAME);
-    if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
     if (!r) r = macro_usage_dec(b, l + 1);
     if (!r) r = consumeToken(b, FUNCTION);
     return r;
@@ -1245,6 +1243,49 @@ public class ImpExParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "single_string_dec_1", c)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // SPECIAL_PARAMETER_MARKER special_parameter_value
+  public static boolean special_parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "special_parameter")) return false;
+    if (!nextTokenIs(b, SPECIAL_PARAMETER_MARKER)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, SPECIAL_PARAMETER, null);
+    r = consumeToken(b, SPECIAL_PARAMETER_MARKER);
+    p = r; // pin = 1
+    r = r && special_parameter_value(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // (
+  //       SPECIAL_PARAMETER_VALUE
+  //     | macro_usage_dec)+
+  static boolean special_parameter_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "special_parameter_value")) return false;
+    if (!nextTokenIs(b, "", MACRO_USAGE, SPECIAL_PARAMETER_VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = special_parameter_value_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!special_parameter_value_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "special_parameter_value", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // SPECIAL_PARAMETER_VALUE
+  //     | macro_usage_dec
+  private static boolean special_parameter_value_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "special_parameter_value_0")) return false;
+    boolean r;
+    r = consumeToken(b, SPECIAL_PARAMETER_VALUE);
+    if (!r) r = macro_usage_dec(b, l + 1);
+    return r;
   }
 
   /* ********************************************************** */

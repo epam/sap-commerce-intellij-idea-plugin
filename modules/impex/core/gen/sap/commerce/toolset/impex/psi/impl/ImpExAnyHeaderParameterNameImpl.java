@@ -62,6 +62,12 @@ public class ImpExAnyHeaderParameterNameImpl extends ImpExAnyHeaderParameterName
 
   @Override
   @Nullable
+  public ImpExSpecialParameter getSpecialParameter() {
+    return findChildByClass(ImpExSpecialParameter.class);
+  }
+
+  @Override
+  @Nullable
   public ImpExHeaderTypeName getHeaderItemTypeName() {
     return ImpExPsiUtil.getHeaderItemTypeName(this);
   }

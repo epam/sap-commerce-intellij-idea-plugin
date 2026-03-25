@@ -103,7 +103,10 @@ digit   = [-+]?[0-9]+([.][0-9]+)?
 
 parameter_name = ({identifier}+([.@]?{identifier}*)*)+
 alternative_pattern = [|]
-special_parameter_name = [@][^\[\"\r\n\\]+
+
+special_parameter_marker = [@]
+special_parameter_value = [^\;\[\"\r\n\\\$]+
+special_parameter_end = [\;\[\"\r\n\\\$]
 
 attribute_name  = ({identifier}|[.])+
 attribute_value = [^, \t\f\]\r\n]+
@@ -134,6 +137,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state MACRO_DECLARATION
 %state HEADER_TYPE
 %state HEADER_LINE
+%state SPECIAL_PARAMETER
 %state FIELD_VALUE
 %state DOUBLE_STRING
 %state FIELD_VALUE_START
@@ -377,7 +381,7 @@ end_userrights                    = [$]END_USERRIGHTS
                                                             }
     {parameter_name}                                        { return ImpExTypes.HEADER_PARAMETER_NAME; }
     {alternative_pattern}                                   { return ImpExTypes.ALTERNATIVE_PATTERN; }
-    {special_parameter_name}                                { return ImpExTypes.HEADER_SPECIAL_PARAMETER_NAME; }
+    {special_parameter_marker}                              { yybegin(SPECIAL_PARAMETER); return ImpExTypes.SPECIAL_PARAMETER_MARKER; }
     {assign_value}                                          { yybegin(WAITING_ATTR_OR_PARAM_VALUE); return ImpExTypes.ASSIGN_VALUE; }
 
     {left_round_bracket}                                    { return ImpExTypes.LEFT_ROUND_BRACKET; }
@@ -386,6 +390,15 @@ end_userrights                    = [$]END_USERRIGHTS
     {left_square_bracket}                                   { yybegin(MODIFIERS_BLOCK); return ImpExTypes.LEFT_SQUARE_BRACKET; }
     {right_square_bracket}                                  { return ImpExTypes.RIGHT_SQUARE_BRACKET; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
+}
+
+<SPECIAL_PARAMETER> {
+    {special_parameter_end}                                 {
+                                                                yybegin(HEADER_LINE);
+                                                                yypushback(yylength());
+                                                            }
+    {special_parameter_value}                               { return ImpExTypes.SPECIAL_PARAMETER_VALUE; }
+    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
 }
 
 <MODIFIERS_BLOCK> {

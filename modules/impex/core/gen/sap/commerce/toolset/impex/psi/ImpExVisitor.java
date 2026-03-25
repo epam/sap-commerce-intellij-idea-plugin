@@ -125,6 +125,10 @@ public class ImpExVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitSpecialParameter(@NotNull ImpExSpecialParameter o) {
+    visitPsiElement(o);
+  }
+
   public void visitString(@NotNull ImpExString o) {
     visitPsiElement(o);
   }
