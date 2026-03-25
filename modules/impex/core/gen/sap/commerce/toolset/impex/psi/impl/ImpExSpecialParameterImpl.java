@@ -30,16 +30,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import sap.commerce.toolset.impex.psi.*;
 
-public class ImpExAnyHeaderParameterNameImpl extends ImpExAnyHeaderParameterNameMixin implements ImpExAnyHeaderParameterName {
+public class ImpExSpecialParameterImpl extends ASTWrapperPsiElement implements ImpExSpecialParameter {
 
-  public ImpExAnyHeaderParameterNameImpl(@NotNull ASTNode node) {
+  public ImpExSpecialParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
-    visitor.visitAnyHeaderParameterName(this);
+    visitor.visitSpecialParameter(this);
   }
 
   @Override
@@ -49,27 +50,9 @@ public class ImpExAnyHeaderParameterNameImpl extends ImpExAnyHeaderParameterName
   }
 
   @Override
-  @Nullable
-  public ImpExDocumentIdDec getDocumentIdDec() {
-    return findChildByClass(ImpExDocumentIdDec.class);
-  }
-
-  @Override
   @NotNull
   public List<ImpExMacroUsageDec> getMacroUsageDecList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpExSpecialParameter getSpecialParameter() {
-    return findChildByClass(ImpExSpecialParameter.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpExHeaderTypeName getHeaderItemTypeName() {
-    return ImpExPsiUtil.getHeaderItemTypeName(this);
   }
 
 }

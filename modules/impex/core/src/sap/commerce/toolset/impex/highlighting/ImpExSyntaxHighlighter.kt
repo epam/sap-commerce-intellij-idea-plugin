@@ -114,8 +114,10 @@ class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpExTypes.HEADER_MODE_REMOVE to pack(ImpExHighlighterColors.HEADER_MODE_REMOVE),
             ImpExTypes.HEADER_MODE_UPDATE to pack(ImpExHighlighterColors.HEADER_MODE_UPDATE),
             ImpExTypes.HEADER_PARAMETER_NAME to pack(ImpExHighlighterColors.HEADER_PARAMETER_NAME),
-            ImpExTypes.HEADER_SPECIAL_PARAMETER_NAME to pack(ImpExHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME),
             ImpExTypes.HEADER_TYPE to pack(ImpExHighlighterColors.HEADER_TYPE),
+
+            ImpExTypes.SPECIAL_PARAMETER_MARKER to pack(ImpExHighlighterColors.SPECIAL_PARAMETER_MARKER),
+            ImpExTypes.SPECIAL_PARAMETER_VALUE to pack(ImpExHighlighterColors.SPECIAL_PARAMETER_VALUE),
 
             ImpExTypes.MACRO_NAME_DECLARATION to pack(ImpExHighlighterColors.MACRO_NAME_DECLARATION),
             ImpExTypes.MACRO_USAGE to pack(ImpExHighlighterColors.MACRO_USAGE),

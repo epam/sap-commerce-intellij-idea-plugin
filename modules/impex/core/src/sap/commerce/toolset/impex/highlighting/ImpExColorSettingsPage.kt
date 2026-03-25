@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,7 +65,11 @@ UPDATE Language; ${unique("isoCode")}[unique=true]; fallbackLanguages(isoCode); 
 <vlo>; value; value; another value</vlo>
 <vle>; value; value; another value</vle>
 
-INSERT_UPDATE SomeType; ${"$"}contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; ${unique("uid")}[unique = true]; title[lang = ${"$"}lang]; ${attributeHeaderAbbreviation("C@someAttribute")}
+INSERT_UPDATE SomeType; ${"$"}contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; ${unique("uid")}[unique = true]; title[lang = ${"$"}lang]; ${
+            attributeHeaderAbbreviation(
+                "C@someAttribute"
+            )
+        }
 Subtype ; ; account                ; "Your Account"
         ; ; <ignore>               ; "Add/Edit Address"
         ; ; <null>                 ;
@@ -100,7 +104,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
 """
     }
 
-    private val customTags = with (RainbowHighlighter.createRainbowHLM()) {
+    private val customTags = with(RainbowHighlighter.createRainbowHLM()) {
         put("permission_inherited", ImpExHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)
         put("attribute_header_abbreviation", ImpExHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION)
         put("hl", ImpExHighlighterColors.HEADER_LINE)
@@ -111,8 +115,8 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         this
     }
     private val inheritedPermission = "<permission_inherited>.</permission_inherited>"
-    private fun attributeHeaderAbbreviation(abbreviation : String) = "<attribute_header_abbreviation>${"$$abbreviation"}</attribute_header_abbreviation>"
-    private fun unique(parameterName : String) = "<unique>${parameterName}</unique>"
+    private fun attributeHeaderAbbreviation(abbreviation: String) = "<attribute_header_abbreviation>${"$$abbreviation"}</attribute_header_abbreviation>"
+    private fun unique(parameterName: String) = "<unique>${parameterName}</unique>"
 
     private val descriptors = arrayOf(
         AttributesDescriptor("Comment line", ImpExHighlighterColors.PROPERTY_COMMENT),
@@ -173,8 +177,10 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Parameter//Document id", ImpExHighlighterColors.DOCUMENT_ID),
         AttributesDescriptor("Parameter//Parameter name", ImpExHighlighterColors.HEADER_PARAMETER_NAME),
         AttributesDescriptor("Parameter//Unique parameter name", ImpExHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME),
-        AttributesDescriptor("Parameter//Special parameter name", ImpExHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME),
         AttributesDescriptor("Parameter//Function call", ImpExHighlighterColors.FUNCTION_CALL),
+
+        AttributesDescriptor("Special parameter//Marker", ImpExHighlighterColors.SPECIAL_PARAMETER_MARKER),
+        AttributesDescriptor("Special parameter//Value", ImpExHighlighterColors.SPECIAL_PARAMETER_VALUE),
 
         AttributesDescriptor("Delimiters//Alternative map delimiter", ImpExHighlighterColors.ALTERNATIVE_MAP_DELIMITER),
         AttributesDescriptor("Delimiters//Default key-value delimiter", ImpExHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER),

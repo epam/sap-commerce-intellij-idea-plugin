@@ -27,18 +27,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpExAnyHeaderParameterName extends PsiElement {
-
-  @Nullable
-  ImpExDocumentIdDec getDocumentIdDec();
+public interface ImpExSpecialParameter extends PsiElement {
 
   @NotNull
   List<ImpExMacroUsageDec> getMacroUsageDecList();
-
-  @Nullable
-  ImpExSpecialParameter getSpecialParameter();
-
-  @Nullable
-  ImpExHeaderTypeName getHeaderItemTypeName();
 
 }
