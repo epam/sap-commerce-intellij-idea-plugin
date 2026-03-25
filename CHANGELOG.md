@@ -1,7 +1,7 @@
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
-- 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+- 25 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - On Refresh - save only modified `locaextensions.xml` & `extensioninfo.xml` files [#1783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1783)
@@ -25,6 +25,7 @@
 - Support complex `@` header values, such as `@some value` for special value translator [#1780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1780)
 - Support macros in the `@` header values, such as `@some value` [#1781](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1781)
 - Split abbreviation to header param name and special header value tokens [#1782](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1782)
+- Parse type, dot & attribute as standalone tokens in the header value [#1785](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1785)
 
 ### `ImpEx` inspection rules
 - Inspection: detect and delete unused macro declarations [#1772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1772)
