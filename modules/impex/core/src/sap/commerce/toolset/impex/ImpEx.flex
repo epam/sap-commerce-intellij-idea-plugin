@@ -103,7 +103,7 @@ digit   = [-+]?[0-9]+([.][0-9]+)?
 
 parameter_name = ({identifier}+([.@]?{identifier}*)*)+
 alternative_pattern = [|]
-special_parameter_name = [@]{identifier}+
+special_parameter_name = [@][^\[\"\r\n\\]+
 
 attribute_name  = ({identifier}|[.])+
 attribute_value = [^, \t\f\]\r\n]+
@@ -423,11 +423,10 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <WAITING_MACRO_VALUE> {
-    {single_quote}                                         { return ImpExTypes.SINGLE_QUOTE; }
-    {double_quote}                                         { return ImpExTypes.DOUBLE_QUOTE; }
+    {single_quote}                                          { return ImpExTypes.SINGLE_QUOTE; }
+    {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
 
     {macro_usage}                                           { yypushback(yylength()); yybegin(WAITING_MACRO_CONFIG_USAGE); }
-    {special_parameter_name}                                { return ImpExTypes.HEADER_SPECIAL_PARAMETER_NAME; }
 
     {left_round_bracket}                                    { return ImpExTypes.LEFT_ROUND_BRACKET; }
     {right_round_bracket}                                   { return ImpExTypes.RIGHT_ROUND_BRACKET; }
