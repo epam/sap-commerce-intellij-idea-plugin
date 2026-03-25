@@ -1,7 +1,7 @@
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
-- 21 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+- 22 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Improved handling of the double-quoted `"` strings in the data row fields [#1761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1761)
@@ -21,6 +21,7 @@
 - Enhanced support of the abbreviations [#1779](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1779)
 - Support complex `@` header values, such as `@some value` for special value translator [#1780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1780)
 - Support macros in the `@` header values, such as `@some value` [#1781](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1781)
+- Split abbreviation to header param name and special header value tokens [#1782](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1782)
 
 ### `ImpEx` inspection rules
 - Inspection: detect and delete unused macro declarations [#1772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1772)

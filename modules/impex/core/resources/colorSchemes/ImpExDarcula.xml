@@ -52,8 +52,8 @@
     </option>
     <option name="SPECIAL_PARAMETER_MARKER">
         <value>
-            <option name="FOREGROUND" value="B79DFA"/>
-            <option name="FONT_TYPE" value="2"/>
+            <option name="FOREGROUND" value="7DFF71FF"/>
+            <option name="FONT_TYPE" value="3"/>
         </value>
     </option>
     <option name="SPECIAL_PARAMETER_VALUE">

@@ -342,7 +342,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
 }
 
 any_header_parameter_name ::= document_id_dec
-  | special_parameter
+  | (special_parameter | HEADER_PARAMETER_NAME special_parameter)
   | (HEADER_PARAMETER_NAME
   | macro_usage_dec
   | FUNCTION)+
