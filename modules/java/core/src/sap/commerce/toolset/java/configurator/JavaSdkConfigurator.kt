@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,9 +31,8 @@ class JavaSdkConfigurator : ProjectImportConfigurator {
 
     override suspend fun configure(context: ProjectImportContext) {
         val project = context.project
-        val projectRootManager = ProjectRootManager.getInstance(project)
 
-        val projectSdk = projectRootManager.projectSdk ?: return
+        val projectSdk = ProjectRootManager.getInstance(project).projectSdk ?: return
         val versionString = projectSdk.versionString ?: return
         val sdkVersion = JavaSdkVersion.fromVersionString(versionString) ?: return
         val languageLevelExt = LanguageLevelProjectExtension.getInstance(project)

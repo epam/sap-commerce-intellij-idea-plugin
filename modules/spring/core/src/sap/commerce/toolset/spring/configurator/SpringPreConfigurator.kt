@@ -239,7 +239,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
             }
             return true
         } catch (e: Exception) {
-            thisLogger().error("unable scan file for spring imports " + springFile.name)
+            thisLogger().error("unable scan file for spring imports " + springFile.name, e)
         }
         return false
     }

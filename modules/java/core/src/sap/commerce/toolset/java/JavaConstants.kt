@@ -20,6 +20,10 @@ package sap.commerce.toolset.java
 
 object JavaConstants {
 
+    object LiveTemplates {
+        const val YSRI = "ysri"
+    }
+
     object ModuleLibrary {
         const val COMPILE = "library"
         const val TEST = "library (test)"
