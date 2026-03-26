@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.openapi.application.backgroundWriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.localextensions.LeConstants
@@ -35,13 +34,8 @@ class SaveDocumentsProjectBeforeRefreshConfigurator : ProjectBeforeRefreshConfig
     override suspend fun configure(context: ProjectRefreshContext) {
         val dependencies = setOf(LeConstants.LOCAL_EXTENSIONS_XML, EiConstants.EXTENSION_INFO_XML)
 
-        val unsavedDocuments = FileDocumentManager.getInstance().unsavedDocuments
+        FileDocumentManager.getInstance().unsavedDocuments
             .filter { dependencies.contains(FileDocumentManager.getInstance().getFile(it)?.name) }
-
-        if (unsavedDocuments.isEmpty()) return
-
-        backgroundWriteAction {
-            unsavedDocuments.forEach { FileDocumentManager.getInstance().saveDocument(it) }
-        }
+            .forEach { FileDocumentManager.getInstance().saveDocument(it) }
     }
 }
