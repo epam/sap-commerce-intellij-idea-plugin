@@ -105,6 +105,10 @@ public class ImpExVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitMacroValuesDec(@NotNull ImpExMacroValuesDec o) {
+    visitPsiElement(o);
+  }
+
   public void visitModifiers(@NotNull ImpExModifiers o) {
     visitPsiElement(o);
   }

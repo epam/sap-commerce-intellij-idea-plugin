@@ -185,7 +185,10 @@ comment ::= LINE_COMMENT
 
 macro_value_dec ::= MACRO_VALUE
 
-macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
+macro_declaration ::=  macro_name_dec ASSIGN_VALUE macro_values_dec
+{pin = 2}
+
+macro_values_dec ::= (
       macro_value_dec
     | SINGLE_QUOTE
     | DOUBLE_QUOTE
@@ -205,7 +208,6 @@ macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
     | HEADER_MODE_INSERT_UPDATE
     | HEADER_MODE_REMOVE
     )*
-{pin = 2}
 
 script ::= GROOVY_MARKER SCRIPT_ACTION? groovy_script_body
     | JAVASCRIPT_MARKER SCRIPT_ACTION? javascript_script_body

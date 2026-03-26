@@ -33,14 +33,14 @@ import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import sap.commerce.toolset.impex.psi.*;
 
-public class ImpExMacroDeclarationImpl extends ASTWrapperPsiElement implements ImpExMacroDeclaration {
+public class ImpExMacroValuesDecImpl extends ASTWrapperPsiElement implements ImpExMacroValuesDec {
 
-  public ImpExMacroDeclarationImpl(@NotNull ASTNode node) {
+  public ImpExMacroValuesDecImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
-    visitor.visitMacroDeclaration(this);
+    visitor.visitMacroValuesDec(this);
   }
 
   @Override
@@ -51,14 +51,14 @@ public class ImpExMacroDeclarationImpl extends ASTWrapperPsiElement implements I
 
   @Override
   @NotNull
-  public ImpExMacroNameDec getMacroNameDec() {
-    return findNotNullChildByClass(ImpExMacroNameDec.class);
+  public List<ImpExMacroUsageDec> getMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
   }
 
   @Override
-  @Nullable
-  public ImpExMacroValuesDec getMacroValuesDec() {
-    return findChildByClass(ImpExMacroValuesDec.class);
+  @NotNull
+  public List<ImpExMacroValueDec> getMacroValueDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroValueDec.class);
   }
 
 }

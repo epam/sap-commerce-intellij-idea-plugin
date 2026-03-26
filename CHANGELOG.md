@@ -1,3 +1,11 @@
+## [2026.0.7]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+
+### `ImpEx` enhancements
+- Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)
+
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
