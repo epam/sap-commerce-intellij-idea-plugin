@@ -32,10 +32,7 @@ public interface ImpExMacroDeclaration extends PsiElement {
   @NotNull
   ImpExMacroNameDec getMacroNameDec();
 
-  @NotNull
-  List<ImpExMacroUsageDec> getMacroUsageDecList();
-
-  @NotNull
-  List<ImpExMacroValueDec> getMacroValueDecList();
+  @Nullable
+  ImpExMacroValuesDec getMacroValuesDec();
 
 }

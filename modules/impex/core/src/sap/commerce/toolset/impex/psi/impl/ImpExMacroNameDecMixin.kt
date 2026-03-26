@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.impex.psi.impl
 
+import com.intellij.database.dialects.base.findChild
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -28,6 +29,7 @@ import sap.commerce.toolset.impex.editor.ImpExSplitEditor
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
+import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.util.getKey
 import sap.commerce.toolset.impex.psi.util.setName
 import java.io.Serial
@@ -45,28 +47,26 @@ abstract class ImpExMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
         Key.create("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
         {
             val resolvedValue = resolveVirtualParameter()
-                ?: siblings(forward = true, withSelf = false)
-                    .map {
-                        when (it) {
-                            is ImpExMacroUsageDec -> {
-                                if (evaluatedMacroUsages.contains(it)) return@map it.text
+                ?: this.parent.findChild(ImpExTypes.MACRO_VALUES_DEC)
+                    ?.childLeafs()
+                    ?.map { psi ->
+                        psi
+                            .takeIf { it.elementType == ImpExTypes.MACRO_USAGE }
+                            ?.parentOfType<ImpExMacroUsageDec>()
+                            ?.takeUnless { evaluatedMacroUsages.contains(it) }
+                            ?.let { macroUsage ->
+                                evaluatedMacroUsages.add(macroUsage)
 
-                                evaluatedMacroUsages.add(it)
-                                it.resolveValue(evaluatedMacroUsages)
-                                    .let { value ->
-                                        val ref = it.reference ?: return@let null
-                                        value + ref.element.text.substringAfter(ref.canonicalText, "")
-                                    }
-                                    ?: it.text
+                                val ref = macroUsage.reference ?: return@let null
+                                val resolveValue = macroUsage.resolveValue(evaluatedMacroUsages)
+
+                                resolveValue + ref.element.text.substringAfter(ref.canonicalText, "")
                             }
-
-                            else -> it.text
-                        }
+                            ?: psi.text
                     }
-                    .joinToString("")
-                    .trim()
-                    .trimStart('=')
-                    .trimStart()
+                    ?.joinToString("")
+                    ?.trim()
+                ?: ""
 
             CachedValueProvider.Result.createSingleDependency(
                 resolvedValue,
