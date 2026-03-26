@@ -1,10 +1,11 @@
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
-- 25 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
+- 26 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.6+author%3Amlytvyn+is%3Apr)
 
 ### `Project Import` enhancements
 - On Refresh - save only modified `locaextensions.xml` & `extensioninfo.xml` files [#1783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1783)
+- Save unsaved documents in non-background thread on project refresh [#1787](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1787)
 
 ### `ImpEx` enhancements
 - Improved handling of the double-quoted `"` strings in the data row fields [#1761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1761)
