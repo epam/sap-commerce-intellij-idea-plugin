@@ -5,7 +5,7 @@
 
 ### `Project Import` enhancements
 - On Refresh - save only modified `locaextensions.xml` & `extensioninfo.xml` files [#1783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1783)
-- Save unsaved documents in non-background thread on project refresh [#1785](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1785)
+- Save unsaved documents in non-background thread on project refresh [#1787](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1787)
 
 ### `ImpEx` enhancements
 - Improved handling of the double-quoted `"` strings in the data row fields [#1761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1761)
