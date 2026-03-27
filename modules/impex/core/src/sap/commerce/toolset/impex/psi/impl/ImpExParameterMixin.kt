@@ -22,9 +22,10 @@ package sap.commerce.toolset.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
@@ -32,40 +33,37 @@ import sap.commerce.toolset.impex.psi.ImpExParameter
 import sap.commerce.toolset.impex.psi.references.ImpExFunctionTSAttributeReference
 import sap.commerce.toolset.impex.psi.references.ImpExFunctionTSItemReference
 import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import java.io.Serial
 
 abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpExParameter {
 
-    private val myReferences = mutableListOf<PsiReferenceBase<out PsiElement>>()
-    private var previousText: String? = null
-
     override fun getReference() = references.firstOrNull()
 
-    override fun getReferences(): Array<PsiReference> {
-        if (previousText != text) {
-            myReferences.clear()
-        }
-
-        if (childrenOfType<ImpExDocumentIdUsage>().isNotEmpty()) return emptyArray()
-
-        if (myReferences.isEmpty() || previousText == null) {
-            previousText = text
-
+    override fun getReferences(): Array<PsiReference> = CachedValuesManager.getManager(project).getCachedValue(this) {
+        val references = if (childrenOfType<ImpExDocumentIdUsage>().isNotEmpty()) emptyArray()
+        else buildList<PsiReference> {
             if (inlineTypeName != null) {
-                myReferences.add(ImpExFunctionTSItemReference(this))
+                add(ImpExFunctionTSItemReference(this@ImpExParameterMixin))
 
                 // attribute can be a Macro item(CMSLinkComponent.$contentCV)
-                if (childrenOfType<ImpExMacroUsageDec>().isEmpty()) addReference()
-            } else addReference()
+                if (childrenOfType<ImpExMacroUsageDec>().isEmpty()) {
+                    add(getSuitableReference())
+                }
+            } else {
+                add(getSuitableReference())
+            }
         }
+            .toTypedArray()
 
-        return myReferences.toTypedArray()
+        CachedValueProvider.Result.create(
+            references,
+            TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+        )
     }
 
     override fun clone(): Any {
         val result = super.clone() as ImpExParameterMixin
-        result.previousText = null
-        result.myReferences.clear()
         return result
     }
 
@@ -75,10 +73,8 @@ abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
         removeUserData(ImpExHeaderAbbreviationReference.CACHE_KEY)
     }
 
-    private fun addReference() {
-        if (isHeaderAbbreviation()) myReferences.add(ImpExHeaderAbbreviationReference(this))
-        else myReferences.add(ImpExFunctionTSAttributeReference(this))
-    }
+    private fun getSuitableReference() = if (isHeaderAbbreviation()) ImpExHeaderAbbreviationReference(this)
+    else ImpExFunctionTSAttributeReference(this)
 
     companion object {
         @Serial
