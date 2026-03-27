@@ -2,6 +2,7 @@
 
 <cite>Release contributors</cite>
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 
 ### `ImpEx` enhancements
 - Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)
@@ -14,6 +15,9 @@
 
 ### Other
 - Include only last 10 releases in the shipped changelog [#1793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1793)
+
+### `Spring` enhancements
+- Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)
 
 ## [2026.0.6]
 

@@ -274,7 +274,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
         val resource = import.getAttributeValue("resource")
 
         if (resource.startsWith("classpath*:")) {
-            // TODO: unsupported multiple import
+            addSpringOnClasspathMultiple(moduleDescriptorMap, moduleDescriptor, resource.substring("classpath*:".length))
             return
         }
 
@@ -305,6 +305,33 @@ class SpringPreConfigurator : ProjectImportConfigurator {
         }
         moduleDescriptorMap.values
             .any { addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, it.resourcesPath, fileOnClasspath) }
+    }
+
+    private fun addSpringOnClasspathMultiple(
+        moduleDescriptorMap: Map<String, YModuleDescriptor>,
+        relevantModule: YModuleDescriptor,
+        fileOnClasspath: String
+    ) {
+        val pattern = StringUtils.stripStart(fileOnClasspath, "/")
+        val hasWildcard = pattern.contains('*') || pattern.contains('?')
+
+        if (hasWildcard) {
+            val globPattern = "glob:$pattern"
+            moduleDescriptorMap.values.forEach { module ->
+                val resourcesDir = module.resourcesPath
+                if (!resourcesDir.directoryExists) return@forEach
+                val matcher = resourcesDir.fileSystem.getPathMatcher(globPattern)
+                Files.walk(resourcesDir)
+                    .filter { it.fileExists }
+                    .filter { matcher.matches(resourcesDir.relativize(it)) }
+                    .forEach { processSpringFile(moduleDescriptorMap, relevantModule, it) }
+            }
+        } else {
+            // No wildcards — search ALL modules (unlike classpath: which stops at first match)
+            moduleDescriptorMap.values.forEach { module ->
+                addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, module.resourcesPath, fileOnClasspath)
+            }
+        }
     }
 
     private fun addSpringXmlFile(

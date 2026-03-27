@@ -53,3 +53,4 @@
 - Mihai Sprinceana
 - Patrick Gäckle
 - Sina Bastani
+- Fabio Elias Filpi
