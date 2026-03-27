@@ -240,14 +240,9 @@ class ImpExAnnotator : AbstractAnnotator() {
                 }
             }
 
-            ImpExTypes.HEADER_PARAMETER_NAME,
-            ImpExTypes.PARAMETER -> {
+            ImpExTypes.HEADER_PARAMETER_NAME -> {
                 if (element.parent.reference is ImpExHeaderAbbreviationReference) {
-                    highlight(
-                        ImpExHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION,
-                        holder,
-                        element,
-                    )
+                    highlight(ImpExHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION, holder, element)
                 } else {
                     element.parentOfType<ImpExFullHeaderParameter>()
                         ?.getAttribute(AttributeModifier.UNIQUE)
@@ -260,6 +255,12 @@ class ImpExAnnotator : AbstractAnnotator() {
                                 element
                             )
                         }
+                }
+            }
+
+            ImpExTypes.PARAMETER -> {
+                if (element.parent.reference is ImpExHeaderAbbreviationReference) {
+                    highlight(ImpExHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION, holder, element)
                 }
             }
         }

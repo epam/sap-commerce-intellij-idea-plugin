@@ -1,11 +1,12 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)
 - Resolve header abbreviation in the complex param `; categories(code, myAbbreviation);` [#1789](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1789)
+- Do not create TS reference when `&DocId` reference present [#1794](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1794)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

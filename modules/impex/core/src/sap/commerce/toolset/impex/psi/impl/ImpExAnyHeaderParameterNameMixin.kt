@@ -41,6 +41,7 @@ abstract class ImpExAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
             ?.flatMap { it.getParameterList() }
             ?.forEach {
                 it.removeUserData(ImpExFunctionTSItemReference.CACHE_KEY)
+                it.removeUserData(ImpExHeaderAbbreviationReference.CACHE_KEY)
                 it.removeUserData(ImpExFunctionTSAttributeReference.CACHE_KEY)
             }
     }

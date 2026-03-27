@@ -26,6 +26,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.childrenOfType
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpExParameter
 import sap.commerce.toolset.impex.psi.references.ImpExFunctionTSAttributeReference
@@ -45,7 +46,11 @@ abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
             myReferences.clear()
         }
 
+        if (childrenOfType<ImpExDocumentIdUsage>().isNotEmpty()) return emptyArray()
+
         if (myReferences.isEmpty() || previousText == null) {
+            previousText = text
+
             if (inlineTypeName != null) {
                 myReferences.add(ImpExFunctionTSItemReference(this))
 
