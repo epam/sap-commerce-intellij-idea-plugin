@@ -8,16 +8,17 @@
 - Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)
 - Resolve header abbreviation in the complex param `; categories(code, myAbbreviation);` [#1789](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1789)
 - Do not create TS reference when `&DocId` reference present [#1794](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1794)
+- Show abbreviations in the completion list for parameters [#1795](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1795)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
 - Inspection: respect macro declarations required by abbreviations in the parameter [#1791](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1791)
 
-### Other
-- Include only last 10 releases in the shipped changelog [#1793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1793)
-
 ### `Spring` enhancements
 - Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)
+
+### Other
+- Include only last 10 releases in the shipped changelog [#1793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1793)
 
 ## [2026.0.6]
 
