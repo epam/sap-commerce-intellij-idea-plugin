@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,7 +65,7 @@ class ImpExFunctionReferenceTypeMismatchInspection : LocalInspectionTool() {
                             typeReference,
                             ProblemHighlightType.ERROR,
                             i18n(
-                                "hybris.inspections.impex.ImpexMismatchFunctionTypeInspection.key",
+                                "hybris.inspections.impex.ImpExMismatchFunctionTypeInspection.key",
                                 inlineType,
                                 expectedItemType,
                                 parameter.referenceName ?: "?"
@@ -90,7 +90,7 @@ class ImpExFunctionReferenceTypeMismatchInspection : LocalInspectionTool() {
             problemsHolder.registerProblemForReference(
                 typeReference,
                 ProblemHighlightType.ERROR,
-                i18n("hybris.inspections.impex.ImpexMismatchFunctionTypeInspection.onlyItemType.key", inlineType, type),
+                i18n("hybris.inspections.impex.ImpExMismatchFunctionTypeInspection.onlyItemType.key", inlineType, type),
             )
         }
 

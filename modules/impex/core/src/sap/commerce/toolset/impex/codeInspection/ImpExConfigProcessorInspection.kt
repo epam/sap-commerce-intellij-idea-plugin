@@ -68,7 +68,7 @@ class ImpExConfigProcessorInspection : LocalInspectionTool() {
             if (!isExist) {
                 problemsHolder.registerProblem(
                     macroValue,
-                    i18n("hybris.inspections.impex.ImpexConfigProcessorInspection.key", ImpExConstants.IMPEX_CONFIG_PREFIX),
+                    i18n("hybris.inspections.impex.ImpExConfigProcessorInspection.key", ImpExConstants.IMPEX_CONFIG_PREFIX),
                     ProblemHighlightType.ERROR,
                     LocalFix(macroValue)
                 )

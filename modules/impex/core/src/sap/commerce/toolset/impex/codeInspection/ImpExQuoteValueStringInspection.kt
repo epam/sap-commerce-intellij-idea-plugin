@@ -20,43 +20,48 @@ package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.util.parentOfType
+import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.codeInspection.fix.ImpExDeleteModifierFix
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpExAnyAttributeName
-import sap.commerce.toolset.impex.psi.ImpExAttribute
-import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.impex.psi.ImpExVisitor
+import sap.commerce.toolset.impex.psi.references.ImpExTSAttributeReference
 import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
 
-class ImpExLanguageModifierIsNotAllowedInspection : LocalInspectionTool() {
+class ImpExQuoteValueStringInspection : LocalInspectionTool() {
 
-    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) = object : ImpExVisitor() {
+    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WEAK_WARNING
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = Visitor(holder)
 
-        override fun visitAnyAttributeName(psi: ImpExAnyAttributeName) {
-            if (psi.text != AttributeModifier.LANG.modifierName) return
+    class Visitor(private val holder: ProblemsHolder) : ImpExVisitor() {
+        override fun visitValue(value: ImpExValue) {
+            val trimmedText = value.text.trim()
+            if (trimmedText.startsWith('\"')) return
+            if (trimmedText.isBlank()) return
 
-            val attribute = psi.parentOfType<ImpExAttribute>(false) ?: return
-            val meta = psi.parentOfType<ImpExFullHeaderParameter>(false)
+            val valueGroup = value.valueGroup ?: return
+
+            valueGroup
+                .fullHeaderParameter
                 ?.anyHeaderParameterName
                 ?.reference
-                ?.asSafely<PsiPolyVariantReference>()
+                ?.asSafely<ImpExTSAttributeReference>()
                 ?.multiResolve(false)
                 ?.firstOrNull()
                 ?.asSafely<AttributeResolveResult>()
                 ?.meta
-                ?.takeUnless { it.isLocalized }
+                ?.takeIf {
+                    "localized:java.lang.String" == it.type
+                        || "java.lang.String" == it.type && !it.modifiers.isUnique
+                }
                 ?: return
 
             holder.registerProblem(
-                psi,
-                i18n("hybris.inspections.impex.ImpExLanguageModifierIsNotAllowedInspection.key", meta.name),
-                ImpExDeleteModifierFix(attribute)
+                value,
+                i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.key"),
+                ProblemHighlightType.WEAK_WARNING,
             )
         }
     }
