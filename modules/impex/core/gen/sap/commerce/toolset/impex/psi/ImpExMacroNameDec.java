@@ -31,10 +31,8 @@ import sap.commerce.toolset.impex.psi.impl.ImpExMacroNameDecMixin;
 
 public interface ImpExMacroNameDec extends ImpExPsiNamedElement {
 
-  @NotNull
-  ImpExMacroNameDecMixin getNameIdentifier();
+  @NotNull ImpExMacroNameDecMixin getNameIdentifier();
 
-  @NotNull
-  String resolveValue(@NotNull Set<ImpExMacroUsageDec> evaluatedMacroUsages);
+  @NotNull String resolveValue(@NotNull Set<@Nullable ImpExMacroUsageDec> evaluatedMacroUsages);
 
 }

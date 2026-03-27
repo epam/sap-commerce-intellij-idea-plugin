@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -85,11 +85,13 @@ class ImpExDocumentationTarget(val element: PsiElement, private val originalElem
                         "With that, you can export a constant value or can aggregate different attributes.",
                         "Using the following header at an export of an order item, the code of the order is exported as well as the id and name of the user owning the order and its payment address, street name, and country.",
                     )
-                    example("""
+                    example(
+                        """
                         INSERT_UPDATE Order; code[unique=true]; \
                                             @template1[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='${"$"}item.user.getUID()']; \
                                             @template2[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='${"$"}item.user.name'];
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                 }.build()
 
                 AttributeModifier.CLASSIFICATION_CLASS.modifierName,
@@ -106,9 +108,11 @@ class ImpExDocumentationTarget(val element: PsiElement, private val originalElem
                         "Therefore you have to declare a special attribute for each feature to import.",
                         "Assuming you want to set a value for feature type at your product a suitable header could be as follows:",
                     )
-                    example("""
+                    example(
+                        """
                         UPDATE Product; code[unique=true]; @type[system='SampleClassification',version='1.0',translator=de.hybris.platform.catalog.jalo.classification.impex.ClassificationAttributeTranslator;]
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     texts("In this example, the modifiers system and version, which are both mandatory, specify the classification system version of the product feature.")
                     texts("One more optional modifier class can be used with this translator.")
                 }.build()
@@ -125,10 +129,12 @@ class ImpExDocumentationTarget(val element: PsiElement, private val originalElem
                         "To disable UniqueAttributesValidator, specify a comma-separated item types for which you want to disable it:",
                         "The following impex specifies only one such interceptor:"
                     )
-                    example("""
+                    example(
+                        """
                         INSERT_UPDATE Currency[disable.UniqueAttributesValidator.for.types='Currency'];isocode[unique=true];digits;
                         ;EUR_Test;-2;
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     texts("If you want to specify more than one ID, put the bean IDs in apostrophes: <'beanID'>.")
                 }.build()
 
@@ -144,10 +150,12 @@ class ImpExDocumentationTarget(val element: PsiElement, private val originalElem
                         "To disable specific interceptors, specify a comma-separated bean-IDs list for the disable.interceptor.beans header attribute.",
                         "The following impex specifies only one such interceptor:"
                     )
-                    example("""
+                    example(
+                        """
                         INSERT_UPDATE Currency[disable.interceptor.beans='validateCurrencyDataInterceptor'];isocode[unique=true];digits;
                         ;EUR_Test;-2;
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                 }.build()
 
                 TypeModifier.DISABLE_INTERCEPTOR_TYPES.modifierName -> impexDoc {
@@ -160,10 +168,12 @@ class ImpExDocumentationTarget(val element: PsiElement, private val originalElem
                         "disable.interceptor.types (InterceptorExecutionPolicy#DISABLED_INTERCEPTOR_TYPES constant)",
                         "This attribute takes a set of interceptor types (de.hybris.platform.servicelayer.interceptor.impl.InterceptorExecutionPolicy.InterceptorType) that you want to disable."
                     )
-                    example("""
+                    example(
+                        """
                         INSERT_UPDATE Currency[disable.interceptor.types=validate];isocode[unique=true];digits;
                         ;EUR_Test2;-2;
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                 }.build()
 
                 TypeModifier.SLD_ENABLED.modifierName -> impexDoc {
@@ -519,7 +529,8 @@ class ImpExDocumentationTarget(val element: PsiElement, private val originalElem
             }
         }
 
-        ImpExTypes.HEADER_PARAMETER_NAME -> {
+        ImpExTypes.HEADER_PARAMETER_NAME,
+        ImpExTypes.PARAMETER -> {
             element.parent.reference
                 ?.asSafely<ImpExHeaderAbbreviationReference>()
                 ?.let {

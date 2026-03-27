@@ -31,10 +31,8 @@ import java.util.Map;
 
 public interface ImpExDocumentIdDec extends ImpExPsiNamedElement {
 
-  @NotNull
-  Map<String, Collection<ImpExValue>> getValues();
+  @NotNull Map<@NotNull String, @NotNull Collection<@NotNull ImpExValue>> getValues();
 
-  @Nullable
-  ImpExHeaderTypeName getHeaderType();
+  @Nullable ImpExHeaderTypeName getHeaderType();
 
 }

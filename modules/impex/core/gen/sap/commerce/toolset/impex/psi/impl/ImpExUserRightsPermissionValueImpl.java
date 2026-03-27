@@ -50,8 +50,7 @@ public class ImpExUserRightsPermissionValueImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  @Nullable
-  public ImpExUserRightsHeaderParameter getHeaderParameter() {
+  public @Nullable ImpExUserRightsHeaderParameter getHeaderParameter() {
     return ImpExPsiUtil.getHeaderParameter(this);
   }
 

@@ -50,8 +50,7 @@ public class ImpExMacroUsageDecImpl extends ImpExMacroUsageDecMixin implements I
   }
 
   @Override
-  @Nullable
-  public String getConfigPropertyKey() {
+  public @Nullable String getConfigPropertyKey() {
     return ImpExPsiUtil.getConfigPropertyKey(this);
   }
 

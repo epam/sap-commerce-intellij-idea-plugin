@@ -34,8 +34,8 @@ import sap.commerce.toolset.impex.psi.*;
 
 public class ImpExUserRightsAttributeValueImpl extends ImpExUserRightsAttributeValueMixin implements ImpExUserRightsAttributeValue {
 
-  public ImpExUserRightsAttributeValueImpl(@NotNull ASTNode node) {
-    super(node);
+  public ImpExUserRightsAttributeValueImpl(@NotNull ASTNode astNode) {
+    super(astNode);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
@@ -49,8 +49,7 @@ public class ImpExUserRightsAttributeValueImpl extends ImpExUserRightsAttributeV
   }
 
   @Override
-  @Nullable
-  public ImpExUserRightsHeaderParameter getHeaderParameter() {
+  public @Nullable ImpExUserRightsHeaderParameter getHeaderParameter() {
     return ImpExPsiUtil.getHeaderParameter(this);
   }
 
