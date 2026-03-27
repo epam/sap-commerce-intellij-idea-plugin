@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 
 ### `ImpEx` enhancements
 - Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)
@@ -10,6 +10,9 @@
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
 - Inspection: respect macro declarations required by abbreviations in the parameter [#1791](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1791)
+
+### Other
+- Include only last 10 releases in the shipped changelog [#1793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1793)
 
 ## [2026.0.6]
 
