@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,7 +50,7 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
                 if (isDeclarationExists != null && isDeclarationExists == false) {
                     problemsHolder.registerProblem(
                         usage,
-                        i18n("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
+                        i18n("hybris.inspections.impex.ImpExUnknownConfigPropertyInspection.param.key", propertyName),
                         ProblemHighlightType.ERROR
                     )
                 } else {
@@ -60,7 +60,7 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
                         cachedProperties[propertyName] = false
                         problemsHolder.registerProblem(
                             usage,
-                            i18n("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
+                            i18n("hybris.inspections.impex.ImpExUnknownConfigPropertyInspection.param.key", propertyName),
                             ProblemHighlightType.ERROR
                         )
                     } else {
@@ -81,7 +81,7 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
                     if (properties.isEmpty()) {
                         problemsHolder.registerProblem(
                             macroValue,
-                            i18n("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.key", key),
+                            i18n("hybris.inspections.impex.ImpExUnknownConfigPropertyInspection.key", key),
                             ProblemHighlightType.ERROR
                         )
                     }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,7 +65,7 @@ class ImpExOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
 
             problemsHolder.registerProblem(
                 mode,
-                i18n("hybris.inspections.impex.ImpexOnlyUpdateOrRemoveAllowedForNonDynamicEnumInspection.key", modeName, impexModeUpdate),
+                i18n("hybris.inspections.impex.ImpExOnlyUpdateOrRemoveAllowedForNonDynamicEnumInspection.key", modeName, impexModeUpdate),
                 ProblemHighlightType.ERROR,
                 ImpExChangeHeaderModeQuickFix(
                     headerMode = mode,
