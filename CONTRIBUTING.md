@@ -53,3 +53,4 @@ q## Contribution guidelines
 - Mihai Sprinceana
 - Patrick Gäckle
 - Sina Bastani
+- Fabio Elias Filpi

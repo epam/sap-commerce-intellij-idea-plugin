@@ -1,3 +1,11 @@
+## [2026.0.7]
+
+<cite>Release contributors</cite>
+- 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
+
+### `Spring` enhancements
+- Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)
+
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
