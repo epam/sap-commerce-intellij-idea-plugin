@@ -30,17 +30,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import sap.commerce.toolset.impex.psi.*;
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier;
 
-public class ImpExFullHeaderParameterImpl extends ImpExFullHeaderParameterMixin implements ImpExFullHeaderParameter {
+public class ImpExMacroValuesDecImpl extends ASTWrapperPsiElement implements ImpExMacroValuesDec {
 
-  public ImpExFullHeaderParameterImpl(@NotNull ASTNode node) {
+  public ImpExMacroValuesDecImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
-    visitor.visitFullHeaderParameter(this);
+    visitor.visitMacroValuesDec(this);
   }
 
   @Override
@@ -51,30 +51,14 @@ public class ImpExFullHeaderParameterImpl extends ImpExFullHeaderParameterMixin 
 
   @Override
   @NotNull
-  public ImpExAnyHeaderParameterName getAnyHeaderParameterName() {
-    return findNotNullChildByClass(ImpExAnyHeaderParameterName.class);
+  public List<ImpExMacroUsageDec> getMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
   }
 
   @Override
   @NotNull
-  public List<ImpExModifiers> getModifiersList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExModifiers.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpExParameters> getParametersList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExParameters.class);
-  }
-
-  @Override
-  public @Nullable ImpExHeaderLine getHeaderLine() {
-    return ImpExPsiUtil.getHeaderLine(this);
-  }
-
-  @Override
-  public @Nullable ImpExAttribute getAttribute(@NotNull AttributeModifier attributeModifier) {
-    return ImpExPsiUtil.getAttribute(this, attributeModifier);
+  public List<ImpExMacroValueDec> getMacroValueDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroValueDec.class);
   }
 
 }

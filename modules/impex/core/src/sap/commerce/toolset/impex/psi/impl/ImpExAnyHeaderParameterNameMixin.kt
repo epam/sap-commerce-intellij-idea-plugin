@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,18 +18,15 @@
  */
 package sap.commerce.toolset.impex.psi.impl
 
-import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.references.*
-import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.psi.shouldCreateNewReference
 import java.io.Serial
 
@@ -44,6 +41,7 @@ abstract class ImpExAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
             ?.flatMap { it.getParameterList() }
             ?.forEach {
                 it.removeUserData(ImpExFunctionTSItemReference.CACHE_KEY)
+                it.removeUserData(ImpExHeaderAbbreviationReference.CACHE_KEY)
                 it.removeUserData(ImpExFunctionTSAttributeReference.CACHE_KEY)
             }
     }
@@ -58,7 +56,7 @@ abstract class ImpExAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
         when {
             ImpExTypes.MACRO_USAGE == leafType -> return arrayOf(ImpExMacroReference(this))
 
-            //optimisation: don't even try for macro's and documents
+            // optimization: don't even try for macro's and documents
             ImpExTypes.HEADER_PARAMETER_NAME != leafType
                 && ImpExTypes.FUNCTION != leafType -> return PsiReference.EMPTY_ARRAY
 
@@ -78,20 +76,6 @@ abstract class ImpExAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
         result.myReference = null
         return result
     }
-
-    private fun isHeaderAbbreviation() = PropertyService.getInstance(project)
-        .findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
-        .asSequence()
-        .mapNotNull { it.value }
-        .mapNotNull { abbreviation ->
-            abbreviation
-                .split("...")
-                .takeIf { it.size == 2 }
-                ?.map { it.trim() }
-        }
-        .mapNotNull { it.firstOrNull() }
-        .map { it.replace("\\\\", "\\") }
-        .any { text.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED).matches(it.toRegex()) }
 
     companion object {
         @Serial

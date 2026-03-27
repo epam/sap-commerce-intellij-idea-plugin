@@ -20,12 +20,15 @@
 
 package sap.commerce.toolset.impex.psi
 
+import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.project.PropertyService
@@ -231,3 +234,20 @@ fun getHeaderParameter(element: ImpExUserRightsValue): ImpExUserRightsHeaderPara
 
     else -> null
 }
+
+fun isHeaderAbbreviation(element: ImpExAnyHeaderParameterName): Boolean = isHeaderAbbreviation(element.project, element.text)
+fun isHeaderAbbreviation(element: ImpExParameter): Boolean = isHeaderAbbreviation(element.project, element.text)
+
+private fun isHeaderAbbreviation(project: Project, text: String): Boolean = PropertyService.getInstance(project)
+    .findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+    .asSequence()
+    .mapNotNull { it.value }
+    .mapNotNull { abbreviation ->
+        abbreviation
+            .split("...")
+            .takeIf { it.size == 2 }
+            ?.map { it.trim() }
+    }
+    .mapNotNull { it.firstOrNull() }
+    .map { it.replace("\\\\", "\\") }
+    .any { text.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED).matches(it.toRegex()) }

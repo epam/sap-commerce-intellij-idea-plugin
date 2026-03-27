@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
+import java.nio.file.Files
 
 fun properties(key: String) = providers.gradleProperty(key)
 
@@ -131,9 +132,26 @@ intellijPlatform {
 }
 
 tasks {
-    val copyChangelog by registering(Copy::class) {
-        from("CHANGELOG.md")
-        into("resources")
+    val copyChangelog by registering {
+        val changelog = project.changelog // local variable for configuration cache compatibility
+        // Get the latest available change notes from the changelog file
+        val changeNotes = with(changelog) {
+            getAll().values
+                .take(10)
+                .joinToString("") {
+                    renderItem(
+                        it
+                            .withLinks(true)
+                            .withEmptySections(false),
+                        Changelog.OutputType.MARKDOWN,
+                    )
+                }
+        }
+
+        sourceSets.main.get().resources.srcDirs
+            .map { it.toPath() }
+            .firstOrNull { Files.exists(it) }
+            ?.let { Files.writeString(it.resolve("CHANGELOG.md"), changeNotes) }
     }
 
     patchPluginXml {

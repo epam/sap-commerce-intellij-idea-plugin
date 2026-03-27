@@ -32,15 +32,12 @@ public interface ImpExValueGroup extends PsiElement {
   @Nullable
   ImpExValue getValue();
 
-  @Nullable
-  ImpExFullHeaderParameter getFullHeaderParameter();
+  @Nullable ImpExFullHeaderParameter getFullHeaderParameter();
 
   int getColumnNumber();
 
-  @Nullable
-  ImpExValueLine getValueLine();
+  @Nullable ImpExValueLine getValueLine();
 
-  @Nullable
-  String computeValue();
+  @Nullable String computeValue();
 
 }

@@ -34,8 +34,8 @@ import sap.commerce.toolset.impex.psi.*;
 
 public class ImpExParameterImpl extends ImpExParameterMixin implements ImpExParameter {
 
-  public ImpExParameterImpl(@NotNull ASTNode node) {
-    super(node);
+  public ImpExParameterImpl(@NotNull ASTNode astNode) {
+    super(astNode);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
@@ -73,33 +73,33 @@ public class ImpExParameterImpl extends ImpExParameterMixin implements ImpExPara
   }
 
   @Override
-  @Nullable
-  public String getReferenceItemTypeName() {
+  public @Nullable String getReferenceItemTypeName() {
     return ImpExPsiUtil.getReferenceItemTypeName(this);
   }
 
   @Override
-  @Nullable
-  public String getReferenceName() {
+  public @Nullable String getReferenceName() {
     return ImpExPsiUtil.getReferenceName(this);
   }
 
   @Override
-  @Nullable
-  public String getItemTypeName() {
+  public @Nullable String getItemTypeName() {
     return ImpExPsiUtil.getItemTypeName(this);
   }
 
   @Override
-  @Nullable
-  public String getInlineTypeName() {
+  public @Nullable String getInlineTypeName() {
     return ImpExPsiUtil.getInlineTypeName(this);
   }
 
   @Override
-  @NotNull
-  public String getAttributeName() {
+  public @NotNull String getAttributeName() {
     return ImpExPsiUtil.getAttributeName(this);
+  }
+
+  @Override
+  public boolean isHeaderAbbreviation() {
+    return ImpExPsiUtil.isHeaderAbbreviation(this);
   }
 
 }

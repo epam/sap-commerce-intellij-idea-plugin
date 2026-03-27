@@ -34,8 +34,8 @@ import sap.commerce.toolset.impex.psi.*;
 
 public class ImpExAnyAttributeNameImpl extends ImpExAttributeNameMixin implements ImpExAnyAttributeName {
 
-  public ImpExAnyAttributeNameImpl(@NotNull ASTNode node) {
-    super(node);
+  public ImpExAnyAttributeNameImpl(@NotNull ASTNode astNode) {
+    super(astNode);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
@@ -55,8 +55,7 @@ public class ImpExAnyAttributeNameImpl extends ImpExAttributeNameMixin implement
   }
 
   @Override
-  @Nullable
-  public ImpExAnyAttributeValue getAnyAttributeValue() {
+  public @Nullable ImpExAnyAttributeValue getAnyAttributeValue() {
     return ImpExPsiUtil.getAnyAttributeValue(this);
   }
 

@@ -489,26 +489,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // macro_name_dec ASSIGN_VALUE (
-  //       macro_value_dec
-  //     | SINGLE_QUOTE
-  //     | DOUBLE_QUOTE
-  //     | macro_usage_dec
-  //     | LEFT_ROUND_BRACKET
-  //     | RIGHT_ROUND_BRACKET
-  //     | LEFT_SQUARE_BRACKET
-  //     | RIGHT_SQUARE_BRACKET
-  //     | ASSIGN_VALUE
-  //     | DIGIT
-  //     | BOOLEAN
-  //     | FIELD_VALUE_IGNORE
-  //     | FIELD_VALUE_NULL
-  //     | COMMA
-  //     | HEADER_MODE_INSERT
-  //     | HEADER_MODE_UPDATE
-  //     | HEADER_MODE_INSERT_UPDATE
-  //     | HEADER_MODE_REMOVE
-  //     )*
+  // macro_name_dec ASSIGN_VALUE macro_values_dec
   public static boolean macro_declaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "macro_declaration")) return false;
     if (!nextTokenIs(b, MACRO_NAME_DECLARATION)) return false;
@@ -517,81 +498,9 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     r = macro_name_dec(b, l + 1);
     r = r && consumeToken(b, ASSIGN_VALUE);
     p = r; // pin = 2
-    r = r && macro_declaration_2(b, l + 1);
+    r = r && macro_values_dec(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
-  }
-
-  // (
-  //       macro_value_dec
-  //     | SINGLE_QUOTE
-  //     | DOUBLE_QUOTE
-  //     | macro_usage_dec
-  //     | LEFT_ROUND_BRACKET
-  //     | RIGHT_ROUND_BRACKET
-  //     | LEFT_SQUARE_BRACKET
-  //     | RIGHT_SQUARE_BRACKET
-  //     | ASSIGN_VALUE
-  //     | DIGIT
-  //     | BOOLEAN
-  //     | FIELD_VALUE_IGNORE
-  //     | FIELD_VALUE_NULL
-  //     | COMMA
-  //     | HEADER_MODE_INSERT
-  //     | HEADER_MODE_UPDATE
-  //     | HEADER_MODE_INSERT_UPDATE
-  //     | HEADER_MODE_REMOVE
-  //     )*
-  private static boolean macro_declaration_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "macro_declaration_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!macro_declaration_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "macro_declaration_2", c)) break;
-    }
-    return true;
-  }
-
-  // macro_value_dec
-  //     | SINGLE_QUOTE
-  //     | DOUBLE_QUOTE
-  //     | macro_usage_dec
-  //     | LEFT_ROUND_BRACKET
-  //     | RIGHT_ROUND_BRACKET
-  //     | LEFT_SQUARE_BRACKET
-  //     | RIGHT_SQUARE_BRACKET
-  //     | ASSIGN_VALUE
-  //     | DIGIT
-  //     | BOOLEAN
-  //     | FIELD_VALUE_IGNORE
-  //     | FIELD_VALUE_NULL
-  //     | COMMA
-  //     | HEADER_MODE_INSERT
-  //     | HEADER_MODE_UPDATE
-  //     | HEADER_MODE_INSERT_UPDATE
-  //     | HEADER_MODE_REMOVE
-  private static boolean macro_declaration_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "macro_declaration_2_0")) return false;
-    boolean r;
-    r = macro_value_dec(b, l + 1);
-    if (!r) r = consumeToken(b, SINGLE_QUOTE);
-    if (!r) r = consumeToken(b, DOUBLE_QUOTE);
-    if (!r) r = macro_usage_dec(b, l + 1);
-    if (!r) r = consumeToken(b, LEFT_ROUND_BRACKET);
-    if (!r) r = consumeToken(b, RIGHT_ROUND_BRACKET);
-    if (!r) r = consumeToken(b, LEFT_SQUARE_BRACKET);
-    if (!r) r = consumeToken(b, RIGHT_SQUARE_BRACKET);
-    if (!r) r = consumeToken(b, ASSIGN_VALUE);
-    if (!r) r = consumeToken(b, DIGIT);
-    if (!r) r = consumeToken(b, BOOLEAN);
-    if (!r) r = consumeToken(b, FIELD_VALUE_IGNORE);
-    if (!r) r = consumeToken(b, FIELD_VALUE_NULL);
-    if (!r) r = consumeToken(b, COMMA);
-    if (!r) r = consumeToken(b, HEADER_MODE_INSERT);
-    if (!r) r = consumeToken(b, HEADER_MODE_UPDATE);
-    if (!r) r = consumeToken(b, HEADER_MODE_INSERT_UPDATE);
-    if (!r) r = consumeToken(b, HEADER_MODE_REMOVE);
-    return r;
   }
 
   /* ********************************************************** */
@@ -627,6 +536,81 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, MACRO_VALUE);
     exit_section_(b, m, MACRO_VALUE_DEC, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // (
+  //       macro_value_dec
+  //     | SINGLE_QUOTE
+  //     | DOUBLE_QUOTE
+  //     | macro_usage_dec
+  //     | LEFT_ROUND_BRACKET
+  //     | RIGHT_ROUND_BRACKET
+  //     | LEFT_SQUARE_BRACKET
+  //     | RIGHT_SQUARE_BRACKET
+  //     | ASSIGN_VALUE
+  //     | DIGIT
+  //     | BOOLEAN
+  //     | FIELD_VALUE_IGNORE
+  //     | FIELD_VALUE_NULL
+  //     | COMMA
+  //     | HEADER_MODE_INSERT
+  //     | HEADER_MODE_UPDATE
+  //     | HEADER_MODE_INSERT_UPDATE
+  //     | HEADER_MODE_REMOVE
+  //     )*
+  public static boolean macro_values_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "macro_values_dec")) return false;
+    Marker m = enter_section_(b, l, _NONE_, MACRO_VALUES_DEC, "<macro values dec>");
+    while (true) {
+      int c = current_position_(b);
+      if (!macro_values_dec_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "macro_values_dec", c)) break;
+    }
+    exit_section_(b, l, m, true, false, null);
+    return true;
+  }
+
+  // macro_value_dec
+  //     | SINGLE_QUOTE
+  //     | DOUBLE_QUOTE
+  //     | macro_usage_dec
+  //     | LEFT_ROUND_BRACKET
+  //     | RIGHT_ROUND_BRACKET
+  //     | LEFT_SQUARE_BRACKET
+  //     | RIGHT_SQUARE_BRACKET
+  //     | ASSIGN_VALUE
+  //     | DIGIT
+  //     | BOOLEAN
+  //     | FIELD_VALUE_IGNORE
+  //     | FIELD_VALUE_NULL
+  //     | COMMA
+  //     | HEADER_MODE_INSERT
+  //     | HEADER_MODE_UPDATE
+  //     | HEADER_MODE_INSERT_UPDATE
+  //     | HEADER_MODE_REMOVE
+  private static boolean macro_values_dec_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "macro_values_dec_0")) return false;
+    boolean r;
+    r = macro_value_dec(b, l + 1);
+    if (!r) r = consumeToken(b, SINGLE_QUOTE);
+    if (!r) r = consumeToken(b, DOUBLE_QUOTE);
+    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = consumeToken(b, LEFT_ROUND_BRACKET);
+    if (!r) r = consumeToken(b, RIGHT_ROUND_BRACKET);
+    if (!r) r = consumeToken(b, LEFT_SQUARE_BRACKET);
+    if (!r) r = consumeToken(b, RIGHT_SQUARE_BRACKET);
+    if (!r) r = consumeToken(b, ASSIGN_VALUE);
+    if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, BOOLEAN);
+    if (!r) r = consumeToken(b, FIELD_VALUE_IGNORE);
+    if (!r) r = consumeToken(b, FIELD_VALUE_NULL);
+    if (!r) r = consumeToken(b, COMMA);
+    if (!r) r = consumeToken(b, HEADER_MODE_INSERT);
+    if (!r) r = consumeToken(b, HEADER_MODE_UPDATE);
+    if (!r) r = consumeToken(b, HEADER_MODE_INSERT_UPDATE);
+    if (!r) r = consumeToken(b, HEADER_MODE_REMOVE);
     return r;
   }
 
