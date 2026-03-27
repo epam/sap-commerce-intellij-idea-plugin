@@ -20,12 +20,19 @@ package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.impex.psi.ImpExElementFactory
 import sap.commerce.toolset.impex.psi.ImpExValue
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.psi.ImpExVisitor
 import sap.commerce.toolset.impex.psi.references.ImpExTSAttributeReference
 import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
@@ -62,7 +69,33 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 value,
                 i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.key"),
                 ProblemHighlightType.WEAK_WARNING,
+                LocalFix(value)
             )
+        }
+
+        private class LocalFix(element: PsiElement) : LocalQuickFixOnPsiElement(element) {
+
+            override fun getFamilyName() = "[y] Quote value string"
+            override fun getText() = "Wrap unquoted value string in quotes"
+
+            override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+                val newValue = startElement.text.replace("\"", "\"\"")
+
+                val newElement = ImpExElementFactory.createFile(
+                    project, """
+                        UPDATE Title;name;
+                        ; "$newValue"
+
+                """.trimIndent()
+                )
+                    .childrenOfType<ImpExValueLine>()
+                    .flatMap { it.valueGroupList }
+                    .mapNotNull { it.value }
+                    .lastOrNull()
+                    ?: return
+
+                startElement.replace(newElement)
+            }
         }
     }
 }
