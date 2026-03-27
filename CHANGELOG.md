@@ -11,6 +11,9 @@
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
 - Inspection: respect macro declarations required by abbreviations in the parameter [#1791](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1791)
 
+### Other
+- Include only last 10 releases in the shipped changelog [#1793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1793)
+
 ## [2026.0.6]
 
 <cite>Release contributors</cite>
