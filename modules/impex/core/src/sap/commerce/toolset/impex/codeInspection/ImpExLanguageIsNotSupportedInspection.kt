@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,9 +22,13 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeName
+import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
+import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 import sap.commerce.toolset.project.PropertyService
 
 class ImpExLanguageIsNotSupportedInspection : LocalInspectionTool() {
@@ -37,15 +41,10 @@ class ImpExLanguageIsNotSupportedInspection : LocalInspectionTool() {
                 ?.takeIf { AttributeModifier.LANG.modifierName == it.text }
                 ?: return
 
-            val language = if (psi.firstChild is ImpExMacroUsageDec) {
-                PsiTreeUtil.getNextSiblingOfType(psi.firstChild.reference
-                    ?.resolve(), ImpExMacroValueDec::class.java)
-                    ?.text
-                    ?: psi.text
-            } else {
-                psi.text
-            }
-                .trim()
+            val language = psi.firstChild.asSafely<ImpExMacroUsageDec>()
+                ?.resolveValue(HashSet())
+                ?.trim()
+                ?: psi.text
 
             val propertyService = PropertyService.getInstance(psi.project)
             val supportedLanguages = propertyService.getLanguages()
