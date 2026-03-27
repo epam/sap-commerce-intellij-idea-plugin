@@ -48,7 +48,7 @@ class ImpExUnusedMacroInspection : LocalInspectionTool() {
     override fun inspectionStarted(session: LocalInspectionToolSession, isOnTheFly: Boolean) {
         expectedMacrosByAbbreviations.clear()
 
-        PsiTreeUtil.findChildrenOfType(session.file, ImpExAnyHeaderParameterName::class.java)
+        PsiTreeUtil.findChildrenOfAnyType(session.file, ImpExAnyHeaderParameterName::class.java, ImpExParameter::class.java)
             .forEach { parameter ->
                 parameter.reference.asSafely<ImpExHeaderAbbreviationReference>()
                     ?.resolve()

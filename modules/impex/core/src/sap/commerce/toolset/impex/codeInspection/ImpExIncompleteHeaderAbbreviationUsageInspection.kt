@@ -96,14 +96,14 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
                     .parentOfType<ImpExHeaderLine>()
                     ?: return
 
-                val snippetFile = ImpExElementFactory.createFile(
+                ImpExElementFactory.createFile(
                     project, """
                     $macroName =  
 
                 """.trimIndent()
                 )
-
-                file.addBefore(snippetFile, firstLeaf)
+                    .children
+                    .forEach { file.addBefore(it, firstLeaf) }
             }
         }
     }
