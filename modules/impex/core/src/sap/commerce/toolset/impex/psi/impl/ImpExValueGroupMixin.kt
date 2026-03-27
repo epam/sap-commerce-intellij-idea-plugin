@@ -24,9 +24,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExValueGroup
-import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 import java.io.Serial
 
@@ -69,10 +67,13 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
             ?: this.fullHeaderParameter
                 ?.getAttribute(AttributeModifier.DEFAULT)
                 ?.anyAttributeValue
-                ?.let {
-                    it.stringList.firstOrNull()
-                        ?.text
+                ?.childLeafs()
+                ?.toList()
+                ?.joinToString("") {
+                    if (it.elementType == ImpExTypes.MACRO_USAGE) it.parentOfType<ImpExMacroUsageDec>()
+                        ?.resolveValue(HashSet())
                         ?: it.text
+                    else it.text
                 }
 
         val defaultValue = computedValue
