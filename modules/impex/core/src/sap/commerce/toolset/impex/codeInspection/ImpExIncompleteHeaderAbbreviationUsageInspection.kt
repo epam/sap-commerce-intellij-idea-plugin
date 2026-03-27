@@ -50,8 +50,11 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
         private val cachedMacros: Set<String>
     ) : ImpExVisitor() {
 
-        override fun visitAnyHeaderParameterName(parameter: ImpExAnyHeaderParameterName) {
-            val reference = parameter.reference.asSafely<ImpExHeaderAbbreviationReference>() ?: return
+        override fun visitParameter(parameter: ImpExParameter) = visit(parameter)
+        override fun visitAnyHeaderParameterName(parameter: ImpExAnyHeaderParameterName) = visit(parameter)
+
+        private fun visit(element: PsiElement) {
+            val reference = element.reference.asSafely<ImpExHeaderAbbreviationReference>() ?: return
 
             val headerAbbreviationValue = reference
                 .resolve()
@@ -73,25 +76,24 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
             problemsHolder.registerProblemForReference(
                 reference,
                 ProblemHighlightType.WARNING,
-                i18n("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", parameter.text, missingExpectedMacros.joinToString()),
+                i18n("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", element.text, missingExpectedMacros.joinToString()),
                 *missingExpectedMacros
-                    .map { LocalFix(parameter, it) }
+                    .map { LocalFix(element, it) }
                     .toTypedArray()
             )
         }
 
         private class LocalFix(
-            parameter: ImpExAnyHeaderParameterName,
+            element: PsiElement,
             private val macroName: String
-        ) : LocalQuickFixOnPsiElement(parameter) {
+        ) : LocalQuickFixOnPsiElement(element) {
 
             override fun getFamilyName() = "[y] Missing macro declarations"
             override fun getText() = "Add macro declaration '$macroName'"
 
             override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
                 val firstLeaf = startElement
-                    .asSafely<ImpExAnyHeaderParameterName>()
-                    ?.parentOfType<ImpExHeaderLine>()
+                    .parentOfType<ImpExHeaderLine>()
                     ?: return
 
                 val snippetFile = ImpExElementFactory.createFile(
