@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,6 +30,7 @@ import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpExParameter
 import sap.commerce.toolset.impex.psi.references.ImpExFunctionTSAttributeReference
 import sap.commerce.toolset.impex.psi.references.ImpExFunctionTSItemReference
+import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
 import java.io.Serial
 
 abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpExParameter {
@@ -48,13 +49,9 @@ abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
             if (inlineTypeName != null) {
                 myReferences.add(ImpExFunctionTSItemReference(this))
 
-                if (childrenOfType<ImpExMacroUsageDec>().isEmpty()) {
-                    // attribute can be a Macro item(CMSLinkComponent.$contentCV)
-                    myReferences.add(ImpExFunctionTSAttributeReference(this))
-                }
-            } else {
-                myReferences.add(ImpExFunctionTSAttributeReference(this))
-            }
+                // attribute can be a Macro item(CMSLinkComponent.$contentCV)
+                if (childrenOfType<ImpExMacroUsageDec>().isEmpty()) addReference()
+            } else addReference()
         }
 
         return myReferences.toTypedArray()
@@ -70,6 +67,12 @@ abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
     override fun subtreeChanged() {
         removeUserData(ImpExFunctionTSItemReference.CACHE_KEY)
         removeUserData(ImpExFunctionTSAttributeReference.CACHE_KEY)
+        removeUserData(ImpExHeaderAbbreviationReference.CACHE_KEY)
+    }
+
+    private fun addReference() {
+        if (isHeaderAbbreviation()) myReferences.add(ImpExHeaderAbbreviationReference(this))
+        else myReferences.add(ImpExFunctionTSAttributeReference(this))
     }
 
     companion object {

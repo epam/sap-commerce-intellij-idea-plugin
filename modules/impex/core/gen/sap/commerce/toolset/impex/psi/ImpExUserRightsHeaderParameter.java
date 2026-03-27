@@ -30,13 +30,10 @@ import java.util.Collection;
 
 public interface ImpExUserRightsHeaderParameter extends PsiElement {
 
-  @Nullable
-  ImpExUserRightsHeaderLine getHeaderLine();
+  @Nullable ImpExUserRightsHeaderLine getHeaderLine();
 
-  @Nullable
-  Integer getColumnNumber();
+  @Nullable Integer getColumnNumber();
 
-  @NotNull
-  Collection<ImpExUserRightsValueGroup> getValueGroups();
+  @NotNull Collection<@NotNull ImpExUserRightsValueGroup> getValueGroups();
 
 }

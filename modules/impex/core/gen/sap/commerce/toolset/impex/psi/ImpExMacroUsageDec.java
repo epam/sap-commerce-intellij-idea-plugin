@@ -31,13 +31,10 @@ import sap.commerce.toolset.impex.psi.impl.ImpExMacroUsageDecMixin;
 
 public interface ImpExMacroUsageDec extends ImpExPsiNamedElement {
 
-  @NotNull
-  ImpExMacroUsageDecMixin getNameIdentifier();
+  @NotNull ImpExMacroUsageDecMixin getNameIdentifier();
 
-  @Nullable
-  String getConfigPropertyKey();
+  @Nullable String getConfigPropertyKey();
 
-  @NotNull
-  String resolveValue(@NotNull Set<ImpExMacroUsageDec> evaluatedMacroUsages);
+  @NotNull String resolveValue(@NotNull Set<@Nullable ImpExMacroUsageDec> evaluatedMacroUsages);
 
 }

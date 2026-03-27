@@ -351,7 +351,7 @@ any_header_parameter_name ::= document_id_dec
 {
     recoverWhile = recover_parameter_name
     mixin = "sap.commerce.toolset.impex.psi.impl.ImpExAnyHeaderParameterNameMixin"
-    methods=[getHeaderItemTypeName]
+    methods=[getHeaderItemTypeName isHeaderAbbreviation]
 }
 
 special_parameter ::= SPECIAL_PARAMETER_MARKER special_parameter_value
@@ -387,7 +387,7 @@ parameter ::= (HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUN
 {
     pin=1
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExParameterMixin"
-    methods=[getReferenceItemTypeName getReferenceName getItemTypeName getInlineTypeName getAttributeName]
+    methods=[getReferenceItemTypeName getReferenceName getItemTypeName getInlineTypeName getAttributeName isHeaderAbbreviation]
 }
 
 sub_parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET

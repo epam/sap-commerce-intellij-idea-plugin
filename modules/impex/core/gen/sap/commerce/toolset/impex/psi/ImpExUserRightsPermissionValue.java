@@ -29,7 +29,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpExUserRightsPermissionValue extends ImpExUserRightsValue {
 
-  @Nullable
-  ImpExUserRightsHeaderParameter getHeaderParameter();
+  @Nullable ImpExUserRightsHeaderParameter getHeaderParameter();
 
 }

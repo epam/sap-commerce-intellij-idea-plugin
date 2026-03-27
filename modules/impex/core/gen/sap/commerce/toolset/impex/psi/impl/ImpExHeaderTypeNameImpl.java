@@ -34,8 +34,8 @@ import sap.commerce.toolset.impex.psi.*;
 
 public class ImpExHeaderTypeNameImpl extends ImpExHeaderTypeNameMixin implements ImpExHeaderTypeName {
 
-  public ImpExHeaderTypeNameImpl(@NotNull ASTNode node) {
-    super(node);
+  public ImpExHeaderTypeNameImpl(@NotNull ASTNode astNode) {
+    super(astNode);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
