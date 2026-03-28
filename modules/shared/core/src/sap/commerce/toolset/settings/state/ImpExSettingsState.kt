@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,8 @@ package sap.commerce.toolset.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toImmutableSet
 
 @Tag("ImpexSettings")
 data class ImpExSettingsState(
@@ -27,12 +29,17 @@ data class ImpExSettingsState(
     @JvmField @OptionTag val editMode: ImpExEditModeSettingsState = ImpExEditModeSettingsState(),
     @JvmField @OptionTag val completion: ImpExCompletionSettingsState = ImpExCompletionSettingsState(),
     @JvmField @OptionTag val documentation: ImpExDocumentationSettingsState = ImpExDocumentationSettingsState(),
+    // Type name to > set of attribute names
+    @JvmField @OptionTag val quoteStringsExclusions: Map<String, Set<String>> = mapOf(),
 ) {
     fun mutable() = Mutable(
         groupLocalizedFiles = groupLocalizedFiles,
         editMode = editMode.mutable(),
         completion = completion.mutable(),
         documentation = documentation.mutable(),
+        quoteStringsExclusions = quoteStringsExclusions
+            .mapValues { (_, value) -> value.toMutableSet() }
+            .toMutableMap(),
     )
 
     data class Mutable(
@@ -40,12 +47,16 @@ data class ImpExSettingsState(
         var editMode: ImpExEditModeSettingsState.Mutable,
         var completion: ImpExCompletionSettingsState.Mutable,
         var documentation: ImpExDocumentationSettingsState.Mutable,
+        var quoteStringsExclusions: MutableMap<String, MutableSet<String>>,
     ) {
         fun immutable() = ImpExSettingsState(
             groupLocalizedFiles = groupLocalizedFiles,
             editMode = editMode.immutable(),
             completion = completion.immutable(),
             documentation = documentation.immutable(),
+            quoteStringsExclusions = quoteStringsExclusions
+                .mapValues { (_, value) -> value.toImmutableSet() }
+                .toImmutableMap(),
         )
     }
 }
