@@ -180,7 +180,7 @@
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownAttributeModifierInspection"/>
 
-        <localInspection groupPath="SAP Commerce" shortName="ImpExOnlyUpdateAllowedForNonDynamicEnumInspection" displayName="[y] Unknown type"
+        <localInspection groupPath="SAP Commerce" shortName="ImpExOnlyUpdateAllowedForNonDynamicEnumInspection" displayName="[y] Update mode for enums"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExOnlyUpdateAllowedForNonDynamicEnumInspection"/>
 

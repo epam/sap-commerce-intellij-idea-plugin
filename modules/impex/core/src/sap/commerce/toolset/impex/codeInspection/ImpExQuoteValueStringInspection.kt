@@ -33,6 +33,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.ImpExTSAttributeReference
+import sap.commerce.toolset.settings.state.ImpExQuoteStringExclusion
 import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
 
@@ -55,6 +56,13 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 .any { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
 
             if (hasUnquotedValues) {
+                val isExcluded = headerParameter.project.yDeveloperSettings.impexSettings.quoteStringExclusions[typeName]
+                    ?.contains(attributeName)
+                    ?: false
+                // already excluded
+                // TODO: add one more "fix" to re-enable quotes for value strings
+                if (isExcluded) return
+
                 holder.registerProblem(
                     parameterName,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.exclude.key", typeName, attributeName),
@@ -78,7 +86,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             val typeName = attributeMeta.owner.name ?: return
             val attributeName = attributeMeta.name
 
-            val isExcluded = value.project.yDeveloperSettings.impexSettings.quoteStringsExclusions[typeName]
+            val isExcluded = value.project.yDeveloperSettings.impexSettings.quoteStringExclusions[typeName]
                 ?.contains(attributeName)
                 ?: false
             if (isExcluded) return
@@ -144,13 +152,9 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
 
             override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
                 project.yDeveloperSettings.impexSettings = project.yDeveloperSettings.impexSettings.mutable()
-                    .apply {
-                        quoteStringsExclusions.getOrPut(typeName) { mutableSetOf() }
-                            .add(attributeName)
-                    }
+                    .apply { quoteStringExclusions.add(ImpExQuoteStringExclusion(typeName, attributeName)) }
                     .immutable()
             }
-
         }
     }
 }

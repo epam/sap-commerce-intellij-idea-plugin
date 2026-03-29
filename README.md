@@ -18,6 +18,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 > Please take a moment to acknowledge the contributors listed on the project’s [Contributors & Insights](https://github.com/epam/sap-commerce-intellij-idea-plugin/graphs/contributors?from=10%2F07%2F2022) page!   
 
 ## References
+- Project wiki & features can be found on project's [GitHub - Wiki](https://github.com/epam/sap-commerce-intellij-idea-plugin/wiki), feel free to contribute to its content.
 - Overview of the releases [2023.1.0 - 2023.2.7](https://hybrismart.com/2023/09/04/part-iii-sap-commerce-developers-toolset-v-2023-1-0-intellij-idea-plugin/).
 - Overview of the releases [2022.3.1 - 2023.1.0](https://hybrismart.com/2023/08/24/part-ii-sap-commerce-developers-toolset-v-2023-1-0-intellij-idea-plugin).
 - Overview of the releases [2022.2.0 - 2022.3.1](https://hybrismart.com/2023/05/08/sap-commerce-dev-toolset-2022-3-1-updates).

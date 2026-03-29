@@ -20,50 +20,47 @@ package sap.commerce.toolset.ui
 import com.intellij.icons.AllIcons
 import com.intellij.ide.HelpTooltip
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
-import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.fileEditor.FileEditor
-import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.observable.util.addItemListener
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.*
 import com.intellij.ui.components.ActionLink
+import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.impl.DslComponentPropertyInternal
 import com.intellij.util.MathUtil
-import com.intellij.util.ui.JBUI
+import com.intellij.util.ui.JBEmptyBorder
 import org.jetbrains.annotations.NonNls
 import sap.commerce.toolset.Notifications
+import java.awt.Color
 import java.awt.Dimension
+import java.awt.Font
 import java.awt.datatransfer.StringSelection
+import java.awt.event.ItemListener
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.io.Serial
 import javax.swing.Icon
+import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.ScrollPaneConstants
+import javax.swing.border.Border
 
-fun DialogWrapper.repackDialog() {
-    invokeLater {
-        peer.window?.pack()
-    }
-}
-
-fun DialogWrapper.banner(
-    text: String,
-    status: EditorNotificationPanel.Status = EditorNotificationPanel.Status.Info
-) = EditorNotificationPanel(null as FileEditor?, status).apply {
-    this.text = if (text.contains("<html>")) text else "<html>$text</html>"
-    border = JBUI.Borders.compound(
-        ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER),
-        border
-    )
+fun Row.previewEditor(project: Project, fileType: FileType, contentProvider: () -> String): Cell<EditorTextField> {
+    val document = EditorFactory.getInstance().createDocument(StringUtil.convertLineSeparators(contentProvider()))
+    return cell(EditorTextField(document, project, fileType, true, false))
 }
 
 fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null): Cell<JBTextField> {
@@ -208,3 +205,25 @@ private class PopupActionGroup(
         PopupUtil.showForActionButtonEvent(popup, e)
     }
 }
+
+fun scrollPanel(content: JComponent, horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) = panel {
+    row {
+        scrollCell(content)
+            .align(Align.FILL)
+            .resizableColumn()
+            .applyToComponent {
+                (this.parent.parent as? JBScrollPane)?.apply {
+                    this.horizontalScrollBarPolicy = horizontalScrollBarPolicy
+                    border = JBEmptyBorder(0)
+                }
+            }
+
+    }.resizableRow()
+}
+
+fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
+fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }
+fun <J : JComponent> Cell<J>.opaque(opaque: Boolean): Cell<J> = this.apply { component.isOpaque = opaque }
+fun <J : JComponent> Cell<J>.font(font: Font): Cell<J> = this.apply { component.font = font }
+fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
+    .apply { component.addItemListener(parentDisposable, listener) }

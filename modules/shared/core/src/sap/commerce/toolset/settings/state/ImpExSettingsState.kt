@@ -20,8 +20,6 @@ package sap.commerce.toolset.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
-import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.collections.immutable.toImmutableSet
 
 @Tag("ImpexSettings")
 data class ImpExSettingsState(
@@ -30,16 +28,18 @@ data class ImpExSettingsState(
     @JvmField @OptionTag val completion: ImpExCompletionSettingsState = ImpExCompletionSettingsState(),
     @JvmField @OptionTag val documentation: ImpExDocumentationSettingsState = ImpExDocumentationSettingsState(),
     // Type name to > set of attribute names
-    @JvmField @OptionTag val quoteStringsExclusions: Map<String, Set<String>> = mapOf(),
+    @JvmField @OptionTag val quoteStringExclusions: Map<String, Set<String>> = mapOf(),
 ) {
     fun mutable() = Mutable(
         groupLocalizedFiles = groupLocalizedFiles,
         editMode = editMode.mutable(),
         completion = completion.mutable(),
         documentation = documentation.mutable(),
-        quoteStringsExclusions = quoteStringsExclusions
-            .mapValues { (_, value) -> value.toMutableSet() }
-            .toMutableMap(),
+        quoteStringExclusions = quoteStringExclusions
+            .flatMap { (type, attributes) ->
+                attributes.map { ImpExQuoteStringExclusion(type, it) }
+            }
+            .toMutableList(),
     )
 
     data class Mutable(
@@ -47,16 +47,19 @@ data class ImpExSettingsState(
         var editMode: ImpExEditModeSettingsState.Mutable,
         var completion: ImpExCompletionSettingsState.Mutable,
         var documentation: ImpExDocumentationSettingsState.Mutable,
-        var quoteStringsExclusions: MutableMap<String, MutableSet<String>>,
+        var quoteStringExclusions: MutableList<ImpExQuoteStringExclusion>,
     ) {
         fun immutable() = ImpExSettingsState(
             groupLocalizedFiles = groupLocalizedFiles,
             editMode = editMode.immutable(),
             completion = completion.immutable(),
             documentation = documentation.immutable(),
-            quoteStringsExclusions = quoteStringsExclusions
-                .mapValues { (_, value) -> value.toImmutableSet() }
-                .toImmutableMap(),
+            quoteStringExclusions = quoteStringExclusions
+                .groupBy(
+                    keySelector = { it.typeName },
+                    valueTransform = { it.attributeName }
+                )
+                .mapValues { it.value.toSet() },
         )
     }
 }
