@@ -28,7 +28,7 @@
         <projectConfigurable id="sap.commerce.toolset.ccv2.exec.settings" parentId="hybris.settings"
                              nonDefaultProject="true" dynamic="true"
                              displayName="CCv2" order="first"
-                             provider="sap.commerce.toolset.ccv2.options.CCv2ExecProjectSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.ccv2.options.CCv2ProjectSettingsConfigurableProvider"/>
 
         <unscrambleSupport implementation="sap.commerce.toolset.ccv2.unscramble.CCv2StackTraceUnscrambler"/>
     </extensions>

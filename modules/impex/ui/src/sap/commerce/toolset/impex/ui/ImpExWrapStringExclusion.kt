@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.ccv2.actionSystem
 
-import sap.commerce.toolset.actionSystem.OpenSettingsAction
-import sap.commerce.toolset.ccv2.options.CCv2ProjectSettingsConfigurableProvider
+package sap.commerce.toolset.impex.ui
 
-class CCv2OpenSettingsAction : OpenSettingsAction(
-    configurableClass = CCv2ProjectSettingsConfigurableProvider.SettingsConfigurable::class.java,
-    text = "Open CCv2 Settings"
-)
+data class ImpExWrapStringExclusion(
+    var typeName: String,
+    var attributeName: String,
+) {
+    override fun toString() = "$typeName.$attributeName"
+}

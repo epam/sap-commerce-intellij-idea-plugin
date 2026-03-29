@@ -55,6 +55,13 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 .any { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
 
             if (hasUnquotedValues) {
+                val isExcluded = headerParameter.project.yDeveloperSettings.impexSettings.quoteStringsExclusions[typeName]
+                    ?.contains(attributeName)
+                    ?: false
+                // already excluded
+                // TODO: add one more "fix" to re-enable quotes for value strings
+                if (isExcluded) return
+
                 holder.registerProblem(
                     parameterName,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.exclude.key", typeName, attributeName),

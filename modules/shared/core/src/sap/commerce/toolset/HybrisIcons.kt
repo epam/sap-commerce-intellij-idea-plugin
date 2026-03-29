@@ -277,6 +277,7 @@ object HybrisIcons {
             val PRIMITIVE = HybrisIcons.Types.PRIMITIVE
             val OBJECT = HybrisIcons.Types.OBJECT
             val SPECIAL = AllIcons.FileTypes.Yaml
+            val UNKNOWN = AllIcons.General.ContextHelp
         }
 
         object Preview {

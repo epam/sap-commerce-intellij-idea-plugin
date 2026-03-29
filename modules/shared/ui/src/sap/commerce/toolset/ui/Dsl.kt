@@ -23,14 +23,17 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.PopupUtil
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.*
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBTextField
@@ -64,6 +67,11 @@ fun DialogWrapper.banner(
         ClientProperty.get(this, FileEditorManager.SEPARATOR_BORDER),
         border
     )
+}
+
+fun Row.previewEditor(project: Project, fileType: FileType, contentProvider: () -> String): Cell<EditorTextField> {
+    val document = EditorFactory.getInstance().createDocument(StringUtil.convertLineSeparators(contentProvider()))
+    return cell(EditorTextField(document, project, fileType, true, false))
 }
 
 fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null): Cell<JBTextField> {
