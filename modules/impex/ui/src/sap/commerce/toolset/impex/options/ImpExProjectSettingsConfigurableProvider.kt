@@ -29,9 +29,9 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.file.ImpExFileType
-import sap.commerce.toolset.impex.ui.ImpExWrapStringExclusion
-import sap.commerce.toolset.impex.ui.components.ImpExWrapStringExclusionsListPanel
+import sap.commerce.toolset.impex.ui.components.ImpExQuoteStringExclusionsListPanel
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.settings.state.ImpExQuoteStringExclusion
 import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.ui.previewEditor
 import javax.swing.JCheckBox
@@ -48,17 +48,12 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
         private val developerSettings = project.yDeveloperSettings
         private val mutable = developerSettings.impexSettings.mutable()
         private var originalGroupLocalizedFiles = mutable.groupLocalizedFiles
-        private lateinit var wrapStringExclusionsListPanel: ImpExWrapStringExclusionsListPanel
-
+        private val originalQuoteStringExclusions = mutableListOf<ImpExQuoteStringExclusion>()
+        private lateinit var wrapStringExclusionsListPanel: ImpExQuoteStringExclusionsListPanel
         private lateinit var documentationEnableCheckBox: JCheckBox
 
         override fun createPanel(): DialogPanel {
-            val quoteStringsExclusions = mutable.quoteStringsExclusions
-                .flatMap { (type, attributes) ->
-                    attributes.map { ImpExWrapStringExclusion(type, it) }
-                }
-
-            wrapStringExclusionsListPanel = ImpExWrapStringExclusionsListPanel(project, quoteStringsExclusions)
+            wrapStringExclusionsListPanel = ImpExQuoteStringExclusionsListPanel(project)
 
             return panel {
                 row {
@@ -159,7 +154,25 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
 
                     row {
                         cell(wrapStringExclusionsListPanel)
-//                            .onIsModified { wrapStringExclusionsListPanel.data.any { it.modified } }
+                            .onIsModified { originalQuoteStringExclusions != wrapStringExclusionsListPanel.data }
+                            .onApply {
+                                mutable.quoteStringExclusions.apply {
+                                    clear()
+                                    addAll(wrapStringExclusionsListPanel.data)
+                                }
+                                originalQuoteStringExclusions.apply {
+                                    clear()
+                                    addAll(wrapStringExclusionsListPanel.data)
+                                }
+                            }
+                            .onReset {
+                                originalQuoteStringExclusions.apply {
+                                    clear()
+                                    mutable.quoteStringExclusions.forEach { add(it.copy()) }
+                                }
+                                wrapStringExclusionsListPanel.data = originalQuoteStringExclusions
+                                    .map { it.copy() }
+                            }
                             .align(AlignX.FILL)
                     }
                 }

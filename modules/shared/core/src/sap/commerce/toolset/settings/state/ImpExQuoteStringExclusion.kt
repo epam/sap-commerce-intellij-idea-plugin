@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.ui
+package sap.commerce.toolset.settings.state
 
-data class ImpExWrapStringExclusion(
+data class ImpExQuoteStringExclusion(
     var typeName: String,
     var attributeName: String,
 ) {

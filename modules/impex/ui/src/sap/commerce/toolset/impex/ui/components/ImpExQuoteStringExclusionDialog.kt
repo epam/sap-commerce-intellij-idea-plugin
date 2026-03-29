@@ -34,8 +34,9 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.ui.ImpExWrapStringExclusion
+import sap.commerce.toolset.settings.state.ImpExQuoteStringExclusion
 import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
@@ -44,9 +45,9 @@ import sap.commerce.toolset.ui.banner
 import java.awt.Component
 import java.awt.Dimension
 
-class ImpExWrapStringExclusionDialog(
+class ImpExQuoteStringExclusionDialog(
     private val project: Project,
-    private val exclusion: ImpExWrapStringExclusion,
+    private val exclusion: ImpExQuoteStringExclusion,
     parentComponent: Component,
     dialogTitle: String,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.PROJECT) {
@@ -62,7 +63,8 @@ class ImpExWrapStringExclusionDialog(
         super.init()
     }
 
-    override fun getInitialSize() = Dimension(450, super.initialSize?.height ?: 125)
+    override fun getStyle() = DialogStyle.COMPACT
+    override fun getInitialSize() = Dimension(450, super.initialSize?.height ?: 250)
 
     override fun createNorthPanel() = banner(
         text = """
@@ -103,6 +105,7 @@ class ImpExWrapStringExclusionDialog(
                         else null
                     }
                     .label("Item type:")
+                    .onApply { exclusion.typeName = itemTextFieldCompletion.text }
             }.layout(RowLayout.PARENT_GRID)
 
             row {
@@ -115,10 +118,13 @@ class ImpExWrapStringExclusionDialog(
                         val metaItem = selectedMetaItem.get() ?: return@validationOnApply null
 
                         if (metaItem.attributes.contains(it.text)) null
-                        else error("Please enter a logger name")
+                        else error("Please enter a valid attribute name")
                     }
+                    .onApply { exclusion.attributeName = attributeTextFieldCompletion.text }
                     .enabledIf(selectedMetaItem.isNotNull())
             }.layout(RowLayout.PARENT_GRID)
+        }.also {
+            it.border = JBUI.Borders.empty(16)
         }
     }
 
