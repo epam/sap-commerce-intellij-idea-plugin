@@ -59,11 +59,14 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 val isExcluded = headerParameter.project.yDeveloperSettings.impexSettings.quoteStringExclusions[typeName]
                     ?.contains(attributeName)
                     ?: false
-                // already excluded
-                // TODO: add one more "fix" to re-enable quotes for value strings
-                if (isExcluded) return
 
-                holder.registerProblem(
+                if (isExcluded) holder.registerProblem(
+                    parameterName,
+                    i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.enable.key", typeName, attributeName),
+                    ProblemHighlightType.INFORMATION,
+                    LocalFixEnable(typeName, attributeName),
+                )
+                else holder.registerProblem(
                     parameterName,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.exclude.key", typeName, attributeName),
                     ProblemHighlightType.WEAK_WARNING,
@@ -153,6 +156,22 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
                 project.yDeveloperSettings.impexSettings = project.yDeveloperSettings.impexSettings.mutable()
                     .apply { quoteStringExclusions.add(ImpExQuoteStringExclusion(typeName, attributeName)) }
+                    .immutable()
+            }
+        }
+
+        private class LocalFixEnable(
+            private val typeName: String,
+            private val attributeName: String,
+        ) : LocalQuickFix, HighPriorityAction {
+
+            override fun getFamilyName() = "[y] Enable quote value strings"
+            override fun getName() = "Enable quoting of value strings for: '$typeName.$attributeName'"
+            override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
+
+            override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+                project.yDeveloperSettings.impexSettings = project.yDeveloperSettings.impexSettings.mutable()
+                    .apply { quoteStringExclusions.removeIf { it.typeName == typeName && it.attributeName == attributeName } }
                     .immutable()
             }
         }
