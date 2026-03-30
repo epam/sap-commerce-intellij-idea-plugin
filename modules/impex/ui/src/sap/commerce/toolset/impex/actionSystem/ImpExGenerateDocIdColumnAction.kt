@@ -54,7 +54,7 @@ class ImpExGenerateDocIdColumnAction : AbstractImpExTableAction() {
             val docIds = headerLine.documentIdDeclarations
                 .map { it.text.trim() }
                 .joinToString(", ") { "'$it'" }
-            e.presentation.text = "Document Id - $docIds"
+            e.presentation.text = "Declared Document Id: $docIds"
         } else {
             e.presentation.text = "Generate Document Id"
         }
