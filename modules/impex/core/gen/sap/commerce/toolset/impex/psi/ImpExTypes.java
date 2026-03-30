@@ -138,8 +138,6 @@ public interface ImpExTypes {
   IElementType SCRIPT_ACTION = new ImpExTokenType("SCRIPT_ACTION");
   IElementType SCRIPT_BODY_VALUE = new ImpExTokenType("SCRIPT_BODY_VALUE");
   IElementType SINGLE_QUOTE = new ImpExTokenType("SINGLE_QUOTE");
-  IElementType SINGLE_QUOTE_CLOSE = new ImpExTokenType("SINGLE_QUOTE_CLOSE");
-  IElementType SINGLE_QUOTE_OPEN = new ImpExTokenType("SINGLE_QUOTE_OPEN");
   IElementType SINGLE_STRING = new ImpExTokenType("SINGLE_STRING");
   IElementType SPECIAL_PARAMETER_MARKER = new ImpExTokenType("SPECIAL_PARAMETER_MARKER");
   IElementType SPECIAL_PARAMETER_VALUE = new ImpExTokenType("SPECIAL_PARAMETER_VALUE");

@@ -14,6 +14,7 @@
 - Manage Regex for values which should not be wrapped in quotes [#1808](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1808)
 - New action to generate `&docId` column based on the unique columns of the table [#1803](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1803)
 - Enhanced `&docId` generation with the configurable Wizard [#1807](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1807)
+- Support `$macroDec` in the script body string [#1809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1809)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

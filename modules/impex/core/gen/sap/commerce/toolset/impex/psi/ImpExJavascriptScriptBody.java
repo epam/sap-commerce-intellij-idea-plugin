@@ -29,4 +29,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpExJavascriptScriptBody extends PsiElement {
 
+  @NotNull
+  List<ImpExString> getStringList();
+
 }

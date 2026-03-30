@@ -49,4 +49,10 @@ public class ImpExBeanshellScriptBodyImpl extends ASTWrapperPsiElement implement
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<ImpExString> getStringList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExString.class);
+  }
+
 }
