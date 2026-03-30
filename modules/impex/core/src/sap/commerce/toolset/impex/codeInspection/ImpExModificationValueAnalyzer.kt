@@ -146,7 +146,7 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                             ).isEmpty()
                         }
                         .filter { valueGroup ->
-                            val commonContext = keyValue.keys.first()
+                            val commonContext = keyValue.keys.find { it != null }
                                 ?.let { PsiTreeUtil.findCommonContext(it, valueGroup) }
                             commonContext != null && commonContext !is ImpExFile
                         }
