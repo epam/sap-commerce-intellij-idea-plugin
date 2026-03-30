@@ -969,8 +969,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //   |  BEAN_SHELL_MARKER
   //   |  GROOVY_MARKER
   //   |  JAVASCRIPT_MARKER
-  //   |  DOUBLE_STRING
-  //   |  SINGLE_STRING
+  //   |  string
   //   |  MACRO_USAGE
   // )
   static boolean recover_root(PsiBuilder b, int l) {
@@ -995,8 +994,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //   |  BEAN_SHELL_MARKER
   //   |  GROOVY_MARKER
   //   |  JAVASCRIPT_MARKER
-  //   |  DOUBLE_STRING
-  //   |  SINGLE_STRING
+  //   |  string
   //   |  MACRO_USAGE
   private static boolean recover_root_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_root_0")) return false;
@@ -1014,8 +1012,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BEAN_SHELL_MARKER);
     if (!r) r = consumeToken(b, GROOVY_MARKER);
     if (!r) r = consumeToken(b, JAVASCRIPT_MARKER);
-    if (!r) r = consumeToken(b, DOUBLE_STRING);
-    if (!r) r = consumeToken(b, SINGLE_STRING);
+    if (!r) r = string(b, l + 1);
     if (!r) r = consumeToken(b, MACRO_USAGE);
     return r;
   }
