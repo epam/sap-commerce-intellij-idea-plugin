@@ -179,11 +179,7 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
 
     private fun hasNoAppendModeModifier(headerParameter: ImpExFullHeaderParameter) = !headerParameter.modifiersList
         .flatMap { it.attributeList }
-        .any {
-            it.anyAttributeName.text == AttributeModifier.LANG.modifierName
-                || (it.anyAttributeName.text == AttributeModifier.MODE.modifierName && it.anyAttributeValue?.text == "append")
-        }
-
+        .any { it.anyAttributeName.text == AttributeModifier.MODE.modifierName && it.anyAttributeValue?.text == "append" }
 }
 
 class Row(val key: Key, val columns: ByteArray, val valueGroup: Array<PsiElement?>)
