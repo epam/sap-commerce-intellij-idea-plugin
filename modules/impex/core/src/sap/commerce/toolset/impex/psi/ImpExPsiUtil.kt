@@ -235,6 +235,14 @@ fun getHeaderParameter(element: ImpExUserRightsValue): ImpExUserRightsHeaderPara
     else -> null
 }
 
+fun getHeaderLine(element: ImpExHeaderTypeName): ImpExHeaderLine? = element.parentOfType<ImpExHeaderLine>()
+
+fun hasDocumentIdDec(element: ImpExHeaderLine): Boolean = element.fullHeaderParameterList
+    .any { it.anyHeaderParameterName.documentIdDec != null }
+
+fun getDocumentIdDeclarations(element: ImpExHeaderLine): List<ImpExDocumentIdDec> = element.fullHeaderParameterList
+    .mapNotNull { it.anyHeaderParameterName.documentIdDec }
+
 fun isHeaderAbbreviation(element: ImpExAnyHeaderParameterName): Boolean = isHeaderAbbreviation(element.project, element.text)
 fun isHeaderAbbreviation(element: ImpExParameter): Boolean = isHeaderAbbreviation(element.project, element.text)
 

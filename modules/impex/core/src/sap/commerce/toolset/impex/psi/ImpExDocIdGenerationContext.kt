@@ -16,19 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- */
-package sap.commerce.toolset.impex.psi;
+package sap.commerce.toolset.impex.psi
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-
-public interface ImpExHeaderTypeName extends PsiElement {
-
-  @Nullable ImpExHeaderLine getHeaderLine();
-
-}
+data class ImpExDocIdGenerationContext(
+    val name: String = "docId",
+    val prefix: String = "",
+    val postfix: String = "",
+    val includedColumnIds: List<Int>,
+)

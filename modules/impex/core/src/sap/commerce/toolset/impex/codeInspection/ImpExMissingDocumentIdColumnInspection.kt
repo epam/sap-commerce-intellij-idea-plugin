@@ -25,15 +25,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.elementType
-import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.prevLeaf
-import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpExHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExDocIdGenerationContext
 import sap.commerce.toolset.impex.psi.ImpExHeaderTypeName
-import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExVisitor
 
 class ImpExMissingDocumentIdColumnInspection : LocalInspectionTool() {
@@ -44,14 +38,10 @@ class ImpExMissingDocumentIdColumnInspection : LocalInspectionTool() {
     private class Visitor(private val problemsHolder: ProblemsHolder) : ImpExVisitor() {
 
         override fun visitHeaderTypeName(element: ImpExHeaderTypeName) {
-            val headerLine = element.parentOfType<ImpExHeaderLine>() ?: return
-            val hasDocId = headerLine.fullHeaderParameterList
-                .any { it.anyHeaderParameterName.documentIdDec != null }
+            val headerLine = element.headerLine ?: return
+            if (headerLine.hasDocumentIdDec()) return
 
-            if (hasDocId) return
-
-            val uniqueColumnNumbers = headerLine.fullHeaderParameterList
-                .filter { it.getAttributeValue(AttributeModifier.UNIQUE, "false") == "true" }
+            val uniqueColumnNumbers = headerLine.uniqueFullHeaderParameters
                 .map { it.columnNumber }
                 .takeIf { it.isNotEmpty() }
                 ?: return
@@ -60,15 +50,14 @@ class ImpExMissingDocumentIdColumnInspection : LocalInspectionTool() {
 
             problemsHolder.registerProblem(
                 element,
-                "Declare documentId for ${typeName}",
+                "Declare documentId for '$typeName'",
                 ProblemHighlightType.INFORMATION,
-                LocalFix(element, uniqueColumnNumbers, typeName)
+                LocalFix(element, typeName)
             )
         }
 
         private class LocalFix(
             el: ImpExHeaderTypeName,
-            private val uniqueColumnNumbers: List<Int>,
             private val typeName: String
         ) : LocalQuickFixOnPsiElement(el) {
 
@@ -78,38 +67,21 @@ class ImpExMissingDocumentIdColumnInspection : LocalInspectionTool() {
 
             override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
                 val typeName = startElement.asSafely<ImpExHeaderTypeName>() ?: return
-                val headerLine = typeName.parentOfType<ImpExHeaderLine>() ?: return
-                val headerInjectPosition = headerLine.fullHeaderParameterList.firstOrNull()
-                    ?.prevLeaf { it.elementType == ImpExTypes.PARAMETERS_SEPARATOR }
-                    ?.startOffset
+                val headerLine = typeName.headerLine ?: return
+                val uniqueColumnNumbers = headerLine.uniqueFullHeaderParameters
+                    .map { it.columnNumber }
+                    .takeIf { it.isNotEmpty() }
                     ?: return
 
-                val tableRange = headerLine.tableRange
+                val rangeAwareContent = headerLine.generateDocId(
+                    ImpExDocIdGenerationContext(
+                        includedColumnIds = uniqueColumnNumbers
+                    )
+                ) ?: return
+                val textRange = rangeAwareContent.textRange
+                val newContent = rangeAwareContent.content
 
-                val reversedValueInsertions = headerLine.valueLines
-                    .mapNotNull { valueLine ->
-                        val injectAt = valueLine.valueGroupList.firstOrNull()
-                            ?.startOffset
-                            ?: return@mapNotNull null
-                        val valueDocId = uniqueColumnNumbers
-                            .mapNotNull { valueLine.getValueGroup(it) }
-                            .mapNotNull { it.computeValue() }
-                            .joinToString("-")
-                        val relativeOffset = injectAt - tableRange.startOffset
-                        relativeOffset to ";$valueDocId"
-                    }
-                    .sortedByDescending { it.first }
-
-                val newContent = StringBuilder(file.text.substring(tableRange.startOffset, tableRange.endOffset))
-
-                reversedValueInsertions.forEach { (relativeOffset, insertion) ->
-                    newContent.insert(relativeOffset, insertion)
-                }
-
-                val headerRelativeOffset = headerInjectPosition - tableRange.startOffset
-                newContent.insert(headerRelativeOffset, ";&docId")
-
-                file.fileDocument.replaceString(tableRange.startOffset, tableRange.endOffset, newContent)
+                file.fileDocument.replaceString(textRange.startOffset, textRange.endOffset, newContent)
             }
         }
     }

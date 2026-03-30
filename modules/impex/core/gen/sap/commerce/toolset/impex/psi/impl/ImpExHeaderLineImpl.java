@@ -33,6 +33,7 @@ import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
 import sap.commerce.toolset.impex.psi.*;
 import com.intellij.openapi.util.TextRange;
 import java.util.Collection;
+import sap.commerce.toolset.psi.RangeAwareContent;
 
 public class ImpExHeaderLineImpl extends ImpExHeaderLineMixin implements ImpExHeaderLine {
 
@@ -76,6 +77,16 @@ public class ImpExHeaderLineImpl extends ImpExHeaderLineMixin implements ImpExHe
   @Override
   public @NotNull List<ImpExFullHeaderParameter> getUniqueFullHeaderParameters() {
     return ImpExPsiUtil.getUniqueFullHeaderParameters(this);
+  }
+
+  @Override
+  public boolean hasDocumentIdDec() {
+    return ImpExPsiUtil.hasDocumentIdDec(this);
+  }
+
+  @Override
+  public @NotNull List<@NotNull ImpExDocumentIdDec> getDocumentIdDeclarations() {
+    return ImpExPsiUtil.getDocumentIdDeclarations(this);
   }
 
 }

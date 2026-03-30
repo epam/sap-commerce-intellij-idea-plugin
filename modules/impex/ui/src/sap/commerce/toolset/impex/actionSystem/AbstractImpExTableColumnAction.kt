@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,8 +17,7 @@
  */
 package sap.commerce.toolset.impex.actionSystem
 
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
@@ -27,9 +26,7 @@ import sap.commerce.toolset.impex.psi.ImpExValueGroup
 
 abstract class AbstractImpExTableColumnAction : AbstractImpExTableAction() {
 
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
-
-    override fun getSuitableElement(element: PsiElement): PsiElement? {
+    override fun getSuitableElement(e: AnActionEvent, element: PsiElement): PsiElement? {
         val targetElement = PsiTreeUtil.getParentOfType(element, ImpExFullHeaderParameter::class.java, ImpExValueGroup::class.java)
 
         return if (targetElement == null && element is PsiWhiteSpace) PsiTreeUtil.getPrevSiblingOfType(element, ImpExValueGroup::class.java)
