@@ -28,6 +28,8 @@ data class ImpExSettingsState(
     @JvmField @OptionTag val completion: ImpExCompletionSettingsState = ImpExCompletionSettingsState(),
     @JvmField @OptionTag val documentation: ImpExDocumentationSettingsState = ImpExDocumentationSettingsState(),
     // Type name to > set of attribute names
+    @JvmField @OptionTag val quoteStringMatching: Boolean = true,
+    @JvmField @OptionTag val quoteStringMatchingRegex: Regex = Regex("^[a-zA-Z0-9_-]+$"),
     @JvmField @OptionTag val quoteStringExclusions: Map<String, Set<String>> = mapOf(),
 ) {
     fun mutable() = Mutable(
@@ -35,6 +37,8 @@ data class ImpExSettingsState(
         editMode = editMode.mutable(),
         completion = completion.mutable(),
         documentation = documentation.mutable(),
+        quoteStringMatching = quoteStringMatching,
+        quoteStringMatchingPattern = quoteStringMatchingRegex.pattern,
         quoteStringExclusions = quoteStringExclusions
             .flatMap { (type, attributes) ->
                 attributes.map { ImpExQuoteStringExclusion(type, it) }
@@ -47,6 +51,8 @@ data class ImpExSettingsState(
         var editMode: ImpExEditModeSettingsState.Mutable,
         var completion: ImpExCompletionSettingsState.Mutable,
         var documentation: ImpExDocumentationSettingsState.Mutable,
+        var quoteStringMatching: Boolean,
+        var quoteStringMatchingPattern: String,
         var quoteStringExclusions: MutableList<ImpExQuoteStringExclusion>,
     ) {
         fun immutable() = ImpExSettingsState(
@@ -54,6 +60,8 @@ data class ImpExSettingsState(
             editMode = editMode.immutable(),
             completion = completion.immutable(),
             documentation = documentation.immutable(),
+            quoteStringMatching = quoteStringMatching,
+            quoteStringMatchingRegex = Regex(quoteStringMatchingPattern),
             quoteStringExclusions = quoteStringExclusions
                 .groupBy(
                     keySelector = { it.typeName },

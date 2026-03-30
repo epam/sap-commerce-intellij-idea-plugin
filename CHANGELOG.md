@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 20 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 21 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 
 ### `ImpEx` enhancements
@@ -11,6 +11,7 @@
 - Show abbreviations in the completion list for parameters [#1795](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1795)
 - Resolve macro values used in the `default` header attribute and displayed as an inline hint [#1796](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1796)
 - Add exclusion rules for `string` attributes which should not be wrapped in quotes [#1800](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1800)
+- Manage Regex for values which should not be wrapped in quotes [#1808](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1808)
 - New action to generate `&docId` column based on the unique columns of the table [#1803](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1803)
 - Enhanced `&docId` generation with the configurable Wizard [#1807](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1807)
 

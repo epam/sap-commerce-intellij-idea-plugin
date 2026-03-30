@@ -80,6 +80,13 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             if (trimmedText.startsWith('\"')) return
             if (trimmedText.isBlank()) return
 
+            val impExSettings = value.project.yDeveloperSettings.impexSettings
+
+            if (impExSettings.quoteStringMatching && impExSettings.quoteStringMatchingRegex.matches(trimmedText)) {
+                // ignore whitelisted value
+                return
+            }
+
             val attributeMeta = value.valueGroup
                 ?.fullHeaderParameter
                 ?.anyHeaderParameterName
@@ -89,7 +96,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             val typeName = attributeMeta.owner.name ?: return
             val attributeName = attributeMeta.name
 
-            val isExcluded = value.project.yDeveloperSettings.impexSettings.quoteStringExclusions[typeName]
+            val isExcluded = impExSettings.quoteStringExclusions[typeName]
                 ?.contains(attributeName)
                 ?: false
             if (isExcluded) return
@@ -110,8 +117,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 ?.asSafely<AttributeResolveResult>()
                 ?.meta
                 ?.takeIf {
-                    "localized:java.lang.String" == it.type
-                        || "java.lang.String" == it.type && !it.modifiers.isUnique
+                    "localized:java.lang.String" == it.type || "java.lang.String" == it.type && !it.modifiers.isUnique
                 }
 
         private class LocalFix(
