@@ -1217,8 +1217,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // (SCRIPT_BODY_VALUE
   //     | MACRO_USAGE
-  //     | SINGLE_STRING
-  //     | DOUBLE_STRING
+  //     | string
   //     )*
   static boolean script_body(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "script_body")) return false;
@@ -1232,42 +1231,14 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   // SCRIPT_BODY_VALUE
   //     | MACRO_USAGE
-  //     | SINGLE_STRING
-  //     | DOUBLE_STRING
+  //     | string
   private static boolean script_body_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "script_body_0")) return false;
     boolean r;
     r = consumeToken(b, SCRIPT_BODY_VALUE);
     if (!r) r = consumeToken(b, MACRO_USAGE);
-    if (!r) r = consumeToken(b, SINGLE_STRING);
-    if (!r) r = consumeToken(b, DOUBLE_STRING);
+    if (!r) r = string(b, l + 1);
     return r;
-  }
-
-  /* ********************************************************** */
-  // SINGLE_QUOTE_OPEN double_quoted_string_content* SINGLE_QUOTE_CLOSE
-  static boolean single_string_dec(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "single_string_dec")) return false;
-    if (!nextTokenIs(b, SINGLE_QUOTE_OPEN)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, SINGLE_QUOTE_OPEN);
-    p = r; // pin = 1
-    r = r && report_error_(b, single_string_dec_1(b, l + 1));
-    r = p && consumeToken(b, SINGLE_QUOTE_CLOSE) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // double_quoted_string_content*
-  private static boolean single_string_dec_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "single_string_dec_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!double_quoted_string_content(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "single_string_dec_1", c)) break;
-    }
-    return true;
   }
 
   /* ********************************************************** */
@@ -1316,7 +1287,6 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // SINGLE_STRING
   //     | DOUBLE_STRING
-  //     | single_string_dec
   //     | double_string_dec
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
@@ -1324,7 +1294,6 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
     r = consumeToken(b, SINGLE_STRING);
     if (!r) r = consumeToken(b, DOUBLE_STRING);
-    if (!r) r = single_string_dec(b, l + 1);
     if (!r) r = double_string_dec(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;

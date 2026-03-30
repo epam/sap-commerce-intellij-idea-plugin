@@ -48,4 +48,10 @@ public class ImpExGroovyScriptBodyImpl extends ImpExGroovyScriptBodyMixin implem
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<ImpExString> getStringList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExString.class);
+  }
+
 }

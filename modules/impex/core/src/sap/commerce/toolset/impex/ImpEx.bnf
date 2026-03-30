@@ -223,22 +223,15 @@ javascript_script_body ::= script_body
 
 private script_body ::= (SCRIPT_BODY_VALUE
     | MACRO_USAGE
-    | SINGLE_STRING
-    | DOUBLE_STRING
+    | string
     )*
 
 string ::= SINGLE_STRING
     | DOUBLE_STRING
-    | single_string_dec
     | double_string_dec
 {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExStringMixin"
     methods=[getValueGroup]
-}
-
-private single_string_dec ::= SINGLE_QUOTE_OPEN double_quoted_string_content* SINGLE_QUOTE_CLOSE
-{
-    pin=1
 }
 
 private double_string_dec ::= DOUBLE_QUOTE_OPEN double_quoted_string_content* DOUBLE_QUOTE_CLOSE

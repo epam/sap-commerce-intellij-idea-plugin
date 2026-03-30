@@ -49,4 +49,10 @@ public class ImpExJavascriptScriptBodyImpl extends ASTWrapperPsiElement implemen
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<ImpExString> getStringList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExString.class);
+  }
+
 }

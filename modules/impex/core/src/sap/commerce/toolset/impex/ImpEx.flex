@@ -144,6 +144,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state BEAN_SHELL
 %state SCRIPT
 %state SCRIPT_BODY
+%state SCRIPT_DOUBLE_STRING
 %state MODIFIERS_BLOCK
 %state WAITING_ATTR_OR_PARAM_VALUE
 %state HEADER_PARAMETERS
@@ -279,24 +280,33 @@ end_userrights                    = [$]END_USERRIGHTS
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
     {script_action}                                         { return ImpExTypes.SCRIPT_ACTION;}
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
-    {double_string}                                         { return ImpExTypes.DOUBLE_STRING; }
+
+    {double_quote}                                          {
+                                                                yybegin(SCRIPT_DOUBLE_STRING);
+                                                                return ImpExTypes.DOUBLE_QUOTE_OPEN;
+                                                            }
+
     {script_body_value}                                     { return ImpExTypes.SCRIPT_BODY_VALUE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
-<FIELD_VALUE_START> {
-    {double_quote}                                          {
-                                                                yybegin(DOUBLE_STRING);
-                                                                return ImpExTypes.DOUBLE_QUOTE_OPEN;
+<SCRIPT_DOUBLE_STRING> {
+    {double_quote}                                          { yybegin(SCRIPT_BODY); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
+    {macro_usage}                                           {
+                                                                var macroName = yytext().toString().trim();
+                                                                return macroDeclarations.contains(macroName)
+                                                                    ? ImpExTypes.MACRO_USAGE
+                                                                    : ImpExTypes.STRING_LITERAL;
                                                             }
+    {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
+}
 
+<FIELD_VALUE_START> {
+    {double_quote}                                          { yybegin(DOUBLE_STRING); return ImpExTypes.DOUBLE_QUOTE_OPEN;}
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 
     /* anything else → fallback to normal FIELD_VALUE */
-    . {
-        yypushback(1);
-        yybegin(FIELD_VALUE);
-    }
+    .                                                       { yypushback(1); yybegin(FIELD_VALUE); }
 }
 
 <DOUBLE_STRING> {
