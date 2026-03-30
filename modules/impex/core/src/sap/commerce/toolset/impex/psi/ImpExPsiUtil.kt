@@ -29,11 +29,9 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.references.ImpExTSAttributeReference
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.*
 
@@ -64,19 +62,9 @@ fun getUniqueFullHeaderParameters(element: ImpExHeaderLine) = element.fullHeader
 
 fun getColumnContexts(element: ImpExHeaderLine) = element.fullHeaderParameterList
     .map {
-        val parameterName = it.anyHeaderParameterName
-        val icon = parameterName.reference
-            ?.asSafely<ImpExTSAttributeReference>()
-            ?.multiResolve(false)
-            ?.firstOrNull()
-            ?.asSafely<AttributeResolveResult>()
-            ?.meta
-            ?.icon
-            ?: HybrisIcons.TypeSystem.ATTRIBUTE
         ImpExColumnContext(
-            name = parameterName.text.trim(),
+            name = it.anyHeaderParameterName.text.trim(),
             number = it.columnNumber,
-            icon = icon,
             unique = it.isUnique
         )
     }

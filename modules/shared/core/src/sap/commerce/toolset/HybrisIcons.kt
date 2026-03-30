@@ -160,6 +160,7 @@ object HybrisIcons {
         val MACROS = getIcon("/icons/impex/macros.svg")
         val MODE = AllIcons.Nodes.Function
 
+        val COLUMN_UNIQUE = getIcon("/icons/impex/uniqueColumn.svg")
         val DOC_ID_MODE_COUNTER = getIcon("/icons/impex/docIdCounterMode.svg")
         val DOC_ID_MODE_COLUMNS = getIcon("/icons/impex/docIdColumnsMode.svg")
 

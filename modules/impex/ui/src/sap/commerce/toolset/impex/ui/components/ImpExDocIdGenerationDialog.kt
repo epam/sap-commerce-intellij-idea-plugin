@@ -24,6 +24,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.dsl.builder.*
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationMode
 import java.awt.Component
@@ -82,15 +83,18 @@ class ImpExDocIdGenerationDialog(
         group("Columns") {
             mutableContext.columns.forEach { column ->
                 row {
+                    label("#${column.number + 1}")
+                        .gap(RightGap.SMALL)
+
                     checkBox(StringUtil.shortenPathWithEllipsis(column.name, 30))
                         .bindSelected(column::include)
                         .align(AlignX.FILL)
-                        .gap(RightGap.COLUMNS)
+                        .gap(RightGap.SMALL)
 
-                    val details = if (column.unique) "unique column"
-                    else "column"
-                    label("#${column.number + 1} - $details")
-                }.layout(RowLayout.PARENT_GRID)
+                    if (column.unique) {
+                        icon(HybrisIcons.ImpEx.COLUMN_UNIQUE)
+                    }
+                }
             }
         }.enabledIf(modeObservable.equalsTo(ImpExDocIdGenerationMode.COLUMN_BASED))
     }

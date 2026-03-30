@@ -18,19 +18,15 @@
 
 package sap.commerce.toolset.impex.codeInspection.context
 
-import javax.swing.Icon
-
 data class ImpExColumnContext(
     val name: String,
     val number: Int,
-    val icon: Icon,
     val unique: Boolean,
     val include: Boolean = unique
 ) {
     fun mutable() = Mutable(
         name = name,
         number = number,
-        icon = icon,
         unique = unique,
         include = include,
     )
@@ -38,7 +34,6 @@ data class ImpExColumnContext(
     data class Mutable(
         val name: String,
         val number: Int,
-        val icon: Icon,
         val unique: Boolean,
         var include: Boolean,
     ) {
@@ -46,7 +41,6 @@ data class ImpExColumnContext(
         fun immutable() = ImpExColumnContext(
             name = name,
             number = number,
-            icon = icon,
             unique = unique,
             include = include,
         )
