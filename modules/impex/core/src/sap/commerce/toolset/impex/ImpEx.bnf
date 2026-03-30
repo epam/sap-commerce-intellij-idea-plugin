@@ -76,8 +76,7 @@ private recover_root ::= !(
   |  BEAN_SHELL_MARKER
   |  GROOVY_MARKER
   |  JAVASCRIPT_MARKER
-  |  DOUBLE_STRING
-  |  SINGLE_STRING
+  |  string
   |  MACRO_USAGE
 )
 

@@ -133,6 +133,7 @@ tag_close    = [<][/]({identifier})+{white_space}*[>]
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
 
+%state YYINITIAL_DOUBLE_STRING
 %state WAITING_MACRO_VALUE
 %state MACRO_DECLARATION
 %state HEADER_TYPE
@@ -162,9 +163,7 @@ end_userrights                    = [$]END_USERRIGHTS
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 
 <YYINITIAL> {
-    {double_string}                                         {
-                                                                return ImpExTypes.DOUBLE_STRING;
-                                                            }
+    {double_quote}                                          { yybegin(YYINITIAL_DOUBLE_STRING); return ImpExTypes.DOUBLE_QUOTE_OPEN; }
 
     {line_comment}                                          {
                                                                 final String text = yytext().toString().trim();
@@ -224,6 +223,21 @@ end_userrights                    = [$]END_USERRIGHTS
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
+<YYINITIAL_DOUBLE_STRING> {
+    {double_quote}                                          { yybegin(YYINITIAL); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
+    {double_quote_escaped}                                  { return ImpExTypes.DOUBLE_QUOTE_ESCAPE; }
+    {white_space}+                                          { return TokenType.WHITE_SPACE; }
+    {macro_usage}                                           {
+                                                                var macroName = yytext().toString().trim();
+                                                                return macroDeclarations.contains(macroName)
+                                                                    ? ImpExTypes.MACRO_USAGE
+                                                                    : ImpExTypes.STRING_LITERAL;
+                                                            }
+    {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
+
+    {crlf}                                                  { return ImpExTypes.CRLF; }
+}
+
 <USER_RIGHTS_START> {
     {semicolon}                                             { return ImpExTypes.PARAMETERS_SEPARATOR; }
     {crlf}                                                  { yybegin(USER_RIGHTS_HEADER_LINE); return ImpExTypes.CRLF; }
@@ -278,13 +292,10 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <SCRIPT_BODY> {
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
-    {script_action}                                         { return ImpExTypes.SCRIPT_ACTION;}
+    {script_action}                                         { return ImpExTypes.SCRIPT_ACTION; }
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
 
-    {double_quote}                                          {
-                                                                yybegin(SCRIPT_DOUBLE_STRING);
-                                                                return ImpExTypes.DOUBLE_QUOTE_OPEN;
-                                                            }
+    {double_quote}                                          { yybegin(SCRIPT_DOUBLE_STRING); return ImpExTypes.DOUBLE_QUOTE_OPEN; }
 
     {script_body_value}                                     { return ImpExTypes.SCRIPT_BODY_VALUE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
