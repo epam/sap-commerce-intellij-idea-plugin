@@ -22,7 +22,12 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.*
-import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
+import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationMode
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
+import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.psi.RangeAwareContent
 import java.io.Serial
 
@@ -83,12 +88,15 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         val tableRange = tableRange
 
         val reversedValueInsertions = valueLines
-            .mapNotNull { valueLine ->
+            .mapIndexedNotNull { index, valueLine ->
                 val injectAt = valueLine.valueGroupList.firstOrNull()
                     ?.startOffset
-                    ?: return@mapNotNull null
-                val valueDocId = context.includedColumnIds
-                    .mapNotNull { valueLine.getValueGroup(it) }
+                    ?: return@mapIndexedNotNull null
+                val valueDocId = if (context.mode == ImpExDocIdGenerationMode.COUNTER)
+                    "${context.prefix}${index + 1}${context.postfix}"
+                else context.columns
+                    .filter { it.include }
+                    .mapNotNull { valueLine.getValueGroup(it.number) }
                     .mapNotNull { it.computeValue() }
                     .joinToString("-", context.prefix, context.postfix)
                 val relativeOffset = injectAt - tableRange.startOffset

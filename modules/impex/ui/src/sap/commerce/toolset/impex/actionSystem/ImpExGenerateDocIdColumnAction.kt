@@ -34,9 +34,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.psi.ImpExDocIdGenerationContext
+import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.ui.components.ImpExDocIdGenerationDialog
 
 class ImpExGenerateDocIdColumnAction : AbstractImpExTableAction() {
 
@@ -67,18 +68,15 @@ class ImpExGenerateDocIdColumnAction : AbstractImpExTableAction() {
             val headerLine = element.asSafely<ImpExHeaderLine>()
                 ?: return@launch
 
-            val includedColumnIds = readAction {
-                headerLine.uniqueFullHeaderParameters
-                    .map { it.columnNumber }
-                    .takeIf { it.isNotEmpty() }
+            val columns = readAction { headerLine.columnContexts }
+            val mutableContext = ImpExDocIdGenerationContext(columns = columns).mutable()
+
+            val context = withContext(Dispatchers.EDT) {
+                ImpExDocIdGenerationDialog(project, editor.component, mutableContext).get()
             } ?: return@launch
 
             val rangeAwareContent = readAction {
-                headerLine.generateDocId(
-                    ImpExDocIdGenerationContext(
-                        includedColumnIds = includedColumnIds,
-                    )
-                )
+                headerLine.generateDocId(context)
             } ?: return@launch
 
             withContext(Dispatchers.EDT) {

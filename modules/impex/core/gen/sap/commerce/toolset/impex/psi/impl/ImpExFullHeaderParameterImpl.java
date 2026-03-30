@@ -77,4 +77,9 @@ public class ImpExFullHeaderParameterImpl extends ImpExFullHeaderParameterMixin 
     return ImpExPsiUtil.getAttribute(this, attributeModifier);
   }
 
+  @Override
+  public boolean isUnique() {
+    return ImpExPsiUtil.isUnique(this);
+  }
+
 }

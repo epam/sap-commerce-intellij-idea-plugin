@@ -16,11 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.psi
+package sap.commerce.toolset.impex.codeInspection.context
 
-data class ImpExDocIdGenerationContext(
-    val name: String = "docId",
-    val prefix: String = "",
-    val postfix: String = "",
-    val includedColumnIds: List<Int>,
-)
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
+
+enum class ImpExDocIdGenerationMode(
+    val icon: Icon,
+    val title: String,
+    val description: String
+) {
+    COUNTER(
+        HybrisIcons.ImpEx.DOC_ID_MODE_COUNTER,
+        "Counter",
+        "This mode generates numeric ids for each data row."
+    ),
+    COLUMN_BASED(
+        HybrisIcons.ImpEx.DOC_ID_MODE_COLUMNS,
+        "Columns",
+        "This mode generates ids based on the respective values of the included columns"
+    ),
+}
