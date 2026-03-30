@@ -29,56 +29,67 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.asSafely
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.psi.ImpExDocIdGenerationContext
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
-import sap.commerce.toolset.impex.psi.ImpExUserRights
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 
-class ImpExTableRemoveAction : AbstractImpExTableAction() {
+class ImpExGenerateDocIdColumnAction : AbstractImpExTableAction() {
 
     init {
         with(templatePresentation) {
-            text = "Remove Table"
-            description = "Remove current table"
-            icon = HybrisIcons.ImpEx.Actions.REMOVE_TABLE
+            text = "Generate Document Id"
+            description = "Define new reference column based on unique columns"
+            icon = HybrisIcons.ImpEx.Actions.GENERATE_DOC_ID
+        }
+    }
+
+    override fun update(e: AnActionEvent, suitableElement: PsiElement, actionAllowed: Boolean) {
+        if (!actionAllowed) {
+            val headerLine = suitableElement.asSafely<ImpExHeaderLine>() ?: return
+            val docIds = headerLine.documentIdDeclarations
+                .map { it.text.trim() }
+                .joinToString(", ") { "'$it'" }
+            e.presentation.text = "Document Id - $docIds"
+        } else {
+            e.presentation.text = "Generate Document Id"
         }
     }
 
     override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
-        if (element is ImpExUserRights) removeUserRightsTable(project, element)
-        else removeTable(project, editor, psiFile, element)
-    }
-
-    private fun removeUserRightsTable(project: Project, element: PsiElement) {
-        WriteCommandAction.runWriteCommandAction(project) {
-            element.delete()
-        }
-    }
-
-    private fun removeTable(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
         currentThreadCoroutineScope().launch {
-            val textRange = readAction {
-                if (!psiFile.isValid) return@readAction null
+            if (readAction { !psiFile.isValid }) return@launch
 
-                when (element) {
-                    is ImpExHeaderLine -> element.tableRange
-                    is ImpExValueLine -> element.headerLine
-                        ?.tableRange
-                        ?: return@readAction null
+            val headerLine = element.asSafely<ImpExHeaderLine>()
+                ?: return@launch
 
-                    else -> return@readAction null
-                }
+            val includedColumnIds = readAction {
+                headerLine.uniqueFullHeaderParameters
+                    .map { it.columnNumber }
+                    .takeIf { it.isNotEmpty() }
+            } ?: return@launch
+
+            val rangeAwareContent = readAction {
+                headerLine.generateDocId(
+                    ImpExDocIdGenerationContext(
+                        includedColumnIds = includedColumnIds,
+                    )
+                )
             } ?: return@launch
 
             withContext(Dispatchers.EDT) {
                 PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                    runWithModalProgressBlocking(project, "Removing table") {
+                    runWithModalProgressBlocking(project, "Generating &docId") {
                         WriteCommandAction.runWriteCommandAction(project) {
                             PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                                editor.document.deleteString(textRange.startOffset, textRange.endOffset)
+                                val textRange = rangeAwareContent.textRange
+                                val newContent = rangeAwareContent.content
+
+                                psiFile.fileDocument.replaceString(textRange.startOffset, textRange.endOffset, newContent)
                             }
                         }
                     }
@@ -88,6 +99,12 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
     }
 
     override fun getSuitableElement(e: AnActionEvent, element: PsiElement) = PsiTreeUtil
-        .getParentOfType(element, ImpExValueLine::class.java, ImpExHeaderLine::class.java, ImpExUserRights::class.java)
+        .getParentOfType(element, ImpExHeaderLine::class.java, ImpExValueLine::class.java)
+        ?.let { it.asSafely<ImpExHeaderLine>() ?: it.asSafely<ImpExValueLine>()?.headerLine }
+
+    override fun isActionAllowed(project: Project, editor: Editor, e: AnActionEvent, suitableElement: PsiElement) = suitableElement
+        .asSafely<ImpExHeaderLine>()
+        ?.let { !it.hasDocumentIdDec() }
+        ?: false
 
 }

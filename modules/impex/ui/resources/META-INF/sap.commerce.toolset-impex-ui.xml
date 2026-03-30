@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -57,10 +57,12 @@
         <action id="hybris.impex.table.select" class="sap.commerce.toolset.impex.actionSystem.ImpExTableSelectAction">
             <keyboard-shortcut first-keystroke="control shift s" keymap="$default"/>
         </action>
+        <action id="hybris.impex.table.generate.docId" class="sap.commerce.toolset.impex.actionSystem.ImpExGenerateDocIdColumnAction"/>
         <action id="hybris.impex.executionContextSettings" class="sap.commerce.toolset.impex.actionSystem.ImpExExecutionContextSettingsAction"/>
 
         <group id="hybris.impex.table.actions">
             <reference ref="hybris.impex.table.select"/>
+            <reference ref="hybris.impex.table.generate.docId"/>
             <separator/>
             <action id="hybris.impex.table.column.move.left" class="sap.commerce.toolset.impex.actionSystem.ImpExTableColumnMoveLeftAction">
                 <keyboard-shortcut first-keystroke="control shift alt COMMA" keymap="$default"/>

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.impex.actionSystem
 
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -50,15 +51,11 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         }
     }
 
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean {
-        val suitableElement = getSuitableElement(element) ?: return false
-
-        return when (suitableElement) {
-            // Table with only-unique columns are not allowed for split
-            is ImpExFullHeaderParameter -> canProcess(suitableElement.headerLine)
-            is ImpExValueGroup -> canProcess(suitableElement.valueLine?.headerLine)
-            else -> false
-        }
+    override fun isActionAllowed(project: Project, editor: Editor, e: AnActionEvent, suitableElement: PsiElement) = when (suitableElement) {
+        // Table with only-unique columns are not allowed for split
+        is ImpExFullHeaderParameter -> canProcess(suitableElement.headerLine)
+        is ImpExValueGroup -> canProcess(suitableElement.valueLine?.headerLine)
+        else -> false
     }
 
     override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {

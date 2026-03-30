@@ -177,7 +177,7 @@ header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR MULTILIN
 {
     pin = 1
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExHeaderLineMixin"
-    methods=[getFullHeaderParameter getValueLines getTableRange getUniqueFullHeaderParameters]
+    methods=[getFullHeaderParameter getValueLines getTableRange getUniqueFullHeaderParameters hasDocumentIdDec getDocumentIdDeclarations generateDocId]
 }
 
 comment ::= LINE_COMMENT
@@ -333,6 +333,7 @@ header_type_name ::= HEADER_TYPE
 {
     recoverWhile = recover_header_type
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExHeaderTypeNameMixin"
+    methods=[getHeaderLine]
 }
 
 full_header_parameter ::= any_header_parameter_name parameters? modifiers* parameters?

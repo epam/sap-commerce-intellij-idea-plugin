@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.impex.actionSystem
 
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -35,13 +36,9 @@ class ImpExTableColumnMoveLeftAction : AbstractImpExTableColumnMoveAction(ImpExC
         }
     }
 
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean {
-        val suitableElement = getSuitableElement(element) ?: return false
-
-        return when (suitableElement) {
-            is ImpExFullHeaderParameter -> suitableElement.columnNumber > 0
-            is ImpExValueGroup -> suitableElement.columnNumber > 0
-            else -> false
-        }
+    override fun isActionAllowed(project: Project, editor: Editor, e: AnActionEvent, suitableElement: PsiElement) = when (suitableElement) {
+        is ImpExFullHeaderParameter -> suitableElement.columnNumber > 0
+        is ImpExValueGroup -> suitableElement.columnNumber > 0
+        else -> false
     }
 }

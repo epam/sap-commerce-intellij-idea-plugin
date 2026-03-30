@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,8 +43,10 @@ abstract class AbstractImpExTableAction : AnAction() {
 
         if (project != null && editor != null && editor.caretModel.caretCount == 1) {
             PsiUtilBase.getElementAtCaret(editor)
-                ?.let {
-                    actionAllowed = isActionAllowed(project, editor, it)
+                ?.let { getSuitableElement(e, it) }
+                ?.apply {
+                    actionAllowed = isActionAllowed(project, editor, e, this)
+                    update(e, this, actionAllowed)
                 }
         }
 
@@ -57,14 +59,15 @@ abstract class AbstractImpExTableAction : AnAction() {
         val psiFile = e.getData(CommonDataKeys.PSI_FILE) ?: return
 
         PsiUtilBase.getElementAtCaret(editor)
-            ?.let { getSuitableElement(it) }
+            ?.let { getSuitableElement(e, it) }
             ?.takeIf { EditorModificationUtil.requestWriting(editor) }
             ?.let { performAction(project, editor, psiFile, it) }
     }
 
-    abstract fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement)
-    abstract fun getSuitableElement(element: PsiElement): PsiElement?
-    abstract fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean
+    protected open fun update(e: AnActionEvent, suitableElement: PsiElement, actionAllowed: Boolean): Unit = Unit
+    protected abstract fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement)
+    protected abstract fun getSuitableElement(e: AnActionEvent, element: PsiElement): PsiElement?
+    protected open fun isActionAllowed(project: Project, editor: Editor, e: AnActionEvent, suitableElement: PsiElement) = true
 
     protected fun run(project: Project, title: String, block: (ProgressIndicator) -> Unit) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, title, false, DEAF) {

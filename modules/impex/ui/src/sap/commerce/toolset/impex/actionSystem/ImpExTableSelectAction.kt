@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.impex.actionSystem
 
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Editor
@@ -62,9 +63,7 @@ class ImpExTableSelectAction : AbstractImpExTableAction() {
             .submit(AppExecutorUtil.getAppExecutorService())
     }
 
-    override fun getSuitableElement(element: PsiElement) = PsiTreeUtil
+    override fun getSuitableElement(e: AnActionEvent, element: PsiElement) = PsiTreeUtil
         .getParentOfType(element, ImpExValueLine::class.java, ImpExHeaderLine::class.java, ImpExUserRights::class.java)
-
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 
 }

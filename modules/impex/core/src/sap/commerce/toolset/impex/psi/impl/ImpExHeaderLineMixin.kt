@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,9 +22,8 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.*
-import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExHeaderLine
-import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.psi.RangeAwareContent
 import java.io.Serial
 
 abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpExHeaderLine {
@@ -74,6 +73,43 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
             PsiModificationTracker.MODIFICATION_COUNT,
         )
     }, false)
+
+    override fun generateDocId(context: ImpExDocIdGenerationContext): RangeAwareContent? {
+        val headerInjectPosition = fullHeaderParameterList.firstOrNull()
+            ?.prevLeaf { it.elementType == ImpExTypes.PARAMETERS_SEPARATOR }
+            ?.startOffset
+            ?: return null
+
+        val tableRange = tableRange
+
+        val reversedValueInsertions = valueLines
+            .mapNotNull { valueLine ->
+                val injectAt = valueLine.valueGroupList.firstOrNull()
+                    ?.startOffset
+                    ?: return@mapNotNull null
+                val valueDocId = context.includedColumnIds
+                    .mapNotNull { valueLine.getValueGroup(it) }
+                    .mapNotNull { it.computeValue() }
+                    .joinToString("-", context.prefix, context.postfix)
+                val relativeOffset = injectAt - tableRange.startOffset
+                relativeOffset to ";$valueDocId"
+            }
+            .sortedByDescending { it.first }
+
+        val newContent = StringBuilder(containingFile.text.substring(tableRange.startOffset, tableRange.endOffset))
+
+        reversedValueInsertions.forEach { (relativeOffset, insertion) ->
+            newContent.insert(relativeOffset, insertion)
+        }
+
+        val headerRelativeOffset = headerInjectPosition - tableRange.startOffset
+        newContent.insert(headerRelativeOffset, ";&${context.name}")
+
+        return RangeAwareContent(
+            textRange = tableRange,
+            content = newContent.toString()
+        )
+    }
 
     companion object {
         val CACHE_KEY_BY_INDEX = Key.create<CachedValue<Map<Int, ImpExFullHeaderParameter>>>("SAP_CX_IMPEX_FHP_BY_INDEX")

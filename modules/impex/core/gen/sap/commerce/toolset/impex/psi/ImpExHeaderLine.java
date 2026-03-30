@@ -28,6 +28,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.TextRange;
 import java.util.Collection;
+import sap.commerce.toolset.psi.RangeAwareContent;
 
 public interface ImpExHeaderLine extends PsiElement {
 
@@ -49,5 +50,11 @@ public interface ImpExHeaderLine extends PsiElement {
   @NotNull TextRange getTableRange();
 
   @NotNull List<ImpExFullHeaderParameter> getUniqueFullHeaderParameters();
+
+  boolean hasDocumentIdDec();
+
+  @NotNull List<@NotNull ImpExDocumentIdDec> getDocumentIdDeclarations();
+
+  @Nullable RangeAwareContent generateDocId(@NotNull ImpExDocIdGenerationContext context);
 
 }

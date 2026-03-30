@@ -48,4 +48,9 @@ public class ImpExHeaderTypeNameImpl extends ImpExHeaderTypeNameMixin implements
     else super.accept(visitor);
   }
 
+  @Override
+  public @Nullable ImpExHeaderLine getHeaderLine() {
+    return ImpExPsiUtil.getHeaderLine(this);
+  }
+
 }
