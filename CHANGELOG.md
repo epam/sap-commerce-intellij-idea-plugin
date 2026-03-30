@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 
 ### `ImpEx` enhancements
@@ -19,6 +19,7 @@
 - Local fix: quote value strings for non-unique string columns & localized string columns [#1798](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1798)
 - Local fix: exclude attribute of the specific type from the wrap value string in quotes rule [#1799](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1799)
 - Local fix: enable value to be quoted for string attribute of the specific type [#1801](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1801)
+- Local fix: generate `&docId` column based on the unique columns of the table [#1802](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1802)
 
 ### `Spring` enhancements
 - Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)

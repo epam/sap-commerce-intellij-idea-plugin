@@ -207,6 +207,10 @@
         <localInspection groupPath="SAP Commerce" shortName="ImpExQuoteValueStringInspection" displayName="[y] Quote value strings"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExQuoteValueStringInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExMissingDocumentIdColumnInspection" displayName="[y] Missing DocId"
+                         groupName="[y] ImpEx" level="INFORMATION" language="ImpEx" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExMissingDocumentIdColumnInspection"/>
     </extensions>
 
 </idea-plugin>
