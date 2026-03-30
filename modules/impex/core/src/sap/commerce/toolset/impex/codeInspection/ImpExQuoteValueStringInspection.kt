@@ -125,7 +125,11 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             override fun getText() = "Wrap in quotes '$typeName.$attributeName' value string: '$shortText'"
 
             override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                val newValue = startElement.text.replace("\"", "\"\"")
+                val newValue = startElement.text
+                    .replace("\"", "\"\"")
+                    .replace("\\\n", "")
+                    .replace("\\\r", "")
+                    .replace("\\\n\r", "")
 
                 val newElement = ImpExElementFactory.createFile(
                     project, """

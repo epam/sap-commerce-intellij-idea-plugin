@@ -120,9 +120,9 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnknownTypeAttributeInspection"/>
 
-        <localInspection groupPath="SAP Commerce" shortName="ImpExDoubleQuotedStringAsModifierInspection" displayName="[y] Double Quote string as a modifier"
+        <localInspection groupPath="SAP Commerce" shortName="ImpExQuotedStringAsModifierInspection" displayName="[y] Double Quote string as a modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExDoubleQuotedStringAsModifierInspection"/>
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExQuotedStringAsModifierInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExUnknownFunctionTypeInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
