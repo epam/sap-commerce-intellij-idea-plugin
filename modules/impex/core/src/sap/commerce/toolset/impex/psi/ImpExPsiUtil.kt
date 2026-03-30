@@ -30,6 +30,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.*
@@ -53,8 +54,20 @@ fun getAnyAttributeName(element: ImpExAnyAttributeValue): ImpExAnyAttributeName?
 fun getAnyAttributeValue(element: ImpExAnyAttributeName): ImpExAnyAttributeValue? = PsiTreeUtil
     .getNextSiblingOfType(element, ImpExAnyAttributeValue::class.java)
 
+fun isUnique(element: ImpExFullHeaderParameter) = element.getAttribute(AttributeModifier.UNIQUE)
+    ?.anyAttributeValue?.textMatches("true") ?: false
+
 fun getUniqueFullHeaderParameters(element: ImpExHeaderLine) = element.fullHeaderParameterList
-    .filter { it.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.textMatches("true") ?: false }
+    .filter { it.isUnique }
+
+fun getColumnContexts(element: ImpExHeaderLine) = element.fullHeaderParameterList
+    .map {
+        ImpExColumnContext(
+            name = it.anyHeaderParameterName.text.trim(),
+            number = it.columnNumber,
+            unique = it.isUnique
+        )
+    }
 
 fun getTableRange(element: ImpExHeaderLine): TextRange {
     val tableElements = ArrayDeque<PsiElement>()

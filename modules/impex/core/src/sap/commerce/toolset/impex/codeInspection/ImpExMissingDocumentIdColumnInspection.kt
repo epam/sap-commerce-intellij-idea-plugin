@@ -26,7 +26,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.util.asSafely
-import sap.commerce.toolset.impex.psi.ImpExDocIdGenerationContext
+import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
 import sap.commerce.toolset.impex.psi.ImpExHeaderTypeName
 import sap.commerce.toolset.impex.psi.ImpExVisitor
 
@@ -68,14 +68,10 @@ class ImpExMissingDocumentIdColumnInspection : LocalInspectionTool() {
             override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
                 val typeName = startElement.asSafely<ImpExHeaderTypeName>() ?: return
                 val headerLine = typeName.headerLine ?: return
-                val uniqueColumnNumbers = headerLine.uniqueFullHeaderParameters
-                    .map { it.columnNumber }
-                    .takeIf { it.isNotEmpty() }
-                    ?: return
 
                 val rangeAwareContent = headerLine.generateDocId(
                     ImpExDocIdGenerationContext(
-                        includedColumnIds = uniqueColumnNumbers
+                        columns = headerLine.columnContexts
                     )
                 ) ?: return
                 val textRange = rangeAwareContent.textRange

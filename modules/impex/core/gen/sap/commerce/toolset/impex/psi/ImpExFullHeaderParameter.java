@@ -49,4 +49,6 @@ public interface ImpExFullHeaderParameter extends PsiElement {
 
   @NotNull List<@NotNull ImpExValueGroup> getValueGroups();
 
+  boolean isUnique();
+
 }
