@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 
 ### `ImpEx` enhancements
@@ -17,6 +17,7 @@
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
 - Inspection: respect macro declarations required by abbreviations in the parameter [#1791](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1791)
 - Inspection: quote value strings for non-unique string columns & localized string columns [#1797](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1797)
+- Inspection: remove multi-line separator `\` on quoted value strings [#1806](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1806)
 - Inspection: improved no unique value logic [#1804](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1804)
 - Inspection: support localized columns in the no unique value validation [#1805](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1805)
 - Local fix: quote value strings for non-unique string columns & localized string columns [#1798](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1798)

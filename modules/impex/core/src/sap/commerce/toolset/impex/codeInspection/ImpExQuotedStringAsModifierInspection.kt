@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,7 +30,7 @@ import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExVisitor
 
-class ImpExDoubleQuotedStringAsModifierInspection : LocalInspectionTool() {
+class ImpExQuotedStringAsModifierInspection : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WEAK_WARNING
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpExHeaderLineVisitor(holder)
@@ -44,7 +44,7 @@ class ImpExDoubleQuotedStringAsModifierInspection : LocalInspectionTool() {
                 ?.let {
                     problemsHolder.registerProblem(
                         it,
-                        "Inverted Comma should be used to escape attribute modifier value. Double quote will be taken as a value.",
+                        "Inverted Comma should be used to escape attribute modifier value. Quotes are taken as a value.",
                         ProblemHighlightType.WEAK_WARNING,
                         ImpExConvertToSingleQuoteStringQuickFix(it)
                     )
