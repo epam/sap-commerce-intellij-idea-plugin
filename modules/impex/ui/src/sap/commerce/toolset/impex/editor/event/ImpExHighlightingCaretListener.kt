@@ -104,12 +104,14 @@ class ImpExHighlightingCaretListener : CaretListener {
         textRangesToHighlight.forEach { range ->
             checkCanceled()
 
-            cache.computeIfAbsent(range) {
-                markupModel.addRangeHighlighter(
-                    EditorColors.IDENTIFIER_UNDER_CARET_ATTRIBUTES, range.startOffset, range.endOffset,
-                    HighlightManagerImpl.OCCURRENCE_LAYER,
-                    HighlighterTargetArea.EXACT_RANGE
-                )
+            runCatching {
+                cache.computeIfAbsent(range) {
+                    markupModel.addRangeHighlighter(
+                        EditorColors.IDENTIFIER_UNDER_CARET_ATTRIBUTES, range.startOffset, range.endOffset,
+                        HighlightManagerImpl.OCCURRENCE_LAYER,
+                        HighlighterTargetArea.EXACT_RANGE
+                    )
+                }
             }
         }
     }
