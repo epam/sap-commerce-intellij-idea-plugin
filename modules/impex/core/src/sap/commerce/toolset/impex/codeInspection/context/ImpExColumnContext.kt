@@ -18,6 +18,8 @@
 
 package sap.commerce.toolset.impex.codeInspection.context
 
+import com.intellij.openapi.observable.properties.PropertyGraph
+
 data class ImpExColumnContext(
     val name: String,
     val number: Int,
@@ -32,17 +34,23 @@ data class ImpExColumnContext(
     )
 
     data class Mutable(
-        val name: String,
-        val number: Int,
-        val unique: Boolean,
-        var include: Boolean,
+        private val name: String,
+        private val number: Int,
+        private val unique: Boolean,
+        private var include: Boolean,
     ) {
+        private val graph = PropertyGraph()
+
+        val nameProperty    = graph.property(name)
+        val numberProperty  = graph.property(number)
+        val uniqueProperty  = graph.property(unique)
+        val includeProperty = graph.property(include)
 
         fun immutable() = ImpExColumnContext(
-            name = name,
-            number = number,
-            unique = unique,
-            include = include,
+            name = nameProperty.get(),
+            number = numberProperty.get(),
+            unique = uniqueProperty.get(),
+            include = includeProperty.get(),
         )
     }
 }

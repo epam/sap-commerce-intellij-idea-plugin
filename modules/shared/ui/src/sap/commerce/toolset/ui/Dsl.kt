@@ -24,6 +24,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.util.addItemListener
@@ -58,9 +59,16 @@ import javax.swing.JLabel
 import javax.swing.ScrollPaneConstants
 import javax.swing.border.Border
 
-fun Row.previewEditor(project: Project, fileType: FileType, contentProvider: () -> String): Cell<EditorTextField> {
-    val document = EditorFactory.getInstance().createDocument(StringUtil.convertLineSeparators(contentProvider()))
-    return cell(EditorTextField(document, project, fileType, true, false))
+fun Row.previewEditor(project: Project, fileType: FileType, initialText: String = "", customizeEditor: EditorEx.() -> Unit = {}): Cell<EditorTextField> {
+    val document = EditorFactory.getInstance().createDocument(StringUtil.convertLineSeparators(initialText))
+    val editorTextField = object : EditorTextField(document, project, fileType, true, false) {
+        override fun createEditor(): EditorEx = super.createEditor()
+            .apply { customizeEditor() }
+
+        @Serial
+        private val serialVersionUID: Long = -8710635390249282681L
+    }
+    return cell(editorTextField)
 }
 
 fun Row.nullableIntTextField(range: IntRange? = null, keyboardStep: Int? = null): Cell<JBTextField> {
