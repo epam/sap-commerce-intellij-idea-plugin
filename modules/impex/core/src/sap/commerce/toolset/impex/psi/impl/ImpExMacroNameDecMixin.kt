@@ -70,7 +70,7 @@ abstract class ImpExMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
 
             CachedValueProvider.Result.createSingleDependency(
                 resolvedValue,
-                PsiModificationTracker.MODIFICATION_COUNT,
+                this
             )
         }, false
     )

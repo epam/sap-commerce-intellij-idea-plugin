@@ -22,17 +22,16 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.references.*
-import sap.commerce.toolset.psi.shouldCreateNewReference
 import java.io.Serial
 
 abstract class ImpExAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpExAnyHeaderParameterName {
-
-    private var myReference: PsiReference? = null
 
     override fun subtreeChanged() {
         removeUserData(ImpExTSAttributeReference.CACHE_KEY)
@@ -48,33 +47,24 @@ abstract class ImpExAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
 
     override fun getReference() = getReferences().firstOrNull()
 
-    override fun getReferences(): Array<PsiReference> {
+    override fun getReferences(): Array<out PsiReference> = CachedValuesManager.getManager(project).getCachedValue(this) {
         val leafType = firstChild
             ?.node
             ?.elementType
 
-        when {
-            ImpExTypes.MACRO_USAGE == leafType -> return arrayOf(ImpExMacroReference(this))
-
+        val references = when {
+            ImpExTypes.MACRO_USAGE == leafType -> arrayOf(ImpExMacroReference(this))
             // optimization: don't even try for macro's and documents
-            ImpExTypes.HEADER_PARAMETER_NAME != leafType
-                && ImpExTypes.FUNCTION != leafType -> return PsiReference.EMPTY_ARRAY
+            ImpExTypes.HEADER_PARAMETER_NAME != leafType && ImpExTypes.FUNCTION != leafType -> PsiReference.EMPTY_ARRAY
 
-            shouldCreateNewReference(myReference, text) -> {
-                myReference = if (isHeaderAbbreviation()) ImpExHeaderAbbreviationReference(this)
-                else ImpExTSAttributeReference(this)
-            }
+            isHeaderAbbreviation() -> arrayOf(ImpExHeaderAbbreviationReference(this))
+            else -> arrayOf(ImpExTSAttributeReference(this))
         }
 
-        return myReference
-            ?.let { arrayOf(it) }
-            ?: emptyArray()
-    }
-
-    override fun clone(): Any {
-        val result = super.clone() as ImpExAnyHeaderParameterNameMixin
-        result.myReference = null
-        return result
+        CachedValueProvider.Result.create(
+            references,
+            this
+        )
     }
 
     companion object {

@@ -1,8 +1,12 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 24 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 25 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
+- 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
+
+### `Project Import` enhancements
+- Stop attaching decompiled OOTB sources  [#1813](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1813)
 
 ### `ImpEx` enhancements
 - Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)
@@ -36,6 +40,7 @@
 
 ### Other
 - Include only last 10 releases in the shipped changelog [#1793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1793)
+- Make cached PsiReferences depend on exact PsiElement to improve memory & CPU footprint [#1814](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1814)
 
 ## [2026.0.6]
 

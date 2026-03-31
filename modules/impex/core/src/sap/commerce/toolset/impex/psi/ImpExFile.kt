@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,7 +25,10 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiManager
-import com.intellij.psi.util.*
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.childrenOfType
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.file.ImpExFileType
@@ -44,7 +47,7 @@ class ImpExFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpE
 
         CachedValueProvider.Result.createSingleDependency(
             headerLines,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this
         )
     }, false)
 
@@ -62,7 +65,7 @@ class ImpExFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpE
 
         CachedValueProvider.Result.createSingleDependency(
             externalImpExFiles,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this
         )
     }, false)
 

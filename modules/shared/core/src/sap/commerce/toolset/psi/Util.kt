@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -89,8 +89,14 @@ fun navigate(descriptor: ProblemDescriptor, psiElement: PsiElement?, requestFocu
 
 fun shouldCreateNewReference(reference: PsiReference?, text: String?) = when {
     reference == null -> true
+    text == null -> false
     else -> reference.asSafely<PsiReferenceBase<*>>()
-        ?.let { text != null && (text.length != it.getRangeInElement().length || text != it.getValue()) }
+        ?.let { reference ->
+            // special case of $config- prefix
+            val adjustedText = text.removePrefix($$"$config-")
+
+            adjustedText.length != reference.getRangeInElement().length || adjustedText != reference.getValue()
+        }
         ?: false
 }
 

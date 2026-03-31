@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,6 @@ import com.intellij.lang.properties.psi.Property
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
@@ -64,7 +63,7 @@ abstract class ImpExMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiEl
 
             CachedValueProvider.Result.create(
                 resolvedValue,
-                PsiModificationTracker.MODIFICATION_COUNT
+                this
             )
         }, false
     )

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,9 @@
 package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiReference
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
 import sap.commerce.toolset.impex.psi.references.ImpExDocumentIdReference
 import java.io.Serial
@@ -27,7 +30,12 @@ abstract class ImpExDocumentIdUsageMixin(node: ASTNode) : ImpExPsiNamedElementMi
 
     override fun getReference() = references.firstOrNull()
 
-    override fun getReferences() = arrayOf(ImpExDocumentIdReference(this))
+    override fun getReferences(): Array<PsiReference> = CachedValuesManager.getManager(project).getCachedValue(this) {
+        CachedValueProvider.Result.create(
+            arrayOf(ImpExDocumentIdReference(this)),
+            this
+        )
+    }
 
     companion object {
         @Serial

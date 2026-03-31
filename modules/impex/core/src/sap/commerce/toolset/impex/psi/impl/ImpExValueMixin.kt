@@ -27,7 +27,6 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
@@ -59,7 +58,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     override fun getReferences(): Array<PsiReference> = CachedValuesManager.getManager(project).getCachedValue(this) {
         CachedValueProvider.Result.create(
             collectReferences(),
-            TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+            TSModificationTracker.getInstance(project), this
         )
     }
 
