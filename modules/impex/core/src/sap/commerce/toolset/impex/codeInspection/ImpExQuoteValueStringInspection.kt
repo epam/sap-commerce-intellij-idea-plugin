@@ -82,11 +82,6 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
 
             val impExSettings = value.project.yDeveloperSettings.impexSettings
 
-            if (impExSettings.quoteStringMatching && impExSettings.quoteStringMatchingRegex.matches(trimmedText)) {
-                // ignore whitelisted value
-                return
-            }
-
             val attributeMeta = value.valueGroup
                 ?.fullHeaderParameter
                 ?.anyHeaderParameterName
@@ -100,6 +95,11 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 ?.contains(attributeName)
                 ?: false
             if (isExcluded) return
+
+            if (impExSettings.quoteStringMatching && impExSettings.quoteStringMatchingRegex.matches(trimmedText)) {
+                // ignore whitelisted value
+                return
+            }
 
             holder.registerProblem(
                 value,
