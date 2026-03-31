@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
+import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationMode
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.ui.components.ImpExDocIdGenerationDialog
@@ -68,8 +69,75 @@ class ImpExGenerateDocIdColumnAction : AbstractImpExTableAction() {
             val headerLine = element.asSafely<ImpExHeaderLine>()
                 ?: return@launch
 
+            val mode = readAction { headerLine.anyHeaderMode.text }
+            val typeName = readAction { headerLine.fullHeaderType?.headerTypeName?.text }
+                ?: return@launch
+
             val columns = readAction { headerLine.columnContexts }
-            val mutableContext = ImpExDocIdGenerationContext(columns = columns).mutable()
+            val previewValueLines = readAction {
+                headerLine.valueLines.take(15)
+                    .map { valueLine ->
+                        columns.associate { column ->
+                            val value = valueLine
+                                .getValueGroup(column.number)
+                                ?.computeValue()
+                                ?: ""
+                            column.number to value
+                        }
+                    }
+            }
+            val mutableContext = ImpExDocIdGenerationContext(columns = columns).mutable() {
+                fun StringBuilder.appendDocIdLine(index: Int, values: Map<Int, String>) {
+                    val chunks = if (modeProperty.get() == ImpExDocIdGenerationMode.COUNTER) {
+                        listOf(index.toString())
+                    } else this@mutable.columns
+                        .filter { it.includeProperty.get() }
+                        .mapNotNull { values[it.numberProperty.get()] }
+                    val key = buildList {
+                        add(prefixProperty.get())
+                        chunks.forEach { chunk -> add(chunk) }
+                        add(postfixProperty.get())
+                    }
+                        .filter { it.isNotEmpty() }
+                        .joinToString("-")
+
+                    append("; ")
+                    append(key)
+                    values.forEach { append("; ${it.value}") }
+                    appendLine()
+                }
+
+                fun String.formatImpEx(): String {
+                    val lines = this.lines().filter { it.isNotBlank() }
+                    val allRows = lines.map { line -> line.split(";").map { it.trim() } }
+                    val colWidths = allRows.fold(IntArray(allRows.maxOf { it.size })) { widths, row ->
+                        row.forEachIndexed { i, cell -> widths[i] = maxOf(widths[i], cell.length) }
+                        widths
+                    }
+
+                    return allRows.joinToString("\n") { row ->
+                        row.mapIndexed { i, cell ->
+                            if (i == row.lastIndex) cell else cell.padEnd(colWidths[i])
+                        }.joinToString("; ")
+                    }
+                }
+
+                buildString {
+                    append("UPDATE Test; &${nameProperty.get()}")
+                    columns.forEach { column ->
+                        append("; ${column.name}")
+                        if (column.unique) append("[unique=true]")
+                    }
+                    appendLine()
+
+                    if (previewValueLines.isEmpty()) {
+                        val noValueLines = (1..1).associateWith { "<${columns[it].name}>" }
+                        appendDocIdLine(1, noValueLines)
+                    } else previewValueLines.forEachIndexed { index, values -> appendDocIdLine(index + 1, values) }
+                }
+                    .formatImpEx()
+                    .let { "# $mode $typeName\n$it" }
+            }
 
             val context = withContext(Dispatchers.EDT) {
                 ImpExDocIdGenerationDialog(project, editor.component, mutableContext).get()

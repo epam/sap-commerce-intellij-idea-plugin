@@ -129,15 +129,14 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
 
             group("Wrap Value Strings", false) {
                 row {
-                    previewEditor(project, ImpExFileType) {
-                        """
-                                UPDATE Title; code[unique = true]; name[lang = en]
-                                # Before inspection rule
-                                ; test ; Not wrapped name
-                                # After inspection rule
-                                ; test ; "Not wrapped name"
-                            """.trimIndent()
-                    }
+                    val text = """
+                        UPDATE Title; code[unique = true]; name[lang = en]
+                        # Before inspection rule
+                        ; test ; Not wrapped name
+                        # After inspection rule
+                        ; test ; "Not wrapped name"
+                    """.trimIndent()
+                    previewEditor(project, ImpExFileType, text)
                         .comment(
                             """
                                     It is preferable to wrap any values in quotes for non-unique <code>java.lang.String</code> and <code>localized:java.lang.String</code> item attributes.<br>

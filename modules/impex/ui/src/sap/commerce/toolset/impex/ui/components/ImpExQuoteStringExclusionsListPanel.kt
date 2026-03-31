@@ -72,7 +72,10 @@ class ImpExQuoteStringExclusionsListPanel(
                     (comp as JComponent).border = JBEmptyBorder(5)
                     icon = value.asSafely<ImpExQuoteStringExclusion>()
                         ?.typeName
-                        ?.let { TSMetaModelAccess.getInstance(project).findMetaItemByName(it) }
+                        ?.let {
+                            runCatching { TSMetaModelAccess.getInstance(project).findMetaItemByName(it) }
+                        }
+                        ?.getOrNull()
                         ?.icon
                         ?: HybrisIcons.TypeSystem.Types.UNKNOWN
                     text = name

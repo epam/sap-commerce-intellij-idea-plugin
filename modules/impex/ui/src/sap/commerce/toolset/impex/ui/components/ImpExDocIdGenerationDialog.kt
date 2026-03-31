@@ -18,24 +18,27 @@
 
 package sap.commerce.toolset.impex.ui.components
 
-import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.equalsTo
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.ui.JBUI
+import com.intellij.xdebugger.impl.ui.DebuggerUIUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationMode
+import sap.commerce.toolset.impex.file.ImpExFileType
+import sap.commerce.toolset.ui.previewEditor
 import java.awt.Component
+import java.awt.Dimension
+import javax.swing.ScrollPaneConstants
 
 class ImpExDocIdGenerationDialog(
-    project: Project,
+    private val project: Project,
     parentComponent: Component,
     private val mutableContext: ImpExDocIdGenerationContext.Mutable
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.PROJECT) {
-
-    private val modeObservable = AtomicProperty(mutableContext.mode)
 
     init {
         title = "Generate DocId for ImpEx"
@@ -45,62 +48,94 @@ class ImpExDocIdGenerationDialog(
     }
 
     override fun createCenterPanel() = panel {
-        row {
-            label("Mode:")
-                .bold()
-            segmentedButton(
-                ImpExDocIdGenerationMode.entries.toList()
-            ) {
-                icon = it.icon
-                text = it.title
-                toolTipText = it.description
+        twoColumnsRow(
+            {
+                panel {
+                    row {
+                        label("Mode:")
+                            .bold()
+                        segmentedButton(
+                            ImpExDocIdGenerationMode.entries.toList()
+                        ) {
+                            icon = it.icon
+                            text = it.title
+                            toolTipText = it.description
+                        }
+                            .bind(mutableContext.modeProperty)
+                    }.layout(RowLayout.PARENT_GRID)
+
+                    row {
+                        textField()
+                            .label("Doc id:")
+                            .bindText(mutableContext.nameProperty)
+                            .align(AlignX.FILL)
+                            .comment("Represents name of the newly generated &docId column.")
+                    }.layout(RowLayout.PARENT_GRID)
+
+                    row {
+                        textField()
+                            .label("Prefix:")
+                            .bindText(mutableContext.prefixProperty)
+                            .align(AlignX.FILL)
+                    }.layout(RowLayout.PARENT_GRID)
+
+                    row {
+                        textField()
+                            .label("Postfix:")
+                            .bindText(mutableContext.postfixProperty)
+                            .align(AlignX.FILL)
+                    }.layout(RowLayout.PARENT_GRID)
+                }
+            },
+            {
+                panel {
+                    row {
+                        label("Columns")
+                    }
+                    mutableContext.columns.forEach { column ->
+                        row {
+                            label("#${column.numberProperty.get() + 1}")
+                                .gap(RightGap.SMALL)
+
+                            checkBox(StringUtil.shortenPathWithEllipsis(column.nameProperty.get(), 30))
+                                .bindSelected(column.includeProperty)
+                                .align(AlignX.FILL)
+                                .gap(RightGap.SMALL)
+
+                            if (column.uniqueProperty.get()) {
+                                icon(HybrisIcons.ImpEx.COLUMN_UNIQUE)
+                            }
+                        }.layout(RowLayout.PARENT_GRID)
+                    }
+                }.enabledIf(mutableContext.modeProperty.equalsTo(ImpExDocIdGenerationMode.COLUMN_BASED))
             }
-                .bind(modeObservable)
-        }.layout(RowLayout.PARENT_GRID)
+        )
+
+        separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
 
         row {
-            textField()
-                .label("Doc id:")
-                .bindText(mutableContext::name)
-                .align(AlignX.FILL)
-                .comment("Represents name of the newly generated &docId column.")
-        }.layout(RowLayout.PARENT_GRID)
-
+            label("Preview")
+                .align(AlignX.CENTER)
+        }
         row {
-            textField()
-                .label("Prefix:")
-                .bindText(mutableContext::prefix)
-                .align(AlignX.FILL)
-        }.layout(RowLayout.PARENT_GRID)
+            previewEditor(project, ImpExFileType) {
+                setHorizontalScrollbarVisible(true)
+                setCaretEnabled(true)
+                scrollPane.verticalScrollBarPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED
+                component.preferredSize = Dimension(JBUI.DialogSizes.large().width, 380)
+                colorsScheme = createBoundColorSchemeDelegate(DebuggerUIUtil.getColorScheme())
+            }
+                .applyToComponent {
+                    this.text = mutableContext.computePreview(mutableContext)
 
-        row {
-            textField()
-                .label("Postfix:")
-                .bindText(mutableContext::postfix)
-                .align(AlignX.FILL)
-        }.layout(RowLayout.PARENT_GRID)
-
-        group("Columns") {
-            mutableContext.columns.forEach { column ->
-                row {
-                    label("#${column.number + 1}")
-                        .gap(RightGap.SMALL)
-
-                    checkBox(StringUtil.shortenPathWithEllipsis(column.name, 30))
-                        .bindSelected(column::include)
-                        .align(AlignX.FILL)
-                        .gap(RightGap.SMALL)
-
-                    if (column.unique) {
-                        icon(HybrisIcons.ImpEx.COLUMN_UNIQUE)
+                    mutableContext.previewProperty.afterChange(disposable) {
+                        this.text = it
                     }
                 }
-            }
-        }.enabledIf(modeObservable.equalsTo(ImpExDocIdGenerationMode.COLUMN_BASED))
+                .align(AlignX.FILL)
+        }
     }
 
-    fun get() = if (showAndGet()) mutableContext
-        .apply { mode = modeObservable.get() }
-        .immutable()
+    fun get() = if (showAndGet()) mutableContext.immutable()
     else null
 }

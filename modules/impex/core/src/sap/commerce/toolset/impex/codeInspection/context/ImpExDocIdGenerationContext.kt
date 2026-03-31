@@ -18,34 +18,59 @@
 
 package sap.commerce.toolset.impex.codeInspection.context
 
+import com.intellij.openapi.observable.properties.PropertyGraph
+
 data class ImpExDocIdGenerationContext(
+    val mode: ImpExDocIdGenerationMode = ImpExDocIdGenerationMode.COLUMN_BASED,
     val name: String = "docId",
     val prefix: String = "",
     val postfix: String = "",
-    val columns: List<ImpExColumnContext>,
-    val mode: ImpExDocIdGenerationMode = ImpExDocIdGenerationMode.COLUMN_BASED
+    val columns: List<ImpExColumnContext>
 ) {
-    fun mutable() = Mutable(
+    fun mutable(computePreview: Mutable.() -> String) = Mutable(
+        mode = mode,
         name = name,
         prefix = prefix,
         postfix = postfix,
         columns = columns.map { it.mutable() },
-        mode = mode
+        computePreview = computePreview
     )
 
     data class Mutable(
-        var name: String,
-        var prefix: String,
-        var postfix: String,
-        var columns: List<ImpExColumnContext.Mutable>,
-        var mode: ImpExDocIdGenerationMode
+        private var mode: ImpExDocIdGenerationMode,
+        private var name: String,
+        private var prefix: String,
+        private var postfix: String,
+        val columns: List<ImpExColumnContext.Mutable>,
+        val computePreview: Mutable.() -> String
     ) {
+        private val graph = PropertyGraph()
+
+        val modeProperty = graph.property(mode)
+        val nameProperty = graph.property(name)
+        val prefixProperty = graph.property(prefix)
+        val postfixProperty = graph.property(postfix)
+        val previewProperty = graph.property("")
+
+        init {
+            graph.dependsOn(previewProperty, modeProperty) { computePreview() }
+            graph.dependsOn(previewProperty, nameProperty) { computePreview() }
+            graph.dependsOn(previewProperty, prefixProperty) { computePreview() }
+            graph.dependsOn(previewProperty, postfixProperty) { computePreview() }
+            columns.forEach { col ->
+                graph.dependsOn(previewProperty, col.nameProperty) { computePreview() }
+                graph.dependsOn(previewProperty, col.numberProperty) { computePreview() }
+                graph.dependsOn(previewProperty, col.uniqueProperty) { computePreview() }
+                graph.dependsOn(previewProperty, col.includeProperty) { computePreview() }
+            }
+        }
+
         fun immutable() = ImpExDocIdGenerationContext(
-            name = name,
-            prefix = prefix,
-            postfix = postfix,
-            columns = columns.map { it.immutable() },
-            mode = mode
+            mode = modeProperty.get(),
+            name = nameProperty.get(),
+            prefix = prefixProperty.get(),
+            postfix = postfixProperty.get(),
+            columns = columns.map { it.immutable() }
         )
     }
 
