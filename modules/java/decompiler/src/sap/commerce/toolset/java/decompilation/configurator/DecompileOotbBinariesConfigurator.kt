@@ -35,7 +35,6 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.workspace.jps.entities.*
 import com.intellij.platform.workspace.storage.entities
-import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.workspaceModel.ide.toPath
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
@@ -49,14 +48,13 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
-import sap.commerce.toolset.project.fromPath
 import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.jar.JarFile
 
 /**
- * Decompile OOTB bin jars into doc/decompiledsrc and attach as additional sources.
+ * Decompile OOTB bin jars into doc/decompiledsrc.
  */
 class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
 
@@ -95,17 +93,6 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
                             }
                         }.awaitAll()
                     }
-                }
-
-                val contextsToAttach = contexts.zip(decompileResults)
-                    .filter { it.second != JarDecompileResult.Failed }
-                    .map { it.first }
-
-                runCatching {
-                    attachDecompiledSources(context, contextsToAttach)
-                }.onFailure {
-                    if (it is CancellationException) throw it
-                    logger.warn("Failed to attach decompiled sources", it)
                 }
 
                 notifyFinished(project, decompileResults)
@@ -150,7 +137,6 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
                 if (moduleEntity.hasNonGeneratedJavaSources()) continue
 
                 for (libraryEntity in moduleEntity.getModuleLibraries(context.storage)) {
-                    val libraryId = libraryEntity.symbolicId
                     for (libraryRoot in libraryEntity.roots) {
                         if (libraryRoot.type != LibraryRootTypeId.COMPILED) continue
                         val jarRoot = libraryRoot.url.virtualFile ?: continue
@@ -159,7 +145,6 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
                         add(
                             JarDecompileContext(
                                 moduleDescriptor = moduleDescriptor,
-                                libraryId = libraryId,
                                 libraryRoot = libraryRoot,
                                 jar = jarRoot,
                             )
@@ -268,55 +253,11 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
         .resolve(ProjectConstants.Paths.DOC_DECOMPILED_SOURCES)
         .resolve(jar.name.substringBeforeLast('.', jar.name))
 
-    private suspend fun attachDecompiledSources(
-        context: ProjectPostImportContext,
-        contexts: List<JarDecompileContext>
-    ) {
-        val vfUrlManager = context.workspace.getVirtualFileUrlManager()
-        val sourcesRootsByLibraryId = contexts
-            .mapNotNull { decompileContext ->
-                val outputRoot = decompileContext.outputRoot()
-                    .takeIf { it.directoryExists }
-                    ?: return@mapNotNull null
-                val sourcesRoot = outputRoot.toSourcesLibraryRoot(vfUrlManager)
-                    ?: return@mapNotNull null
-
-                decompileContext.libraryId to sourcesRoot
-            }
-            .groupBy(
-                keySelector = { it.first },
-                valueTransform = { it.second }
-            )
-            .takeIf { it.isNotEmpty() }
-            ?: return
-
-        context.workspace.update("Attaching decompiled sources") { storage ->
-            storage.entities<LibraryEntity>()
-                .forEach { entity ->
-                    val sourceLibraryRoots = sourcesRootsByLibraryId[entity.symbolicId]
-                        ?: return@forEach
-                    val existingSources = entity.roots
-                        .filter { it.type == LibraryRootTypeId.SOURCES }
-                    val newSourceRoots = sourceLibraryRoots
-                        .filterNot { existingSources.contains(it) }
-                        .takeIf { it.isNotEmpty() }
-                        ?: return@forEach
-
-                    storage.modifyLibraryEntity(entity) {
-                        this.roots += newSourceRoots
-                    }
-                }
-        }
-    }
-
     private fun LibraryRoot.toCompiledJarPathOrNull(): Path? {
         if (type != LibraryRootTypeId.COMPILED) return null
 
         return runCatching { url.toPath().normalize() }.getOrNull()
     }
-
-    private fun Path.toSourcesLibraryRoot(vfUrlManager: VirtualFileUrlManager): LibraryRoot? = vfUrlManager.fromPath(this)
-        ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
 
     private fun notifyFinished(project: Project, results: List<JarDecompileResult>) {
         val completed = results.count { it == JarDecompileResult.Completed }
@@ -333,7 +274,7 @@ class DecompileOotbBinariesConfigurator : ProjectPostImportConfigurator {
         Notifications.create(
             type = if (failed > 0) NotificationType.WARNING else NotificationType.INFORMATION,
             title = "Decompiled OOTB sources",
-            content = "$details. Decompiled sources are written under 'doc/decompiledsrc' in each module and attached as library sources."
+            content = "$details. Decompiled sources are written under 'doc/decompiledsrc' in each module."
         )
             .hideAfter(10)
             .notify(project)
