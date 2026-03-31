@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,7 +30,6 @@ import com.intellij.psi.jsp.JspFile;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
@@ -141,7 +140,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
             }
 
             final IProperty theChosenOne = chooseForLocale(allProperties);
-            return new CachedValueProvider.Result<>(theChosenOne, PsiModificationTracker.MODIFICATION_COUNT);
+            return new CachedValueProvider.Result<>(theChosenOne, codeValue);
         });
     }
 

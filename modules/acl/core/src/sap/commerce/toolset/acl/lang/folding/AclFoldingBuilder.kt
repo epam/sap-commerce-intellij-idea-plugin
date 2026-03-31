@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import com.intellij.psi.util.*
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiElementFilter
+import com.intellij.psi.util.elementType
 import sap.commerce.toolset.acl.psi.AclTypes
 import sap.commerce.toolset.acl.psi.AclUserRights
 import sap.commerce.toolset.acl.psi.AclUserRightsBody
@@ -67,7 +70,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
             CachedValueProvider.Result.create(
                 results,
-                PsiModificationTracker.MODIFICATION_COUNT,
+                root,
                 ProjectRootModificationTracker.getInstance(root.project),
                 foldingSettings
             )

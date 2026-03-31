@@ -41,7 +41,7 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
             CachedValueProvider.Result.createSingleDependency(
                 fhp,
-                PsiModificationTracker.MODIFICATION_COUNT,
+                this,
             )
 
         },
@@ -56,7 +56,7 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
             CachedValueProvider.Result.createSingleDependency(
                 fhp,
-                PsiModificationTracker.MODIFICATION_COUNT,
+                this,
             )
         },
         false
@@ -75,7 +75,7 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         }
         CachedValueProvider.Result.createSingleDependency(
             valueLines,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this,
         )
     }, false)
 

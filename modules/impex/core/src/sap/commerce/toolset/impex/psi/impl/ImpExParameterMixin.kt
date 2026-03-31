@@ -25,7 +25,6 @@ import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
@@ -58,7 +57,7 @@ abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
 
         CachedValueProvider.Result.create(
             references,
-            TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+            TSModificationTracker.getInstance(project), this
         )
     }
 

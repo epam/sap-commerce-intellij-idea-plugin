@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
         element: PsiElement, context: ProcessingContext
     ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         val attributeValue = element as? XmlAttributeValue
-            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), element)
 
         val propertyXmlTags = element.parents(false)
             .mapNotNull { it as? XmlTag }
@@ -51,18 +51,18 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
             .firstOrNull()
             ?.childrenOfType<XmlTag>()
             ?.filter { it.localName == "property" }
-            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), element)
         val currentLevelMappings = propertyXmlTags
             .firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_LEVEL_MAPPING }
             ?.let { PsiTreeUtil.collectElements(it) { element -> element is XmlAttribute && element.localName == "key" } }
             ?.map { it as XmlAttribute }
             ?.mapNotNull { it.value }
-            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), element)
 
         val meta = propertyXmlTags
             .firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_DTO_CLASS }
             ?.let { BSMetaModelAccess.getInstance(element.project).findMetaBeanByName(it.getAttributeValue("value")) }
-            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), element)
 
         val levelMappings = currentLevelMappings + HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS
 
@@ -73,7 +73,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
         CachedValueProvider.Result.createSingleDependency(
             references,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            element,
         )
     }
 

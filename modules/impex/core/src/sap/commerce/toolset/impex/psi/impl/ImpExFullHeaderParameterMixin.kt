@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,6 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
@@ -38,7 +37,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
 
         CachedValueProvider.Result.createSingleDependency(
             columnNumber,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this
         )
     }, false)
 
@@ -51,7 +50,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
 
         CachedValueProvider.Result.createSingleDependency(
             valueGroups,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this
         )
     }, false)
 

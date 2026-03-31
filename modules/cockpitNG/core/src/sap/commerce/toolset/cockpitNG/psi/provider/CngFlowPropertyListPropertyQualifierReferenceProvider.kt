@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,6 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.cockpitNG.CngConstants
 import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
@@ -36,7 +35,7 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
         element: PsiElement, context: ProcessingContext
     ): Array<PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         val type = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
-            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), element)
 
         val reference = when {
             type.startsWith(CngConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
@@ -50,7 +49,7 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
 
         CachedValueProvider.Result.createSingleDependency(
             arrayOf(reference),
-            PsiModificationTracker.MODIFICATION_COUNT,
+            element,
         )
     }
 }

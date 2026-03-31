@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,6 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -48,7 +47,7 @@ class CngTSItemAttributeReferenceProvider : PsiReferenceProvider() {
 
         CachedValueProvider.Result.createSingleDependency(
             references,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            element,
         )
     }
 

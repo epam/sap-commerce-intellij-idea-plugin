@@ -36,7 +36,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
         CachedValueProvider.Result.createSingleDependency(
             valueLine,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this,
         )
     }, false)
 
@@ -47,7 +47,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
         CachedValueProvider.Result.createSingleDependency(
             header,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this,
         )
     }, false)
 
@@ -56,7 +56,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
         CachedValueProvider.Result.createSingleDependency(
             columnNumber,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this,
         )
     }, false)
 
@@ -82,7 +82,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
         CachedValueProvider.Result.createSingleDependency(
             defaultValue,
-            PsiModificationTracker.MODIFICATION_COUNT,
+            this,
         )
     }, false)
 
