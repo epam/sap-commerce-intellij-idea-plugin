@@ -30,8 +30,7 @@ import java.nio.file.Path
 /**
  * Excludes decompiled sources output (doc/decompiledsrc) from module content roots.
  *
- * Decompiled sources are attached back as *library sources*, so excluding the physical folder prevents
- * IntelliJ inspections/indexing from treating them as project sources, while still allowing navigation.
+ * Prevents IntelliJ inspections/indexing from treating the decompiled files as project sources.
  */
 class ExcludeDecompiledSourcesContentRootEntryConfigurator : ModuleContentRootEntryConfigurator {
 
