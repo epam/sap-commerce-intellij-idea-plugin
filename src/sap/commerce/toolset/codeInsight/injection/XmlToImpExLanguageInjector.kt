@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,13 @@ import sap.commerce.toolset.impex.psi.impl.ImpExStringImpl
 
 class XmlToImpExLanguageInjector : LanguageInjector {
 
+    /**
+     * return true if the String passed in is something like XML
+     *
+     * @return true of the string is XML, false otherwise
+     */
+    private val xmlPatternRegExp = "<(\\S+?)(.*?)>(.*?)</\\1>".toRegex()
+
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
@@ -42,13 +49,6 @@ class XmlToImpExLanguageInjector : LanguageInjector {
             )
         }
     }
-
-    /**
-     * return true if the String passed in is something like XML
-     *
-     * @return true of the string is XML, false otherwise
-     */
-    private val xmlPatternRegExp = "<(\\S+?)(.*?)>(.*?)</\\1>".toRegex()
 
     private fun String.isXmlLike(): Boolean {
         if (this.trim { it <= ' ' }.isNotEmpty()) {

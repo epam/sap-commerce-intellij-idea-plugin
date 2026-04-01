@@ -81,7 +81,10 @@ class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpExTypes.BEAN_SHELL_MARKER to SCRIPT_MARKER_KEYS,
             ImpExTypes.GROOVY_MARKER to SCRIPT_MARKER_KEYS,
             ImpExTypes.JAVASCRIPT_MARKER to SCRIPT_MARKER_KEYS,
-            ImpExTypes.SCRIPT_ACTION to pack(ImpExHighlighterColors.SCRIPT_ACTION),
+            ImpExTypes.SCRIPT_ACTION_IF to pack(ImpExHighlighterColors.SCRIPT_ACTION),
+            ImpExTypes.SCRIPT_ACTION_ENDIF to pack(ImpExHighlighterColors.SCRIPT_ACTION),
+            ImpExTypes.SCRIPT_ACTION_BEFOREEACH to pack(ImpExHighlighterColors.SCRIPT_ACTION),
+            ImpExTypes.SCRIPT_ACTION_AFTEREACH to pack(ImpExHighlighterColors.SCRIPT_ACTION),
 
             ImpExTypes.BOOLEAN to pack(ImpExHighlighterColors.BOOLEAN),
             ImpExTypes.COMMA to pack(ImpExHighlighterColors.COMMA),

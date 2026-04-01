@@ -33,14 +33,14 @@ import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import sap.commerce.toolset.impex.psi.*;
 
-public class ImpExScriptImpl extends ASTWrapperPsiElement implements ImpExScript {
+public class ImpExScriptLineImpl extends ASTWrapperPsiElement implements ImpExScriptLine {
 
-  public ImpExScriptImpl(@NotNull ASTNode node) {
+  public ImpExScriptLineImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
-    visitor.visitScript(this);
+    visitor.visitScriptLine(this);
   }
 
   @Override
@@ -51,20 +51,20 @@ public class ImpExScriptImpl extends ASTWrapperPsiElement implements ImpExScript
 
   @Override
   @Nullable
-  public ImpExBeanshellScriptBody getBeanshellScriptBody() {
-    return findChildByClass(ImpExBeanshellScriptBody.class);
+  public ImpExBeanshellScriptBodyLine getBeanshellScriptBodyLine() {
+    return findChildByClass(ImpExBeanshellScriptBodyLine.class);
   }
 
   @Override
   @Nullable
-  public ImpExGroovyScriptBody getGroovyScriptBody() {
-    return findChildByClass(ImpExGroovyScriptBody.class);
+  public ImpExGroovyScriptBodyLine getGroovyScriptBodyLine() {
+    return findChildByClass(ImpExGroovyScriptBodyLine.class);
   }
 
   @Override
   @Nullable
-  public ImpExJavascriptScriptBody getJavascriptScriptBody() {
-    return findChildByClass(ImpExJavascriptScriptBody.class);
+  public ImpExJavascriptScriptBodyLine getJavascriptScriptBodyLine() {
+    return findChildByClass(ImpExJavascriptScriptBodyLine.class);
   }
 
 }

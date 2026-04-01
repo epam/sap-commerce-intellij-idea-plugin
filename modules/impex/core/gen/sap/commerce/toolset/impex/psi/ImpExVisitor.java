@@ -49,8 +49,12 @@ public class ImpExVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitBeanshellScriptBody(@NotNull ImpExBeanshellScriptBody o) {
-    visitPsiElement(o);
+  public void visitBeanshellScriptBodyLine(@NotNull ImpExBeanshellScriptBodyLine o) {
+    visitScriptBody(o);
+  }
+
+  public void visitBeanshellScriptBodyMultiline(@NotNull ImpExBeanshellScriptBodyMultiline o) {
+    visitScriptBody(o);
   }
 
   public void visitComment(@NotNull ImpExComment o) {
@@ -73,8 +77,12 @@ public class ImpExVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitGroovyScriptBody(@NotNull ImpExGroovyScriptBody o) {
-    visitPsiElement(o);
+  public void visitGroovyScriptBodyLine(@NotNull ImpExGroovyScriptBodyLine o) {
+    visitScriptBody(o);
+  }
+
+  public void visitGroovyScriptBodyMultiline(@NotNull ImpExGroovyScriptBodyMultiline o) {
+    visitScriptBody(o);
   }
 
   public void visitHeaderLine(@NotNull ImpExHeaderLine o) {
@@ -85,8 +93,12 @@ public class ImpExVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitJavascriptScriptBody(@NotNull ImpExJavascriptScriptBody o) {
-    visitPsiElement(o);
+  public void visitJavascriptScriptBodyLine(@NotNull ImpExJavascriptScriptBodyLine o) {
+    visitScriptBody(o);
+  }
+
+  public void visitJavascriptScriptBodyMultiline(@NotNull ImpExJavascriptScriptBodyMultiline o) {
+    visitScriptBody(o);
   }
 
   public void visitMacroDeclaration(@NotNull ImpExMacroDeclaration o) {
@@ -125,8 +137,12 @@ public class ImpExVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitScript(@NotNull ImpExScript o) {
-    visitPsiElement(o);
+  public void visitScriptLine(@NotNull ImpExScriptLine o) {
+    visitScript(o);
+  }
+
+  public void visitScriptMultiline(@NotNull ImpExScriptMultiline o) {
+    visitScript(o);
   }
 
   public void visitSpecialParameter(@NotNull ImpExSpecialParameter o) {
@@ -206,6 +222,14 @@ public class ImpExVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiNamedElement(@NotNull ImpExPsiNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitScript(@NotNull ImpExScript o) {
+    visitPsiElement(o);
+  }
+
+  public void visitScriptBody(@NotNull ImpExScriptBody o) {
     visitPsiElement(o);
   }
 

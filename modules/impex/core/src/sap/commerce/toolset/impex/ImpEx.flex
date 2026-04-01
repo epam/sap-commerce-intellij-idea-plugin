@@ -34,7 +34,6 @@ import java.util.HashSet;
 %function advance
 %type IElementType
 %{
-
   private Collection<String> macroDeclarations = new HashSet<String>();
 %}
 
@@ -54,13 +53,20 @@ backslash   = [\\]
 
 multiline_separator   = {backslash}{crlf}
 
-line_comment = [#]{not_crlf}*
+line_comment = "#"|"#"[^%\n]{not_crlf}*
 
 single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-script_action = (beforeEach | afterEach | if | endif)[:]
+script_marker_groovy = "#%groovy%"
+script_marker_javascript = "#%javascript%"
+script_marker_bsh = "#%"("bsh%")?
+
+script_action_if = (if)[:]
+script_action_endif = (endif)[:]
+script_action_beforeEach = (beforeEach)[:]
+script_action_afterEach = (afterEach)[:]
 script_body_value = [^ '\"\r\n]+
 
 macro_name_declaration = [$](([\w\d-]|{white_space})+({backslash}\s*)*)+[=]
@@ -145,6 +151,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state BEAN_SHELL
 %state SCRIPT
 %state SCRIPT_BODY
+%state SCRIPT_BODY_MULTILINE
 %state SCRIPT_DOUBLE_STRING
 %state MODIFIERS_BLOCK
 %state WAITING_ATTR_OR_PARAM_VALUE
@@ -163,41 +170,13 @@ end_userrights                    = [$]END_USERRIGHTS
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 
 <YYINITIAL> {
+    {line_comment}                                          { return ImpExTypes.LINE_COMMENT; }
+
+    {script_marker_groovy}                                  { yybegin(SCRIPT_BODY); return ImpExTypes.GROOVY_MARKER; }
+    {script_marker_javascript}                              { yybegin(SCRIPT_BODY); return ImpExTypes.JAVASCRIPT_MARKER; }
+    {script_marker_bsh}                                     { yybegin(SCRIPT_BODY); return ImpExTypes.BEAN_SHELL_MARKER; }
+
     {double_quote}                                          { yybegin(YYINITIAL_DOUBLE_STRING); return ImpExTypes.DOUBLE_QUOTE_OPEN; }
-
-    {line_comment}                                          {
-                                                                final String text = yytext().toString().trim();
-                                                                int index = text.indexOf("#%groovy%");
-
-                                                                if (index > -1) {
-                                                                    yybegin(SCRIPT_BODY);
-                                                                    yypushback(yylength() - 9);
-                                                                    return ImpExTypes.GROOVY_MARKER;
-                                                                }
-
-                                                                index = text.indexOf("#%javascript%");
-                                                                if (index > -1) {
-                                                                    yybegin(SCRIPT_BODY);
-                                                                    yypushback(yylength() - 13);
-                                                                    return ImpExTypes.JAVASCRIPT_MARKER;
-                                                                }
-
-                                                                index = text.indexOf("#%bsh%");
-                                                                if (index > -1) {
-                                                                    yybegin(SCRIPT_BODY);
-                                                                    yypushback(yylength() - 6);
-                                                                    return ImpExTypes.BEAN_SHELL_MARKER;
-                                                                }
-
-                                                                index = text.indexOf("#%");
-                                                                if (index > -1) {
-                                                                    yybegin(SCRIPT_BODY);
-                                                                    yypushback(yylength() - 2);
-                                                                    return ImpExTypes.BEAN_SHELL_MARKER;
-                                                                }
-
-                                                                return ImpExTypes.LINE_COMMENT;
-                                                            }
 
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return ImpExTypes.START_USERRIGHTS; }
     {root_macro_usage}                                      { return ImpExTypes.MACRO_USAGE; }
@@ -227,6 +206,11 @@ end_userrights                    = [$]END_USERRIGHTS
     {double_quote}                                          { yybegin(YYINITIAL); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
     {double_quote_escaped}                                  { return ImpExTypes.DOUBLE_QUOTE_ESCAPE; }
     {white_space}+                                          { return TokenType.WHITE_SPACE; }
+
+    {script_marker_groovy}                                  { yybegin(SCRIPT_BODY_MULTILINE); return ImpExTypes.GROOVY_MARKER; }
+    {script_marker_javascript}                              { yybegin(SCRIPT_BODY_MULTILINE); return ImpExTypes.JAVASCRIPT_MARKER; }
+    {script_marker_bsh}                                     { yybegin(SCRIPT_BODY_MULTILINE); return ImpExTypes.BEAN_SHELL_MARKER; }
+
     {macro_usage}                                           {
                                                                 var macroName = yytext().toString().trim();
                                                                 return macroDeclarations.contains(macroName)
@@ -235,6 +219,18 @@ end_userrights                    = [$]END_USERRIGHTS
                                                             }
     {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
 
+    {crlf}                                                  { return ImpExTypes.CRLF; }
+}
+
+<SCRIPT_BODY_MULTILINE> {
+    {double_quote}                                          { yybegin(YYINITIAL); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
+    {double_quote_escaped}                                  { return ImpExTypes.DOUBLE_QUOTE_ESCAPE; }
+    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {script_action_if}                                      { return ImpExTypes.SCRIPT_ACTION_IF; }
+    {script_action_endif}                                   { return ImpExTypes.SCRIPT_ACTION_ENDIF; }
+    {script_action_beforeEach}                              { return ImpExTypes.SCRIPT_ACTION_BEFOREEACH; }
+    {script_action_afterEach}                               { return ImpExTypes.SCRIPT_ACTION_AFTEREACH; }
+    {script_body_value}                                     { return ImpExTypes.SCRIPT_BODY_VALUE; }
     {crlf}                                                  { return ImpExTypes.CRLF; }
 }
 
@@ -292,7 +288,10 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <SCRIPT_BODY> {
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
-    {script_action}                                         { return ImpExTypes.SCRIPT_ACTION; }
+    {script_action_if}                                      { return ImpExTypes.SCRIPT_ACTION_IF; }
+    {script_action_endif}                                   { return ImpExTypes.SCRIPT_ACTION_ENDIF; }
+    {script_action_beforeEach}                              { return ImpExTypes.SCRIPT_ACTION_BEFOREEACH; }
+    {script_action_afterEach}                               { return ImpExTypes.SCRIPT_ACTION_AFTEREACH; }
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
 
     {double_quote}                                          { yybegin(SCRIPT_DOUBLE_STRING); return ImpExTypes.DOUBLE_QUOTE_OPEN; }

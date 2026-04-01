@@ -49,7 +49,7 @@ private root_group ::= (
     | root_macro_usage
     | header_line
     | value_line
-    | script
+    | script_line
     | comment
     | (string (';')?)
     | macro_declaration
@@ -208,22 +208,61 @@ macro_values_dec ::= (
     | HEADER_MODE_REMOVE
     )*
 
-script ::= GROOVY_MARKER SCRIPT_ACTION? groovy_script_body
-    | JAVASCRIPT_MARKER SCRIPT_ACTION? javascript_script_body
-    | BEAN_SHELL_MARKER SCRIPT_ACTION? beanshell_script_body
-{pin = 1}
-
-beanshell_script_body ::= script_body
-groovy_script_body ::= script_body
+script_line ::= GROOVY_MARKER script_action? groovy_script_body_line?
+    | JAVASCRIPT_MARKER script_action? javascript_script_body_line?
+    | BEAN_SHELL_MARKER script_action? beanshell_script_body_line?
 {
-    mixin="sap.commerce.toolset.impex.psi.impl.ImpExGroovyScriptBodyMixin"
+    pin = 1
+    implements="sap.commerce.toolset.impex.psi.ImpExScript"
 }
-javascript_script_body ::= script_body
 
-private script_body ::= (SCRIPT_BODY_VALUE
-    | MACRO_USAGE
+script_multiline ::= GROOVY_MARKER script_action? groovy_script_body_multiline
+    | JAVASCRIPT_MARKER script_action? javascript_script_body_multiline
+    | BEAN_SHELL_MARKER script_action? beanshell_script_body_multiline
+{
+    pin = 1
+    implements="sap.commerce.toolset.impex.psi.ImpExScript"
+}
+
+beanshell_script_body_line ::= script_body_line {
+    implements="sap.commerce.toolset.impex.psi.ImpExScriptBody"
+}
+javascript_script_body_line ::= script_body_line {
+    implements="sap.commerce.toolset.impex.psi.ImpExScriptBody"
+}
+groovy_script_body_line ::= script_body_line {
+    mixin="sap.commerce.toolset.impex.psi.impl.ImpExGroovyScriptBodyMixin"
+    implements="sap.commerce.toolset.impex.psi.ImpExScriptBody"
+}
+
+beanshell_script_body_multiline ::= script_body_multiline {
+    implements="sap.commerce.toolset.impex.psi.ImpExScriptBody"
+}
+javascript_script_body_multiline ::= script_body_multiline {
+    implements="sap.commerce.toolset.impex.psi.ImpExScriptBody"
+}
+groovy_script_body_multiline ::= script_body_multiline {
+    mixin="sap.commerce.toolset.impex.psi.impl.ImpExGroovyScriptBodyMixin"
+    implements="sap.commerce.toolset.impex.psi.ImpExScriptBody"
+}
+
+private script_body_multiline ::= (SCRIPT_BODY_VALUE
+    | DOUBLE_QUOTE_ESCAPE
+    | macro_usage_dec
+    | string
+    | CRLF
+    )*
+
+private script_body_line ::= (SCRIPT_BODY_VALUE
+    | DOUBLE_QUOTE_ESCAPE
+    | macro_usage_dec
     | string
     )*
+
+private script_action ::= SCRIPT_ACTION_IF
+    | SCRIPT_ACTION_ENDIF
+    | SCRIPT_ACTION_BEFOREEACH
+    | SCRIPT_ACTION_AFTEREACH
 
 string ::= SINGLE_STRING
     | DOUBLE_STRING
@@ -240,6 +279,7 @@ private double_string_dec ::= DOUBLE_QUOTE_OPEN double_quoted_string_content* DO
 
 private double_quoted_string_content ::=
       macro_usage_dec
+    | script_multiline
     | DOUBLE_QUOTE_ESCAPE
     | TAG_OPEN
     | TAG_CLOSE
