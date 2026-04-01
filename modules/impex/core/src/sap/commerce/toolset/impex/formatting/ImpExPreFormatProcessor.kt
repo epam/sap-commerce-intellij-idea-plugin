@@ -24,6 +24,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
 import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 
@@ -37,8 +38,11 @@ class ImpExPreFormatProcessor : PreFormatProcessor {
             if (it.elementType == ImpExTypes.CRLF) it.prevLeaf(true)
             else it
         }
-        ?.parentOfType<ImpExValueLine>()
-        ?.headerLine
+        ?.let {
+            it.parentOfType<ImpExValueLine>()
+                ?.headerLine
+                ?: it.parentOfType<ImpExHeaderLine>()
+        }
         ?.tableRange
         ?: range
 }
