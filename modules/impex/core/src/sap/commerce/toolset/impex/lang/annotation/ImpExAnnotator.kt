@@ -55,6 +55,11 @@ class ImpExAnnotator : AbstractAnnotator() {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
+            ImpExTypes.BEANSHELL_SCRIPT_BODY_MULTILINE,
+            ImpExTypes.JAVASCRIPT_SCRIPT_BODY_MULTILINE -> {
+                highlight(ImpExHighlighterColors.SCRIPT_BODY, holder, element)
+            }
+
             ImpExTypes.USER_RIGHTS_HEADER_PARAMETER -> {
                 val headerParameter = element as? ImpExUserRightsHeaderParameter ?: return
                 val elementType = headerParameter.firstChild.elementType ?: return
@@ -115,7 +120,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                 value.references.forEach { reference ->
                     when (reference) {
                         is ImpExValueTSStaticEnumReference -> {
-                            val valueElement = reference.getTargetElement() ?: return
+                            val valueElement = reference.getTargetElement()
                             highlightReference(
                                 ImpExHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
                                 "hybris.inspections.impex.unresolved.enumValue.key",

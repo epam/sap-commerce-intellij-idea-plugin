@@ -102,6 +102,7 @@ object ImpExHighlighterColors {
 
     val TAG = key("TAG", DefaultLanguageHighlighterColors.CONSTANT)
 
+    val SCRIPT_BODY = key("IMPEX_SCRIPT_BODY", HighlighterColors.TEXT)
     val SCRIPT_MARKER = key("IMPEX_SCRIPT_MARKER", DefaultLanguageHighlighterColors.KEYWORD)
     val SCRIPT_ACTION = key("IMPEX_SCRIPT_ACTION", DefaultLanguageHighlighterColors.KEYWORD)
 

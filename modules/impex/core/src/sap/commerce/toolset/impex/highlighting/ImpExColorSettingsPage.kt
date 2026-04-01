@@ -78,6 +78,12 @@ vaue                               ; "Address Book"
         ; ; value1, value2, value3 ; 12345 ; com.domain.Class ; qwe : asd
 
 INSERT Address[impex.legacy.mode = true, batchmode = true]; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin
+"#%beforeEach:<sriptbody>
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+Logger LOG = LoggerFactory.getLogger(""MyClass"");
+</sriptbody>"
 
 UPDATE Address; firstname\
               ; owner(Principal.uid | AbstractOrder.code)\
@@ -112,6 +118,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         put("vlo", ImpExHighlighterColors.VALUE_LINE_ODD)
         put("sev", ImpExHighlighterColors.ENUM_VALUE)
         put("unique", ImpExHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME)
+        put("sriptbody", ImpExHighlighterColors.SCRIPT_BODY)
         this
     }
     private val inheritedPermission = "<permission_inherited>.</permission_inherited>"
@@ -159,6 +166,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Value//password encoding prefix", ImpExHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
         AttributesDescriptor("Value//Enum value", ImpExHighlighterColors.ENUM_VALUE),
 
+        AttributesDescriptor("Scripting//Body", ImpExHighlighterColors.SCRIPT_BODY),
         AttributesDescriptor("Scripting//Marker", ImpExHighlighterColors.SCRIPT_MARKER),
         AttributesDescriptor("Scripting//Action", ImpExHighlighterColors.SCRIPT_ACTION),
 

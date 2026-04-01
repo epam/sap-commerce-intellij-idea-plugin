@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 32 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 33 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -28,6 +28,7 @@
 - Preserve formatting ranges in case of the local-fixes, they should not reformat the whole ImpEx statement (table) [#1818](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1818)
 - Preserve indentation on moving lines up / down [#1820](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1820)
 - Enhanced Language lexer & parser to support single & multi-line scripts [#1821](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1821)
+- Color script body for BSH & Javascript [#1822](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1822)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

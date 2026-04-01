@@ -192,6 +192,11 @@
             <option name="FOREGROUND" value="FFFFFF"/>
         </value>
     </option>
+    <option name="IMPEX_SCRIPT_BODY">
+        <value>
+            <option name="BACKGROUND" value="2C2400FF"/>
+        </value>
+    </option>
     <option name="IMPEX_SCRIPT_ACTION">
         <value>
             <option name="FOREGROUND" value="FFDAC9"/>
