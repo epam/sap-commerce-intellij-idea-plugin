@@ -36,7 +36,7 @@
 - Local fix: exclude attribute of the specific type from the wrap value string in quotes rule [#1799](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1799)
 - Local fix: enable value to be quoted for string attribute of the specific type [#1801](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1801)
 - Local fix: generate `&docId` column based on the unique columns of the table [#1802](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1802)
-- Local fix: enforce quote value strings via Informative quick-fix on header attribute and individual value [#1803](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1803)
+- Local fix: enforce quote value strings via Informative quick-fix on header attribute and individual value [#1817](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1817)
 
 ### `Spring` enhancements
 - Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)

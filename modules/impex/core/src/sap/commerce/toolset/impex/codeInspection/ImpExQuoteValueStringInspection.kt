@@ -79,8 +79,9 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.forceQuote.key", typeName, attributeName),
                     ProblemHighlightType.INFORMATION,
                     LocalFixQuote(
-                        parameterName,
-                        "Wrap in quotes '$typeName.$attributeName' $unquotedValues value strings"
+                        element = parameterName,
+                        presentationText = "Wrap in quotes $unquotedValues value strings for: '$typeName.$attributeName'",
+                        overridePreviewInfo = IntentionPreviewInfo.EMPTY
                     ),
                 )
             }
@@ -108,8 +109,8 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.key", typeName, attributeName, StringUtil.shortenPathWithEllipsis(trimmedText, 25)),
                     type,
                     LocalFixQuote(
-                        value,
-                        "Wrap in quotes '$typeName.$attributeName' value string: '${StringUtil.shortenPathWithEllipsis(value.text, 25)}'"
+                        element = value,
+                        presentationText = "Wrap in quotes '$typeName.$attributeName' value string: '${StringUtil.shortenPathWithEllipsis(value.text, 25)}'"
                     )
                 )
             }
@@ -144,16 +145,19 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
 
         private class LocalFixQuote(
             element: PsiElement,
-            private val presentationText: String
+            private val presentationText: String,
+            private val overridePreviewInfo: IntentionPreviewInfo? = null
         ) : LocalQuickFixOnPsiElement(element), LowPriorityAction {
 
             override fun getFamilyName() = "[y] Quote value string"
             override fun getText() = presentationText
+            override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = overridePreviewInfo
+                ?: super.generatePreview(project, previewDescriptor)
 
             override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
                 when (startElement) {
                     is ImpExValue -> quoteValue(startElement, project)
-                    is ImpExAnyAttributeName -> startElement
+                    is ImpExAnyHeaderParameterName -> startElement
                         .parentOfType<ImpExFullHeaderParameter>()
                         ?.valueGroups
                         ?.mapNotNull { it.value }
