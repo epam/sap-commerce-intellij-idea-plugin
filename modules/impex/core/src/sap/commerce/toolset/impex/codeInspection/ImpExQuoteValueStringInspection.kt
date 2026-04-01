@@ -162,6 +162,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                         ?.valueGroups
                         ?.mapNotNull { it.value }
                         ?.filter { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
+                        ?.reversed()
                         ?.forEach { quoteValue(it, project) }
                 }
             }
