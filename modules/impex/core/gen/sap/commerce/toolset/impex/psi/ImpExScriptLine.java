@@ -27,14 +27,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpExString extends PsiElement {
+public interface ImpExScriptLine extends ImpExScript {
 
-  @NotNull
-  List<ImpExMacroUsageDec> getMacroUsageDecList();
+  @Nullable
+  ImpExBeanshellScriptBodyLine getBeanshellScriptBodyLine();
 
-  @NotNull
-  List<ImpExScriptMultiline> getScriptMultilineList();
+  @Nullable
+  ImpExGroovyScriptBodyLine getGroovyScriptBodyLine();
 
-  @Nullable ImpExValueGroup getValueGroup();
+  @Nullable
+  ImpExJavascriptScriptBodyLine getJavascriptScriptBodyLine();
 
 }

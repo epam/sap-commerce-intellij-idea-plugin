@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,8 @@ import com.intellij.psi.xml.XmlFile
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.businessProcess.psi.tryInject
-import sap.commerce.toolset.impex.psi.ImpExGroovyScriptBody
+import sap.commerce.toolset.impex.psi.ImpExGroovyScriptBodyLine
+import sap.commerce.toolset.impex.psi.ImpExGroovyScriptBodyMultiline
 import sap.commerce.toolset.impex.psi.ImpExString
 import sap.commerce.toolset.impex.psi.getScriptType
 import sap.commerce.toolset.typeSystem.ScriptType
@@ -74,7 +75,8 @@ class GroovyLanguageInjector : LanguageInjector {
                 }
             }
 
-            is ImpExGroovyScriptBody -> {
+            is ImpExGroovyScriptBodyLine,
+            is ImpExGroovyScriptBodyMultiline, -> {
                 injectLanguage(injectionPlacesRegistrar, host.textLength, 0)
             }
         }

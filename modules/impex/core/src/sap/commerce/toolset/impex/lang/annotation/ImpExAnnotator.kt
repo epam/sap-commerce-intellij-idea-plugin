@@ -23,7 +23,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.startOffset
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
@@ -56,37 +55,6 @@ class ImpExAnnotator : AbstractAnnotator() {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
-            ImpExTypes.DOUBLE_STRING -> {
-                val text = element.text
-
-                // multi-line script
-                if (!text.startsWith("\"#%")) return
-
-                val textOffset = element.startOffset
-                val indexOfTheMarker = text.indexOf("% ")
-                    .takeIf { it != -1 }
-                    ?: return
-
-                val markerType = when {
-                    text.startsWith("\"#%groovy%") -> ImpExTypes.GROOVY_MARKER
-                    text.startsWith("\"#%javascript%") -> ImpExTypes.JAVASCRIPT_MARKER
-                    else -> ImpExTypes.BEAN_SHELL_MARKER
-                }
-
-                highlight(markerType, holder, element, range = TextRange.from(textOffset + 1, indexOfTheMarker))
-
-                setOf("beforeEach:", "afterEach:", "if:", "endif:")
-                    .firstNotNullOfOrNull {
-                        text.indexOf(it, indexOfTheMarker, true)
-                            .takeIf { index -> index != -1 }
-                            ?.let { index -> textOffset + index }
-                            ?.let { index -> index to it.length }
-                    }
-                    ?.let {
-                        highlight(ImpExTypes.SCRIPT_ACTION, holder, element, range = TextRange.from(it.first, it.second))
-                    }
-            }
-
             ImpExTypes.USER_RIGHTS_HEADER_PARAMETER -> {
                 val headerParameter = element as? ImpExUserRightsHeaderParameter ?: return
                 val elementType = headerParameter.firstChild.elementType ?: return

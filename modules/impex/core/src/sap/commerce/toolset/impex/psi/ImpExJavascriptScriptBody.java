@@ -23,18 +23,16 @@
  */
 package sap.commerce.toolset.impex.psi;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 
-public interface ImpExString extends PsiElement {
+public interface ImpExJavascriptScriptBody extends ImpExScriptBody {
 
-  @NotNull
-  List<ImpExMacroUsageDec> getMacroUsageDecList();
+    @NotNull
+    List<ImpExMacroUsageDec> getMacroUsageDecList();
 
-  @NotNull
-  List<ImpExScriptMultiline> getScriptMultilineList();
-
-  @Nullable ImpExValueGroup getValueGroup();
+    @NotNull
+    List<ImpExString> getStringList();
 
 }

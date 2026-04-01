@@ -55,6 +55,12 @@ public class ImpExValueImpl extends ImpExValueMixin implements ImpExValue {
   }
 
   @Override
+  @NotNull
+  public List<ImpExScriptMultiline> getScriptMultilineList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExScriptMultiline.class);
+  }
+
+  @Override
   public @Nullable ImpExValueGroup getValueGroup() {
     return ImpExPsiUtil.getValueGroup(this);
   }

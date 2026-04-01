@@ -30,16 +30,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import sap.commerce.toolset.impex.psi.*;
 
-public class ImpExStringImpl extends ImpExStringMixin implements ImpExString {
+public class ImpExScriptMultilineImpl extends ASTWrapperPsiElement implements ImpExScriptMultiline {
 
-  public ImpExStringImpl(@NotNull ASTNode node) {
+  public ImpExScriptMultilineImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
-    visitor.visitString(this);
+    visitor.visitScriptMultiline(this);
   }
 
   @Override
@@ -49,20 +50,21 @@ public class ImpExStringImpl extends ImpExStringMixin implements ImpExString {
   }
 
   @Override
-  @NotNull
-  public List<ImpExMacroUsageDec> getMacroUsageDecList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
+  @Nullable
+  public ImpExBeanshellScriptBodyMultiline getBeanshellScriptBodyMultiline() {
+    return findChildByClass(ImpExBeanshellScriptBodyMultiline.class);
   }
 
   @Override
-  @NotNull
-  public List<ImpExScriptMultiline> getScriptMultilineList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExScriptMultiline.class);
+  @Nullable
+  public ImpExGroovyScriptBodyMultiline getGroovyScriptBodyMultiline() {
+    return findChildByClass(ImpExGroovyScriptBodyMultiline.class);
   }
 
   @Override
-  public @Nullable ImpExValueGroup getValueGroup() {
-    return ImpExPsiUtil.getValueGroup(this);
+  @Nullable
+  public ImpExJavascriptScriptBodyMultiline getJavascriptScriptBodyMultiline() {
+    return findChildByClass(ImpExJavascriptScriptBodyMultiline.class);
   }
 
 }

@@ -224,12 +224,23 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // script_body
-  public static boolean beanshell_script_body(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "beanshell_script_body")) return false;
+  // script_body_line
+  public static boolean beanshell_script_body_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "beanshell_script_body_line")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, BEANSHELL_SCRIPT_BODY, "<beanshell script body>");
-    r = script_body(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, BEANSHELL_SCRIPT_BODY_LINE, "<beanshell script body line>");
+    r = script_body_line(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // script_body_multiline
+  public static boolean beanshell_script_body_multiline(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "beanshell_script_body_multiline")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BEANSHELL_SCRIPT_BODY_MULTILINE, "<beanshell script body multiline>");
+    r = script_body_multiline(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -272,6 +283,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // macro_usage_dec
+  //     | script_multiline
   //     | DOUBLE_QUOTE_ESCAPE
   //     | TAG_OPEN
   //     | TAG_CLOSE
@@ -288,6 +300,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "double_quoted_string_content")) return false;
     boolean r;
     r = macro_usage_dec(b, l + 1);
+    if (!r) r = script_multiline(b, l + 1);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
     if (!r) r = consumeToken(b, TAG_OPEN);
     if (!r) r = consumeToken(b, TAG_CLOSE);
@@ -389,12 +402,23 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // script_body
-  public static boolean groovy_script_body(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "groovy_script_body")) return false;
+  // script_body_line
+  public static boolean groovy_script_body_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "groovy_script_body_line")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, GROOVY_SCRIPT_BODY, "<groovy script body>");
-    r = script_body(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, GROOVY_SCRIPT_BODY_LINE, "<groovy script body line>");
+    r = script_body_line(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // script_body_multiline
+  public static boolean groovy_script_body_multiline(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "groovy_script_body_multiline")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, GROOVY_SCRIPT_BODY_MULTILINE, "<groovy script body multiline>");
+    r = script_body_multiline(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -478,12 +502,23 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // script_body
-  public static boolean javascript_script_body(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "javascript_script_body")) return false;
+  // script_body_line
+  public static boolean javascript_script_body_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "javascript_script_body_line")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, JAVASCRIPT_SCRIPT_BODY, "<javascript script body>");
-    r = script_body(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, JAVASCRIPT_SCRIPT_BODY_LINE, "<javascript script body line>");
+    r = script_body_line(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // script_body_multiline
+  public static boolean javascript_script_body_multiline(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "javascript_script_body_multiline")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, JAVASCRIPT_SCRIPT_BODY_MULTILINE, "<javascript script body multiline>");
+    r = script_body_multiline(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1067,7 +1102,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   //     | root_macro_usage
   //     | header_line
   //     | value_line
-  //     | script
+  //     | script_line
   //     | comment
   //     | (string (';')?)
   //     | macro_declaration
@@ -1079,7 +1114,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     if (!r) r = root_macro_usage(b, l + 1);
     if (!r) r = header_line(b, l + 1);
     if (!r) r = value_line(b, l + 1);
-    if (!r) r = script(b, l + 1);
+    if (!r) r = script_line(b, l + 1);
     if (!r) r = comment(b, l + 1);
     if (!r) r = root_group_6(b, l + 1);
     if (!r) r = macro_declaration(b, l + 1);
@@ -1140,102 +1175,246 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // GROOVY_MARKER SCRIPT_ACTION? groovy_script_body
-  //     | JAVASCRIPT_MARKER SCRIPT_ACTION? javascript_script_body
-  //     | BEAN_SHELL_MARKER SCRIPT_ACTION? beanshell_script_body
-  public static boolean script(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script")) return false;
+  // SCRIPT_ACTION_IF
+  //     | SCRIPT_ACTION_ENDIF
+  //     | SCRIPT_ACTION_BEFOREEACH
+  //     | SCRIPT_ACTION_AFTEREACH
+  static boolean script_action(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_action")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, SCRIPT, "<script>");
-    r = script_0(b, l + 1);
-    if (!r) r = script_1(b, l + 1);
-    if (!r) r = script_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    r = consumeToken(b, SCRIPT_ACTION_IF);
+    if (!r) r = consumeToken(b, SCRIPT_ACTION_ENDIF);
+    if (!r) r = consumeToken(b, SCRIPT_ACTION_BEFOREEACH);
+    if (!r) r = consumeToken(b, SCRIPT_ACTION_AFTEREACH);
     return r;
-  }
-
-  // GROOVY_MARKER SCRIPT_ACTION? groovy_script_body
-  private static boolean script_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, GROOVY_MARKER);
-    r = r && script_0_1(b, l + 1);
-    r = r && groovy_script_body(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // SCRIPT_ACTION?
-  private static boolean script_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_0_1")) return false;
-    consumeToken(b, SCRIPT_ACTION);
-    return true;
-  }
-
-  // JAVASCRIPT_MARKER SCRIPT_ACTION? javascript_script_body
-  private static boolean script_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, JAVASCRIPT_MARKER);
-    r = r && script_1_1(b, l + 1);
-    r = r && javascript_script_body(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // SCRIPT_ACTION?
-  private static boolean script_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_1_1")) return false;
-    consumeToken(b, SCRIPT_ACTION);
-    return true;
-  }
-
-  // BEAN_SHELL_MARKER SCRIPT_ACTION? beanshell_script_body
-  private static boolean script_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, BEAN_SHELL_MARKER);
-    r = r && script_2_1(b, l + 1);
-    r = r && beanshell_script_body(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // SCRIPT_ACTION?
-  private static boolean script_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_2_1")) return false;
-    consumeToken(b, SCRIPT_ACTION);
-    return true;
   }
 
   /* ********************************************************** */
   // (SCRIPT_BODY_VALUE
-  //     | MACRO_USAGE
+  //     | DOUBLE_QUOTE_ESCAPE
+  //     | macro_usage_dec
   //     | string
   //     )*
-  static boolean script_body(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_body")) return false;
+  static boolean script_body_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_body_line")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!script_body_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "script_body", c)) break;
+      if (!script_body_line_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "script_body_line", c)) break;
     }
     return true;
   }
 
   // SCRIPT_BODY_VALUE
-  //     | MACRO_USAGE
+  //     | DOUBLE_QUOTE_ESCAPE
+  //     | macro_usage_dec
   //     | string
-  private static boolean script_body_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "script_body_0")) return false;
+  private static boolean script_body_line_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_body_line_0")) return false;
     boolean r;
     r = consumeToken(b, SCRIPT_BODY_VALUE);
-    if (!r) r = consumeToken(b, MACRO_USAGE);
+    if (!r) r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
+    if (!r) r = macro_usage_dec(b, l + 1);
     if (!r) r = string(b, l + 1);
     return r;
+  }
+
+  /* ********************************************************** */
+  // (SCRIPT_BODY_VALUE
+  //     | DOUBLE_QUOTE_ESCAPE
+  //     | macro_usage_dec
+  //     | string
+  //     | CRLF
+  //     )*
+  static boolean script_body_multiline(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_body_multiline")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!script_body_multiline_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "script_body_multiline", c)) break;
+    }
+    return true;
+  }
+
+  // SCRIPT_BODY_VALUE
+  //     | DOUBLE_QUOTE_ESCAPE
+  //     | macro_usage_dec
+  //     | string
+  //     | CRLF
+  private static boolean script_body_multiline_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_body_multiline_0")) return false;
+    boolean r;
+    r = consumeToken(b, SCRIPT_BODY_VALUE);
+    if (!r) r = consumeToken(b, DOUBLE_QUOTE_ESCAPE);
+    if (!r) r = macro_usage_dec(b, l + 1);
+    if (!r) r = string(b, l + 1);
+    if (!r) r = consumeToken(b, CRLF);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // GROOVY_MARKER script_action? groovy_script_body_line?
+  //     | JAVASCRIPT_MARKER script_action? javascript_script_body_line?
+  //     | BEAN_SHELL_MARKER script_action? beanshell_script_body_line?
+  public static boolean script_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, SCRIPT_LINE, "<script line>");
+    r = script_line_0(b, l + 1);
+    if (!r) r = script_line_1(b, l + 1);
+    if (!r) r = script_line_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // GROOVY_MARKER script_action? groovy_script_body_line?
+  private static boolean script_line_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, GROOVY_MARKER);
+    r = r && script_line_0_1(b, l + 1);
+    r = r && script_line_0_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // script_action?
+  private static boolean script_line_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_0_1")) return false;
+    script_action(b, l + 1);
+    return true;
+  }
+
+  // groovy_script_body_line?
+  private static boolean script_line_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_0_2")) return false;
+    groovy_script_body_line(b, l + 1);
+    return true;
+  }
+
+  // JAVASCRIPT_MARKER script_action? javascript_script_body_line?
+  private static boolean script_line_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, JAVASCRIPT_MARKER);
+    r = r && script_line_1_1(b, l + 1);
+    r = r && script_line_1_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // script_action?
+  private static boolean script_line_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_1_1")) return false;
+    script_action(b, l + 1);
+    return true;
+  }
+
+  // javascript_script_body_line?
+  private static boolean script_line_1_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_1_2")) return false;
+    javascript_script_body_line(b, l + 1);
+    return true;
+  }
+
+  // BEAN_SHELL_MARKER script_action? beanshell_script_body_line?
+  private static boolean script_line_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BEAN_SHELL_MARKER);
+    r = r && script_line_2_1(b, l + 1);
+    r = r && script_line_2_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // script_action?
+  private static boolean script_line_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_2_1")) return false;
+    script_action(b, l + 1);
+    return true;
+  }
+
+  // beanshell_script_body_line?
+  private static boolean script_line_2_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_line_2_2")) return false;
+    beanshell_script_body_line(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // GROOVY_MARKER script_action? groovy_script_body_multiline
+  //     | JAVASCRIPT_MARKER script_action? javascript_script_body_multiline
+  //     | BEAN_SHELL_MARKER script_action? beanshell_script_body_multiline
+  public static boolean script_multiline(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_multiline")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, SCRIPT_MULTILINE, "<script multiline>");
+    r = script_multiline_0(b, l + 1);
+    if (!r) r = script_multiline_1(b, l + 1);
+    if (!r) r = script_multiline_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // GROOVY_MARKER script_action? groovy_script_body_multiline
+  private static boolean script_multiline_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_multiline_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, GROOVY_MARKER);
+    r = r && script_multiline_0_1(b, l + 1);
+    r = r && groovy_script_body_multiline(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // script_action?
+  private static boolean script_multiline_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_multiline_0_1")) return false;
+    script_action(b, l + 1);
+    return true;
+  }
+
+  // JAVASCRIPT_MARKER script_action? javascript_script_body_multiline
+  private static boolean script_multiline_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_multiline_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, JAVASCRIPT_MARKER);
+    r = r && script_multiline_1_1(b, l + 1);
+    r = r && javascript_script_body_multiline(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // script_action?
+  private static boolean script_multiline_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_multiline_1_1")) return false;
+    script_action(b, l + 1);
+    return true;
+  }
+
+  // BEAN_SHELL_MARKER script_action? beanshell_script_body_multiline
+  private static boolean script_multiline_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_multiline_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BEAN_SHELL_MARKER);
+    r = r && script_multiline_2_1(b, l + 1);
+    r = r && beanshell_script_body_multiline(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // script_action?
+  private static boolean script_multiline_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_multiline_2_1")) return false;
+    script_action(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */

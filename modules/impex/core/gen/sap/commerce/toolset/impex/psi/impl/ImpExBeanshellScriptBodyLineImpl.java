@@ -33,20 +33,26 @@ import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import sap.commerce.toolset.impex.psi.*;
 
-public class ImpExBeanshellScriptBodyImpl extends ASTWrapperPsiElement implements ImpExBeanshellScriptBody {
+public class ImpExBeanshellScriptBodyLineImpl extends ASTWrapperPsiElement implements ImpExBeanshellScriptBodyLine {
 
-  public ImpExBeanshellScriptBodyImpl(@NotNull ASTNode node) {
+  public ImpExBeanshellScriptBodyLineImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpExVisitor visitor) {
-    visitor.visitBeanshellScriptBody(this);
+    visitor.visitBeanshellScriptBodyLine(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpExVisitor) accept((ImpExVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<ImpExMacroUsageDec> getMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroUsageDec.class);
   }
 
   @Override
