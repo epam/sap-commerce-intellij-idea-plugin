@@ -24,6 +24,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
 import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.psi.ImpExFile
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValueLine
@@ -33,6 +34,7 @@ class ImpExPreFormatProcessor : PreFormatProcessor {
     override fun process(element: ASTNode, range: TextRange) = element.psi
         ?.takeIf { it.language == ImpExLanguage }
         ?.takeIf { it.isValid }
+        ?.takeUnless { it is ImpExFile }
         ?.findElementAt(range.endOffset)
         ?.let {
             if (it.elementType == ImpExTypes.CRLF) it.prevLeaf(true)
