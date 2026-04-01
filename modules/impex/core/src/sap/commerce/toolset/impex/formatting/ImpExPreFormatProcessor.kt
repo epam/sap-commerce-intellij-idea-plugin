@@ -29,20 +29,16 @@ import sap.commerce.toolset.impex.psi.ImpExValueLine
 
 class ImpExPreFormatProcessor : PreFormatProcessor {
 
-    override fun process(element: ASTNode, range: TextRange): TextRange {
-        val psiFile = element.psi
-            ?.takeIf { it.language == ImpExLanguage }
-            ?.takeIf { it.isValid }
-            ?: return range
-
-        return psiFile.findElementAt(range.endOffset)
-            ?.let {
-                if (it.elementType == ImpExTypes.CRLF) it.prevLeaf(true)
-                else it
-            }
-            ?.parentOfType<ImpExValueLine>()
-            ?.headerLine
-            ?.tableRange
-            ?: range
-    }
+    override fun process(element: ASTNode, range: TextRange) = element.psi
+        ?.takeIf { it.language == ImpExLanguage }
+        ?.takeIf { it.isValid }
+        ?.findElementAt(range.endOffset)
+        ?.let {
+            if (it.elementType == ImpExTypes.CRLF) it.prevLeaf(true)
+            else it
+        }
+        ?.parentOfType<ImpExValueLine>()
+        ?.headerLine
+        ?.tableRange
+        ?: range
 }
