@@ -51,6 +51,7 @@
         <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.highlighting.ImpExSyntaxHighlighterFactory"/>
         <lang.commenter language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpExCommenter"/>
         <lang.formatter language="ImpEx" implementationClass="sap.commerce.toolset.impex.formatting.ImpExFormattingModelBuilder"/>
+        <preFormatProcessor implementation="sap.commerce.toolset.impex.formatting.ImpExPreFormatProcessor"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingLinesBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExMacroFoldingBuilder"/>

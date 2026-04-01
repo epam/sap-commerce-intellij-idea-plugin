@@ -261,6 +261,8 @@ dependencies {
             "org.jetbrains.kotlin",
             "com.intellij.diagram",
             "JUnit",
+            // requited to debug export of the EditorConfig: EditorConfigSettingsWriter
+//            "org.editorconfig.editorconfigjetbrains",
         )
 
         // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
