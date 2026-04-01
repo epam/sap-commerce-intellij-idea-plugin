@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 30 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 31 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -26,6 +26,7 @@
 - Ensure that the whole ImpEx statement (table) will be formatted despite the modified/selected range of the value line [#1815](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1815)
 - Ensure that the whole ImpEx statement (table) will be formatted despite the modified/selected range of the header line [#1816](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1816)
 - Preserve formatting ranges in case of the local-fixes, they should not reformat the whole ImpEx statement (table) [#1818](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1818)
+- Preserve indentation on moving lines up / down [#1820](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1820)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
