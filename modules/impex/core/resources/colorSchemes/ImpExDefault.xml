@@ -86,6 +86,11 @@
             <option name="FOREGROUND" value="009FDA"/>
         </value>
     </option>
+    <option name="IMPEX_SCRIPT_BODY">
+        <value>
+            <option name="BACKGROUND" value="FFFCF3FF"/>
+        </value>
+    </option>
     <option name="IMPEX_SCRIPT_MARKER">
         <value>
             <option name="FOREGROUND" value="C7642F"/>

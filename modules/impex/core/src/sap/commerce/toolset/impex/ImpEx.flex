@@ -59,6 +59,7 @@ single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
+// See supported context here -> ImpExReader.getScriptExecutionContext
 script_marker_groovy = "#%groovy%"
 script_marker_javascript = "#%javascript%"
 script_marker_bsh = "#%"("bsh%")?
