@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,12 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
 public class ImpExCodeStyleSettings extends CustomCodeStyleSettings {
+
+    @SuppressWarnings("unused")
+    // used to override global settings and to respect reformatting of the text ranges, by expanding to the whole ImpEx table
+    // see: EditorConfigSettingsWriter, CodeFormattingFacade (mySettings.FORMATTER_TAGS_ENABLED)
+    // and custom pre-formatter -> ImpExPreFormatProcessor
+    public boolean FORMATTER_TAGS_ENABLED = false;
 
     public boolean SPACE_AFTER_FIELD_VALUE_SEPARATOR = true;
     public boolean SPACE_BEFORE_FIELD_VALUE_SEPARATOR = true;
