@@ -29,6 +29,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.*
@@ -51,11 +52,11 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             val typeName = attributeMeta.owner.name ?: return
             val attributeName = attributeMeta.name
 
-            val hasUnquotedValues = headerParameter.valueGroups
+            val unquotedValues = headerParameter.valueGroups
                 .mapNotNull { it.value }
-                .any { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
+                .count { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
 
-            if (hasUnquotedValues) {
+            if (unquotedValues > 0) {
                 val isExcluded = headerParameter.project.yDeveloperSettings.impexSettings.quoteStringExclusions[typeName]
                     ?.contains(attributeName)
                     ?: false
@@ -71,6 +72,17 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.exclude.key", typeName, attributeName),
                     ProblemHighlightType.WEAK_WARNING,
                     LocalFixExclude(typeName, attributeName),
+                )
+
+                holder.registerProblem(
+                    parameterName,
+                    i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.forceQuote.key", typeName, attributeName),
+                    ProblemHighlightType.INFORMATION,
+                    LocalFixQuote(
+                        element = parameterName,
+                        presentationText = "Wrap in quotes $unquotedValues value strings for: '$typeName.$attributeName'",
+                        overridePreviewInfo = IntentionPreviewInfo.EMPTY
+                    ),
                 )
             }
         }
@@ -91,22 +103,33 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             val typeName = attributeMeta.owner.name ?: return
             val attributeName = attributeMeta.name
 
+            fun registerFix(type: ProblemHighlightType) {
+                holder.registerProblem(
+                    value,
+                    i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.key", typeName, attributeName, StringUtil.shortenPathWithEllipsis(trimmedText, 25)),
+                    type,
+                    LocalFixQuote(
+                        element = value,
+                        presentationText = "Wrap in quotes '$typeName.$attributeName' value string: '${StringUtil.shortenPathWithEllipsis(value.text, 25)}'"
+                    )
+                )
+            }
+
             val isExcluded = impExSettings.quoteStringExclusions[typeName]
                 ?.contains(attributeName)
                 ?: false
-            if (isExcluded) return
-
-            if (impExSettings.quoteStringMatching && impExSettings.quoteStringMatchingRegex.matches(trimmedText)) {
-                // ignore whitelisted value
+            if (isExcluded) {
+                registerFix(ProblemHighlightType.INFORMATION)
                 return
             }
 
-            holder.registerProblem(
-                value,
-                i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.key", typeName, attributeName, StringUtil.shortenPathWithEllipsis(trimmedText, 25)),
-                ProblemHighlightType.WEAK_WARNING,
-                LocalFix(value, typeName, attributeName)
-            )
+            if (impExSettings.quoteStringMatching && impExSettings.quoteStringMatchingRegex.matches(trimmedText)) {
+                // ignore whitelisted value
+                registerFix(ProblemHighlightType.INFORMATION)
+                return
+            }
+
+            registerFix(ProblemHighlightType.WEAK_WARNING)
         }
 
         private val ImpExAnyHeaderParameterName.applicableItemAttribute
@@ -120,18 +143,31 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     "localized:java.lang.String" == it.type || "java.lang.String" == it.type && !it.modifiers.isUnique
                 }
 
-        private class LocalFix(
+        private class LocalFixQuote(
             element: PsiElement,
-            private val typeName: String,
-            private val attributeName: String,
-            private val shortText: String = StringUtil.shortenPathWithEllipsis(element.text, 25)
+            private val presentationText: String,
+            private val overridePreviewInfo: IntentionPreviewInfo? = null
         ) : LocalQuickFixOnPsiElement(element), LowPriorityAction {
 
             override fun getFamilyName() = "[y] Quote value string"
-            override fun getText() = "Wrap in quotes '$typeName.$attributeName' value string: '$shortText'"
+            override fun getText() = presentationText
+            override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = overridePreviewInfo
+                ?: super.generatePreview(project, previewDescriptor)
 
             override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                val newValue = startElement.text
+                when (startElement) {
+                    is ImpExValue -> quoteValue(startElement, project)
+                    is ImpExAnyHeaderParameterName -> startElement
+                        .parentOfType<ImpExFullHeaderParameter>()
+                        ?.valueGroups
+                        ?.mapNotNull { it.value }
+                        ?.filter { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
+                        ?.forEach { quoteValue(it, project) }
+                }
+            }
+
+            private fun quoteValue(value: ImpExValue, project: Project) {
+                val newValue = value.text
                     .replace("\"", "\"\"")
                     .replace("\\\n", "")
                     .replace("\\\r", "")
@@ -139,10 +175,10 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
 
                 val newElement = ImpExElementFactory.createFile(
                     project, """
-                        UPDATE Title;name;
-                        ; "$newValue"
-
-                """.trimIndent()
+                                    UPDATE Title;name;
+                                    ; "$newValue"
+            
+                            """.trimIndent()
                 )
                     .childrenOfType<ImpExValueLine>()
                     .flatMap { it.valueGroupList }
@@ -150,7 +186,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     .lastOrNull()
                     ?: return
 
-                startElement.replace(newElement)
+                value.replace(newElement)
             }
         }
 
