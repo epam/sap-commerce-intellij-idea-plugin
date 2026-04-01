@@ -101,5 +101,6 @@ class ImpExBlock(
         && currentNode.treeParent.elementType != ImpExTypes.VALUE
         && currentNode.treeParent.elementType != ImpExTypes.ANY_ATTRIBUTE_VALUE
         && currentNode.treeParent.elementType != ImpExTypes.MACRO_VALUES_DEC
+        && currentNode.treeParent.elementType != ImpExTypes.STRING
 
 }
