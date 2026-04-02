@@ -102,6 +102,9 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
 ; http:http://site.org/picture.png ;
 ; /medias/fromjar/demo5.jpg ;
 
+INSERT SolrIndexedProperty; fieldValueProvider
+                          ; <vref>categoryCodeValueProvider</vref> 
+
 INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex.jalo.translators.UserPasswordTranslator] 
 ; fritz ; md5:a7c15c415c37626de8fa648127ba1ae5
 ; max ; *:plainPassword
@@ -117,6 +120,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         put("vle", ImpExHighlighterColors.VALUE_LINE_EVEN)
         put("vlo", ImpExHighlighterColors.VALUE_LINE_ODD)
         put("sev", ImpExHighlighterColors.ENUM_VALUE)
+        put("vref", ImpExHighlighterColors.VALUE_REFERENCE)
         put("unique", ImpExHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME)
         put("sriptbody", ImpExHighlighterColors.SCRIPT_BODY)
         this
@@ -165,6 +169,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Value//model: prefix", ImpExHighlighterColors.FIELD_VALUE_SCRIPT_PREFIX),
         AttributesDescriptor("Value//password encoding prefix", ImpExHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
         AttributesDescriptor("Value//Enum value", ImpExHighlighterColors.ENUM_VALUE),
+        AttributesDescriptor("Value//Reference", ImpExHighlighterColors.VALUE_REFERENCE),
 
         AttributesDescriptor("Scripting//Body", ImpExHighlighterColors.SCRIPT_BODY),
         AttributesDescriptor("Scripting//Marker", ImpExHighlighterColors.SCRIPT_MARKER),

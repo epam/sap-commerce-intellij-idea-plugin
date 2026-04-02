@@ -31,6 +31,7 @@ import sap.commerce.toolset.impex.highlighting.ImpExSyntaxHighlighter
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.*
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
+import sap.commerce.toolset.spring.psi.reference.SpringReference
 
 class ImpExAnnotator : AbstractAnnotator() {
 
@@ -124,7 +125,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                         is ImpExValueTSStaticEnumReference -> {
                             val valueElement = reference.getTargetElement()
                             highlightReference(
-                                ImpExHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
+                                ImpExHighlighterColors.VALUE_REFERENCE, holder, valueElement,
                                 "hybris.inspections.impex.unresolved.enumValue.key",
                                 reference = reference
                             )
@@ -133,7 +134,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                         is ImpExValueTSClassifierReference -> {
                             val valueElement = reference.getTargetElement() ?: return
                             highlightReference(
-                                ImpExHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
+                                ImpExHighlighterColors.VALUE_REFERENCE, holder, valueElement,
                                 "hybris.inspections.impex.unresolved.composedType.key",
                                 reference = reference
                             )
@@ -141,8 +142,16 @@ class ImpExAnnotator : AbstractAnnotator() {
 
                         is ImpExDocumentIdUsageReference -> {
                             highlightReference(
-                                ImpExHighlighterColors.VALUE_SUBTYPE_SAME, holder, value,
+                                ImpExHighlighterColors.VALUE_REFERENCE, holder, value,
                                 "hybris.inspections.impex.unresolved.docUsage.key",
+                                reference = reference
+                            )
+                        }
+
+                        is SpringReference -> {
+                            highlightReference(
+                                ImpExHighlighterColors.VALUE_REFERENCE, holder, value,
+                                "hybris.inspections.impex.unresolved.springBean.key",
                                 reference = reference
                             )
                         }

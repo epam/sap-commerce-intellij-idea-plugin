@@ -21,13 +21,12 @@ package sap.commerce.toolset.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.text.StringUtilRt
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.PsiReference
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.impex.ImpExConstants
@@ -37,6 +36,8 @@ import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.impex.psi.references.*
+import sap.commerce.toolset.spring.SpringFallbackScope
+import sap.commerce.toolset.spring.psi.reference.SpringReference
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -85,8 +86,22 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         val metaModelAccess = TSMetaModelAccess.getInstance(project)
         return collectDocIdValuesReferences(fullHeaderParameter, meta, attributeType, metaModelAccess)
             ?: collectTSReferences(fullHeaderParameter, meta, attributeType, metaModelAccess)
+            ?: collectSpringReferences(meta)
             ?: emptyArray()
     }
+
+    private fun collectSpringReferences(meta: TSMetaClassifier<out DomElement>): Array<PsiReference>? = meta.asSafely<TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
+        ?.takeIf { this.macroUsageDecList.isEmpty() }
+        ?.takeIf {
+            val leaf = this.firstLeaf()
+            leaf.elementType != ImpExTypes.FIELD_VALUE_IGNORE && leaf.elementType != ImpExTypes.FIELD_VALUE_NULL
+        }
+        ?.takeIf { attr ->
+            val metaItem = attr.owner.name ?: return@takeIf false
+
+            predefinedSpringReferenceAttributes.contains("$metaItem.${attr.name}".lowercase()) || predefinedSpringIdAttributes.contains(attr.name.lowercase())
+        }
+        ?.let { arrayOf(SpringReference(this, StringUtilRt.unquoteString(this.text), SpringFallbackScope.CUSTOM_MODULES)) }
 
     private fun collectDocIdValuesReferences(
         fullHeaderParameter: ImpExFullHeaderParameter,
@@ -307,11 +322,30 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 
     private fun getFieldValues(): Array<PsiElement> = findChildrenByType(ImpExTypes.FIELD_VALUE, PsiElement::class.java)
 
+    @Suppress("SpellCheckingInspection")
     companion object {
         @Serial
         private val serialVersionUID: Long = 8258794639693010240L
-    }
 
+        // Lowercased on purpose
+        private val predefinedSpringReferenceAttributes = setOf(
+            "solrindexedproperty.fieldvalueprovider",
+            "solrindexedproperty.facetdisplaynameprovider",
+            "solrindexedproperty.facetsortprovider",
+            "solrindexedproperty.facettopvaluesprovider",
+            "solrindexedproperty.topvaluesprovider",
+            "solrindexedproperty.customFacetSortProvider",
+            "solrsearchquerytemplate.ftsquerybuilder",
+
+            "abstractasfacetconfiguration.valuesSortProvider",
+            "abstractasfacetconfiguration.valuesdisplaynameprovider",
+            "abstractasfacetconfiguration.topvaluesprovider",
+
+            "solrextindexercronjob.queryparameterprovider",
+            "solrindexedtype.identityprovider",
+        )
+        private val predefinedSpringIdAttributes = setOf("springid")
+    }
 }
 
 private fun TextRange.isMacro(text: String): Boolean = substring(text)
