@@ -55,6 +55,8 @@ class ImpExAnnotator : AbstractAnnotator() {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
+            ImpExTypes.BEANSHELL_SCRIPT_BODY_LINE,
+            ImpExTypes.JAVASCRIPT_SCRIPT_BODY_LINE,
             ImpExTypes.BEANSHELL_SCRIPT_BODY_MULTILINE,
             ImpExTypes.JAVASCRIPT_SCRIPT_BODY_MULTILINE -> {
                 highlight(ImpExHighlighterColors.SCRIPT_BODY, holder, element)
