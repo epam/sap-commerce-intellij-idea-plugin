@@ -30,7 +30,7 @@
 - Enhanced Language lexer & parser to support single & multi-line scripts [#1821](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1821)
 - Color multiline script body for BSH & JavaScript [#1822](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1822)
 - Color single line script body for BSH & JavaScript [#1824](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1824)
-- Exclude script body from the formatting model [#1823](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/182#)
+- Exclude script body from the formatting model [#1823](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1823)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
