@@ -39,4 +39,8 @@ public interface ImpExValue extends PsiElement {
 
   @Nullable PsiElement getFieldValue(int index);
 
+  boolean isImportable();
+
+  boolean isNonImportable();
+
 }
