@@ -1,12 +1,13 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 37 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 38 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
 ### `Project Import` enhancements
-- Stop attaching decompiled OOTB sources  [#1813](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1813)
+- Stop attaching decompiled OOTB sources [#1813](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1813)
+- Re-init Global Meta Model on project refresh [#1827](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1827)
 
 ### `ImpEx` enhancements
 - Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)

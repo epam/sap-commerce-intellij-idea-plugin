@@ -18,30 +18,8 @@
 
 package sap.commerce.toolset.meta
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.SimpleModificationTracker
-import com.intellij.psi.xml.XmlFile
+interface MetaModelStateAlterationService {
 
-abstract class MetaModelModificationTracker(
-    protected val project: Project,
-) : SimpleModificationTracker() {
-
-    abstract val stateService: MetaModelStateAlterationService
-    abstract fun getKeys(vararg xmlFiles: XmlFile): Collection<String>?
-
-    fun resetCache(keys: Collection<String>) {
-        updateState(keys)
-
-        incModificationCount()
-    }
-
-    fun resetCache(vararg xmlFiles: XmlFile) = getKeys(*xmlFiles)
-        ?.let { resetCache(it) }
-
-    fun updateState(keys: Collection<String>) {
-        stateService.update(keys)
-    }
-
-    fun init() = stateService.init()
-
+    fun init()
+    fun update(metaModels: Collection<String>)
 }

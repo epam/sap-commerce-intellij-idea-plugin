@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,6 +35,8 @@ import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.yExtensionDescriptor
 import sap.commerce.toolset.project.yExtensionName
 
 abstract class MetaCollector<T : DomElement>(
@@ -63,6 +65,7 @@ abstract class MetaCollector<T : DomElement>(
                         val xmlFile = psiFile.asSafely<XmlFile>() ?: return true
                         val virtualFile = xmlFile.virtualFile ?: return true
                         val metaContainer = projectFileIndex.getModuleForFile(virtualFile)
+                            ?.takeIf { it.yExtensionDescriptor?.type in allowedModuleTypes }
                             ?.let {
                                 val extensionName = it.yExtensionName ?: return@let null
                                 it.name to extensionName
@@ -94,5 +97,13 @@ abstract class MetaCollector<T : DomElement>(
         }
 
         return files.toImmutableSet()
+    }
+
+    companion object {
+        private val allowedModuleTypes = arrayOf(
+            ModuleDescriptorType.EXT,
+            ModuleDescriptorType.OOTB,
+            ModuleDescriptorType.CUSTOM
+        )
     }
 }

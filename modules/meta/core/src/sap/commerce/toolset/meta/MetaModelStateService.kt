@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,7 +40,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
     private val systemName: String,
     private val metaCollector: MetaCollector<D>,
     private val metaModelProcessor: MetaModelProcessor<D, M>
-) : Disposable {
+) : MetaModelStateAlterationService, Disposable {
 
     protected val _metaModelsState = MutableStateFlow<Map<String, M>>(emptyMap())
     protected val _metaModelState = MutableStateFlow(CachedMetaState<G>(null, computed = false, computing = false))
@@ -52,7 +52,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
     protected abstract suspend fun create(metaModelsToMerge: Collection<M>): G
     protected abstract fun onCompletion(newState: G)
 
-    fun init() {
+    override fun init() {
         processState()
     }
 
@@ -115,7 +115,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
         }
     }
 
-    fun update(metaModels: Collection<String>) {
+    override fun update(metaModels: Collection<String>) {
         val metas = _recomputeMetasState.value
         if (metas == null) {
             _recomputeMetasState.value = metaModels.toSet()
