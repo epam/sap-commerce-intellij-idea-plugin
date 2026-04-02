@@ -63,6 +63,11 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         )
     }
 
+    override fun isNonImportable(): Boolean = !isImportable()
+
+    override fun isImportable(): Boolean = firstLeaf().elementType
+        .let { it != ImpExTypes.FIELD_VALUE_IGNORE && it != ImpExTypes.FIELD_VALUE_NULL }
+
     private fun collectReferences(): Array<PsiReference> {
         val fullHeaderParameter = valueGroup?.fullHeaderParameter
             ?: return emptyArray()
@@ -92,10 +97,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 
     private fun collectSpringReferences(meta: TSMetaClassifier<out DomElement>): Array<PsiReference>? = meta.asSafely<TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
         ?.takeIf { this.macroUsageDecList.isEmpty() }
-        ?.takeIf {
-            val leaf = this.firstLeaf()
-            leaf.elementType != ImpExTypes.FIELD_VALUE_IGNORE && leaf.elementType != ImpExTypes.FIELD_VALUE_NULL
-        }
+        ?.takeIf { this.isImportable }
         ?.takeIf { attr ->
             val metaItem = attr.owner.name ?: return@takeIf false
 

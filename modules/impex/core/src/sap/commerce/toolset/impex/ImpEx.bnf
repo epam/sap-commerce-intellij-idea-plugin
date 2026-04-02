@@ -311,7 +311,7 @@ value ::= string
     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
 {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExValueMixin"
-    methods=[getValueGroup getFieldValue]
+    methods=[getValueGroup getFieldValue isImportable isNonImportable]
 }
 
 private value_dec ::= FIELD_VALUE

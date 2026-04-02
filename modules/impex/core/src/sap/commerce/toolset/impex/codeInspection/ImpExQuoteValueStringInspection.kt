@@ -54,6 +54,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
 
             val unquotedValues = headerParameter.valueGroups
                 .mapNotNull { it.value }
+                .filter { it.isImportable }
                 .count { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
 
             if (unquotedValues > 0) {
@@ -88,6 +89,8 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
         }
 
         override fun visitValue(value: ImpExValue) {
+            if (value.isNonImportable) return
+
             val trimmedText = value.text.trim()
             if (trimmedText.startsWith('\"')) return
             if (trimmedText.isBlank()) return
