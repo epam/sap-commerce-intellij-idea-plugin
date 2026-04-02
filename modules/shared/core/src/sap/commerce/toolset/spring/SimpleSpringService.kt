@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -80,9 +80,9 @@ class SimpleSpringService(private val project: Project, private val coroutineSco
         }
     }
 
-    override fun resolveBeanDeclaration(element: PsiElement, beanId: String) = findBean(beanId)
+    override fun resolveBeanDeclaration(element: PsiElement, beanId: String, fallback: SpringFallbackScope) = findBean(beanId)
 
-    override fun resolveBeanClass(element: PsiElement, beanId: String) = findBean(beanId)
+    override fun resolveBeanClass(element: PsiElement, beanId: String, fallback: SpringFallbackScope) = findBean(beanId)
         ?.getAttributeValue("class")
         ?.let {
             JavaPsiFacade.getInstance(element.project).findClass(it, GlobalSearchScope.allScope(element.project))

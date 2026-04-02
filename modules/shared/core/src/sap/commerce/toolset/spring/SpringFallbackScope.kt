@@ -18,17 +18,8 @@
 
 package sap.commerce.toolset.spring
 
-import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.xml.XmlTag
-
-interface SpringService {
-
-    fun resolveBeanDeclaration(element: PsiElement, beanId: String, fallback: SpringFallbackScope): XmlTag?
-    fun resolveBeanClass(element: PsiElement, beanId: String, fallback: SpringFallbackScope): PsiClass?
-
-    companion object {
-        val EP = ExtensionPointName.create<SpringService>("sap.commerce.toolset.shared.springService")
-    }
+enum class SpringFallbackScope {
+    NONE,
+    ALL_MODULES,
+    CUSTOM_MODULES
 }

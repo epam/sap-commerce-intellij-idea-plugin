@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,12 +23,12 @@ import com.intellij.psi.PsiElement
 
 object SpringHelper {
 
-    fun resolveBeanDeclaration(element: PsiElement, beanId: String) = SpringService.EP.extensionList
-        .firstNotNullOfOrNull { it.resolveBeanDeclaration(element, beanId) }
-        ?: SimpleSpringService.getService(element.project).resolveBeanDeclaration(element, beanId)
+    fun resolveBeanDeclaration(element: PsiElement, beanId: String, fallback: SpringFallbackScope = SpringFallbackScope.ALL_MODULES) = SpringService.EP.extensionList
+        .firstNotNullOfOrNull { it.resolveBeanDeclaration(element, beanId, fallback,) }
+        ?: SimpleSpringService.getService(element.project).resolveBeanDeclaration(element, beanId, fallback,)
 
-    fun resolveBeanClass(element: PsiElement, beanId: String): PsiClass? = SpringService.EP.extensionList
-        .firstNotNullOfOrNull { it.resolveBeanClass(element, beanId) }
-        ?: SimpleSpringService.getService(element.project).resolveBeanClass(element, beanId)
+    fun resolveBeanClass(element: PsiElement, beanId: String, fallback: SpringFallbackScope = SpringFallbackScope.ALL_MODULES): PsiClass? = SpringService.EP.extensionList
+        .firstNotNullOfOrNull { it.resolveBeanClass(element, beanId, fallback,) }
+        ?: SimpleSpringService.getService(element.project).resolveBeanClass(element, beanId, fallback,)
 
 }
