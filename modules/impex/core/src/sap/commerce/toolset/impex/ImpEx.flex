@@ -227,6 +227,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {double_quote}                                          { yybegin(YYINITIAL); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
     {double_quote_escaped}                                  { return ImpExTypes.DOUBLE_QUOTE_ESCAPE; }
     {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
     {script_action_if}                                      { return ImpExTypes.SCRIPT_ACTION_IF; }
     {script_action_endif}                                   { return ImpExTypes.SCRIPT_ACTION_ENDIF; }
     {script_action_beforeEach}                              { return ImpExTypes.SCRIPT_ACTION_BEFOREEACH; }

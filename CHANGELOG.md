@@ -31,6 +31,7 @@
 - Color multiline script body for BSH & JavaScript [#1822](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1822)
 - Color single line script body for BSH & JavaScript [#1824](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1824)
 - Exclude script body from the formatting model [#1823](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1823)
+- Support `'` strings in the bodies of the scripts [#1825](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1825)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
