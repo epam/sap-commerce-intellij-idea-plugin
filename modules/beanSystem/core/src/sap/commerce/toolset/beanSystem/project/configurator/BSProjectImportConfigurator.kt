@@ -15,33 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.beanSystem.project.configurator
 
-package sap.commerce.toolset.meta
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.context.ProjectPostImportContext
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.SimpleModificationTracker
-import com.intellij.psi.xml.XmlFile
+class BSProjectImportConfigurator : ProjectPostImportConfigurator {
 
-abstract class MetaModelModificationTracker(
-    protected val project: Project,
-) : SimpleModificationTracker() {
+    override val name: String
+        get() = "Bean System"
 
-    abstract val stateService: MetaModelStateAlterationService
-    abstract fun getKeys(vararg xmlFiles: XmlFile): Collection<String>?
-
-    fun resetCache(keys: Collection<String>) {
-        updateState(keys)
-
-        incModificationCount()
+    override suspend fun configure(context: ProjectPostImportContext) {
+        BSMetaModelStateService.getInstance(context.project).init()
     }
-
-    fun resetCache(vararg xmlFiles: XmlFile) = getKeys(*xmlFiles)
-        ?.let { resetCache(it) }
-
-    fun updateState(keys: Collection<String>) {
-        stateService.update(keys)
-    }
-
-    fun init() = stateService.init()
-
 }
