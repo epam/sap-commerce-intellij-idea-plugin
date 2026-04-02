@@ -337,16 +337,27 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             "solrindexedproperty.facettopvaluesprovider",
             "solrindexedproperty.topvaluesprovider",
             "solrindexedproperty.customFacetSortProvider",
+            "solrsearchqueryproperty.facetdisplaynameprovider",
+            "solrsearchqueryproperty.facetsortprovider",
+            "solrsearchqueryproperty.facettopvaluesprovider",
             "solrsearchquerytemplate.ftsquerybuilder",
-
             "abstractasfacetconfiguration.valuesSortProvider",
             "abstractasfacetconfiguration.valuesdisplaynameprovider",
             "abstractasfacetconfiguration.topvaluesprovider",
-
             "solrextindexercronjob.queryparameterprovider",
             "solrindexedtype.identityprovider",
+            "eventconfiguration.converterbean",
+            "basestore.productsearchstrategy",
+            "conversionmediaformat.conversionstrategy",
+            "abstractrulebasedpromotionaction.strategyid",
+            "distributedprocess.handlerbeanid",
+            "automatedworkflowactiontemplate.jobhandler",
+            "servicelayerjob.springidcronjobfactory",
         )
-        private val predefinedSpringIdAttributes = setOf("springid")
+        private val predefinedSpringIdAttributes = setOf(
+            "springid",
+            "runnerbean"
+        )
     }
 }
 
