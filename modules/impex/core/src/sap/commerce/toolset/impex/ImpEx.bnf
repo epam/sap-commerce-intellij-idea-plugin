@@ -306,7 +306,7 @@ value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
-value ::= double_string_dec
+value ::= string
     | (MULTILINE_SEPARATOR? value_dec)+
     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
 {
