@@ -32,8 +32,8 @@ public interface ImpExValue extends PsiElement {
   @NotNull
   List<ImpExMacroUsageDec> getMacroUsageDecList();
 
-  @NotNull
-  List<ImpExScriptMultiline> getScriptMultilineList();
+  @Nullable
+  ImpExString getString();
 
   @Nullable ImpExValueGroup getValueGroup();
 
