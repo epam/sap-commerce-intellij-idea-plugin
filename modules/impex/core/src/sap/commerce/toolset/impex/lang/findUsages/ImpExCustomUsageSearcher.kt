@@ -35,6 +35,9 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
 
+/**
+ * Implementation based on the reverse-engineering of the: FindUsagesManager & ShowUsagesAction
+ */
 class ImpExCustomUsageSearcher : CustomUsageSearcher() {
 
     override fun processElementUsages(
