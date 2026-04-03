@@ -45,7 +45,9 @@ class XmlToImpExLanguageInjector : LanguageInjector {
         if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
             injectionPlacesRegistrar.addPlace(
                 XMLLanguage.INSTANCE,
-                TextRange.from(QUOTE_SYMBOL_LENGTH, host.textLength - 2), null, null
+                TextRange.from(QUOTE_SYMBOL_LENGTH, host.textLength - 2),
+                "<CDATA>",
+                "</CDATA>"
             )
         }
     }
