@@ -27,7 +27,6 @@ import com.intellij.psi.util.parentOfType
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExValueGroup
 import sap.commerce.toolset.impex.psi.ImpExVisitor
 
 class ImpExUniqueDocumentIdInspection : LocalInspectionTool() {
@@ -40,16 +39,14 @@ class ImpExUniqueDocumentIdInspection : LocalInspectionTool() {
             val set = HashSet<String>()
 
             impexFullHeaderParameter.valueGroups
+                .mapNotNull { it.value }
                 .forEach {
-                    if (!set.add(it.text)) {
-                        val qualifier = (it as ImpExValueGroup).value
-                            ?.text
-                            ?: it.text
-
+                    val qualifier = it.text
+                    if (!set.add(qualifier)) {
                         holder.registerProblem(
                             it,
                             i18n("hybris.inspections.impex.ImpExUniqueDocumentIdInspection.key", qualifier, parameter.text),
-                            ProblemHighlightType.ERROR
+                            ProblemHighlightType.GENERIC_ERROR
                         )
                     }
                 }

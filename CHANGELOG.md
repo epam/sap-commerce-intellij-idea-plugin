@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 43 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 44 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -45,6 +45,7 @@
 - Inspection: improved no unique value logic [#1804](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1804)
 - Inspection: support localized columns in the no unique value validation [#1805](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1805)
 - Inspection: improved detection of the unused macros [#1831](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1831)
+- Inspection: changed highlighting region & style for `docId` uniqueness inspection [#1833](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1833)
 - Local fix: quote value strings for non-unique string columns & localized string columns [#1798](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1798)
 - Local fix: exclude attribute of the specific type from the wrap value string in quotes rule [#1799](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1799)
 - Local fix: enable value to be quoted for string attribute of the specific type [#1801](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1801)
