@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 44 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 45 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -36,6 +36,7 @@
 - Ensure correctness of the code injection into the quoted strings [#1826](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1826)
 - Do not quote `<ignore>` & `<null>` values [#1829](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1829)
 - Enhanced find usages for macro declaration [#1832](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1832)
+- Improved injection of the `Xml` language to quoted strings [#1834](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1834)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
