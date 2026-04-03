@@ -25,9 +25,6 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.properties.IProperty
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.search.LocalSearchScope
-import com.intellij.psi.search.SearchScope
-import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
@@ -72,27 +69,24 @@ class ImpExUnusedMacroInspection : LocalInspectionTool() {
             val macroName = macro.text
             if (expectedMacrosByAbbreviations.contains(macroName)) return
 
-            val macroDeclaration = macro.parentOfType<ImpExMacroDeclaration>()
-                ?: return
+            val hasUsages = PsiTreeUtil.findChildrenOfAnyType(macro.containingFile, ImpExMacroUsageDec::class.java)
+                .any { it.reference?.resolve() == macro }
+
+            if (hasUsages) return
+
+            val macroDeclaration = macro.parentOfType<ImpExMacroDeclaration>() ?: return
             val endElement = macroDeclaration.nextLeaf({ it.elementType == ImpExTypes.CRLF })
-            val file = problemsHolder.file
 
-            val scope: SearchScope = LocalSearchScope(file)
-            val usages = ReferencesSearch.search(macro, scope)
-                .findFirst()
-
-            if (usages == null) {
-                problemsHolder.registerProblem(
-                    macro,
-                    i18n("hybris.inspections.impex.ImpExUnusedMacroInspection.key", macroName),
-                    ProblemHighlightType.WARNING,
-                    ImpExDeleteMacroDeclarationFix(
-                        macroName,
-                        macroDeclaration,
-                        endElement,
-                    )
+            problemsHolder.registerProblem(
+                macro,
+                i18n("hybris.inspections.impex.ImpExUnusedMacroInspection.key", macroName),
+                ProblemHighlightType.WARNING,
+                ImpExDeleteMacroDeclarationFix(
+                    macroName,
+                    macroDeclaration,
+                    endElement,
                 )
-            }
+            )
         }
     }
 }
