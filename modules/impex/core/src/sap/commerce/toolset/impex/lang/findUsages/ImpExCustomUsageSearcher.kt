@@ -22,7 +22,10 @@ import com.intellij.find.findUsages.FindUsagesOptions
 import com.intellij.openapi.application.readAction
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.usageView.UsageInfo
 import com.intellij.usages.Usage
+import com.intellij.usages.UsageInfoToUsageConverter
+import com.intellij.usages.similarity.clustering.ClusteringSearchSession
 import com.intellij.util.Processor
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
@@ -46,16 +49,25 @@ class ImpExCustomUsageSearcher : CustomUsageSearcher() {
             readAction {
                 ensureActive()
 
+                val clusteringSearchSession = ClusteringSearchSession.createClusteringSessionIfEnabled()
+
                 PsiTreeUtil.findChildrenOfAnyType(macro.containingFile, ImpExMacroUsageDec::class.java)
                     .mapNotNull {
                         ensureActive()
 
                         val reference = it.reference ?: return@mapNotNull null
                         val target = reference.resolve() ?: return@mapNotNull null
-                        return@mapNotNull if (target != macro) null
-                        else ImpExPsiElementUsage(it, reference)
+
+                        if (target != macro) return@mapNotNull null
+
+                        val usageInfo = UsageInfo(reference)
+                        val arrayOf = arrayOf<PsiElement>(macro)
+
+                        clusteringSearchSession
+                            ?.let { UsageInfoToUsageConverter.convertToSimilarUsage(arrayOf, usageInfo, it) }
+                            ?: UsageInfoToUsageConverter.convert(arrayOf, usageInfo)
                     }
-                    .forEach { processor.process(it) }
+                    .forEach { if (!processor.process(it)) return@readAction }
             }
         }
     }
