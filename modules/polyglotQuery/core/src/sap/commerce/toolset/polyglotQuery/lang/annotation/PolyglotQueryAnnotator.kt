@@ -21,11 +21,9 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 import sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes.*
-import sap.commerce.toolset.project.PropertyService
 
 class PolyglotQueryAnnotator : AbstractAnnotator() {
 
@@ -36,28 +34,7 @@ class PolyglotQueryAnnotator : AbstractAnnotator() {
         when (element.elementType) {
             IDENTIFIER -> when (element.parent.elementType) {
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
-
-                // TODO: migrate to Inspection Rule
-                LOCALIZED_NAME -> {
-                    val language = element.text.trim()
-
-                    val propertyService = PropertyService.getInstance(element.project)
-                    val supportedLanguages = propertyService.getLanguages()
-
-                    if (propertyService.containsLanguage(language, supportedLanguages)) {
-                        highlight(LOCALIZED_NAME, holder, element)
-                    } else {
-                        highlightError(
-                            holder, element,
-                            i18n(
-                                "hybris.inspections.language.unsupported",
-                                language,
-                                supportedLanguages.joinToString()
-                            )
-                        )
-                    }
-                }
-
+                LOCALIZED_NAME -> highlight(LOCALIZED_NAME, holder, element)
                 TYPE_KEY_NAME -> element.parent.references.forEach { holder.highlightReference(it, TYPE_KEY_NAME) }
                 ATTRIBUTE_KEY_NAME -> element.parent.references.forEach { holder.highlightReference(it, ATTRIBUTE_KEY_NAME) }
             }

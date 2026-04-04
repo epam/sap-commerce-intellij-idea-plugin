@@ -22,43 +22,30 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.polyglotQuery.codeInspection.fix.PolyglotQueryDeleteLocalizedMarkerFix
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryAttributeKey
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryLocalized
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryLocalizedName
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryVisitor
-import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
+import sap.commerce.toolset.project.PropertyService
 
-class PolyglotQueryUnexpectedLocalizedMarkerInspection : LocalInspectionTool() {
+class PolyglotQueryNotSupportedLanguageInspection : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = PolyglotQueryPsiVisitor(holder)
 
     private class PolyglotQueryPsiVisitor(private val problemsHolder: ProblemsHolder) : PolyglotQueryVisitor() {
 
-        override fun visitLocalized(element: PolyglotQueryLocalized) {
-            val attribute = element.parent
-                .asSafely<PolyglotQueryAttributeKey>()
-                ?.attributeKeyName
-                ?: return
+        override fun visitLocalizedName(element: PolyglotQueryLocalizedName) {
+            val language = element.text.trim()
+            val propertyService = PropertyService.getInstance(element.project)
+            val supportedLanguages = propertyService.getLanguages()
 
-            val featureName = attribute.text.trim()
+            if (propertyService.containsLanguage(language, supportedLanguages)) return
 
-            attribute.reference
-                ?.asSafely<PsiPolyVariantReference>()
-                ?.multiResolve(false)
-                ?.firstOrNull()
-                ?.takeUnless { TSResolveResultUtil.isLocalized(it, featureName) }
-                ?.let {
-                    problemsHolder.registerProblem(
-                        element,
-                        i18n("hybris.inspections.language.unexpected", featureName),
-                        ProblemHighlightType.ERROR,
-                        PolyglotQueryDeleteLocalizedMarkerFix(element, featureName)
-                    )
-                }
+            problemsHolder.registerProblem(
+                element,
+                i18n("hybris.inspections.language.unsupported", language, supportedLanguages.joinToString()),
+                ProblemHighlightType.ERROR,
+            )
         }
     }
 }

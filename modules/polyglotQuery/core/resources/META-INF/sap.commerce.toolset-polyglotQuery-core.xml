@@ -56,6 +56,10 @@
         <localInspection groupPath="SAP Commerce" shortName="PolyglotQueryUnexpectedLocalizedMarkerInspection" displayName="[y] Localized marker for non-localized attributes"
                          groupName="[y] Polyglot Query" level="ERROR" language="Polyglot Query" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.polyglotQuery.codeInspection.PolyglotQueryUnexpectedLocalizedMarkerInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="PolyglotQueryNotSupportedLanguageInspection" displayName="[y] Not supported language"
+                         groupName="[y] Polyglot Query" level="ERROR" language="Polyglot Query" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.polyglotQuery.codeInspection.PolyglotQueryNotSupportedLanguageInspection"/>
     </extensions>
 
 </idea-plugin>
