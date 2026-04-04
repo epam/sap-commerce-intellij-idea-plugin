@@ -70,30 +70,6 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
             }
 
             // TODO: Migrate to Inspection Rule
-            BOOLEAN_LITERAL -> highlight(
-                textAttributesKey = null,
-                holder = holder,
-                element = element,
-                highlightSeverity = HighlightSeverity.WARNING,
-                message = "Since not all databases recognize true as a query parameter, 0 and 1 should be used instead of false and true.",
-                fix = object : BaseIntentionAction() {
-
-                    val newValue = if (element.text.trim().equals("true", true)) 1 else 0
-
-                    override fun getFamilyName() = "[y] FlexibleSearch"
-                    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?) = (file?.isWritable ?: false) && canModify(file)
-                    override fun getText() = "Replace with $newValue"
-
-                    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-                        if (editor == null || file == null) return
-
-                        (element as? LeafPsiElement)
-                            ?.replaceWithText(newValue.toString())
-                    }
-                }
-            )
-
-            // TODO: Migrate to Inspection Rule
             COLON -> if (element.parent.elementType == COLUMN_SEPARATOR
                 && element.parent.parent.elementType == COLUMN_REF_EXPRESSION
             ) {
