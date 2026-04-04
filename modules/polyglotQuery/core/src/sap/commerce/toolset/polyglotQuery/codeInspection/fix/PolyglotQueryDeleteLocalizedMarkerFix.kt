@@ -22,7 +22,7 @@ import com.intellij.psi.PsiElement
 import sap.commerce.toolset.codeInspection.fix.DeletePsiElementFix
 import sap.commerce.toolset.i18n
 
-class PolyglotQueryDeleteValueGroupFix(element: PsiElement, attributeName: String) : DeletePsiElementFix(
+class PolyglotQueryDeleteLocalizedMarkerFix(element: PsiElement, attributeName: String) : DeletePsiElementFix(
     i18n("hybris.inspections.fix.pgq.DeleteLocalizedMarker"),
     i18n(
         "hybris.inspections.fix.pgq.DeleteLocalizedMarker.key", attributeName

@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 50 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 51 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -63,6 +63,7 @@
 ### `Polyglot Query` inspection rules
 - Inspection: validate various references used in the Polyglot Query [#1838](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1838)
 - Inspection: unexpected language marker for non-localized attribute [#1839](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1839)
+- Inspection: unsupported language for localized attribute [#1840](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1840)
 
 ### `Spring` enhancements
 - Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)
