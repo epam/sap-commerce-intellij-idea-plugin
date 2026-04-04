@@ -57,6 +57,9 @@
 ### `Access Control Lists` inspection rules
 - Inspection: validate various references used in the ACL [#1836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1836)
 
+### `FlexibleSearch` enhancements
+- Improve lexer to treat `order` as identifier and not a keyword [#1845](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1845)
+
 ### `FlexibleSearch` inspection rules
 - Inspection: validate various references used in the FlexibleSearch [#1837](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1837)
 - Inspection: db dependent boolean should be omitted [#1841](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1841)
