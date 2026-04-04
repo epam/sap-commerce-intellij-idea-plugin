@@ -57,6 +57,9 @@
 ### `Access Control Lists` inspection rules
 - Inspection: validate various references used in the ACL [#1836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1836)
 
+### `FlexibleSearch` inspection rules
+- Inspection: validate various references used in the FlexibleSearch [#1837](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1837)
+
 ### `Spring` enhancements
 - Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)
 - Resolve spring references in ImpEx files for predefined set of attributes [#1828](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1828)
