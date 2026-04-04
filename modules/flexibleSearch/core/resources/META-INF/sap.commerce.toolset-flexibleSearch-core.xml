@@ -89,6 +89,10 @@
         <localInspection groupPath="SAP Commerce" shortName="FlexibleSearchDbDependentBooleanInspection" displayName="[y] DB dependant boolean expression"
                          groupName="[y] FlexibleSearch" level="WARNING" language="FlexibleSearch" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.flexibleSearch.codeInspection.FlexibleSearchDbDependentBooleanInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="FlexibleSearchColonSeparatorInNonYColumnInspection" displayName="[y] Colon separator cannot be used for non-[y] columns"
+                         groupName="[y] FlexibleSearch" level="ERROR" language="FlexibleSearch" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.flexibleSearch.codeInspection.FlexibleSearchColonSeparatorInNonYColumnInspection"/>
     </extensions>
 
 </idea-plugin>
