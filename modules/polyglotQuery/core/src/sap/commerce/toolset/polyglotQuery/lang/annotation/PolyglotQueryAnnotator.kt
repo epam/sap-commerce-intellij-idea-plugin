@@ -20,16 +20,12 @@ package sap.commerce.toolset.polyglotQuery.lang.annotation
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 import sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes.*
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 class PolyglotQueryAnnotator : AbstractAnnotator() {
 
@@ -68,25 +64,6 @@ class PolyglotQueryAnnotator : AbstractAnnotator() {
 
             QUESTION_MARK -> when (element.parent.elementType) {
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
-            }
-
-            // TODO: migrate to Inspection Rule
-            LOCALIZED -> {
-                element.parent.childrenOfType<PolyglotQueryAttributeKeyName>()
-                    .firstOrNull()
-                    ?.let { attribute ->
-                        val featureName = attribute.text.trim()
-                        (attribute.reference as? PsiReferenceBase.Poly<*>)
-                            ?.multiResolve(false)
-                            ?.firstOrNull()
-                            ?.takeIf { !TSResolveResultUtil.isLocalized(it, featureName) }
-                            ?.let {
-                                highlightError(
-                                    holder, element,
-                                    i18n("hybris.inspections.language.unexpected", featureName)
-                                )
-                            }
-                    }
             }
         }
     }

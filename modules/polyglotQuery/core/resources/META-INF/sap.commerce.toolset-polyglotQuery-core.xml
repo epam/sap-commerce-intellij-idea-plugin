@@ -52,6 +52,10 @@
         <localInspection groupPath="SAP Commerce" shortName="PolyglotQueryUnresolvedReferenceInspection" displayName="[y] Unresolved reference"
                          groupName="[y] Polyglot Query" level="ERROR" language="Polyglot Query" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.polyglotQuery.codeInspection.PolyglotQueryUnresolvedReferenceInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="PolyglotQueryUnexpectedLocalizedMarkerInspection" displayName="[y] Localized marker for non-localized attributes"
+                         groupName="[y] Polyglot Query" level="ERROR" language="Polyglot Query" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.polyglotQuery.codeInspection.PolyglotQueryUnexpectedLocalizedMarkerInspection"/>
     </extensions>
 
 </idea-plugin>
