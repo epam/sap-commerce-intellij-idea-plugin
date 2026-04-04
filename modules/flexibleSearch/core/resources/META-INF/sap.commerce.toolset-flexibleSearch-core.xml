@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -47,7 +47,7 @@
 
         <colorSettingsPage implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
 
-        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.flexibleSearch.lang.documentation.FlexibleSearchPsiDocumentationTargetProvider" />
+        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.flexibleSearch.lang.documentation.FlexibleSearchPsiDocumentationTargetProvider"/>
         <platform.backend.documentation.targetProvider implementation="sap.commerce.toolset.flexibleSearch.lang.documentation.FlexibleSearchDocumentationTargetProvider"/>
         <lang.braceMatcher language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
         <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
@@ -71,6 +71,13 @@
 
         <annotator language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>
         <highlightErrorFilter implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlightErrorFilter"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection groupPath="SAP Commerce" shortName="FlexibleSearchUnresolvedReferenceInspection" displayName="[y] Unresolved reference"
+                         groupName="[y] FlexibleSearch" level="ERROR" language="FlexibleSearch" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.flexibleSearch.codeInspection.FlexibleSearchUnresolvedReferenceInspection"/>
+
     </extensions>
 
 </idea-plugin>

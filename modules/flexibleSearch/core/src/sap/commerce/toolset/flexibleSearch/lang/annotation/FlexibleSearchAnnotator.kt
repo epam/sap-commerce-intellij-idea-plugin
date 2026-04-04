@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,14 +50,15 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
             IDENTIFIER,
             BACKTICK_LITERAL -> when (element.parent.elementType) {
                 FUNCTION_NAME -> highlight(FUNCTION_NAME, holder, element)
-                COLUMN_NAME -> highlightReference(COLUMN_NAME, holder, element, "hybris.inspections.fxs.unresolved.columnAlias.key")
-                Y_COLUMN_NAME -> highlightReference(Y_COLUMN_NAME, holder, element, "hybris.inspections.fxs.unresolved.attribute.key")
-                SELECTED_TABLE_NAME -> highlightReference(SELECTED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.tableAlias.key")
-                DEFINED_TABLE_NAME -> highlightReference(DEFINED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.type.key")
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
                 TABLE_ALIAS_NAME -> highlight(TABLE_ALIAS_NAME, holder, element)
                 COLUMN_ALIAS_NAME -> highlight(COLUMN_ALIAS_NAME, holder, element)
                 COLUMN_LOCALIZED_NAME -> highlight(COLUMN_LOCALIZED_NAME, holder, element)
+
+                COLUMN_NAME -> element.parent.references.forEach { holder.highlightReference(it, COLUMN_NAME) }
+                Y_COLUMN_NAME -> element.parent.references.forEach { holder.highlightReference(it, Y_COLUMN_NAME) }
+                SELECTED_TABLE_NAME -> element.parent.references.forEach { holder.highlightReference(it, SELECTED_TABLE_NAME) }
+                DEFINED_TABLE_NAME -> element.parent.references.forEach { holder.highlightReference(it, DEFINED_TABLE_NAME) }
             }
 
             // Special case, [y] allows reserved words for attributes & types
@@ -68,6 +69,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
             }
 
+            // TODO: Migrate to Inspection Rule
             BOOLEAN_LITERAL -> highlight(
                 textAttributesKey = null,
                 holder = holder,
@@ -91,6 +93,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
                 }
             )
 
+            // TODO: Migrate to Inspection Rule
             COLON -> if (element.parent.elementType == COLUMN_SEPARATOR
                 && element.parent.parent.elementType == COLUMN_REF_EXPRESSION
             ) {
@@ -122,6 +125,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
                 DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FXS_TABLE_TAIL, holder, element)
             }
 
+            // TODO: migrate to Inspection Rule
             COLUMN_LOCALIZED_NAME -> {
                 val language = element.text.trim()
 
@@ -156,6 +160,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
                     }
             }
 
+            // TODO: migrate to Inspection Rule
             TokenType.ERROR_ELEMENT -> when (element.parent.elementType) {
                 COLUMN_LOCALIZED_NAME ->
                     highlightError(

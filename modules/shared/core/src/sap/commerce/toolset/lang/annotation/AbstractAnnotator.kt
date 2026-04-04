@@ -131,8 +131,7 @@ abstract class AbstractAnnotator : Annotator {
         range: TextRange = element.textRange,
         message: String? = null,
         fix: IntentionAction? = null,
-    ) = highlighter
-        .getTokenHighlights(tokenType)
+    ) = highlighter.getTokenHighlights(tokenType)
         .firstOrNull()
         ?.let { highlight(it, holder, element, highlightSeverity, range, message, fix) }
 
@@ -152,11 +151,21 @@ abstract class AbstractAnnotator : Annotator {
         builder.create()
     }
 
-    fun AnnotationHolder.highlightReference(reference: PsiReference, textAttributes: TextAttributesKey) = this
+    fun AnnotationHolder.highlightReference(
+        reference: PsiReference,
+        textAttributes: TextAttributesKey,
+    ) = this
         .newSilentAnnotation(HighlightSeverity.TEXT_ATTRIBUTES)
         .range(reference.absoluteRange)
         .textAttributes(textAttributes)
         .create()
+
+    fun AnnotationHolder.highlightReference(
+        reference: PsiReference,
+        tokenType: IElementType,
+    ) = highlighter.getTokenHighlights(tokenType)
+        .firstOrNull()
+        ?.let { highlightReference(reference, it) }
 
     fun annotation(
         message: String?,

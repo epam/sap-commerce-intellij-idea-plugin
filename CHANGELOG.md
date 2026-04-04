@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 47 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 48 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -56,6 +56,9 @@
 
 ### `Access Control Lists` inspection rules
 - Inspection: validate various references used in the ACL [#1836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1836)
+
+### `FlexibleSearch` inspection rules
+- Inspection: validate various references used in the FlexibleSearch [#1837](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1837)
 
 ### `Spring` enhancements
 - Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)
