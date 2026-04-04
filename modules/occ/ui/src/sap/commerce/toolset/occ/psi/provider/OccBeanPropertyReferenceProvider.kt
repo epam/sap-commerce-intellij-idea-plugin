@@ -47,8 +47,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
         val propertyXmlTags = element.parents(false)
             .mapNotNull { it as? XmlTag }
-            .filter { it.localName == "bean" }
-            .firstOrNull()
+            .firstOrNull { it.localName == "bean" }
             ?.childrenOfType<XmlTag>()
             ?.filter { it.localName == "property" }
             ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), element)
