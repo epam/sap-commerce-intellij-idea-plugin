@@ -144,9 +144,11 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // document_id_dec
   //   | (special_parameter | HEADER_PARAMETER_NAME special_parameter)
-  //   | (HEADER_PARAMETER_NAME
-  //   | macro_usage_dec
-  //   | FUNCTION)+
+  //   | (
+  //         HEADER_PARAMETER_NAME
+  //       | macro_usage_dec
+  //       | FUNCTION
+  //   )+
   public static boolean any_header_parameter_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_parameter_name")) return false;
     boolean r;
@@ -180,9 +182,11 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (HEADER_PARAMETER_NAME
-  //   | macro_usage_dec
-  //   | FUNCTION)+
+  // (
+  //         HEADER_PARAMETER_NAME
+  //       | macro_usage_dec
+  //       | FUNCTION
+  //   )+
   private static boolean any_header_parameter_name_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_parameter_name_2")) return false;
     boolean r;
@@ -198,8 +202,8 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   // HEADER_PARAMETER_NAME
-  //   | macro_usage_dec
-  //   | FUNCTION
+  //       | macro_usage_dec
+  //       | FUNCTION
   private static boolean any_header_parameter_name_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_parameter_name_2_0")) return false;
     boolean r;
@@ -747,7 +751,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))? modifiers*
+  // (HEADER_PARAMETER_NAME DOT? FUNCTION? | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))? modifiers*
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r, p;
@@ -760,15 +764,43 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION
+  // HEADER_PARAMETER_NAME DOT? FUNCTION? | macro_usage_dec | document_id_usage | FUNCTION
   private static boolean parameter_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_0")) return false;
     boolean r;
-    r = consumeToken(b, HEADER_PARAMETER_NAME);
+    Marker m = enter_section_(b);
+    r = parameter_0_0(b, l + 1);
     if (!r) r = macro_usage_dec(b, l + 1);
     if (!r) r = document_id_usage(b, l + 1);
     if (!r) r = consumeToken(b, FUNCTION);
+    exit_section_(b, m, null, r);
     return r;
+  }
+
+  // HEADER_PARAMETER_NAME DOT? FUNCTION?
+  private static boolean parameter_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, HEADER_PARAMETER_NAME);
+    r = r && parameter_0_0_1(b, l + 1);
+    r = r && parameter_0_0_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // DOT?
+  private static boolean parameter_0_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_0_1")) return false;
+    consumeToken(b, DOT);
+    return true;
+  }
+
+  // FUNCTION?
+  private static boolean parameter_0_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_0_2")) return false;
+    consumeToken(b, FUNCTION);
+    return true;
   }
 
   // (sub_parameters | ((DOT)? macro_usage_dec) | (DOT? HEADER_PARAMETER_NAME))?

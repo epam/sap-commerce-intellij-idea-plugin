@@ -28,10 +28,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.tree.IElementType
-import com.intellij.util.asSafely
-import sap.commerce.toolset.i18n
 
 abstract class AbstractAnnotator : Annotator {
 
@@ -53,26 +50,6 @@ abstract class AbstractAnnotator : Annotator {
             .range(range)
             .highlightType(type)
             .create()
-    }
-
-    fun highlightReference(
-        tokenType: IElementType,
-        holder: AnnotationHolder,
-        element: PsiElement,
-        messageKey: String,
-        referenceHolder: PsiElement = element.parent
-    ) {
-        val resolved = referenceHolder.reference
-            .asSafely<PsiReferenceBase.Poly<*>>()
-            ?.multiResolve(true)
-            ?.isNotEmpty()
-            ?: true
-
-        if (resolved) {
-            highlight(tokenType, holder, element)
-        } else {
-            highlightError(holder, element, i18n(messageKey, element.text))
-        }
     }
 
     fun highlight(

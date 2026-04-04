@@ -26,8 +26,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
 import com.intellij.psi.util.parentOfType
 import sap.commerce.toolset.flexibleSearch.codeInspection.fix.FlexibleSearchReplaceColumnSeparatorQuickFix
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnSeparator
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchResultColumn
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchVisitor
 
@@ -39,13 +39,13 @@ class FlexibleSearchColonSeparatorInNonYColumnInspection : LocalInspectionTool()
     private class FlexibleSearchPsiVisitor(private val problemsHolder: ProblemsHolder) : FlexibleSearchVisitor() {
 
         override fun visitColumnSeparator(element: FlexibleSearchColumnSeparator) {
-            element.parentOfType<FlexibleSearchResultColumn>() ?: return
+            element.parentOfType<FlexibleSearchColumnRefExpression>() ?: return
 
             if (element.firstLeaf().elementType != FlexibleSearchTypes.COLON) return
 
             problemsHolder.registerProblem(
                 element,
-                "Test",
+                "Replace ':' column separator with '.'",
                 ProblemHighlightType.GENERIC_ERROR,
                 FlexibleSearchReplaceColumnSeparatorQuickFix(
                     element = element,

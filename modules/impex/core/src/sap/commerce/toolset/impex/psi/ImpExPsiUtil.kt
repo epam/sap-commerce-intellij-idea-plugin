@@ -169,7 +169,8 @@ fun getReferenceItemTypeName(element: ImpExParameter): String? = (
         ?: PsiTreeUtil.getParentOfType(element, ImpExFullHeaderParameter::class.java)
             ?.anyHeaderParameterName
     )
-    ?.reference
+    ?.references
+    ?.lastOrNull()
     ?.asSafely<PsiPolyVariantReference>()
     ?.multiResolve(false)
     ?.firstOrNull()
