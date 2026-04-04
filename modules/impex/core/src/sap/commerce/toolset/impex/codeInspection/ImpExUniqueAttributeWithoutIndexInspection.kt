@@ -27,6 +27,7 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExVisitor
+import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
@@ -39,7 +40,11 @@ class ImpExUniqueAttributeWithoutIndexInspection : LocalInspectionTool() {
             val attribute = param.anyHeaderParameterName.text
 
             // no need to validate special parameters
-            if (attribute.startsWith('@') || TSConstants.Attribute.PK.equals(attribute, true)) return
+            if (attribute.startsWith('@')
+                || TSConstants.Attribute.PK.equals(attribute, true)
+                || param.anyHeaderParameterName.reference is ImpExHeaderAbbreviationReference
+                || param.anyHeaderParameterName.macroUsageDecList.isNotEmpty()
+                ) return
 
             param.modifiersList
                 .flatMap { it.attributeList }
