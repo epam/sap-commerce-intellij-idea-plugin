@@ -110,11 +110,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                 val headerParameter = value.headerParameter ?: return
                 if (!tsElementTypes.contains(headerParameter.firstChild.elementType)) return
 
-                highlightReference(
-                    ImpExTypes.HEADER_TYPE, holder, element,
-                    "hybris.inspections.impex.unresolved.type.key",
-                    referenceHolder = element
-                )
+                highlight(ImpExTypes.HEADER_TYPE, holder, element)
             }
 
             ImpExTypes.VALUE -> {
@@ -122,39 +118,10 @@ class ImpExAnnotator : AbstractAnnotator() {
 
                 value.references.forEach { reference ->
                     when (reference) {
-                        is ImpExValueTSStaticEnumReference -> {
-                            val valueElement = reference.getTargetElement()
-                            highlightReference(
-                                ImpExHighlighterColors.VALUE_REFERENCE, holder, valueElement,
-                                "hybris.inspections.impex.unresolved.enumValue.key",
-                                reference = reference
-                            )
-                        }
-
-                        is ImpExValueTSClassifierReference -> {
-                            val valueElement = reference.getTargetElement() ?: return
-                            highlightReference(
-                                ImpExHighlighterColors.VALUE_REFERENCE, holder, valueElement,
-                                "hybris.inspections.impex.unresolved.composedType.key",
-                                reference = reference
-                            )
-                        }
-
-                        is ImpExDocumentIdUsageReference -> {
-                            highlightReference(
-                                ImpExHighlighterColors.VALUE_REFERENCE, holder, value,
-                                "hybris.inspections.impex.unresolved.docUsage.key",
-                                reference = reference
-                            )
-                        }
-
-                        is SpringReference -> {
-                            highlightReference(
-                                ImpExHighlighterColors.VALUE_REFERENCE, holder, value,
-                                "hybris.inspections.impex.unresolved.springBean.key",
-                                reference = reference
-                            )
-                        }
+                        is ImpExValueTSStaticEnumReference,
+                        is ImpExValueTSClassifierReference,
+                        is ImpExDocumentIdUsageReference,
+                        is SpringReference -> holder.highlightReference(reference, ImpExHighlighterColors.VALUE_REFERENCE)
                     }
                 }
             }
@@ -164,11 +131,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                 val headerParameter = value.headerParameter ?: return
                 if (!tsElementTypes.contains(headerParameter.firstChild.elementType)) return
 
-                highlightReference(
-                    ImpExTypes.HEADER_PARAMETER_NAME, holder, element,
-                    "hybris.inspections.impex.unresolved.type.key",
-                    referenceHolder = element
-                )
+                highlight(ImpExTypes.HEADER_PARAMETER_NAME, holder, element)
             }
 
             ImpExTypes.DOT -> {
@@ -183,8 +146,6 @@ class ImpExAnnotator : AbstractAnnotator() {
 
                 if (subType.textMatches(headerType)) {
                     highlight(ImpExHighlighterColors.VALUE_SUBTYPE_SAME, holder, element)
-                } else {
-                    highlightReference(ImpExTypes.VALUE_SUBTYPE, holder, element, "hybris.inspections.impex.unresolved.subType.key")
                 }
             }
 
@@ -195,6 +156,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                     val propertyKey = macroUsageDec.configPropertyKey
                         ?: element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 
+                    // TODO: replace this with the correct Lexer and Parse, introduce new TOKEN MACRO_CONFIG_PREFIX
                     highlight(
                         ImpExHighlighterColors.MACRO_CONFIG_KEY,
                         holder,

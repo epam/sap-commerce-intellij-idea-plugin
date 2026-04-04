@@ -71,10 +71,9 @@ INSERT_UPDATE SomeType; ${"$"}contentCV[unique = true][map-delimiter = |][datefo
             )
         }
 Subtype ; ; account                ; "Your Account"
-        ; ; <ignore>               ; "Add/Edit Address"
-        ; ; <null>                 ;
-        ; ; key -> vaue | key ->
-vaue                               ; "Address Book"
+<sst>SomeType</sst>        ; ; <ignore>               ; "Add/Edit Address"
+        ; ; <null>                  ;
+        ; ; key -> vaue | key ->vaue ; "Address Book"
         ; ; value1, value2, value3 ; 12345 ; com.domain.Class ; qwe : asd
 
 INSERT Address[impex.legacy.mode = true, batchmode = true]; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin
@@ -123,6 +122,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         put("vref", ImpExHighlighterColors.VALUE_REFERENCE)
         put("unique", ImpExHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME)
         put("sriptbody", ImpExHighlighterColors.SCRIPT_BODY)
+        put("sst", ImpExHighlighterColors.VALUE_SUBTYPE_SAME)
         this
     }
     private val inheritedPermission = "<permission_inherited>.</permission_inherited>"
@@ -143,7 +143,8 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Mode//Remove", ImpExHighlighterColors.HEADER_MODE_REMOVE),
 
         AttributesDescriptor("Type//Header type", ImpExHighlighterColors.HEADER_TYPE),
-        AttributesDescriptor("Type//Value sub-type", ImpExHighlighterColors.VALUE_SUBTYPE),
+        AttributesDescriptor("Type//Sub-type", ImpExHighlighterColors.VALUE_SUBTYPE),
+        AttributesDescriptor("Type//Same sub-type", ImpExHighlighterColors.VALUE_SUBTYPE_SAME),
 
         AttributesDescriptor("Separators//Field value separator", ImpExHighlighterColors.FIELD_VALUE_SEPARATOR),
         AttributesDescriptor("Separators//List item separator", ImpExHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
