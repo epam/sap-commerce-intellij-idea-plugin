@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -46,6 +46,12 @@
         <lang.commenter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryCommenter"/>
         <lang.braceMatcher language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
         <lang.foldingBuilder language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection groupPath="SAP Commerce" shortName="PolyglotQueryUnresolvedReferenceInspection" displayName="[y] Unresolved reference"
+                         groupName="[y] Polyglot Query" level="ERROR" language="Polyglot Query" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.polyglotQuery.codeInspection.PolyglotQueryUnresolvedReferenceInspection"/>
     </extensions>
 
 </idea-plugin>
