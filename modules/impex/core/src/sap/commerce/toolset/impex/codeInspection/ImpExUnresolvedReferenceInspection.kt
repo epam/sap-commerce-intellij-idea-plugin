@@ -19,18 +19,11 @@ package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.PsiReference
-import com.intellij.util.asSafely
+import sap.commerce.toolset.codeInspection.verifyReferences
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.psi.ImpExSubTypeName
-import sap.commerce.toolset.impex.psi.ImpExUserRightsAttributeValue
-import sap.commerce.toolset.impex.psi.ImpExUserRightsSingleValue
-import sap.commerce.toolset.impex.psi.ImpExValue
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.ImpExDocumentIdUsageReference
 import sap.commerce.toolset.impex.psi.references.ImpExValueTSClassifierReference
 import sap.commerce.toolset.impex.psi.references.ImpExValueTSStaticEnumReference
@@ -39,23 +32,23 @@ import sap.commerce.toolset.spring.psi.reference.SpringReference
 class ImpExUnresolvedReferenceInspection : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpExVisitor(holder)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpExPsiVisitor(holder)
 
-    private class ImpExVisitor(private val problemsHolder: ProblemsHolder) : sap.commerce.toolset.impex.psi.ImpExVisitor() {
+    private class ImpExPsiVisitor(private val problemsHolder: ProblemsHolder) : ImpExVisitor() {
 
-        override fun visitUserRightsSingleValue(element: ImpExUserRightsSingleValue) = element.verifyReferences {
+        override fun visitUserRightsSingleValue(element: ImpExUserRightsSingleValue) = problemsHolder.verifyReferences(element) {
             i18n("hybris.inspections.impex.unresolved.type.key", canonicalText)
         }
 
-        override fun visitUserRightsAttributeValue(element: ImpExUserRightsAttributeValue) = element.verifyReferences {
+        override fun visitUserRightsAttributeValue(element: ImpExUserRightsAttributeValue) = problemsHolder.verifyReferences(element) {
             i18n("hybris.inspections.impex.unresolved.type.key", canonicalText)
         }
 
-        override fun visitSubTypeName(element: ImpExSubTypeName) = element.verifyReferences {
+        override fun visitSubTypeName(element: ImpExSubTypeName) = problemsHolder.verifyReferences(element) {
             i18n("hybris.inspections.impex.unresolved.subType.key", canonicalText)
         }
 
-        override fun visitValue(element: ImpExValue) = element.verifyReferences {
+        override fun visitValue(element: ImpExValue) = problemsHolder.verifyReferences(element) {
             when (this) {
                 is ImpExValueTSStaticEnumReference -> "hybris.inspections.impex.unresolved.enumValue.key"
                 is ImpExValueTSClassifierReference -> "hybris.inspections.impex.unresolved.composedType.key"
@@ -65,17 +58,5 @@ class ImpExUnresolvedReferenceInspection : LocalInspectionTool() {
             }
                 ?.let { i18n(it, canonicalText) }
         }
-
-        private fun PsiElement.verifyReferences(descriptionProvider: PsiReference.() -> String?) = references
-            .filter {
-                it.asSafely<PsiPolyVariantReference>()
-                    ?.multiResolve(false)
-                    ?.isEmpty()
-                    ?: (it.resolve() == null)
-            }
-            .forEach { reference ->
-                val description = descriptionProvider(reference) ?: return@forEach
-                problemsHolder.registerProblem(reference, description, ProblemHighlightType.ERROR)
-            }
     }
 }
