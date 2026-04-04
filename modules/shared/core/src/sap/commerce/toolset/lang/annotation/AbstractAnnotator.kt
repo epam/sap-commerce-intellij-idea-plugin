@@ -75,54 +75,6 @@ abstract class AbstractAnnotator : Annotator {
         }
     }
 
-    fun highlightReference(
-        holder: AnnotationHolder,
-        element: PsiElement,
-        messageKey: String,
-        referenceHolder: PsiElement = element.parent
-    ) = referenceHolder.reference
-        .asSafely<PsiReferenceBase.Poly<*>>()
-        ?.multiResolve(true)
-        ?.takeIf { it.isEmpty() }
-        ?.let { highlightError(holder, element, i18n(messageKey, element.text)) }
-
-    fun highlightReference(
-        holder: AnnotationHolder,
-        element: PsiElement,
-        messageKey: String,
-        reference: PsiReference
-    ) {
-        val range = reference.absoluteRange
-        val isValid = reference.asSafely<PsiReferenceBase.Poly<PsiElement>>()
-            ?.multiResolve(false)
-            ?.isNotEmpty()
-            ?: (reference.resolve() != null)
-
-        if (!isValid) {
-            highlightError(holder, element, i18n(messageKey, reference.canonicalText), range = range)
-        }
-    }
-
-    fun highlightReference(
-        textAttributesKey: TextAttributesKey?,
-        holder: AnnotationHolder,
-        element: PsiElement,
-        messageKey: String,
-        reference: PsiReference
-    ) {
-        val range = reference.absoluteRange
-        val isValid = reference.asSafely<PsiReferenceBase.Poly<PsiElement>>()
-            ?.multiResolve(false)
-            ?.isNotEmpty()
-            ?: (reference.resolve() != null)
-
-        if (isValid) {
-            highlight(textAttributesKey, holder, element, range = range)
-        } else {
-            highlightError(holder, element, i18n(messageKey, reference.canonicalText), range = range)
-        }
-    }
-
     fun highlight(
         tokenType: IElementType,
         holder: AnnotationHolder,

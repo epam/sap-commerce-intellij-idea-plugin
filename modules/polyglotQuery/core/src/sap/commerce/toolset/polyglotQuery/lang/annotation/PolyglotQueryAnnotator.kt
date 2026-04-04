@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,9 +39,9 @@ class PolyglotQueryAnnotator : AbstractAnnotator() {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
             IDENTIFIER -> when (element.parent.elementType) {
-                TYPE_KEY_NAME -> highlightReference(TYPE_KEY_NAME, holder, element, "hybris.inspections.pgq.unresolved.type.key")
-                ATTRIBUTE_KEY_NAME -> highlightReference(ATTRIBUTE_KEY_NAME, holder, element, "hybris.inspections.pgq.unresolved.attribute.key")
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
+
+                // TODO: migrate to Inspection Rule
                 LOCALIZED_NAME -> {
                     val language = element.text.trim()
 
@@ -61,12 +61,16 @@ class PolyglotQueryAnnotator : AbstractAnnotator() {
                         )
                     }
                 }
+
+                TYPE_KEY_NAME -> element.parent.references.forEach { holder.highlightReference(it, TYPE_KEY_NAME) }
+                ATTRIBUTE_KEY_NAME -> element.parent.references.forEach { holder.highlightReference(it, ATTRIBUTE_KEY_NAME) }
             }
 
             QUESTION_MARK -> when (element.parent.elementType) {
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
             }
 
+            // TODO: migrate to Inspection Rule
             LOCALIZED -> {
                 element.parent.childrenOfType<PolyglotQueryAttributeKeyName>()
                     .firstOrNull()
@@ -86,5 +90,4 @@ class PolyglotQueryAnnotator : AbstractAnnotator() {
             }
         }
     }
-
 }
