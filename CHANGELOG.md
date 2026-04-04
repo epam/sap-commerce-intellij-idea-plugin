@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 53 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 54 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -61,6 +61,7 @@
 - Inspection: validate various references used in the FlexibleSearch [#1837](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1837)
 - Inspection: db dependent boolean should be omitted [#1841](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1841)
 - Inspection: unsupported language for localized attribute [#1842](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1842)
+- Inspection: unexpected language marker for non-localized attribute [#1843](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1843)
 
 ### `Polyglot Query` inspection rules
 - Inspection: validate various references used in the Polyglot Query [#1838](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1838)
