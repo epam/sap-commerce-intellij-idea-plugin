@@ -77,6 +77,10 @@
         <localInspection groupPath="SAP Commerce" shortName="FlexibleSearchUnresolvedReferenceInspection" displayName="[y] Unresolved reference"
                          groupName="[y] FlexibleSearch" level="ERROR" language="FlexibleSearch" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.flexibleSearch.codeInspection.FlexibleSearchUnresolvedReferenceInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="FlexibleSearchDbDependentBooleanInspection" displayName="[y] DB dependant boolean expression"
+                         groupName="[y] FlexibleSearch" level="WARNING" language="FlexibleSearch" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.flexibleSearch.codeInspection.FlexibleSearchDbDependentBooleanInspection"/>
     </extensions>
 
 </idea-plugin>
