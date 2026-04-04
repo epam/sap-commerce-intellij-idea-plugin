@@ -16,25 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInspection.fix
+package sap.commerce.toolset.flexibleSearch.codeInspection.fix
 
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
+import sap.commerce.toolset.codeInspection.fix.DeletePsiElementFix
+import sap.commerce.toolset.i18n
 
-open class DeletePsiElementFix(
-    private val myFamilyName: String,
-    private val myText: String,
+class FlexibleSearchDeleteLocalizedMarkerQuickFix(
     startElement: PsiElement,
-    endElement: PsiElement? = null,
-) : LocalQuickFixOnPsiElement(startElement, endElement ?: startElement) {
-
-    override fun getFamilyName() = myFamilyName
-    override fun getText() = myText
-
-    override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        if (startElement != endElement) startElement.parent.deleteChildRange(startElement, endElement)
-        else startElement.delete()
-    }
-}
+    endElement: PsiElement,
+    attributeName: String,
+) : DeletePsiElementFix(
+    i18n("hybris.inspections.fix.fsq.FlexibleSearchDeleteLocalizedMarker"),
+    i18n("hybris.inspections.fix.fsq.FlexibleSearchDeleteLocalizedMarker.key", attributeName),
+    startElement,
+    endElement
+)

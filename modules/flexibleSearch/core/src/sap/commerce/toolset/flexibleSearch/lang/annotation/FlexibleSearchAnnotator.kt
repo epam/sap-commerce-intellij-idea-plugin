@@ -25,19 +25,15 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
-import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 class FlexibleSearchAnnotator : AbstractAnnotator() {
 
@@ -98,25 +94,6 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
             EXCLAMATION_MARK,
             DASH_MARK -> when (element.parent.elementType) {
                 DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FXS_TABLE_TAIL, holder, element)
-            }
-
-            // TODO: migrate to Inspection Rule
-            COLUMN_LOCALIZED_NAME -> {
-                element.parent.childrenOfType<FlexibleSearchYColumnName>()
-                    .firstOrNull()
-                    ?.let { yColumn ->
-                        val featureName = yColumn.text.trim()
-                        (yColumn.reference as? PsiReferenceBase.Poly<*>)
-                            ?.multiResolve(false)
-                            ?.firstOrNull()
-                            ?.takeIf { !TSResolveResultUtil.isLocalized(it, featureName) }
-                            ?.let {
-                                highlightError(
-                                    holder, element,
-                                    i18n("hybris.inspections.language.unexpected", featureName)
-                                )
-                            }
-                    }
             }
 
             // TODO: migrate to Inspection Rule
