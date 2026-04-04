@@ -37,7 +37,6 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
-import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 class FlexibleSearchAnnotator : AbstractAnnotator() {
@@ -103,22 +102,6 @@ class FlexibleSearchAnnotator : AbstractAnnotator() {
 
             // TODO: migrate to Inspection Rule
             COLUMN_LOCALIZED_NAME -> {
-                val language = element.text.trim()
-
-                val propertyService = PropertyService.getInstance(element.project)
-                val supportedLanguages = propertyService.getLanguages()
-
-                if (!propertyService.containsLanguage(language, supportedLanguages)) {
-                    highlightError(
-                        holder, element,
-                        i18n(
-                            "hybris.inspections.language.unsupported",
-                            language,
-                            supportedLanguages.joinToString()
-                        )
-                    )
-                }
-
                 element.parent.childrenOfType<FlexibleSearchYColumnName>()
                     .firstOrNull()
                     ?.let { yColumn ->
