@@ -250,18 +250,13 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (SINGLE_QUOTE)+
+  // LINE_COMMENT
   public static boolean comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comment")) return false;
-    if (!nextTokenIs(b, SINGLE_QUOTE)) return false;
+    if (!nextTokenIs(b, LINE_COMMENT)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, SINGLE_QUOTE);
-    while (r) {
-      int c = current_position_(b);
-      if (!consumeToken(b, SINGLE_QUOTE)) break;
-      if (!empty_element_parsed_guard_(b, "comment", c)) break;
-    }
+    r = consumeToken(b, LINE_COMMENT);
     exit_section_(b, m, COMMENT, r);
     return r;
   }
