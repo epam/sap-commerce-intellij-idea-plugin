@@ -214,6 +214,10 @@
         <localInspection groupPath="SAP Commerce" shortName="ImpExMissingDocumentIdColumnInspection" displayName="[y] Missing DocId"
                          groupName="[y] ImpEx" level="INFORMATION" language="ImpEx" enabledByDefault="true"
                          implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExMissingDocumentIdColumnInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExUnresolvedReferenceInspection" displayName="[y] Unresolved reference"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="sap.commerce.toolset.impex.codeInspection.ImpExUnresolvedReferenceInspection"/>
     </extensions>
 
 </idea-plugin>
