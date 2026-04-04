@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -1467,7 +1467,8 @@ public class _FlexibleSearchLexer implements FlexLexer {
           // fall through
           case 164: break;
           case 75:
-            { return ORDER;
+            { if (!braces.isEmpty() && braces.getFirst()) return IDENTIFIER;
+                                        return ORDER;
             }
           // fall through
           case 165: break;

@@ -142,7 +142,10 @@ LINE_COMMENT=--[^\r\n]*
   "NUMBERED_PARAMETER"               { return NUMBERED_PARAMETER; }
   "LIMIT"                            { return LIMIT; }
   "OFFSET"                           { return OFFSET; }
-  "ORDER"                            { return ORDER; }
+  "ORDER"                            {
+                                        if (!braces.isEmpty() && braces.getFirst()) return IDENTIFIER;
+                                        return ORDER;
+                                     }
   "BY"                               { return BY; }
   "ALL"                              { return ALL; }
   "GROUP"                            { return GROUP; }
