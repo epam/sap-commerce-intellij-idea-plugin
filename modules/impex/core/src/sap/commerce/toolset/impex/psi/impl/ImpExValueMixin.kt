@@ -127,7 +127,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             is TSMetaRelation.TSMetaRelationElement -> meta.cardinality
             is TSGlobalMetaItem.TSGlobalMetaItemAttribute -> when (metaModelAccess.findMetaClassifierByName(attributeType)) {
                 is TSGlobalMetaCollection -> Cardinality.MANY
-                else -> null
+                else -> Cardinality.ONE
             }
 
             else -> Cardinality.ONE
