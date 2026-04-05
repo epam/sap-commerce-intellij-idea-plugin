@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,11 +20,15 @@ package sap.commerce.toolset.impex.editor
 
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
+import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 
 data class ImpExVirtualParameter(
     val name: String,
-    val displayName: String = StringUtil.shortenPathWithEllipsis(name.removePrefix("$"), 20),
+    val displayName: String = StringUtil.shortenPathWithEllipsis(
+        name.removePrefix(ImpExConstants.IMPEX_PREFIX_MACRO),
+        20
+    ),
 ) {
 
     private val lazyPresentationValue = ClearableLazyValue.create<String> { this.evaluatePresentationValue() }

@@ -43,4 +43,8 @@ public interface ImpExValue extends PsiElement {
 
   boolean isNonImportable();
 
+  boolean isQuotable();
+
+  boolean isNotQuotable();
+
 }

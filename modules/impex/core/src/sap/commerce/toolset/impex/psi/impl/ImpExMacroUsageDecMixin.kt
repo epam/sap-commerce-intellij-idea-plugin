@@ -38,7 +38,7 @@ abstract class ImpExMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiEl
 
     override fun createReference() = if (text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
         ImpExPropertyReference(this)
-    } else if (text.startsWith("$")) {
+    } else if (text.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)) {
         ImpExMacroReference(this)
     } else {
         null

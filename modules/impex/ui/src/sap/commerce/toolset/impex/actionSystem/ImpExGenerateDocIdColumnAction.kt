@@ -123,7 +123,7 @@ class ImpExGenerateDocIdColumnAction : AbstractImpExTableAction() {
                 }
 
                 buildString {
-                    append("UPDATE Test; &${nameProperty.get()}")
+                    append("UPDATE T; &${nameProperty.get()}")
                     columns.forEach { column ->
                         append("; ${column.name}")
                         if (column.unique) append("[unique=true]")

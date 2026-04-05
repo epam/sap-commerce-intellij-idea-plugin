@@ -48,14 +48,13 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
         override fun visitFullHeaderParameter(headerParameter: ImpExFullHeaderParameter) {
             val parameterName = headerParameter.anyHeaderParameterName
             val attributeMeta = parameterName.applicableItemAttribute ?: return
-
             val typeName = attributeMeta.owner.name ?: return
             val attributeName = attributeMeta.name
 
             val unquotedValues = headerParameter.valueGroups
                 .mapNotNull { it.value }
                 .filter { it.isImportable }
-                .count { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
+                .count { it.isQuotable }
 
             if (unquotedValues > 0) {
                 val isExcluded = headerParameter.project.yDeveloperSettings.impexSettings.quoteStringExclusions[typeName]
@@ -90,10 +89,9 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
 
         override fun visitValue(value: ImpExValue) {
             if (value.isNonImportable) return
+            if (value.isNotQuotable) return
 
             val trimmedText = value.text.trim()
-            if (trimmedText.startsWith('\"')) return
-            if (trimmedText.isBlank()) return
 
             val impExSettings = value.project.yDeveloperSettings.impexSettings
 
@@ -164,7 +162,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                         .parentOfType<ImpExFullHeaderParameter>()
                         ?.valueGroups
                         ?.mapNotNull { it.value }
-                        ?.filter { it.text.isNotBlank() && !it.text.trim().startsWith("\"") }
+                        ?.filter { it.isQuotable }
                         ?.reversed()
                         ?.forEach { quoteValue(it, project) }
                 }
