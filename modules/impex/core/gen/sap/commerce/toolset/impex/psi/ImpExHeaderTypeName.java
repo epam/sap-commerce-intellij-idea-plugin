@@ -29,6 +29,9 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpExHeaderTypeName extends PsiElement {
 
+  @NotNull
+  List<ImpExMacroUsageDec> getMacroUsageDecList();
+
   @Nullable ImpExHeaderLine getHeaderLine();
 
 }

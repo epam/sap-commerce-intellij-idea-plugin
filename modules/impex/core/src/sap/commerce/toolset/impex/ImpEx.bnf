@@ -361,7 +361,7 @@ any_header_mode ::= HEADER_MODE_INSERT | HEADER_MODE_UPDATE | HEADER_MODE_INSERT
 full_header_type ::= header_type_name modifiers?
 {recoverWhile = not_line_break_or_parameters_separator}
 
-header_type_name ::= HEADER_TYPE
+header_type_name ::= (macro_usage_dec | HEADER_TYPE)+
 {
     recoverWhile = recover_header_type
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExHeaderTypeNameMixin"
