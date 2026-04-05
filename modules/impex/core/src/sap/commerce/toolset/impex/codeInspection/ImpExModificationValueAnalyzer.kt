@@ -29,17 +29,13 @@ import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.psi.PsiTreeUtilExt
 
-fun notKeyAttributesList(fullParametersList: List<ImpExFullHeaderParameter>) = fullParametersList.filterNot { keyAttrPredicate(it) }
+fun notKeyAttributesList(fullParametersList: List<ImpExFullHeaderParameter>) = fullParametersList.filterNot { it.isUnique }
 
-fun keyAttributesList(fullParametersList: List<ImpExFullHeaderParameter>) = fullParametersList.filter { keyAttrPredicate(it) }
+fun keyAttributesList(fullParametersList: List<ImpExFullHeaderParameter>) = fullParametersList.filter { it.isUnique }
 
 fun fullParametersList(headerLines: List<ImpExHeaderLine>) = headerLines.flatMap { it.fullHeaderParameterList }
 
-fun keyAttrsName(it: ImpExHeaderLine) = it.fullHeaderParameterList.filter { keyAttrPredicate(it) }.map { it.text }
-
-fun keyAttrPredicate(param: ImpExFullHeaderParameter) = param.modifiersList
-    .flatMap { it.attributeList }
-    .find { it.anyAttributeName.text == AttributeModifier.UNIQUE.modifierName && it.anyAttributeValue?.text == "true" } != null
+fun keyAttrsName(it: ImpExHeaderLine) = it.fullHeaderParameterList.filter { it.isUnique }.map { it.text }
 
 fun intersection(a: ByteArray, b: ByteArray) = a.filterIndexed { index, i -> b[index] != 0.toByte() && b[index] == i }.isNotEmpty()
 

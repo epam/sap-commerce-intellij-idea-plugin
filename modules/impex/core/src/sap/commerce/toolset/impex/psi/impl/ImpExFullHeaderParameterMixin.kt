@@ -21,12 +21,9 @@ package sap.commerce.toolset.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExValueGroup
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 import java.io.Serial
 
@@ -54,15 +51,63 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         )
     }, false)
 
-    override fun getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String): String = getAttribute(attributeModifier)
+    override fun isUnique() = this.getExpandedAttributes()
+        .lastOrNull { it.anyAttributeName.textMatches(AttributeModifier.UNIQUE.modifierName) }
+        ?.anyAttributeValue?.textMatches("true") ?: false
+
+    override fun getAttribute(attributeModifier: AttributeModifier): ImpExAttribute? = this.modifiersList
+        .flatMap { it.attributeList }
+        .lastOrNull { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
+
+    override fun getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String): String = getExpandedAttributes()
+        .lastOrNull { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
         ?.anyAttributeValue
-        ?.text
-        ?.trim()
+        ?.childLeafs()
+        ?.joinToString("") {
+            if (it.elementType == ImpExTypes.MACRO_USAGE) it.parentOfType<ImpExMacroUsageDec>()
+                ?.resolveValue(HashSet())
+                ?: it.text
+            else it.text
+        }
         ?: defaultValue
+
+    // In contrast to the "getAttribute" function, this function will expand any macros, create new temporary file and recreate FullHeaderParameter
+    // due that, it will NOT BE PART of the original PsiTree and MUST NOT be accesses outside of this internal logic.
+    private fun getExpandedAttributes(): List<ImpExAttribute> = CachedValuesManager.getManager(project)
+        .getCachedValue(this, CACHE_KEY_EXPANDED_ATTRIBUTES, {
+            val macroExpandedParameter = anyHeaderParameterName
+                .takeIf { it.macroUsageDecList.isNotEmpty() }
+                ?.children
+                ?.joinToString("") {
+                    when (it) {
+                        is ImpExMacroUsageDec -> it.resolveValue(HashSet())
+                        else -> it.text
+                    }
+                }
+                ?.let {
+                    val macros = buildString {
+                        PsiTreeUtil.processElements(anyHeaderParameterName.containingFile) {element ->
+                            if (element == this)  return@processElements false
+                            if (element is ImpExMacroDeclaration) this@buildString.appendLine(element.text)
+                            return@processElements true
+                        }
+                    }
+                    ImpExElementFactory.createFullHeaderParameter(project, macros, it) }
+                ?: this
+
+            val expandedAttribute = macroExpandedParameter.modifiersList
+                .flatMap { it.attributeList }
+
+            CachedValueProvider.Result.createSingleDependency(
+                expandedAttribute,
+                this@ImpExFullHeaderParameterMixin
+            )
+        }, false)
 
     companion object {
         val CACHE_KEY_COLUMN_NUMBER = Key.create<CachedValue<Int>>("SAP_CX_IMPEX_COLUMN_NUMBER")
         val CACHE_KEY_VALUE_GROUPS = Key.create<CachedValue<List<ImpExValueGroup>>>("SAP_CX_IMPEX_VALUE_GROUPS")
+        val CACHE_KEY_EXPANDED_ATTRIBUTES = Key.create<CachedValue<List<ImpExAttribute>>>("SAP_CX_IMPEX_EXPANDED_ATTRIBUTE")
 
         @Serial
         private val serialVersionUID: Long = -4491471414641409161L

@@ -22,9 +22,14 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.util.*
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
+import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 import java.io.Serial
 
@@ -65,16 +70,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
             .value
             ?.text
             ?: this.fullHeaderParameter
-                ?.getAttribute(AttributeModifier.DEFAULT)
-                ?.anyAttributeValue
-                ?.childLeafs()
-                ?.toList()
-                ?.joinToString("") {
-                    if (it.elementType == ImpExTypes.MACRO_USAGE) it.parentOfType<ImpExMacroUsageDec>()
-                        ?.resolveValue(HashSet())
-                        ?: it.text
-                    else it.text
-                }
+                ?.getAttributeValue(AttributeModifier.DEFAULT, "")
 
         val defaultValue = computedValue
             ?.let { StringUtil.unquoteString(it, '\'') }

@@ -31,7 +31,6 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.codeInspection.context.ImpExColumnContext
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.*
 
@@ -53,9 +52,6 @@ fun getAnyAttributeName(element: ImpExAnyAttributeValue): ImpExAnyAttributeName?
 
 fun getAnyAttributeValue(element: ImpExAnyAttributeName): ImpExAnyAttributeValue? = PsiTreeUtil
     .getNextSiblingOfType(element, ImpExAnyAttributeValue::class.java)
-
-fun isUnique(element: ImpExFullHeaderParameter) = element.getAttribute(AttributeModifier.UNIQUE)
-    ?.anyAttributeValue?.textMatches("true") ?: false
 
 fun getUniqueFullHeaderParameters(element: ImpExHeaderLine) = element.fullHeaderParameterList
     .filter { it.isUnique }
@@ -105,11 +101,6 @@ fun addValueGroups(element: ImpExValueLine, groupsToAdd: Int) {
             ?.let { element.addAfter(it, element.valueGroupList.lastOrNull()) }
     }
 }
-
-fun getAttribute(element: ImpExFullHeaderParameter, attributeModifier: AttributeModifier): ImpExAttribute? = element
-    .modifiersList
-    .flatMap { it.attributeList }
-    .lastOrNull { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
 
 fun getHeaderTypeName(element: ImpExSubTypeName): ImpExHeaderTypeName? = element
     .valueLine

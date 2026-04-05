@@ -357,7 +357,6 @@ macro_name_dec ::= MACRO_NAME_DECLARATION
 
 any_header_mode ::= HEADER_MODE_INSERT | HEADER_MODE_UPDATE | HEADER_MODE_INSERT_UPDATE | HEADER_MODE_REMOVE
 
-
 full_header_type ::= header_type_name modifiers?
 {recoverWhile = not_line_break_or_parameters_separator}
 
