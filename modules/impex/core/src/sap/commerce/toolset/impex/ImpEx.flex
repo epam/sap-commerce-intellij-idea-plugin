@@ -214,7 +214,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {macro_usage}                                           {
                                                                 var macroName = yytext().toString().trim();
-                                                                return macroDeclarations.contains(macroName)
+                                                                return macroDeclarations.contains(macroName) || macroName.startsWith("$config-")
                                                                     ? ImpExTypes.MACRO_USAGE
                                                                     : ImpExTypes.STRING_LITERAL;
                                                             }
@@ -306,7 +306,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {double_quote}                                          { yybegin(SCRIPT_BODY); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
     {macro_usage}                                           {
                                                                 var macroName = yytext().toString().trim();
-                                                                return macroDeclarations.contains(macroName)
+                                                                return macroDeclarations.contains(macroName) || macroName.startsWith("$config-")
                                                                     ? ImpExTypes.MACRO_USAGE
                                                                     : ImpExTypes.STRING_LITERAL;
                                                             }
@@ -337,7 +337,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {macro_usage}                                           {
                                                                 var macroName = yytext().toString().trim();
-                                                                return macroDeclarations.contains(macroName)
+                                                                return macroDeclarations.contains(macroName) || macroName.startsWith("$config-")
                                                                     ? ImpExTypes.MACRO_USAGE
                                                                     : ImpExTypes.STRING_LITERAL;
                                                             }
