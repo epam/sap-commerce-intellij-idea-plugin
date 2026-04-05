@@ -38,6 +38,7 @@
 - Enhanced find usages for macro declaration [#1832](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1832)
 - Improved injection of the `Xml` language to quoted strings [#1834](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1834)
 - Improved handling of the nested parameters in the header line [#1846](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1846)
+- Support `$config-` macro usages in the quoted strings [#1849](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1849)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

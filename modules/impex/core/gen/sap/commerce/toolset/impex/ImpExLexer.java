@@ -1851,7 +1851,7 @@ class ImpExLexer implements FlexLexer {
           case 168: break;
           case 61:
             { var macroName = yytext().toString().trim();
-                                                                return macroDeclarations.contains(macroName)
+                                                                return macroDeclarations.contains(macroName) || macroName.startsWith("$config-")
                                                                     ? ImpExTypes.MACRO_USAGE
                                                                     : ImpExTypes.STRING_LITERAL;
             }
