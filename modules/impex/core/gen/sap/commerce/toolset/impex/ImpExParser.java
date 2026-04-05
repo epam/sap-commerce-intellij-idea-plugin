@@ -483,13 +483,27 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HEADER_TYPE
+  // (macro_usage_dec | HEADER_TYPE)+
   public static boolean header_type_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_type_name")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, HEADER_TYPE_NAME, "<header type name>");
-    r = consumeToken(b, HEADER_TYPE);
+    r = header_type_name_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!header_type_name_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "header_type_name", c)) break;
+    }
     exit_section_(b, l, m, r, false, ImpExParser::recover_header_type);
+    return r;
+  }
+
+  // macro_usage_dec | HEADER_TYPE
+  private static boolean header_type_name_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "header_type_name_0")) return false;
+    boolean r;
+    r = macro_usage_dec(b, l + 1);
+    if (!r) r = consumeToken(b, HEADER_TYPE);
     return r;
   }
 

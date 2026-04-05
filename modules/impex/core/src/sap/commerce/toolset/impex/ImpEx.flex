@@ -35,6 +35,66 @@ import java.util.HashSet;
 %type IElementType
 %{
   private Collection<String> macroDeclarations = new HashSet<String>();
+
+  /**
+   * Remembers which state to return to after draining a macro suffix in MACRO_SUFFIX state.
+   */
+  private int macroSuffixReturnState = YYINITIAL;
+
+  /**
+   * Remembers which token type to emit for the suffix drained in MACRO_SUFFIX state.
+   * This is state-specific — e.g. STRING_LITERAL in string contexts, FIELD_VALUE in
+   * field contexts, MACRO_VALUE in macro value contexts, etc.
+   */
+  private IElementType macroSuffixTokenType = ImpExTypes.MACRO_VALUE;
+
+  /**
+   * Resolves a matched {macro_usage} candidate against declared macros.
+   *
+   * Cases:
+   *   1. Exact match or $config- prefix → MACRO_USAGE, switch to returnState
+   *   2. Longest declared prefix match  → MACRO_USAGE for the prefix,
+   *                                       push back suffix, drain it as fallbackType
+   *                                       via MACRO_SUFFIX state, then returnState
+   *   3. No match at all               → fallbackType for full text, switch to returnState
+   *
+   * @param returnState  the yybegin() state to restore after resolution
+   * @param fallbackType the IElementType to emit for unresolved text — must be the
+   *                     semantically correct type for the calling state (e.g.
+   *                     STRING_LITERAL, FIELD_VALUE, SCRIPT_BODY_VALUE, MACRO_VALUE…)
+   */
+  private IElementType resolveMacroUsage(int returnState, IElementType fallbackType) {
+      var candidate = yytext().toString();
+
+      // 1. Exact match or $config- prefix — straightforward MACRO_USAGE
+      if (macroDeclarations.contains(candidate) || candidate.startsWith("$config-")) {
+          yybegin(returnState);
+          return ImpExTypes.MACRO_USAGE;
+      }
+
+      // 2. Longest declared prefix scan
+      String bestMatch = null;
+      for (String declared : macroDeclarations) {
+          if (candidate.startsWith(declared)) {
+              if (bestMatch == null || declared.length() > bestMatch.length()) {
+                  bestMatch = declared;
+              }
+          }
+      }
+
+      if (bestMatch != null) {
+          // Push back the unmatched suffix — MACRO_SUFFIX will consume it as fallbackType
+          yypushback(candidate.length() - bestMatch.length());
+          macroSuffixReturnState = returnState;
+          macroSuffixTokenType   = fallbackType;
+          yybegin(MACRO_SUFFIX);
+          return ImpExTypes.MACRO_USAGE;
+      }
+
+      // 3. Completely undeclared — treat whole token as the caller's fallback type
+      yybegin(returnState);
+      return fallbackType;
+  }
 %}
 
 %eof{
@@ -160,6 +220,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state MACRO_USAGE
 %state MACRO_CONFIG_USAGE
 %state WAITING_MACRO_CONFIG_USAGE
+%state MACRO_SUFFIX
 %state USER_RIGHTS_START
 %state USER_RIGHTS_END
 %state USER_RIGHTS_HEADER_LINE
@@ -212,12 +273,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {script_marker_javascript}                              { yybegin(SCRIPT_BODY_MULTILINE); return ImpExTypes.JAVASCRIPT_MARKER; }
     {script_marker_bsh}                                     { yybegin(SCRIPT_BODY_MULTILINE); return ImpExTypes.BEAN_SHELL_MARKER; }
 
-    {macro_usage}                                           {
-                                                                var macroName = yytext().toString().trim();
-                                                                return macroDeclarations.contains(macroName) || macroName.startsWith("$config-")
-                                                                    ? ImpExTypes.MACRO_USAGE
-                                                                    : ImpExTypes.STRING_LITERAL;
-                                                            }
+    {macro_usage}                                           { return resolveMacroUsage(YYINITIAL_DOUBLE_STRING, ImpExTypes.STRING_LITERAL); }
     {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
 
     {crlf}                                                  { return ImpExTypes.CRLF; }
@@ -226,7 +282,7 @@ end_userrights                    = [$]END_USERRIGHTS
 <SCRIPT_BODY_MULTILINE> {
     {double_quote}                                          { yybegin(YYINITIAL); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
     {double_quote_escaped}                                  { return ImpExTypes.DOUBLE_QUOTE_ESCAPE; }
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return resolveMacroUsage(SCRIPT_BODY_MULTILINE, ImpExTypes.SCRIPT_BODY_VALUE); }
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
     {script_action_if}                                      { return ImpExTypes.SCRIPT_ACTION_IF; }
     {script_action_endif}                                   { return ImpExTypes.SCRIPT_ACTION_ENDIF; }
@@ -289,7 +345,7 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <SCRIPT_BODY> {
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return resolveMacroUsage(SCRIPT_BODY, ImpExTypes.SCRIPT_BODY_VALUE); }
     {script_action_if}                                      { return ImpExTypes.SCRIPT_ACTION_IF; }
     {script_action_endif}                                   { return ImpExTypes.SCRIPT_ACTION_ENDIF; }
     {script_action_beforeEach}                              { return ImpExTypes.SCRIPT_ACTION_BEFOREEACH; }
@@ -304,12 +360,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <SCRIPT_DOUBLE_STRING> {
     {double_quote}                                          { yybegin(SCRIPT_BODY); return ImpExTypes.DOUBLE_QUOTE_CLOSE; }
-    {macro_usage}                                           {
-                                                                var macroName = yytext().toString().trim();
-                                                                return macroDeclarations.contains(macroName) || macroName.startsWith("$config-")
-                                                                    ? ImpExTypes.MACRO_USAGE
-                                                                    : ImpExTypes.STRING_LITERAL;
-                                                            }
+    {macro_usage}                                           { return resolveMacroUsage(SCRIPT_DOUBLE_STRING, ImpExTypes.STRING_LITERAL); }
     {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
 }
 
@@ -335,12 +386,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {alternative_map_delimiter}                             { return ImpExTypes.ALTERNATIVE_MAP_DELIMITER; }
     {default_key_value_delimiter}                           { return ImpExTypes.DEFAULT_KEY_VALUE_DELIMITER; }
 
-    {macro_usage}                                           {
-                                                                var macroName = yytext().toString().trim();
-                                                                return macroDeclarations.contains(macroName) || macroName.startsWith("$config-")
-                                                                    ? ImpExTypes.MACRO_USAGE
-                                                                    : ImpExTypes.STRING_LITERAL;
-                                                            }
+    {macro_usage}                                           { return resolveMacroUsage(DOUBLE_STRING, ImpExTypes.STRING_LITERAL); }
 
     {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
     {crlf}                                                  { return ImpExTypes.CRLF; }
@@ -377,14 +423,18 @@ end_userrights                    = [$]END_USERRIGHTS
     {collection_remove_prefix}                              { return ImpExTypes.COLLECTION_REMOVE_PREFIX; }
     {collection_merge_prefix}                               { return ImpExTypes.COLLECTION_MERGE_PREFIX; }
 
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return resolveMacroUsage(FIELD_VALUE, ImpExTypes.FIELD_VALUE); }
 
     {field_value}                                           { return ImpExTypes.FIELD_VALUE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
 <HEADER_TYPE> {
-    {header_type}                                           { yybegin(HEADER_LINE); return ImpExTypes.HEADER_TYPE; }
+    {macro_usage}                                           { return resolveMacroUsage(HEADER_TYPE, ImpExTypes.HEADER_TYPE); }
+    {header_type}                                           { return ImpExTypes.HEADER_TYPE; }
+    {left_square_bracket}                                   { yypushback(1); yybegin(HEADER_LINE); }
+    {multiline_separator}                                   { yypushback(1); yybegin(HEADER_LINE); }
+    {semicolon}                                             { yypushback(1); yybegin(HEADER_LINE); }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
@@ -394,7 +444,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {comma}                                                 { return ImpExTypes.COMMA; }
     {dot}                                                   { return ImpExTypes.DOT; }
 
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return resolveMacroUsage(HEADER_LINE, ImpExTypes.HEADER_PARAMETER_NAME); }
     {document_id}                                           { return ImpExTypes.DOCUMENT_ID; }
     {parameter_name}{white_space}?+{left_round_bracket}     {
                                                               yybegin(HEADER_LINE);
@@ -420,7 +470,7 @@ end_userrights                    = [$]END_USERRIGHTS
                                                                 yypushback(yylength());
                                                             }
     {special_parameter_value}                               { return ImpExTypes.SPECIAL_PARAMETER_VALUE; }
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return resolveMacroUsage(SPECIAL_PARAMETER, ImpExTypes.SPECIAL_PARAMETER_VALUE); }
 }
 
 <MODIFIERS_BLOCK> {
@@ -436,7 +486,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {comma}                                                 { return ImpExTypes.ATTRIBUTE_SEPARATOR; }
 
     {alternative_map_delimiter}                             { yybegin(MODIFIERS_BLOCK); return ImpExTypes.ALTERNATIVE_MAP_DELIMITER; }
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return resolveMacroUsage(MODIFIERS_BLOCK, ImpExTypes.ATTRIBUTE_VALUE); }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
@@ -445,7 +495,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {digit}                                                 { return ImpExTypes.DIGIT; }
     {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
     {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
-    {macro_usage}                                           { return ImpExTypes.MACRO_USAGE; }
+    {macro_usage}                                           { return resolveMacroUsage(WAITING_ATTR_OR_PARAM_VALUE, ImpExTypes.ATTRIBUTE_VALUE); }
     {comma}                                                 { yybegin(MODIFIERS_BLOCK); return ImpExTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpExTypes.ATTRIBUTE_VALUE; }
     {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpExTypes.RIGHT_SQUARE_BRACKET; }
@@ -461,6 +511,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {single_quote}                                          { return ImpExTypes.SINGLE_QUOTE; }
     {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
 
+    // Redirect to config-usage check first; falls through to MACRO_USAGE state for plain $var
     {macro_usage}                                           { yypushback(yylength()); yybegin(WAITING_MACRO_CONFIG_USAGE); }
 
     {left_round_bracket}                                    { return ImpExTypes.LEFT_ROUND_BRACKET; }
@@ -488,13 +539,24 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <WAITING_MACRO_CONFIG_USAGE> {
+    // $config-xxx takes priority — resolved as-is without prefix splitting
     {macro_config_usage}                                    { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_USAGE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
-   .                                                        { yypushback(yylength()); yybegin(MACRO_USAGE); }
+    // Not a config usage — hand off to MACRO_USAGE for split resolution
+    .                                                       { yypushback(yylength()); yybegin(MACRO_USAGE); }
 }
 
 <MACRO_USAGE> {
-    {macro_usage}                                           { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_USAGE; }
+    // Resolve with split logic; returns to WAITING_MACRO_VALUE after (or MACRO_SUFFIX for suffix drain)
+    {macro_usage}                                           { return resolveMacroUsage(WAITING_MACRO_VALUE, ImpExTypes.MACRO_VALUE); }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
+}
+
+// Drains the unmatched suffix pushed back after a partial MACRO_USAGE prefix match.
+// macroSuffixReturnState holds the caller's state to restore after the suffix is consumed.
+// macroSuffixTokenType holds the semantically correct token type for the calling state.
+<MACRO_SUFFIX> {
+    {macro_value}                                           { yybegin(macroSuffixReturnState); return macroSuffixTokenType; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
