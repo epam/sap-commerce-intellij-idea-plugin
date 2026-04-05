@@ -65,6 +65,18 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 
     override fun isNonImportable(): Boolean = !isImportable()
 
+    override fun isQuotable(): Boolean {
+        val trimmedText = text.trim()
+        if (trimmedText.isEmpty()) return false
+        if (trimmedText.startsWith('\"')) return false
+        val leafs = childLeafs()
+            .groupBy { it.elementType }
+
+        return !(leafs.size == 1 && leafs[ImpExTypes.MACRO_USAGE]?.size == 1)
+    }
+
+    override fun isNotQuotable(): Boolean = !isQuotable
+
     override fun isImportable(): Boolean = firstLeaf().elementType
         .let { it != ImpExTypes.FIELD_VALUE_IGNORE && it != ImpExTypes.FIELD_VALUE_NULL }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.PsiClassImplUtil
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.constants.modifier.ImpExModifier
 import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
 import sap.commerce.toolset.impex.psi.ImpExVisitor
@@ -44,7 +45,7 @@ abstract class ImpExInvalidClassReferenceModifierInspection(
 
         override fun visitAnyAttributeValue(element: ImpExAnyAttributeValue) {
             if (modifier.modifierName != element.anyAttributeName?.text) return
-            if (element.text.startsWith("$")) return
+            if (element.text.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)) return
             val reference = element.reference
 
             if (reference == null) unresolvedReference(element)
