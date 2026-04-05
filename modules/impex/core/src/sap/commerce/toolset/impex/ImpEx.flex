@@ -35,6 +35,54 @@ import java.util.HashSet;
 %type IElementType
 %{
   private Collection<String> macroDeclarations = new HashSet<String>();
+
+  // Queue for deferred tokens when a macro candidate is split
+  private final java.util.Deque<IElementType> pendingTokenTypes   = new java.util.ArrayDeque<>();
+  private final java.util.Deque<Integer>      pendingTokenLengths = new java.util.ArrayDeque<>();
+
+  /**
+   * Resolves a matched macro_usage candidate against declared macros.
+   *
+   * Exact match      → returns MACRO_USAGE, switches to returnState
+   * Prefix match     → returns MACRO_USAGE for the prefix,
+   *                    queues MACRO_VALUE for the suffix, switches to returnState
+   * No match at all  → returns MACRO_VALUE for the full text, switches to returnState
+   *
+   * @param returnState  the yybegin() state to restore after resolution
+   */
+  private IElementType resolveMacroUsage(int returnState) {
+      var candidate = yytext().toString();
+
+      // 1. Exact match
+      if (macroDeclarations.contains(candidate) || candidate.startsWith("$config-")) {
+          yybegin(returnState);
+          return ImpExTypes.MACRO_USAGE;
+      }
+
+      // 2. Longest declared prefix
+      String bestMatch = null;
+      for (String declared : macroDeclarations) {
+          if (candidate.startsWith(declared)) {
+              if (bestMatch == null || declared.length() > bestMatch.length()) {
+                  bestMatch = declared;
+              }
+          }
+      }
+
+      if (bestMatch != null) {
+          int suffixLen = candidate.length() - bestMatch.length();
+          // Queue the suffix as MACRO_VALUE to be returned on next advance()
+          pendingTokenTypes.addLast(ImpExTypes.MACRO_VALUE);
+          pendingTokenLengths.addLast(suffixLen);
+          yypushback(suffixLen);
+          yybegin(returnState);
+          return ImpExTypes.MACRO_USAGE;
+      }
+
+      // 3. No match — treat the whole token as a plain value
+      yybegin(returnState);
+      return ImpExTypes.MACRO_VALUE;
+  }
 %}
 
 %eof{
@@ -158,6 +206,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state WAITING_ATTR_OR_PARAM_VALUE
 %state HEADER_PARAMETERS
 %state MACRO_USAGE
+%state MACRO_USAGE_CANDIDATE
 %state MACRO_CONFIG_USAGE
 %state WAITING_MACRO_CONFIG_USAGE
 %state USER_RIGHTS_START
@@ -494,8 +543,42 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <MACRO_USAGE> {
-    {macro_usage}                                           { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_USAGE; }
-    {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
+    {macro_usage}   {
+                        var candidate = yytext().toString();
+
+                        // Exact match — declared variable
+                        if (macroDeclarations.contains(candidate)) {
+                            yybegin(WAITING_MACRO_VALUE);
+                            return ImpExTypes.MACRO_USAGE;
+                        }
+
+                        // Find longest declared prefix
+                        String bestMatch = null;
+                        for (final String declared : macroDeclarations) {
+                            if (candidate.startsWith(declared)) {
+                                if (bestMatch == null || declared.length() > bestMatch.length()) {
+                                    bestMatch = declared;
+                                }
+                            }
+                        }
+
+                        if (bestMatch != null) {
+                            // Push back the suffix (the non-variable remainder)
+                            yypushback(candidate.length() - bestMatch.length());
+                            yybegin(MACRO_USAGE_CANDIDATE);
+                            return ImpExTypes.MACRO_USAGE;
+                        }
+
+                        // No declared variable matched — treat as plain macro value
+                        yybegin(WAITING_MACRO_VALUE);
+                        return ImpExTypes.MACRO_VALUE;
+                    }
+    {crlf}          { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
+}
+
+<MACRO_USAGE_CANDIDATE> {
+    {macro_value}   { yybegin(WAITING_MACRO_VALUE); return ImpExTypes.MACRO_VALUE; }
+    {crlf}          { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
 }
 
 // Fallback
