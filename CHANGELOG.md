@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 60 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 61 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -12,7 +12,7 @@
 ### `ImpEx` enhancements
 - Do not format value if the declared macro [#1788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1788)
 - Resolve header abbreviation in the complex param `; categories(code, myAbbreviation);` [#1789](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1789)
-- Do not create TS reference when `&DocId` reference present [#1794](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1794)
+- Do not create TS reference when `&docId` reference present [#1794](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1794)
 - Show abbreviations in the completion list for parameters [#1795](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1795)
 - Resolve macro values used in the `default` header attribute and displayed as an inline hint [#1796](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1796)
 - Add exclusion rules for `string` attributes which should not be wrapped in quotes [#1800](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1800)
@@ -23,7 +23,7 @@
 - Improved lexer to support `$macroUsages` & `""` in th multi-line script body string [#1810](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1810)
 - Allow `\` in the unquoted strings via default RegEx (can be changed via settings) [#1811](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1811)
 - Allow `$` in the unquoted strings via default RegEx (can be changed via settings) [#1819](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1819)
-- Added preview for `&docID` generator Wizard [#1812](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1812)
+- Added preview for `&docId` generator Wizard [#1812](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1812)
 - Ensure that the whole ImpEx statement (table) will be formatted despite the modified/selected range of the value line [#1815](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1815)
 - Ensure that the whole ImpEx statement (table) will be formatted despite the modified/selected range of the header line [#1816](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1816)
 - Preserve formatting ranges in case of the local-fixes, they should not reformat the whole ImpEx statement (table) [#1818](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1818)
@@ -41,6 +41,7 @@
 - Support `$config-` macro usages in the quoted strings [#1849](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1849)
 - Improved macro usage resolution with the "startsWith" approach in the language Lexer [#1850](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1850)
 - Expand complex attribute values and resolve expanded parameter modifiers [#1851](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1851)
+- Ensure that `&docId` usages respect `ONE` cardinality on an Item.attribute [#1852](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1852)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

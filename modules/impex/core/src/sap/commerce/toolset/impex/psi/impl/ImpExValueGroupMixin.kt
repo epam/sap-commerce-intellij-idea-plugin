@@ -71,6 +71,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
             ?.text
             ?: this.fullHeaderParameter
                 ?.getAttributeValue(AttributeModifier.DEFAULT, "")
+                ?.takeIf { it.isNotEmpty() }
 
         val defaultValue = computedValue
             ?.let { StringUtil.unquoteString(it, '\'') }
