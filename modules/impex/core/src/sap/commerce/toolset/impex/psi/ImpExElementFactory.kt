@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -55,6 +55,16 @@ object ImpExElementFactory {
         .childrenOfType<ImpExValueLine>()
         .firstOrNull()
         ?.valueGroupList
+        ?.firstOrNull()
+
+    fun createFullHeaderParameter(project: Project, macros: String, parameterPlaceholder: String) = createFile(project, $$"""
+        UPDATE GenericItem[processor = de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor]; pk[unique = true]
+        $$macros
+        UPDATE I;$$parameterPlaceholder
+    """.trimIndent())
+        .childrenOfType<ImpExHeaderLine>()
+        .lastOrNull()
+        ?.fullHeaderParameterList
         ?.firstOrNull()
 
     fun createFile(project: Project, text: String): ImpExFile = PsiFileFactory.getInstance(project)

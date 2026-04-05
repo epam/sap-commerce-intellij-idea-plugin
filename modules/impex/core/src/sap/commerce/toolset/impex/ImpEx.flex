@@ -176,7 +176,7 @@ special_parameter_value = [^(\;\[\"\r\n\\\ \t\f$]+
 special_parameter_end = [(\;\[\"\r\n\\\$]
 
 attribute_name  = ({identifier}|[.])+
-attribute_value = [^, \t\f\]\r\n]+
+attribute_value = [^$, \t\f\]\r\n]+
 
 document_id = [&]{identifier}+
 

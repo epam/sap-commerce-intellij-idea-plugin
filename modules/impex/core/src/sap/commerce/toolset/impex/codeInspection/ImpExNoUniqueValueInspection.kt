@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,9 +42,12 @@ class ImpExNoUniqueValueInspection : LocalInspectionTool() {
 
                     if (keyAttrsList.isNotEmpty()) {
                         val notKeyAttrsList = notKeyAttributesList(fullParametersList)
-                        val distinctCommonAttrsNames = notKeyAttrsList.map { it.text }.distinct()
-
-                        val keyAttrsGroupedByName = fullParametersList.filter { keyAttrPredicate(it) }.groupBy { it.anyHeaderParameterName.text }
+                        val distinctCommonAttrsNames = notKeyAttrsList
+                            .map { it.text }
+                            .distinct()
+                        val keyAttrsGroupedByName = fullParametersList
+                            .filter { it.isUnique }
+                            .groupBy { it.anyHeaderParameterName.text }
 
                         val dataMap = keyAttrsGroupedByName.entries
                             .associate { (name, attrs) ->
@@ -55,7 +58,7 @@ class ImpExNoUniqueValueInspection : LocalInspectionTool() {
 
                         if (distinctCommonAttrsNames.isEmpty()) {
                             val attrsNames = fullParametersList
-                                .filter { keyAttrPredicate(it) }
+                                .filter { it.isUnique }
                                 .map { it.text }
                                 .distinct()
                             createDataTable(dataMap, attrsNames, keyAttrsList).analyze(problemsHolder)

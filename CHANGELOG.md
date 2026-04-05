@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 59 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 60 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -40,6 +40,7 @@
 - Improved handling of the nested parameters in the header line [#1846](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1846)
 - Support `$config-` macro usages in the quoted strings [#1849](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1849)
 - Improved macro usage resolution with the "startsWith" approach in the language Lexer [#1850](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1850)
+- Expand complex attribute values and resolve expanded parameter modifiers [#1851](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1851)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

@@ -52,6 +52,8 @@ class ImpExCustomUsageSearcher : CustomUsageSearcher() {
             readAction {
                 ensureActive()
 
+                if (!macro.isValid) return@readAction
+
                 val clusteringSearchSession = ClusteringSearchSession.createClusteringSessionIfEnabled()
 
                 PsiTreeUtil.findChildrenOfAnyType(macro.containingFile, ImpExMacroUsageDec::class.java)
