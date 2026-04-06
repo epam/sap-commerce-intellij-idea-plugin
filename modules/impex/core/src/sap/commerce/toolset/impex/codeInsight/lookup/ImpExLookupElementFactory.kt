@@ -37,7 +37,10 @@ object ImpExLookupElementFactory {
 
     private const val PRIORITY_2_0 = 2.0
     private const val PRIORITY_1_0 = 1.0
+    private const val PRIORITY_0_2 = 0.2
+    private const val PRIORITY_0_1 = 0.1
     private const val MACRO_USAGE_GROUP = 1
+    private const val HEADER_MODE_GROUP = 2
 
     fun build(element: PsiElement, modifier: TypeModifier, completionSettings: ImpExCompletionSettingsState) = build(
         element,
@@ -72,15 +75,18 @@ object ImpExLookupElementFactory {
     )
         .withPresentableText("\$START_USERRIGHTS")
         .withIcon(HybrisIcons.ImpEx.USER_RIGHTS)
+        .let { PrioritizedLookupElement.withPriority(it, PRIORITY_0_1) }
+        .let { PrioritizedLookupElement.withGrouping(it, HEADER_MODE_GROUP) }
 
     fun buildMacro(lookupElement: String) = LookupElementBuilder.create(lookupElement)
         .withIcon(HybrisIcons.ImpEx.MACRO_USAGE)
+        .withTypeText("macro", true)
         .let { PrioritizedLookupElement.withPriority(it, PRIORITY_1_0) }
         .let { PrioritizedLookupElement.withGrouping(it, MACRO_USAGE_GROUP) }
 
     fun buildMacroConfig() = LookupElementBuilder.create($$"$config-")
         .withIcon(HybrisIcons.ImpEx.MACRO_CONFIG)
-        .withTailText(" config property access", true)
+        .withTypeText("config property access", true)
         .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
         .let { PrioritizedLookupElement.withPriority(it, PRIORITY_2_0) }
         .let { PrioritizedLookupElement.withGrouping(it, MACRO_USAGE_GROUP) }
@@ -89,6 +95,8 @@ object ImpExLookupElementFactory {
         .withPresentableText(mode)
         .withIcon(HybrisIcons.ImpEx.MODE)
         .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
+        .let { PrioritizedLookupElement.withPriority(it, PRIORITY_0_2) }
+        .let { PrioritizedLookupElement.withGrouping(it, HEADER_MODE_GROUP) }
 
     private fun build(element: PsiElement, modifierName: String, completionSettings: ImpExCompletionSettingsState) =
         if (completionSettings.addEqualsAfterModifier && !hasAssignValueLeaf(element))

@@ -98,6 +98,7 @@ class ImpExCompletionContributor : CompletionContributor() {
                 .andNot(PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement().withElementType(ImpExTypes.PARAMETER))),
             ImpExHeaderItemTypeAttributeNameCompletionProvider()
         )
+
         // case: item's attribute
         extend(
             CompletionType.BASIC,
@@ -107,18 +108,23 @@ class ImpExCompletionContributor : CompletionContributor() {
                 .and(PlatformPatterns.psiElement().withElementType(ImpExTypes.HEADER_PARAMETER_NAME)),
             ImpExHeaderItemTypeParameterNameCompletionProvider()
         )
-        // case: impex keywords
+
+        // case: impex header mode keywords
         extend(
             CompletionType.BASIC,
-            topLevel(),
+            PlatformPatterns.psiElement()
+                .withLanguage(ImpExLanguage)
+                .withElementType(ImpExTypes.VALUE_SUBTYPE),
             ImpExKeywordModeCompletionProvider()
         )
 
-        // case: macros keywords
+        // case: user rights keywords
         extend(
             CompletionType.BASIC,
-            topLevel(),
-            ImpExKeywordMacroCompletionProvider()
+            PlatformPatterns.psiElement()
+                .withLanguage(ImpExLanguage)
+                .withElementType(ImpExTypes.VALUE_SUBTYPE),
+            ImpExUserRightsCompletionProvider()
         )
 
         // case: impex macros
@@ -153,24 +159,4 @@ class ImpExCompletionContributor : CompletionContributor() {
             ImpExMacrosConfigCompletionProvider()
         )
     }
-
-    private fun topLevel() = PlatformPatterns.psiElement()
-        .withLanguage(ImpExLanguage)
-        .andNot(
-            PlatformPatterns.psiElement() // FIXME bad code, but working
-                .andOr(
-                    PlatformPatterns.psiElement(ImpExTypes.HEADER_TYPE),
-                    PlatformPatterns.psiElement(ImpExTypes.MACRO_NAME_DECLARATION),
-                    PlatformPatterns.psiElement(ImpExTypes.ROOT_MACRO_USAGE),
-                    PlatformPatterns.psiElement(ImpExTypes.MACRO_DECLARATION),
-                    PlatformPatterns.psiElement(ImpExTypes.ASSIGN_VALUE),
-                    PlatformPatterns.psiElement(ImpExTypes.MACRO_VALUE),
-                    PlatformPatterns.psiElement(ImpExTypes.ATTRIBUTE),
-                    PlatformPatterns.psiElement(ImpExTypes.HEADER_TYPE_NAME),
-                    PlatformPatterns.psiElement(ImpExTypes.HEADER_PARAMETER_NAME),
-                    PlatformPatterns.psiElement(ImpExTypes.ATTRIBUTE_NAME),
-                    PlatformPatterns.psiElement(ImpExTypes.FIELD_VALUE),
-                    PlatformPatterns.psiElement(ImpExTypes.ATTRIBUTE_VALUE)
-                )
-        )
 }
