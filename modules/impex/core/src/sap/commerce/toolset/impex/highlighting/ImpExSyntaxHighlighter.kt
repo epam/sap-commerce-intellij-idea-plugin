@@ -100,6 +100,9 @@ class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
 
             ImpExTypes.SINGLE_STRING to pack(ImpExHighlighterColors.SINGLE_STRING),
             ImpExTypes.SINGLE_QUOTE to pack(ImpExHighlighterColors.SINGLE_QUOTE),
+            ImpExTypes.SINGLE_QUOTE_OPEN to pack(ImpExHighlighterColors.SINGLE_QUOTE_OPEN),
+            ImpExTypes.SINGLE_QUOTE_CLOSE to pack(ImpExHighlighterColors.SINGLE_QUOTE_CLOSE),
+            ImpExTypes.SINGLE_QUOTE_ESCAPE to pack(ImpExHighlighterColors.SINGLE_QUOTE_ESCAPE),
 
             ImpExTypes.STRING_LITERAL to pack(ImpExHighlighterColors.STRING_LITERAL),
 

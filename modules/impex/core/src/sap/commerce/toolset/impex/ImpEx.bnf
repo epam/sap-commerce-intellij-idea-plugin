@@ -266,6 +266,7 @@ private script_action ::= SCRIPT_ACTION_IF
 
 string ::= SINGLE_STRING
     | DOUBLE_STRING
+    | single_string_dec
     | double_string_dec
 {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExStringMixin"
@@ -276,6 +277,16 @@ private double_string_dec ::= DOUBLE_QUOTE_OPEN double_quoted_string_content* DO
 {
     pin=1
 }
+
+private single_string_dec ::= SINGLE_QUOTE_OPEN single_quoted_string_content* SINGLE_QUOTE_CLOSE
+{
+    pin=1
+}
+
+private single_quoted_string_content ::=
+      macro_usage_dec
+    | SINGLE_QUOTE_ESCAPE
+    | STRING_LITERAL
 
 private double_quoted_string_content ::=
       macro_usage_dec

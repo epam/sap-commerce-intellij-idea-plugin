@@ -59,6 +59,10 @@ UPDATE Language; ${unique("isoCode")}[unique=true]; fallbackLanguages(isoCode); 
                ; en                               ; (+?) z                    ;
                ; en                               ; (-) fr                    ;
 
+UPDATE Title;code;name[lang=en, default= 'default with escaped inverted comma '' value']
+            ;test;
+
+# special coloring of the lines
 <hl>INSERT SomeType; param; param2; param3</hl>
 <vlo>; value; value; another value</vlo>
 <vle>; value; value; another value</vle>
@@ -154,6 +158,14 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Lines//Header line", ImpExHighlighterColors.HEADER_LINE),
         AttributesDescriptor("Lines//Even value line", ImpExHighlighterColors.VALUE_LINE_EVEN),
         AttributesDescriptor("Lines//Odd value line", ImpExHighlighterColors.VALUE_LINE_ODD),
+
+        AttributesDescriptor("Quoted string//Open", ImpExHighlighterColors.DOUBLE_QUOTE_OPEN),
+        AttributesDescriptor("Quoted string//Close", ImpExHighlighterColors.DOUBLE_QUOTE_CLOSE),
+        AttributesDescriptor("Quoted string//Escaped", ImpExHighlighterColors.DOUBLE_QUOTE_ESCAPE),
+
+        AttributesDescriptor("Inverted comma//Open", ImpExHighlighterColors.SINGLE_QUOTE_OPEN),
+        AttributesDescriptor("Inverted comma//Close", ImpExHighlighterColors.SINGLE_QUOTE_CLOSE),
+        AttributesDescriptor("Inverted comma//Escaped", ImpExHighlighterColors.SINGLE_QUOTE_ESCAPE),
 
         AttributesDescriptor("Value//Field value", ImpExHighlighterColors.FIELD_VALUE),
         AttributesDescriptor("Value//Single string", ImpExHighlighterColors.SINGLE_STRING),
