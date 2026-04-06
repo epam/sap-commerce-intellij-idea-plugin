@@ -247,7 +247,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     private fun collectTSReferencesForMetaAtomic(attributeType: String): List<PsiReference>? {
         if (TSConstants.Type.JAVA_CLASS != attributeType) return null
 
-        return if (text.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)) null
+        return if (text.startsWith(ImpExConstants.MACRO_MARKER)) null
         else listOf(ImpExJavaClassReference(this))
     }
 
@@ -374,4 +374,4 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 }
 
 private fun TextRange.isMacro(text: String): Boolean = substring(text)
-    .startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)
+    .startsWith(ImpExConstants.MACRO_MARKER)

@@ -37,7 +37,7 @@ class ImpExUnknownMacrosInspection : LocalInspectionTool() {
 
         override fun visitMacroUsageDec(usage: ImpExMacroUsageDec) {
             val text = usage.text
-            if (text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return
+            if (text.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) return
 
             if (usage.reference?.resolve() != null) return
 

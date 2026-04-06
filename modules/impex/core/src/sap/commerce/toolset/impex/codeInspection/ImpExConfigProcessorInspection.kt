@@ -45,7 +45,7 @@ class ImpExConfigProcessorInspection : LocalInspectionTool() {
         override fun visitMacroDeclaration(declaration: ImpExMacroDeclaration) {
             val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpExMacroUsageDec::class.java) ?: return
 
-            if (!macroValue.text.contains(ImpExConstants.IMPEX_CONFIG_PREFIX)) return
+            if (!macroValue.text.contains(ImpExConstants.MACRO_CONFIG_MARKER)) return
 
             var isExist = false
             PsiSearchHelper.getInstance(macroValue.project)
@@ -66,7 +66,7 @@ class ImpExConfigProcessorInspection : LocalInspectionTool() {
             if (!isExist) {
                 problemsHolder.registerProblem(
                     macroValue,
-                    i18n("hybris.inspections.impex.ImpExConfigProcessorInspection.key", ImpExConstants.IMPEX_CONFIG_PREFIX),
+                    i18n("hybris.inspections.impex.ImpExConfigProcessorInspection.key", ImpExConstants.MACRO_CONFIG_MARKER),
                     ProblemHighlightType.ERROR,
                     ImpExGenerateConfigImportProcessorQuickFix(macroValue)
                 )

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,11 +21,11 @@ package sap.commerce.toolset.impex
 import com.intellij.psi.tree.IFileElementType
 
 object ImpExConstants {
-    const val IMPEX_CONFIG_PREFIX = "\$config"
-    const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
     const val IMPEX = "ImpEx"
-    const val IMPEX_PREFIX_DOC_ID = "&"
-    const val IMPEX_PREFIX_MACRO = "$"
+    const val MACRO_MARKER = "$"
+    const val MACRO_CONFIG_MARKER = $$"$config"
+    const val MACRO_CONFIG_COMPLETE_MARKER = "$MACRO_CONFIG_MARKER-"
+    const val DOC_ID_MARKER = "&"
 
     val FILE_NODE_TYPE = IFileElementType(ImpExLanguage)
 }

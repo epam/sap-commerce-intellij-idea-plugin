@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -91,16 +91,16 @@ public class ImpExMacroFoldingBuilder implements FoldingBuilder {
 
     @Nullable
     private FoldingDescriptor buildFoldRegion(final ImpExMacroUsageDec macroUsage) {
-        final var configPropertyMacro = macroUsage.getText().startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX);
+        final var configPropertyMacro = macroUsage.getText().startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER);
 
-        if (configPropertyMacro && macroUsage.getText().length() == ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()) return null;
+        if (configPropertyMacro && macroUsage.getText().length() == ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length()) return null;
 
         final var reference = macroUsage.getReference();
         if (reference == null) return null;
 
         final var start = macroUsage.getTextRange().getStartOffset();
         final var end = configPropertyMacro
-            ? start + reference.getCanonicalText().length() + ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()
+            ? start + reference.getCanonicalText().length() + ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length()
             : start + reference.getCanonicalText().length();
         final var range = new TextRange(start, end);
 

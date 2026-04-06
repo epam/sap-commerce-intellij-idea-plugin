@@ -36,9 +36,9 @@ import java.io.Serial
 
 abstract class ImpExMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpExMacroUsageDec, ImpExPsiNamedElement {
 
-    override fun createReference() = if (text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+    override fun createReference() = if (text.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) {
         ImpExPropertyReference(this)
-    } else if (text.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)) {
+    } else if (text.startsWith(ImpExConstants.MACRO_MARKER)) {
         ImpExMacroReference(this)
     } else {
         null

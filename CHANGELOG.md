@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 63 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 64 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -42,6 +42,7 @@
 - Improved macro usage resolution with the "startsWith" approach in the language Lexer [#1850](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1850)
 - Expand complex attribute values and resolve expanded parameter modifiers [#1851](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1851)
 - Ensure that `&docId` usages respect `ONE` cardinality on an `Item.attribute` [#1852](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1852)
+- Improved code completion for macro usages across ImpEx element [#1855](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1855)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

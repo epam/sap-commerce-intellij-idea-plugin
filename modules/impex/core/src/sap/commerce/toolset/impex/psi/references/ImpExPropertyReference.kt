@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,13 +34,13 @@ class ImpExPropertyReference(owner: ImpExMacroUsageDec) : PsiReferenceBase.Poly<
         .configPropertyKey
         ?.let {
             TextRange.from(
-                ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length,
+                ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length,
                 it.length
             )
         }
         ?: TextRange.from(
-            ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length,
-            element.textLength - ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length
+            ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length,
+            element.textLength - ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length
         )
 
     override fun getVariants(): Array<PsiReference> = EMPTY_ARRAY
@@ -51,7 +51,7 @@ class ImpExPropertyReference(owner: ImpExMacroUsageDec) : PsiReferenceBase.Poly<
         ?: ResolveResult.EMPTY_ARRAY
 
     private fun getPropertyKey() = element.text
-        .replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+        .replace(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER, "")
         .takeUnless { it.isBlank() }
 
 }

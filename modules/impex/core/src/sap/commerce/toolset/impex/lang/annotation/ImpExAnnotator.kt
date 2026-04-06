@@ -150,25 +150,25 @@ class ImpExAnnotator : AbstractAnnotator() {
             }
 
             ImpExTypes.MACRO_USAGE -> {
-                if (element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+                if (element.text.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) {
                     val macroUsageDec = element.parent as? ImpExMacroUsageDec ?: return
 
                     val propertyKey = macroUsageDec.configPropertyKey
-                        ?: element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+                        ?: element.text.replace(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER, "")
 
                     // TODO: replace this with the correct Lexer and Parse, introduce new TOKEN MACRO_CONFIG_PREFIX
                     highlight(
                         ImpExHighlighterColors.MACRO_CONFIG_KEY,
                         holder,
                         element,
-                        range = TextRange.from(element.textRange.startOffset + ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length, propertyKey.length)
+                        range = TextRange.from(element.textRange.startOffset + ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length, propertyKey.length)
                     )
 
                     highlight(
                         ImpExHighlighterColors.MACRO_CONFIG_PREFIX,
                         holder,
                         element,
-                        range = TextRange.from(element.textRange.startOffset, ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
+                        range = TextRange.from(element.textRange.startOffset, ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length)
                     )
                 } else if (element.text.startsWith("$")) {
                     val textLength = element.parent.reference

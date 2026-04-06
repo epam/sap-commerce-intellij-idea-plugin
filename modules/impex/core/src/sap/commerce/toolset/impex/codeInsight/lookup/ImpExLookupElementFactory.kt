@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.impex.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -34,9 +35,21 @@ import sap.commerce.toolset.settings.state.ImpExCompletionSettingsState
 
 object ImpExLookupElementFactory {
 
-    fun build(element: PsiElement, modifier: TypeModifier, completionSettings: ImpExCompletionSettingsState) = build(element, modifier.modifierName, completionSettings)
+    private const val PRIORITY_2_0 = 2.0
+    private const val PRIORITY_1_0 = 1.0
+    private const val MACRO_USAGE_GROUP = 1
 
-    fun build(element: PsiElement, modifier: AttributeModifier, completionSettings: ImpExCompletionSettingsState) = build(element, modifier.modifierName, completionSettings)
+    fun build(element: PsiElement, modifier: TypeModifier, completionSettings: ImpExCompletionSettingsState) = build(
+        element,
+        modifier.modifierName,
+        completionSettings
+    )
+
+    fun build(element: PsiElement, modifier: AttributeModifier, completionSettings: ImpExCompletionSettingsState) = build(
+        element,
+        modifier.modifierName,
+        completionSettings
+    )
 
     fun buildModifierValue(lookupElement: String) = LookupElementBuilder.create(lookupElement)
 
@@ -58,10 +71,19 @@ object ImpExLookupElementFactory {
         """.trimIndent()
     )
         .withPresentableText("\$START_USERRIGHTS")
-        .withIcon(HybrisIcons.ImpEx.MACROS)
+        .withIcon(HybrisIcons.ImpEx.USER_RIGHTS)
 
     fun buildMacro(lookupElement: String) = LookupElementBuilder.create(lookupElement)
-        .withIcon(HybrisIcons.ImpEx.MACROS)
+        .withIcon(HybrisIcons.ImpEx.MACRO_USAGE)
+        .let { PrioritizedLookupElement.withPriority(it, PRIORITY_1_0) }
+        .let { PrioritizedLookupElement.withGrouping(it, MACRO_USAGE_GROUP) }
+
+    fun buildMacroConfig() = LookupElementBuilder.create($$"$config-")
+        .withIcon(HybrisIcons.ImpEx.MACRO_CONFIG)
+        .withTailText(" config property access", true)
+        .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
+        .let { PrioritizedLookupElement.withPriority(it, PRIORITY_2_0) }
+        .let { PrioritizedLookupElement.withGrouping(it, MACRO_USAGE_GROUP) }
 
     fun buildMode(mode: String) = LookupElementBuilder.create("$mode ")
         .withPresentableText(mode)
