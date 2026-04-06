@@ -81,11 +81,7 @@ class ImpExUnusedMacroInspection : LocalInspectionTool() {
                 macro,
                 i18n("hybris.inspections.impex.ImpExUnusedMacroInspection.key", macroName),
                 ProblemHighlightType.WARNING,
-                ImpExDeleteMacroDeclarationFix(
-                    macroName,
-                    macroDeclaration,
-                    endElement,
-                )
+                ImpExDeleteMacroDeclarationFix(macroName, macroDeclaration, endElement)
             )
         }
     }

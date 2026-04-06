@@ -19,17 +19,21 @@
 package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
-import com.intellij.codeInspection.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalInspectionToolSession
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.properties.IProperty
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.parentOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.codeInspection.fix.ImpExAddMacroDeclarationQuickFix
+import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExParameter
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
 
 class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
@@ -78,33 +82,10 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
                 ProblemHighlightType.WARNING,
                 i18n("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", element.text, missingExpectedMacros.joinToString()),
                 *missingExpectedMacros
-                    .map { LocalFix(element, it) }
+                    .map { ImpExAddMacroDeclarationQuickFix(element, it) }
                     .toTypedArray()
             )
         }
 
-        private class LocalFix(
-            element: PsiElement,
-            private val macroName: String
-        ) : LocalQuickFixOnPsiElement(element) {
-
-            override fun getFamilyName() = "[y] Missing macro declarations"
-            override fun getText() = "Add macro declaration '$macroName'"
-
-            override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                val firstLeaf = startElement
-                    .parentOfType<ImpExHeaderLine>()
-                    ?: return
-
-                ImpExElementFactory.createFile(
-                    project, """
-                    $macroName =  
-
-                """.trimIndent()
-                )
-                    .children
-                    .forEach { file.addBefore(it, firstLeaf) }
-            }
-        }
     }
 }

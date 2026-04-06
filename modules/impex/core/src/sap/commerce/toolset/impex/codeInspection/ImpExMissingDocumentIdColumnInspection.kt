@@ -19,14 +19,11 @@
 package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
-import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
-import com.intellij.codeInspection.*
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
-import com.intellij.util.asSafely
-import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
+import sap.commerce.toolset.impex.codeInspection.fix.ImpExGenerateDocumentIdQuickFix
 import sap.commerce.toolset.impex.psi.ImpExHeaderTypeName
 import sap.commerce.toolset.impex.psi.ImpExVisitor
 
@@ -52,34 +49,10 @@ class ImpExMissingDocumentIdColumnInspection : LocalInspectionTool() {
                 element,
                 "Declare documentId for '$typeName'",
                 ProblemHighlightType.INFORMATION,
-                LocalFix(element, typeName)
+                ImpExGenerateDocumentIdQuickFix(element, typeName)
             )
         }
 
-        private class LocalFix(
-            el: ImpExHeaderTypeName,
-            private val typeName: String
-        ) : LocalQuickFixOnPsiElement(el) {
-
-            override fun getFamilyName() = "[y] DocId column is not declared "
-            override fun getText() = "Generate &docId column for '$typeName'"
-            override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
-
-            override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                val typeName = startElement.asSafely<ImpExHeaderTypeName>() ?: return
-                val headerLine = typeName.headerLine ?: return
-
-                val rangeAwareContent = headerLine.generateDocId(
-                    ImpExDocIdGenerationContext(
-                        columns = headerLine.columnContexts
-                    )
-                ) ?: return
-                val textRange = rangeAwareContent.textRange
-                val newContent = rangeAwareContent.content
-
-                file.fileDocument.replaceString(textRange.startOffset, textRange.endOffset, newContent)
-            }
-        }
     }
 }
 

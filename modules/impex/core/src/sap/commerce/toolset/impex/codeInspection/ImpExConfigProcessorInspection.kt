@@ -20,15 +20,9 @@ package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiComment
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.UsageSearchContext
@@ -36,7 +30,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
-import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.codeInspection.fix.ImpExGenerateConfigImportProcessorQuickFix
+import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
+import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
+import sap.commerce.toolset.impex.psi.ImpExTypes
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 
 class ImpExConfigProcessorInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
@@ -70,33 +68,11 @@ class ImpExConfigProcessorInspection : LocalInspectionTool() {
                     macroValue,
                     i18n("hybris.inspections.impex.ImpExConfigProcessorInspection.key", ImpExConstants.IMPEX_CONFIG_PREFIX),
                     ProblemHighlightType.ERROR,
-                    LocalFix(macroValue)
+                    ImpExGenerateConfigImportProcessorQuickFix(macroValue)
                 )
             }
         }
 
-        private class LocalFix(el: PsiElement) : LocalQuickFixOnPsiElement(el) {
-
-            override fun getFamilyName() = "[y] ImpEx configuration"
-            override fun getText() = "Inject Config import processor"
-
-            override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                val config = ImpExElementFactory.createFile(
-                    project, """
-                UPDATE GenericItem[processor = ${HybrisConstants.CLASS_FQN_CONFIG_IMPORT_PROCESSOR}]; pk[unique = true]
-
-
-            """.trimIndent()
-                )
-
-                val firstChild = file.firstChild
-                val insertBefore = if (firstChild !is PsiComment && firstChild !is LeafPsiElement) firstChild
-                else PsiTreeUtil.skipSiblingsForward(firstChild, PsiComment::class.java, LeafPsiElement::class.java)
-
-                insertBefore
-                    ?.let { file.addBefore(config, it) }
-            }
-        }
     }
 }
 

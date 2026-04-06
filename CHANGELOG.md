@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 61 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 62 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -41,7 +41,7 @@
 - Support `$config-` macro usages in the quoted strings [#1849](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1849)
 - Improved macro usage resolution with the "startsWith" approach in the language Lexer [#1850](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1850)
 - Expand complex attribute values and resolve expanded parameter modifiers [#1851](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1851)
-- Ensure that `&docId` usages respect `ONE` cardinality on an Item.attribute [#1852](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1852)
+- Ensure that `&docId` usages respect `ONE` cardinality on an `Item.attribute` [#1852](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1852)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)
@@ -60,6 +60,7 @@
 - Local fix: enable value to be quoted for string attribute of the specific type [#1801](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1801)
 - Local fix: generate `&docId` column based on the unique columns of the table [#1802](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1802)
 - Local fix: enforce quote value strings via Informative quick-fix on header attribute and individual value [#1817](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1817)
+- Local fix: preserve formatting for newly quoted string value [#1853](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1853)
 
 ### `Access Control Lists` inspection rules
 - Inspection: validate various references used in the ACL [#1836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1836)
