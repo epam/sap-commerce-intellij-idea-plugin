@@ -161,6 +161,10 @@ object HybrisIcons {
         val MACRO_CONFIG = AllIcons.Nodes.Property
         val USER_RIGHTS = getIcon("/icons/impex/userRights.svg")
         val MODE = AllIcons.Nodes.Function
+        val MODIFIER = AllIcons.Nodes.Artifact
+        val MODE_EXPORT = AllIcons.General.Export
+        val MODE_IMPORT = AllIcons.ToolbarDecorator.Import
+        val MODE_ANY = AllIcons.Diff.ApplyNotConflicts
 
         val COLUMN_UNIQUE = getIcon("/icons/impex/uniqueColumn.svg")
         val DOC_ID_MODE_COUNTER = getIcon("/icons/impex/docIdCounterMode.svg")

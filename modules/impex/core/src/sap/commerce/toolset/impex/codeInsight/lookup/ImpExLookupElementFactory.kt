@@ -27,6 +27,7 @@ import com.intellij.psi.util.parentOfType
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
+import sap.commerce.toolset.impex.constants.modifier.ImpExModifier
 import sap.commerce.toolset.impex.constants.modifier.InterceptorProvider
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
 import sap.commerce.toolset.impex.psi.ImpExAttribute
@@ -42,17 +43,17 @@ object ImpExLookupElementFactory {
     private const val MACRO_USAGE_GROUP = 1
     private const val HEADER_MODE_GROUP = 2
 
-    fun build(element: PsiElement, modifier: TypeModifier, completionSettings: ImpExCompletionSettingsState) = build(
-        element,
-        modifier.modifierName,
-        completionSettings
-    )
+    fun build(
+        element: PsiElement,
+        modifier: TypeModifier,
+        completionSettings: ImpExCompletionSettingsState
+    ) = modifier.build(element, completionSettings)
 
-    fun build(element: PsiElement, modifier: AttributeModifier, completionSettings: ImpExCompletionSettingsState) = build(
-        element,
-        modifier.modifierName,
-        completionSettings
-    )
+    fun build(
+        element: PsiElement,
+        modifier: AttributeModifier,
+        completionSettings: ImpExCompletionSettingsState
+    ) = modifier.build(element, completionSettings)
 
     fun buildModifierValue(lookupElement: String) = LookupElementBuilder.create(lookupElement)
 
@@ -98,13 +99,19 @@ object ImpExLookupElementFactory {
         .let { PrioritizedLookupElement.withPriority(it, PRIORITY_0_2) }
         .let { PrioritizedLookupElement.withGrouping(it, HEADER_MODE_GROUP) }
 
-    private fun build(element: PsiElement, modifierName: String, completionSettings: ImpExCompletionSettingsState) =
+    private fun ImpExModifier.build(element: PsiElement, completionSettings: ImpExCompletionSettingsState) =
         if (completionSettings.addEqualsAfterModifier && !hasAssignValueLeaf(element))
             LookupElementBuilder.create("$modifierName=")
+                .withIcon(HybrisIcons.ImpEx.MODIFIER)
                 .withPresentableText(modifierName)
+                .withTypeText(modifierMode.presentationText, modifierMode.icon, true)
+                .withTypeIconRightAligned(true)
                 .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
         else LookupElementBuilder.create(modifierName)
+            .withIcon(HybrisIcons.ImpEx.MODIFIER)
             .withPresentableText(modifierName)
+            .withTypeText(modifierMode.presentationText, modifierMode.icon, true)
+            .withTypeIconRightAligned(true)
 
     private fun hasAssignValueLeaf(element: PsiElement) = element.parentOfType<ImpExAttribute>()
         ?.childrenOfType<LeafPsiElement>()

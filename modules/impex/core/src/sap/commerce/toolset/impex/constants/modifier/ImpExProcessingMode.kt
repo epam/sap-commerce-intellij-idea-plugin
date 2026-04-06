@@ -18,13 +18,11 @@
 
 package sap.commerce.toolset.impex.constants.modifier
 
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
 
-interface ImpExModifier {
-
-    val modifierName: String
-    val modifierMode: ImpExProcessingMode
-    val modifierValues: Set<String>
-    fun getLookupElements(project: Project): Set<LookupElement>
+enum class ImpExProcessingMode(val presentationText: String, val icon: Icon) {
+    ANY("any mode", HybrisIcons.ImpEx.MODE_ANY),
+    IMPORT("import", HybrisIcons.ImpEx.MODE_IMPORT),
+    EXPORT("export", HybrisIcons.ImpEx.MODE_EXPORT);
 }
