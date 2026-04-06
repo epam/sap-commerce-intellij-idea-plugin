@@ -31,9 +31,12 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.impex.title"
                              provider="sap.commerce.toolset.impex.options.ImpExProjectSettingsConfigurableProvider"/>
+
+        <actionPromoter implementation="sap.commerce.toolset.impex.actionSystem.ImpExActionPromoter"/>
     </extensions>
 
     <actions>
+        <action id="hybris.impex.collapseRegionAction" class="sap.commerce.toolset.impex.actionSystem.ImpExCollapseRegionAction"/>
         <action id="hybris.hac.console.impex.validate" class="sap.commerce.toolset.impex.actionSystem.ConsoleImpExValidateAction">
             <add-to-group group-id="hybris.console.actionGroup" relative-to-action="sap.commerce.toolset.console.clearAll" anchor="before"/>
         </action>

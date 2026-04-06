@@ -15,25 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.impex.lang.folding
 
-package sap.commerce.toolset.impex
+import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.editor.FoldingGroup
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 
-import com.intellij.psi.tree.IFileElementType
+class ImpExFoldingDescriptor(
+    private val psiElement: PsiElement,
+    startOffset: Int,
+    endOffset: Int,
+    group: FoldingGroup,
+    private val placeholderFunction: (PsiElement) -> String
+) : FoldingDescriptor(psiElement.node, TextRange(startOffset, endOffset), group) {
 
-object ImpExConstants {
-    const val IMPEX = "ImpEx"
-    const val MACRO_MARKER = "$"
-    const val MACRO_CONFIG_MARKER = $$"$config"
-    const val MACRO_CONFIG_COMPLETE_MARKER = "$MACRO_CONFIG_MARKER-"
-    const val DOC_ID_MARKER = "&"
-
-    val FILE_NODE_TYPE = IFileElementType(ImpExLanguage)
-
-    object Folding {
-        const val GROUP_PREFIX = "impex.columns"
-        const val VALUE_PREFIX = "; <"
-        const val VALUE_POSTFIX = ">"
-        const val HEADER_PREFIX = " <"
-        const val HEADER_POSTFIX = ">"
-    }
+    override fun getPlaceholderText(): String = placeholderFunction(psiElement)
 }

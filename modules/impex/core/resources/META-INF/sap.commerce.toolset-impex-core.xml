@@ -54,8 +54,11 @@
         <preFormatProcessor implementation="sap.commerce.toolset.impex.formatting.ImpExPreFormatProcessor"/>
         <statementUpDownMover implementation="sap.commerce.toolset.impex.codeInsight.editorActions.moveUpDown.ImpExStatementUpDownMover"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingBuilder"/>
-        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingLinesBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExMacroFoldingBuilder"/>
+        <lang.foldingBuilder language="ImpEx" id="ImpExFoldingLinesBuilder"
+                             implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingLinesBuilder"/>
+        <lang.foldingBuilder language="ImpEx" order="before ImpExFoldingLinesBuilder"
+                             implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingColumnsBuilder"/>
         <lang.refactoringSupport language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.refactoring.ImpExRefactoringSupportProvider"/>
 
         <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpExCodeStyleSettingsProvider"/>

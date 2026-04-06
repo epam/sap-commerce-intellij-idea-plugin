@@ -1,7 +1,7 @@
 ## [2026.0.7]
 
 <cite>Release contributors</cite>
-- 67 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
+- 68 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
 
@@ -46,6 +46,7 @@
 - Improved code completion for top-level elements, such as `Header Modes` & `User Rights` [#1856](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1856)
 - Improved code completion for header modifiers [#1857](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1857)
 - Enhanced Language lexer & parser to support macro usages in the `'` escaped modifier value [#1858](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1858)
+- Introduced column-based folding for ImpEx statements [#1859](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1859)
 
 ### `ImpEx` inspection rules
 - Inspection: resolve expected macro declarations by abbreviations in the parameter [#1790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1790)

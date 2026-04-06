@@ -84,15 +84,18 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                         else -> it.text
                     }
                 }
-                ?.let {
+                ?.let { locallyExpandedParameter ->
                     val macros = buildString {
-                        PsiTreeUtil.processElements(anyHeaderParameterName.containingFile) {element ->
-                            if (element == this)  return@processElements false
+                        PsiTreeUtil.processElements(anyHeaderParameterName.containingFile) { element ->
+                            if (element == this) return@processElements false
                             if (element is ImpExMacroDeclaration) this@buildString.appendLine(element.text)
                             return@processElements true
                         }
                     }
-                    ImpExElementFactory.createFullHeaderParameter(project, macros, it) }
+                    val locallyExpandedParameterWithModifiers = locallyExpandedParameter + this.modifiersList
+                        .joinToString { it.text }
+                    ImpExElementFactory.createFullHeaderParameter(project, macros, locallyExpandedParameterWithModifiers)
+                }
                 ?: this
 
             val expandedAttribute = macroExpandedParameter.modifiersList
