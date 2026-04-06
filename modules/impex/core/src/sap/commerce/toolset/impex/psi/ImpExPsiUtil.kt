@@ -109,19 +109,19 @@ fun getHeaderTypeName(element: ImpExSubTypeName): ImpExHeaderTypeName? = element
     ?.headerTypeName
 
 fun getConfigPropertyKey(element: ImpExMacroUsageDec): String? {
-    if (!element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null
+    if (!element.text.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) return null
 
     val project = element.project
-    val propertyKey = element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+    val propertyKey = element.text.replace(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER, "")
 
     if (propertyKey.isBlank()) return null
 
     return if (DumbService.isDumb(project)) {
-        element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+        element.text.replace(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER, "")
     } else PropertyService.getInstance(project)
         .findMacroProperty(propertyKey)
         ?.key
-        ?: element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+        ?: element.text.replace(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER, "")
 }
 
 fun getInlineTypeName(element: ImpExParameter): String? = element.text

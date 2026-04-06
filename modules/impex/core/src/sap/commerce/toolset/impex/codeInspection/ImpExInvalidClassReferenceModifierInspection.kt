@@ -45,7 +45,7 @@ abstract class ImpExInvalidClassReferenceModifierInspection(
 
         override fun visitAnyAttributeValue(element: ImpExAnyAttributeValue) {
             if (modifier.modifierName != element.anyAttributeName?.text) return
-            if (element.text.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)) return
+            if (element.text.startsWith(ImpExConstants.MACRO_MARKER)) return
             val reference = element.reference
 
             if (reference == null) unresolvedReference(element)

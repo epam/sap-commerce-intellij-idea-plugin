@@ -41,8 +41,8 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
         private val cachedProperties = HashMap<String, Boolean>()
 
         override fun visitMacroUsageDec(usage: ImpExMacroUsageDec) {
-            if (!usage.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return
-            val propertyName = usage.text.substring(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
+            if (!usage.text.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) return
+            val propertyName = usage.text.substring(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length)
 
             if (propertyName.isNotEmpty()) {
                 val isDeclarationExists = cachedProperties[propertyName]
@@ -74,7 +74,7 @@ class ImpExUnknownConfigPropertyInspection : LocalInspectionTool() {
             val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpExMacroValue::class.java)
             if (macroValue != null) {
                 val prevLeaf = PsiTreeUtil.prevLeaf(macroValue)
-                if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+                if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) {
                     val key = macroValue.text
                     // TODO: why not plugin-specific "PropertyService" ?
                     val properties = PropertiesImplUtil.findPropertiesByKey(declaration.project, key)

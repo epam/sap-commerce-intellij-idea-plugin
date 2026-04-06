@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,7 +37,7 @@ class ImpExMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
         val prevLeaf = PsiTreeUtil.prevLeaf(psiElementUnderCaret)
         val propertyService = PropertyService.getInstance(project)
 
-        if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+        if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) {
             val position = parameters.position
             val query = getQuery(position)
             propertyService.findAutoCompleteProperties(query)
@@ -46,7 +46,7 @@ class ImpExMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
                 .forEach { result.addElement(it) }
         }
 
-        if (psiElementUnderCaret.text.contains(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+        if (psiElementUnderCaret.text.contains(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)) {
             val position = parameters.position
             val prefix = getPrefix(position)
             val query = position.text
@@ -66,8 +66,8 @@ class ImpExMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
     private fun getPrefix(position: PsiElement): String {
         val text = position.text
 
-        val index = text.indexOf(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
-        return text.substring(0, index + ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
+        val index = text.indexOf(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)
+        return text.substring(0, index + ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length)
     }
 
 }

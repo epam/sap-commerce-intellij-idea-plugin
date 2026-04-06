@@ -78,7 +78,9 @@ abstract class ImpExMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
     private fun resolveVirtualParameter(): String? {
         val macroDeclaration = parentOfType<ImpExMacroDeclaration>()
             ?: return null
-        return FileEditorManager.getInstance(project).getSelectedEditor(containingFile.virtualFile)
+        val vf = containingFile.virtualFile
+            ?: return null
+        return FileEditorManager.getInstance(project).getSelectedEditor(vf)
             ?.asSafely<ImpExSplitEditor>()
             ?.virtualParameter(macroDeclaration)
             ?.rawValue

@@ -26,7 +26,7 @@ import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 data class ImpExVirtualParameter(
     val name: String,
     val displayName: String = StringUtil.shortenPathWithEllipsis(
-        name.removePrefix(ImpExConstants.IMPEX_PREFIX_MACRO),
+        name.removePrefix(ImpExConstants.MACRO_MARKER),
         20
     ),
 ) {

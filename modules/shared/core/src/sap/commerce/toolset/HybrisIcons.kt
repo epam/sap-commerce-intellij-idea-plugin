@@ -157,7 +157,9 @@ object HybrisIcons {
     object ImpEx {
         val FILE = getIcon("/icons/fileTypes/impexFile.svg")
         val BUNDLE = getIcon("/icons/fileTypes/impexBundle.svg")
-        val MACROS = getIcon("/icons/impex/macros.svg")
+        val MACRO_USAGE = AllIcons.Nodes.Gvariable
+        val MACRO_CONFIG = AllIcons.Nodes.Property
+        val USER_RIGHTS = getIcon("/icons/impex/userRights.svg")
         val MODE = AllIcons.Nodes.Function
 
         val COLUMN_UNIQUE = getIcon("/icons/impex/uniqueColumn.svg")

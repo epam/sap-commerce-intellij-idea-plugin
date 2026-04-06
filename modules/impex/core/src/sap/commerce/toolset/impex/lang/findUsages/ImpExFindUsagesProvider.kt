@@ -49,7 +49,7 @@ class ImpExFindUsagesProvider : FindUsagesProvider {
     )
 
     override fun canFindUsagesFor(psiElement: PsiElement) = psiElement is PsiNamedElement
-        && !psiElement.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+        && !psiElement.text.startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER)
 
     override fun getHelpId(psiElement: PsiElement) = null
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String = element.text

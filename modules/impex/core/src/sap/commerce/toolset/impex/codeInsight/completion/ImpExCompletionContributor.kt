@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,9 @@ package sap.commerce.toolset.impex.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.codeInsight.completion.provider.*
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
@@ -124,7 +126,22 @@ class ImpExCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
                 .withLanguage(ImpExLanguage)
-                .withElementType(ImpExTypes.MACRO_USAGE),
+                .withElementType(
+                    TokenSet.create(
+                        ImpExTypes.FIELD_VALUE,
+                        ImpExTypes.MACRO_VALUE,
+                        ImpExTypes.STRING_LITERAL,
+                        ImpExTypes.SCRIPT_BODY_VALUE,
+                        ImpExTypes.HEADER_TYPE,
+                        ImpExTypes.HEADER_PARAMETER_NAME,
+                        ImpExTypes.SPECIAL_PARAMETER_VALUE,
+                        ImpExTypes.ATTRIBUTE_VALUE,
+                    )
+                )
+                .withText(
+                    StandardPatterns.string().startsWith(ImpExConstants.MACRO_MARKER)
+                        .andNot(StandardPatterns.string().startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER))
+                ),
             ImpExMacrosCompletionProvider()
         )
 
