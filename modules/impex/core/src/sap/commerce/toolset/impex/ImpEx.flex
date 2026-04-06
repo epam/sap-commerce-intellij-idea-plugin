@@ -147,10 +147,12 @@ comma         = [,]
 dot           = [.]
 assign_value  = [=]
 
-double_quote   = [\"]
-double_quote_escaped = [\"][\"]
-single_quote   = [']
-string_literal = ({not_crlf}|{identifier}+)
+double_quote          = [\"]
+double_quote_escaped  = [\"][\"]
+single_quote          = [']
+single_quote_escaped  = ['][']
+single_string_literal = ([^'\r\n])+
+string_literal =  ({not_crlf}|{identifier}+)
 
 // see - CollectionValueTranslator
 // value must start with this prefix
@@ -176,7 +178,7 @@ special_parameter_value = [^(\;\[\"\r\n\\\ \t\f$]+
 special_parameter_end = [(\;\[\"\r\n\\\$]
 
 attribute_name  = ({identifier}|[.])+
-attribute_value = [^$, \t\f\]\r\n]+
+attribute_value = [^, \t\f\]\r\n]+
 
 document_id = [&]{identifier}+
 
@@ -216,6 +218,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state SCRIPT_DOUBLE_STRING
 %state MODIFIERS_BLOCK
 %state WAITING_ATTR_OR_PARAM_VALUE
+%state WAITING_ATTR_OR_PARAM_VALUE_SINGLE_STRING
 %state HEADER_PARAMETERS
 %state MACRO_USAGE
 %state MACRO_CONFIG_USAGE
@@ -491,15 +494,26 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <WAITING_ATTR_OR_PARAM_VALUE> {
+    {single_string}                                         {
+                                                                yypushback(yylength()-1);
+                                                                yybegin(WAITING_ATTR_OR_PARAM_VALUE_SINGLE_STRING);
+                                                                return ImpExTypes.SINGLE_QUOTE_OPEN;
+                                                            }
     {boolean}                                               { return ImpExTypes.BOOLEAN; }
     {digit}                                                 { return ImpExTypes.DIGIT; }
-    {single_string}                                         { return ImpExTypes.SINGLE_STRING; }
     {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
     {macro_usage}                                           { return resolveMacroUsage(WAITING_ATTR_OR_PARAM_VALUE, ImpExTypes.ATTRIBUTE_VALUE); }
     {comma}                                                 { yybegin(MODIFIERS_BLOCK); return ImpExTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpExTypes.ATTRIBUTE_VALUE; }
     {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpExTypes.RIGHT_SQUARE_BRACKET; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpExTypes.CRLF; }
+}
+
+<WAITING_ATTR_OR_PARAM_VALUE_SINGLE_STRING> {
+    {single_quote}                                          { yybegin(WAITING_ATTR_OR_PARAM_VALUE); return ImpExTypes.SINGLE_QUOTE_CLOSE; }
+    {single_quote_escaped}                                  { return ImpExTypes.SINGLE_QUOTE_ESCAPE; }
+    {macro_usage}                                           { return resolveMacroUsage(WAITING_ATTR_OR_PARAM_VALUE_SINGLE_STRING, ImpExTypes.STRING_LITERAL); }
+    {string_literal}                                        { return ImpExTypes.STRING_LITERAL; }
 }
 
 <MACRO_DECLARATION> {
