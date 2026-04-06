@@ -132,9 +132,9 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                     val text = """
                         UPDATE Title; code[unique = true]; name[lang = en]
                         # Before inspection rule
-                        ; test ; Not wrapped name
+                        ; test ; Not quoted name
                         # After inspection rule
-                        ; test ; "Not wrapped name"
+                        ; test ; "Not quoted name"
                     """.trimIndent()
                     previewEditor(project, ImpExFileType, text)
                         .comment(
@@ -148,11 +148,11 @@ class ImpExProjectSettingsConfigurableProvider(private val project: Project) : C
                 }
 
                 row {
-                    checkBox("Do not wrap string values matching the Regex:")
-                        .bindSelected(mutable::quoteStringMatching)
+                    checkBox("Do not quote string values matching the Regex:")
+                        .bindSelected(mutable::quoteStringWhitelist)
 
                     textField()
-                        .bindText(mutable::quoteStringMatchingPattern)
+                        .bindText(mutable::quoteStringWhitelistPattern)
                         .addValidationRule("Please enter a valid Regex.") {
                             runCatching { Regex(it.text) }.isFailure
                         }

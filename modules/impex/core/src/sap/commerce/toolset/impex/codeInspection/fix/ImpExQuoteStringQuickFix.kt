@@ -30,9 +30,11 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.settings.yDeveloperSettings
 
 class ImpExQuoteStringQuickFix(
     element: PsiElement,
+    private val checkValuePattern: Boolean = false,
     private val presentationText: String,
     private val overridePreviewInfo: IntentionPreviewInfo? = null
 ) : LocalQuickFixOnPsiElement(element), LowPriorityAction {
@@ -56,6 +58,13 @@ class ImpExQuoteStringQuickFix(
     }
 
     private fun quoteValue(file: PsiFile, value: ImpExValue, project: Project) {
+        if (checkValuePattern) {
+            val impExSettings = file.project.yDeveloperSettings.impexSettings
+            if (impExSettings.quoteStringWhitelist && impExSettings.quoteStringWhitelistPattern.matches(value.text.trim())) {
+                return
+            }
+        }
+
         val newValue = value.text
             .replace("\"", "\"\"")
             .replace("\\\n", "")

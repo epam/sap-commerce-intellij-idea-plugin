@@ -50,39 +50,60 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             val attributeMeta = parameterName.applicableItemAttribute ?: return
             val typeName = attributeMeta.owner.name ?: return
             val attributeName = attributeMeta.name
-
+            val impExSettings = headerParameter.project.yDeveloperSettings.impexSettings
+            val isAttributeExcluded = impExSettings.quoteStringExclusions[typeName]
+                ?.contains(attributeName)
+                ?: false
             val unquotedValues = headerParameter.valueGroups
                 .mapNotNull { it.value }
                 .filter { it.isImportable }
-                .count { it.isQuotable }
+                .filter { it.isQuotable }
 
-            if (unquotedValues > 0) {
-                val isExcluded = headerParameter.project.yDeveloperSettings.impexSettings.quoteStringExclusions[typeName]
-                    ?.contains(attributeName)
-                    ?: false
+            val whitelistedValues = unquotedValues
+                .filterNot { impExSettings.quoteStringWhitelist && impExSettings.quoteStringWhitelistPattern.matches(it.text.trim()) }
 
-                if (isExcluded) holder.registerProblem(
+            if (isAttributeExcluded) {
+                holder.registerProblem(
                     parameterName,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.enable.key", typeName, attributeName),
                     ProblemHighlightType.INFORMATION,
                     ImpExEnableQuotingForAttributeQuickFix(typeName, attributeName),
                 )
-                else holder.registerProblem(
-                    parameterName,
-                    i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.exclude.key", typeName, attributeName),
-                    ProblemHighlightType.WEAK_WARNING,
-                    ImpExDisableQuotingForAttributeQuickFix(typeName, attributeName),
-                )
-
+                return
+            } else {
+                val highlightType = if (whitelistedValues.isNotEmpty()) ProblemHighlightType.WEAK_WARNING
+                else ProblemHighlightType.INFORMATION
                 holder.registerProblem(
                     parameterName,
-                    i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.forceQuote.key", typeName, attributeName),
-                    ProblemHighlightType.INFORMATION,
-                    ImpExQuoteStringQuickFix(
-                        element = parameterName,
-                        presentationText = "Wrap in quotes $unquotedValues value strings for: '$typeName.$attributeName'",
-                        overridePreviewInfo = IntentionPreviewInfo.EMPTY
-                    ),
+                    i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.exclude.key", typeName, attributeName),
+                    highlightType,
+                    ImpExDisableQuotingForAttributeQuickFix(typeName, attributeName),
+                )
+            }
+
+            if (unquotedValues.isNotEmpty()) {
+                fun registerInfoQuickFix(checkValuePattern: Boolean, presentationText: String) {
+                    holder.registerProblem(
+                        parameterName,
+                        i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.forceQuote.key", typeName, attributeName),
+                        ProblemHighlightType.INFORMATION,
+                        ImpExQuoteStringQuickFix(
+                            element = parameterName,
+                            checkValuePattern = checkValuePattern,
+                            presentationText = presentationText,
+                            overridePreviewInfo = IntentionPreviewInfo.EMPTY
+                        ),
+                    )
+                }
+
+                if (whitelistedValues.isNotEmpty()) registerInfoQuickFix(
+                    checkValuePattern = true,
+                    presentationText = "Quote ${whitelistedValues.size} eligible value strings for: '$typeName.$attributeName'"
+                )
+
+                registerInfoQuickFix(
+                    checkValuePattern = false,
+                    presentationText = "Quote all ${unquotedValues.size} value strings for: '$typeName.$attributeName'"
                 )
             }
         }
@@ -91,18 +112,15 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
             if (value.isNonImportable) return
             if (value.isNotQuotable) return
 
-            val trimmedText = value.text.trim()
-
             val impExSettings = value.project.yDeveloperSettings.impexSettings
-
             val attributeMeta = value.valueGroup
                 ?.fullHeaderParameter
                 ?.anyHeaderParameterName
                 ?.applicableItemAttribute
                 ?: return
-
             val typeName = attributeMeta.owner.name ?: return
             val attributeName = attributeMeta.name
+            val trimmedText = value.text.trim()
 
             fun registerFix(type: ProblemHighlightType) {
                 holder.registerProblem(
@@ -111,7 +129,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     type,
                     ImpExQuoteStringQuickFix(
                         element = value,
-                        presentationText = "Wrap in quotes '$typeName.$attributeName' value string: '${StringUtil.shortenPathWithEllipsis(value.text, 25)}'"
+                        presentationText = "Quote '$typeName.$attributeName' value string: '${StringUtil.shortenPathWithEllipsis(value.text, 25)}'"
                     )
                 )
             }
@@ -124,7 +142,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 return
             }
 
-            if (impExSettings.quoteStringMatching && impExSettings.quoteStringMatchingRegex.matches(trimmedText)) {
+            if (impExSettings.quoteStringWhitelist && impExSettings.quoteStringWhitelistPattern.matches(trimmedText)) {
                 // ignore whitelisted value
                 registerFix(ProblemHighlightType.INFORMATION)
                 return
