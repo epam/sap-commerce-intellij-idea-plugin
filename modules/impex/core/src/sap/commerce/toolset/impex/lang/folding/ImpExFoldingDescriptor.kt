@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,36 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.impex.lang.folding
 
-package sap.commerce.toolset.impex.lang.folding;
+import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.editor.FoldingGroup
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 
-import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.openapi.editor.FoldingGroup;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+class ImpExFoldingDescriptor(
+    private val psiElement: PsiElement,
+    startOffset: Int,
+    endOffset: Int,
+    group: FoldingGroup,
+    private val placeholderFunction: (PsiElement) -> String
+) : FoldingDescriptor(psiElement.node, TextRange(startOffset, endOffset), group) {
 
-import java.util.function.Function;
-
-public class ImpExFoldingDescriptor extends FoldingDescriptor {
-
-    private final String placeholder;
-
-    public ImpExFoldingDescriptor(
-        @NotNull final PsiElement psiElement,
-        final int startOffset, final int endOffset,
-        @NotNull final FoldingGroup group,
-        final Function<PsiElement, String> placeholderFunction
-    ) {
-        super(psiElement.getNode(), new TextRange(startOffset, endOffset), group);
-
-        placeholder = placeholderFunction.apply(psiElement);
-    }
-
-    @Nullable
-    @Override
-    public String getPlaceholderText() {
-        return placeholder;
-    }
+    override fun getPlaceholderText(): String = placeholderFunction(psiElement)
 }

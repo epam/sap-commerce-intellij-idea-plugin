@@ -15,25 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.impex.actionSystem
 
-package sap.commerce.toolset.impex
+import com.intellij.openapi.actionSystem.*
+import org.jetbrains.annotations.Unmodifiable
 
-import com.intellij.psi.tree.IFileElementType
+class ImpExActionPromoter : ActionPromoter {
 
-object ImpExConstants {
-    const val IMPEX = "ImpEx"
-    const val MACRO_MARKER = "$"
-    const val MACRO_CONFIG_MARKER = $$"$config"
-    const val MACRO_CONFIG_COMPLETE_MARKER = "$MACRO_CONFIG_MARKER-"
-    const val DOC_ID_MARKER = "&"
+    override fun promote(actions: @Unmodifiable List<AnAction>, context: DataContext): @Unmodifiable List<AnAction> {
+        CommonDataKeys.EDITOR.getData(context) ?: return actions
 
-    val FILE_NODE_TYPE = IFileElementType(ImpExLanguage)
+        val replace = actions.indexOfFirst { it.javaClass.simpleName == "CollapseRegionAction" }
+            .takeIf { it != -1 }
+            ?: return actions
+        val impExCollapseRegionAction = ActionManager.getInstance().getAction("hybris.impex.collapseRegionAction")
 
-    object Folding {
-        const val GROUP_PREFIX = "impex.columns"
-        const val VALUE_PREFIX = "; <"
-        const val VALUE_POSTFIX = ">"
-        const val HEADER_PREFIX = " <"
-        const val HEADER_POSTFIX = ">"
+        return actions.toMutableList().apply {
+            set(replace, impExCollapseRegionAction)
+        }
     }
 }
