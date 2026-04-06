@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,16 +31,42 @@ import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
  */
 enum class AttributeModifier(
     override val modifierName: String,
-    private val modifierValues: Set<String> = emptySet(),
+    override val modifierValues: Set<String> = emptySet(),
+    override val modifierMode: ImpExProcessingMode = ImpExProcessingMode.ANY,
 ) : ImpExModifier {
 
-    UNIQUE("unique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    ALLOW_NULL("allownull", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    FORCE_WRITE("forceWrite", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    IGNORE_KEY_CASE("ignoreKeyCase", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    IGNORE_NULL("ignorenull", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    VIRTUAL("virtual", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    MODE("mode") {
+    UNIQUE(
+        modifierName = "unique",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES
+    ),
+    ALLOW_NULL(
+        modifierName = "allownull",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES,
+        modifierMode = ImpExProcessingMode.IMPORT
+    ),
+    FORCE_WRITE(
+        modifierName = "forceWrite",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES,
+        modifierMode = ImpExProcessingMode.IMPORT
+    ),
+    IGNORE_KEY_CASE(
+        modifierName = "ignoreKeyCase",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES,
+        modifierMode = ImpExProcessingMode.IMPORT
+    ),
+    IGNORE_NULL(
+        modifierName = "ignorenull",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES,
+        modifierMode = ImpExProcessingMode.IMPORT
+    ),
+    VIRTUAL(
+        modifierName = "virtual",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES
+    ),
+    MODE(
+        modifierName = "mode",
+        modifierMode = ImpExProcessingMode.IMPORT
+    ) {
         override fun getLookupElements(project: Project) = mapOf(
             "append" to "(+)",
             "remove" to "(-)",
@@ -49,28 +75,34 @@ enum class AttributeModifier(
             .map { ImpExLookupElementFactory.buildModifierValue(it.key, it.value) }
             .toSet()
     },
-    ALIAS("alias"),
-    COLLECTION_DELIMITER("collection-delimiter"),
-    DATE_FORMAT("dateformat"),
-    DEFAULT("default"),
-    KEY_2_VALUE_DELIMITER("key2value-delimiter"),
-    LANG("lang"),
-    MAP_DELIMITER("map-delimiter"),
-    NUMBER_FORMAT("numberformat"),
-    PATH_DELIMITER("path-delimiter"),
-    POS("pos"),
-    CELL_DECORATOR("cellDecorator") {
+    ALIAS(
+        modifierName = "alias",
+        modifierMode = ImpExProcessingMode.EXPORT
+    ),
+    COLLECTION_DELIMITER(modifierName = "collection-delimiter"),
+    DATE_FORMAT(modifierName = "dateformat"),
+    DEFAULT(modifierName = "default"),
+    KEY_2_VALUE_DELIMITER(modifierName = "key2value-delimiter"),
+    LANG(modifierName = "lang"),
+    MAP_DELIMITER(modifierName = "map-delimiter"),
+    NUMBER_FORMAT(modifierName = "numberformat"),
+    PATH_DELIMITER(modifierName = "path-delimiter"),
+    POS(modifierName = "pos"),
+    CELL_DECORATOR(
+        modifierName = "cellDecorator",
+        modifierMode = ImpExProcessingMode.IMPORT
+    ) {
         override fun getLookupElements(project: Project) = JavaClassCompletionService.getInstance(project)
             .getImplementationsForClasses(HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR)
     },
-    TRANSLATOR("translator") {
+    TRANSLATOR(modifierName = "translator") {
         override fun getLookupElements(project: Project) = JavaClassCompletionService.getInstance(project)
             .getImplementationsForClasses(*HybrisConstants.CLASS_FQN_IMPEX_TRANSLATORS)
     },
-    EXPR("expr"),
-    SYSTEM("system"),
-    VERSION("version"),
-    CLASSIFICATION_CLASS("class");
+    EXPR(modifierName = "expr"),
+    SYSTEM(modifierName = "system"),
+    VERSION(modifierName = "version"),
+    CLASSIFICATION_CLASS(modifierName = "class");
 
     override fun getLookupElements(project: Project): Set<LookupElement> = modifierValues
         .map { ImpExLookupElementFactory.buildModifierValue(it) }

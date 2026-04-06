@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,31 +38,50 @@ import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
  */
 enum class TypeModifier(
     override val modifierName: String,
-    private val modifierValues: Set<String> = emptySet()
+    override val modifierMode: ImpExProcessingMode = ImpExProcessingMode.ANY,
+    override val modifierValues: Set<String> = emptySet(),
 ) : ImpExModifier {
 
-    DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES("disable.UniqueAttributesValidator.for.types") {
+    DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES(modifierName = "disable.UniqueAttributesValidator.for.types") {
         override fun getLookupElements(project: Project) = TSCompletionService.getInstance(project)
             .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
             .toSet()
     },
-    DISABLE_INTERCEPTOR_BEANS("disable.interceptor.beans") {
+    DISABLE_INTERCEPTOR_BEANS(modifierName = "disable.interceptor.beans") {
         override fun getLookupElements(project: Project): Set<LookupElement> = InterceptorProvider.EP.extensionList
             .map { it.collect(project, HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING) }
             .flatten()
             .map { ImpExLookupElementFactory.buildInterceptor(it) }
             .toSet()
     },
-    DISABLE_INTERCEPTOR_TYPES("disable.interceptor.types") {
+    DISABLE_INTERCEPTOR_TYPES(modifierName = "disable.interceptor.types") {
         override fun getLookupElements(project: Project) = InterceptorType.entries
             .map { ImpExLookupElementFactory.buildModifierValue(it.code, it.code, it.title) }
             .toSet()
     },
-    BATCH_MODE("batchmode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    SLD_ENABLED("sld.enabled", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    CACHE_UNIQUE("cacheUnique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    IMPEX_LEGACY_MODE("impex.legacy.mode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    PROCESSOR("processor") {
+    BATCH_MODE(
+        modifierName = "batchmode",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES,
+        modifierMode = ImpExProcessingMode.IMPORT
+    ),
+    SLD_ENABLED(
+        modifierName = "sld.enabled",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES,
+        modifierMode = ImpExProcessingMode.IMPORT
+    ),
+    CACHE_UNIQUE(
+        modifierName = "cacheUnique",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES,
+        modifierMode = ImpExProcessingMode.IMPORT
+    ),
+    IMPEX_LEGACY_MODE(
+        modifierName = "impex.legacy.mode",
+        modifierValues = HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES
+    ),
+    PROCESSOR(
+        modifierName = "processor",
+        modifierMode = ImpExProcessingMode.IMPORT
+    ) {
         override fun getLookupElements(project: Project) = JavaClassCompletionService.getInstance(project)
             .getImplementationsForClasses(HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
     };
