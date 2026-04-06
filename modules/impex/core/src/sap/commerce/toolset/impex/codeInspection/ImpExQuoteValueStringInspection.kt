@@ -19,22 +19,22 @@
 package sap.commerce.toolset.impex.codeInspection
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
-import com.intellij.codeInsight.intention.HighPriorityAction
-import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
-import com.intellij.codeInspection.*
-import com.intellij.openapi.project.Project
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
-import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.util.parentOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.codeInspection.fix.ImpExDisableQuotingForAttributeQuickFix
+import sap.commerce.toolset.impex.codeInspection.fix.ImpExEnableQuotingForAttributeQuickFix
+import sap.commerce.toolset.impex.codeInspection.fix.ImpExQuoteStringQuickFix
+import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExValue
+import sap.commerce.toolset.impex.psi.ImpExVisitor
 import sap.commerce.toolset.impex.psi.references.ImpExTSAttributeReference
-import sap.commerce.toolset.settings.state.ImpExQuoteStringExclusion
 import sap.commerce.toolset.settings.yDeveloperSettings
 import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
 
@@ -65,20 +65,20 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     parameterName,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.enable.key", typeName, attributeName),
                     ProblemHighlightType.INFORMATION,
-                    LocalFixEnable(typeName, attributeName),
+                    ImpExEnableQuotingForAttributeQuickFix(typeName, attributeName),
                 )
                 else holder.registerProblem(
                     parameterName,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.exclude.key", typeName, attributeName),
                     ProblemHighlightType.WEAK_WARNING,
-                    LocalFixExclude(typeName, attributeName),
+                    ImpExDisableQuotingForAttributeQuickFix(typeName, attributeName),
                 )
 
                 holder.registerProblem(
                     parameterName,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.forceQuote.key", typeName, attributeName),
                     ProblemHighlightType.INFORMATION,
-                    LocalFixQuote(
+                    ImpExQuoteStringQuickFix(
                         element = parameterName,
                         presentationText = "Wrap in quotes $unquotedValues value strings for: '$typeName.$attributeName'",
                         overridePreviewInfo = IntentionPreviewInfo.EMPTY
@@ -109,7 +109,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     value,
                     i18n("hybris.inspections.impex.ImpExQuoteValueStringInspection.key", typeName, attributeName, StringUtil.shortenPathWithEllipsis(trimmedText, 25)),
                     type,
-                    LocalFixQuote(
+                    ImpExQuoteStringQuickFix(
                         element = value,
                         presentationText = "Wrap in quotes '$typeName.$attributeName' value string: '${StringUtil.shortenPathWithEllipsis(value.text, 25)}'"
                     )
@@ -143,85 +143,5 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                 ?.takeIf {
                     "localized:java.lang.String" == it.type || "java.lang.String" == it.type && !it.modifiers.isUnique
                 }
-
-        private class LocalFixQuote(
-            element: PsiElement,
-            private val presentationText: String,
-            private val overridePreviewInfo: IntentionPreviewInfo? = null
-        ) : LocalQuickFixOnPsiElement(element), LowPriorityAction {
-
-            override fun getFamilyName() = "[y] Quote value string"
-            override fun getText() = presentationText
-            override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = overridePreviewInfo
-                ?: super.generatePreview(project, previewDescriptor)
-
-            override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                when (startElement) {
-                    is ImpExValue -> quoteValue(startElement, project)
-                    is ImpExAnyHeaderParameterName -> startElement
-                        .parentOfType<ImpExFullHeaderParameter>()
-                        ?.valueGroups
-                        ?.mapNotNull { it.value }
-                        ?.filter { it.isQuotable }
-                        ?.reversed()
-                        ?.forEach { quoteValue(it, project) }
-                }
-            }
-
-            private fun quoteValue(value: ImpExValue, project: Project) {
-                val newValue = value.text
-                    .replace("\"", "\"\"")
-                    .replace("\\\n", "")
-                    .replace("\\\r", "")
-                    .replace("\\\n\r", "")
-
-                val newElement = ImpExElementFactory.createFile(
-                    project, """
-                                    UPDATE Title;name;
-                                    ; "$newValue"
-            
-                            """.trimIndent()
-                )
-                    .childrenOfType<ImpExValueLine>()
-                    .flatMap { it.valueGroupList }
-                    .mapNotNull { it.value }
-                    .lastOrNull()
-                    ?: return
-
-                value.replace(newElement)
-            }
-        }
-
-        private class LocalFixExclude(
-            private val typeName: String,
-            private val attributeName: String,
-        ) : LocalQuickFix, HighPriorityAction {
-
-            override fun getFamilyName() = "[y] Exclusion: quote value strings"
-            override fun getName() = "Do not quote value strings for: '$typeName.$attributeName'"
-            override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
-
-            override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-                project.yDeveloperSettings.impexSettings = project.yDeveloperSettings.impexSettings.mutable()
-                    .apply { quoteStringExclusions.add(ImpExQuoteStringExclusion(typeName, attributeName)) }
-                    .immutable()
-            }
-        }
-
-        private class LocalFixEnable(
-            private val typeName: String,
-            private val attributeName: String,
-        ) : LocalQuickFix, HighPriorityAction {
-
-            override fun getFamilyName() = "[y] Enable quote value strings"
-            override fun getName() = "Enable quoting of value strings for: '$typeName.$attributeName'"
-            override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
-
-            override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-                project.yDeveloperSettings.impexSettings = project.yDeveloperSettings.impexSettings.mutable()
-                    .apply { quoteStringExclusions.removeIf { it.typeName == typeName && it.attributeName == attributeName } }
-                    .immutable()
-            }
-        }
     }
 }
