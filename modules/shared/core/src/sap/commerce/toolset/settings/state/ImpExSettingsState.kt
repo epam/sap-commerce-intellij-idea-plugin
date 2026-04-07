@@ -29,7 +29,7 @@ data class ImpExSettingsState(
     @JvmField @OptionTag val documentation: ImpExDocumentationSettingsState = ImpExDocumentationSettingsState(),
     // Type name to > set of attribute names
     @JvmField @OptionTag val quoteStringWhitelist: Boolean = true,
-    @JvmField @OptionTag val quoteStringWhitelistPattern: Regex = Regex("^[a-zA-Z0-9_$/\\-]+$"),
+    @JvmField @OptionTag val quoteStringWhitelistPattern: Regex = Regex("^([a-zA-Z0-9_$/\\-]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})$"),
     @JvmField @OptionTag val quoteStringExclusions: Map<String, Set<String>> = mapOf(),
 ) {
     fun mutable() = Mutable(
