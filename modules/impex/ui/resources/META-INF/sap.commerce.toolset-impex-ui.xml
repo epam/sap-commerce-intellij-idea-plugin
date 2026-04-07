@@ -37,6 +37,7 @@
 
     <actions>
         <action id="hybris.impex.collapseRegionAction" class="sap.commerce.toolset.impex.actionSystem.ImpExCollapseRegionAction"/>
+        <action id="hybris.impex.collapseAllRegionsAction" class="sap.commerce.toolset.impex.actionSystem.ImpExCollapseAllRegionsAction"/>
         <action id="hybris.hac.console.impex.validate" class="sap.commerce.toolset.impex.actionSystem.ConsoleImpExValidateAction">
             <add-to-group group-id="hybris.console.actionGroup" relative-to-action="sap.commerce.toolset.console.clearAll" anchor="before"/>
         </action>

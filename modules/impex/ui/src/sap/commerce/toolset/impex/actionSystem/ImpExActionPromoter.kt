@@ -25,13 +25,13 @@ class ImpExActionPromoter : ActionPromoter {
     override fun promote(actions: @Unmodifiable List<AnAction>, context: DataContext): @Unmodifiable List<AnAction> {
         CommonDataKeys.EDITOR.getData(context) ?: return actions
 
-        val replace = actions.indexOfFirst { it.javaClass.simpleName == "CollapseRegionAction" }
-            .takeIf { it != -1 }
-            ?: return actions
-        val impExCollapseRegionAction = ActionManager.getInstance().getAction("hybris.impex.collapseRegionAction")
-
         return actions.toMutableList().apply {
-            set(replace, impExCollapseRegionAction)
+            indexOfFirst { it.javaClass.simpleName == "CollapseRegionAction" }
+                .takeIf { it != -1 }
+                ?.let { index -> set(index, ActionManager.getInstance().getAction("hybris.impex.collapseRegionAction")) }
+            indexOfFirst { it.javaClass.simpleName == "CollapseAllRegionsAction" }
+                .takeIf { it != -1 }
+                ?.let { index -> set(index, ActionManager.getInstance().getAction("hybris.impex.collapseAllRegionsAction")) }
         }
     }
 }
