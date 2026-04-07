@@ -26,6 +26,8 @@ package sap.commerce.toolset.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
+import kotlin.jvm.functions.Function0;
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier;
 
 public interface ImpExFullHeaderParameter extends PsiElement {
@@ -50,5 +52,13 @@ public interface ImpExFullHeaderParameter extends PsiElement {
   @NotNull List<@NotNull ImpExValueGroup> getValueGroups();
 
   boolean isUnique();
+
+  @Nullable ImpExFullHeaderParameterTSContext getTypeSystemContext();
+
+  @Nullable
+  @NotNull PsiReference @Nullable [] collectDocIdReferences(@NotNull PsiElement targetElement, @NotNull ImpExFullHeaderParameterTSContext tsContext);
+
+  @Nullable
+  @NotNull PsiReference @Nullable [] collectTSReferences(@NotNull PsiElement targetElement, @NotNull ImpExFullHeaderParameterTSContext tsContext, @NotNull Function0<@NotNull PsiElement @NotNull []> valuesProvider);
 
 }

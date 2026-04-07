@@ -31,6 +31,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.impex.psi.ImpExTypes.*;
 import sap.commerce.toolset.impex.psi.*;
+import com.intellij.psi.PsiReference;
+import kotlin.jvm.functions.Function0;
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier;
 
 public class ImpExFullHeaderParameterImpl extends ImpExFullHeaderParameterMixin implements ImpExFullHeaderParameter {

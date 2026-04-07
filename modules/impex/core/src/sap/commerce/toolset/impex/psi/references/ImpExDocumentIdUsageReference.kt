@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,13 +31,14 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdDec
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
-import sap.commerce.toolset.impex.psi.ImpExValue
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
-class ImpExDocumentIdUsageReference(
-    private val impexValue: ImpExValue,
+open class ImpExDocumentIdUsageReference private constructor(
+    private val fullHeaderParameter: ImpExFullHeaderParameter,
+    element: PsiElement,
     textRange: TextRange,
-) : PsiReferenceBase.Poly<PsiElement>(impexValue, textRange, false) {
+) : PsiReferenceBase.Poly<PsiElement>(element, textRange, false) {
 
     private val cacheKeyResolvedResults = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdUsageReference>>("RESOLVED_RESULTS_$textRange")
 
@@ -53,11 +54,8 @@ class ImpExDocumentIdUsageReference(
         private val KEY_LOOKUP_ELEMENTS = Key.create<ParameterizedCachedValue<Array<LookupElementBuilder>, ImpExDocumentIdUsageReference>>("LOOKUP_ELEMENTS")
 
         private val PROVIDER_LOOKUP_ELEMENTS = ParameterizedCachedValueProvider<Array<LookupElementBuilder>, ImpExDocumentIdUsageReference> { ref ->
-            val fullHeaderParameter = ref.impexValue.valueGroup
-                ?.fullHeaderParameter
-                ?: return@ParameterizedCachedValueProvider CachedValueProvider.Result.create(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
-
-            val lookupElements = fullHeaderParameter
+            val project = ref.fullHeaderParameter.project
+            val lookupElements = ref.fullHeaderParameter
                 .parametersList
                 .firstOrNull()
                 ?.parameterList
@@ -68,13 +66,19 @@ class ImpExDocumentIdUsageReference(
                 ?.reference
                 ?.asSafely<ImpExDocumentIdReference>()
                 ?.multiResolve(false)
+                ?.asSequence()
                 ?.mapNotNull { it.element as? ImpExDocumentIdDec }
                 ?.flatMap { it.values.values }
                 ?.flatten()
                 ?.distinctBy { it.text }
                 ?.map { idDec ->
-                    val meta = idDec.valueGroup?.fullHeaderParameter?.headerLine?.fullHeaderType?.headerTypeName?.text
-                        ?.let { TSMetaModelAccess.getInstance(ref.impexValue.project).findMetaClassifierByName(it) }
+                    val meta = idDec.valueGroup
+                        ?.fullHeaderParameter
+                        ?.headerLine
+                        ?.fullHeaderType
+                        ?.headerTypeName
+                        ?.text
+                        ?.let { TSMetaModelAccess.getInstance(project).findMetaClassifierByName(it) }
 
                     LookupElementBuilder.createWithSmartPointer(idDec.text, idDec).also { builder ->
                         if (meta != null) {
@@ -84,18 +88,21 @@ class ImpExDocumentIdUsageReference(
                         }
                     }
                 }
+                ?.toList()
                 ?.toTypedArray()
                 ?: emptyArray()
 
-            CachedValueProvider.Result.create(lookupElements, PsiModificationTracker.MODIFICATION_COUNT)
+            CachedValueProvider.Result.create(
+                lookupElements,
+                PsiModificationTracker.MODIFICATION_COUNT
+            )
         }
 
         private val PROVIDER_RESOLVED_RESULTS = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExDocumentIdUsageReference> { ref ->
             val name = ref.value
-            val results = ref.impexValue.valueGroup
-                ?.fullHeaderParameter
-                ?.parametersList
-                ?.firstOrNull()
+            val results = ref.fullHeaderParameter
+                .parametersList
+                .firstOrNull()
                 ?.parameterList
                 ?.takeIf { it.size == 1 }
                 ?.firstOrNull()
@@ -115,5 +122,11 @@ class ImpExDocumentIdUsageReference(
                 PsiModificationTracker.MODIFICATION_COUNT,
             )
         }
+
+        fun create(fullHeaderParameter: ImpExFullHeaderParameter, targetElement: PsiElement, textRange: TextRange) = ImpExDocumentIdUsageReference(
+            fullHeaderParameter,
+            targetElement,
+            textRange
+        )
     }
 }

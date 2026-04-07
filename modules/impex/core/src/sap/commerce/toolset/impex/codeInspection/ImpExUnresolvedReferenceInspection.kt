@@ -48,6 +48,16 @@ class ImpExUnresolvedReferenceInspection : LocalInspectionTool() {
             i18n("hybris.inspections.impex.unresolved.subType.key", canonicalText)
         }
 
+        override fun visitAnyAttributeValue(element: ImpExAnyAttributeValue) = problemsHolder.verifyReferences(element) {
+            when (this) {
+                is ImpExValueTSStaticEnumReference -> "hybris.inspections.impex.unresolved.enumValue.key"
+                is ImpExValueTSClassifierReference -> "hybris.inspections.impex.unresolved.composedType.key"
+                is ImpExDocumentIdUsageReference -> "hybris.inspections.impex.unresolved.docUsage.key"
+                else -> null
+            }
+                ?.let { i18n(it, canonicalText) }
+        }
+
         override fun visitValue(element: ImpExValue) = problemsHolder.verifyReferences(element) {
             when (this) {
                 is ImpExValueTSStaticEnumReference -> "hybris.inspections.impex.unresolved.enumValue.key"

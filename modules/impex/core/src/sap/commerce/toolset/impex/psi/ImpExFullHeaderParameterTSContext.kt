@@ -16,25 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex
+package sap.commerce.toolset.impex.psi
 
-import com.intellij.psi.tree.IFileElementType
+import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaClassifier
 
-object ImpExConstants {
-    const val IMPEX = "ImpEx"
-    const val MACRO_MARKER = "$"
-    const val MACRO_CONFIG_MARKER = $$"$config"
-    const val MACRO_CONFIG_COMPLETE_MARKER = "$MACRO_CONFIG_MARKER-"
-    const val DOC_ID_MARKER = "&"
-    const val INVERTED_COMMA = '\''
-
-    val FILE_NODE_TYPE = IFileElementType(ImpExLanguage)
-
-    object Folding {
-        const val GROUP_PREFIX = "impex.columns"
-        const val VALUE_PREFIX = "; <"
-        const val VALUE_POSTFIX = ">"
-        const val HEADER_PREFIX = " <"
-        const val HEADER_POSTFIX = ">"
-    }
-}
+data class ImpExFullHeaderParameterTSContext(
+    val meta: TSMetaClassifier<out DomElement>,
+    val attributeType: String
+)

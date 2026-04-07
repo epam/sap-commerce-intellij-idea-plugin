@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,7 +25,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -34,23 +33,23 @@ import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
 import sap.commerce.toolset.typeSystem.psi.reference.result.EnumValueResolveResult
 
 class ImpExValueTSDynamicEnumReference(
-    owner: ImpExValue,
+    owner: PsiElement,
     metaName: String,
     textRange: TextRange,
 ) : ImpExValueTSEnumReference(owner, metaName, true, textRange)
 
 class ImpExValueTSStaticEnumReference(
-    owner: ImpExValue,
+    owner: PsiElement,
     metaName: String,
     textRange: TextRange,
 ) : ImpExValueTSEnumReference(owner, metaName, false, textRange)
 
 abstract class ImpExValueTSEnumReference(
-    owner: ImpExValue,
+    owner: PsiElement,
     private val metaName: String,
     soft: Boolean,
     textRange: TextRange,
-) : TSReferenceBase<ImpExValue>(owner, soft, textRange), HighlightedReference {
+) : TSReferenceBase<PsiElement>(owner, soft, textRange), HighlightedReference {
 
     private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
 
