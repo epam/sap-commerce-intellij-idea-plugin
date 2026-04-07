@@ -34,7 +34,7 @@ class ImpExPreFormatProcessor : PreFormatProcessor {
     override fun process(element: ASTNode, range: TextRange) = element.psi
         ?.takeIf { it.language == ImpExLanguage }
         ?.takeIf { it.isValid }
-        ?.takeUnless { it is ImpExFile }
+        ?.takeIf { it is ImpExFile }
         ?.findElementAt(range.endOffset)
         ?.let {
             if (it.elementType == ImpExTypes.CRLF) it.prevLeaf(true)
