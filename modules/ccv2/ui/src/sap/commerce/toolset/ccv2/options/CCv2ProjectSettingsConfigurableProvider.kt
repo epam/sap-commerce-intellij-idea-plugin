@@ -70,6 +70,7 @@ class CCv2ProjectSettingsConfigurableProvider(private val project: Project) : Co
         private var originalClientId: String? = null
         private var originalClientSecret: String? = null
         private var originalActiveSubscription = developerSettings.getActiveCCv2Subscription()
+        private var originalSubscriptionsSize = mutable.subscriptions.size
         private lateinit var pane: DialogPanel
 
         override fun createPanel(): DialogPanel {
@@ -132,7 +133,10 @@ class CCv2ProjectSettingsConfigurableProvider(private val project: Project) : Co
                 group("Subscriptions", false) {
                     row {
                         cell(subscriptionListPanel)
-                            .onIsModified { subscriptionListPanel.data.any { it.modified } }
+                            .onIsModified {
+                                subscriptionListPanel.data.size != originalSubscriptionsSize
+                                    || subscriptionListPanel.data.any { it.modified }
+                            }
                             .align(AlignX.FILL)
                     }
                 }
@@ -143,6 +147,7 @@ class CCv2ProjectSettingsConfigurableProvider(private val project: Project) : Co
         override fun reset() {
             super.reset()
             subscriptionListPanel.data = projectSettings.state.mutable().subscriptions
+            originalSubscriptionsSize = subscriptionListPanel.data.size
             subscriptionsComboBoxModel.refresh(subscriptionListPanel.data.map { it.immutable() })
 
             activeCCv2SubscriptionComboBox.selectedItem = originalActiveSubscription
@@ -177,6 +182,7 @@ class CCv2ProjectSettingsConfigurableProvider(private val project: Project) : Co
             )
 
             originalActiveSubscription = developerSettings.getActiveCCv2Subscription()
+            originalSubscriptionsSize = subscriptionListPanel.data.size
         }
 
         private fun initForm() {

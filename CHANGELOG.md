@@ -94,6 +94,9 @@
 - Resolve spring references in ImpEx files for predefined set of attributes [#1828](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1828)
 - Adjusted list of spring-aware attributes to be resolved in ImpEx [#1830](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1830)
 
+### `CCv2` enhancements
+- Allow removal single subscription [#1863](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1863)
+
 ### Other
 - Include only last 10 releases in the shipped changelog [#1793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1793)
 - Make cached PsiReferences depend on exact PsiElement to improve memory & CPU footprint [#1814](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1814)
