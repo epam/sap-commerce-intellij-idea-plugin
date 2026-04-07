@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -44,7 +44,6 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
         run(project, "Moving the '${headerParameter.text}' column ${direction.name.lowercase(Locale.ROOT)}") {
             WriteCommandAction.runWriteCommandAction(project) {
                 PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-//                    ImpExHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
 
                     val headerLine = headerParameter.headerLine ?: return@disablePostprocessFormattingInside
                     val column = headerParameter.columnNumber

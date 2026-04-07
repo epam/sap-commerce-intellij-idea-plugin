@@ -101,7 +101,7 @@ class ImpExQuoteValueStringInspection : LocalInspectionTool() {
                     presentationText = "Quote ${whitelistedValues.size} eligible value strings for: '$typeName.$attributeName'"
                 )
 
-                registerInfoQuickFix(
+                if (whitelistedValues.size != unquotedValues.size) registerInfoQuickFix(
                     checkValuePattern = false,
                     presentationText = "Quote all ${unquotedValues.size} value strings for: '$typeName.$attributeName'"
                 )

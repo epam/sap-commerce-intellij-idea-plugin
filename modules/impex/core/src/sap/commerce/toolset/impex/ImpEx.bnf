@@ -383,7 +383,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
     pin=1
     recoverWhile=not_line_break_or_parameters_separator
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExFullHeaderParameterMixin"
-    methods=[getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups isUnique]
+    methods=[getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups isUnique getTypeSystemContext collectDocIdReferences collectTSReferences]
 }
 
 any_header_parameter_name ::= document_id_dec

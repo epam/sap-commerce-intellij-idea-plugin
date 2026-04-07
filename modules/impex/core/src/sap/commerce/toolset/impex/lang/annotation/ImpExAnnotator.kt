@@ -126,6 +126,16 @@ class ImpExAnnotator : AbstractAnnotator() {
                 }
             }
 
+            ImpExTypes.ATTRIBUTE_VALUE -> {
+                element.parent.references.forEach { reference ->
+                    when (reference) {
+                        is ImpExValueTSStaticEnumReference,
+                        is ImpExValueTSClassifierReference,
+                        is ImpExDocumentIdUsageReference -> holder.highlightReference(reference, ImpExHighlighterColors.VALUE_REFERENCE)
+                    }
+                }
+            }
+
             ImpExTypes.USER_RIGHTS_ATTRIBUTE_VALUE -> {
                 val value = element as? ImpExUserRightsValue ?: return
                 val headerParameter = value.headerParameter ?: return
