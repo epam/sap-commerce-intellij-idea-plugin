@@ -25,6 +25,7 @@ import com.intellij.openapi.application.smartReadAction
 import com.intellij.util.asSafely
 import org.jetbrains.jps.model.java.compiler.JavaCompilers
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisConstants.COMPILER_PARAMETER_PARAMETERS
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportWhenSmartConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
@@ -48,6 +49,13 @@ class JavaCompilerConfigurator : ProjectImportWhenSmartConfigurator {
                 "org.eclipse.jdt.core.JDTCompilerAdapter" -> applyCompiler(compilerConfiguration, JavaCompilers.ECLIPSE_ID)
                 "modern" -> applyCompiler(compilerConfiguration, JavaCompilers.JAVAC_ID)
             }
+
+            compilerConfiguration.additionalOptions =
+                compilerConfiguration.additionalOptions
+                    .toMutableList()
+                    .apply {
+                        if (COMPILER_PARAMETER_PARAMETERS !in this) add(COMPILER_PARAMETER_PARAMETERS)
+                    }
         }
     }
 

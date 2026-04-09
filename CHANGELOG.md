@@ -4,6 +4,7 @@
 - 73 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Fabio Filpi](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3Afabiofilpi+is%3Apr+)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AMihaiSprinceana+is%3Apr+)
+- 1 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.7+author%3AStefanKruk+is%3Apr+)
 
 ### `Project Import` enhancements
 - Stop attaching decompiled OOTB sources [#1813](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1813)
@@ -94,6 +95,9 @@
 - Support `classpath*:` prefix in Spring XML imports [#1792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1792)
 - Resolve spring references in ImpEx files for predefined set of attributes [#1828](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1828)
 - Adjusted list of spring-aware attributes to be resolved in ImpEx [#1830](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1830)
+
+### `Compile` enhancements
+- Add Compiler Parameter `-parameters` to keep Method Names during compilaton for Reflection.
 
 ### `CCv2` enhancements
 - Allow removal single subscription [#1863](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1863)
