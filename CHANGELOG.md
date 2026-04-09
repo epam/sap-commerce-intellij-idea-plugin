@@ -97,7 +97,7 @@
 - Adjusted list of spring-aware attributes to be resolved in ImpEx [#1830](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1830)
 
 ### `Compile` enhancements
-- Add Compiler Parameter `-parameters` to keep Method Names during compilaton for Reflection.
+- Add Compiler Parameter `-parameters` to keep Method Names during compilaton for Reflection. [#1865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1865)
 
 ### `CCv2` enhancements
 - Allow removal single subscription [#1863](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1863)
