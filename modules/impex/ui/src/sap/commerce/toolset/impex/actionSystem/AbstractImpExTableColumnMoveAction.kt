@@ -20,6 +20,7 @@ package sap.commerce.toolset.impex.actionSystem
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.currentThreadCoroutineScope
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -27,8 +28,6 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
@@ -44,14 +43,13 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
             else -> return
         }
 
-        CoroutineScope(Dispatchers.Default).launch {
+        currentThreadCoroutineScope().launch {
             val headerLine = readAction { headerParameter.headerLine }
                 ?: return@launch
             val firstColumnIndex = readAction { headerParameter.columnNumber }
             val previousOffset = readAction { editor.caretModel.currentCaret.offset }
             val secondColumnIndex = firstColumnIndex + direction.step
             val file = readAction { headerParameter.containingFile }
-            val fileText = readAction { file.fileDocument.text }
             val replacements = buildList {
                 readAction { headerLine.valueLines }
                     .forEach { valueLine ->
@@ -73,7 +71,8 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
                 add(secondParameter.replacement(firstParameter, true))
             }
 
-            val newContent = fileText.applyReplacements(replacements)
+            val newContent = readAction { file.fileDocument.text }
+                .applyReplacements(replacements)
 
             writeCommandAction(project, "ImpEx - Move Column") {
                 file.fileDocument.setText(newContent)

@@ -17,38 +17,29 @@
  */
 package sap.commerce.toolset.impex.actionSystem
 
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.currentThreadCoroutineScope
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
-import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.util.asSafely
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
 import sap.commerce.toolset.psi.PsiTreeUtilExt
-import sap.commerce.toolset.text.removeRanges
 
 class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
 
-    private val commandName = "Remove Column"
-    private val groupID = "action.sap.cx.impex.column.remove"
 
     init {
         with(templatePresentation) {
-            text = commandName
+            text = "Remove Column"
             description = "Remove current column"
             icon = HybrisIcons.ImpEx.Actions.REMOVE_COLUMN
         }
@@ -71,7 +62,7 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
                 }
             } ?: return@launch
 
-            val textRanges = buildList {
+            val replacements = buildList {
                 readAction {
                     fullHeaderParameter.valueGroups
                         .filter { it.isValid }
@@ -94,23 +85,15 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
 
                     add(TextRange(startOffset, endOffset))
                 }
-            }.sortedByDescending { it.startOffset }
+            }
+                .sortedByDescending { it.startOffset }
+                .map { it.startOffset..it.endOffset to "" }
 
-            val document = PsiDocumentManager.getInstance(project).getDocument(psiFile)
-                ?: return@launch
+            val newContent = readAction { psiFile.fileDocument.text }
+                .applyReplacements(replacements)
 
-            val newContent = psiFile.text.removeRanges(textRanges)
-
-            withContext(Dispatchers.EDT) {
-                PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                    runWithModalProgressBlocking(project, "Removing '${fullHeaderParameter.text}' column") {
-                        WriteCommandAction.runWriteCommandAction(project) {
-                            document.replaceString(0, document.textLength, newContent)
-
-                            PsiDocumentManager.getInstance(project).commitDocument(document)
-                        }
-                    }
-                }
+            writeCommandAction(project, "ImpEx - Remove Column") {
+                psiFile.fileDocument.setText(newContent)
             }
         }
     }
