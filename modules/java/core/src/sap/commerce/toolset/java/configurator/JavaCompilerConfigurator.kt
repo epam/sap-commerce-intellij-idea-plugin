@@ -51,7 +51,7 @@ class JavaCompilerConfigurator : ProjectImportWhenSmartConfigurator {
             }
 
             with(compilerConfiguration) {
-                if (!additionalOptions.contains(JavaConstants.COMPILER_PARAMETER_PARAMETERS)) {
+                if (JavaConstants.COMPILER_PARAMETER_PARAMETERS !in additionalOptions) {
                     additionalOptions = buildList {
                         addAll(additionalOptions)
                         add(JavaConstants.COMPILER_PARAMETER_PARAMETERS)
