@@ -1,6 +1,7 @@
 ## [2026.0.8]
 
 <cite>Release contributors</cite>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3AStefanKruk+is%3Apr+)
 
 ### `Project Import` enhancements
