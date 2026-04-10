@@ -27,6 +27,8 @@ object ImpExConstants {
     const val MACRO_CONFIG_COMPLETE_MARKER = "$MACRO_CONFIG_MARKER-"
     const val DOC_ID_MARKER = "&"
     const val INVERTED_COMMA = '\''
+    const val PATH_DELIMITER = ":"
+    const val COLLECTION_DELIMITER = ","
 
     val FILE_NODE_TYPE = IFileElementType(ImpExLanguage)
 

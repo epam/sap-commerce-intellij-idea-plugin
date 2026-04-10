@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,6 +51,7 @@ object TSConstants {
     object Type {
         const val OBJECT = "java.lang.Object"
         const val JAVA_CLASS = "java.lang.Class"
+        const val JAVA_STRING = "java.lang.String"
         const val ITEM = "Item"
         const val GENERIC_ITEM = "GenericItem"
         const val LOCALIZABLE_ITEM = "LocalizableItem"
@@ -88,6 +89,7 @@ object TSConstants {
         const val CODE = "code"
         const val NAME = "name"
         const val PK = "pk"
+        const val QUALIFIER = "qualifier"
 
         const val LOCALIZED_PREFIX = "localized:"
     }

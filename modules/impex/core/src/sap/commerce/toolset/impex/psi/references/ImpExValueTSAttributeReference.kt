@@ -25,27 +25,31 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import com.intellij.util.asSafely
+import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
-import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaClassifier
 import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
-import sap.commerce.toolset.typeSystem.psi.reference.result.*
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
-class ImpExValueTSClassifierReference(
+class ImpExValueTSAttributeReference(
     owner: PsiElement,
     textRange: TextRange,
-    private val allowedTypes: List<TSMetaType> = TSMetaType.entries
 ) : TSReferenceBase<PsiElement>(owner, false, textRange), HighlightedReference {
 
-    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
+    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
+
+    override fun getVariants(): Array<LookupElementBuilder> = resolveOwnerMetaType(this)
+        ?.name
+        ?.let { TSCompletionService.getInstance(element.project).getCompletions(it) }
+        ?.toTypedArray()
+        ?: emptyArray()
 
     override fun resolve() = multiResolve(false).firstOrNull()?.element
-
-    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
-        .getCompletions(*allowedTypes.toTypedArray())
-        .toTypedArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
@@ -57,30 +61,28 @@ class ImpExValueTSClassifierReference(
     }
 
     companion object {
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExValueTSClassifierReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExValueTSAttributeReference> { ref ->
             val project = ref.project
-            val lookingForName = ref.value
-            val allowedTypes = ref.allowedTypes
-
-            val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
-                ?.let {
-                    when (it) {
-                        is TSGlobalMetaItem if allowedTypes.contains(TSMetaType.META_ITEM) -> it.declarations.map { meta -> ItemResolveResult(meta) }
-                        is TSGlobalMetaEnum if allowedTypes.contains(TSMetaType.META_ENUM) -> it.declarations.map { meta -> EnumResolveResult(meta) }
-                        is TSGlobalMetaRelation if allowedTypes.contains(TSMetaType.META_RELATION) -> it.declarations.map { meta -> RelationResolveResult(meta) }
-                        is TSGlobalMetaMap if allowedTypes.contains(TSMetaType.META_MAP) -> it.declarations.map { meta -> MapResolveResult(meta) }
-                        is TSGlobalMetaAtomic if allowedTypes.contains(TSMetaType.META_ATOMIC) -> it.declarations.map { meta -> AtomicResolveResult(meta) }
-                        is TSGlobalMetaCollection if allowedTypes.contains(TSMetaType.META_COLLECTION) -> it.declarations.map { meta -> CollectionResolveResult(meta) }
-                        else -> null
-                    }
-                }
-                ?.toTypedArray()
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
+            val featureName = ref.value
+            val result = resolveOwnerMetaType(ref)
+                ?.name
+                ?.let { TSResolveResultUtil.tryResolveAttribute(metaModelAccess, featureName, it) }
+                ?.let { arrayOf(it) }
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
-                results,
-                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT,
+                result,
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
+
+        private fun resolveOwnerMetaType(ref: ImpExValueTSAttributeReference): TSMetaClassifier<out DomElement>? = ref.element.references
+            .filterIsInstance<ImpExValueTSClassifierReference>()
+            .firstOrNull()
+            ?.multiResolve(false)
+            ?.firstOrNull()
+            ?.asSafely<TSResolveResult<*>>()
+            ?.meta
     }
 }

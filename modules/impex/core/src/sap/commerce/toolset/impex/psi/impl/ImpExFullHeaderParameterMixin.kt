@@ -161,7 +161,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
             ?.let {
                 when (it) {
                     is TSGlobalMetaAtomic -> collectTSReferencesForMetaAtomic(targetElement, tsContext.attributeType)
-                    is TSGlobalMetaEnum -> collectTSReferencesForMetaEnum( targetElement, it, tsContext.attributeType, valuesProvider)
+                    is TSGlobalMetaEnum -> collectTSReferencesForMetaEnum(targetElement, it, tsContext.attributeType, valuesProvider)
                     is TSGlobalMetaItem -> collectTSReferencesForMetaItem(targetElement, tsContext.meta, tsContext.attributeType)
                     is TSGlobalMetaCollection -> collectTSReferencesForMetaCollection(targetElement, it, metaModelAccess)
                     else -> null
@@ -276,10 +276,10 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
          * To be injected into -> ConsumedDestination
          */
 
-        val ranges = collectRanges(targetElement, AttributeModifier.PATH_DELIMITER, ":")
+        val ranges = collectRanges(targetElement, AttributeModifier.PATH_DELIMITER, ImpExConstants.PATH_DELIMITER)
         return parameters
             .mapIndexedNotNull { index, parameter ->
-                parameter.reference.asSafely<ImpExFunctionTSAttributeReference>()
+                val targetMetaType = parameter.reference.asSafely<ImpExFunctionTSAttributeReference>()
                     ?.multiResolve(false)
                     ?.firstOrNull()
                     ?.let { resolveResult ->
@@ -288,10 +288,18 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                             is RelationEndResolveResult -> resolveResult.meta.type
                             else -> null
                         }
-                    }
-                    ?.takeIf { TSConstants.Type.COMPOSED_TYPE == it }
-                    ?.let { ranges.getOrNull(index) }
-                    ?.let { ImpExValueTSClassifierReference(targetElement, it) }
+                    } ?: return@mapIndexedNotNull null
+                val targetRange = ranges.getOrNull(index) ?: return@mapIndexedNotNull null
+
+                when {
+                    targetMetaType == TSConstants.Type.COMPOSED_TYPE -> ImpExValueTSClassifierReference(targetElement, targetRange)
+
+                    TSConstants.Type.ATTRIBUTE_DESCRIPTOR == attributeType
+                        && TSConstants.Attribute.QUALIFIER.equals(parameter.text, true)
+                        && targetMetaType == TSConstants.Type.JAVA_STRING -> ImpExValueTSAttributeReference(targetElement, targetRange)
+
+                    else -> null
+                }
             }
     }
 
@@ -308,7 +316,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         attributeType: String,
         valuesProvider: () -> Array<PsiElement>
     ): List<PsiReference>? {
-        val ranges = collectRanges(targetElement, AttributeModifier.PATH_DELIMITER, ":")
+        val ranges = collectRanges(targetElement, AttributeModifier.PATH_DELIMITER, ImpExConstants.PATH_DELIMITER)
 
         return this.parametersList
             .firstOrNull()
@@ -347,7 +355,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                     targetMeta is TSGlobalMetaItem && targetMeta.name == TSConstants.Type.COMPOSED_TYPE -> collectRanges(
                         targetElement,
                         AttributeModifier.COLLECTION_DELIMITER,
-                        ","
+                        ImpExConstants.COLLECTION_DELIMITER
                     )
                         .filterNot { range -> range.isMacro(targetElement.text) }
                         .map { ImpExValueTSClassifierReference(targetElement, it) }

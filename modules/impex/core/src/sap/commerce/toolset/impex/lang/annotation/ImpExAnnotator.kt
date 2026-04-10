@@ -120,6 +120,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                     when (reference) {
                         is ImpExValueTSStaticEnumReference,
                         is ImpExValueTSClassifierReference,
+                        is ImpExValueTSAttributeReference,
                         is ImpExDocumentIdUsageReference,
                         is SpringReference -> holder.highlightReference(reference, ImpExHighlighterColors.VALUE_REFERENCE)
                     }

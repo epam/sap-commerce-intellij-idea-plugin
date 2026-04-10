@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,13 +26,10 @@ import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.impex.psi.ImpExAnyHeaderParameterName
 import sap.commerce.toolset.psi.getValidResults
-import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
-import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
-import sap.commerce.toolset.typeSystem.psi.reference.result.OrderingAttributeResolveResult
-import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 class ImpExTSAttributeReference(owner: ImpExAnyHeaderParameterName) : TSReferenceBase<ImpExAnyHeaderParameterName>(owner) {
 
@@ -55,11 +52,9 @@ class ImpExTSAttributeReference(owner: ImpExAnyHeaderParameterName) : TSReferenc
             val project = ref.project
             val metaModelAccess = TSMetaModelAccess.getInstance(project)
             val featureName = ref.value
-            val result = (
-                tryResolveForItemType(metaModelAccess, featureName, ref.element.headerItemTypeName?.text)
-                    ?: tryResolveForRelationType(ref.element, metaModelAccess, featureName)
-                    ?: tryResolveByEnumType(ref.element, metaModelAccess, featureName)
-                )
+            val result = ref.element.headerItemTypeName
+                ?.text
+                ?.let { TSResolveResultUtil.tryResolveAttribute(metaModelAccess, featureName, it) }
                 ?.let { arrayOf(it) }
                 ?: ResolveResult.EMPTY_ARRAY
 
@@ -69,49 +64,5 @@ class ImpExTSAttributeReference(owner: ImpExAnyHeaderParameterName) : TSReferenc
                 TSModificationTracker.getInstance(project)
             )
         }
-
-        private fun tryResolveByEnumType(
-            element: ImpExAnyHeaderParameterName,
-            metaService: TSMetaModelAccess,
-            refName: String
-        ): ResolveResult? = element.headerItemTypeName
-            ?.text
-            ?.let { metaService.findMetaEnumByName(it) }
-            ?.let { metaService.findMetaItemByName(TSConstants.Type.ENUMERATION_VALUE) }
-            ?.let { it.allAttributes[refName] }
-            ?.let { AttributeResolveResult(it) }
-
-        private fun tryResolveForItemType(
-            metaModelService: TSMetaModelAccess,
-            featureName: String,
-            itemTypeCode: String?
-        ): ResolveResult? = itemTypeCode
-            ?.let { metaModelService.findMetaItemByName(it) }
-            ?.let { meta ->
-                meta.allAttributes[featureName]
-                    ?.let { AttributeResolveResult(it) }
-                    ?: meta.allOrderingAttributes[featureName]
-                        ?.let { OrderingAttributeResolveResult(it) }
-                    ?: meta.allRelationEnds
-                        .find { it.name.equals(featureName, true) }
-                        ?.let { RelationEndResolveResult(it) }
-            }
-
-        private fun tryResolveForRelationType(
-            element: ImpExAnyHeaderParameterName,
-            metaService: TSMetaModelAccess,
-            featureName: String
-        ): ResolveResult? = element.headerItemTypeName
-            ?.text
-            ?.let { metaService.findMetaRelationByName(it) }
-            ?.let {
-                if (TSConstants.Attribute.SOURCE.equals(featureName, ignoreCase = true)) {
-                    return@let RelationEndResolveResult(it.source)
-                } else if (TSConstants.Attribute.TARGET.equals(featureName, ignoreCase = true)) {
-                    return@let RelationEndResolveResult(it.target)
-                }
-
-                return@let tryResolveForItemType(metaService, featureName, TSConstants.Type.LINK)
-            }
     }
 }
