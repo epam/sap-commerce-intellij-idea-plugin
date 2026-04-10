@@ -20,6 +20,8 @@ package sap.commerce.toolset.java
 
 object JavaConstants {
 
+    const val COMPILER_PARAMETER_PARAMETERS = "-parameters"
+
     object LiveTemplates {
         const val YSRI = "ysri"
     }

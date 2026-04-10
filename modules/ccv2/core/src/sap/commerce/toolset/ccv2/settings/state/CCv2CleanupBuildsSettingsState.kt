@@ -18,12 +18,13 @@
 
 package sap.commerce.toolset.ccv2.settings.state
 
+import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 import sap.commerce.toolset.ccv2.dto.CCv2BuildSortOrder
 
 @Tag("CCv2CleanupBuildSettings")
 data class CCv2CleanupBuildsSettingsState(
-    @JvmField val top: Int = 20,
+    @JvmField @OptionTag val top: Int = 20,
     @JvmField val sortBy: List<CCv2BuildSortOrder> = listOf(),
 )
 

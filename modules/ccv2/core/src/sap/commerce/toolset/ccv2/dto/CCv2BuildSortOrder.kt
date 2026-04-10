@@ -18,7 +18,9 @@
 
 package sap.commerce.toolset.ccv2.dto
 
+import com.intellij.util.xmlb.annotations.OptionTag
+
 data class CCv2BuildSortOrder(
-    val sortBy: CCv2BuildSortBy,
-    val sortDirection: CCv2BuildSortDirection
+    @JvmField @OptionTag val sortBy: CCv2BuildSortBy = CCv2BuildSortBy.START_TIME,
+    @JvmField @OptionTag val sortDirection: CCv2BuildSortDirection = CCv2BuildSortDirection.ASC,
 )
