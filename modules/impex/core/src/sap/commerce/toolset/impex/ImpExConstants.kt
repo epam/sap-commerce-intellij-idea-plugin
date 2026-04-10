@@ -29,6 +29,8 @@ object ImpExConstants {
     const val INVERTED_COMMA = '\''
     const val PATH_DELIMITER = ":"
     const val COLLECTION_DELIMITER = ","
+    const val FIELD_VALUE_SEPARATOR = ";"
+    const val PARAMETERS_SEPARATOR = ";"
 
     val FILE_NODE_TYPE = IFileElementType(ImpExLanguage)
 

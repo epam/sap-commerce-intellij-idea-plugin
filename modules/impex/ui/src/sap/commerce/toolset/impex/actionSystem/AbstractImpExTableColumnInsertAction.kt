@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,15 +18,22 @@
 package sap.commerce.toolset.impex.actionSystem
 
 import com.intellij.codeInsight.AutoPopupController
-import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import sap.commerce.toolset.impex.psi.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpExValueGroup
 
 abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExColumnPosition) : AbstractImpExTableColumnAction() {
 
@@ -39,56 +46,69 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
             else -> return
         }
 
-        val placement = if (position == ImpExColumnPosition.LEFT) "before"
-        else "after"
+        CoroutineScope(Dispatchers.Default).launch {
+            val headerLine = readAction { headerParameter.headerLine }
+                ?: return@launch
+            val column = readAction { headerParameter.columnNumber }
+            val parameter = readAction { headerLine.fullHeaderParameterList.getOrNull(column) }
+                ?: return@launch
+            val file = readAction { headerParameter.containingFile }
+            val tableRange = readAction { headerLine.tableRange }
+            val fileText = readAction { file.fileDocument.text }
 
-        run(project, "Inserting a new column $placement '${headerParameter.text}'") {
-            WriteCommandAction.runWriteCommandAction(project) {
-                PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                    val headerLine = headerParameter.headerLine ?: return@disablePostprocessFormattingInside
-                    val column = headerParameter.columnNumber
-
-                    val newElementAtCaret: PsiElement? = insertHeaderParam(project, headerLine, column, position)
-                    insertValueGroups(project, headerLine.valueLines, column, position)
-
-                    newElementAtCaret
-                        ?.let {
-                            val offset = when (position) {
-                                ImpExColumnPosition.LEFT -> it.startOffset
-                                ImpExColumnPosition.RIGHT -> it.endOffset
-                            }
-                            editor.caretModel.currentCaret.moveToOffset(offset)
-                            AutoPopupController.getInstance(project).scheduleAutoPopup(editor)
+            val replacements = buildList {
+                readAction { headerLine.valueLines }
+                    .reversed()
+                    .mapNotNull { readAction { it.getValueGroup(column) } }
+                    .forEach { valueGroup ->
+                        val valueGroupText = readAction { valueGroup.text }
+                        val replacement = when (position) {
+                            ImpExColumnPosition.LEFT -> ImpExConstants.FIELD_VALUE_SEPARATOR + valueGroupText
+                            ImpExColumnPosition.RIGHT -> valueGroupText + ImpExConstants.FIELD_VALUE_SEPARATOR
                         }
+
+                        add(valueGroup.startOffset..valueGroup.endOffset to replacement)
+                    }
+
+                val parameterText = readAction { parameter.text }
+                val parameterReplacement = when (position) {
+                    ImpExColumnPosition.LEFT -> ImpExConstants.PARAMETERS_SEPARATOR + parameterText
+                    ImpExColumnPosition.RIGHT -> parameterText + ImpExConstants.PARAMETERS_SEPARATOR
                 }
+
+                add(parameter.startOffset..parameter.endOffset to parameterReplacement)
+            }
+            val newContent = fileText.applyReplacements(replacements)
+
+            writeCommandAction(project, "ImpEx - Insert Column") {
+                file.fileDocument.setText(newContent)
+            }
+
+            withContext(Dispatchers.EDT) {
+                val moveToOffset = when (position) {
+                    ImpExColumnPosition.LEFT -> parameter.startOffset - 1
+                    ImpExColumnPosition.RIGHT -> parameter.endOffset + 1
+                }
+                editor.caretModel.currentCaret.moveToOffset(moveToOffset)
+                AutoPopupController.getInstance(project).scheduleAutoPopup(editor)
             }
         }
     }
 
-    private fun insertHeaderParam(project: Project, headerLine: ImpExHeaderLine, column: Int, position: ImpExColumnPosition): PsiElement? {
-        val current = headerLine.fullHeaderParameterList.getOrNull(column)
-            ?: return null
+    fun String.applyReplacements(replacements: List<Pair<IntRange, String>>): String {
+        if (replacements.isEmpty()) return this
 
-        return ImpExElementFactory.createParametersSeparator(project)
-            ?.let {
-                when (position) {
-                    ImpExColumnPosition.LEFT -> headerLine.addBefore(it, current)
-                    ImpExColumnPosition.RIGHT -> headerLine.addAfter(it, current)
-                }
-            }
+        val sorted = replacements.sortedBy { it.first.first }
+        val sb = StringBuilder(length)
+        var cursor = 0
+
+        for ((range, replacement) in sorted) {
+            sb.append(this, cursor, range.first)
+            sb.append(replacement)
+            cursor = range.last + 1
+        }
+
+        sb.append(this, cursor, length)
+        return sb.toString()
     }
-
-    private fun insertValueGroups(project: Project, valueLines: Collection<ImpExValueLine>, column: Int, position: ImpExColumnPosition) {
-        valueLines
-            .forEach {
-                val valueGroup = it.getValueGroup(column) ?: return@forEach
-                val newValueGroup = ImpExElementFactory.createValueGroup(project) ?: return@forEach
-
-                when (position) {
-                    ImpExColumnPosition.LEFT -> it.addBefore(newValueGroup, valueGroup)
-                    ImpExColumnPosition.RIGHT -> it.addAfter(newValueGroup, valueGroup)
-                }
-            }
-    }
-
 }

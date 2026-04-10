@@ -1,7 +1,7 @@
 ## [2026.0.8]
 
 <cite>Release contributors</cite>
-- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
+- 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3AStefanKruk+is%3Apr+)
 
 ### `Project Import` enhancements
@@ -12,6 +12,7 @@
 - Added references support for `AttributeDescriptor`.`qualifier` values cells [#1868](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1868)
 - Highlight and validate references to classes in the values cells [#1869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1869)
 - Improved performance for removing unnecessary elements via inspection rules [#1870](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1870)
+- Improved performance of inserting new columns [#1871](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1871)
 
 ### `CCv2` enhancements
 - Persist builds cleanup settings [#1866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1866)
