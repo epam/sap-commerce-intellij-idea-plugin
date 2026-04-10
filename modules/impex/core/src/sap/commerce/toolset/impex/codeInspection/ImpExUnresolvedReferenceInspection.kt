@@ -24,10 +24,7 @@ import com.intellij.psi.PsiElementVisitor
 import sap.commerce.toolset.codeInspection.verifyReferences
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.impex.psi.references.ImpExDocumentIdUsageReference
-import sap.commerce.toolset.impex.psi.references.ImpExValueTSAttributeReference
-import sap.commerce.toolset.impex.psi.references.ImpExValueTSClassifierReference
-import sap.commerce.toolset.impex.psi.references.ImpExValueTSStaticEnumReference
+import sap.commerce.toolset.impex.psi.references.*
 import sap.commerce.toolset.spring.psi.reference.SpringReference
 
 class ImpExUnresolvedReferenceInspection : LocalInspectionTool() {
@@ -54,6 +51,7 @@ class ImpExUnresolvedReferenceInspection : LocalInspectionTool() {
                 is ImpExValueTSStaticEnumReference -> "hybris.inspections.impex.unresolved.enumValue.key"
                 is ImpExValueTSClassifierReference -> "hybris.inspections.impex.unresolved.composedType.key"
                 is ImpExValueTSAttributeReference -> "hybris.inspections.impex.unresolved.attribute.key"
+                is ImpExJavaClassReference -> "hybris.inspections.impex.unresolved.class.key"
                 is ImpExDocumentIdUsageReference -> "hybris.inspections.impex.unresolved.docUsage.key"
                 else -> null
             }
@@ -65,6 +63,7 @@ class ImpExUnresolvedReferenceInspection : LocalInspectionTool() {
                 is ImpExValueTSStaticEnumReference -> "hybris.inspections.impex.unresolved.enumValue.key"
                 is ImpExValueTSClassifierReference -> "hybris.inspections.impex.unresolved.composedType.key"
                 is ImpExValueTSAttributeReference -> "hybris.inspections.impex.unresolved.attribute.key"
+                is ImpExJavaClassReference -> "hybris.inspections.impex.unresolved.class.key"
                 is ImpExDocumentIdUsageReference -> "hybris.inspections.impex.unresolved.docUsage.key"
                 is SpringReference -> "hybris.inspections.impex.unresolved.springBean.key"
                 else -> null
