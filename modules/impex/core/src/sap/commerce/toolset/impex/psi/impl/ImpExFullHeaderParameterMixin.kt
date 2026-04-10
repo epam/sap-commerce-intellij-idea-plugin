@@ -264,7 +264,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                          *
                          * To be injected into -> Address
                          */
-                        listOf(ImpExValueTSClassifierReference(targetElement, TextRange.create(0, textLength)))
+                        listOf(ImpExValueTSClassifierReference(targetElement, TextRange.create(0, targetElement.textLength)))
                     }
                 }
         }
