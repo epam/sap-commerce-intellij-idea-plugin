@@ -22,6 +22,8 @@ import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
 
 open class DeletePsiElementFix(
     private val myFamilyName: String,
@@ -34,7 +36,6 @@ open class DeletePsiElementFix(
     override fun getText() = myText
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        if (startElement != endElement) startElement.parent.deleteChildRange(startElement, endElement)
-        else startElement.delete()
+        file.fileDocument.replaceString(startElement.startOffset, endElement.endOffset, "")
     }
 }
