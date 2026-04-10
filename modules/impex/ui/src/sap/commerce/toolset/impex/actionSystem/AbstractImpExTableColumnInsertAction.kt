@@ -18,7 +18,6 @@
 package sap.commerce.toolset.impex.actionSystem
 
 import com.intellij.codeInsight.AutoPopupController
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
@@ -30,7 +29,6 @@ import com.intellij.psi.util.startOffset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
@@ -49,17 +47,16 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
         CoroutineScope(Dispatchers.Default).launch {
             val headerLine = readAction { headerParameter.headerLine }
                 ?: return@launch
-            val column = readAction { headerParameter.columnNumber }
-            val parameter = readAction { headerLine.fullHeaderParameterList.getOrNull(column) }
+            val columnIndex = readAction { headerParameter.columnNumber }
+            val parameter = readAction { headerLine.getFullHeaderParameter(columnIndex) }
                 ?: return@launch
             val file = readAction { headerParameter.containingFile }
-            val tableRange = readAction { headerLine.tableRange }
             val fileText = readAction { file.fileDocument.text }
 
             val replacements = buildList {
                 readAction { headerLine.valueLines }
                     .reversed()
-                    .mapNotNull { readAction { it.getValueGroup(column) } }
+                    .mapNotNull { readAction { it.getValueGroup(columnIndex) } }
                     .forEach { valueGroup ->
                         val valueGroupText = readAction { valueGroup.text }
                         val replacement = when (position) {
@@ -82,9 +79,7 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
 
             writeCommandAction(project, "ImpEx - Insert Column") {
                 file.fileDocument.setText(newContent)
-            }
 
-            withContext(Dispatchers.EDT) {
                 val moveToOffset = when (position) {
                     ImpExColumnPosition.LEFT -> parameter.startOffset - 1
                     ImpExColumnPosition.RIGHT -> parameter.endOffset + 1
@@ -93,22 +88,5 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
                 AutoPopupController.getInstance(project).scheduleAutoPopup(editor)
             }
         }
-    }
-
-    fun String.applyReplacements(replacements: List<Pair<IntRange, String>>): String {
-        if (replacements.isEmpty()) return this
-
-        val sorted = replacements.sortedBy { it.first.first }
-        val sb = StringBuilder(length)
-        var cursor = 0
-
-        for ((range, replacement) in sorted) {
-            sb.append(this, cursor, range.first)
-            sb.append(replacement)
-            cursor = range.last + 1
-        }
-
-        sb.append(this, cursor, length)
-        return sb.toString()
     }
 }

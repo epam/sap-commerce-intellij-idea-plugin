@@ -78,4 +78,12 @@ abstract class AbstractImpExTableAction : AnAction() {
             }
         })
     }
+
+    protected fun String.applyReplacements(replacements: List<Pair<IntRange, String>>): String = StringBuilder(this)
+        .apply {
+            replacements
+                .sortedByDescending { it.first.first }
+                .forEach { (range, replacement) -> replace(range.first, range.last, replacement) }
+        }
+        .toString()
 }
