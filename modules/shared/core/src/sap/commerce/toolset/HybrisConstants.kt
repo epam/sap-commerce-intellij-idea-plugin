@@ -129,8 +129,6 @@ object HybrisConstants {
     const val CLASS_FQN_UNIT_TEST = "de.hybris.bootstrap.annotations.UnitTest"
     const val CLASS_NAME_FLEXIBLE_SEARCH_QUERY = "FlexibleSearchQuery"
 
-    const val COMPILER_PARAMETER_PARAMETERS = "-parameters"
-
     val CLASS_FQN_IMPEX_TRANSLATORS = arrayOf(
         CLASS_FQN_IMPEX_SPECIAL_TRANSLATOR,
         CLASS_FQN_IMPEX_HEADER_TRANSLATOR,

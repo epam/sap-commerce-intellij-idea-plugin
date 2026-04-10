@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,7 +25,7 @@ import com.intellij.openapi.application.smartReadAction
 import com.intellij.util.asSafely
 import org.jetbrains.jps.model.java.compiler.JavaCompilers
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisConstants.COMPILER_PARAMETER_PARAMETERS
+import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ProjectImportWhenSmartConfigurator
 import sap.commerce.toolset.project.context.ProjectPostImportContext
@@ -50,12 +50,14 @@ class JavaCompilerConfigurator : ProjectImportWhenSmartConfigurator {
                 "modern" -> applyCompiler(compilerConfiguration, JavaCompilers.JAVAC_ID)
             }
 
-            compilerConfiguration.additionalOptions =
-                compilerConfiguration.additionalOptions
-                    .toMutableList()
-                    .apply {
-                        if (COMPILER_PARAMETER_PARAMETERS !in this) add(COMPILER_PARAMETER_PARAMETERS)
+            with(compilerConfiguration) {
+                if (!additionalOptions.contains(JavaConstants.COMPILER_PARAMETER_PARAMETERS)) {
+                    additionalOptions = buildList {
+                        addAll(additionalOptions)
+                        add(JavaConstants.COMPILER_PARAMETER_PARAMETERS)
                     }
+                }
+            }
         }
     }
 

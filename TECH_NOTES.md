@@ -15,6 +15,15 @@
 
 ## Technical Notes & How-To(s)
 
+### Pull requests categorizations and labels
+
+1. If pull request results into a need of the Project Refresh
+    1. Add `Project Refresh` label to the PR.
+    2. Update `ProjectImportConstants.MIN_REFRESH_API_VERSION` property to exact Plugin version.
+2. If code changes applied in the pull request are not backward compatible with the Project Refresh and full Project Reimport is required:
+   1. Add `Project Reimport` label to the PR.
+   2. Update `ProjectImportConstants.MIN_IMPORT_API_VERSION` property to exact Plugin version. 
+
 ### Enable specific feature only during development
 
 Rely on `sap.commerce.toolset.isSandbox` flag set via `build.gradle.kts # applyRunIdeSystemSettings`, which is available only on "SandBox" environments.
