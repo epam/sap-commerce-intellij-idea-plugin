@@ -21,13 +21,12 @@ import com.intellij.codeInsight.AutoPopupController
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.currentThreadCoroutineScope
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
@@ -44,14 +43,13 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
             else -> return
         }
 
-        CoroutineScope(Dispatchers.Default).launch {
+        currentThreadCoroutineScope().launch {
             val headerLine = readAction { headerParameter.headerLine }
                 ?: return@launch
             val columnIndex = readAction { headerParameter.columnNumber }
             val parameter = readAction { headerLine.getFullHeaderParameter(columnIndex) }
                 ?: return@launch
             val file = readAction { headerParameter.containingFile }
-            val fileText = readAction { file.fileDocument.text }
 
             val replacements = buildList {
                 readAction { headerLine.valueLines }
@@ -75,7 +73,8 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
 
                 add(parameter.startOffset..parameter.endOffset to parameterReplacement)
             }
-            val newContent = fileText.applyReplacements(replacements)
+            val newContent = readAction { file.fileDocument.text }
+                .applyReplacements(replacements)
 
             writeCommandAction(project, "ImpEx - Insert Column") {
                 file.fileDocument.setText(newContent)
