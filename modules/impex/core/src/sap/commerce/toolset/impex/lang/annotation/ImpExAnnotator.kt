@@ -122,6 +122,7 @@ class ImpExAnnotator : AbstractAnnotator() {
                         is ImpExValueTSClassifierReference,
                         is ImpExValueTSAttributeReference,
                         is ImpExDocumentIdUsageReference,
+                        is ImpExJavaClassReference,
                         is SpringReference -> holder.highlightReference(reference, ImpExHighlighterColors.VALUE_REFERENCE)
                     }
                 }
