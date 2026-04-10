@@ -17,18 +17,21 @@
  */
 package sap.commerce.toolset.impex.actionSystem
 
-import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
+import com.intellij.util.asSafely
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExHeaderLine
 import sap.commerce.toolset.impex.psi.ImpExValueGroup
-import sap.commerce.toolset.impex.psi.ImpExValueLine
-import java.util.*
 
 abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExColumnPosition) : AbstractImpExTableColumnAction() {
 
@@ -41,69 +44,81 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
             else -> return
         }
 
-        run(project, "Moving the '${headerParameter.text}' column ${direction.name.lowercase(Locale.ROOT)}") {
-            WriteCommandAction.runWriteCommandAction(project) {
-                PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
+        CoroutineScope(Dispatchers.Default).launch {
+            val headerLine = readAction { headerParameter.headerLine }
+                ?: return@launch
+            val firstColumnIndex = readAction { headerParameter.columnNumber }
+            val previousOffset = readAction { editor.caretModel.currentCaret.offset }
+            val secondColumnIndex = firstColumnIndex + direction.step
+            val file = readAction { headerParameter.containingFile }
+            val fileText = readAction { file.fileDocument.text }
+            val replacements = buildList {
+                readAction { headerLine.valueLines }
+                    .forEach { valueLine ->
+                        val firstValueGroup = readAction { valueLine.getValueGroup(firstColumnIndex) }
+                            ?: return@forEach
+                        val secondValueGroup = readAction { valueLine.getValueGroup(secondColumnIndex) }
+                            ?: return@forEach
 
-                    val headerLine = headerParameter.headerLine ?: return@disablePostprocessFormattingInside
-                    val column = headerParameter.columnNumber
+                        add(firstValueGroup.replacement(secondValueGroup))
+                        add(secondValueGroup.replacement(firstValueGroup))
+                    }
 
-                    val previousOffset = editor.caretModel.currentCaret.offset
-                    val previousElementStartOffset = element.startOffset
+                val firstParameter = readAction { headerLine.getFullHeaderParameter(firstColumnIndex) }
+                    ?: return@launch
+                val secondParameter = readAction { headerLine.getFullHeaderParameter(secondColumnIndex) }
+                    ?: return@launch
 
-                    var newElementAtCaret: PsiElement? = null
-                    moveHeaderParam(headerLine, column, direction)
-                        ?.let { newElementAtCaret = it }
-                    moveValueGroups(headerLine.valueLines, element, column, direction)
-                        ?.let { newElementAtCaret = it }
+                add(firstParameter.replacement(secondParameter, true))
+                add(secondParameter.replacement(firstParameter, true))
+            }
 
-                    newElementAtCaret
-                        ?.let {
-                            val caretOffsetInText = previousOffset - previousElementStartOffset
-                            editor.caretModel.currentCaret.moveToOffset(it.startOffset + caretOffsetInText)
-                        }
-                }
+            val newContent = fileText.applyReplacements(replacements)
+
+            writeCommandAction(project, "ImpEx - Move Column") {
+                file.fileDocument.setText(newContent)
+
+                val replacementTextLength = replacements
+                    .find { (range, _) -> previousOffset in range }
+                    ?.second
+                    ?.length
+                    // include ; length for header parameter
+                    ?.let { if (element is ImpExFullHeaderParameter) it + 1 else it }
+                    ?: 0
+
+                val moveToOffset = previousOffset + (replacementTextLength * direction.step)
+                editor.caretModel.currentCaret.moveToOffset(moveToOffset)
             }
         }
     }
 
-    private fun moveHeaderParam(headerLine: ImpExHeaderLine, column: Int, direction: ImpExColumnPosition): ImpExFullHeaderParameter? {
-        val newColumn = column + direction.step
-        val previous = headerLine.fullHeaderParameterList.getOrNull(newColumn)
-            ?: return null
-        val current = headerLine.fullHeaderParameterList.getOrNull(column)
-            ?: return null
+    private suspend fun PsiElement.replacement(
+        replacement: PsiElement,
+        withLeftSpaces: Boolean = false,
+    ): Pair<IntRange, String> = readAction {
+        val leftSpaces = if (withLeftSpaces) replacement.prevSibling
+            ?.asSafely<PsiWhiteSpace>()
+            ?.textLength
+            ?: 0
+        else 0
+        val rightSpaces = replacement.nextSibling
+            ?.asSafely<PsiWhiteSpace>()
+            ?.textLength
+            ?: 0
 
-        replacePsiElement(previous, current)
+        val replaceWith = " ".repeat(leftSpaces) + replacement.text + " ".repeat(rightSpaces)
 
-        return headerLine.fullHeaderParameterList.getOrNull(newColumn)
+        val actualStartOffset = if (withLeftSpaces) this.prevSibling
+            ?.asSafely<PsiWhiteSpace>()
+            ?.startOffset
+            ?: startOffset
+        else startOffset
+
+        val actualEndOffset = this.nextSibling
+            ?.asSafely<PsiWhiteSpace>()
+            ?.endOffset
+            ?: endOffset
+
+        actualStartOffset..actualEndOffset to replaceWith
     }
-
-    private fun moveValueGroups(valueLines: Collection<ImpExValueLine>, elementAtCaret: PsiElement, column: Int, direction: ImpExColumnPosition): PsiElement? {
-        val newColumn = column + direction.step
-        var newElementAtCaret: PsiElement? = null
-        valueLines.forEach {
-            val first = it.getValueGroup(newColumn)
-            val second = it.getValueGroup(column)
-
-            if (first != null && second != null) {
-                replacePsiElement(first, second)
-
-                if (first == elementAtCaret || second == elementAtCaret) {
-                    newElementAtCaret = it.getValueGroup(newColumn)
-                }
-            }
-        }
-        return newElementAtCaret
-    }
-
-    private fun replacePsiElement(first: PsiElement, second: PsiElement) {
-        val firstCopy = first.copy()
-        val secondCopy = second.copy()
-
-        first.replace(secondCopy)
-        second.replace(firstCopy)
-    }
-
 }
-
