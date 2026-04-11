@@ -21,6 +21,7 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
+import sap.commerce.toolset.gradle.api.FetchPRsGradleTask
 import java.nio.file.Files
 
 fun properties(key: String) = providers.gradleProperty(key)
@@ -154,8 +155,20 @@ tasks {
             ?.let { Files.writeString(it.resolve("CHANGELOG.md"), changeNotes) }
     }
 
+    val fetchPRs by registering(FetchPRsGradleTask::class) {
+        repository.set("epam/sap-commerce-intellij-idea-plugin")
+        targetLabels.set(listOf("Project Refresh", "Project Reimport"))
+        branch.set("main")
+        outputFile.set(file("resources/prs.json"))
+        metadataFile.set(file("build/.pr-fetch-metadata.json"))
+    }
+
     patchPluginXml {
         dependsOn(copyChangelog)
+    }
+
+    buildPlugin {
+        dependsOn(fetchPRs)
     }
 
     wrapper {

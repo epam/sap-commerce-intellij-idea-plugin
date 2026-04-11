@@ -53,7 +53,7 @@
         </action>
         <action id="hybris.impex.openSettings" class="sap.commerce.toolset.impex.actionSystem.ImpExOpenSettingsAction"/>
         <action id="hybris.impex.validate" class="sap.commerce.toolset.impex.actionSystem.ImpExValidateAction">
-            <keyboard-shortcut first-keystroke="control alt V" keymap="$default"/>
+            <keyboard-shortcut first-keystroke="control shift alt V" keymap="$default"/>
         </action>
         <action id="hybris.impex.import" class="sap.commerce.toolset.impex.actionSystem.ImpExExecuteAction">
             <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>

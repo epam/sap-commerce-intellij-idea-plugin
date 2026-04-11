@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,16 +18,15 @@
 
 package sap.commerce.toolset.startup
 
-import com.intellij.notification.NotificationType
+import com.google.gson.Gson
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.util.text.VersionComparatorUtil
-import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.actionSystem.triggerAction
-import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
@@ -40,31 +39,66 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         if (!isHybrisProject) return
         val importedByVersion = WorkspaceSettings.getInstance(project).importedByVersion
 
-        if (isOutdatedHybrisProject(importedByVersion)) {
-            Notifications.create(
-                NotificationType.INFORMATION,
-                i18n("hybris.notification.project.open.outdated.title"),
-                i18n(
-                    "hybris.notification.project.open.outdated.text",
-                    importedByVersion ?: "old"
-                )
-            )
-                .important(true)
-                .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> project.triggerAction("sap.commerce.toolset.yRefresh") }
-                .notify(project)
+        when (val projectImportStatus = getProjectImportStatus(importedByVersion)) {
+            is ProjectImportStatus.Normal -> {
+                logVersion(project, importedByVersion)
+                continueOpening(project)
+            }
+
+            is ProjectImportStatus.Refresh -> {
+                val map = projectImportStatus.pullRequests
+                    .joinToString("\n") { it.milestone + " | " + it.title + " | " + it.author }
+                MessageDialogBuilder.yesNo("Refresh", map)
+            }
+
+            is ProjectImportStatus.Reimport -> {
+                val map = projectImportStatus.pullRequests
+                    .joinToString("\n") { it.milestone + " | " + it.title + " | " + it.author }
+                MessageDialogBuilder.yesNo("Reimport", map)
+            }
         }
 
-        logVersion(project, importedByVersion)
-        continueOpening(project)
+//        if (isOutdatedHybrisProject(importedByVersion)) {
+//            Notifications.create(
+//                NotificationType.INFORMATION,
+//                i18n("hybris.notification.project.open.outdated.title"),
+//                i18n(
+//                    "hybris.notification.project.open.outdated.text",
+//                    importedByVersion ?: "old"
+//                )
+//            )
+//                .important(true)
+//                .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> project.triggerAction("sap.commerce.toolset.yRefresh") }
+//                .notify(project)
+//        }
+//
+//        logVersion(project, importedByVersion)
+//        continueOpening(project)
     }
 
-    fun isOutdatedHybrisProject(importedByVersion: String?): Boolean {
-        val lastImportVersion = importedByVersion ?: return true
+    private sealed class ProjectImportStatus {
+        data object Normal : ProjectImportStatus()
+        data class Reimport(val pullRequests: List<PullRequest> = emptyList()) : ProjectImportStatus()
+        data class Refresh(val pullRequests: List<PullRequest>) : ProjectImportStatus()
+    }
+
+    private fun getProjectImportStatus(importedByVersion: String?): ProjectImportStatus {
+        val lastImportVersion = importedByVersion ?: return ProjectImportStatus.Reimport()
         val currentVersion = Plugin.HYBRIS.pluginDescriptor
             ?.version
-            ?: return true
+            ?: return ProjectImportStatus.Reimport()
 
-        return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
+        val prs = this.javaClass.getResourceAsStream("/prs.json").use { stream ->
+            Gson().fromJson(stream?.bufferedReader(), PRData::class.java)
+        }
+            .pullRequests
+            .filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
+            .flatMap { pr -> pr.labels.map { label -> label to pr } }
+            .groupBy({ it.first }, { it.second })
+
+        return prs[ProjectImportConstants.PR_LABEL_PROJECT_REIMPORT]?.let { ProjectImportStatus.Reimport(it) }
+            ?: prs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH]?.let { ProjectImportStatus.Refresh(it) }
+            ?: ProjectImportStatus.Normal
     }
 
     private fun logVersion(project: Project, importedByVersion: String?) {
@@ -80,5 +114,17 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 
         ProjectStartupConfigurator.EP.extensionList.forEach { it.configure(project) }
     }
+
+    data class PullRequest(
+        val title: String,
+        val number: Int,
+        val author: String,
+        val milestone: String,
+        val labels: List<String>
+    )
+
+    data class PRData(
+        val pullRequests: List<PullRequest>
+    )
 
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,6 +30,7 @@ import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
+import sap.commerce.toolset.spring.SpringFallbackScope
 import sap.commerce.toolset.spring.SpringHelper
 
 class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
@@ -62,7 +63,7 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
             ?.takeIf { it.isEnabled(project, vf) }
             ?: return
 
-        val resolveBeanClass = SpringHelper.resolveBeanClass(place, name) ?: return
+        val resolveBeanClass = SpringHelper.resolveBeanClass(place, name, fallback = SpringFallbackScope.CUSTOM_MODULES) ?: return
         val fqn = resolveBeanClass.qualifiedName ?: return
 
         val declaration = GrLightField(resolveBeanClass, name, fqn)

@@ -44,3 +44,4 @@
 jflex-*.jar
 
 resources/CHANGELOG.md
+resources/prs.json
