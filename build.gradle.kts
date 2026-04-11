@@ -157,7 +157,7 @@ tasks {
 
     val fetchPRs by registering(FetchPRsGradleTask::class) {
         repository.set("epam/sap-commerce-intellij-idea-plugin")
-        targetLabels.set(listOf("Project Refresh", "Project Reimport"))
+        targetLabels.set(listOf("Requires - Project Refresh", "Requires - Project Reimport"))
         branch.set("main")
         outputFile.set(file("resources/prs.json"))
         metadataFile.set(file("build/.pr-fetch-metadata.json"))

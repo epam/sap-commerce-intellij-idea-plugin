@@ -19,11 +19,14 @@
 package sap.commerce.toolset.startup
 
 import com.google.gson.Gson
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.util.text.VersionComparatorUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectImportConstants
@@ -48,13 +51,17 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             is ProjectImportStatus.Refresh -> {
                 val map = projectImportStatus.pullRequests
                     .joinToString("\n") { it.milestone + " | " + it.title + " | " + it.author }
-                MessageDialogBuilder.yesNo("Refresh", map)
+                withContext(Dispatchers.EDT) {
+                    MessageDialogBuilder.yesNo("Refresh", map)
+                        .ask(project)
+                }
             }
 
             is ProjectImportStatus.Reimport -> {
                 val map = projectImportStatus.pullRequests
                     .joinToString("\n") { it.milestone + " | " + it.title + " | " + it.author }
                 MessageDialogBuilder.yesNo("Reimport", map)
+                    .ask(project)
             }
         }
 

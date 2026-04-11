@@ -24,7 +24,10 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -75,15 +78,17 @@ abstract class FetchPRsGradleTask : DefaultTask() {
         if (token == null) {
             throw RuntimeException(
                 """
-                GITHUB_TOKEN required. Set via environment or task configuration. Create new simple GitHub Token with the permissions to public repositories.
+            GITHUB_TOKEN required. Set via environment or task configuration. Create new simple GitHub Token with the permissions to public repositories.
 
-                To enforce project re-import / refresh it is expected to fetch PRs with labels "Project Refresh" or "Project Reimport".
-                Analyze via HybrisProjectStructureStartupActivity and decide which action to be displayed to an end-user.
- 
-                This setting is mandatory for anyone build the plugin via `buildPlugin` task.
-                """.trimIndent()
+            To enforce project re-import / refresh it is expected to fetch PRs with labels "Requires - Project Refresh" or "Requires - Project Reimport".
+            Analyze via HybrisProjectStructureStartupActivity and decide which action to be displayed to an end-user.
+
+            This setting is mandatory for anyone build the plugin via `buildPlugin` task.
+            """.trimIndent()
             )
         }
+
+        logger.lifecycle("Fetching import/refresh related PRs from the remote: $repo | ${branch.get()}")
 
         // Get latest commit SHA
         val commitRequest = HttpRequest.newBuilder()
@@ -98,16 +103,15 @@ abstract class FetchPRsGradleTask : DefaultTask() {
             throw RuntimeException("Failed to fetch commit: ${commitResponse.statusCode()}")
         }
 
-        val commitData = gson.fromJson(commitResponse.body(), Map::class.java)
-        val latestCommit = commitData["sha"] as String
+        val commitData = gson.fromJson(commitResponse.body(), CommitResponse::class.java)
+        val latestCommit = commitData.sha
 
         // Check if already fetched for this commit
         val metadata = metadataFile.get().asFile
         val output = outputFile.get().asFile
 
         val cachedCommit = if (metadata.exists()) {
-            val meta = gson.fromJson(metadata.readText(), Map::class.java)
-            meta["lastCommit"] as? String
+            gson.fromJson(metadata.readText(), Metadata::class.java).lastCommit
         } else null
 
         if (cachedCommit == latestCommit && output.exists()) {
@@ -118,30 +122,95 @@ abstract class FetchPRsGradleTask : DefaultTask() {
 
         logger.lifecycle("New commit detected: ${latestCommit.take(7)}")
 
-        // GraphQL query
+        // Fetch all PRs in parallel batches
+        val allNodes = mutableListOf<PRNode>()
+        var endCursor: String? = null
+        var hasNextPage = true
+        val batchSize = 3 // Fetch 3 pages in parallel
+
+        while (hasNextPage) {
+            val cursors = mutableListOf<String?>()
+            cursors.add(endCursor)
+
+            // Prefetch next cursors for parallel requests
+            val futures = cursors.map { cursor ->
+                java.util.concurrent.CompletableFuture.supplyAsync {
+                    fetchPage(client, gson, owner, repoName, token, cursor)
+                }
+            }
+
+            val results = futures.map { it.get() }
+
+            results.forEach { result ->
+                allNodes.addAll(result.nodes)
+            }
+
+            val lastResult = results.last()
+            hasNextPage = lastResult.pageInfo.hasNextPage
+            endCursor = lastResult.pageInfo.endCursor
+
+            logger.lifecycle("Fetched ${allNodes.size} PRs so far...")
+        }
+
+        val filteredPRs = allNodes
+            .filter { pr -> pr.labels.nodes.any { it.name in labels } }
+            .map { pr ->
+                PullRequest(
+                    title = pr.title,
+                    number = pr.number,
+                    author = pr.author?.login,
+                    milestone = pr.milestone?.title,
+                    labels = pr.labels.nodes.map { it.name }
+                )
+            }
+
+        output.parentFile.mkdirs()
+        output.writeText(gson.toJson(PRData(filteredPRs)))
+
+        metadata.parentFile.mkdirs()
+        metadata.writeText(gson.toJson(Metadata(latestCommit, filteredPRs.size)))
+
+        logger.lifecycle("Fetched ${filteredPRs.size} PRs")
+        logger.lifecycle("Output: ${output.absolutePath}")
+    }
+
+    private fun fetchPage(
+        client: HttpClient,
+        gson: Gson,
+        owner: String,
+        repoName: String,
+        token: String,
+        cursor: String?
+    ): PullRequestsPage {
+        val afterClause = cursor?.let { """, after: "$it"""" } ?: ""
+
         val query = """
-            query {
-              repository(owner: "$owner", name: "$repoName") {
-                pullRequests(first: 100, states: [OPEN, CLOSED, MERGED], orderBy: {field: UPDATED_AT, direction: DESC}) {
+        query {
+          repository(owner: "$owner", name: "$repoName") {
+            pullRequests(first: 100$afterClause, labels: ["Requires - Project Refresh","Requires - Project Reimport"], states: [CLOSED, MERGED], orderBy: {field: UPDATED_AT, direction: DESC}) {
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
+              nodes {
+                title
+                number
+                author {
+                  login
+                }
+                milestone {
+                  title
+                }
+                labels(first: 20) {
                   nodes {
-                    title
-                    number
-                    author {
-                      login
-                    }
-                    milestone {
-                      title
-                    }
-                    labels(first: 20) {
-                      nodes {
-                        name
-                      }
-                    }
+                    name
                   }
                 }
               }
             }
-        """.trimIndent()
+          }
+        }
+    """.trimIndent()
 
         val graphqlRequest = HttpRequest.newBuilder()
             .uri(URI.create("https://api.github.com/graphql"))
@@ -156,44 +225,52 @@ abstract class FetchPRsGradleTask : DefaultTask() {
             throw RuntimeException("GraphQL API failed: ${graphqlResponse.statusCode()} - ${graphqlResponse.body()}")
         }
 
-        val result = gson.fromJson(graphqlResponse.body(), Map::class.java)
-        val data = result["data"] as? Map<String, Any>
-        val repoData = data?.get("repository") as? Map<String, Any>
-        val pullRequests = repoData?.get("pullRequests") as? Map<String, Any>
-        val nodes = pullRequests?.get("nodes") as? List<Map<String, Any>> ?: emptyList()
-
-        val filteredPRs = nodes.mapNotNull { pr ->
-            val prLabels = (pr["labels"] as? Map<String, Any>)?.get("nodes") as? List<Map<String, Any>>
-            val labelNames = prLabels?.map { it["name"] as String } ?: emptyList()
-
-            if (labelNames.any { it in labels }) {
-                val author = pr["author"] as? Map<String, Any>
-                val milestone = pr["milestone"] as? Map<String, Any>
-
-                mapOf(
-                    "title" to pr["title"],
-                    "number" to (pr["number"] as Double).toInt(),
-                    "author" to author?.get("login"),
-                    "milestone" to milestone?.get("title"),
-                    "labels" to labelNames
-                )
-            } else null
-        }
-
-        output.parentFile.mkdirs()
-        output.writeText(gson.toJson(mapOf("pullRequests" to filteredPRs)))
-
-        metadata.parentFile.mkdirs()
-        metadata.writeText(
-            gson.toJson(
-                mapOf(
-                    "lastCommit" to latestCommit,
-                    "totalPRs" to filteredPRs.size
-                )
-            )
+        val result = gson.fromJson(graphqlResponse.body(), GraphQLResponse::class.java)
+        return PullRequestsPage(
+            result.data.repository.pullRequests.pageInfo,
+            result.data.repository.pullRequests.nodes
         )
-
-        logger.lifecycle("Fetched ${filteredPRs.size} PRs")
-        logger.lifecycle("Output: ${output.absolutePath}")
     }
+
+    data class PullRequestsPage(
+        val pageInfo: PageInfo,
+        val nodes: List<PRNode>
+    )
+
+    // Response models
+    data class CommitResponse(val sha: String)
+
+    data class GraphQLResponse(val data: Data)
+    data class Data(val repository: Repository)
+    data class Repository(val pullRequests: PullRequests)
+    data class PullRequests(
+        val pageInfo: PageInfo,
+        val nodes: List<PRNode>
+    )
+    data class PageInfo(
+        val hasNextPage: Boolean,
+        val endCursor: String?
+    )
+    data class PRNode(
+        val title: String,
+        val number: Int,
+        val author: Author?,
+        val milestone: Milestone?,
+        val labels: Labels
+    )
+    data class Author(val login: String)
+    data class Milestone(val title: String)
+    data class Labels(val nodes: List<Label>)
+    data class Label(val name: String)
+
+    // Output models
+    data class PullRequest(
+        val title: String,
+        val number: Int,
+        val author: String?,
+        val milestone: String?,
+        val labels: List<String>
+    )
+    data class PRData(val pullRequests: List<PullRequest>)
+    data class Metadata(val lastCommit: String, val totalPRs: Int)
 }

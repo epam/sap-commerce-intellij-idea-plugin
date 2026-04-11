@@ -24,8 +24,8 @@ object ProjectImportConstants {
     const val HYBRIS_VERSION_KEY = "version"
     const val MIN_IMPORT_API_VERSION = "2025.3.1"
 
-    const val PR_LABEL_PROJECT_REFRESH = "Project Refresh"
-    const val PR_LABEL_PROJECT_REIMPORT = "Project Reimport"
+    const val PR_LABEL_PROJECT_REFRESH = "Requires - Project Refresh"
+    const val PR_LABEL_PROJECT_REIMPORT = "Requires - Project Reimport"
 
     val excludedFromScanningDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)
