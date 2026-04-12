@@ -31,12 +31,14 @@ sealed class ProjectState {
     data class Reimport(
         val projectDirectory: VirtualFile,
         val importedByVersion: String,
+        val currentVersion: String,
         val reimportRequests: List<PullRequest> = emptyList(),
         val refreshRequests: List<PullRequest> = emptyList(),
     ) : ProjectState()
 
     data class Refresh(
         val importedByVersion: String,
+        val currentVersion: String,
         val refreshRequests: List<PullRequest>,
     ) : ProjectState()
 

@@ -45,10 +45,17 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         if (project.isDisposed) return
         val isHybrisProject = project.isHybrisProject
         if (!isHybrisProject) return
-        val importedByVersion = WorkspaceSettings.getInstance(project).importedByVersion
+        val currentVersion = Plugin.HYBRIS.pluginDescriptor?.version ?: return
+        val workspaceSettings = WorkspaceSettings.getInstance(project)
+        val importedByVersion = workspaceSettings.importedByVersion
         logVersion(project, importedByVersion)
 
-        val continueOpening = when (val projectState = getProjectState(project, importedByVersion)) {
+        if (workspaceSettings.doNotAskForProjectImport[currentVersion] ?: false) {
+            continueOpening(project)
+            return
+        }
+
+        val continueOpening = when (val projectState = getProjectState(project, importedByVersion, currentVersion)) {
             is ProjectState.Normal -> true
 
             is ProjectState.Refresh -> withContext(Dispatchers.EDT) {
@@ -75,7 +82,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         }
     }
 
-    private fun getProjectState(project: Project, importedByVersion: String?): ProjectState? {
+    private fun getProjectState(project: Project, importedByVersion: String?, currentVersion: String): ProjectState? {
         val projectDirectory = project.path
             ?.let { path -> VfsUtil.findFile(path, true) }
             ?: return null
@@ -86,27 +93,19 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         val prs = resourceAsStream.use { stream ->
             Gson().fromJson(stream.bufferedReader(), ProjectState.PRData::class.java)
         }.pullRequests
-        val currentVersion = Plugin.HYBRIS.pluginDescriptor?.version
 
-        val filteredPRs = if (currentVersion != null) prs
-            .filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
-        else prs
+        val filteredPRs = prs.filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
 
         val groupedPRs = filteredPRs
             .flatMap { pr -> pr.labels.map { label -> label to pr } }
             .groupBy({ it.first }, { it.second })
-
-        if (currentVersion == null) return ProjectState.Reimport(
-            projectDirectory = projectDirectory,
-            importedByVersion = importedByVersion,
-            reimportRequests = groupedPRs.values.flatten()
-        )
 
         return groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REIMPORT]
             ?.let {
                 ProjectState.Reimport(
                     projectDirectory = projectDirectory,
                     importedByVersion = importedByVersion,
+                    currentVersion = currentVersion,
                     reimportRequests = it,
                     refreshRequests = groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH] ?: emptyList()
                 )
@@ -114,6 +113,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             ?: groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH]?.let {
                 ProjectState.Refresh(
                     importedByVersion = importedByVersion,
+                    currentVersion = currentVersion,
                     refreshRequests = it
                 )
             }

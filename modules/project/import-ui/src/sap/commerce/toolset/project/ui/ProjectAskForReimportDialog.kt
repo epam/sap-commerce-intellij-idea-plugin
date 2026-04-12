@@ -25,6 +25,7 @@ import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
@@ -37,6 +38,7 @@ import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.project.ProjectState
+import sap.commerce.toolset.settings.WorkspaceSettings
 import sap.commerce.toolset.ui.banner
 import sap.commerce.toolset.ui.browserLink
 import java.awt.Dimension
@@ -54,8 +56,18 @@ class ProjectAskForReimportDialog(
         private val serialVersionUID: Long = -1963011685030505631L
 
         override fun doAction(e: ActionEvent) {
-            // TODO: save skip flag
-            this@ProjectAskForReimportDialog.close(CLOSE_EXIT_CODE)
+            val decision = MessageDialogBuilder.yesNo(
+                title = "Ignore Project Reimport",
+                message = "Do not show this dialog again for the plugin '${projectState.currentVersion}' version. It may appear again after updating the plugin.",
+                icon = HybrisIcons.Project.REFRESH,
+            ).ask(project)
+
+            if (decision) with(WorkspaceSettings.getInstance(project)) {
+                doNotAskForProjectImport = doNotAskForProjectImport.toMutableMap()
+                    .apply { put(projectState.currentVersion, true) }
+
+                this@ProjectAskForReimportDialog.close(CLOSE_EXIT_CODE)
+            }
         }
     }
 
