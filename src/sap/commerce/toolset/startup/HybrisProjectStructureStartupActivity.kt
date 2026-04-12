@@ -23,15 +23,17 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.util.text.VersionComparatorUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectImportConstants
+import sap.commerce.toolset.project.ProjectState
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.ui.ProjectAskForRefreshDialog
+import sap.commerce.toolset.project.ui.ProjectAskForReimportDialog
 import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisProjectStructureStartupActivity : ProjectActivity {
@@ -41,28 +43,22 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         val isHybrisProject = project.isHybrisProject
         if (!isHybrisProject) return
         val importedByVersion = WorkspaceSettings.getInstance(project).importedByVersion
+        logVersion(project, importedByVersion)
 
-        when (val projectImportStatus = getProjectImportStatus(importedByVersion)) {
-            is ProjectImportStatus.Normal -> {
-                logVersion(project, importedByVersion)
-                continueOpening(project)
+        val continueOpening = when (val projectState = getProjectState(importedByVersion)) {
+            is ProjectState.Normal -> true
+
+            is ProjectState.Refresh -> withContext(Dispatchers.EDT) {
+                !ProjectAskForRefreshDialog(project, projectState).showAndGet()
             }
 
-            is ProjectImportStatus.Refresh -> {
-                val map = projectImportStatus.pullRequests
-                    .joinToString("\n") { it.milestone + " | " + it.title + " | " + it.author }
-                withContext(Dispatchers.EDT) {
-                    MessageDialogBuilder.yesNo("Refresh", map)
-                        .ask(project)
-                }
+            is ProjectState.Reimport -> withContext(Dispatchers.EDT) {
+                !ProjectAskForReimportDialog(project, projectState).showAndGet()
             }
+        }
 
-            is ProjectImportStatus.Reimport -> {
-                val map = projectImportStatus.pullRequests
-                    .joinToString("\n") { it.milestone + " | " + it.title + " | " + it.author }
-                MessageDialogBuilder.yesNo("Reimport", map)
-                    .ask(project)
-            }
+        if (continueOpening) {
+            continueOpening(project)
         }
 
 //        if (isOutdatedHybrisProject(importedByVersion)) {
@@ -83,29 +79,23 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 //        continueOpening(project)
     }
 
-    private sealed class ProjectImportStatus {
-        data object Normal : ProjectImportStatus()
-        data class Reimport(val pullRequests: List<PullRequest> = emptyList()) : ProjectImportStatus()
-        data class Refresh(val pullRequests: List<PullRequest>) : ProjectImportStatus()
-    }
-
-    private fun getProjectImportStatus(importedByVersion: String?): ProjectImportStatus {
-        val lastImportVersion = importedByVersion ?: return ProjectImportStatus.Reimport()
+    private fun getProjectState(importedByVersion: String?): ProjectState {
+        val lastImportVersion = importedByVersion ?: return ProjectState.Reimport()
         val currentVersion = Plugin.HYBRIS.pluginDescriptor
             ?.version
-            ?: return ProjectImportStatus.Reimport()
+            ?: return ProjectState.Reimport()
 
         val prs = this.javaClass.getResourceAsStream("/prs.json").use { stream ->
-            Gson().fromJson(stream?.bufferedReader(), PRData::class.java)
+            Gson().fromJson(stream?.bufferedReader(), ProjectState.PRData::class.java)
         }
             .pullRequests
             .filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
             .flatMap { pr -> pr.labels.map { label -> label to pr } }
             .groupBy({ it.first }, { it.second })
 
-        return prs[ProjectImportConstants.PR_LABEL_PROJECT_REIMPORT]?.let { ProjectImportStatus.Reimport(it) }
-            ?: prs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH]?.let { ProjectImportStatus.Refresh(it) }
-            ?: ProjectImportStatus.Normal
+        return prs[ProjectImportConstants.PR_LABEL_PROJECT_REIMPORT]?.let { ProjectState.Reimport(it) }
+            ?: prs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH]?.let { ProjectState.Refresh(it) }
+            ?: ProjectState.Normal
     }
 
     private fun logVersion(project: Project, importedByVersion: String?) {
@@ -121,17 +111,4 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 
         ProjectStartupConfigurator.EP.extensionList.forEach { it.configure(project) }
     }
-
-    data class PullRequest(
-        val title: String,
-        val number: Int,
-        val author: String,
-        val milestone: String,
-        val labels: List<String>
-    )
-
-    data class PRData(
-        val pullRequests: List<PullRequest>
-    )
-
 }

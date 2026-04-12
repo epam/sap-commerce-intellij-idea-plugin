@@ -164,12 +164,20 @@ tasks {
         metadataFile.set(file("build/.pr-fetch-metadata.json"))
     }
 
+    val validateGitHubToken by registering {
+        if (System.getenv("GITHUB_TOKEN") == null) throw GradleException("GITHUB_TOKEN is not set")
+    }
+
     patchPluginXml {
         dependsOn(copyChangelog)
     }
 
-    buildPlugin {
+    processResources {
         dependsOn(fetchPRs)
+    }
+
+    buildPlugin {
+        dependsOn(validateGitHubToken)
     }
 
     wrapper {

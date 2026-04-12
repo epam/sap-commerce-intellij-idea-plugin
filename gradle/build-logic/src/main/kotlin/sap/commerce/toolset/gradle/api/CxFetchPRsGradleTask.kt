@@ -74,8 +74,11 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
         val repo = repository.get()
         val labels = targetLabels.get()
         val (owner, repoName) = repo.split("/")
-        val token = githubToken.orNull ?: throw RuntimeException(
-            """
+        val token = githubToken.orNull
+
+        if (token == null) {
+            logger.lifecycle(
+                """
                 GITHUB_TOKEN required. Set via environment or task configuration. Create new simple GitHub Token with the permissions to public repositories.
     
                 To enforce project re-import / refresh it is expected to fetch PRs with labels: ${labels.joinToString()}.
@@ -83,7 +86,9 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
     
                 This setting is mandatory for anyone build the plugin via `buildPlugin` task.
                 """.trimIndent()
-        )
+            )
+            return
+        }
 
         logger.lifecycle("Fetching import/refresh related PRs from the remote: $repo | ${branch.get()}")
 
