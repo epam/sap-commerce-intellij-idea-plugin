@@ -24,15 +24,15 @@ import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.configureProjectLibrary
+import sap.commerce.toolset.java.configurator.library.util.sourceCode
 import sap.commerce.toolset.java.configurator.library.util.sources
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.ProjectLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
+import sap.commerce.toolset.project.fromPath
 import sap.commerce.toolset.util.directoryExists
-import sap.commerce.toolset.util.fileExists
 import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.pathString
 
 class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
 
@@ -57,11 +57,6 @@ class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
         )
     }
 
-    private fun ProjectImportContext.sourceCode(virtualFileUrlManager: VirtualFileUrlManager) = this.sourceCodeFile
-        ?.takeIf { it.fileExists }
-        ?.let { virtualFileUrlManager.fromPath(it.pathString) }
-        ?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
-
     private fun PlatformModuleDescriptor.libraryDirectories(virtualFileUrlManager: VirtualFileUrlManager) = buildList {
         val moduleRootPath = this@libraryDirectories.moduleRootPath
 
@@ -81,6 +76,6 @@ class PlatformBootstrapProjectLibraryConfigurator : ProjectLibraryConfigurator {
         add(moduleRootPath.resolve(ProjectConstants.Paths.TOMCAT_6_LIB))
     }
         .filter { it.directoryExists }
-        .map { virtualFileUrlManager.fromPath(it.pathString) }
+        .mapNotNull { virtualFileUrlManager.fromPath(it) }
         .map { LibraryRoot(it, LibraryRootTypeId.COMPILED, LibraryRoot.InclusionOptions.ARCHIVES_UNDER_ROOT) }
 }

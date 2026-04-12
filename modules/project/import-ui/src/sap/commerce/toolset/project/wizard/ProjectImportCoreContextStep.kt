@@ -200,7 +200,13 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 ?.takeIf { it.isNotBlank() }
                 ?: projectSettings.javadocUrl
             this.sourceCodePath = projectSettings.sourceCodePath?.toNioPathOrNull()
-            this.sourceCodeFile = this.sourceCodePath?.findSourceCodeFile(platformVersion, platformApiVersion)
+            this.sourceCodeFile = this.sourceCodePath?.let { path ->
+                when {
+                    path.fileExists -> path // Already a file (zip)
+                    path.directoryExists -> path.findSourceCodeFile(platformVersion, platformApiVersion) // Directory, search for zip
+                    else -> null
+                }
+            }
 
             this.externalExtensionsDirectory = projectSettings.externalExtensionsDirectory?.toNioPathOrNull()
             this.externalConfigDirectory = projectSettings.externalConfigDirectory?.toNioPathOrNull()

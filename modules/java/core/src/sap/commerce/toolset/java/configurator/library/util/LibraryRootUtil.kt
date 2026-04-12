@@ -25,6 +25,7 @@ import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
 import sap.commerce.toolset.project.fromJar
@@ -35,6 +36,7 @@ import kotlin.io.path.Path
 import kotlin.io.path.extension
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
+import kotlin.io.path.pathString
 
 fun ModuleDescriptor.lib(virtualFileUrlManager: VirtualFileUrlManager) = this.compiledArchives(
     virtualFileUrlManager, Path(ProjectConstants.Directory.LIB)
@@ -137,3 +139,14 @@ private fun ModuleDescriptor.libraryRoots(
     .mapNotNull { virtualFileUrlManager.fromPath(moduleRootPath.resolve(it)) }
     .map { LibraryRoot(it, type, inclusionOptions) }
 
+fun ProjectImportContext.sourceCode(virtualFileUrlManager: VirtualFileUrlManager): LibraryRoot? {
+    // Scenario 1: ZIP file selected - sourceCodeFile is set
+    // Scenario 2: Directory selected - only sourceCodePath is set
+    val path = sourceCodeFile ?: sourceCodePath ?: return null
+
+    return when {
+        path.extension == "zip" -> virtualFileUrlManager.fromJar(path)
+        path.directoryExists -> virtualFileUrlManager.fromPath(path)
+        else -> null
+    }?.let { LibraryRoot(it, LibraryRootTypeId.SOURCES) }
+}
