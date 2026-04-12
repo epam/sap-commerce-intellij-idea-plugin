@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,9 @@ object ProjectImportConstants {
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
     const val MIN_IMPORT_API_VERSION = "2025.3.1"
+
+    const val PR_LABEL_PROJECT_REFRESH = "Requires - Project Refresh"
+    const val PR_LABEL_PROJECT_REIMPORT = "Requires - Project Reimport"
 
     val excludedFromScanningDirectories = buildSet {
         add(ProjectConstants.Directory.DATA)

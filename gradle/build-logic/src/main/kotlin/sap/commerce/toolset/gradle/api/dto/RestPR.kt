@@ -16,14 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.gradle.api.dto
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
-
-@Tag("HybrisProjectSettings")
-data class WorkspaceSettingsState(
-    @JvmField @OptionTag val hybrisProject: Boolean = false,
-    @JvmField @OptionTag val importedByVersion: String? = null,
-    @JvmField @OptionTag val doNotAskForProjectImport: Map<String, Boolean> = emptyMap(),
+data class RestPR(
+    val title: String,
+    val number: Int,
+    val user: Author?,
+    val milestone: Milestone?,
+    val labels: List<Label>
 )

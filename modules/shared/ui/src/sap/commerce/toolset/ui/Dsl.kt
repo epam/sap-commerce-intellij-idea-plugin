@@ -36,6 +36,7 @@ import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.*
 import com.intellij.ui.components.ActionLink
+import com.intellij.ui.components.BrowserLink
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -149,6 +150,13 @@ fun Row.contextHelp(
 
     return cell(result)
 }
+
+fun Row.browserLink(
+    icon: Icon = AllIcons.Ide.External_link_arrow,
+    text: String? = null,
+    tooltip: String? = null,
+    url: String,
+): Cell<BrowserLink> = cell(BrowserLink(icon, text, tooltip, url))
 
 fun Row.actionButton(
     action: AnAction, @NonNls actionPlace: String = ActionPlaces.UNKNOWN,

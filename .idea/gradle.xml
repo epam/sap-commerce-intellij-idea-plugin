@@ -4,6 +4,17 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/gradle/build-logic" name="build-logic">
+                <projects>
+                  <project path="$PROJECT_DIR$/gradle/build-logic" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="delegatedBuild" value="false" />
         <option name="testRunner" value="PLATFORM" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -11,6 +22,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/gradle/build-logic" />
             <option value="$PROJECT_DIR$/jps-plugin" />
             <option value="$PROJECT_DIR$/modules/acl/core" />
             <option value="$PROJECT_DIR$/modules/acl/ui" />

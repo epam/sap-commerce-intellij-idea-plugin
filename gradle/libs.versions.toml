@@ -31,6 +31,8 @@ moshi = "1.15.2"
 okhttp = "5.3.2"
 # https://central.sonatype.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-core/1.9.0
 serialization = "1.9.0"
+# https://mvnrepository.com/artifact/com.google.code.gson/gson
+gson = "2.13.2"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
@@ -58,6 +60,7 @@ moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", versio
 moshi-kotin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 kotlinxJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 [bundles]
 commons = ["commons-io", "commons-codec", "commons-lang3", "commons-collections4"]

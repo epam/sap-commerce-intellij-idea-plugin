@@ -54,6 +54,13 @@ object HybrisIcons {
         val FACET = LOGO_GREEN
     }
 
+    object Project {
+        val CONTRIBUTORS = getIcon("/icons/users.svg")
+        val REIMPORT = AllIcons.Actions.ForceRefresh
+        val REFRESH = AllIcons.Actions.Refresh
+        val UNKNOWN_REQUEST = AllIcons.General.ContextHelp
+    }
+
     object HAC {
         val AUTH_AUTOMATIC = AllIcons.Actions.SynchronizeScrolling
         val AUTH_MANUAL = AllIcons.Actions.ToggleVisibility

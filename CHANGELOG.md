@@ -1,7 +1,7 @@
 ## [2026.0.8]
 
 <cite>Release contributors</cite>
-- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
+- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3AStefanKruk+is%3Apr+)
 - 2 PR(s) by [Alessandro Antonini](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Aninopg+is%3Apr)
 
@@ -11,6 +11,7 @@
 ### `Project Import` enhancements
 - Add Compiler Parameter `-parameters` to keep Method Names during compilation for Reflection [#1865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1865)
 - Attach sources for OOTB modules during project import (supports both zip files and folders) [#1875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1875)
+- Brand-new way to inform & request project refresh or reimport [#1876](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1876)
 
 ### `ImpEx` enhancements
 - Adjusted range for reference resolution to ComposedTypes within value cells [#1867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1867)
@@ -405,6 +406,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ### `hAC` enhancements
 - Added collapsible groups for connection dialog to target low-resolution screens [#1664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1664)
+- Improved warning message in case of credentials issue [#1678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1678)
 
 ### `Bean System` enhancements
 - Improved folding for elements without required values [#1665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1665)
@@ -414,9 +416,6 @@ Due severe API changes it is highly advised to backup the project and import it 
 
 ### `Cockpit NG` enhancements
 - Added folding for `simple-search:sort-field` [#1674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1674)
-
-### `hAC` enhancements
-- Improved warning message in case of credentials issue [#1678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1678)
 
 ### Other
 - Updated Plugin icon [#1667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1667)
@@ -856,7 +855,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)
 - Show replica-specific results within `In-Editor Results` view [#1478](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1478)
 
-### `Remote Connection` enhancements
+### `hAC` enhancements
 - Shorten CCv2 url without custom name [#1449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1449)
 
 ### Other
@@ -1112,7 +1111,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Added possibility to Track progress of the Deployment [#1306](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1306)
 - Added Deployment specific action to Track its progress [#1307](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1307)
 
-### `JUnit Tests` enhancements
+### `JUnit` enhancements
 - For Pure JUnit Tests (annotated with `@UnitTest`) the JUnit Tests is no longer enhanced. It is also not necessary to enhance the Classpath if the `platformhome` is properly set. [#1302](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1302)
 
 ### `Type System` enhancements
@@ -1128,7 +1127,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - 6 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.4+author%3Amlytvyn+is%3Apr)
 - 1 PR by [Burak Gürler](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.3.4+author%3Amburakgurler+is%3Apr)
 
-### `Integrations` enhancements
+### `WSL` enhancements
 - Added Windows WSL support [#1292](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1292)
 
 ### `ImpEx` enhancements
@@ -1592,7 +1591,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 ### `items.xml` enhancements
 - Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009) | [#1010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1010)
 
-### `Remote Connection` enhancements
+### `hAC` enhancements
 - Introduced `Project` and `Personal` scope for remote connections [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)
 - Redesign hAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968) | [#986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/986) | [#987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/987)
 - Redesign SOLR connection settings and rely on `PasswordSafe` to store passwords [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971) | [#985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/985)
@@ -1703,7 +1702,7 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Do not remove custom third-party modules during the `Project Refresh` [#948](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/948)
 - Do not modify hybris directory during the `Project Refresh` [#950](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/950)
 
-### `Tests` enhancements
+### `JUnit` enhancements
 - Add JDK Export Properties to JUnit Tests to run Integration Tests [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
 - Load Properties from Files and Environment [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
 

@@ -16,14 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.gradle
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-@Tag("HybrisProjectSettings")
-data class WorkspaceSettingsState(
-    @JvmField @OptionTag val hybrisProject: Boolean = false,
-    @JvmField @OptionTag val importedByVersion: String? = null,
-    @JvmField @OptionTag val doNotAskForProjectImport: Map<String, Boolean> = emptyMap(),
-)
+class SAPCommerceDevelopersToolsetGradlePlugin : Plugin<Project> {
+    override fun apply(project: Project) {
+        // Plugin auto-makes task class available
+    }
+}
