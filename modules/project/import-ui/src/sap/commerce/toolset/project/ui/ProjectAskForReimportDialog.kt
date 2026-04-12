@@ -59,7 +59,7 @@ class ProjectAskForReimportDialog(
             val decision = MessageDialogBuilder.yesNo(
                 title = "Ignore Project Reimport",
                 message = "Do not show this dialog again for the plugin '${projectState.currentVersion}' version. It may appear again after updating the plugin.",
-                icon = HybrisIcons.Project.REFRESH,
+                icon = HybrisIcons.Project.REIMPORT,
             ).ask(project)
 
             if (decision) with(WorkspaceSettings.getInstance(project)) {
