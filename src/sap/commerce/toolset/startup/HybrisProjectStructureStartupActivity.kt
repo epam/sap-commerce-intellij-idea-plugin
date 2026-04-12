@@ -55,46 +55,52 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             is ProjectState.Reimport -> withContext(Dispatchers.EDT) {
                 !ProjectAskForReimportDialog(project, projectState).showAndGet()
             }
+
+            else -> {
+                thisLogger().warn("Project Import State cannot be identified due missing 'resource/prs.json', which has to be generated via Gradle 'fetchPRs' task.")
+                true
+            }
         }
 
         if (continueOpening) {
             continueOpening(project)
         }
-
-//        if (isOutdatedHybrisProject(importedByVersion)) {
-//            Notifications.create(
-//                NotificationType.INFORMATION,
-//                i18n("hybris.notification.project.open.outdated.title"),
-//                i18n(
-//                    "hybris.notification.project.open.outdated.text",
-//                    importedByVersion ?: "old"
-//                )
-//            )
-//                .important(true)
-//                .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> project.triggerAction("sap.commerce.toolset.yRefresh") }
-//                .notify(project)
-//        }
-//
-//        logVersion(project, importedByVersion)
-//        continueOpening(project)
     }
 
-    private fun getProjectState(importedByVersion: String?): ProjectState {
-        val lastImportVersion = importedByVersion ?: return ProjectState.Reimport()
-        val currentVersion = Plugin.HYBRIS.pluginDescriptor
-            ?.version
-            ?: return ProjectState.Reimport()
-
-        val prs = this.javaClass.getResourceAsStream("/prs.json").use { stream ->
-            Gson().fromJson(stream?.bufferedReader(), ProjectState.PRData::class.java)
+    private fun getProjectState(importedByVersion: String?): ProjectState? {
+        val lastImportVersion = importedByVersion ?: return ProjectState.Reimport("too old")
+        val resourceAsStream = this.javaClass.getResourceAsStream("/prs.json")
+            ?: return null
+        val prs = resourceAsStream.use { stream ->
+            Gson().fromJson(stream.bufferedReader(), ProjectState.PRData::class.java)
         }
             .pullRequests
+        val currentVersion = Plugin.HYBRIS.pluginDescriptor?.version
+
+        val filteredPRs = if (currentVersion != null) prs
             .filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
+        else prs
+
+        val groupedPRs = filteredPRs
             .flatMap { pr -> pr.labels.map { label -> label to pr } }
             .groupBy({ it.first }, { it.second })
 
-        return prs[ProjectImportConstants.PR_LABEL_PROJECT_REIMPORT]?.let { ProjectState.Reimport(it) }
-            ?: prs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH]?.let { ProjectState.Refresh(it) }
+        if (currentVersion == null) return ProjectState.Reimport(importedByVersion, groupedPRs.values.flatten())
+
+        return groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REIMPORT]
+            ?.let {
+                ProjectState.Reimport(
+                    importedByVersion = importedByVersion,
+                    reimportRequests = it,
+                    refreshRequests = groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH] ?: emptyList()
+                )
+            }
+            ?: groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH]?.let {
+                ProjectState.Refresh(
+                    importedByVersion = importedByVersion,
+                    refreshRequests = it
+                )
+            }
             ?: ProjectState.Normal
     }
 

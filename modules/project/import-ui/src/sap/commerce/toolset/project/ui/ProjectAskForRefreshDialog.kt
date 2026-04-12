@@ -20,35 +20,85 @@ package sap.commerce.toolset.project.ui
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.scale.JBUIScale
+import com.intellij.util.asSafely
+import com.intellij.util.ui.JBEmptyBorder
+import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.project.ProjectState
+import sap.commerce.toolset.ui.banner
+import java.awt.Dimension
+import java.awt.event.ActionEvent
+import java.io.Serial
+import javax.swing.ScrollPaneConstants
 
 class ProjectAskForRefreshDialog(
     private val project: Project,
     private val projectState: ProjectState.Refresh,
 ) : DialogWrapper(project, false, IdeModalityType.IDE) {
 
+    private val skip = object : DialogWrapperAction("Skip Refresh") {
+        @Serial
+        private val serialVersionUID: Long = -1963011685030505631L
+
+        override fun doAction(e: ActionEvent) = this@ProjectAskForRefreshDialog
+            .close(CLOSE_EXIT_CODE)
+    }
+
     init {
         title = "Project Refresh Required"
+        isResizable = false
 
+        setOKButtonText("Refresh Project")
         super.init()
     }
 
+    override fun getStyle() = DialogStyle.COMPACT
+    override fun createLeftSideActions() = arrayOf(skip)
+
+    override fun applyFields() {
+        project.triggerAction("sap.commerce.toolset.yRefresh")
+    }
+
+    override fun createNorthPanel() = banner(
+        text = """
+            Your project was imported with older version of the plugin <strong>${projectState.importedByVersion}</strong>.<br>
+            It is highly advisable to refresh the project to align with the following changes:
+        """.trimIndent(),
+        status = EditorNotificationPanel.Status.Warning
+    )
+
     override fun createCenterPanel() = panel {
-        projectState.pullRequests.groupBy { it.milestone }
+        row {
+            scrollCell(detailsPanel())
+                .align(Align.FILL)
+                .applyToComponent {
+                    parent.parent.asSafely<JBScrollPane>()?.apply {
+                        horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+                        border = JBEmptyBorder(0)
+                        preferredSize = Dimension(JBUIScale.scale(600), JBUIScale.scale(400))
+                    }
+                }
+        }.resizableRow()
+    }
+
+    private fun detailsPanel() = panel {
+        projectState.refreshRequests.groupBy { it.milestone }
             .forEach { (milestone, prs) ->
                 group("Release: $milestone") {
                     prs.forEach { pr ->
                         row {
                             browserLink("#${pr.number}", "https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/${pr.number}")
-                                .comment("PR")
-
-                            label(pr.title)
-                                .comment("by ${pr.author}")
+                            text(pr.title)
                         }.layout(RowLayout.PARENT_GRID)
                     }
                 }
             }
-    }
+    }.apply { border = JBUI.Borders.empty(16) }
+
 }

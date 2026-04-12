@@ -16,30 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project
+package sap.commerce.toolset.gradle.api.dto
 
-sealed class ProjectState {
-    data object Normal : ProjectState()
-    data class Reimport(
-        val importedByVersion: String,
-        val reimportRequests: List<PullRequest> = emptyList(),
-        val refreshRequests: List<PullRequest> = emptyList(),
-    ) : ProjectState()
-
-    data class Refresh(
-        val importedByVersion: String,
-        val refreshRequests: List<PullRequest>,
-    ) : ProjectState()
-
-    data class PullRequest(
-        val title: String,
-        val number: Int,
-        val author: String,
-        val milestone: String,
-        val labels: List<String>
-    )
-
-    data class PRData(
-        val pullRequests: List<PullRequest>
-    )
-}
+data class PullRequests(
+    val pageInfo: PageInfo,
+    val nodes: List<PRNode>
+)

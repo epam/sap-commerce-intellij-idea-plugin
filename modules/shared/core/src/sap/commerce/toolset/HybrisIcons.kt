@@ -42,6 +42,7 @@ object HybrisIcons {
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
     val SORT = getIcon("/icons/sort.svg")
+    val PR_AUTHOR = AllIcons.General.User
 
     object Y {
         val LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
