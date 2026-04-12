@@ -56,6 +56,11 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
                 !ProjectAskForReimportDialog(project, projectState).showAndGet()
             }
 
+            is ProjectState.ForceReimport -> withContext(Dispatchers.EDT) {
+                ProjectAskForReimportDialog(project, projectState).showAndGet()
+                false
+            }
+
             else -> {
                 thisLogger().warn("Project Import State cannot be identified due missing 'resource/prs.json', which has to be generated via Gradle 'fetchPRs' task.")
                 true
@@ -68,7 +73,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     }
 
     private fun getProjectState(importedByVersion: String?): ProjectState? {
-        val lastImportVersion = importedByVersion ?: return ProjectState.Reimport("too old")
+        val lastImportVersion = importedByVersion ?: return ProjectState.ForceReimport
         val resourceAsStream = this.javaClass.getResourceAsStream("/prs.json")
             ?: return null
         val prs = resourceAsStream.use { stream ->

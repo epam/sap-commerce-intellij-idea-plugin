@@ -29,9 +29,11 @@ import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.project.ProjectState
 import sap.commerce.toolset.ui.banner
+import sap.commerce.toolset.ui.browserLink
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.io.Serial
@@ -70,7 +72,7 @@ class ProjectAskForReimportDialog(
             Your project was imported with an older version of the plugin <strong>${projectState.importedByVersion}</strong>.<br>
             This version does not support project refresh. A full project reimport is required.<br>
             Without reimport, plugin behavior may be unpredictable.<br>
-            It is strongly recommended to reimport the project to apply the latest changes:
+            It is strongly recommended to reimport the project to apply related changes:
         """.trimIndent(),
         status = EditorNotificationPanel.Status.Error
     )
@@ -90,15 +92,32 @@ class ProjectAskForReimportDialog(
     }
 
     private fun detailsPanel() = panel {
-        projectState.reimportRequests.groupBy { it.milestone }
+        val combinedRequests = projectState.reimportRequests + projectState.refreshRequests
+        combinedRequests
+            .sortedByDescending { it.milestone }
+            .groupBy { it.milestone }
             .forEach { (milestone, prs) ->
                 group("Release: $milestone") {
-                    prs.forEach { pr ->
-                        row {
-                            browserLink("#${pr.number}", "https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/${pr.number}")
-                            text(pr.title)
-                        }.layout(RowLayout.PARENT_GRID)
+                    row {
+                        icon(HybrisIcons.Project.CONTRIBUTORS)
+                        comment("Contributors: ")
+                        prs.map { it.author }.distinct()
+                            .forEach { author -> browserLink(author, "https://github.com/$author") }
                     }
+
+                    prs
+                        .sortedBy { it.type }
+                        .forEach { pr ->
+                            row {
+                                browserLink(
+                                    pr.type.icon,
+                                    "#${pr.number} ",
+                                    pr.type.presentationTitle,
+                                    "https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/${pr.number}"
+                                )
+                                text(pr.title)
+                            }.layout(RowLayout.PARENT_GRID)
+                        }
                 }
             }
     }.apply { border = JBUI.Borders.empty(16) }

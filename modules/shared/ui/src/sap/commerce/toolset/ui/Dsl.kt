@@ -152,10 +152,11 @@ fun Row.contextHelp(
 }
 
 fun Row.browserLink(
-    icon: Icon,
-    text: String,
+    icon: Icon = AllIcons.Ide.External_link_arrow,
+    text: String? = null,
+    tooltip: String? = null,
     url: String,
-): Cell<BrowserLink> = cell(BrowserLink(icon, text, url))
+): Cell<BrowserLink> = cell(BrowserLink(icon, text, tooltip, url))
 
 fun Row.actionButton(
     action: AnAction, @NonNls actionPlace: String = ActionPlaces.UNKNOWN,

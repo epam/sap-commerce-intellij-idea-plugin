@@ -42,7 +42,6 @@ object HybrisIcons {
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
     val SORT = getIcon("/icons/sort.svg")
-    val PR_AUTHOR = AllIcons.General.User
 
     object Y {
         val LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
@@ -53,6 +52,13 @@ object HybrisIcons {
         val REMOTES = getIcon("/icons/remotes.svg")
         val REMOTE_GREEN = getIcon("/icons/hybrisRemoteGreen.svg")
         val FACET = LOGO_GREEN
+    }
+
+    object Project {
+        val CONTRIBUTORS = getIcon("/icons/users.svg")
+        val REIMPORT = AllIcons.Actions.ForceRefresh
+        val REFRESH = AllIcons.Actions.Refresh
+        val UNKNOWN_REQUEST = AllIcons.General.ContextHelp
     }
 
     object HAC {

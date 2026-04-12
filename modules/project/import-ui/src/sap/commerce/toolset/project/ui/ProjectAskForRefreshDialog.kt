@@ -29,9 +29,11 @@ import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.project.ProjectState
 import sap.commerce.toolset.ui.banner
+import sap.commerce.toolset.ui.browserLink
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.io.Serial
@@ -88,12 +90,25 @@ class ProjectAskForRefreshDialog(
     }
 
     private fun detailsPanel() = panel {
-        projectState.refreshRequests.groupBy { it.milestone }
+        projectState.refreshRequests
+            .sortedByDescending { it.milestone }
+            .groupBy { it.milestone }
             .forEach { (milestone, prs) ->
                 group("Release: $milestone") {
+                    row {
+                        icon(HybrisIcons.Project.CONTRIBUTORS)
+                        comment("Contributors: ")
+                        prs.map { it.author }.distinct()
+                            .forEach { author -> browserLink(author, "https://github.com/$author") }
+                    }
+
                     prs.forEach { pr ->
                         row {
-                            browserLink("#${pr.number}", "https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/${pr.number}")
+                            browserLink(
+                                text = "#${pr.number}",
+                                tooltip = "Refresh request",
+                                url = "https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/${pr.number}"
+                            )
                             text(pr.title)
                         }.layout(RowLayout.PARENT_GRID)
                     }
