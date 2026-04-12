@@ -18,6 +18,11 @@
 
 package sap.commerce.toolset.project.ui
 
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUiKind
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EditorNotificationPanel
@@ -44,19 +49,22 @@ class ProjectAskForReimportDialog(
     private val projectState: ProjectState.Reimport,
 ) : DialogWrapper(project, false, IdeModalityType.IDE) {
 
-    private val skip = object : DialogWrapperAction("Skip Reimport") {
+    private val skip = object : DialogWrapperAction("Don't Ask Again") {
         @Serial
         private val serialVersionUID: Long = -1963011685030505631L
 
-        override fun doAction(e: ActionEvent) = this@ProjectAskForReimportDialog
-            .close(CLOSE_EXIT_CODE)
+        override fun doAction(e: ActionEvent) {
+            // TODO: save skip flag
+            this@ProjectAskForReimportDialog.close(CLOSE_EXIT_CODE)
+        }
     }
 
     init {
         title = "Project Reimport Required"
         isResizable = false
 
-        setOKButtonText("Reimport Project")
+        setCancelButtonText("Remind Me Later")
+        setOKButtonText("Reimport Project...")
         super.init()
     }
 
@@ -64,7 +72,17 @@ class ProjectAskForReimportDialog(
     override fun createLeftSideActions() = arrayOf(skip)
 
     override fun applyFields() {
-        project.triggerAction("sap.commerce.toolset.reimport")
+        invokeLater {
+            triggerAction(
+                actionId = "sap.commerce.toolset.reimport",
+                place = ActionPlaces.NEW_PROJECT_WIZARD,
+                uiKind = ActionUiKind.POPUP,
+                dataContextProvider = {
+                    SimpleDataContext.builder()
+                        .add(CommonDataKeys.VIRTUAL_FILE, projectState.projectDirectory)
+                        .build()
+                })
+        }
     }
 
     override fun createNorthPanel() = banner(

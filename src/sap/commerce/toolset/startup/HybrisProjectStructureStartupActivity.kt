@@ -23,11 +23,13 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.util.text.VersionComparatorUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.path
 import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.ProjectState
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
@@ -46,7 +48,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         val importedByVersion = WorkspaceSettings.getInstance(project).importedByVersion
         logVersion(project, importedByVersion)
 
-        val continueOpening = when (val projectState = getProjectState(importedByVersion)) {
+        val continueOpening = when (val projectState = getProjectState(project, importedByVersion)) {
             is ProjectState.Normal -> true
 
             is ProjectState.Refresh -> withContext(Dispatchers.EDT) {
@@ -73,14 +75,17 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         }
     }
 
-    private fun getProjectState(importedByVersion: String?): ProjectState? {
-        val lastImportVersion = importedByVersion ?: return ProjectState.ForceReimport
+    private fun getProjectState(project: Project, importedByVersion: String?): ProjectState? {
+        val projectDirectory = project.path
+            ?.let { path -> VfsUtil.findFile(path, true) }
+            ?: return null
+        val lastImportVersion = importedByVersion
+            ?: return ProjectState.ForceReimport(projectDirectory)
         val resourceAsStream = this.javaClass.getResourceAsStream("/prs.json")
             ?: return null
         val prs = resourceAsStream.use { stream ->
             Gson().fromJson(stream.bufferedReader(), ProjectState.PRData::class.java)
-        }
-            .pullRequests
+        }.pullRequests
         val currentVersion = Plugin.HYBRIS.pluginDescriptor?.version
 
         val filteredPRs = if (currentVersion != null) prs
@@ -91,11 +96,16 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             .flatMap { pr -> pr.labels.map { label -> label to pr } }
             .groupBy({ it.first }, { it.second })
 
-        if (currentVersion == null) return ProjectState.Reimport(importedByVersion, groupedPRs.values.flatten())
+        if (currentVersion == null) return ProjectState.Reimport(
+            projectDirectory = projectDirectory,
+            importedByVersion = importedByVersion,
+            reimportRequests = groupedPRs.values.flatten()
+        )
 
         return groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REIMPORT]
             ?.let {
                 ProjectState.Reimport(
+                    projectDirectory = projectDirectory,
                     importedByVersion = importedByVersion,
                     reimportRequests = it,
                     refreshRequests = groupedPRs[ProjectImportConstants.PR_LABEL_PROJECT_REFRESH] ?: emptyList()

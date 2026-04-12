@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.project.ui
 
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EditorNotificationPanel
@@ -44,19 +45,22 @@ class ProjectAskForRefreshDialog(
     private val projectState: ProjectState.Refresh,
 ) : DialogWrapper(project, false, IdeModalityType.IDE) {
 
-    private val skip = object : DialogWrapperAction("Skip Refresh") {
+    private val skip = object : DialogWrapperAction("Don't Ask Again") {
         @Serial
         private val serialVersionUID: Long = -1963011685030505631L
 
-        override fun doAction(e: ActionEvent) = this@ProjectAskForRefreshDialog
-            .close(CLOSE_EXIT_CODE)
+        override fun doAction(e: ActionEvent) {
+            // TODO: save "skip" flag
+            this@ProjectAskForRefreshDialog.close(CLOSE_EXIT_CODE)
+        }
     }
 
     init {
         title = "Project Refresh Required"
         isResizable = false
 
-        setOKButtonText("Refresh Project")
+        setCancelButtonText("Remind Me Later")
+        setOKButtonText("Refresh Project...")
         super.init()
     }
 
@@ -64,7 +68,7 @@ class ProjectAskForRefreshDialog(
     override fun createLeftSideActions() = arrayOf(skip)
 
     override fun applyFields() {
-        project.triggerAction("sap.commerce.toolset.yRefresh")
+        invokeLater { project.triggerAction("sap.commerce.toolset.yRefresh") }
     }
 
     override fun createNorthPanel() = banner(

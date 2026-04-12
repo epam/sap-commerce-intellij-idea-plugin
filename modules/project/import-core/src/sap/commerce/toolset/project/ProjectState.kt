@@ -18,14 +18,18 @@
 
 package sap.commerce.toolset.project
 
+import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 sealed class ProjectState {
     data object Normal : ProjectState()
-    data object ForceReimport : ProjectState()
+    data class ForceReimport(
+        val projectDirectory: VirtualFile,
+    ) : ProjectState()
 
     data class Reimport(
+        val projectDirectory: VirtualFile,
         val importedByVersion: String,
         val reimportRequests: List<PullRequest> = emptyList(),
         val refreshRequests: List<PullRequest> = emptyList(),
