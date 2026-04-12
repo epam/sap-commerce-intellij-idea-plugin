@@ -3,9 +3,14 @@
 <cite>Release contributors</cite>
 - 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3AStefanKruk+is%3Apr+)
+- 2 PR(s) by [Alessandro Antonini](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Aninopg+is%3Apr)
+
+### `Groovy` enhancements
+- Fix HAC response formatting by removing jsoup parsing [#1874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1874)
 
 ### `Project Import` enhancements
 - Add Compiler Parameter `-parameters` to keep Method Names during compilation for Reflection [#1865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1865)
+- Attach sources for OOTB modules during project import (supports both zip files and folders) [#1875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1875)
 
 ### `ImpEx` enhancements
 - Adjusted range for reference resolution to ComposedTypes within value cells [#1867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1867)

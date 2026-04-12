@@ -162,7 +162,7 @@ internal fun uiCoreStep(context: ProjectImportCoreContext): DialogPanel {
                             path.fileExists -> {
                                 context.sourceCodeFile.set(textField.text)
                                 sourceCodeInfoToggle.set(true)
-                                sourceCodeInfoLabel.set("The selected file will be used as a source in the Bootstrap Library.")
+                                sourceCodeInfoLabel.set("The selected file will be used as a source for OOTB modules.")
                             }
 
                             path.directoryExists -> {
