@@ -19,6 +19,7 @@
 package sap.commerce.toolset.java.configurator.library
 
 import com.intellij.platform.workspace.storage.url.VirtualFileUrlManager
+import com.intellij.util.containers.addIfNotNull
 import sap.commerce.toolset.java.JavaConstants
 import sap.commerce.toolset.java.configurator.library.util.*
 import sap.commerce.toolset.project.ProjectConstants
@@ -26,6 +27,7 @@ import sap.commerce.toolset.project.configurator.ModuleLibraryConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectModuleConfigurationContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ifNonCustomModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
@@ -48,6 +50,9 @@ class CompileModuleLibraryConfigurator : ModuleLibraryConfigurator<YModuleDescri
         val virtualFileUrlManager = importContext.workspace.getVirtualFileUrlManager()
         val libraryRoots = buildList {
             addAll(moduleDescriptor.serverJarFiles(virtualFileUrlManager))
+            if (moduleDescriptor.type == ModuleDescriptorType.OOTB || moduleDescriptor.type == ModuleDescriptorType.EXT) {
+                addIfNotNull(context.importContext.sourceCode(virtualFileUrlManager))
+            }
             addAll(moduleDescriptor.docSources(virtualFileUrlManager))
             addAll(moduleDescriptor.lib(virtualFileUrlManager))
 
