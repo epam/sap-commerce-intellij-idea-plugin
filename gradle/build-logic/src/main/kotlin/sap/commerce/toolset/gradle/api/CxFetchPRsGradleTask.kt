@@ -28,6 +28,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import sap.commerce.toolset.gradle.api.dto.*
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -113,7 +114,7 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
         val output = outputFile.get().asFile
 
         val cachedCommit = if (metadata.exists()) {
-            gson.fromJson(metadata.readText(), Metadata::class.java).lastCommit
+            gson.fromJson(metadata.readText(), sap.commerce.toolset.gradle.api.dto.Metadata::class.java).lastCommit
         } else null
 
         if (cachedCommit == latestCommit && output.exists()) {
@@ -234,50 +235,4 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
             result.data.repository.pullRequests.nodes
         )
     }
-
-    data class PullRequestsPage(
-        val pageInfo: PageInfo,
-        val nodes: List<PRNode>
-    )
-
-    // Response models
-    data class CommitResponse(val sha: String)
-
-    data class GraphQLResponse(val data: Data)
-    data class Data(val repository: Repository)
-    data class Repository(val pullRequests: PullRequests)
-    data class PullRequests(
-        val pageInfo: PageInfo,
-        val nodes: List<PRNode>
-    )
-
-    data class PageInfo(
-        val hasNextPage: Boolean,
-        val endCursor: String?
-    )
-
-    data class PRNode(
-        val title: String,
-        val number: Int,
-        val author: Author?,
-        val milestone: Milestone?,
-        val labels: Labels
-    )
-
-    data class Author(val login: String)
-    data class Milestone(val title: String)
-    data class Labels(val nodes: List<Label>)
-    data class Label(val name: String)
-
-    // Output models
-    data class PullRequest(
-        val title: String,
-        val number: Int,
-        val author: String?,
-        val milestone: String?,
-        val labels: List<String>
-    )
-
-    data class PRData(val pullRequests: List<PullRequest>)
-    data class Metadata(val lastCommit: String, val totalPRs: Int)
 }
