@@ -32,6 +32,7 @@ import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.ProjectState
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.ui.ProjectAskForForcedReimportDialog
 import sap.commerce.toolset.project.ui.ProjectAskForRefreshDialog
 import sap.commerce.toolset.project.ui.ProjectAskForReimportDialog
 import sap.commerce.toolset.settings.WorkspaceSettings
@@ -57,7 +58,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             }
 
             is ProjectState.ForceReimport -> withContext(Dispatchers.EDT) {
-                ProjectAskForReimportDialog(project, projectState).showAndGet()
+                ProjectAskForForcedReimportDialog(project, projectState).showAndGet()
                 false
             }
 
