@@ -29,7 +29,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
-import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
@@ -58,8 +57,7 @@ class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : Defau
         )
 
         try {
-            val document = Jsoup.parse(response.entity.content, Charsets.UTF_8.name(), "")
-            val jsonAsString = document.getElementsByTag("body").text()
+            val jsonAsString = response.entity.content.readBytes().toString(Charsets.UTF_8)
             val json = Json.parseToJsonElement(jsonAsString)
 
             json.jsonObject["stacktraceText"]
