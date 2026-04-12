@@ -16,13 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.gradle
-
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-
-class FetchPRsPlugin : Plugin<Project> {
-    override fun apply(project: Project) {
-        // Plugin auto-makes task class available
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("../libs.versions.toml"))
+        }
     }
 }

@@ -32,6 +32,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * Fetches PR metadata from GitHub repository using GraphQL API.
@@ -39,7 +40,7 @@ import java.net.http.HttpResponse
  * Only refetches if repository HEAD has changed since last execution.
  * Filters PRs by specified labels and outputs JSON to resources directory.
  */
-abstract class FetchPRsGradleTask : DefaultTask() {
+abstract class CxFetchPRsGradleTask : DefaultTask() {
 
     @get:Input
     abstract val repository: Property<String>
@@ -73,20 +74,16 @@ abstract class FetchPRsGradleTask : DefaultTask() {
         val repo = repository.get()
         val labels = targetLabels.get()
         val (owner, repoName) = repo.split("/")
-        val token = githubToken.orNull
-
-        if (token == null) {
-            throw RuntimeException(
-                """
-            GITHUB_TOKEN required. Set via environment or task configuration. Create new simple GitHub Token with the permissions to public repositories.
-
-            To enforce project re-import / refresh it is expected to fetch PRs with labels "Requires - Project Refresh" or "Requires - Project Reimport".
-            Analyze via HybrisProjectStructureStartupActivity and decide which action to be displayed to an end-user.
-
-            This setting is mandatory for anyone build the plugin via `buildPlugin` task.
-            """.trimIndent()
-            )
-        }
+        val token = githubToken.orNull ?: throw RuntimeException(
+            """
+                GITHUB_TOKEN required. Set via environment or task configuration. Create new simple GitHub Token with the permissions to public repositories.
+    
+                To enforce project re-import / refresh it is expected to fetch PRs with labels: ${labels.joinToString()}.
+                Analyze via HybrisProjectStructureStartupActivity and decide which action to be displayed to an end-user.
+    
+                This setting is mandatory for anyone build the plugin via `buildPlugin` task.
+                """.trimIndent()
+        )
 
         logger.lifecycle("Fetching import/refresh related PRs from the remote: $repo | ${branch.get()}")
 
@@ -126,7 +123,6 @@ abstract class FetchPRsGradleTask : DefaultTask() {
         val allNodes = mutableListOf<PRNode>()
         var endCursor: String? = null
         var hasNextPage = true
-        val batchSize = 3 // Fetch 3 pages in parallel
 
         while (hasNextPage) {
             val cursors = mutableListOf<String?>()
@@ -134,8 +130,8 @@ abstract class FetchPRsGradleTask : DefaultTask() {
 
             // Prefetch next cursors for parallel requests
             val futures = cursors.map { cursor ->
-                java.util.concurrent.CompletableFuture.supplyAsync {
-                    fetchPage(client, gson, owner, repoName, token, cursor)
+                CompletableFuture.supplyAsync {
+                    fetchPage(client, gson, owner, repoName, labels, token, cursor)
                 }
             }
 
@@ -179,15 +175,17 @@ abstract class FetchPRsGradleTask : DefaultTask() {
         gson: Gson,
         owner: String,
         repoName: String,
+        labels: List<String>,
         token: String,
-        cursor: String?
+ cursor: String?
     ): PullRequestsPage {
         val afterClause = cursor?.let { """, after: "$it"""" } ?: ""
-
+        val labelsClause = labels.joinToString(",") { "\"$it\""}
+        val statusesClause = "CLOSED, MERGED"
         val query = """
         query {
           repository(owner: "$owner", name: "$repoName") {
-            pullRequests(first: 100$afterClause, labels: ["Requires - Project Refresh","Requires - Project Reimport"], states: [CLOSED, MERGED], orderBy: {field: UPDATED_AT, direction: DESC}) {
+            pullRequests(first: 100 $afterClause, labels: [$labelsClause], states: [$statusesClause], orderBy: {field: UPDATED_AT, direction: DESC}) {
               pageInfo {
                 hasNextPage
                 endCursor
@@ -247,10 +245,12 @@ abstract class FetchPRsGradleTask : DefaultTask() {
         val pageInfo: PageInfo,
         val nodes: List<PRNode>
     )
+
     data class PageInfo(
         val hasNextPage: Boolean,
         val endCursor: String?
     )
+
     data class PRNode(
         val title: String,
         val number: Int,
@@ -258,6 +258,7 @@ abstract class FetchPRsGradleTask : DefaultTask() {
         val milestone: Milestone?,
         val labels: Labels
     )
+
     data class Author(val login: String)
     data class Milestone(val title: String)
     data class Labels(val nodes: List<Label>)
@@ -271,6 +272,7 @@ abstract class FetchPRsGradleTask : DefaultTask() {
         val milestone: String?,
         val labels: List<String>
     )
+
     data class PRData(val pullRequests: List<PullRequest>)
     data class Metadata(val lastCommit: String, val totalPRs: Int)
 }

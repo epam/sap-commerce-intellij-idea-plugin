@@ -45,3 +45,7 @@ jflex-*.jar
 
 resources/CHANGELOG.md
 resources/prs.json
+
+gradle/build-logic/.gradle
+gradle/build-logic/build
+gradle/build-logic/.kotlin

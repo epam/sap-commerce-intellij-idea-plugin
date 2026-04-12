@@ -25,5 +25,13 @@ repositories {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
+}
+gradlePlugin {
+    plugins {
+        create("Gradle Build Plugin") {
+            id = "sap-commerce-developers-toolset-gradle-plugin"
+            implementationClass = "sap.commerce.toolset.gradle.SAPCommerceDevelopersToolsetGradlePlugin"
+        }
+    }
 }
