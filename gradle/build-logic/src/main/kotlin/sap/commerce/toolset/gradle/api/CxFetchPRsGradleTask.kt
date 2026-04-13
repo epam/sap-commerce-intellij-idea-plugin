@@ -68,28 +68,17 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
     }
 
     @TaskAction
-    fun execute() {
+    fun execute() = githubToken.orNull
+        ?.let { gitHubToken -> executeGraphQL(gitHubToken) }
+        ?: executeRest()
+
+    private fun executeGraphQL(gitHubToken: String) {
         val client = HttpClient.newHttpClient()
         val gson = GsonBuilder().setPrettyPrinting().create()
 
         val repo = repository.get()
         val labels = targetLabels.get()
         val (owner, repoName) = repo.split("/")
-        val token = githubToken.orNull
-
-        if (token == null) {
-            logger.lifecycle(
-                """
-                GITHUB_TOKEN required. Set via environment or task configuration. Create new simple GitHub Token with the permissions to public repositories.
-    
-                To enforce project re-import / refresh it is expected to fetch PRs with labels: ${labels.joinToString()}.
-                Analyze via HybrisProjectStructureStartupActivity and decide which action to be displayed to an end-user.
-    
-                This setting is mandatory for anyone build the plugin via `buildPlugin` task.
-                """.trimIndent()
-            )
-            return
-        }
 
         logger.lifecycle("Fetching import/refresh related PRs from the remote: $repo | ${branch.get()}")
 
@@ -97,7 +86,7 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
         val commitRequest = HttpRequest.newBuilder()
             .uri(URI.create("https://api.github.com/repos/$repo/commits/${branch.get()}"))
             .header("Accept", "application/vnd.github.v3+json")
-            .header("Authorization", "Bearer $token")
+            .header("Authorization", "Bearer $gitHubToken")
             .GET()
             .build()
 
@@ -114,7 +103,7 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
         val output = outputFile.get().asFile
 
         val cachedCommit = if (metadata.exists()) {
-            gson.fromJson(metadata.readText(), sap.commerce.toolset.gradle.api.dto.Metadata::class.java).lastCommit
+            gson.fromJson(metadata.readText(), Metadata::class.java).lastCommit
         } else null
 
         if (cachedCommit == latestCommit && output.exists()) {
@@ -137,7 +126,7 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
             // Prefetch next cursors for parallel requests
             val futures = cursors.map { cursor ->
                 CompletableFuture.supplyAsync {
-                    fetchPage(client, gson, owner, repoName, labels, token, cursor)
+                    fetchPage(client, gson, owner, repoName, labels, gitHubToken, cursor)
                 }
             }
 
@@ -176,6 +165,118 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
         logger.lifecycle("Output: ${output.absolutePath}")
     }
 
+    private fun executeRest() {
+        val client = HttpClient.newHttpClient()
+        val gson = GsonBuilder().setPrettyPrinting().create()
+
+        val repo = repository.get()
+        val labels = targetLabels.get()
+
+        logger.lifecycle(
+            """
+        GITHUB_TOKEN not provided, using REST API fallback (rate-limited).
+
+        Fetching import/refresh related PRs from: $repo | ${branch.get()}
+    """.trimIndent()
+        )
+
+        // Get latest commit SHA without auth
+        val commitRequest = HttpRequest.newBuilder()
+            .uri(URI.create("https://api.github.com/repos/$repo/commits/${branch.get()}"))
+            .header("Accept", "application/vnd.github.v3+json")
+            .GET()
+            .build()
+
+        val commitResponse = client.send(commitRequest, HttpResponse.BodyHandlers.ofString())
+        if (commitResponse.statusCode() != 200) {
+            throw RuntimeException("Failed to fetch commit: ${commitResponse.statusCode()}")
+        }
+
+        val commitData = gson.fromJson(commitResponse.body(), CommitResponse::class.java)
+        val latestCommit = commitData.sha
+
+        // Check if already fetched for this commit
+        val metadata = metadataFile.get().asFile
+        val output = outputFile.get().asFile
+
+        val cachedCommit = if (metadata.exists()) {
+            gson.fromJson(metadata.readText(), Metadata::class.java).lastCommit
+        } else null
+
+        if (cachedCommit == latestCommit && output.exists()) {
+            logger.lifecycle("Already up-to-date (commit: ${latestCommit.take(7)})")
+            logger.lifecycle("Skipping fetch")
+            return
+        }
+
+        logger.lifecycle("New commit detected: ${latestCommit.take(7)}")
+
+        // Fetch PRs for each label separately (REST API doesn't support multiple labels in one query)
+        val allPRs = mutableMapOf<Int, PullRequest>() // Deduplicate by PR number
+
+        labels.forEach { label ->
+            var page = 1
+            var hasMore = true
+
+            while (hasMore && page <= 5) { // Limit pages per label
+                val labelsParam = label.replace(" ", "+")
+                val prRequest = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.github.com/repos/$repo/issues?state=closed&labels=$labelsParam&per_page=100&page=$page"))
+                    .header("Accept", "application/vnd.github.v3+json")
+                    .GET()
+                    .build()
+
+                val prResponse = client.send(prRequest, HttpResponse.BodyHandlers.ofString())
+
+                if (prResponse.statusCode() == 403) {
+                    logger.warn("Rate limit exceeded. Set GITHUB_TOKEN to avoid this.")
+                    hasMore = false
+                    break
+                }
+
+                if (prResponse.statusCode() != 200) {
+                    throw RuntimeException("Failed to fetch PRs: ${prResponse.statusCode()}")
+                }
+
+                val pagePRs = gson.fromJson(prResponse.body(), Array<RestPR>::class.java)
+
+                if (pagePRs.isEmpty()) {
+                    hasMore = false
+                    break
+                }
+
+                pagePRs
+                    .filter { it.pull_request != null } // Issues endpoint returns both issues and PRs
+                    .forEach { pr ->
+                        allPRs.putIfAbsent(
+                            pr.number,
+                            PullRequest(
+                                title = pr.title,
+                                number = pr.number,
+                                author = pr.user?.login,
+                                milestone = pr.milestone?.title,
+                                labels = pr.labels.map { it.name }
+                            )
+                        )
+                    }
+
+                logger.lifecycle("Label '$label', page $page - ${allPRs.size} total PRs so far...")
+                page++
+            }
+        }
+
+        val prs = allPRs.values.toList()
+
+        output.parentFile.mkdirs()
+        output.writeText(gson.toJson(PRData(prs)))
+
+        metadata.parentFile.mkdirs()
+        metadata.writeText(gson.toJson(Metadata(latestCommit, prs.size)))
+
+        logger.lifecycle("Fetched ${prs.size} PRs (fallback mode)")
+        logger.lifecycle("Output: ${output.absolutePath}")
+    }
+
     private fun fetchPage(
         client: HttpClient,
         gson: Gson,
@@ -183,10 +284,10 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
         repoName: String,
         labels: List<String>,
         token: String,
- cursor: String?
+        cursor: String?
     ): PullRequestsPage {
         val afterClause = cursor?.let { """, after: "$it"""" } ?: ""
-        val labelsClause = labels.joinToString(",") { "\"$it\""}
+        val labelsClause = labels.joinToString(",") { "\"$it\"" }
         val statusesClause = "CLOSED, MERGED"
         val query = """
         query {

@@ -162,6 +162,7 @@ tasks {
         branch.set("main")
         outputFile.set(file("resources/prs.json"))
         metadataFile.set(file("build/.pr-fetch-metadata.json"))
+        metadataFile.set(file("build/.pr-fetch-metadata.json"))
     }
 
     patchPluginXml {

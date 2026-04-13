@@ -71,13 +71,34 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 > 
 > Useful [Technical Notes](TECH_NOTES.md) for special cases.
 > 
-> Please, update the [Got it Tooltip](https://plugins.jetbrains.com/docs/intellij/got-it-tooltip.html) whenever you're changing related functionality. 
+> Please, use [Got it Tooltip](https://plugins.jetbrains.com/docs/intellij/got-it-tooltip.html) whenever you're changing related functionality.
 
 * Fork and checkout most-active `main` branch the project
 * Refresh gradle dependencies
 * Execute gradle task `Run IDE`
 
-### Build process debugging
+### GitHub integration & SAP Commerce Projects Import State
+
+> [!NOTE]
+>
+> The plugin build system requires a GitHub Personal Access Token (classic).
+> 
+> This token is used to fetch pull requests labeled `Requires - Project Refresh` and `Requires - Project Reimport`.
+> Based on these PRs, the build generates resources/prs.json, which determines the appropriate project import state.
+
+**SAP Commerce Projects Import States**
+> 1. **Reimport** - Displays a reimport dialog listing all PRs requiring refresh or reimport.
+> 2. **Forced Reimport** - Displays a mandatory reimport dialog (cannot be skipped).
+> 3. **Refresh** - Displays a refresh dialog listing all PRs requiring a project refresh.
+> 4. **Normal** - No refresh or reimport required; no dialog is shown.
+
+**Setup Instructions**
+* Create a Personal Access Token (classic) in GitHub: https://github.com/settings/tokens/new
+* Grant only the `repo:public_repo scope`
+* Set the environment variable `GITHUB_TOKEN`
+* **Never** commit or share this token
+
+### Sandbox Build process debugging
 
 * Start the sandbox
 * Enable `Debug Build Process` via actions menu
@@ -94,19 +115,19 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 ## Licence ##
 [GNU Lesser General Public License 3.0](https://www.gnu.org/licenses/)
 
-Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
-
-Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
-
-This program is free software: you can redistribute it and/or modify
+> Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+> 
+> Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+>
+> This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
+>
+> This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
+> 
+> You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
