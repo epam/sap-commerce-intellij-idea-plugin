@@ -87,10 +87,10 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 > Based on these PRs, the build generates resources/prs.json, which determines the appropriate project import state.
 
 **SAP Commerce Projects Import States**
-> 1. **Reimport** - Displays a reimport dialog listing all PRs requiring refresh or reimport.
-> 2. **Forced Reimport** - Displays a mandatory reimport dialog (cannot be skipped).
-> 3. **Refresh** - Displays a refresh dialog listing all PRs requiring a project refresh.
-> 4. **Normal** - No refresh or reimport required; no dialog is shown.
+1. **Reimport** - Displays a reimport dialog listing all PRs requiring refresh or reimport.
+2. **Forced Reimport** - Displays a mandatory reimport dialog (cannot be skipped).
+3. **Refresh** - Displays a refresh dialog listing all PRs requiring a project refresh.
+4. **Normal** - No refresh or reimport required; no dialog is shown.
 
 **Setup Instructions**
 * Create a Personal Access Token (classic) in GitHub: https://github.com/settings/tokens/new
