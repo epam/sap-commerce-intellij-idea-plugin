@@ -19,11 +19,17 @@
 package sap.commerce.toolset.project.ui
 
 import com.intellij.ide.util.ElementsChooser
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUiKind
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.ClearableLazyValue
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
@@ -34,7 +40,9 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.path
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
@@ -42,6 +50,8 @@ import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 import sap.commerce.toolset.ui.banner
 import java.awt.Dimension
+import java.awt.event.ActionEvent
+import java.io.Serial
 import javax.swing.Icon
 import javax.swing.ScrollPaneConstants
 
@@ -213,6 +223,33 @@ class ProjectRefreshDialog(
         }
     }
 
+    private val reimportProjectAction = object : DialogWrapperAction("Reimport Project") {
+        @Serial
+        private val serialVersionUID: Long = -1963011685030505631L
+
+        override fun doAction(e: ActionEvent) {
+            this@ProjectRefreshDialog.doCancelAction()
+
+            val projectDirectory = project.path
+                ?.let { path -> VfsUtil.findFile(path, true) }
+                ?: return
+
+            project.triggerAction("CloseProject")
+
+            invokeLater {
+                triggerAction(
+                    actionId = "sap.commerce.toolset.reimport",
+                    place = ActionPlaces.NEW_PROJECT_WIZARD,
+                    uiKind = ActionUiKind.POPUP,
+                    dataContextProvider = {
+                        SimpleDataContext.builder()
+                            .add(CommonDataKeys.VIRTUAL_FILE, projectDirectory)
+                            .build()
+                    })
+            }
+        }
+    }
+
     init {
         title = "Refresh the Project"
         isResizable = false
@@ -237,6 +274,7 @@ class ProjectRefreshDialog(
             preferredSize = Dimension(JBUIScale.scale(600), JBUIScale.scale(400))
         }
 
+    override fun createLeftSideActions() = arrayOf(reimportProjectAction)
     override fun createNorthPanel() = banner(
         text = "Other settings can be found under SAP CX Settings.",
     )
