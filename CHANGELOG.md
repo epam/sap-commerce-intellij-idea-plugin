@@ -15,7 +15,7 @@
 - Introduced fallback to REST GitHub Api if GITHUB_TOKEN is not set [#1877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1877)
 - Updated project reimport dialog with the plugin version used for last import [#1878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1878)
 - New possibility to preserve existing project setting on project reimport [#1879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1879)
-- Reimport project added as an optional action in the Refresh Project dialog [#1880](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1880)
+- Reimport Project added as an optional action in the Refresh Project dialog [#1880](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1880)
 
 ### `ImpEx` enhancements
 - Adjusted range for reference resolution to ComposedTypes within value cells [#1867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1867)
