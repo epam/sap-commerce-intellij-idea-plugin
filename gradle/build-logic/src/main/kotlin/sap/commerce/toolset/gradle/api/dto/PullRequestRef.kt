@@ -18,12 +18,4 @@
 
 package sap.commerce.toolset.gradle.api.dto
 
-data class RestPR(
-    val title: String,
-    val number: Int,
-    val user: Author?,
-    val milestone: Milestone?,
-    val labels: List<Label>,
-    val pull_request: PullRequestRef? = null // Distinguishes PRs from issues
-)
-
+data class PullRequestRef(val url: String)
