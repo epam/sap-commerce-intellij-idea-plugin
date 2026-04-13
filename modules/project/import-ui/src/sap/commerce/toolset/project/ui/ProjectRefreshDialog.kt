@@ -223,7 +223,7 @@ class ProjectRefreshDialog(
         }
     }
 
-    private val reimportProjectAction = object : DialogWrapperAction("Reimport Project") {
+    private val reimportProjectAction = object : DialogWrapperAction("Reimport Project...") {
         @Serial
         private val serialVersionUID: Long = -1963011685030505631L
 
