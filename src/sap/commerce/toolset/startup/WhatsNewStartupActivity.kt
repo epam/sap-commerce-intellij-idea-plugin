@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,7 @@ class WhatsNewStartupActivity : ProjectActivity {
 
         RunOnceUtil.runOnceForProject(project, "sapCX_showWhatsNew_$version") {
             try {
-                val content = this.javaClass.getResourceAsStream("/CHANGELOG.md").use { html ->
+                val content = this.javaClass.getResourceAsStream("/releaseNotes.md").use { html ->
                     html
                         ?.let { String(StreamUtil.readBytes(it), Charsets.UTF_8) }
                 } ?: return@runOnceForProject

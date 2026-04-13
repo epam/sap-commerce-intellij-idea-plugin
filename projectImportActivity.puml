@@ -1,0 +1,184 @@
+@startuml ProjectImportActivity
+!theme plain
+
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam ArrowColor #2C3E50
+skinparam ActivityDiamondBackgroundColor #ECF0F1
+skinparam ActivityDiamondBorderColor #95A5A6
+
+' Color palette
+!define ACCENT #E74C3C
+!define PRIMARY #3498DB
+!define SUCCESS #2ECC71
+!define WARNING #F39C12
+!define SECONDARY #9B59B6
+
+skinparam ActivityBackgroundColor<<projectLevel>> PRIMARY
+skinparam ActivityBackgroundColor<<moduleLevel>> ACCENT
+skinparam ActivityBackgroundColor<<storageLevel>> SUCCESS
+skinparam ActivityBackgroundColor<<postImport>> WARNING
+
+skinparam NoteBorderColor #95A5A6
+skinparam NoteBackgroundColor #FDFEFE
+
+start
+:ProjectImportTask.execute();
+:Modal Progress with 95% Import, 5% Save; <<continuous>>
+
+partition "**Import Project (95%)**" #E8F6F3 {
+  :Get ProjectImportConfigurator\nExtension List;
+
+  fork
+    :ApplicationSettingsConfigurator;
+    :Saves import settings to
+    ApplicationSettings instance; <<continuous>>
+  fork again
+    :ProjectSettingsConfigurator;
+    :Workspace/project settings,
+    directory locations; <<continuous>>
+  fork again
+    :ProjectEncodingConfigurator;
+  fork again
+    :ProjectIconConfigurator;
+  fork again
+    :ProjectDictionaryConfigurator;
+    :Adds module names to
+    project dictionary; <<continuous>>
+  fork again
+    :ProjectLibrariesConfigurator;
+  fork again
+    :ProjectModulesDirectoryConfigurator;
+  fork again
+    :Only during Refresh; <<continuous>>
+    :ResetCacheProjectBeforeRefreshConfigurator;
+  fork again
+    :Only during Refresh; <<continuous>>
+    :SaveDocumentsProjectBeforeRefreshConfigurator;
+  fork again
+    partition "**ModulesConfigurator**" #D6EAF8 {
+      :Create Module Entities\nfor chosen modules <<projectLevel>>;
+      :Uses ModuleProvider.EP\nto create module entities; <<continuous>>
+
+      :For each Module:\nConfigure Module;
+
+      partition "**Module Configuration**" #EBF5FB {
+        :Get ModuleImportConfigurator Extension List (filtered by type);
+
+        fork
+          :JavaModuleReadonlyConfigurator;
+          :Sets readonly based on\nmodule type (OOTB/PLATFORM/EXT); <<continuous>>
+        fork again
+          partition "**Module Libraries**" #FADBD8 {
+            :Get ModuleLibraryConfigurator.EP;
+            fork
+              :ConfigModuleLibraryConfigurator;
+              :Links platform\nlicense library; <<continuous>>
+            fork again
+              :PlatformModuleLibraryConfigurator;
+              :Links database\ndrivers library; <<continuous>>
+            fork again
+              :[Other ModuleLibraryConfigurator];
+            end fork
+          }
+        fork again
+          partition "**Content Root Entries**" #FADBD8 {
+            fork
+              :SourcesContentRootEntryConfigurator;
+              :Configures src/\nand gensrc/; <<continuous>>
+            fork again
+              :TestSourcesContentRootEntryConfigurator;
+              :Configures\ntest sources; <<continuous>>
+            fork again
+              :[Other ContentRootEntryConfigurator];
+            end fork
+          }
+        fork again
+          :[Other ModuleImportConfigurator];
+        end fork
+      }
+    }
+  fork again
+    :ModulesDependenciesConfigurator;
+  fork again
+    :ModulesMappingConfigurator;
+  fork again
+    :GroupModuleConfigurator;
+  fork again
+    :VersionControlSystemConfigurator;
+  fork again
+    :SearchScopeConfigurator;
+  fork again
+    :YFacetConfigurator;
+  fork again
+    :ProjectPostImportBulkConfigurator <<postImport>>;
+    :Delayed: triggers after\nmutable storage committed; <<continuous>>
+  end fork
+}
+
+partition "**Save Workspace (5%)**" #E8F8F5 {
+  :context.workspace.update();
+
+  partition "**Cleanup Phase**" #D5F4E6 {
+    :Get ProjectStorageCleanupConfigurator Extension List;
+    fork
+      :CleanupFacetsStorageConfigurator <<storageLevel>>;
+    fork again
+      :CleanupModulesStorageConfigurator <<storageLevel>>;
+    fork again
+      :CleanupLibrariesStorageConfigurator <<storageLevel>>;
+    end fork
+  }
+
+  partition "**Save Phase**" #D5F4E6 {
+    :Get ProjectStorageSaveConfigurator Extension List;
+    fork
+      :SaveModulesStorageConfigurator <<storageLevel>>;
+    fork again
+      :SaveLibrariesStorageConfigurator <<storageLevel>>;
+    end fork
+  }
+
+  :Lock mutableStorage;
+  :Set ImportState = IMPORTED;
+}
+
+partition "**Post-Import (Async)**" #FEF9E7 {
+  :ProjectPostImportBulkConfigurator\nlistens to workspace events;
+
+  partition "**Legacy Configurators (EDT)**" #FCF3CF {
+    :Get ProjectPostImportLegacyConfigurator Extension List;
+    :Handles facets and
+    legacy workspace model; <<continuous>>
+  }
+
+  partition "**Workspace Configurators (Async)**" #FCF3CF {
+    :Get ProjectPostImportConfigurator Extension List;
+    fork
+      :ExtensionDescriptorsConfigurator;
+      :Saves extension
+      descriptor mappings; <<continuous>>
+    fork again
+      :MavenConfigurator;
+      :Schedules Maven sync
+      if Maven modules present; <<continuous>>
+    fork again
+      :AngularConfigurator;
+      :Configures Angular
+      modules; <<continuous>>
+    fork again
+      :[Other ProjectPostImportConfigurator];
+    end fork
+  }
+
+  partition "**Index-Aware Configurators**" #FCF3CF {
+    :Get ProjectImportWhenSmartConfigurator Extension List;
+    :Runs after
+    indexing completes; <<continuous>>
+  }
+
+  :Notify Import Finished;
+}
+
+stop
+@enduml

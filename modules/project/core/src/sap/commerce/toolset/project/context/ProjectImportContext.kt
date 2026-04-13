@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,6 +63,8 @@ data class ProjectImportContext(
 
     val chosenHybrisModuleDescriptors: Collection<ModuleDescriptor>,
     val chosenOtherModuleDescriptors: Collection<ModuleDescriptor>,
+
+    val restoreExistingProjectFilesTempDirectory: Path?,
 ) {
     val mutableStorage: MutableWorkspace = MutableWorkspace()
     val workspace = WorkspaceModel.getInstance(project)
@@ -114,6 +116,7 @@ data class ProjectImportContext(
         val removeExternalModules: Boolean,
 
         var project: Project? = null,
+        var projectName: String? = null,
         var modulesFilesDirectory: Path? = null,
         var sourceCodePath: Path? = null,
         var sourceCodeFile: Path? = null,
@@ -128,8 +131,11 @@ data class ProjectImportContext(
         private val _foundModules: MutableCollection<ModuleDescriptor> = mutableListOf(),
         private val _chosenModuleDescriptors: MutableMap<ModuleGroup, Collection<ModuleDescriptor>> = mutableMapOf(),
         private val _detectedVcs: MutableCollection<Path> = mutableSetOf(),
-        private val _excludedFromScanning: MutableCollection<String> = mutableSetOf()
+        private val _excludedFromScanning: MutableCollection<String> = mutableSetOf(),
+        private val _restoreExistingProjectFiles: MutableCollection<Path> = mutableSetOf(),
     ) {
+        val init
+            get() = !refresh
         val foundModules: Collection<ModuleDescriptor>
             get() = _foundModules.toImmutableList()
         var excludedFromScanning: Collection<String>
@@ -137,6 +143,12 @@ data class ProjectImportContext(
             set(value) {
                 _excludedFromScanning.clear(); _excludedFromScanning.addAll(value)
             }
+        var restoreExistingProjectFiles: Collection<Path>
+            get() = _restoreExistingProjectFiles.toSet()
+            set(value) {
+                _restoreExistingProjectFiles.clear(); _restoreExistingProjectFiles.addAll(value)
+            }
+        var restoreExistingProjectFilesTempDirectory: Path? = null
 
         fun chooseModuleDescriptors(moduleGroup: ModuleGroup, moduleDescriptors: Collection<ModuleDescriptor>) {
             _chosenModuleDescriptors[moduleGroup] = moduleDescriptors.toMutableList()
@@ -187,6 +199,8 @@ data class ProjectImportContext(
                 .filterIsInstance<PlatformModuleDescriptor>()
                 .firstOrNull()
                 ?: throw HybrisConfigurationException("Unable to find platform module descriptor"),
+
+            restoreExistingProjectFilesTempDirectory = restoreExistingProjectFilesTempDirectory,
         )
     }
 }

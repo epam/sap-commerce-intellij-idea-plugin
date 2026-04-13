@@ -44,6 +44,7 @@ import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.impl.DslComponentPropertyInternal
 import com.intellij.util.MathUtil
 import com.intellij.util.ui.JBEmptyBorder
+import com.intellij.util.ui.JBFont
 import org.jetbrains.annotations.NonNls
 import sap.commerce.toolset.Notifications
 import java.awt.Color
@@ -157,6 +158,11 @@ fun Row.browserLink(
     tooltip: String? = null,
     url: String,
 ): Cell<BrowserLink> = cell(BrowserLink(icon, text, tooltip, url))
+
+fun <T : JComponent> Cell<T>.italic(): Cell<T> {
+    component.font = JBFont.create(component.font.deriveFont(Font.ITALIC), false)
+    return this
+}
 
 fun Row.actionButton(
     action: AnAction, @NonNls actionPlace: String = ActionPlaces.UNKNOWN,

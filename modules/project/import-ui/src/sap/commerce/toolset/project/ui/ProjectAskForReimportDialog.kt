@@ -84,6 +84,8 @@ class ProjectAskForReimportDialog(
     override fun createLeftSideActions() = arrayOf(skip)
 
     override fun applyFields() {
+        project.triggerAction("CloseProject")
+
         invokeLater {
             triggerAction(
                 actionId = "sap.commerce.toolset.reimport",

@@ -153,7 +153,7 @@ tasks {
         sourceSets.main.get().resources.srcDirs
             .map { it.toPath() }
             .firstOrNull { Files.exists(it) }
-            ?.let { Files.writeString(it.resolve("CHANGELOG.md"), changeNotes) }
+            ?.let { Files.writeString(it.resolve("releaseNotes.md"), changeNotes) }
     }
 
     val fetchPRs by registering(CxFetchPRsGradleTask::class) {
@@ -284,9 +284,10 @@ dependencies {
 
         compatiblePlugins(
             "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
-            "PsiViewer",                        // PsiViewer            https://plugins.jetbrains.com/plugin/227-psiviewer
-            "JRebelPlugin",                     // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-            "AngularJS"                         // Angular              https://plugins.jetbrains.com/plugin/6971-angular
+            "PsiViewer",                               // PsiViewer            https://plugins.jetbrains.com/plugin/227-psiviewer
+            "JRebelPlugin",                            // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
+            "AngularJS",                               // AngularJS            https://plugins.jetbrains.com/plugin/23546-angularjs
+//            "Angular"                                  // Angular              https://plugins.jetbrains.com/plugin/6971-angular
         )
 
         // Big Data Tools:

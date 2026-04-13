@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -85,7 +85,12 @@ class ProjectRefreshAction : DumbAwareAction(
     }
 
     override fun update(e: AnActionEvent) {
-        val project = e.project ?: return
+        val project = e.project
+
+        if (project == null) {
+            e.presentation.isEnabledAndVisible = false
+            return
+        }
 
         e.presentation.putClientProperty(SHOW_TEXT_IN_TOOLBAR, true)
         e.presentation.isEnabled = project.importState == ProjectImportState.IMPORTED

@@ -94,7 +94,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             Gson().fromJson(stream.bufferedReader(), ProjectState.PRData::class.java)
         }.pullRequests
 
-        val filteredPRs = prs.filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
+        val filteredPRs = prs.filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) < 0 }
 
         val groupedPRs = filteredPRs
             .flatMap { pr -> pr.labels.map { label -> label to pr } }

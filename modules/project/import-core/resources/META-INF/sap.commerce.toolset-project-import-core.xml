@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,9 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.beforeCreateConfigurator order="first" id="backupProjectSettingsConfigurator"
+                                          implementation="sap.commerce.toolset.project.configurator.BackupProjectSettingsConfigurator"/>
+
         <project.importConfigurator order="first" id="applicationSettingsConfigurator"
                                     implementation="sap.commerce.toolset.project.configurator.ApplicationSettingsConfigurator"/>
         <project.importConfigurator order="after applicationSettingsConfigurator" id="projectSettingsConfigurator"
@@ -43,6 +46,7 @@
         <project.whenSmartConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
         <project.postImportConfigurator order="last" implementation="sap.commerce.toolset.project.configurator.ExtensionDescriptorsConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.BackupProjectSettingsConfigurator"/>
 
         <project.beforeRefreshConfigurator order="first" id="saveDocumentsProjectRefreshConfigurator"
                                            implementation="sap.commerce.toolset.project.configurator.SaveDocumentsProjectBeforeRefreshConfigurator"/>
