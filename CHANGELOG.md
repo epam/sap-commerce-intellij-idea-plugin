@@ -12,8 +12,9 @@
 - Add Compiler Parameter `-parameters` to keep Method Names during compilation for Reflection [#1865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1865)
 - Attach sources for OOTB modules during project import (supports both zip files and folders) [#1875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1875)
 - Brand-new way to inform & request project refresh or reimport [#1876](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1876)
-- Updated project reimport dialog with the plugin version used for last import [#1877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1877)
-- New possibility to preserve existing project setting on project reimport [#1878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1878)
+- Introduced fallback to REST GitHub Api if GITHUB_TOKEN is not set [#1877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1877)
+- Updated project reimport dialog with the plugin version used for last import [#1878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1878)
+- New possibility to preserve existing project setting on project reimport [#1879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1879)
 
 ### `ImpEx` enhancements
 - Adjusted range for reference resolution to ComposedTypes within value cells [#1867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1867)
