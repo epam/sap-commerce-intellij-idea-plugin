@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,6 +33,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.path
+import sap.commerce.toolset.settings.WorkspaceSettings
 import sap.commerce.toolset.ui.banner
 import javax.swing.Action
 
@@ -56,7 +57,10 @@ class ProjectReImportDialog(
     }
 
     override fun createNorthPanel() = banner(
-        text = "RE-IMPORT REQUIRED! Project refresh is not supported.",
+        text = """
+            RE-IMPORT REQUIRED! Project refresh is not supported.<br>
+            Your project was imported with an older version of the plugin <strong>${WorkspaceSettings.getInstance(project).importedByVersion ?: "unknown"}</strong>.
+        """.trimIndent(),
         status = EditorNotificationPanel.Status.Error
     )
 
