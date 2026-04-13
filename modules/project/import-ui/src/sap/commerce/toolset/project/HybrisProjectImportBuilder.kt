@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.projectImport.ProjectImportBuilder
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.configurator.ProjectBeforeCreateConfigurator
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.context.ProjectImportSettings
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -50,8 +51,18 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         _openProjectSettingsAfterImport = on
     }
 
-    override fun createProject(name: String, path: String) = super.createProject(name, path).also {
-        context?.project = it
+    override fun createProject(name: String, path: String): Project? {
+        context?.let { importContent ->
+            ProjectBeforeCreateConfigurator.EP.extensionList.forEach { it.configure(importContent) }
+        }
+
+        val projectName = context
+            ?.projectName
+            ?: name
+
+        return super.createProject(projectName, path).also {
+            context?.project = it
+        }
     }
 
     override fun isMarked(element: ModuleDescriptor?): Boolean = element
@@ -96,7 +107,8 @@ open class HybrisProjectImportBuilder : ProjectImportBuilder<ModuleDescriptor>()
         rootDirectory = Path(fileToImport),
         settings = importSettings,
         refresh = isUpdate,
-        project = getCurrentProject(),
+        project = getCurrentProject()
+            ?.takeUnless { it.isDefault },
         removeExternalModules = removeExternalModules,
     ).also {
         context = it

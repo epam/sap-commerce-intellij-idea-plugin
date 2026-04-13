@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.wizard
 
 import com.intellij.ide.util.projectWizard.WizardContext
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.GraphProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.util.IconLoader
@@ -36,6 +37,8 @@ import sap.commerce.toolset.ui.italic
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.awt.Dimension
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.nio.file.Path
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -48,13 +51,12 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
 
     private var _ui: JComponent? = null
     private val graph = PropertyGraph()
-    private val checkboxProperties = mutableMapOf<GraphProperty<Boolean>, Path>()
+    private val projectNameProperty = AtomicProperty<String?>(null)
+    private val checkboxProperties = mutableMapOf<String, RestoreOption>()
 
     override fun updateStep() {
         checkboxProperties.clear()
         _ui = panel {
-            val mutableContext = importContext ?: return@panel
-            val projectName = mutableContext.project?.name ?: "Unknown"
             val ideaPath = Path(builder.fileToImport)
                 .resolve(ProjectConstants.Paths.IDEA)
             val ideaDirectory = ideaPath.absolutePathString()
@@ -75,26 +77,31 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
 
             row {
                 button("Select All") {
-                    checkboxProperties.keys.forEach { it.set(true) }
+                    checkboxProperties.values.forEach { it.property.set(true) }
                 }
 
                 button("Deselect All") {
-                    checkboxProperties.keys.forEach { it.set(false) }
+                    checkboxProperties.values.forEach { it.property.set(false) }
                 }
             }
 
             separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
 
-            checkBoxFile(ideaPath, ".name", "Project name") {
-                label(projectName).italic()
+            checkBoxFile(ideaPath, ".name", "Project name") { path ->
+                runCatching {
+                    Files.readString(path, StandardCharsets.UTF_8)
+                }.onSuccess { projectName ->
+                    projectNameProperty.set(projectName)
+                    label(projectName).italic()
+                }
             }
             checkBoxFile(ideaPath, "icon.svg", "Project icon (light theme)") { path ->
-                IconLoader.findIcon(path.toUri().toURL())
+                IconLoader.findIcon(path.toUri().toURL(), false)
                     ?.let { IconUtil.scale(it, null, 16f / it.iconWidth) }
                     ?.let { icon(it) }
             }
             checkBoxFile(ideaPath, "icon_dark.svg", "Project icon (dark theme)") { path ->
-                IconLoader.findIcon(path.toUri().toURL())
+                IconLoader.findIcon(path.toUri().toURL(), false)
                     ?.let { IconUtil.scale(it, null, 16f / it.iconWidth) }
                     ?.let { icon(it) }
             }
@@ -116,9 +123,12 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
 
     override fun updateDataModel() {
         val mutableContext = importContext ?: return
-        mutableContext.restoreExistingProjectFiles = checkboxProperties.entries
-            .filter { it.key.get() }
-            .map { it.value }
+        mutableContext.projectName = projectNameProperty.get()
+            ?.takeIf { it.isNotBlank() }
+            ?.takeIf { checkboxProperties[".name"]?.property?.get() ?: false}
+        mutableContext.restoreExistingProjectFiles = checkboxProperties.values
+            .filter { it.property.get() }
+            .map { it.path }
     }
 
     override fun isStepVisible(): Boolean {
@@ -151,7 +161,11 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
             ?.let { path ->
                 row {
                     val property = graph.property(false)
-                    checkboxProperties[property] = path
+                    checkboxProperties[childName] = RestoreOption(
+                        name = childName,
+                        property = property,
+                        path = path,
+                    )
                     checkBox(textProvider(path))
                         .bindSelected(property)
                         .comment(".idea/$childName")
@@ -162,4 +176,10 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
     private val importContext: ProjectImportContext.Mutable?
         get() = builder.asSafely<HybrisProjectImportBuilder>()
             ?.context
+
+    private data class RestoreOption(
+        val name: String,
+        val property: GraphProperty<Boolean>,
+        val path: Path,
+    )
 }

@@ -64,7 +64,7 @@ data class ProjectImportContext(
     val chosenHybrisModuleDescriptors: Collection<ModuleDescriptor>,
     val chosenOtherModuleDescriptors: Collection<ModuleDescriptor>,
 
-    val restoreExistingProjectFiles: Collection<Path>,
+    val restoreExistingProjectFilesTempDirectory: Path?,
 ) {
     val mutableStorage: MutableWorkspace = MutableWorkspace()
     val workspace = WorkspaceModel.getInstance(project)
@@ -116,6 +116,7 @@ data class ProjectImportContext(
         val removeExternalModules: Boolean,
 
         var project: Project? = null,
+        var projectName: String? = null,
         var modulesFilesDirectory: Path? = null,
         var sourceCodePath: Path? = null,
         var sourceCodeFile: Path? = null,
@@ -133,6 +134,8 @@ data class ProjectImportContext(
         private val _excludedFromScanning: MutableCollection<String> = mutableSetOf(),
         private val _restoreExistingProjectFiles: MutableCollection<Path> = mutableSetOf(),
     ) {
+        val init
+            get() = !refresh
         val foundModules: Collection<ModuleDescriptor>
             get() = _foundModules.toImmutableList()
         var excludedFromScanning: Collection<String>
@@ -145,6 +148,7 @@ data class ProjectImportContext(
             set(value) {
                 _restoreExistingProjectFiles.clear(); _restoreExistingProjectFiles.addAll(value)
             }
+        var restoreExistingProjectFilesTempDirectory: Path? = null
 
         fun chooseModuleDescriptors(moduleGroup: ModuleGroup, moduleDescriptors: Collection<ModuleDescriptor>) {
             _chosenModuleDescriptors[moduleGroup] = moduleDescriptors.toMutableList()
@@ -196,7 +200,7 @@ data class ProjectImportContext(
                 .firstOrNull()
                 ?: throw HybrisConfigurationException("Unable to find platform module descriptor"),
 
-            restoreExistingProjectFiles = _restoreExistingProjectFiles
+            restoreExistingProjectFilesTempDirectory = restoreExistingProjectFilesTempDirectory,
         )
     }
 }
