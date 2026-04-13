@@ -22,6 +22,9 @@ import com.intellij.ide.RecentProjectsManager
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.ide.impl.OpenProjectTask
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUiKind
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.ex.ProjectManagerEx
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.VerticalFlowLayout
@@ -38,6 +41,7 @@ import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.triggerAction
 import java.awt.Component
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -48,7 +52,7 @@ import javax.swing.*
 import javax.swing.plaf.FontUIResource
 
 class SapCommerceWelcomeTab(parentDisposable: Disposable) :
-    DefaultWelcomeScreenTab("SAP Commerce Cloud"), Disposable {
+    DefaultWelcomeScreenTab("SAP Commerce"), Disposable {
 
     private val listModel = CollectionListModel<SapProject>()
     private val projectList = JBList(listModel)
@@ -62,9 +66,9 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
     override fun buildComponent(): JComponent {
         return panel {
             row {
-                icon(HybrisIcons.Y.LOGO_BLUE)
+                icon(HybrisIcons.PLUGIN_SETTINGS)
 
-                label("SAP Commerce Cloud Projects")
+                label("SAP Commerce Projects")
                     .bold()
                     .applyToComponent {
                         font = FontUIResource(
@@ -72,6 +76,8 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
                         )
                     }
             }.bottomGap(BottomGap.MEDIUM)
+
+            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
 
             row {
                 scrollCell(projectList)
@@ -82,7 +88,16 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
             row {
                 button("Refresh") { loadProjects() }
                 button("Open") { openSelectedProject() }
-                // button("Import Project") { importProject() }
+                button("Import Project") {
+
+                    invokeLater {
+                        triggerAction(
+                            actionId = "ImportProject",
+                            place = ActionPlaces.WELCOME_SCREEN,
+                            uiKind = ActionUiKind.POPUP,
+                            )
+                    }
+                }
             }
                 //.align(AlignX.RIGHT)
         }.apply {
