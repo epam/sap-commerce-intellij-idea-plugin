@@ -6,7 +6,7 @@
 
 ### `Project Import` enhancements
 - Enable `externalDependencies.xml` as a restoration entry on project reimport [#1884](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1884)
-- Improved Angluar module detection for Ultimate IDEA [#1885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1885)
+- Improved Angular module detection for Ultimate IDEA [#1885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1885)
 
 ### `Welcome Screen` enchancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
