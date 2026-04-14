@@ -24,7 +24,5 @@ import com.intellij.openapi.wm.WelcomeScreenTab
 import com.intellij.openapi.wm.WelcomeTabFactory
 
 class SapCommerceWelcomeTabFactory : WelcomeTabFactory {
-    override fun createWelcomeTabs(ws: WelcomeScreen, parentDisposable: Disposable): MutableList<WelcomeScreenTab> {
-        return mutableListOf(SapCommerceWelcomeTab(parentDisposable))
-    }
+    override fun createWelcomeTabs(ws: WelcomeScreen, parentDisposable: Disposable): MutableList<WelcomeScreenTab> = mutableListOf(SapCommerceWelcomeTab(parentDisposable))
 }

@@ -43,6 +43,7 @@ import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
@@ -112,6 +113,7 @@ class SapCommerceWelcomeTab(
     }
 
     private fun initList() {
+        //TODO move inside projectList
         projectList.cellRenderer = SapCommerceProjectRenderer()
 
         val mouseHandler = SapCommerceProjectMouseHandler(projectList, listModel)
@@ -119,18 +121,16 @@ class SapCommerceWelcomeTab(
         projectList.addMouseMotionListener(this, mouseHandler)
     }
 
-    private fun subscribeToRecentProjectsChanges() {
-        ApplicationManager.getApplication().messageBus
-            .connect(this)
-            .subscribe(
-                RecentProjectsManager.RECENT_PROJECTS_CHANGE_TOPIC,
-                object : RecentProjectsManager.RecentProjectsChange {
-                    override fun change() {
-                        loadProjects()
-                    }
+    private fun subscribeToRecentProjectsChanges() = ApplicationManager.getApplication().messageBus
+        .connect(this)
+        .subscribe(
+            RecentProjectsManager.RECENT_PROJECTS_CHANGE_TOPIC,
+            object : RecentProjectsManager.RecentProjectsChange {
+                override fun change() {
+                    loadProjects()
                 }
-            )
-    }
+            }
+        )
 
     private fun loadProjects() {
         currentLoadJob?.cancel()
@@ -152,7 +152,7 @@ class SapCommerceWelcomeTab(
 
     private fun isSapCommerceProject(location: String): Boolean = runCatching {
         Path.of(location)
-            .resolve(".idea")
+            .resolve(ProjectConstants.Directory.IDEA)
             .resolve("hybrisProjectSettings.xml")
             .fileExists
     }
