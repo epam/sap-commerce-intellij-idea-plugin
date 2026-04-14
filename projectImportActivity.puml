@@ -154,19 +154,20 @@ partition "**Post-Import**" #FEF9E7 {
         if (Plugin: Java EE) then (<color:green>installed)
             :WebFacetConfigurator;
             :Configures Web Facets\nfor web sub-modules; <<continuous>>
-        else (<color:red>not)
-            :skip; <<continuous>>
+        else (<color:red>no -> skip)
         endif
     fork again
         if (Plugin: Kotlin) then (<color:green>installed)
             :KotlinFacetConfigurator;
-            :Configures Web Facets\nfor web sub-modules; <<continuous>>
-        else (<color:red>not)
-            :skip; <<continuous>>
+            :Configures Kotlin Facets\nfor modules; <<continuous>>
+        else (<color:red>no -> skip)
         endif
     fork again
-        :JavadocsProjectImportConfigurator;
-        :Test; <<continuous>>
+        if (Plugin: Kotlin) then (<color:green>installed)
+            :JavadocsProjectImportConfigurator;
+            :Configures Javadocs for\nnon-custom moduels; <<continuous>>
+        else (<color:red>no -> skip)
+        endif
     fork again
         :CCv2YFacetConfigurator;
         :Test; <<continuous>>

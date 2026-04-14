@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -48,7 +48,7 @@ class BSDuplicateEnumDefinition : BSInspection() {
         val meta = BSMetaModelAccess.getInstance(project).findMetaForDom(dom) ?: return
 
         val currentFileDeclarations = meta.declarations
-            .mapNotNull { it?.domAnchor }
+            .map { it.domAnchor }
             .filter { it.containingFile == dom.xmlElement?.containingFile }
             .mapNotNull { it.retrieveDomElement() }
         if (currentFileDeclarations.size > 1) {
