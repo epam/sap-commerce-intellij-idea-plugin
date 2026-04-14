@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen
+package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.wm.WelcomeScreen
 import com.intellij.openapi.wm.WelcomeScreenTab
 import com.intellij.openapi.wm.WelcomeTabFactory
 
-class SapCommerceCloudWelcomeTabFactory : WelcomeTabFactory {
+class SapCommerceWelcomeTabFactory : WelcomeTabFactory {
     override fun createWelcomeTabs(ws: WelcomeScreen, parentDisposable: Disposable): MutableList<WelcomeScreenTab> {
         return mutableListOf(SapCommerceWelcomeTab(parentDisposable))
     }

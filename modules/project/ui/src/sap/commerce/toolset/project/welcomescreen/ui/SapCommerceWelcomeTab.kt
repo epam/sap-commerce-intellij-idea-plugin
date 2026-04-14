@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen
+package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.ide.RecentProjectsManager
 import com.intellij.ide.RecentProjectsManagerBase
@@ -29,19 +29,25 @@ import com.intellij.openapi.project.ex.ProjectManagerEx
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.wm.impl.welcomeScreen.TabbedWelcomeScreen.DefaultWelcomeScreenTab
+import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBList
+import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.scale.JBUIScale
+import com.intellij.util.IconUtil
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import com.intellij.util.ui.UIUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -54,7 +60,7 @@ import javax.swing.plaf.FontUIResource
 class SapCommerceWelcomeTab(parentDisposable: Disposable) :
     DefaultWelcomeScreenTab("SAP Commerce"), Disposable {
 
-    private val listModel = CollectionListModel<SapProject>()
+    private val listModel = CollectionListModel<SapCommerceProject>()
     private val projectList = JBList(listModel)
 
     init {
@@ -66,50 +72,55 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
     override fun buildComponent(): JComponent {
         return panel {
             row {
-                icon(HybrisIcons.PLUGIN_SETTINGS)
+                icon(
+                    IconUtil.scale(HybrisIcons.PLUGIN_SETTINGS, null, 3.125f)
+                )
 
-                label("SAP Commerce Projects")
+                label(i18n("hybris.welcometab.text"))
                     .bold()
+                    .resizableColumn()
+                    .align(AlignX.LEFT)
                     .applyToComponent {
                         font = FontUIResource(
                             font.deriveFont(font.size2D + JBUIScale.scale(3))
                         )
                     }
-            }.bottomGap(BottomGap.MEDIUM)
 
-            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-
-            row {
-                scrollCell(projectList)
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }.resizableRow()
-
-            row {
-                button("Refresh") { loadProjects() }
-                button("Open") { openSelectedProject() }
-                button("Import Project") {
-
+                button(i18n("hybris.welcometab.button.import.project")) {
                     invokeLater {
                         triggerAction(
                             actionId = "ImportProject",
                             place = ActionPlaces.WELCOME_SCREEN,
                             uiKind = ActionUiKind.POPUP,
-                            )
+                        )
                     }
+                }.align(AlignX.RIGHT)
+            }.bottomGap(BottomGap.MEDIUM)
+
+            separator(WelcomeScreenUIManager.getSeparatorColor())
+
+            row {
+                val scrollPane = JBScrollPane(projectList).apply {
+                    border = JBUI.Borders.empty()
+                    background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
+                    viewport.background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
                 }
-            }
-                //.align(AlignX.RIGHT)
+                cell(scrollPane)
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }.resizableRow()
+
         }.apply {
-            border = JBUI.Borders.empty(16)
-            background = UIUtil.getPanelBackground()
+            border = JBUI.Borders.empty(13, 12)
+            background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         }
     }
 
     private fun initList() {
         projectList.apply {
             selectionMode = ListSelectionModel.SINGLE_SELECTION
-            cellRenderer = SapProjectRenderer()
+            cellRenderer = SapCommerceProjectRenderer()
+            background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
 
             addMouseListener(object : MouseAdapter() {
                 override fun mouseClicked(e: MouseEvent) {
@@ -122,17 +133,16 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
     }
 
     private fun loadProjects() {
-        val recentProjectManager = RecentProjectsManager.getInstance() as RecentProjectsManagerBase
-        val paths = recentProjectManager.getRecentPaths()
+        val projects = RecentProjectsManager.getInstance()
+            .asSafely<RecentProjectsManagerBase>()
+            ?.getRecentPaths()
+            ?.asSequence()
+            ?.filter { isSapCommerceProject(it) }
+            ?.map { SapCommerceProject.of(it) }
+            ?.toList()
+            ?: emptyList()
 
-        val sapProjects = paths
-            .asSequence()
-            .filter { isSapCommerceProject(it) }
-            .map { SapProject.of(it) }
-            .toList()
-
-        listModel.removeAll()
-        listModel.add(sapProjects)
+        listModel.replaceAll(projects)
     }
 
     private fun isSapCommerceProject(path: String): Boolean =
@@ -140,62 +150,49 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
 
     private fun openSelectedProject() {
         val selected = projectList.selectedValue ?: run {
-            Messages.showWarningDialog("Please select a project", "No Selection")
+            Messages.showWarningDialog(i18n("hybris.welcometab.message.select.project"), i18n("hybris.welcometab.message.no.selection"))
             return
         }
 
         ProjectManagerEx.getInstanceEx().openProject(Path.of(selected.path), OpenProjectTask())
     }
 
-    // ========================= MODEL =========================
 
-    private data class SapProject(
-        val path: String,
-        val displayName: String,
-        val projectName: String,
-        val projectIcon: Icon
-    ) {
-        companion object {
-            fun of(path: String): SapProject {
-                val manager = RecentProjectsManager.getInstance() as RecentProjectsManagerBase
-                val projectName = manager.getProjectName(path)
-                val displayName = manager.getDisplayName(path) ?: projectName
-                val icon = RecentProjectsManagerBase.getInstanceEx().getProjectIcon(path, true)
+    internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommerceProject> {
 
-                return SapProject(path, displayName, projectName, icon)
-            }
-        }
-    }
-
-    // ========================= RENDERER =========================
-
-    private class SapProjectRenderer : JPanel(), ListCellRenderer<SapProject> {
-
+        private val iconLabel = JLabel()
         private val nameLabel = JLabel()
         private val pathLabel = JLabel()
 
         init {
-            layout = VerticalFlowLayout()
-            border = JBUI.Borders.empty(6)
+            layout = BorderLayout(JBUI.scale(8), 0)
+            border = JBUI.Borders.empty(6, 8)
             isFocusable = false
 
             pathLabel.foreground = JBColor.GRAY
+            pathLabel.font = JBUI.Fonts.smallFont()
 
-            add(nameLabel)
-            add(pathLabel)
+            val textPanel = JPanel(VerticalFlowLayout(0, 2)).apply {
+                isOpaque = false
+                add(nameLabel)
+                add(pathLabel)
+            }
+
+            add(iconLabel, BorderLayout.WEST)
+            add(textPanel, BorderLayout.CENTER)
         }
 
         override fun getListCellRendererComponent(
-            list: JList<out SapProject>,
-            value: SapProject,
+            list: JList<out SapCommerceProject>,
+            value: SapCommerceProject,
             index: Int,
             isSelected: Boolean,
             cellHasFocus: Boolean
         ): Component {
 
-            nameLabel.icon = value.projectIcon
+            iconLabel.icon = value.projectIcon
             nameLabel.text = value.displayName
-            pathLabel.text = FileUtil.getLocationRelativeToUserHome(value.path)
+            pathLabel.text = value.locationRelativeToUserHome
 
             background = if (isSelected) list.selectionBackground else list.background
 
