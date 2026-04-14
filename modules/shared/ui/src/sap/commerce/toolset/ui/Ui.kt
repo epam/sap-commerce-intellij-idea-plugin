@@ -35,7 +35,9 @@ import java.awt.event.KeyListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseListener
 import javax.swing.JComponent
+import javax.swing.JList
 import javax.swing.JTree
+import javax.swing.event.ListSelectionListener
 import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
 import javax.swing.tree.DefaultMutableTreeNode
@@ -82,6 +84,12 @@ fun JBList<*>.addMouseMotionListener(parentDisposable: Disposable? = null, liste
     .apply {
         addMouseMotionListener(listener)
         parentDisposable?.whenDisposed { removeMouseListener(listener) }
+    }
+
+fun JList<*>.addListSelectionListener(parentDisposable: Disposable? = null, listener: ListSelectionListener): JList<*> = this
+    .apply {
+        addListSelectionListener(listener)
+        parentDisposable?.whenDisposed { removeListSelectionListener(listener) }
     }
 
 fun <T : TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this
