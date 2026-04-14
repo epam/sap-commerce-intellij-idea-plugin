@@ -27,6 +27,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.ClientProperty
 import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
@@ -68,6 +69,12 @@ fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listene
     .apply {
         addTreeSelectionListener(listener)
         parentDisposable?.whenDisposed { removeTreeSelectionListener(listener) }
+    }
+
+fun JBList<*>.addMouseListener(parentDisposable: Disposable? = null, listener: MouseListener): JBList<*> = this
+    .apply {
+        addMouseListener(listener)
+        parentDisposable?.whenDisposed { removeMouseListener(listener) }
     }
 
 fun <T : TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this

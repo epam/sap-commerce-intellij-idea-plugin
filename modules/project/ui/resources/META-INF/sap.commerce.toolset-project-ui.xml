@@ -32,7 +32,7 @@
                              key="hybris.settings.project.title"
                              provider="sap.commerce.toolset.project.options.ProjectSettingsConfigurableProvider"/>
 
-        <welcomeTabFactory id="SapCommerceCloudWelcomeTab" implementation="sap.commerce.toolset.project.welcomescreen.ui.SapCommerceWelcomeTabFactory"
-                           order="first"/>
+        <welcomeTabFactory id="SapCommerceCloudWelcomeTab" order="first"
+                           implementation="sap.commerce.toolset.project.welcomescreen.ui.SapCommerceWelcomeTabFactory"/>
     </extensions>
 </idea-plugin>

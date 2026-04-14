@@ -18,6 +18,8 @@
 
 package sap.commerce.toolset.project.welcomescreen.ui
 
+import com.intellij.codeInsight.hints.presentation.MouseButton
+import com.intellij.codeInsight.hints.presentation.mouseButton
 import com.intellij.ide.RecentProjectsManager
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.ide.impl.OpenProjectTask
@@ -47,6 +49,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.ui.addMouseListener
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.event.MouseAdapter
@@ -57,8 +60,7 @@ import java.nio.file.Path
 import javax.swing.*
 import javax.swing.plaf.FontUIResource
 
-class SapCommerceWelcomeTab(parentDisposable: Disposable) :
-    DefaultWelcomeScreenTab("SAP Commerce"), Disposable {
+class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreenTab("SAP Commerce"), Disposable {
 
     private val listModel = CollectionListModel<SapCommerceProject>()
     private val projectList = JBList(listModel)
@@ -122,9 +124,9 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
             cellRenderer = SapCommerceProjectRenderer()
             background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
 
-            addMouseListener(object : MouseAdapter() {
+            addMouseListener(this@SapCommerceWelcomeTab, object : MouseAdapter() {
                 override fun mouseClicked(e: MouseEvent) {
-                    if (e.clickCount == 2) {
+                    if (e.mouseButton == MouseButton.Left && e.clickCount == 1) {
                         openSelectedProject()
                     }
                 }
