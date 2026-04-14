@@ -27,10 +27,10 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.ClientProperty
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
+import java.awt.Component
 import java.awt.event.KeyListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseListener
@@ -74,19 +74,19 @@ fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listene
         parentDisposable?.whenDisposed { removeTreeSelectionListener(listener) }
     }
 
-fun JBList<*>.addMouseListener(parentDisposable: Disposable? = null, listener: MouseAdapter): JBList<*> = this
+fun <T : Component> T.addMouseListener(parentDisposable: Disposable? = null, listener: MouseAdapter): T = this
     .apply {
         addMouseListener(listener)
         parentDisposable?.whenDisposed { removeMouseListener(listener) }
     }
 
-fun JBList<*>.addMouseMotionListener(parentDisposable: Disposable? = null, listener: MouseAdapter): JBList<*> = this
+fun <T : Component> T.addMouseMotionListener(parentDisposable: Disposable? = null, listener: MouseAdapter): T = this
     .apply {
         addMouseMotionListener(listener)
         parentDisposable?.whenDisposed { removeMouseListener(listener) }
     }
 
-fun JList<*>.addListSelectionListener(parentDisposable: Disposable? = null, listener: ListSelectionListener): JList<*> = this
+fun <T : JList<*>> T.addListSelectionListener(parentDisposable: Disposable? = null, listener: ListSelectionListener): T = this
     .apply {
         addListSelectionListener(listener)
         parentDisposable?.whenDisposed { removeListSelectionListener(listener) }

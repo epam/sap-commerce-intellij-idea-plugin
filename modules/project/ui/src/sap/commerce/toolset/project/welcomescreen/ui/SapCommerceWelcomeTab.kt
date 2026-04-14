@@ -114,11 +114,11 @@ class SapCommerceWelcomeTab(
 
     private fun initList() {
         //TODO move inside projectList
-        projectList.cellRenderer = SapCommerceProjectRenderer()
-
         val mouseHandler = SapCommerceProjectMouseHandler(projectList, listModel)
-        projectList.addMouseListener(this, mouseHandler)
-        projectList.addMouseMotionListener(this, mouseHandler)
+        projectList
+            .addMouseListener(this, mouseHandler)
+            .addMouseMotionListener(this, mouseHandler)
+            .cellRenderer = SapCommerceProjectRenderer()
     }
 
     private fun subscribeToRecentProjectsChanges() = ApplicationManager.getApplication().messageBus
