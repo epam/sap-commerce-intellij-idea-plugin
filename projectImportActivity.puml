@@ -143,38 +143,122 @@ partition "**Save Workspace (5%)**" #E8F8F5 {
   :Set ImportState = IMPORTED;
 }
 
-partition "**Post-Import (Async)**" #FEF9E7 {
+partition "**Post-Import**" #FEF9E7 {
   :ProjectPostImportBulkConfigurator\nlistens to workspace events;
 
-  partition "**Legacy Configurators (EDT)**" #FCF3CF {
+  partition "**Legacy Configurators (EDT)**" #FDF3CF {
     :Get ProjectPostImportLegacyConfigurator Extension List;
-    :Handles facets and
-    legacy workspace model; <<continuous>>
+    :Handles facets and\nlegacy workspace model; <<continuous>>
+    fork
+    fork again
+        if (Plugin: Java EE) then (<color:green>installed)
+            :WebFacetConfigurator;
+            :Configures Web Facets\nfor web sub-modules; <<continuous>>
+        else (<color:red>not)
+            :skip; <<continuous>>
+        endif
+    fork again
+        if (Plugin: Kotlin) then (<color:green>installed)
+            :KotlinFacetConfigurator;
+            :Configures Web Facets\nfor web sub-modules; <<continuous>>
+        else (<color:red>not)
+            :skip; <<continuous>>
+        endif
+    fork again
+        :JavadocsProjectImportConfigurator;
+        :Test; <<continuous>>
+    fork again
+        :CCv2YFacetConfigurator;
+        :Test; <<continuous>>
+    fork again
+        :AngularYFacetConfigurator;
+        :Test; <<continuous>>
+    fork again
+        :SpringFacetConfigurator;
+        :Test; <<continuous>>
+    fork again
+        :YFacetConfigurator;
+        :Test; <<continuous>>
+    fork end
   }
 
-  partition "**Workspace Configurators (Async)**" #FCF3CF {
+  partition "**Workspace Configurators (Async)**" #FDF3CF {
     :Get ProjectPostImportConfigurator Extension List;
+    :every configurator executed in own independent forked coroutine; <<continuous>>
     fork
       :ExtensionDescriptorsConfigurator;
-      :Saves extension
-      descriptor mappings; <<continuous>>
+      :Saves extension\ndescriptor mappings; <<continuous>>
     fork again
       :MavenConfigurator;
-      :Schedules Maven sync
-      if Maven modules present; <<continuous>>
+      :- depends on Maven plugin -\nImports selected Maven modules; <<continuous>>
     fork again
       :AngularConfigurator;
-      :Configures Angular
-      modules; <<continuous>>
+      :- depends on Angular & AngularJS plugins -\nImports selected Angular modules; <<continuous>>
     fork again
-      :[Other ProjectPostImportConfigurator];
+        :GradleConfigurator;
+        :- depends on Gradle plugin -\nImports selected Gradle modules; <<continuous>>
+    fork again
+        :EclipseModuleConfigurator;
+        :- depends on Eclipse plugin -\nImports selected Eclipse modules; <<continuous>>
+    fork again
+        :JRebelConfigurator;
+        :- depends on JRebel plugin -\nConfigures JRebel facets; <<continuous>>
+    fork again
+        :KotlinPostImportConfigurator;
+        :- if kotlinnature extension registered -\nConfigures Kotlin; <<continuous>>
+    fork again
+        :JavaLibrarySourcesConfigurator;
+        :Downloads and attaches sources\nfor every .jar library; <<continuous>>
+    fork again
+        :DecompileOotbBinariesConfigurator;
+        :Decompiles Platform binaries\nand place under `docs`; <<continuous>>
+    fork again
+        :DataSourceConfigurator;
+        :- Ultimate only -\nConfigures DB schema; <<continuous>>
+    fork again
+        :XsdSchemaConfigurator;
+        :Configures\nJava EE XSD for Cockpit NG; <<continuous>>
+    fork again
+        :SearchScopeConfigurator;
+        :Configures\nProject Search Scopes; <<continuous>>
+    fork again
+        :TSProjectImportConfigurator;
+        :- Init -\nType System\nMeta Model; <<continuous>>
+    fork again
+        :BSProjectImportConfigurator;
+        :- Init -\nBean System\nMeta Model; <<continuous>>
+    fork again
+        :CngProjectImportConfigurator;
+        :- Init -\nCockpit NG\nMeta Model; <<continuous>>
+    fork again
+        :BackupProjectSettingsConfigurator;
+        :- Import Only -\nRestores selected previously entries; <<continuous>>
     end fork
   }
 
-  partition "**Index-Aware Configurators**" #FCF3CF {
+  partition "**Index-Aware Configurators**" #FDF3CF {
     :Get ProjectImportWhenSmartConfigurator Extension List;
-    :Runs after
-    indexing completes; <<continuous>>
+    :Runs after\nindexing completes; <<continuous>>
+    fork
+    fork again
+        :LocalServerRunConfigurationWhenSmartConfigurator;
+        :Configures Local SAP CX Run Configuration; <<continuous>>
+    fork again
+        :RemoteDebugRunConfigurationWhenSmartConfigurator;
+        :Configures Remote Debug Run Configuration; <<continuous>>
+    fork again
+        :KotlinWhenSmartConfigurator;
+        :Configures Kotlin Compiler & Library; <<continuous>>
+    fork again
+        :JavaCompilerConfigurator;
+        :Configures Java Compiler; <<continuous>>
+    fork again
+        :AntWhenSmartConfigurator;
+        :Configures Ant Installation & targets; <<continuous>>
+    fork again
+        :VersionControlSystemConfigurator;
+        :Configures Version Control Systems; <<continuous>>
+    end fork
   }
 
   :Notify Import Finished;
