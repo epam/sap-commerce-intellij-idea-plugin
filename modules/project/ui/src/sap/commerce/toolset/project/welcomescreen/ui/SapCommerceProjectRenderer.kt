@@ -30,10 +30,9 @@ import javax.swing.*
 internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommerceProject> {
 
     private val iconLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
-    private val nameLabel = JLabel()
+    private val nameLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
     private val pathLabel = JLabel().apply {
         foreground = JBColor.GRAY
-        font = JBUI.Fonts.smallFont()
     }
 
     private val pillColor: Color = UIManager.getColor("List.selectionBackground")
@@ -91,9 +90,11 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
         isSelected: Boolean,
         cellHasFocus: Boolean
     ): Component {
-        iconLabel.icon = value.projectIcon
-        nameLabel.text = value.displayName
-        pathLabel.text = value.locationRelativeToUserHome
+        with(value) {
+            iconLabel.icon = projectIcon
+            nameLabel.text = displayName
+            pathLabel.text = locationRelativeToUserHome
+        }
 
         hovered = (list as? SapCommerceProjectList)?.hoveredIndex == index
         return this
