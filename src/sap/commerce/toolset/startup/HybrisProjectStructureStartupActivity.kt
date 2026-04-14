@@ -88,15 +88,16 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             ?: return null
         val lastImportVersion = importedByVersion
             ?: return ProjectState.ForceReimport(projectDirectory)
+
+        if (lastImportVersion == currentVersion) return ProjectState.Normal
+
         val resourceAsStream = this.javaClass.getResourceAsStream("/prs.json")
             ?: return null
-        val prs = resourceAsStream.use { stream ->
+        val groupedPRs = resourceAsStream.use { stream ->
             Gson().fromJson(stream.bufferedReader(), ProjectState.PRData::class.java)
-        }.pullRequests
-
-        val filteredPRs = prs.filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) < 0 }
-
-        val groupedPRs = filteredPRs
+        }
+            .pullRequests
+            .filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
             .flatMap { pr -> pr.labels.map { label -> label to pr } }
             .groupBy({ it.first }, { it.second })
 
