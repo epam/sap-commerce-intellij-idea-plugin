@@ -174,10 +174,10 @@ abstract class CxFetchPRsGradleTask : DefaultTask() {
 
         logger.lifecycle(
             """
-        GITHUB_TOKEN not provided, using REST API fallback (rate-limited).
-
-        Fetching import/refresh related PRs from: $repo | ${branch.get()}
-    """.trimIndent()
+                GITHUB_TOKEN not provided, using REST API fallback (rate-limited).
+        
+                Fetching import/refresh related PRs from: $repo | ${branch.get()}
+            """.trimIndent()
         )
 
         // Get latest commit SHA without auth

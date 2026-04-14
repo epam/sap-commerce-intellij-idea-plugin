@@ -1,7 +1,7 @@
 ## [2026.0.8]
 
 <cite>Release contributors</cite>
-- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
+- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Stefan Kruk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3AStefanKruk+is%3Apr+)
 - 2 PR(s) by [Alessandro Antonini](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.8+author%3Aninopg+is%3Apr)
 
@@ -17,6 +17,7 @@
 - New possibility to preserve existing project setting on project reimport [#1879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1879)
 - Reimport Project added as an optional action in the Refresh Project dialog [#1880](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1880)
 - Evaluate project import state as normal when `importedByVersion` equal plugin's `currentVersion` [#1881](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1881)
+- Ensure to show `Ask for Refresh` only when intended [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
 
 ### `ImpEx` enhancements
 - Adjusted range for reference resolution to ComposedTypes within value cells [#1867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1867)

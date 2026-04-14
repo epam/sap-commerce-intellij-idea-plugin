@@ -97,7 +97,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             Gson().fromJson(stream.bufferedReader(), ProjectState.PRData::class.java)
         }
             .pullRequests
-            .filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) >= 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
+            .filter { VersionComparatorUtil.compare(it.milestone, lastImportVersion) > 0 && VersionComparatorUtil.compare(it.milestone, currentVersion) <= 0 }
             .flatMap { pr -> pr.labels.map { label -> label to pr } }
             .groupBy({ it.first }, { it.second })
 
