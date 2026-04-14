@@ -273,7 +273,6 @@ dependencies {
             "org.jetbrains.idea.maven",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
-            "com.intellij.diagram",
             "JUnit",
             // requited to debug export of the EditorConfig: EditorConfigSettingsWriter
 //            "org.editorconfig.editorconfigjetbrains",
@@ -285,8 +284,7 @@ dependencies {
             "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
             "PsiViewer",                               // PsiViewer            https://plugins.jetbrains.com/plugin/227-psiviewer
             "JRebelPlugin",                            // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-            "AngularJS",                               // AngularJS            https://plugins.jetbrains.com/plugin/23546-angularjs
-//            "Angular"                                  // Angular              https://plugins.jetbrains.com/plugin/6971-angular
+            "AngularJS"                                // Angular              https://plugins.jetbrains.com/plugin/6971-angular
         )
 
         // Big Data Tools:
