@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.ui.VerticalFlowLayout
-import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
@@ -94,7 +93,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
     ): Component {
         iconLabel.icon = value.projectIcon
         nameLabel.text = value.displayName
-        pathLabel.text = FileUtil.getLocationRelativeToUserHome(value.path)
+        pathLabel.text = value.locationRelativeToUserHome
 
         hovered = (list as? SapCommerceProjectList)?.hoveredIndex == index
         return this

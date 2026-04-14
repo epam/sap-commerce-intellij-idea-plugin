@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.welcomescreen.presentation
 
-import com.intellij.ide.RecentProjectsManager
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.openapi.util.io.FileUtil
 import javax.swing.Icon
@@ -34,10 +33,10 @@ data class SapCommerceProject(
 
     companion object {
         fun of(path: String): SapCommerceProject {
-            val manager = RecentProjectsManager.getInstance() as RecentProjectsManagerBase
+            val manager = RecentProjectsManagerBase.getInstanceEx()
             val projectName = manager.getProjectName(path)
             val displayName = manager.getDisplayName(path) ?: projectName
-            val icon = RecentProjectsManagerBase.getInstanceEx().getProjectIcon(path, true)
+            val icon = manager.getProjectIcon(path, true)
             return SapCommerceProject(path, displayName, projectName, icon)
         }
     }
