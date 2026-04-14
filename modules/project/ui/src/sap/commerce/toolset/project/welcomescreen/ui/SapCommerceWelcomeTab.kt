@@ -95,7 +95,7 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
                         )
                     }
                 }.align(AlignX.RIGHT)
-            }.bottomGap(BottomGap.MEDIUM)
+            }.bottomGap(BottomGap.SMALL)
 
             separator(WelcomeScreenUIManager.getSeparatorColor())
 
@@ -160,7 +160,9 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
 
     internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommerceProject> {
 
-        private val iconLabel = JLabel()
+        private val iconLabel = JLabel().apply {
+            verticalAlignment = SwingConstants.TOP
+        }
         private val nameLabel = JLabel()
         private val pathLabel = JLabel()
 
@@ -172,7 +174,7 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) :
             pathLabel.foreground = JBColor.GRAY
             pathLabel.font = JBUI.Fonts.smallFont()
 
-            val textPanel = JPanel(VerticalFlowLayout(0, 2)).apply {
+            val textPanel = JPanel(VerticalFlowLayout(0, 4)).apply {
                 isOpaque = false
                 add(nameLabel)
                 add(pathLabel)
