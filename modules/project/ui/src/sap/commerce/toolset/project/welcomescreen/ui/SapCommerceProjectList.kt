@@ -67,30 +67,24 @@ internal class SapCommerceProjectList(
         }
     }
 
-    override fun processMouseEvent(e: MouseEvent) {
-        if (!isOnRow(e)) return
-        super.processMouseEvent(e)
-    }
+    override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
 
-    override fun processMouseMotionEvent(e: MouseEvent) {
-        if (!isOnRow(e)) {
-            // Deliver manually to registered listeners so hover tracking can
-            // react to "cursor left the row area". BasicListUI's own listener
-            // also runs here but is a no-op for MOUSE_MOVED without a drag.
-            for (listener in mouseMotionListeners) {
-                when (e.id) {
-                    MouseEvent.MOUSE_MOVED -> listener.mouseMoved(e)
-                    MouseEvent.MOUSE_DRAGGED -> listener.mouseDragged(e)
-                }
-            }
-            return
-        }
+    override fun processMouseMotionEvent(e: MouseEvent) = if (isOnRow(e)) {
         super.processMouseMotionEvent(e)
+    } else {
+        // Deliver manually to registered listeners so hover tracking can
+        // react to "cursor left the row area". BasicListUI's own listener
+        // also runs here but is a no-op for MOUSE_MOVED without a drag.
+        for (listener in mouseMotionListeners) {
+            when (e.id) {
+                MouseEvent.MOUSE_MOVED -> listener.mouseMoved(e)
+                MouseEvent.MOUSE_DRAGGED -> listener.mouseDragged(e)
+            }
+        }
     }
 
-    private fun isOnRow(e: MouseEvent): Boolean {
-        val index = locationToIndex(e.point)
-        return index >= 0 && getCellBounds(index, index)?.contains(e.point) == true
+    private fun isOnRow(e: MouseEvent): Boolean = with(locationToIndex(e.point)) {
+        this >= 0 && getCellBounds(this, this)?.contains(e.point) == true
     }
 
     companion object {
