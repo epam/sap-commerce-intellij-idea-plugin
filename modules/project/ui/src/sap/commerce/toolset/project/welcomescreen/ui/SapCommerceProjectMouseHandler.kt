@@ -20,13 +20,14 @@ package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.codeInsight.hints.presentation.MouseButton
 import com.intellij.codeInsight.hints.presentation.mouseButton
-import com.intellij.ide.impl.OpenProjectTask
 import com.intellij.openapi.project.ex.ProjectManagerEx
 import com.intellij.ui.CollectionListModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.nio.file.Path
 
 /**
  * Handles mouse interaction for [SapCommerceProjectList]:
@@ -47,15 +48,14 @@ internal class SapCommerceProjectMouseHandler(
         if (!bounds.contains(e.point)) return
 
         val project = model.getElementAt(index)
-        ProjectManagerEx.getInstanceEx()
-            .openProject(Path.of(project.path), OpenProjectTask())
+
+        CoroutineScope(Dispatchers.Default).launch {
+            ProjectManagerEx.getInstanceEx().openProjectAsync(project.path)
+        }
     }
 
     override fun mouseMoved(e: MouseEvent) {
-        val index = list.locationToIndex(e.point)
-        val valid = index >= 0 &&
-            list.getCellBounds(index, index)?.contains(e.point) == true
-        list.hoveredIndex = if (valid) index else -1
+        list.hoveredIndex = if (list.isOnRow(e)) list.locationToIndex(e.point) else -1
     }
 
     override fun mouseExited(e: MouseEvent) {

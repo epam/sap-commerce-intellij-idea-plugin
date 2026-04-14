@@ -20,24 +20,28 @@ package sap.commerce.toolset.project.welcomescreen.presentation
 
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.openapi.util.io.FileUtil
+import java.nio.file.Path
 import javax.swing.Icon
 
 data class SapCommerceProject(
-    val path: String,
+    private val location: String,
     val displayName: String,
     val projectName: String,
     val projectIcon: Icon
 ) {
+    val path: Path
+        get() = Path.of(location)
+
     val locationRelativeToUserHome: String
-        get() = FileUtil.getLocationRelativeToUserHome(path)
+        get() = FileUtil.getLocationRelativeToUserHome(location)
 
     companion object {
-        fun of(path: String): SapCommerceProject {
+        fun of(location: String): SapCommerceProject {
             val manager = RecentProjectsManagerBase.getInstanceEx()
-            val projectName = manager.getProjectName(path)
-            val displayName = manager.getDisplayName(path) ?: projectName
-            val icon = manager.getProjectIcon(path, true)
-            return SapCommerceProject(path, displayName, projectName, icon)
+            val projectName = manager.getProjectName(location)
+            val displayName = manager.getDisplayName(location) ?: projectName
+            val icon = manager.getProjectIcon(location, true)
+            return SapCommerceProject(location, displayName, projectName, icon)
         }
     }
 }

@@ -83,7 +83,7 @@ internal class SapCommerceProjectList(
         }
     }
 
-    private fun isOnRow(e: MouseEvent): Boolean = with(locationToIndex(e.point)) {
+    fun isOnRow(e: MouseEvent): Boolean = with(locationToIndex(e.point)) {
         this >= 0 && getCellBounds(this, this)?.contains(e.point) == true
     }
 

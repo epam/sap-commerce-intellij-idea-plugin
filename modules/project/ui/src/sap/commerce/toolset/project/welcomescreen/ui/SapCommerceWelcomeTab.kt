@@ -150,8 +150,8 @@ class SapCommerceWelcomeTab(
         }
     }
 
-    private fun isSapCommerceProject(path: String): Boolean = runCatching {
-        Path.of(path)
+    private fun isSapCommerceProject(location: String): Boolean = runCatching {
+        Path.of(location)
             .resolve(".idea")
             .resolve("hybrisProjectSettings.xml")
             .fileExists
