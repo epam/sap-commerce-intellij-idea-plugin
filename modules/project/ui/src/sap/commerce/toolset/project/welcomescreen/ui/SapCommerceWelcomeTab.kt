@@ -91,7 +91,6 @@ class SapCommerceWelcomeTab(
                     )
                 }
             }.align(AlignX.RIGHT)
-                .applyToComponent { isFocusable = false }
         }.bottomGap(BottomGap.SMALL)
 
         separator(WelcomeScreenUIManager.getSeparatorColor())
