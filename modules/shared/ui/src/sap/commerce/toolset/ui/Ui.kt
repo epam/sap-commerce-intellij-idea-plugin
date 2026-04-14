@@ -30,10 +30,14 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
+import java.awt.Component
 import java.awt.event.KeyListener
+import java.awt.event.MouseAdapter
 import java.awt.event.MouseListener
 import javax.swing.JComponent
+import javax.swing.JList
 import javax.swing.JTree
+import javax.swing.event.ListSelectionListener
 import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
 import javax.swing.tree.DefaultMutableTreeNode
@@ -68,6 +72,24 @@ fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listene
     .apply {
         addTreeSelectionListener(listener)
         parentDisposable?.whenDisposed { removeTreeSelectionListener(listener) }
+    }
+
+fun <T : Component> T.addMouseListener(parentDisposable: Disposable? = null, listener: MouseAdapter): T = this
+    .apply {
+        addMouseListener(listener)
+        parentDisposable?.whenDisposed { removeMouseListener(listener) }
+    }
+
+fun <T : Component> T.addMouseMotionListener(parentDisposable: Disposable? = null, listener: MouseAdapter): T = this
+    .apply {
+        addMouseMotionListener(listener)
+        parentDisposable?.whenDisposed { removeMouseListener(listener) }
+    }
+
+fun <T : JList<*>> T.addListSelectionListener(parentDisposable: Disposable? = null, listener: ListSelectionListener): T = this
+    .apply {
+        addListSelectionListener(listener)
+        parentDisposable?.whenDisposed { removeListSelectionListener(listener) }
     }
 
 fun <T : TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this
