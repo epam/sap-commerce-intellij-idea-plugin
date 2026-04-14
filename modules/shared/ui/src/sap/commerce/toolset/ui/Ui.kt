@@ -32,6 +32,7 @@ import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import java.awt.event.KeyListener
+import java.awt.event.MouseAdapter
 import java.awt.event.MouseListener
 import javax.swing.JComponent
 import javax.swing.JTree
@@ -71,9 +72,15 @@ fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listene
         parentDisposable?.whenDisposed { removeTreeSelectionListener(listener) }
     }
 
-fun JBList<*>.addMouseListener(parentDisposable: Disposable? = null, listener: MouseListener): JBList<*> = this
+fun JBList<*>.addMouseListener(parentDisposable: Disposable? = null, listener: MouseAdapter): JBList<*> = this
     .apply {
         addMouseListener(listener)
+        parentDisposable?.whenDisposed { removeMouseListener(listener) }
+    }
+
+fun JBList<*>.addMouseMotionListener(parentDisposable: Disposable? = null, listener: MouseAdapter): JBList<*> = this
+    .apply {
+        addMouseMotionListener(listener)
         parentDisposable?.whenDisposed { removeMouseListener(listener) }
     }
 

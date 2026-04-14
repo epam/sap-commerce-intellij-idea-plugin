@@ -28,9 +28,9 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUiKind
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.ex.ProjectManagerEx
-import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.wm.impl.welcomeScreen.TabbedWelcomeScreen.DefaultWelcomeScreenTab
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.CollectionListModel
@@ -50,8 +50,8 @@ import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
-import java.awt.BorderLayout
-import java.awt.Component
+import sap.commerce.toolset.ui.addMouseMotionListener
+import java.awt.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.io.File
@@ -63,7 +63,44 @@ import javax.swing.plaf.FontUIResource
 class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreenTab("SAP Commerce"), Disposable {
 
     private val listModel = CollectionListModel<SapCommerceProject>()
-    private val projectList = JBList(listModel)
+    private val projectList = object : JBList<SapCommerceProject>(listModel) {
+        @Serial
+        private val serialVersionUID: Long = 2925119990657205456L
+
+        init {
+            addListSelectionListener {
+                if (this.selectedIndex != -1) {
+                    SwingUtilities.invokeLater { this.clearSelection() }
+                }
+            }
+        }
+
+        override fun processMouseEvent(e: MouseEvent) {
+            val index = locationToIndex(e.point)
+            val onRow = index >= 0 && getCellBounds(index, index)?.contains(e.point) == true
+            if (!onRow) {
+                // Swallow the event entirely — no selection change, no click dispatched
+                return
+            }
+            super.processMouseEvent(e)
+        }
+
+        override fun processMouseMotionEvent(e: MouseEvent) {
+            val index = locationToIndex(e.point)
+            val onRow = index >= 0 && getCellBounds(index, index)?.contains(e.point) == true
+            if (!onRow) {
+                // Manually deliver to custom listeners only — skip super entirely
+                // Don't forward to BasicListUI, but still deliver to registered listeners
+                // so hover-out logic in mouseMoved can clear the hover state.
+                for (listener in mouseMotionListeners) {
+                    if (e.id == MouseEvent.MOUSE_MOVED) listener.mouseMoved(e)
+                    else if (e.id == MouseEvent.MOUSE_DRAGGED) listener.mouseDragged(e)
+                }
+                return
+            }
+            super.processMouseMotionEvent(e)
+        }
+    }
 
     init {
         Disposer.register(parentDisposable, this)
@@ -120,17 +157,42 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
 
     private fun initList() {
         projectList.apply {
+            background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
+            selectionBackground = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
+            border = JBUI.Borders.empty(0, 4)
             selectionMode = ListSelectionModel.SINGLE_SELECTION
             cellRenderer = SapCommerceProjectRenderer()
-            background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
 
-            addMouseListener(this@SapCommerceWelcomeTab, object : MouseAdapter() {
+            val mouseHandler = object : MouseAdapter() {
                 override fun mouseClicked(e: MouseEvent) {
                     if (e.mouseButton == MouseButton.Left && e.clickCount == 1) {
-                        openSelectedProject()
+                        val index = locationToIndex(e.point)
+                        if (index >= 0 && getCellBounds(index, index)?.contains(e.point) == true) {
+                            val project = listModel.getElementAt(index)
+                            ProjectManagerEx.getInstanceEx().openProject(Path.of(project.path), OpenProjectTask())
+                        }
                     }
                 }
-            })
+
+                override fun mouseMoved(e: MouseEvent) {
+                    val index = locationToIndex(e.point)
+                    val validIndex = if (index >= 0 && getCellBounds(index, index)?.contains(e.point) == true) index else -1
+                    val previous = getClientProperty(SapCommerceProjectRenderer.HOVERED_INDEX_KEY) as? Int ?: -1
+                    if (previous != validIndex) {
+                        putClientProperty(SapCommerceProjectRenderer.HOVERED_INDEX_KEY, validIndex)
+                        repaint()
+                    }
+                }
+
+                override fun mouseExited(e: MouseEvent) {
+                    if (getClientProperty(SapCommerceProjectRenderer.HOVERED_INDEX_KEY) != -1) {
+                        putClientProperty(SapCommerceProjectRenderer.HOVERED_INDEX_KEY, -1)
+                        repaint()
+                    }
+                }
+            }
+            addMouseListener(this@SapCommerceWelcomeTab, mouseHandler)
+            addMouseMotionListener(this@SapCommerceWelcomeTab, mouseHandler)
         }
     }
 
@@ -150,17 +212,7 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
     private fun isSapCommerceProject(path: String): Boolean =
         File(File(path), ".idea/hybrisProjectSettings.xml").exists()
 
-    private fun openSelectedProject() {
-        val selected = projectList.selectedValue ?: run {
-            Messages.showWarningDialog(i18n("hybris.welcometab.message.select.project"), i18n("hybris.welcometab.message.no.selection"))
-            return
-        }
-
-        ProjectManagerEx.getInstanceEx().openProject(Path.of(selected.path), OpenProjectTask())
-    }
-
-
-    internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommerceProject> {
+    private class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommerceProject> {
 
         private val iconLabel = JLabel().apply {
             verticalAlignment = SwingConstants.TOP
@@ -168,10 +220,17 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
         private val nameLabel = JLabel()
         private val pathLabel = JLabel()
 
+        private val pillColor: Color = UIManager.getColor("List.selectionBackground")
+            ?: JBUI.CurrentTheme.List.Hover.background(true)
+
+        private var selected = false
+        private var hovered = false
+
         init {
-            layout = BorderLayout(JBUI.scale(8), 0)
-            border = JBUI.Borders.empty(6, 8)
+            layout = BorderLayout(JBUI.scale(12), 0)
+            border = JBUI.Borders.empty(10, 20)
             isFocusable = false
+            isOpaque = false
 
             pathLabel.foreground = JBColor.GRAY
             pathLabel.font = JBUI.Fonts.smallFont()
@@ -182,8 +241,35 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
                 add(pathLabel)
             }
 
-            add(iconLabel, BorderLayout.WEST)
+            val iconWrapper = JPanel(BorderLayout()).apply {
+                isOpaque = false
+                add(iconLabel, BorderLayout.NORTH)
+            }
+
+            add(iconWrapper, BorderLayout.WEST)
             add(textPanel, BorderLayout.CENTER)
+        }
+
+        override fun paintComponent(g: Graphics) {
+            val g2 = g.create() as Graphics2D
+            try {
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+
+                // Always cover the whole cell with the panel background to hide BasicListUI's selection paint
+                g2.color = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
+                g2.fillRect(0, 0, width, height)
+
+                // Draw the rounded pill on top
+                if (selected || hovered) {
+                    g2.color = pillColor
+                    val arc = JBUI.scale(12)
+                    val inset = JBUI.scale(8)
+                    g2.fillRoundRect(inset, 0, width - 2 * inset, height, arc, arc)
+                }
+            } finally {
+                g2.dispose()
+            }
+            super.paintComponent(g)
         }
 
         override fun getListCellRendererComponent(
@@ -196,14 +282,17 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
 
             iconLabel.icon = value.projectIcon
             nameLabel.text = value.displayName
-            pathLabel.text = value.locationRelativeToUserHome
+            pathLabel.text = FileUtil.getLocationRelativeToUserHome(value.path)
 
-            background = if (isSelected) list.selectionBackground else list.background
+            selected = isSelected
+            hovered = !isSelected && index == (list.getClientProperty(HOVERED_INDEX_KEY) as? Int ?: -1)
 
             return this
         }
 
         companion object {
+            const val HOVERED_INDEX_KEY = "SapCommerceProjectRenderer.hoveredIndex"
+
             @Serial
             private const val serialVersionUID: Long = 8828202110264000188L
         }
