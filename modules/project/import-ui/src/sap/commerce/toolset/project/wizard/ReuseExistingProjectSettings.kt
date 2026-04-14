@@ -107,6 +107,7 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
             }
             checkBoxFile(ideaPath, "hybrisDeveloperSpecificProjectSettings.xml", "Plugin developer specific project settings")
             checkBoxFile(ideaPath, "vcs.xml", "Version control systems")
+            checkBoxFile(ideaPath, "externalDependencies.xml", "External dependencies on other plugins")
 
             checkBoxDirectory(ideaPath, ".run", "Run configurations (modern format)")
             checkBoxDirectory(ideaPath, "runConfigurations", "Run configurations (legacy format)")

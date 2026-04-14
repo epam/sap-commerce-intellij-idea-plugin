@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset
 
+import com.intellij.openapi.project.Project
 import java.util.*
 import java.util.regex.Pattern
 
@@ -160,7 +161,7 @@ object HybrisConstants {
         ".classpath",
         ".directory",
         ".externalToolBuilders",
-        ".idea",
+        Project.DIRECTORY_STORE_FOLDER,
         ".pmd",
         ".project",
         ".ruleset",

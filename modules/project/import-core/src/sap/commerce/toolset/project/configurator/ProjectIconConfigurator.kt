@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.configurator
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
@@ -31,7 +32,7 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
         get() = "Project Icon"
 
     override suspend fun configure(context: ProjectImportContext) {
-        val ideaDirectory = context.rootDirectory.resolve(".idea")
+        val ideaDirectory = context.rootDirectory.resolve(ProjectConstants.Directory.IDEA)
 
         val target = ideaDirectory.resolve("icon.svg")
         val targetDark = ideaDirectory.resolve("icon_dark.svg")

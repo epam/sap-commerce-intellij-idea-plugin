@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.module.JavaModuleType
+import com.intellij.openapi.project.Project
 import com.intellij.platform.workspace.jps.entities.LibraryTypeId
 import sap.commerce.toolset.extensioninfo.EiConstants
 import kotlin.io.path.Path
@@ -48,7 +49,7 @@ object ProjectConstants {
         const val GIT = ".git"
         const val HG = ".hg"
         const val GITHUB = ".github"
-        const val IDEA = ".idea"
+        const val IDEA = Project.DIRECTORY_STORE_FOLDER
         const val ANGULAR = ".angular"
         const val SETTINGS = ".settings"
         const val MACO_SX = "__MACOSX"
@@ -110,7 +111,7 @@ object ProjectConstants {
     }
 
     object Paths {
-        val IDEA = Path(".idea")
+        val IDEA = Path(Directory.IDEA)
         val IDEA_MODULES = IDEA.resolve("idea-modules")
 
         val RELATIVE_CONFIG = Path("..", "..", "config")
