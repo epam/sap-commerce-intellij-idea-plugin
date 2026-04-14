@@ -46,7 +46,8 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
-import java.io.File
+import sap.commerce.toolset.util.fileExists
+import java.nio.file.Path
 import javax.swing.JComponent
 import javax.swing.plaf.FontUIResource
 
@@ -149,8 +150,13 @@ class SapCommerceWelcomeTab(
         }
     }
 
-    private fun isSapCommerceProject(path: String): Boolean =
-        File(File(path), ".idea/hybrisProjectSettings.xml").exists()
+    private fun isSapCommerceProject(path: String): Boolean = runCatching {
+        Path.of(path)
+            .resolve(".idea")
+            .resolve("hybrisProjectSettings.xml")
+            .fileExists
+    }
+        .getOrElse { false }
 
     override fun dispose() = scope.cancel()
 
