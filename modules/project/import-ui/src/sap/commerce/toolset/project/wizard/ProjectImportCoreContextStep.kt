@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,7 +35,10 @@ import sap.commerce.toolset.project.HybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.ProjectImportConstants
 import sap.commerce.toolset.project.context.*
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.exceptions.ModuleNotFoundException
+import sap.commerce.toolset.project.exceptions.PlatformIsNotBuiltException
+import sap.commerce.toolset.project.exceptions.ProjectIsNotReadyForImportException
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.tasks.LookupModuleDescriptorsTask
 import sap.commerce.toolset.project.tasks.LookupPlatformDirectoryTask
@@ -285,11 +288,20 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             thisLogger().debug("Setting RootProjectDirectory to ${importContext.rootDirectory}")
 
             LookupModuleDescriptorsTask.getInstance().execute(importContext)
+
+            importContext.ensureReadyForImport()
         } catch (e: ModuleNotFoundException) {
             importContext.clear()
             thisLogger().error(e.message, e)
 
             ModuleNotFoundDialog(e.message!!, e.moduleDescriptors).showAndGet()
+        } catch (e: ProjectIsNotReadyForImportException) {
+            thisLogger().error(e.message, e)
+
+            Messages.showErrorDialog(
+                e.message,
+                "Project Import",
+            )
         } catch (e: Exception) {
             importContext.clear()
             thisLogger().error(e.message, e)
@@ -298,6 +310,17 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
                 e.message,
                 "Project Import"
             )
+        }
+    }
+
+    @Throws(ProjectIsNotReadyForImportException::class)
+    private fun ProjectImportContext.Mutable.ensureReadyForImport() {
+        if (refresh) return
+
+        val platformModuleDescriptor = this.foundModules.find { it is PlatformModuleDescriptor }
+            ?: return
+        if (!platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC).fileExists) {
+            throw PlatformIsNotBuiltException()
         }
     }
 
