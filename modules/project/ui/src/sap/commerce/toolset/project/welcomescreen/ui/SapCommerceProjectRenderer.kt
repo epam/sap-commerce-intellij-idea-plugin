@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
+import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
@@ -34,10 +35,19 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
         foreground = JBColor.GRAY
     }
 
+    private val versionLabel = JLabel().apply {
+        foreground = JBColor.GRAY
+        font = JBUI.Fonts.smallFont()
+        border = JBUI.Borders.empty(2, 8)
+        isOpaque = false
+    }
+
     private val pillColor: Color = UIManager.getColor("List.selectionBackground")
         ?: JBUI.CurrentTheme.List.Hover.background(true)
+    private val tagBorderColor: Color = JBColor.border()
 
     private var hovered = false
+    private var showVersionTagBorder = false
 
     init {
         layout = BorderLayout(JBUI.scale(ICON_TEXT_GAP), 0)
@@ -45,6 +55,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
         isFocusable = false
         isOpaque = false
 
+        // BoxLayout with matching TOP_ALIGNMENT — icon top edge lines up with name top edge.
         val textPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
             isOpaque = false
@@ -64,8 +75,16 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
             add(iconLabel)
         }
 
+        val rightPanel = JPanel(GridBagLayout()).apply {
+            isOpaque = false
+            add(versionLabel, GridBagConstraints().apply {
+                anchor = GridBagConstraints.CENTER
+            })
+        }
+
         add(iconHolder, BorderLayout.WEST)
         add(textPanel, BorderLayout.CENTER)
+        add(rightPanel, BorderLayout.EAST)
     }
 
     override fun paintComponent(g: Graphics) {
@@ -84,6 +103,17 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
                 val inset = JBUI.scale(PILL_HORIZONTAL_INSET)
                 g2.fillRoundRect(inset, 0, width - 2 * inset, height, arc, arc)
             }
+
+            if (showVersionTagBorder) {
+                val bounds = SwingUtilities.convertRectangle(versionLabel.parent, versionLabel.bounds, this)
+                g2.color = tagBorderColor
+                g2.stroke = BasicStroke(JBUI.scale(1).toFloat())
+                g2.drawRoundRect(
+                    bounds.x, bounds.y,
+                    bounds.width - 1, bounds.height - 1,
+                    JBUI.scale(TAG_ARC), JBUI.scale(TAG_ARC)
+                )
+            }
         } finally {
             g2.dispose()
         }
@@ -101,6 +131,17 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
             iconLabel.icon = projectIcon
             nameLabel.text = displayName
             pathLabel.text = locationRelativeToUserHome
+
+            val version = hybrisVersion
+            if (version != null) {
+                versionLabel.icon = null
+                versionLabel.text = version
+                showVersionTagBorder = true
+            } else {
+                versionLabel.icon = AnimatedIcon.Default.INSTANCE
+                versionLabel.text = ""
+                showVersionTagBorder = false
+            }
         }
 
         hovered = (list as? SapCommerceProjectList)?.hoveredIndex == index
@@ -116,5 +157,6 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
         private const val TEXT_LINE_GAP = 4
         private const val PILL_ARC = 12
         private const val PILL_HORIZONTAL_INSET = 8
+        private const val TAG_ARC = 8
     }
 }

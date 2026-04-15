@@ -20,10 +20,13 @@ package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
+import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBList
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
@@ -39,10 +42,12 @@ import javax.swing.ListSelectionModel
  * - Forwards off-row motion events to registered listeners so external hover
  *   tracking can clear its state when the cursor leaves a row.
  * - Exposes [hoveredIndex] as a typed property; changing it repaints the list.
+ * - Drives `AnimatedIcon` repaints in renderers via `ANIMATION_IN_RENDERER_ALLOWED`.
+ * - Subscribes to [HybrisProjectSettingsCache] and repaints rows when their settings load.
  */
 internal class SapCommerceProjectList(
     parentDisposable: Disposable,
-    model: CollectionListModel<SapCommerceProject>
+    private val model: CollectionListModel<SapCommerceProject>
 ) : JBList<SapCommerceProject>(model) {
 
     var hoveredIndex: Int = -1
@@ -53,21 +58,39 @@ internal class SapCommerceProjectList(
             }
         }
 
+    private val cacheListener = HybrisProjectSettingsCache.Listener { location, _ ->
+        invokeLater { repaintRowForLocation(location) }
+    }
+
     init {
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         selectionBackground = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         border = JBUI.Borders.empty(0, 4)
         selectionMode = ListSelectionModel.SINGLE_SELECTION
 
-        // Never allow a row to stay selected — we drive visuals purely from hover.
+        // Tell JBList to drive AnimatedIcon repaints inside the cell renderer.
+        putClientProperty(AnimatedIcon.ANIMATION_IN_RENDERER_ALLOWED, true)
+
         addListSelectionListener(parentDisposable) {
-            if (selectedIndex != -1) {
-                invokeLater { clearSelection() }
+            if (selectedIndex != -1) invokeLater { clearSelection() }
+        }
+
+        val cache = HybrisProjectSettingsCache.getInstance()
+        cache.addListener(cacheListener)
+        Disposer.register(parentDisposable) { cache.removeListener(cacheListener) }
+    }
+
+    private fun repaintRowForLocation(location: String) {
+        for (i in 0 until model.size) {
+            if (model.getElementAt(i).location == location) {
+                getCellBounds(i, i)?.let { repaint(it) }
+                return
             }
         }
     }
 
-    override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
+    override fun processMouseEvent(e: MouseEvent) =
+        if (isOnRow(e)) super.processMouseEvent(e) else Unit
 
     override fun processMouseMotionEvent(e: MouseEvent) = if (isOnRow(e)) {
         super.processMouseMotionEvent(e)

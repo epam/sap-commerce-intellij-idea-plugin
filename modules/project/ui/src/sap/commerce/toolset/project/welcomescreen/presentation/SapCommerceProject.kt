@@ -20,28 +20,35 @@ package sap.commerce.toolset.project.welcomescreen.presentation
 
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.openapi.util.io.FileUtil
+import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import java.nio.file.Path
 import javax.swing.Icon
 
 data class SapCommerceProject(
-    private val location: String,
+    val location: String,
     val displayName: String,
     val projectName: String,
     val projectIcon: Icon
 ) {
-    val path: Path
-        get() = Path.of(location)
+    val path: Path get() = Path.of(location)
 
     val locationRelativeToUserHome: String
         get() = FileUtil.getLocationRelativeToUserHome(location)
+
+    /** Returns the parsed hybris version if cached, or `null` while loading. */
+    val hybrisVersion: String?
+        get() = HybrisProjectSettingsCache.getInstance().get(location)?.hybrisVersion
 
     companion object {
         fun of(location: String): SapCommerceProject {
             val manager = RecentProjectsManagerBase.getInstanceEx()
             val projectName = manager.getProjectName(location)
-            val displayName = manager.getDisplayName(location) ?: projectName
-            val icon = manager.getProjectIcon(location, true)
-            return SapCommerceProject(location, displayName, projectName, icon)
+            return SapCommerceProject(
+                location = location,
+                displayName = manager.getDisplayName(location) ?: projectName,
+                projectName = projectName,
+                projectIcon = manager.getProjectIcon(location, true)
+            )
         }
     }
 }

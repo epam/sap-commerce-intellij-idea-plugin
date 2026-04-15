@@ -44,6 +44,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
@@ -146,6 +147,14 @@ class SapCommerceWelcomeTab(
 
             withContext(Dispatchers.EDT) {
                 listModel.replaceAll(projects)
+            }
+
+            // Kick off settings parsing for any project not yet cached.
+            // The cache deduplicates concurrent and repeat requests, so this is safe
+            // to call on every reload (including those triggered by RECENT_PROJECTS_CHANGE_TOPIC).
+            val cache = HybrisProjectSettingsCache.getInstance()
+            for (project in projects) {
+                cache.warmUp(project.location)
             }
         }
     }

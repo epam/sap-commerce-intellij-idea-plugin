@@ -102,4 +102,8 @@
                          implementationClass="sap.commerce.toolset.project.codeInspection.LeUnknownExtensionDefinition"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache"/>
+    </extensions>
+
 </idea-plugin>
