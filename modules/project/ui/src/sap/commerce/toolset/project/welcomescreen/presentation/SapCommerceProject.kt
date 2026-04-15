@@ -35,6 +35,10 @@ data class SapCommerceProject(
     val locationRelativeToUserHome: String
         get() = FileUtil.getLocationRelativeToUserHome(location)
 
+    val isSettingsLoaded: Boolean
+        get() = HybrisProjectSettingsCache.getInstance().isLoaded(location)
+
+
     /** Returns the parsed hybris version if cached, or `null` while loading. */
     val hybrisVersion: String?
         get() = HybrisProjectSettingsCache.getInstance().get(location)?.hybrisVersion

@@ -86,6 +86,8 @@ class HybrisProjectSettingsCache(private val scope: CoroutineScope) {
         }
     }
 
+    fun isLoaded(projectLocation: String): Boolean = cache.containsKey(projectLocation)
+
     companion object {
         @JvmStatic
         fun getInstance(): HybrisProjectSettingsCache =

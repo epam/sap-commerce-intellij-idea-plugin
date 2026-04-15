@@ -132,15 +132,25 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
             nameLabel.text = displayName
             pathLabel.text = locationRelativeToUserHome
 
-            val version = hybrisVersion
-            if (version != null) {
-                versionLabel.icon = null
-                versionLabel.text = version
-                showVersionTagBorder = true
-            } else {
-                versionLabel.icon = AnimatedIcon.Default.INSTANCE
-                versionLabel.text = ""
-                showVersionTagBorder = false
+            when {
+                !isSettingsLoaded -> {
+                    // Still loading — show spinner, no border.
+                    versionLabel.icon = AnimatedIcon.Default.INSTANCE
+                    versionLabel.text = ""
+                    showVersionTagBorder = false
+                }
+                hybrisVersion != null -> {
+                    // Loaded with value — show version, with border.
+                    versionLabel.icon = null
+                    versionLabel.text = hybrisVersion
+                    showVersionTagBorder = true
+                }
+                else -> {
+                    // Loaded but no value — show "n/a", with border.
+                    versionLabel.icon = null
+                    versionLabel.text = NOT_AVAILABLE_TEXT
+                    showVersionTagBorder = true
+                }
             }
         }
 
@@ -158,5 +168,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
         private const val PILL_ARC = 12
         private const val PILL_HORIZONTAL_INSET = 8
         private const val TAG_ARC = 8
+        private const val NOT_AVAILABLE_TEXT = "n/a"
+
     }
 }

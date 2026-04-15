@@ -31,7 +31,13 @@ import javax.xml.stream.XMLStreamReader
  *
  * Uses StAX (streaming XML reader) for minimal allocations and early exit
  * once all wanted fields are read. Returns an empty [Settings] on any failure
- * or missing file — callers treat absent fields as "unknown".
+ * or missing file. Individual fields are `null` when:
+ *   - the XML element is absent
+ *   - the attribute is absent
+ *   - the attribute value is blank (whitespace-only or empty string)
+ *
+ * Callers treat `null` fields as "unknown" — UI shows a placeholder rather
+ * than rendering an empty pill or value.
  */
 object HybrisProjectSettingsReader {
 
@@ -70,8 +76,8 @@ object HybrisProjectSettingsReader {
             if (reader.next() != XMLStreamConstants.START_ELEMENT) continue
             if (reader.localName != "option") continue
 
-            val name = reader.getAttributeValue(null, "name") ?: continue
-            val value = reader.getAttributeValue(null, "value") ?: continue
+            val name = reader.getAttributeValue(null, "name")?.takeIf { it.isNotBlank() } ?: continue
+            val value = reader.getAttributeValue(null, "value")?.trim()?.takeIf { it.isNotEmpty() }
 
             when (name) {
                 "hybrisVersion" -> hybrisVersion = value
