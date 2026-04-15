@@ -22,71 +22,61 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Application-level cache for parsed `.idea/hybrisProjectSettings.xml`.
  *
- * - [get] returns cached settings synchronously or `null` if not yet loaded.
- * - [warmUp] schedules background parsing for a path; safe to call repeatedly —
- *   concurrent calls for the same path are deduplicated.
- * - [invalidate] removes a cached entry (e.g., to force a re-read).
+ * State is exposed as a [StateFlow] of `location -> Settings` so consumers can
+ * react to changes via coroutines instead of registering callback listeners.
  *
- * Backed by a coroutine scope owned by the service, which is cancelled on
- * application shutdown. Notify listeners via [Listener] when an entry becomes
- * available so UI can refresh that row.
+ * - [settings] emits a new map snapshot whenever any entry is added or invalidated.
+ * - [warmUp] schedules background parsing for a path; concurrent calls for the
+ *   same path are deduplicated.
+ * - [invalidate] removes a cached entry (force re-read on next [warmUp]).
+ *
+ * Read API: [get] / [isLoaded] return synchronously from the latest snapshot —
+ * UI renderers (which don't suspend) call these directly.
  */
 @Service(Service.Level.APP)
 class HybrisProjectSettingsCache(private val scope: CoroutineScope) {
 
-    fun interface Listener {
-        fun onSettingsLoaded(projectLocation: String, settings: HybrisProjectSettingsReader.Settings)
-    }
+    private val _settings = MutableStateFlow<Map<String, HybrisProjectSettingsReader.Settings>>(emptyMap())
+    val settings: StateFlow<Map<String, HybrisProjectSettingsReader.Settings>> = _settings.asStateFlow()
 
-    private val cache = ConcurrentHashMap<String, HybrisProjectSettingsReader.Settings>()
-    private val inFlight = ConcurrentHashMap<String, Deferred<HybrisProjectSettingsReader.Settings>>()
-    private val listeners = mutableListOf<Listener>()
+    private val loadJobs = ConcurrentHashMap<String, Job>()
 
-    fun get(projectLocation: String): HybrisProjectSettingsReader.Settings? = cache[projectLocation]
+    fun get(projectLocation: String): HybrisProjectSettingsReader.Settings? =
+        _settings.value[projectLocation]
+
+    fun isLoaded(projectLocation: String): Boolean =
+        _settings.value.containsKey(projectLocation)
 
     fun warmUp(projectLocation: String) {
-        if (cache.containsKey(projectLocation)) return
+        if (isLoaded(projectLocation)) return
 
-        inFlight.computeIfAbsent(projectLocation) { location ->
-            scope.async(Dispatchers.Default) {
-                val settings = HybrisProjectSettingsReader.read(location)
-                cache[location] = settings
-                inFlight.remove(location)
-                fireLoaded(location, settings)
-                settings
+        loadJobs.computeIfAbsent(projectLocation) { location ->
+            scope.launch {
+                try {
+                    val parsed = HybrisProjectSettingsReader.read(location)
+                    _settings.update { it + (location to parsed) }
+                } finally {
+                    loadJobs.remove(location)
+                }
             }
         }
     }
 
     fun invalidate(projectLocation: String) {
-        cache.remove(projectLocation)
-        inFlight.remove(projectLocation)?.cancel()
+        loadJobs.remove(projectLocation)?.cancel()
+        _settings.update { it - projectLocation }
     }
-
-    fun addListener(listener: Listener) {
-        synchronized(listeners) { listeners.add(listener) }
-    }
-
-    fun removeListener(listener: Listener) {
-        synchronized(listeners) { listeners.remove(listener) }
-    }
-
-    private fun fireLoaded(location: String, settings: HybrisProjectSettingsReader.Settings) {
-        val snapshot = synchronized(listeners) { listeners.toList() }
-        for (l in snapshot) {
-            runCatching { l.onSettingsLoaded(location, settings) }
-        }
-    }
-
-    fun isLoaded(projectLocation: String): Boolean = cache.containsKey(projectLocation)
 
     companion object {
         @JvmStatic

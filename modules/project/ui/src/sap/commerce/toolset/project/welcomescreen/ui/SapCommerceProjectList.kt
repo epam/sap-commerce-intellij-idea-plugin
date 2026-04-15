@@ -19,6 +19,7 @@
 package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
@@ -26,12 +27,17 @@ import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBList
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.ListSelectionModel
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A non-selectable, hover-only list of SAP Commerce projects.
@@ -43,8 +49,9 @@ import javax.swing.ListSelectionModel
  *   tracking can clear its state when the cursor leaves a row.
  * - Exposes [hoveredIndex] as a typed property; changing it repaints the list.
  * - Drives `AnimatedIcon` repaints in renderers via `ANIMATION_IN_RENDERER_ALLOWED`.
- * - Subscribes to [HybrisProjectSettingsCache] and repaints rows when their settings load.
+ * - Collects from [HybrisProjectSettingsCache.settings] and repaints when entries arrive.
  */
+@OptIn(FlowPreview::class)
 internal class SapCommerceProjectList(
     parentDisposable: Disposable,
     private val model: CollectionListModel<SapCommerceProject>
@@ -58,9 +65,7 @@ internal class SapCommerceProjectList(
             }
         }
 
-    private val cacheListener = HybrisProjectSettingsCache.Listener { location, _ ->
-        invokeLater { repaintRowForLocation(location) }
-    }
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     init {
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
@@ -75,18 +80,21 @@ internal class SapCommerceProjectList(
             if (selectedIndex != -1) invokeLater { clearSelection() }
         }
 
-        val cache = HybrisProjectSettingsCache.getInstance()
-        cache.addListener(cacheListener)
-        Disposer.register(parentDisposable) { cache.removeListener(cacheListener) }
-    }
-
-    private fun repaintRowForLocation(location: String) {
-        for (i in 0 until model.size) {
-            if (model.getElementAt(i).location == location) {
-                getCellBounds(i, i)?.let { repaint(it) }
-                return
-            }
+        // Subscribe to cache updates. Debouncing collapses bursts of cache fills
+        // (typical at startup, when many projects warm up in parallel) into a
+        // single repaint instead of one repaint per project.
+        scope.launch {
+            HybrisProjectSettingsCache.getInstance()
+                .settings
+                .drop(1)  // skip the initial empty-map emission
+                .debounce(50.milliseconds)
+                .distinctUntilChanged()
+                .collect {
+                    withContext(Dispatchers.EDT) { repaint() }
+                }
         }
+
+        Disposer.register(parentDisposable) { scope.cancel() }
     }
 
     override fun processMouseEvent(e: MouseEvent) =
