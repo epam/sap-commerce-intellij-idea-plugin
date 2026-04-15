@@ -108,8 +108,6 @@ object ProjectConstants {
 
         const val HYBRIS_LICENCE_JAR = "hybrislicence.jar"
         const val SAP_LICENCES = "installedSaplicenses.properties"
-
-        const val MODELS_JAR = "models.jar"
     }
 
     object Paths {
