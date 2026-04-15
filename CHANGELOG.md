@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -11,7 +11,8 @@
 - Validate that Platform is build before importing the project [#1889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1889)
 
 ### `Welcome Screen` enhancements
-- Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
+- Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
+- Skip project import providers step and proceed to the SAP Project import wizard [#1890](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1890)
 
 ## [2026.0.8]
 
