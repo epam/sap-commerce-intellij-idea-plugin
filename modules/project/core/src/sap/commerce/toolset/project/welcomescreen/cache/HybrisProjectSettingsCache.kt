@@ -16,18 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen
+package sap.commerce.toolset.project.welcomescreen.cache
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import sap.commerce.toolset.project.welcomescreen.reader.HybrisProjectSettingsReader
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -78,7 +73,6 @@ class HybrisProjectSettingsCache(private val scope: CoroutineScope) {
 
     companion object {
         @JvmStatic
-        fun getInstance(): HybrisProjectSettingsCache =
-            ApplicationManager.getApplication().service()
+        fun getInstance(): HybrisProjectSettingsCache = ApplicationManager.getApplication().service()
     }
 }

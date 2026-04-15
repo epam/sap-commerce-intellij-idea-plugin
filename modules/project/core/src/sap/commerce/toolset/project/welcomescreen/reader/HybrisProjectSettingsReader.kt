@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen
+package sap.commerce.toolset.project.welcomescreen.reader
 
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants

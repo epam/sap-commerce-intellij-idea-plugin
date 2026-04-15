@@ -35,8 +35,9 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
+import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
@@ -73,6 +74,10 @@ internal class SapCommerceProjectList(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    private val gitCacheListener = GitHeadCache.Listener { location, _ ->
+        invokeLater { repaintRowForLocation(location) }
+    }
+
     init {
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         selectionBackground = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
@@ -104,6 +109,12 @@ internal class SapCommerceProjectList(
         }
 
         Disposer.register(parentDisposable) { scope.cancel() }
+
+        val gitCache = GitHeadCache.getInstance()
+        gitCache.addListener(gitCacheListener)
+        Disposer.register(parentDisposable) {
+            gitCache.removeListener(gitCacheListener)
+        }
     }
 
     override fun uiDataSnapshot(sink: DataSink) {
