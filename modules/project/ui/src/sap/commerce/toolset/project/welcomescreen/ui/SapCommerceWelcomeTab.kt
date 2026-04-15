@@ -74,7 +74,7 @@ class SapCommerceWelcomeTab(
 
     override fun buildComponent(): JComponent = panel {
         row {
-            icon(IconUtil.scale(HybrisIcons.PLUGIN_SETTINGS, null, HEADER_ICON_SCALE))
+            icon(IconUtil.scale(HybrisIcons.WelcomeTab.PLUGIN_LOGO, null, HEADER_ICON_SCALE))
 
             label(i18n("hybris.welcometab.text"))
                 .bold()

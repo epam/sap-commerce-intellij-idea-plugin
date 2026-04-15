@@ -32,6 +32,21 @@
                              key="hybris.settings.project.title"
                              provider="sap.commerce.toolset.project.options.ProjectSettingsConfigurableProvider"/>
 
+    </extensions>
+
+    <actions>
+        <action id="SapCommerce.RemoveFromRecentProjects"
+                class="sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction"
+                text="hybris.welcometab.button.remove.from.recent.projects">
+            <keyboard-shortcut keymap="$default" first-keystroke="DELETE"/>
+        </action>
+
+        <group id="SapCommerce.WelcomeTab.ProjectContextMenu">
+            <reference ref="SapCommerce.RemoveFromRecentProjects"/>
+        </group>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
         <welcomeTabFactory id="SapCommerceCloudWelcomeTab" order="first"
                            implementation="sap.commerce.toolset.project.welcomescreen.ui.SapCommerceWelcomeTabFactory"/>
     </extensions>

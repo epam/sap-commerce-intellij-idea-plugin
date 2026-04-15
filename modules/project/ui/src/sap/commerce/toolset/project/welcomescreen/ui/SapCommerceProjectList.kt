@@ -19,6 +19,9 @@
 package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataSink
+import com.intellij.openapi.actionSystem.UiDataProvider
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.util.Disposer
@@ -31,7 +34,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
+import sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
@@ -55,7 +60,8 @@ import kotlin.time.Duration.Companion.milliseconds
 internal class SapCommerceProjectList(
     parentDisposable: Disposable,
     private val model: CollectionListModel<SapCommerceProject>
-) : JBList<SapCommerceProject>(model) {
+) : JBList<SapCommerceProject>(model),
+    UiDataProvider{
 
     var hoveredIndex: Int = -1
         set(value) {
@@ -80,6 +86,9 @@ internal class SapCommerceProjectList(
             if (selectedIndex != -1) invokeLater { clearSelection() }
         }
 
+        val removeAction = ActionManager.getInstance().getAction(RemoveSapCommerceProjectAction.ACTION_ID)
+        removeAction?.registerCustomShortcutSet(removeAction.shortcutSet, this, parentDisposable)
+
         // Subscribe to cache updates. Debouncing collapses bursts of cache fills
         // (typical at startup, when many projects warm up in parallel) into a
         // single repaint instead of one repaint per project.
@@ -96,6 +105,22 @@ internal class SapCommerceProjectList(
 
         Disposer.register(parentDisposable) { scope.cancel() }
     }
+
+    override fun uiDataSnapshot(sink: DataSink) {
+        if (hoveredIndex >= 0 && hoveredIndex < model.size) {
+            sink[ProjectConstants.WelcomeScreen.SAP_COMMERCE_PROJECT_KEY] = model.getElementAt(hoveredIndex)
+        }
+    }
+
+    private fun repaintRowForLocation(location: String) {
+        for (i in 0 until model.size) {
+            if (model.getElementAt(i).location == location) {
+                getCellBounds(i, i)?.let { repaint(it) }
+                return
+            }
+        }
+    }
+
 
     override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
 
