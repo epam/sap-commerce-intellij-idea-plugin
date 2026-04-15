@@ -315,6 +315,8 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
     @Throws(ProjectIsNotReadyForImportException::class)
     private fun ProjectImportContext.Mutable.ensureReadyForImport() {
+        if (refresh) return
+
         val platformModuleDescriptor = this.foundModules.find { it is PlatformModuleDescriptor }
             ?: return
         if (!platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC).fileExists) {
