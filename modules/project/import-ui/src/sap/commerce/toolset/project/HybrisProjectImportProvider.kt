@@ -18,6 +18,8 @@
 
 package sap.commerce.toolset.project
 
+import com.intellij.ide.util.PropertiesComponent
+import com.intellij.ide.util.projectWizard.ModuleWizardStep
 import com.intellij.ide.util.projectWizard.ProjectJdkStep
 import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory
 import com.intellij.ide.util.projectWizard.WizardContext
@@ -40,16 +42,20 @@ class HybrisProjectImportProvider : ProjectImportProvider() {
     override fun doGetBuilder(): HybrisProjectImportBuilder = ProjectImportBuilder.EXTENSIONS_POINT_NAME
         .findExtensionOrFail(HybrisProjectImportBuilder::class.java)
 
-    override fun createSteps(context: WizardContext) = arrayOf(
-        InformationStep(context),
-        CheckRequiredPluginsStep(context),
-        ProjectImportCoreContextStep(context),
-        SelectHybrisModulesStep(context),
-        SelectOtherModulesStep(context),
-        ReuseExistingProjectSettings(context),
-        ProjectWizardStepFactory.getInstance().createProjectJdkStep(context).also {
-            it.asSafely<ProjectJdkStep>()
-                ?.let { jdkStep -> context.putUserData(ProjectImportCoreContextStep.KEY_SDK_STEP, jdkStep) }
-        },
-    )
+    override fun createSteps(context: WizardContext): Array<ModuleWizardStep?> {
+        PropertiesComponent.getInstance().setValue("defaultJdkConfigured", false)
+
+        return arrayOf(
+            InformationStep(context),
+            CheckRequiredPluginsStep(context),
+            ProjectImportCoreContextStep(context),
+            SelectHybrisModulesStep(context),
+            SelectOtherModulesStep(context),
+            ReuseExistingProjectSettings(context),
+            ProjectWizardStepFactory.getInstance().createProjectJdkStep(context).also {
+                it.asSafely<ProjectJdkStep>()
+                    ?.let { jdkStep -> context.putUserData(ProjectImportCoreContextStep.KEY_SDK_STEP, jdkStep) }
+            },
+        )
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,11 +20,7 @@ package sap.commerce.toolset.project
 
 import com.intellij.ide.actions.ImportModuleAction
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.projectRoots.ProjectJdkTable
-import com.intellij.openapi.projectRoots.SdkType
-import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
@@ -32,7 +28,6 @@ import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
-import com.intellij.util.asSafely
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.extensioninfo.EiConstants
@@ -79,32 +74,6 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<HybrisProjectImportB
     )
 
     override suspend fun openProjectAsync(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {
-        val jdkTable = ProjectJdkTable.getInstance()
-        val orderRootTypes = OrderRootType.getAllTypes()
-
-        withContext(Dispatchers.EDT) {
-            jdkTable.preconfigure()
-        }
-
-        ProgressManager.getInstance().runProcessWithProgressSynchronously<Unit, RuntimeException>(
-            {
-                jdkTable.allJdks.forEach { sdk ->
-                    sdk.homeDirectory
-                    sdk.sdkType.asSafely<SdkType>()
-                        ?.let { sdkType ->
-                            orderRootTypes
-                                .filter { sdkType.isRootTypeApplicable(it) }
-                                .forEach { orderRootType ->
-                                    sdk.sdkModificator.getRoots(orderRootType)
-                                }
-                        }
-                }
-            },
-            "Detecting SDKs...",
-            true,
-            null
-        )
-
         val providers = ImportModuleAction.getProviders(null).toTypedArray()
 
         val modules = withContext(Dispatchers.EDT) {
