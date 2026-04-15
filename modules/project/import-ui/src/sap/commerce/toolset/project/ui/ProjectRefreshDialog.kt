@@ -30,6 +30,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
@@ -41,18 +42,24 @@ import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
+import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.path
 import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.contentRoot
 import sap.commerce.toolset.project.context.ProjectRefreshContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ySettings
+import sap.commerce.toolset.project.yModule
 import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 import sap.commerce.toolset.ui.banner
+import sap.commerce.toolset.util.fileExists
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.io.Serial
 import javax.swing.Icon
+import javax.swing.JComponent
 import javax.swing.ScrollPaneConstants
 
 class ProjectRefreshDialog(
@@ -275,9 +282,27 @@ class ProjectRefreshDialog(
         }
 
     override fun createLeftSideActions() = arrayOf(reimportProjectAction)
-    override fun createNorthPanel() = banner(
+    override fun createTitlePane() = banner(
         text = "Other settings can be found under SAP CX Settings.",
     )
+
+    override fun createNorthPanel(): JComponent? {
+        val isPlatformBuilt = project.yModule(EiConstants.Extension.PLATFORM)
+            ?.contentRoot
+            ?.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC)
+            ?.fileExists
+            ?: return null
+
+        if (isPlatformBuilt) return null
+        return banner(
+            text = """
+                Do not refresh the project yet.<br>
+                It hasn’t been built - <code>platform/bootstrap/gensrc</code> is missing.<br>
+                Run <code>ant all</code> first; otherwise, plugin features may not work correctly.
+            """.trimIndent(),
+            status = EditorNotificationPanel.Status.Warning
+        )
+    }
 
     override fun getStyle(): DialogStyle = DialogStyle.COMPACT
     override fun doValidateAll() = ui.value.validateAll()
