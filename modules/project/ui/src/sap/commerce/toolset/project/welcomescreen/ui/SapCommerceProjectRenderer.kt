@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.welcomescreen.ui
 
-import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
@@ -46,18 +45,26 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
         isFocusable = false
         isOpaque = false
 
-        val textPanel = JPanel(VerticalFlowLayout(0, TEXT_LINE_GAP)).apply {
+        val textPanel = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
             isOpaque = false
+            alignmentY = TOP_ALIGNMENT
+            nameLabel.alignmentX = LEFT_ALIGNMENT
+            pathLabel.alignmentX = LEFT_ALIGNMENT
             add(nameLabel)
+            add(Box.createVerticalStrut(JBUI.scale(TEXT_LINE_GAP)))
             add(pathLabel)
         }
 
-        val iconWrapper = JPanel(BorderLayout()).apply {
+        val iconHolder = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
             isOpaque = false
-            add(iconLabel, BorderLayout.NORTH)
+            alignmentY = TOP_ALIGNMENT
+            iconLabel.alignmentX = LEFT_ALIGNMENT
+            add(iconLabel)
         }
 
-        add(iconWrapper, BorderLayout.WEST)
+        add(iconHolder, BorderLayout.WEST)
         add(textPanel, BorderLayout.CENTER)
     }
 
