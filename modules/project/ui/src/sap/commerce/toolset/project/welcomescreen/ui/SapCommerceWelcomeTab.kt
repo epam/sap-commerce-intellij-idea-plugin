@@ -87,7 +87,7 @@ class SapCommerceWelcomeTab(
             button(i18n("hybris.welcometab.button.import.project")) {
                 invokeLater {
                     triggerAction(
-                        actionId = "ImportProject",
+                        actionId = "sap.commerce.toolset.import",
                         place = ActionPlaces.WELCOME_SCREEN,
                         uiKind = ActionUiKind.POPUP,
                     )
