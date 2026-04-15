@@ -9,7 +9,7 @@
 - Improved Angular module detection for Ultimate IDEA [#1885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1885)
 - Display detected module root as multiline text in the `Mandatory Module Not Found` dialog [#1887](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1887)
 - Validate that Platform is build before importing the project [#1889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1889)
-- Preselect suitable SDK version during project version based on platform version [#1892](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1892)
+- Preselect suitable SDK version during project version based on platform version [#1893](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1893)
 
 ### `Welcome Screen` enhancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
