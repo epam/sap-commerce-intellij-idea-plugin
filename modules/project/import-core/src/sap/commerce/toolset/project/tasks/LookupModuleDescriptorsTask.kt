@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,7 +26,10 @@ import com.intellij.util.application
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportContext
-import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.project.descriptor.MainConfigModuleDescriptorResolver
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorsCollector
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorsDependenciesResolver
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorsSelector
 import sap.commerce.toolset.project.exceptions.ModuleNotFoundException
 
 @Service
@@ -41,8 +44,7 @@ class LookupModuleDescriptorsTask() {
         val moduleDescriptors = ModuleDescriptorsDependenciesResolver.getInstance().resolve(foundModuleDescriptors)
         moduleDescriptors.forEach { context.addModule(it) }
 
-        val mainConfigModuleDescriptor: ConfigModuleDescriptor = MainConfigModuleDescriptorResolver.getInstance()
-            .resolve(context)
+        val mainConfigModuleDescriptor = MainConfigModuleDescriptorResolver.getInstance().resolve(context)
 
         ModuleDescriptorsSelector.getInstance().preselect(context, mainConfigModuleDescriptor)
     }
