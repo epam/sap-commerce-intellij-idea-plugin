@@ -97,8 +97,7 @@ internal class SapCommerceProjectList(
         Disposer.register(parentDisposable) { scope.cancel() }
     }
 
-    override fun processMouseEvent(e: MouseEvent) =
-        if (isOnRow(e)) super.processMouseEvent(e) else Unit
+    override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
 
     override fun processMouseMotionEvent(e: MouseEvent) = if (isOnRow(e)) {
         super.processMouseMotionEvent(e)
@@ -114,9 +113,7 @@ internal class SapCommerceProjectList(
         }
     }
 
-    fun isOnRow(e: MouseEvent): Boolean = with(locationToIndex(e.point)) {
-        this >= 0 && getCellBounds(this, this)?.contains(e.point) == true
-    }
+    fun isOnRow(e: MouseEvent): Boolean = with(locationToIndex(e.point)) { this >= 0 && getCellBounds(this, this)?.contains(e.point) == true }
 
     companion object {
         @Serial
