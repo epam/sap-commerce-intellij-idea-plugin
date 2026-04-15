@@ -126,7 +126,7 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
         val mutableContext = importContext ?: return
         mutableContext.projectName = projectNameProperty.get()
             ?.takeIf { it.isNotBlank() }
-            ?.takeIf { checkboxProperties[".name"]?.property?.get() ?: false}
+            ?.takeIf { checkboxProperties[".name"]?.property?.get() ?: false }
         mutableContext.restoreExistingProjectFiles = checkboxProperties.values
             .filter { it.property.get() }
             .map { it.path }
@@ -134,7 +134,31 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
 
     override fun isStepVisible(): Boolean {
         val importContext = importContext ?: return false
-        return !importContext.refresh
+        if (importContext.refresh) return false
+        val ideaPath = Path(builder.fileToImport)
+            .resolve(ProjectConstants.Paths.IDEA)
+
+        val anyExists = arrayOf(
+            ".run",
+            "runConfigurations",
+            "dictionaries",
+            "copyright",
+            "codeStyles",
+        )
+            .map { ideaPath.resolve(it) }
+            .firstOrNull { it.directoryExists }
+            ?: arrayOf(
+                ".name",
+                "icon.svg",
+                "icon_dark.svg",
+                "hybrisDeveloperSpecificProjectSettings.xml",
+                "vcs.xml",
+                "externalDependencies.xml",
+            )
+                .map { ideaPath.resolve(it) }
+                .firstOrNull { it.fileExists }
+
+        return anyExists != null
     }
 
     private fun Panel.checkBoxFile(ideaPath: Path, childName: String, checkBoxText: String, preview: Row.(Path) -> Unit = {}) = checkbox(
