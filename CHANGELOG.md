@@ -1,14 +1,15 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
 - Enable `externalDependencies.xml` as a restoration entry on project reimport [#1884](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1884)
 - Improved Angular module detection for Ultimate IDEA [#1885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1885)
+- Display detected module root as multiline text in the `Mandatory Module Not Found` dialog [#1887](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1887)
 
-### `Welcome Screen` enchancements
+### `Welcome Screen` enhancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
 
 ## [2026.0.8]

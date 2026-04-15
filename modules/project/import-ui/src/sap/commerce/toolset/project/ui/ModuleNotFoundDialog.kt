@@ -60,7 +60,7 @@ class ModuleNotFoundDialog(
                         descriptors.forEach { descriptor ->
                             row {
                                 label(descriptor.name)
-                                label(descriptor.moduleRootPath.pathString)
+                                text(descriptor.moduleRootPath.pathString)
                             }.layout(RowLayout.PARENT_GRID)
                         }
                     }
