@@ -18,12 +18,14 @@
 
 package sap.commerce.toolset.project
 
+import com.intellij.ide.util.projectWizard.ProjectJdkStep
 import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectImportProvider
 import com.intellij.projectImport.ProjectOpenProcessor
+import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.wizard.*
 
@@ -45,6 +47,9 @@ class HybrisProjectImportProvider : ProjectImportProvider() {
         SelectHybrisModulesStep(context),
         SelectOtherModulesStep(context),
         ReuseExistingProjectSettings(context),
-        ProjectWizardStepFactory.getInstance().createProjectJdkStep(context),
+        ProjectWizardStepFactory.getInstance().createProjectJdkStep(context).also {
+            it.asSafely<ProjectJdkStep>()
+                ?.let { jdkStep -> context.putUserData(ProjectImportCoreContextStep.KEY_SDK_STEP, jdkStep) }
+        },
     )
 }

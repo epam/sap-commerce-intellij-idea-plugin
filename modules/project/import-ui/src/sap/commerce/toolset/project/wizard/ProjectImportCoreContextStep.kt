@@ -18,10 +18,14 @@
 
 package sap.commerce.toolset.project.wizard
 
+import com.intellij.ide.util.importProject.ProjectDescriptor
+import com.intellij.ide.util.projectWizard.ProjectJdkStep
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ConfigurationException
+import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBScrollPane
@@ -108,6 +112,28 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
         }
 
         searchModuleRoots(importContext)
+        wizardContext.getUserData(KEY_SDK_STEP)
+            ?.let {
+                val projectDescriptor = object : ProjectDescriptor() {
+                    override fun getRequiredJdkVersion(): JavaSdkVersion {
+                        val platformVersion = importContext.platformVersion ?: ""
+                        return when {
+                            platformVersion.startsWith("2211-jdk21") -> JavaSdkVersion.JDK_21
+
+                            platformVersion.startsWith("2211")
+                                || platformVersion.startsWith("2205") -> JavaSdkVersion.JDK_17
+
+                            platformVersion.startsWith("2105")
+                                || platformVersion.startsWith("2011")
+                                || platformVersion.startsWith("2005")
+                                || platformVersion.startsWith("1905") -> JavaSdkVersion.JDK_11
+
+                            else -> JavaSdkVersion.JDK_1_8
+                        }
+                    }
+                }
+                it.setProjectDescriptor(projectDescriptor)
+            }
     }
 
     override fun updateStep() {
@@ -319,7 +345,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
         val platformModuleDescriptor = this.foundModules.find { it is PlatformModuleDescriptor }
             ?: return
-        if (!platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC).fileExists) {
+        if (!platformModuleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC).directoryExists) {
             throw PlatformIsNotBuiltException()
         }
     }
@@ -339,4 +365,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
     private fun importBuilder() = builder as HybrisProjectImportBuilder
 
+    companion object {
+        val KEY_SDK_STEP = Key.create<ProjectJdkStep>("sap.commerce.toolset.importWizard.jdkStep")
+    }
 }

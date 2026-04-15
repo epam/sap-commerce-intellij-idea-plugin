@@ -54,7 +54,7 @@ import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.yModule
 import sap.commerce.toolset.settings.LibrarySourcesFetchMode
 import sap.commerce.toolset.ui.banner
-import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.util.directoryExists
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.io.Serial
@@ -290,7 +290,7 @@ class ProjectRefreshDialog(
         val isPlatformBuilt = project.yModule(EiConstants.Extension.PLATFORM)
             ?.contentRoot
             ?.resolve(ProjectConstants.Paths.BOOTSTRAP_GEN_SRC)
-            ?.fileExists
+            ?.directoryExists
             ?: return null
 
         if (isPlatformBuilt) return null
