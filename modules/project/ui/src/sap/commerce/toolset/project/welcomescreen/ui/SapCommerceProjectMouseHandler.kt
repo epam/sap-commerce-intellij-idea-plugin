@@ -49,7 +49,7 @@ internal class SapCommerceProjectMouseHandler(
 
         val project = model.getElementAt(index)
 
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             ProjectManagerEx.getInstanceEx().openProjectAsync(project.path)
         }
     }
