@@ -47,9 +47,6 @@ data class RecentSapCommerceProject(
     val gitBranch: String?
         get() = (GitHeadCache.getInstance().get(location) as? RecentSapCommerceProjectGitBranch.Named)?.name
 
-    val isGitInfoLoaded: Boolean
-        get() = GitHeadCache.getInstance().isLoaded(location)
-
     companion object {
         fun of(location: String): RecentSapCommerceProject {
             val manager = RecentProjectsManagerBase.getInstanceEx()
