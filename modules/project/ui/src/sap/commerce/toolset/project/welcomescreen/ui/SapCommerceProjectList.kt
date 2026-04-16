@@ -61,7 +61,7 @@ internal class SapCommerceProjectList(
     parentDisposable: Disposable,
     private val model: CollectionListModel<RecentSapCommerceProject>
 ) : JBList<RecentSapCommerceProject>(model),
-    UiDataProvider{
+    UiDataProvider {
 
     var hoveredIndex: Int = -1
         set(value) {
@@ -86,8 +86,8 @@ internal class SapCommerceProjectList(
             if (selectedIndex != -1) invokeLater { clearSelection() }
         }
 
-        val removeAction = ActionManager.getInstance().getAction(RemoveSapCommerceProjectAction.ACTION_ID)
-        removeAction?.registerCustomShortcutSet(removeAction.shortcutSet, this, parentDisposable)
+        ActionManager.getInstance().getAction(RemoveSapCommerceProjectAction.ACTION_ID)
+            ?.also { it.registerCustomShortcutSet(it.shortcutSet, this, parentDisposable) }
 
         // Subscribe to cache updates. Debouncing collapses bursts of cache fills
         // (typical at startup, when many projects warm up in parallel) into a
