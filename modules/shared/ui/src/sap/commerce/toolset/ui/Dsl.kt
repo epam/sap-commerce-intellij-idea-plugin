@@ -43,6 +43,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.impl.DslComponentPropertyInternal
 import com.intellij.util.MathUtil
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBFont
 import org.jetbrains.annotations.NonNls
@@ -228,20 +229,32 @@ private class PopupActionGroup(
     }
 }
 
-fun scrollPanel(content: JComponent, horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) = panel {
-    row {
-        scrollCell(content)
-            .align(Align.FILL)
-            .resizableColumn()
-            .applyToComponent {
-                (this.parent.parent as? JBScrollPane)?.apply {
-                    this.horizontalScrollBarPolicy = horizontalScrollBarPolicy
-                    border = JBEmptyBorder(0)
+fun scrollPanel(
+    content: JComponent,
+    horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED,
+    preferredSize: Dimension? = null,
+) = panel {
+    scrollRow(content, horizontalScrollBarPolicy, preferredSize)
+}
+
+fun Panel.scrollRow(
+    content: JComponent,
+    horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED,
+    preferredSize: Dimension? = null,
+) = row {
+    scrollCell(content)
+        .align(Align.FILL)
+        .resizableColumn()
+        .applyToComponent {
+            this.parent.parent.asSafely<JBScrollPane>()?.apply {
+                this.horizontalScrollBarPolicy = horizontalScrollBarPolicy
+                this.border = JBEmptyBorder(0)
+                if (preferredSize != null) {
+                    this.preferredSize = preferredSize
                 }
             }
-
-    }.resizableRow()
-}
+        }
+}.resizableRow()
 
 fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
 fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }

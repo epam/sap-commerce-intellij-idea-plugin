@@ -28,8 +28,6 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.projectImport.ProjectImportWizardStep
-import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.scale.JBUIScale
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CancellationException
 import sap.commerce.toolset.HybrisConstants
@@ -52,12 +50,10 @@ import sap.commerce.toolset.project.ui.uiCoreStep
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
-import java.awt.Dimension
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
-import javax.swing.ScrollPaneConstants
 import kotlin.io.path.*
 
 class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizardStep(context), RefreshSupport {
@@ -72,10 +68,7 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
             .also { it.registerValidators(wizardContext.disposable) }
     }
 
-    override fun getComponent() = JBScrollPane(_ui).apply {
-        horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-        preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
-    }
+    override fun getComponent() = _ui
 
     override fun updateDataModel() {
         _ui.apply()
