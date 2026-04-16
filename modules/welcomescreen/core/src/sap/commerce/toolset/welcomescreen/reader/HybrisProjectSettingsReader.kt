@@ -18,8 +18,8 @@
 
 package sap.commerce.toolset.welcomescreen.reader
 
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.util.fileExists
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import java.nio.file.Files
@@ -43,7 +43,7 @@ object HybrisProjectSettingsReader {
 
     fun read(projectLocation: String): RecentSapCommerceProjectSettings {
         val settingsFile = Path.of(projectLocation)
-            .resolve(ProjectConstants.Directory.IDEA)
+            .resolve(Project.DIRECTORY_STORE_FOLDER)
             .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
 
         if (!settingsFile.fileExists) return RecentSapCommerceProjectSettings()
