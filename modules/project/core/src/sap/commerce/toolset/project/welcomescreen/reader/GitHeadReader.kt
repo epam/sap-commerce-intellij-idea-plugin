@@ -18,6 +18,8 @@
 
 package sap.commerce.toolset.project.welcomescreen.reader
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
 import java.nio.file.Path
@@ -37,17 +39,17 @@ import java.nio.file.Path
  */
 internal object GitHeadReader {
 
-    fun read(projectLocation: String): String? {
-        val headFile = Path.of(projectLocation).resolve(".git").resolve("HEAD")
-        if (!headFile.fileExists) return null
+    suspend fun read(projectLocation: String): String? = withContext(Dispatchers.IO) {
+        val headFile = Path.of(projectLocation)
+            .resolve(".git")
+            .resolve("HEAD")
+        if (!headFile.fileExists) return@withContext null
 
-        return runCatching {
+        runCatching {
             val contents = Files.readString(headFile).trim()
             when {
-                contents.startsWith(REF_PREFIX) ->
-                    contents.removePrefix(REF_PREFIX).takeIf { it.isNotBlank() }
-                contents.matches(SHA_REGEX) ->
-                    contents.substring(0, SHORT_SHA_LENGTH)
+                contents.startsWith(REF_PREFIX) -> contents.removePrefix(REF_PREFIX).takeIf { it.isNotBlank() }
+                contents.matches(SHA_REGEX) -> contents.substring(0, SHORT_SHA_LENGTH)
                 else -> null
             }
         }.getOrElse { null }
