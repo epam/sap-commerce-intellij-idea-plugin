@@ -46,7 +46,7 @@ import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
-import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
 import sap.commerce.toolset.util.fileExists
@@ -58,7 +58,7 @@ class SapCommerceWelcomeTab(
     parentDisposable: Disposable
 ) : DefaultWelcomeScreenTab("SAP Commerce"), Disposable {
 
-    private val listModel = CollectionListModel<SapCommerceProject>()
+    private val listModel = CollectionListModel<RecentSapCommerceProject>()
     private val projectList = SapCommerceProjectList(this, listModel)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -142,7 +142,7 @@ class SapCommerceWelcomeTab(
                 ?.getRecentPaths()
                 ?.asSequence()
                 ?.filter { isSapCommerceProject(it) }
-                ?.map { SapCommerceProject.of(it) }
+                ?.map { RecentSapCommerceProject.of(it) }
                 ?.toList()
                 ?: emptyList()
 

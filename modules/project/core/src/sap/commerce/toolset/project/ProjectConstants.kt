@@ -23,7 +23,7 @@ import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.project.Project
 import com.intellij.platform.workspace.jps.entities.LibraryTypeId
 import sap.commerce.toolset.extensioninfo.EiConstants
-import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import kotlin.io.path.Path
 
 object ProjectConstants {
@@ -152,7 +152,7 @@ object ProjectConstants {
     }
 
     object WelcomeScreen {
-        val SAP_COMMERCE_PROJECT_KEY: DataKey<SapCommerceProject> = DataKey.create("sap.commerce.welcomeTab.project")
+        val DATA_KEY_SAP_COMMERCE_PROJECT: DataKey<RecentSapCommerceProject> = DataKey.create("sap.commerce.welcomeTab.project")
     }
 
     val PLATFORM_EXTENSION_NAMES = setOf(

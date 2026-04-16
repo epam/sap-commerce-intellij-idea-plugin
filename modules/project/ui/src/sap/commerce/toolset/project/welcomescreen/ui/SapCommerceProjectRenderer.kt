@@ -23,12 +23,12 @@ import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import java.awt.*
 import java.io.Serial
 import javax.swing.*
 
-internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommerceProject> {
+internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSapCommerceProject> {
 
     private val iconLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
     private val nameLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
@@ -128,8 +128,8 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
     }
 
     override fun getListCellRendererComponent(
-        list: JList<out SapCommerceProject>,
-        value: SapCommerceProject,
+        list: JList<out RecentSapCommerceProject>,
+        value: RecentSapCommerceProject,
         index: Int,
         isSelected: Boolean,
         cellHasFocus: Boolean

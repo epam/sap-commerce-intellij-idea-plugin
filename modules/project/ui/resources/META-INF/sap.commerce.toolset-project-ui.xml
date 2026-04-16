@@ -41,7 +41,7 @@
             <keyboard-shortcut keymap="$default" first-keystroke="DELETE"/>
         </action>
 
-        <group id="SapCommerce.WelcomeTab.ProjectContextMenu">
+        <group id="sap.developers.toolset.welcomeTab.projectContextMenu">
             <reference ref="SapCommerce.RemoveFromRecentProjects"/>
         </group>
     </actions>

@@ -33,7 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -48,7 +48,7 @@ import java.awt.event.MouseEvent
  */
 internal class SapCommerceProjectMouseHandler(
     private val list: SapCommerceProjectList,
-    private val model: CollectionListModel<SapCommerceProject>
+    private val model: CollectionListModel<RecentSapCommerceProject>
 ) : MouseAdapter() {
 
     override fun mouseClicked(e: MouseEvent) {
@@ -70,30 +70,28 @@ internal class SapCommerceProjectMouseHandler(
         return e.point.x >= overflowZoneStart
     }
 
-    private fun openProject(project: SapCommerceProject) {
+    private fun openProject(project: RecentSapCommerceProject) {
         CoroutineScope(Dispatchers.Default).launch {
             ProjectManagerEx.getInstanceEx().openProjectAsync(project.path)
         }
     }
 
-    private fun showContextMenu(e: MouseEvent, project: SapCommerceProject) {
-        val actionManager = ActionManager.getInstance()
-        val group = actionManager.getAction("SapCommerce.WelcomeTab.ProjectContextMenu") as? ActionGroup
+    private fun showContextMenu(e: MouseEvent, project: RecentSapCommerceProject) {
+        val group = ActionManager.getInstance().getAction("sap.developers.toolset.welcomeTab.projectContextMenu") as? ActionGroup
             ?: return
 
         val dataContext = SimpleDataContext.builder()
-            .add(ProjectConstants.WelcomeScreen.SAP_COMMERCE_PROJECT_KEY, project)
+            .add(ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT, project)
             .add(PlatformDataKeys.CONTEXT_COMPONENT, list)
             .build()
 
-        JBPopupFactory.getInstance()
-            .createActionGroupPopup(
-                null,                       // title
-                group,
-                dataContext,
-                JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
-                true                        // showDisabledActions
-            )
+        JBPopupFactory.getInstance().createActionGroupPopup(
+            /* title = */ null,
+            /* actionGroup = */ group,
+            /* dataContext = */ dataContext,
+            /* selectionAidMethod = */ JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
+            /* showDisabledActions = */ true
+        )
             .show(RelativePoint(e))
     }
 

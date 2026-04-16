@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.drop
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
-import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
 import java.io.Serial
@@ -59,8 +59,8 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class)
 internal class SapCommerceProjectList(
     parentDisposable: Disposable,
-    private val model: CollectionListModel<SapCommerceProject>
-) : JBList<SapCommerceProject>(model),
+    private val model: CollectionListModel<RecentSapCommerceProject>
+) : JBList<RecentSapCommerceProject>(model),
     UiDataProvider{
 
     var hoveredIndex: Int = -1
@@ -108,7 +108,7 @@ internal class SapCommerceProjectList(
 
     override fun uiDataSnapshot(sink: DataSink) {
         if (hoveredIndex >= 0 && hoveredIndex < model.size) {
-            sink[ProjectConstants.WelcomeScreen.SAP_COMMERCE_PROJECT_KEY] = model.getElementAt(hoveredIndex)
+            sink[ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT] = model.getElementAt(hoveredIndex)
         }
     }
 
