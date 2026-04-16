@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -56,6 +56,14 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     private val initialized = AtomicBooleanProperty(true)
     private val canApply = AtomicBooleanProperty(false)
     private val editable = AtomicBooleanProperty(true)
+
+    /**
+     * Per-render map of logger-name to per-row visibility toggle, plus a
+     * "no matches" flag for the empty-state banner. Stable by reference
+     * across renders so the document listener wired up in [newLoggerPanel]
+     * keeps working without re-registration.
+     */
+    private val filterState = LoggerFilterState()
 
     private lateinit var dPanel: DialogPanel
     private lateinit var loggerLevelField: ComboBox<CxLogLevel>
@@ -125,9 +133,17 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             }
         } else {
             val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
-            val view = createLoggersPanel(loggers, lazyLoggerRows)
             val viewport = dataScrollPane.getViewport()
             val pos = viewport.getViewPosition()
+
+            // Rebuild filter map for this render; listener in newLoggerPanel
+            // keeps referencing filterState by identity, so preserving the
+            // instance across renders is intentional.
+            filterState.clear()
+            val view = createLoggersPanel(loggers, lazyLoggerRows)
+            // Re-apply current filter text so rows come in filtered if the
+            // user had typed something before this render arrived.
+            filterState.apply(loggerNameField.text)
 
             lazyLoggerRows.forEach {
                 lazyLoggerDetails(project, coroutineScope, it)
@@ -148,7 +164,17 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     }
 
     private fun createLoggersPanel(loggers: Collection<CxLoggerPresentation>, lazyLoggerRows: MutableCollection<LazyLoggerRow>) = panel {
+        row {
+            text("No loggers match the current filter.")
+                .align(Align.CENTER)
+                .resizableColumn()
+        }
+            .visibleIf(filterState.showNoMatches)
+
         loggers.forEach { cxLogger ->
+            val rowVisible = AtomicBooleanProperty(true)
+            filterState.track(cxLogger.name, rowVisible)
+
             row {
                 logLevelComboBox()
                     .bindItem({ cxLogger.level }, { _ -> })
@@ -167,6 +193,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                 )
                     .customize(UnscaledGaps(0, 0, 0, 25))
             }
+                .visibleIf(rowVisible)
         }
     }
 
@@ -174,7 +201,10 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         row {
             loggerLevelField = logLevelComboBox().component
 
-            loggerNameField = newLoggerTextField(this@CxCustomLogTemplatesView) {
+            loggerNameField = newLoggerTextField(
+                parentDisposable = this@CxCustomLogTemplatesView,
+                onFilterChanged = { filterState.apply(it) },
+            ) {
                 applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
             }
                 .component
