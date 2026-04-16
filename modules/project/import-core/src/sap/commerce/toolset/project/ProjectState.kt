@@ -22,11 +22,11 @@ import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-sealed class ProjectState {
-    data object Normal : ProjectState()
+sealed interface ProjectState {
+    data object Normal : ProjectState
     data class ForceReimport(
         val projectDirectory: VirtualFile,
-    ) : ProjectState()
+    ) : ProjectState
 
     data class Reimport(
         val projectDirectory: VirtualFile,
@@ -34,13 +34,13 @@ sealed class ProjectState {
         val currentVersion: String,
         val reimportRequests: List<PullRequest> = emptyList(),
         val refreshRequests: List<PullRequest> = emptyList(),
-    ) : ProjectState()
+    ) : ProjectState
 
     data class Refresh(
         val importedByVersion: String,
         val currentVersion: String,
         val refreshRequests: List<PullRequest>,
-    ) : ProjectState()
+    ) : ProjectState
 
     data class PullRequest(
         val title: String,

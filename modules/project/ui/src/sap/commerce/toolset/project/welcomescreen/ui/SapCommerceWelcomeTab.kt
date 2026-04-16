@@ -40,10 +40,12 @@ import com.intellij.util.IconUtil
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
@@ -147,13 +149,21 @@ class SapCommerceWelcomeTab(
             withContext(Dispatchers.EDT) {
                 listModel.replaceAll(projects)
             }
+
+            // Kick off settings parsing for any project not yet cached.
+            // The cache deduplicates concurrent and repeat requests, so this is safe
+            // to call on every reload (including those triggered by RECENT_PROJECTS_CHANGE_TOPIC).
+            val cache = HybrisProjectSettingsCache.getInstance()
+            for (project in projects) {
+                cache.warmUp(project.location)
+            }
         }
     }
 
     private fun isSapCommerceProject(location: String): Boolean = runCatching {
         Path.of(location)
             .resolve(ProjectConstants.Directory.IDEA)
-            .resolve("hybrisProjectSettings.xml")
+            .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
             .fileExists
     }
         .getOrElse { false }

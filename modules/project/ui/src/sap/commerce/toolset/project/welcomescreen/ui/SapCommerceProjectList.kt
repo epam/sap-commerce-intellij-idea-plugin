@@ -19,16 +19,25 @@
 package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
+import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBList
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.ListSelectionModel
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A non-selectable, hover-only list of SAP Commerce projects.
@@ -39,10 +48,13 @@ import javax.swing.ListSelectionModel
  * - Forwards off-row motion events to registered listeners so external hover
  *   tracking can clear its state when the cursor leaves a row.
  * - Exposes [hoveredIndex] as a typed property; changing it repaints the list.
+ * - Drives `AnimatedIcon` repaints in renderers via `ANIMATION_IN_RENDERER_ALLOWED`.
+ * - Collects from [HybrisProjectSettingsCache.settings] and repaints when entries arrive.
  */
+@OptIn(FlowPreview::class)
 internal class SapCommerceProjectList(
     parentDisposable: Disposable,
-    model: CollectionListModel<SapCommerceProject>
+    private val model: CollectionListModel<SapCommerceProject>
 ) : JBList<SapCommerceProject>(model) {
 
     var hoveredIndex: Int = -1
@@ -53,18 +65,36 @@ internal class SapCommerceProjectList(
             }
         }
 
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     init {
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         selectionBackground = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         border = JBUI.Borders.empty(0, 4)
         selectionMode = ListSelectionModel.SINGLE_SELECTION
 
-        // Never allow a row to stay selected — we drive visuals purely from hover.
+        // Tell JBList to drive AnimatedIcon repaints inside the cell renderer.
+        putClientProperty(AnimatedIcon.ANIMATION_IN_RENDERER_ALLOWED, true)
+
         addListSelectionListener(parentDisposable) {
-            if (selectedIndex != -1) {
-                invokeLater { clearSelection() }
-            }
+            if (selectedIndex != -1) invokeLater { clearSelection() }
         }
+
+        // Subscribe to cache updates. Debouncing collapses bursts of cache fills
+        // (typical at startup, when many projects warm up in parallel) into a
+        // single repaint instead of one repaint per project.
+        scope.launch {
+            HybrisProjectSettingsCache.getInstance()
+                .settings
+                .drop(1)  // skip the initial empty-map emission
+                .debounce(50.milliseconds)
+                .distinctUntilChanged()
+                .collect {
+                    withContext(Dispatchers.EDT) { repaint() }
+                }
+        }
+
+        Disposer.register(parentDisposable) { scope.cancel() }
     }
 
     override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
@@ -83,9 +113,7 @@ internal class SapCommerceProjectList(
         }
     }
 
-    fun isOnRow(e: MouseEvent): Boolean = with(locationToIndex(e.point)) {
-        this >= 0 && getCellBounds(this, this)?.contains(e.point) == true
-    }
+    fun isOnRow(e: MouseEvent): Boolean = with(locationToIndex(e.point)) { this >= 0 && getCellBounds(this, this)?.contains(e.point) == true }
 
     companion object {
         @Serial
