@@ -63,7 +63,7 @@ class RemoveSapCommerceProjectAction : AnAction(), DumbAware {
     }
 
     companion object {
-        const val ACTION_ID = "SapCommerce.RemoveFromRecentProjects"
+        const val ACTION_ID = "sap.developers.toolset.removeFromRecentProjects"
     }
 }
 

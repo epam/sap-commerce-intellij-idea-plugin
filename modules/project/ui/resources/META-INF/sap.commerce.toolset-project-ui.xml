@@ -35,14 +35,14 @@
     </extensions>
 
     <actions>
-        <action id="SapCommerce.RemoveFromRecentProjects"
+        <action id="sap.developers.toolset.removeFromRecentProjects"
                 class="sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction"
                 text="hybris.welcometab.button.remove.from.recent.projects">
             <keyboard-shortcut keymap="$default" first-keystroke="DELETE"/>
         </action>
 
         <group id="sap.developers.toolset.welcomeTab.projectContextMenu">
-            <reference ref="SapCommerce.RemoveFromRecentProjects"/>
+            <reference ref="sap.developers.toolset.removeFromRecentProjects"/>
         </group>
     </actions>
 

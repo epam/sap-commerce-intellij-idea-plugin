@@ -152,7 +152,7 @@ object ProjectConstants {
     }
 
     object WelcomeScreen {
-        val DATA_KEY_SAP_COMMERCE_PROJECT: DataKey<RecentSapCommerceProject> = DataKey.create("sap.commerce.welcomeTab.project")
+        val DATA_KEY_SAP_COMMERCE_PROJECT = DataKey.create< RecentSapCommerceProject>("sap.commerce.welcomeTab.project")
     }
 
     val PLATFORM_EXTENSION_NAMES = setOf(
