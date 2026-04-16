@@ -112,16 +112,6 @@ internal class SapCommerceProjectList(
         }
     }
 
-    private fun repaintRowForLocation(location: String) {
-        for (i in 0 until model.size) {
-            if (model.getElementAt(i).location == location) {
-                getCellBounds(i, i)?.let { repaint(it) }
-                return
-            }
-        }
-    }
-
-
     override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
 
     override fun processMouseMotionEvent(e: MouseEvent) = if (isOnRow(e)) {
