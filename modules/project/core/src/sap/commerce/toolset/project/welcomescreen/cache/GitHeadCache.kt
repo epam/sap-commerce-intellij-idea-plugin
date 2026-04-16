@@ -22,79 +22,35 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.StateFlow
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
 import sap.commerce.toolset.project.welcomescreen.reader.GitHeadReader
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Application-level cache for git branch names read from `.git/HEAD`.
  *
- * Mirrors [HybrisProjectSettingsCache]: synchronous [get] for cached values,
- * asynchronous [warmUp] for background loading, [Listener] for completion
- * notifications. Stores `Branch.NotAGitRepo` for projects without a `.git`
- * directory so we don't keep retrying them on every reload.
+ * State is exposed as a [StateFlow] of `location -> Branch` so consumers can
+ * react to changes via coroutines instead of registering callback listeners.
+ *
+ * - [branches] emits a new map snapshot whenever any entry is added or invalidated.
+ * - [warmUp] schedules background reading for a path; concurrent calls for the
+ *   same path are deduplicated.
+ * - [invalidate] removes a cached entry (force re-read on next [warmUp]).
+ *
+ * Stores [sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectGitBranch.NotAGitRepo] for projects without a `.git` directory so we
+ * don't keep retrying them on every reload.
+ *
+ * Read API: [get] / [isLoaded] return synchronously from the latest snapshot —
+ * UI renderers (which don't suspend) call these directly.
  */
+
 @Service(Service.Level.APP)
-class GitHeadCache(private val scope: CoroutineScope) {
+class GitHeadCache(scope: CoroutineScope) : StateFlowCache<RecentSapCommerceProjectGitBranch>(scope) {
 
-    sealed interface Branch {
-        data class Named(val name: String) : Branch
-        data object NotAGitRepo : Branch
-    }
-
-    fun interface Listener {
-        fun onBranchLoaded(projectLocation: String, branch: Branch)
-    }
-
-    private val cache = ConcurrentHashMap<String, Branch>()
-    private val inFlight = ConcurrentHashMap<String, Deferred<Branch>>()
-    private val listeners = mutableListOf<Listener>()
-
-    fun get(projectLocation: String): Branch? = cache[projectLocation]
-
-    fun isLoaded(projectLocation: String): Boolean = cache.containsKey(projectLocation)
-
-    fun warmUp(projectLocation: String) {
-        if (cache.containsKey(projectLocation)) return
-
-        inFlight.computeIfAbsent(projectLocation) { location ->
-            scope.async(Dispatchers.Default) {
-                val branch = GitHeadReader.read(location)
-                    ?.let { Branch.Named(it) }
-                    ?: Branch.NotAGitRepo
-                cache[location] = branch
-                inFlight.remove(location)
-                fireLoaded(location, branch)
-                branch
-            }
-        }
-    }
-
-    fun invalidate(projectLocation: String) {
-        cache.remove(projectLocation)
-        inFlight.remove(projectLocation)?.cancel()
-    }
-
-    fun addListener(listener: Listener) {
-        synchronized(listeners) { listeners.add(listener) }
-    }
-
-    fun removeListener(listener: Listener) {
-        synchronized(listeners) { listeners.remove(listener) }
-    }
-
-    private fun fireLoaded(location: String, branch: Branch) {
-        val snapshot = synchronized(listeners) { listeners.toList() }
-        for (l in snapshot) {
-            runCatching { l.onBranchLoaded(location, branch) }
-        }
-    }
+    override suspend fun load(key: String) = GitHeadReader.read(key)?.let { RecentSapCommerceProjectGitBranch.Named(it) } ?: RecentSapCommerceProjectGitBranch.NotAGitRepo
 
     companion object {
         @JvmStatic
-        fun getInstance(): GitHeadCache =
-            ApplicationManager.getApplication().service()
+        fun getInstance(): GitHeadCache = ApplicationManager.getApplication().service()
     }
 }

@@ -39,6 +39,8 @@ import sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerce
 import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
 import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
 import java.io.Serial
@@ -74,10 +76,6 @@ internal class SapCommerceProjectList(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val gitCacheListener = GitHeadCache.Listener { location, _ ->
-        invokeLater { repaintRowForLocation(location) }
-    }
-
     init {
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         selectionBackground = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
@@ -98,23 +96,42 @@ internal class SapCommerceProjectList(
         // (typical at startup, when many projects warm up in parallel) into a
         // single repaint instead of one repaint per project.
         scope.launch {
+            var previous = emptyMap<String, RecentSapCommerceProjectSettings>()
             HybrisProjectSettingsCache.getInstance()
-                .settings
+                .data
                 .drop(1)  // skip the initial empty-map emission
                 .debounce(50.milliseconds)
                 .distinctUntilChanged()
-                .collect {
-                    withContext(Dispatchers.EDT) { repaint() }
+                .collect { current ->
+                    val changedKeys = (current.keys - previous.keys) +
+                        current.filter { (k, v) -> previous[k] != v }.keys
+                    previous = current
+                    withContext(Dispatchers.EDT) {
+                        for (location in changedKeys) {
+                            repaintRowForLocation(location)
+                        }
+                    }
                 }
         }
 
-        Disposer.register(parentDisposable) { scope.cancel() }
-
-        val gitCache = GitHeadCache.getInstance()
-        gitCache.addListener(gitCacheListener)
-        Disposer.register(parentDisposable) {
-            gitCache.removeListener(gitCacheListener)
+        scope.launch {
+            var previous = emptyMap<String, RecentSapCommerceProjectGitBranch>()
+            GitHeadCache.getInstance()
+                .data
+                .drop(1)
+                .debounce(50.milliseconds)
+                .collect { current ->
+                    val changedKeys = (current.keys - previous.keys) +
+                        current.filter { (k, v) -> previous[k] != v }.keys
+                    previous = current
+                    withContext(Dispatchers.EDT) {
+                        for (location in changedKeys) {
+                            repaintRowForLocation(location)
+                        }
+                    }
+                }
         }
+        Disposer.register(parentDisposable) { scope.cancel() }
     }
 
     override fun uiDataSnapshot(sink: DataSink) {
@@ -122,6 +139,16 @@ internal class SapCommerceProjectList(
             sink[ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT] = model.getElementAt(hoveredIndex)
         }
     }
+
+    private fun repaintRowForLocation(location: String) {
+        for (i in 0 until model.size) {
+            if (model.getElementAt(i).location == location) {
+                getCellBounds(i, i)?.let { repaint(it) }
+                return
+            }
+        }
+    }
+
 
     override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
 

@@ -45,7 +45,7 @@ data class RecentSapCommerceProject(
         get() = HybrisProjectSettingsCache.getInstance().get(location)?.hybrisVersion
 
     val gitBranch: String?
-        get() = (GitHeadCache.getInstance().get(location) as? GitHeadCache.Branch.Named)?.name
+        get() = (GitHeadCache.getInstance().get(location) as? RecentSapCommerceProjectGitBranch.Named)?.name
 
     val isGitInfoLoaded: Boolean
         get() = GitHeadCache.getInstance().isLoaded(location)

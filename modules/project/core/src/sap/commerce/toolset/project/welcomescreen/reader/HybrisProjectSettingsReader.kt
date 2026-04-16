@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.welcomescreen.reader
 
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
 import java.nio.file.Path
@@ -40,16 +41,12 @@ import java.nio.file.Path
  */
 object HybrisProjectSettingsReader {
 
-    data class Settings(
-        val hybrisVersion: String? = null
-    )
-
-    fun read(projectLocation: String): Settings {
+    fun read(projectLocation: String): RecentSapCommerceProjectSettings {
         val settingsFile = Path.of(projectLocation)
             .resolve(ProjectConstants.Directory.IDEA)
             .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
 
-        if (!settingsFile.fileExists) return Settings()
+        if (!settingsFile.fileExists) return RecentSapCommerceProjectSettings()
 
         var hybrisVersion: String? = null
 
@@ -64,7 +61,7 @@ object HybrisProjectSettingsReader {
             }
         }
 
-        return Settings(hybrisVersion = hybrisVersion)
+        return RecentSapCommerceProjectSettings(hybrisVersion = hybrisVersion)
     }
 
     /** Extracts the contents of `value="..."` from a line, or `null` if absent/blank. */
