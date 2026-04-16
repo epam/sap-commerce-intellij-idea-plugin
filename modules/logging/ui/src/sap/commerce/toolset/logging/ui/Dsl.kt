@@ -43,6 +43,8 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
+import sap.commerce.toolset.ui.addActionListener
+import sap.commerce.toolset.ui.addDocumentListener
 import javax.swing.JComponent
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -244,10 +246,10 @@ internal fun Row.newLoggerTextField(
         else null
     }
     .applyToComponent {
-        addActionListener {
+        addActionListener(parentDisposable) {
             apply()
         }
-        document.addDocumentListener(object : DocumentListener {
+        document.addDocumentListener(parentDisposable, object : DocumentListener {
             override fun insertUpdate(e: DocumentEvent) = onFilterChanged(text)
             override fun removeUpdate(e: DocumentEvent) = onFilterChanged(text)
             override fun changedUpdate(e: DocumentEvent) = onFilterChanged(text)
