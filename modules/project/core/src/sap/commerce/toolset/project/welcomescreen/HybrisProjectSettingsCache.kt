@@ -52,11 +52,9 @@ class HybrisProjectSettingsCache(private val scope: CoroutineScope) {
 
     private val loadJobs = ConcurrentHashMap<String, Job>()
 
-    fun get(projectLocation: String): HybrisProjectSettingsReader.Settings? =
-        _settings.value[projectLocation]
+    fun get(projectLocation: String): HybrisProjectSettingsReader.Settings? = _settings.value[projectLocation]
 
-    fun isLoaded(projectLocation: String): Boolean =
-        _settings.value.containsKey(projectLocation)
+    fun isLoaded(projectLocation: String): Boolean = _settings.value.containsKey(projectLocation)
 
     fun warmUp(projectLocation: String) {
         if (isLoaded(projectLocation)) return
@@ -65,7 +63,7 @@ class HybrisProjectSettingsCache(private val scope: CoroutineScope) {
             scope.launch {
                 try {
                     val parsed = HybrisProjectSettingsReader.read(location)
-                    _settings.update { it + (location to parsed) }
+                    _settings.update { cache -> cache + (location to parsed) }
                 } finally {
                     loadJobs.remove(location)
                 }
@@ -75,7 +73,7 @@ class HybrisProjectSettingsCache(private val scope: CoroutineScope) {
 
     fun invalidate(projectLocation: String) {
         loadJobs.remove(projectLocation)?.cancel()
-        _settings.update { it - projectLocation }
+        _settings.update { cache -> cache - projectLocation }
     }
 
     companion object {

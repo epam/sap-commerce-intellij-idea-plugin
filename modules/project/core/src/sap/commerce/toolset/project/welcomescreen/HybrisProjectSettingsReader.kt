@@ -18,26 +18,25 @@
 
 package sap.commerce.toolset.project.welcomescreen
 
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.util.fileExists
 import java.nio.file.Files
 import java.nio.file.Path
-import javax.xml.stream.XMLInputFactory
-import javax.xml.stream.XMLStreamConstants
-import javax.xml.stream.XMLStreamReader
 
 /**
  * Stateless reader for `.idea/hybrisProjectSettings.xml`.
  *
- * Uses StAX (streaming XML reader) for minimal allocations and early exit
- * once all wanted fields are read. Returns an empty [Settings] on any failure
- * or missing file. Individual fields are `null` when:
- *   - the XML element is absent
- *   - the attribute is absent
- *   - the attribute value is blank (whitespace-only or empty string)
+ * Reads the file line-by-line looking for known option names. This assumes
+ * the file is plugin-generated with predictable one-option-per-line
+ * formatting and no inline comments — valid for files produced by this
+ * plugin.
  *
- * Callers treat `null` fields as "unknown" — UI shows a placeholder rather
- * than rendering an empty pill or value.
+ * Individual fields are `null` when:
+ *   - the option line is absent
+ *   - the `value="..."` attribute is missing or its contents are blank
+ *
+ * Callers treat `null` fields as "unknown" — UI shows a placeholder.
  */
 object HybrisProjectSettingsReader {
 
@@ -45,49 +44,37 @@ object HybrisProjectSettingsReader {
         val hybrisVersion: String? = null
     )
 
-    private val factory: XMLInputFactory = XMLInputFactory.newInstance().apply {
-        setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false)
-        setProperty(XMLInputFactory.SUPPORT_DTD, false)
-    }
-
     fun read(projectLocation: String): Settings {
         val settingsFile = Path.of(projectLocation)
             .resolve(ProjectConstants.Directory.IDEA)
-            .resolve(SETTINGS_FILE_NAME)
+            .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
 
         if (!settingsFile.fileExists) return Settings()
 
-        return runCatching {
-            Files.newInputStream(settingsFile).use { input ->
-                val reader = factory.createXMLStreamReader(input)
-                try {
-                    parse(reader)
-                } finally {
-                    reader.close()
-                }
-            }
-        }.getOrElse { Settings() }
-    }
-
-    private fun parse(reader: XMLStreamReader): Settings {
         var hybrisVersion: String? = null
 
-        while (reader.hasNext()) {
-            if (reader.next() != XMLStreamConstants.START_ELEMENT) continue
-            if (reader.localName != "option") continue
-
-            val name = reader.getAttributeValue(null, "name")?.takeIf { it.isNotBlank() } ?: continue
-            val value = reader.getAttributeValue(null, "value")?.trim()?.takeIf { it.isNotEmpty() }
-
-            when (name) {
-                "hybrisVersion" -> hybrisVersion = value
+        runCatching {
+            Files.newBufferedReader(settingsFile).use { reader ->
+                for (line in reader.lineSequence()) {
+                    if (HYBRIS_VERSION_MARKER in line) {
+                        hybrisVersion = extractValue(line)
+                        break  // only field we care about — stop reading
+                    }
+                }
             }
-
-            if (hybrisVersion != null) break  // early exit once we have everything
         }
 
         return Settings(hybrisVersion = hybrisVersion)
     }
 
-    private const val SETTINGS_FILE_NAME = "hybrisProjectSettings.xml"
+    /** Extracts the contents of `value="..."` from a line, or `null` if absent/blank. */
+    private fun extractValue(line: String): String? {
+        val start = line.indexOf(VALUE_ATTR).takeIf { it >= 0 } ?: return null
+        val openQuote = start + VALUE_ATTR.length
+        val closeQuote = line.indexOf('"', openQuote).takeIf { it > openQuote } ?: return null
+        return line.substring(openQuote, closeQuote).trim().takeIf { it.isNotEmpty() }
+    }
+
+    private const val HYBRIS_VERSION_MARKER = "name=\"hybrisVersion\""
+    private const val VALUE_ATTR = "value=\""
 }

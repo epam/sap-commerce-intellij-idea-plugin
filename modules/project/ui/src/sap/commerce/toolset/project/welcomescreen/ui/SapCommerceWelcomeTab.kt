@@ -40,6 +40,7 @@ import com.intellij.util.IconUtil
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
@@ -162,7 +163,7 @@ class SapCommerceWelcomeTab(
     private fun isSapCommerceProject(location: String): Boolean = runCatching {
         Path.of(location)
             .resolve(ProjectConstants.Directory.IDEA)
-            .resolve("hybrisProjectSettings.xml")
+            .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
             .fileExists
     }
         .getOrElse { false }
