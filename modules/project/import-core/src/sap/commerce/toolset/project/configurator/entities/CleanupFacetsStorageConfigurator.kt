@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.project.configurator.entities
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
@@ -31,6 +32,11 @@ class CleanupFacetsStorageConfigurator : ProjectStorageCleanupConfigurator {
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
         storage.entities<ModuleEntity>()
             // remove all facets, they will be re-created with legacy API in scope of the post-import configurator
-            .onEach { currentEntity -> currentEntity.facets.forEach { storage.removeEntity(it) } }
+            .onEach { currentEntity ->
+                currentEntity.facets.forEach {
+                    thisLogger().debug("Removed loaded facet [module: ${currentEntity.name} | facet: ${it.name}]")
+                    storage.removeEntity(it)
+                }
+            }
     }
 }

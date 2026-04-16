@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.project.configurator.entities
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.jps.entities.LibraryEntity
 import com.intellij.platform.workspace.jps.entities.modifyLibraryEntity
 import com.intellij.platform.workspace.storage.MutableEntityStorage
@@ -37,15 +38,17 @@ class SaveLibrariesStorageConfigurator : ProjectStorageSaveConfigurator {
             val currentEntity = currentEntities[newEntity.name]
 
             if (currentEntity != null) {
+                thisLogger().debug("Modified existing library: ${newEntity.name}")
+
                 storage.modifyLibraryEntity(currentEntity) {
                     this.name = newEntity.name
                     this.typeId = newEntity.typeId
                     this.tableId = newEntity.tableId
                     this.excludedRoots = newEntity.excludedRoots
                     this.roots = newEntity.roots
-                    this.entitySource = newEntity.entitySource
                 }
             } else {
+                thisLogger().debug("Created new library: ${newEntity.name}")
                 storage.addEntity(newEntity)
             }
         }

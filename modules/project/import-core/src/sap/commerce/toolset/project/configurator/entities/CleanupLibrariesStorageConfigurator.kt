@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.project.configurator.entities
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.getModuleLibraries
 import com.intellij.platform.workspace.storage.MutableEntityStorage
@@ -51,6 +52,9 @@ class CleanupLibrariesStorageConfigurator : ProjectStorageCleanupConfigurator {
             }
             .flatten()
             // remove module libraries
-            .forEach { storage.removeEntity(it) }
+            .forEach {
+                thisLogger().debug("Removed loaded library: ${it.name}")
+                storage.removeEntity(it)
+            }
     }
 }
