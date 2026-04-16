@@ -58,9 +58,15 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
 
-                row {
+                row(i18n("hybris.settings.project.details.hostingEnvironment.title")) {
                     textField()
-                        .label(i18n("hybris.import.wizard.hybris.distribution.directory.label"))
+                        .enabled(false)
+                        .text(projectSettings.hostingEnvironment?.presentationTitle ?: "N/A")
+                        .align(AlignX.FILL)
+                }.layout(RowLayout.PARENT_GRID)
+
+                row(i18n("hybris.import.wizard.hybris.distribution.directory.label")) {
+                    textField()
                         .enabled(false)
                         .text(projectSettings.platformRelativePath ?: "")
                         .align(AlignX.FILL)
@@ -69,9 +75,8 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                     contextHelp(i18n("hybris.import.wizard.hybris.distribution.directory.help.description"))
                 }.layout(RowLayout.PARENT_GRID)
 
-                row {
+                row(i18n("hybris.import.wizard.javadoc.url.label")) {
                     textField()
-                        .label(i18n("hybris.import.wizard.javadoc.url.label"))
                         .enabled(false)
                         .text(projectSettings.javadocUrl ?: "")
                         .align(AlignX.FILL)

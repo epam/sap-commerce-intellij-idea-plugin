@@ -54,6 +54,11 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(hybrisVersion = value) }
         }
+    var hostingEnvironment
+        get() = state.hostingEnvironment
+        set(value) {
+            updateState { it.copy(hostingEnvironment = value) }
+        }
     var javadocUrl
         get() = state.javadocUrl
         set(value) {
