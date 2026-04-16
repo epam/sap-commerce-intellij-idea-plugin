@@ -16,8 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.presentation
+package sap.commerce.toolset.welcomescreen
 
-data class RecentSapCommerceProjectSettings(
-    val hybrisVersion: String? = null
-)
+import com.intellij.openapi.actionSystem.DataKey
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+
+object WelcomeScreenConstants {
+
+    val DATA_KEY_SAP_COMMERCE_PROJECT = DataKey.create<RecentSapCommerceProject>("sap.commerce.welcomeTab.project")
+}

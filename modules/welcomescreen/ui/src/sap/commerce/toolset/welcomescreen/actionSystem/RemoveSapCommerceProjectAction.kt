@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.actionSystem
+package sap.commerce.toolset.welcomescreen.actionSystem
 
 import com.intellij.ide.RecentProjectsManager
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -26,12 +26,12 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.MessageDialogBuilder
 import com.intellij.openapi.ui.Messages
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.welcomescreen.WelcomeScreenConstants
 
 /**
  * Removes a SAP Commerce project from the IDE's recent projects list.
  *
- * Reads the project from [ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT] supplied via the data context
+ * Reads the project from [sap.commerce.toolset.welcomescreen.WelcomeScreenConstants.DATA_KEY_SAP_COMMERCE_PROJECT] supplied via the data context
  * — typically populated by the welcome screen list when it shows a context menu
  * or invokes the action from a row's overflow button.
  */
@@ -40,12 +40,12 @@ class RemoveSapCommerceProjectAction : AnAction(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = e.getData(ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT) != null
+        e.presentation.isEnabledAndVisible = e.getData(WelcomeScreenConstants.DATA_KEY_SAP_COMMERCE_PROJECT) != null
         e.presentation.text = i18n("hybris.welcometab.button.remove.from.recent.projects")
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val project = e.getData(ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT) ?: return
+        val project = e.getData(WelcomeScreenConstants.DATA_KEY_SAP_COMMERCE_PROJECT) ?: return
 
         val confirmed = MessageDialogBuilder
             .yesNo(

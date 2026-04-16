@@ -17,5 +17,8 @@
   -->
 <idea-plugin>
 
-
+    <applicationListeners>
+        <listener class="sap.commerce.toolset.welcomescreen.listeners.GitCacheInvalidatorOnProjectCloseListener"
+                  topic="com.intellij.openapi.project.ProjectCloseListener"/>
+    </applicationListeners>
 </idea-plugin>

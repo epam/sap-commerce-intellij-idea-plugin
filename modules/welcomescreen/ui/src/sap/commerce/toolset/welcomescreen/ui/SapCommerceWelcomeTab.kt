@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.ui
+package sap.commerce.toolset.welcomescreen.ui
 
 import com.intellij.ide.RecentProjectsManager
 import com.intellij.ide.RecentProjectsManagerBase
@@ -45,12 +45,12 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
-import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
 import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import java.nio.file.Path
 import javax.swing.JComponent
 import javax.swing.plaf.FontUIResource

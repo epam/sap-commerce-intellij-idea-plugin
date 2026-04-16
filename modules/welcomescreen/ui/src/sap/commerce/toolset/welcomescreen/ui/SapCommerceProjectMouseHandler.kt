@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.ui
+package sap.commerce.toolset.welcomescreen.ui
 
 import com.intellij.codeInsight.hints.presentation.MouseButton
 import com.intellij.codeInsight.hints.presentation.mouseButton
@@ -32,8 +32,8 @@ import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.welcomescreen.WelcomeScreenConstants
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -81,7 +81,7 @@ internal class SapCommerceProjectMouseHandler(
             ?: return
 
         val dataContext = SimpleDataContext.builder()
-            .add(ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT, project)
+            .add(WelcomeScreenConstants.DATA_KEY_SAP_COMMERCE_PROJECT, project)
             .add(PlatformDataKeys.CONTEXT_COMPONENT, list)
             .build()
 

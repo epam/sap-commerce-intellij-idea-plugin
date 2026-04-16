@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.listeners
+package sap.commerce.toolset.welcomescreen.listeners
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectCloseListener
-import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
 
 class GitCacheInvalidatorOnProjectCloseListener : ProjectCloseListener {
     override fun projectClosed(project: Project) {

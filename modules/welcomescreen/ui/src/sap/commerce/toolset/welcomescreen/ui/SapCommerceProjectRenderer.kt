@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.ui
+package sap.commerce.toolset.welcomescreen.ui
 
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import java.awt.*
 import java.io.Serial
 import javax.swing.*

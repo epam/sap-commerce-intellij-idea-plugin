@@ -17,5 +17,21 @@
   -->
 <idea-plugin>
 
+    <actions>
+        <action id="sap.developers.toolset.removeFromRecentProjects"
+                class="sap.commerce.toolset.welcomescreen.actionSystem.RemoveSapCommerceProjectAction"
+                text="hybris.welcometab.button.remove.from.recent.projects">
+            <keyboard-shortcut keymap="$default" first-keystroke="DELETE"/>
+        </action>
+
+        <group id="sap.developers.toolset.welcomeTab.projectContextMenu">
+            <reference ref="sap.developers.toolset.removeFromRecentProjects"/>
+        </group>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <welcomeTabFactory id="SapCommerceCloudWelcomeTab" order="first"
+                           implementation="sap.commerce.toolset.welcomescreen.ui.SapCommerceWelcomeTabFactory"/>
+    </extensions>
 
 </idea-plugin>
