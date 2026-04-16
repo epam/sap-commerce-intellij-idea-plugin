@@ -47,7 +47,9 @@ import sap.commerce.toolset.project.welcomescreen.reader.GitHeadReader
 @Service(Service.Level.APP)
 class GitHeadCache(scope: CoroutineScope) : StateFlowCache<RecentSapCommerceProjectGitBranch>(scope) {
 
-    override suspend fun load(key: String) = GitHeadReader.read(key)?.let { RecentSapCommerceProjectGitBranch.Named(it) } ?: RecentSapCommerceProjectGitBranch.NotAGitRepo
+    override suspend fun load(key: String) = GitHeadReader.read(key)
+        ?.let { RecentSapCommerceProjectGitBranch.Named(it) }
+        ?: RecentSapCommerceProjectGitBranch.NotAGitRepo
 
     companion object {
         @JvmStatic
