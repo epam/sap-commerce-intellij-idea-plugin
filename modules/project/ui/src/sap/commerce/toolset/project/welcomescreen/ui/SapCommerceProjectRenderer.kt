@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
-import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
@@ -45,6 +44,12 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         border = JBUI.Borders.empty(2)
         isOpaque = false
     }
+    private val branchLabel = JLabel().apply {
+        foreground = JBColor.GRAY
+        font = JBUI.Fonts.smallFont()
+        icon = HybrisIcons.WelcomeTab.VCS_BRANCH
+        iconTextGap = JBUI.scale(4)
+    }
 
 
     private val pillColor: Color = UIManager.getColor("List.selectionBackground")
@@ -67,10 +72,14 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             alignmentY = TOP_ALIGNMENT
             nameLabel.alignmentX = LEFT_ALIGNMENT
             pathLabel.alignmentX = LEFT_ALIGNMENT
+            branchLabel.alignmentX = LEFT_ALIGNMENT
             add(nameLabel)
             add(Box.createVerticalStrut(JBUI.scale(TEXT_LINE_GAP)))
             add(pathLabel)
+            add(Box.createVerticalStrut(JBUI.scale(TEXT_LINE_GAP)))
+            add(branchLabel)
         }
+
 
         val iconHolder = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
@@ -143,7 +152,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             when {
                 !isSettingsLoaded -> {
                     // Still loading — show spinner, no border.
-                    versionLabel.icon = AnimatedIcon.Default.INSTANCE
+                    versionLabel.icon = HybrisIcons.WelcomeTab.LOADING
                     versionLabel.text = ""
                     showVersionTagBorder = false
                 }
@@ -159,6 +168,15 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
                     versionLabel.text = NOT_AVAILABLE_TEXT
                     showVersionTagBorder = true
                 }
+            }
+
+            val branch = gitBranch
+            if (branch != null) {
+                branchLabel.text = branch
+                branchLabel.isVisible = true
+            } else {
+                branchLabel.text = ""
+                branchLabel.isVisible = false
             }
         }
 

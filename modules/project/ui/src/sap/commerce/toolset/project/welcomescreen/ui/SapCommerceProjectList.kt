@@ -35,9 +35,12 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
+import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
 import java.io.Serial
@@ -93,8 +96,9 @@ internal class SapCommerceProjectList(
         // (typical at startup, when many projects warm up in parallel) into a
         // single repaint instead of one repaint per project.
         scope.launch {
+            var previous = emptyMap<String, RecentSapCommerceProjectSettings>()
             HybrisProjectSettingsCache.getInstance()
-                .settings
+                .data
                 .drop(1)  // skip the initial empty-map emission
                 .debounce(50.milliseconds)
                 .distinctUntilChanged()
@@ -103,6 +107,16 @@ internal class SapCommerceProjectList(
                 }
         }
 
+        scope.launch {
+            var previous = emptyMap<String, RecentSapCommerceProjectGitBranch>()
+            GitHeadCache.getInstance()
+                .data
+                .drop(1)
+                .debounce(50.milliseconds)
+                .collect {
+                    withContext(Dispatchers.EDT) { repaint() }
+                }
+        }
         Disposer.register(parentDisposable) { scope.cancel() }
     }
 

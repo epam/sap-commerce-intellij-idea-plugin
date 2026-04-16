@@ -45,7 +45,8 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
+import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
 import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
@@ -154,8 +155,10 @@ class SapCommerceWelcomeTab(
             // The cache deduplicates concurrent and repeat requests, so this is safe
             // to call on every reload (including those triggered by RECENT_PROJECTS_CHANGE_TOPIC).
             val cache = HybrisProjectSettingsCache.getInstance()
+            val gitCache = GitHeadCache.getInstance()
             for (project in projects) {
                 cache.warmUp(project.location)
+                gitCache.warmUp(project.location)
             }
         }
     }

@@ -20,7 +20,9 @@ package sap.commerce.toolset.project.welcomescreen.presentation
 
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.openapi.util.io.FileUtil
-import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
+import com.intellij.util.asSafely
+import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
 import java.nio.file.Path
 import javax.swing.Icon
 
@@ -42,6 +44,9 @@ data class RecentSapCommerceProject(
     /** Returns the parsed hybris version if cached, or `null` while loading. */
     val hybrisVersion: String?
         get() = HybrisProjectSettingsCache.getInstance().get(location)?.hybrisVersion
+
+    val gitBranch: String?
+        get() = GitHeadCache.getInstance().get(location).asSafely<RecentSapCommerceProjectGitBranch.Named>()?.name
 
     companion object {
         fun of(location: String): RecentSapCommerceProject {

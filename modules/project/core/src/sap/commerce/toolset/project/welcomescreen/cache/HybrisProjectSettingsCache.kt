@@ -16,19 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen
+package sap.commerce.toolset.project.welcomescreen.cache
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import java.util.concurrent.ConcurrentHashMap
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectSettings
+import sap.commerce.toolset.project.welcomescreen.reader.HybrisProjectSettingsReader
 
 /**
  * Application-level cache for parsed `.idea/hybrisProjectSettings.xml`.
@@ -36,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap
  * State is exposed as a [StateFlow] of `location -> Settings` so consumers can
  * react to changes via coroutines instead of registering callback listeners.
  *
- * - [settings] emits a new map snapshot whenever any entry is added or invalidated.
+ * - [data] emits a new map snapshot whenever any entry is added or invalidated.
  * - [warmUp] schedules background parsing for a path; concurrent calls for the
  *   same path are deduplicated.
  * - [invalidate] removes a cached entry (force re-read on next [warmUp]).
@@ -45,40 +41,12 @@ import java.util.concurrent.ConcurrentHashMap
  * UI renderers (which don't suspend) call these directly.
  */
 @Service(Service.Level.APP)
-class HybrisProjectSettingsCache(private val scope: CoroutineScope) {
+class HybrisProjectSettingsCache(scope: CoroutineScope) : StateFlowCache<RecentSapCommerceProjectSettings>(scope) {
 
-    private val _settings = MutableStateFlow<Map<String, HybrisProjectSettingsReader.Settings>>(emptyMap())
-    val settings: StateFlow<Map<String, HybrisProjectSettingsReader.Settings>> = _settings.asStateFlow()
-
-    private val loadJobs = ConcurrentHashMap<String, Job>()
-
-    fun get(projectLocation: String): HybrisProjectSettingsReader.Settings? = _settings.value[projectLocation]
-
-    fun isLoaded(projectLocation: String): Boolean = _settings.value.containsKey(projectLocation)
-
-    fun warmUp(projectLocation: String) {
-        if (isLoaded(projectLocation)) return
-
-        loadJobs.computeIfAbsent(projectLocation) { location ->
-            scope.launch {
-                try {
-                    val parsed = HybrisProjectSettingsReader.read(location)
-                    _settings.update { cache -> cache + (location to parsed) }
-                } finally {
-                    loadJobs.remove(location)
-                }
-            }
-        }
-    }
-
-    fun invalidate(projectLocation: String) {
-        loadJobs.remove(projectLocation)?.cancel()
-        _settings.update { cache -> cache - projectLocation }
-    }
+    override suspend fun load(key: String) = HybrisProjectSettingsReader.read(key)
 
     companion object {
         @JvmStatic
-        fun getInstance(): HybrisProjectSettingsCache =
-            ApplicationManager.getApplication().service()
+        fun getInstance(): HybrisProjectSettingsCache = ApplicationManager.getApplication().service()
     }
 }

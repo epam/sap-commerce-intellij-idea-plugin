@@ -20,6 +20,7 @@ package sap.commerce.toolset
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.util.IconLoader
+import com.intellij.ui.AnimatedIcon
 import icons.AngularIcons
 import icons.GradleIcons
 import icons.OpenapiIcons
@@ -579,6 +580,8 @@ object HybrisIcons {
     object WelcomeTab {
         val PLUGIN_LOGO = PLUGIN_SETTINGS
         val ACTION_MORE = AllIcons.Actions.More
+        val LOADING: AnimatedIcon = AnimatedIcon.Default.INSTANCE
+        val VCS_BRANCH = AllIcons.Vcs.Branch
     }
 
     private fun getIcon(path: String): Icon = IconLoader.getIcon(path, HybrisIcons::class.java.classLoader)
