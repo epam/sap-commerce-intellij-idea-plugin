@@ -32,7 +32,7 @@ import sap.commerce.toolset.project.welcomescreen.reader.HybrisProjectSettingsRe
  * State is exposed as a [StateFlow] of `location -> Settings` so consumers can
  * react to changes via coroutines instead of registering callback listeners.
  *
- * - [settings] emits a new map snapshot whenever any entry is added or invalidated.
+ * - [data] emits a new map snapshot whenever any entry is added or invalidated.
  * - [warmUp] schedules background parsing for a path; concurrent calls for the
  *   same path are deduplicated.
  * - [invalidate] removes a cached entry (force re-read on next [warmUp]).

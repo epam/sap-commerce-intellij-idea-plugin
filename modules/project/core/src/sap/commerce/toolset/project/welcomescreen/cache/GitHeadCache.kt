@@ -32,7 +32,7 @@ import sap.commerce.toolset.project.welcomescreen.reader.GitHeadReader
  * State is exposed as a [StateFlow] of `location -> Branch` so consumers can
  * react to changes via coroutines instead of registering callback listeners.
  *
- * - [branches] emits a new map snapshot whenever any entry is added or invalidated.
+ * - [data] emits a new map snapshot whenever any entry is added or invalidated.
  * - [warmUp] schedules background reading for a path; concurrent calls for the
  *   same path are deduplicated.
  * - [invalidate] removes a cached entry (force re-read on next [warmUp]).
