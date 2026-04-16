@@ -45,6 +45,7 @@ import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addActionListener
 import sap.commerce.toolset.ui.addDocumentListener
+import java.util.concurrent.ConcurrentHashMap
 import javax.swing.JComponent
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -68,15 +69,13 @@ data class LazyLoggerRow(
  * "no results" row via `.visibleIf(showNoMatches)` without pulling in the
  * observable-negation extension.
  *
- * Access is synchronized on [lock] because the map is populated on the
- * background render coroutine while [apply] can be invoked concurrently from
- * the EDT document listener. The AtomicBooleanProperty values themselves are
- * already thread-safe — the lock only guards the map structure and the
- * "matches" counters used by [apply].
+ * Thread-safe without external locking: the backing map is a [ConcurrentHashMap]
+ * (weakly consistent iteration, never throws CME) and the boolean properties
+ * are themselves atomic. Writes happen on the background render coroutine
+ * while [apply] can be invoked concurrently from the EDT document listener.
  */
 internal class LoggerFilterState {
-    private val lock = Any()
-    private val _rowVisibility: MutableMap<String, AtomicBooleanProperty> = LinkedHashMap()
+    private val rowVisibility = ConcurrentHashMap<String, AtomicBooleanProperty>()
 
     val hasMatches: AtomicBooleanProperty = AtomicBooleanProperty(true)
     val showNoMatches: AtomicBooleanProperty = AtomicBooleanProperty(false)
@@ -85,26 +84,22 @@ internal class LoggerFilterState {
      * Register a row's visibility toggle under the given logger name. Called
      * while building the panel on the background coroutine.
      */
-    fun track(loggerName: String, visibility: AtomicBooleanProperty) = synchronized(lock) {
-        _rowVisibility[loggerName] = visibility
+    fun track(loggerName: String, visibility: AtomicBooleanProperty) {
+        rowVisibility[loggerName] = visibility
     }
 
-    fun clear() = synchronized(lock) {
-        _rowVisibility.clear()
+    fun clear() {
+        rowVisibility.clear()
         hasMatches.set(true)
         showNoMatches.set(false)
     }
 
     fun apply(filterText: String) {
         val needle = filterText.trim()
-        // Snapshot under the lock, then flip visibility outside the lock —
-        // AtomicBooleanProperty listeners may fan out to arbitrary UI code
-        // which we do not want to hold a lock across.
-        val entries = synchronized(lock) { _rowVisibility.toList() }
 
         if (needle.isEmpty()) {
-            entries.forEach { (_, visible) -> visible.set(true) }
-            hasMatches.set(entries.isNotEmpty())
+            rowVisibility.values.forEach { it.set(true) }
+            hasMatches.set(rowVisibility.isNotEmpty())
             // Empty filter never shows the "no matches" banner; the outer
             // view already handles the "no loggers at all" case.
             showNoMatches.set(false)
@@ -112,13 +107,17 @@ internal class LoggerFilterState {
         }
 
         var anyMatch = false
-        entries.forEach { (name, visible) ->
+        // ConcurrentHashMap's iteration is weakly consistent: safe against
+        // concurrent puts/clears without CME. Entries added mid-iteration may
+        // or may not be seen — that's fine, they start visible=true and the
+        // next apply() call from render() or another keystroke will catch up.
+        rowVisibility.forEach { (name, visible) ->
             val matches = name.contains(needle, ignoreCase = true)
             if (matches) anyMatch = true
             visible.set(matches)
         }
         hasMatches.set(anyMatch)
-        showNoMatches.set(entries.isNotEmpty() && !anyMatch)
+        showNoMatches.set(rowVisibility.isNotEmpty() && !anyMatch)
     }
 }
 
