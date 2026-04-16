@@ -16,9 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.presentation
+package sap.commerce.toolset.welcomescreen.listeners
 
-sealed interface RecentSapCommerceProjectGitBranch {
-    data class Named(val name: String) : RecentSapCommerceProjectGitBranch
-    data object NotAGitRepo : RecentSapCommerceProjectGitBranch
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectCloseListener
+import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
+
+class GitCacheInvalidatorOnProjectCloseListener : ProjectCloseListener {
+    override fun projectClosed(project: Project) {
+        val location = project.basePath ?: return
+        GitHeadCache.getInstance().invalidate(location)
+    }
 }

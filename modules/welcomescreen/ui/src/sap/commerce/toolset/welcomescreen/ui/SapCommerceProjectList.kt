@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.ui
+package sap.commerce.toolset.welcomescreen.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -34,14 +34,14 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
-import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
-import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import sap.commerce.toolset.ui.addListSelectionListener
+import sap.commerce.toolset.welcomescreen.WelcomeScreenConstants
+import sap.commerce.toolset.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
+import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.ListSelectionModel
@@ -57,7 +57,7 @@ import kotlin.time.Duration.Companion.milliseconds
  *   tracking can clear its state when the cursor leaves a row.
  * - Exposes [hoveredIndex] as a typed property; changing it repaints the list.
  * - Drives `AnimatedIcon` repaints in renderers via `ANIMATION_IN_RENDERER_ALLOWED`.
- * - Collects from [HybrisProjectSettingsCache.settings] and repaints when entries arrive.
+ * - Collects from [sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache.settings] and repaints when entries arrive.
  */
 @OptIn(FlowPreview::class)
 internal class SapCommerceProjectList(
@@ -122,7 +122,7 @@ internal class SapCommerceProjectList(
 
     override fun uiDataSnapshot(sink: DataSink) {
         if (hoveredIndex >= 0 && hoveredIndex < model.size) {
-            sink[ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT] = model.getElementAt(hoveredIndex)
+            sink[WelcomeScreenConstants.DATA_KEY_SAP_COMMERCE_PROJECT] = model.getElementAt(hoveredIndex)
         }
     }
 

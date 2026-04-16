@@ -16,15 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.cache
+package sap.commerce.toolset.welcomescreen.cache
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
-import sap.commerce.toolset.project.welcomescreen.reader.GitHeadReader
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
+import sap.commerce.toolset.welcomescreen.reader.GitHeadReader
 
 /**
  * Application-level cache for git branch names read from `.git/HEAD`.
@@ -37,7 +37,7 @@ import sap.commerce.toolset.project.welcomescreen.reader.GitHeadReader
  *   same path are deduplicated.
  * - [invalidate] removes a cached entry (force re-read on next [warmUp]).
  *
- * Stores [sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectGitBranch.NotAGitRepo] for projects without a `.git` directory so we
+ * Stores [RecentSapCommerceProjectGitBranch.NotAGitRepo] for projects without a `.git` directory so we
  * don't keep retrying them on every reload.
  *
  * Read API: [get] / [isLoaded] return synchronously from the latest snapshot —

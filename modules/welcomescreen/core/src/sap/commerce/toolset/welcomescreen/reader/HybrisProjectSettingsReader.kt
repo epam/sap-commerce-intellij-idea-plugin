@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.reader
+package sap.commerce.toolset.welcomescreen.reader
 
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -43,7 +43,7 @@ object HybrisProjectSettingsReader {
 
     fun read(projectLocation: String): RecentSapCommerceProjectSettings {
         val settingsFile = Path.of(projectLocation)
-            .resolve(ProjectConstants.Directory.IDEA)
+            .resolve(Project.DIRECTORY_STORE_FOLDER)
             .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
 
         if (!settingsFile.fileExists) return RecentSapCommerceProjectSettings()

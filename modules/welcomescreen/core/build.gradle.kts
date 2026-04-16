@@ -16,15 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.listeners
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectCloseListener
-import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-class GitCacheInvalidatorOnProjectCloseListener : ProjectCloseListener {
-    override fun projectClosed(project: Project) {
-        val location = project.basePath ?: return
-        GitHeadCache.getInstance().invalidate(location)
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
+
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":shared-ui"))
+
+    intellijPlatform {
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
     }
 }

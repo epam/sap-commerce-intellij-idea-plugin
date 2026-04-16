@@ -16,8 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.presentation
+package sap.commerce.toolset.welcomescreen.ui
 
-data class RecentSapCommerceProjectSettings(
-    val hybrisVersion: String? = null
-)
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.wm.WelcomeScreen
+import com.intellij.openapi.wm.WelcomeScreenTab
+import com.intellij.openapi.wm.WelcomeTabFactory
+
+class SapCommerceWelcomeTabFactory : WelcomeTabFactory {
+    override fun createWelcomeTabs(
+        ws: WelcomeScreen,
+        parentDisposable: Disposable
+    ): MutableList<WelcomeScreenTab> = mutableListOf(SapCommerceWelcomeTab(parentDisposable))
+}

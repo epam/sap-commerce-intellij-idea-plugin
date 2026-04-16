@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.presentation
+package sap.commerce.toolset.welcomescreen.presentation
 
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.asSafely
-import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
-import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
+import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache
 import java.nio.file.Path
 import javax.swing.Icon
 

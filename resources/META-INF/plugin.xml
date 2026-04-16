@@ -119,6 +119,9 @@
     <xi:include href="/META-INF/sap.commerce.toolset-java-jsp.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-intelliLang-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <xi:include href="/META-INF/sap.commerce.toolset-welcomescreen-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-welcomescreen-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
     <depends optional="true" config-file="sap.commerce.toolset-businessProcess-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="sap.commerce.toolset-typeSystem-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="sap.commerce.toolset-project-diagram.xml">com.intellij.diagram</depends>

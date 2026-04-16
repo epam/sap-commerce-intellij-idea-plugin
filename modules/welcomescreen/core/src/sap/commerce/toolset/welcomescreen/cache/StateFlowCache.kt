@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.cache
+package sap.commerce.toolset.welcomescreen.cache
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

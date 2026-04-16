@@ -16,16 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.ui
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.wm.WelcomeScreen
-import com.intellij.openapi.wm.WelcomeScreenTab
-import com.intellij.openapi.wm.WelcomeTabFactory
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-class SapCommerceWelcomeTabFactory : WelcomeTabFactory {
-    override fun createWelcomeTabs(
-        ws: WelcomeScreen,
-        parentDisposable: Disposable
-    ): MutableList<WelcomeScreenTab> = mutableListOf(SapCommerceWelcomeTab(parentDisposable))
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
+
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":shared-ui"))
+    implementation(project(":welcomescreen-core"))
+
+    intellijPlatform {
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
+    }
 }

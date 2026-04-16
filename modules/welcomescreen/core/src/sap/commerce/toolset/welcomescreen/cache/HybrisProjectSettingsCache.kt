@@ -16,15 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.cache
+package sap.commerce.toolset.welcomescreen.cache
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProjectSettings
-import sap.commerce.toolset.project.welcomescreen.reader.HybrisProjectSettingsReader
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
+import sap.commerce.toolset.welcomescreen.reader.HybrisProjectSettingsReader
 
 /**
  * Application-level cache for parsed `.idea/hybrisProjectSettings.xml`.

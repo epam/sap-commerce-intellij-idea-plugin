@@ -102,13 +102,4 @@
                          implementationClass="sap.commerce.toolset.project.codeInspection.LeUnknownExtensionDefinition"/>
     </extensions>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache"/>
-    </extensions>
-
-    <applicationListeners>
-        <listener class="sap.commerce.toolset.project.welcomescreen.listeners.GitCacheInvalidatorOnProjectCloseListener"
-                  topic="com.intellij.openapi.project.ProjectCloseListener"/>
-    </applicationListeners>
-
 </idea-plugin>

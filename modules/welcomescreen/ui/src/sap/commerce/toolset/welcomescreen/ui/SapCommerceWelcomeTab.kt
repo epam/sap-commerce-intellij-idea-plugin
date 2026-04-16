@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.ui
+package sap.commerce.toolset.welcomescreen.ui
 
 import com.intellij.ide.RecentProjectsManager
 import com.intellij.ide.RecentProjectsManagerBase
@@ -26,6 +26,7 @@ import com.intellij.openapi.actionSystem.ActionUiKind
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.impl.welcomeScreen.TabbedWelcomeScreen.DefaultWelcomeScreenTab
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
@@ -44,13 +45,12 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
-import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
-import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
 import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import java.nio.file.Path
 import javax.swing.JComponent
 import javax.swing.plaf.FontUIResource
@@ -165,7 +165,7 @@ class SapCommerceWelcomeTab(
 
     private fun isSapCommerceProject(location: String): Boolean = runCatching {
         Path.of(location)
-            .resolve(ProjectConstants.Directory.IDEA)
+            .resolve(Project.DIRECTORY_STORE_FOLDER)
             .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
             .fileExists
     }

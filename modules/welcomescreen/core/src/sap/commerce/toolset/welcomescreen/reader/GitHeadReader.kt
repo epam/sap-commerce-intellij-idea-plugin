@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.welcomescreen.reader
+package sap.commerce.toolset.welcomescreen.reader
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
