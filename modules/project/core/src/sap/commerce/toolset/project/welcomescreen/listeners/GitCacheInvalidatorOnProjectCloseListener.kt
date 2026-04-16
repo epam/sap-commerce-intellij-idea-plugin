@@ -22,7 +22,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectCloseListener
 import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
 
-class GitCacheInvalidator : ProjectCloseListener {
+class GitCacheInvalidatorOnProjectCloseListener : ProjectCloseListener {
     override fun projectClosed(project: Project) {
         val location = project.basePath ?: return
         GitHeadCache.getInstance().invalidate(location)

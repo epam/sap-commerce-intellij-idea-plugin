@@ -47,7 +47,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
     private val branchLabel = JLabel().apply {
         foreground = JBColor.GRAY
         font = JBUI.Fonts.smallFont()
-        icon = HybrisIcons.WelcomeTab.GIT_BRANCH
+        icon = HybrisIcons.WelcomeTab.VCS_BRANCH
         iconTextGap = JBUI.scale(4)
     }
 
@@ -152,7 +152,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             when {
                 !isSettingsLoaded -> {
                     // Still loading — show spinner, no border.
-                    versionLabel.icon = HybrisIcons.WelcomeTab.ANIMATED_ICON
+                    versionLabel.icon = HybrisIcons.WelcomeTab.LOADING
                     versionLabel.text = ""
                     showVersionTagBorder = false
                 }

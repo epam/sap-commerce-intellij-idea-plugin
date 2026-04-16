@@ -107,7 +107,7 @@
     </extensions>
 
     <applicationListeners>
-        <listener class="sap.commerce.toolset.project.welcomescreen.listeners.GitCacheInvalidator"
+        <listener class="sap.commerce.toolset.project.welcomescreen.listeners.GitCacheInvalidatorOnProjectCloseListener"
                   topic="com.intellij.openapi.project.ProjectCloseListener"/>
     </applicationListeners>
 

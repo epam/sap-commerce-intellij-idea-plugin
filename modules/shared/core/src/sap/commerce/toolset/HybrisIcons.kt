@@ -580,10 +580,8 @@ object HybrisIcons {
     object WelcomeTab {
         val PLUGIN_LOGO = PLUGIN_SETTINGS
         val ACTION_MORE = AllIcons.Actions.More
-
-        val ANIMATED_ICON = AnimatedIcon.Default.INSTANCE
-
-        val GIT_BRANCH = AllIcons.Vcs.Branch
+        val LOADING: AnimatedIcon = AnimatedIcon.Default.INSTANCE
+        val VCS_BRANCH = AllIcons.Vcs.Branch
     }
 
     private fun getIcon(path: String): Icon = IconLoader.getIcon(path, HybrisIcons::class.java.classLoader)
