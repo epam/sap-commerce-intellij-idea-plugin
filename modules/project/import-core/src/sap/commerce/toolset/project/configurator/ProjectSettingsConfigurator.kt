@@ -66,6 +66,7 @@ class ProjectSettingsConfigurator : ProjectImportConfigurator {
 
         projectSettings.modulesOnBlackList = createModulesOnBlackList(context)
         projectSettings.hybrisVersion = context.platformVersion
+        projectSettings.hostingEnvironment = context.hostingEnvironment
         projectSettings.javadocUrl = context.javadocUrl
 
         projectSettings.sourceCodePath = context.sourceCodePath?.toSystemIndependentName

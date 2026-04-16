@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.module.ModuleRootResolver
 import sap.commerce.toolset.project.module.ResolvedModuleRoot
+import sap.commerce.toolset.project.settings.state.HostingEnvironment
 import java.nio.file.FileVisitResult
 import java.nio.file.Path
 import kotlin.io.path.name
@@ -33,6 +34,10 @@ class CCv2CoreCustomizeModuleRootResolver : ModuleRootResolver {
 
     override fun isApplicable(context: ProjectImportContext.Mutable, rootDirectory: Path, path: Path) = with(path) {
         name == CCv2Constants.CORE_CUSTOMIZE_NAME && isCCv2ManifestFileExists
+    }.also {
+        if (it) {
+            context.hostingEnvironment = HostingEnvironment.CCV2
+        }
     }
 
     override fun resolve(path: Path): ResolvedModuleRoot = ResolvedModuleRoot(

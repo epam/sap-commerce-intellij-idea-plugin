@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,7 +63,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                         ?.let { psiClassIdentifier ->
                             FqnUtil.elementToFqn(psiElement, editor)
                                 ?.let { fqn -> psiClassIdentifier to fqn }
-                    }
+                        }
 
                     is PsiPackageStatement -> psiElement to psiElement.packageName
                     else -> null
@@ -120,14 +120,13 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             .add(CxLogConstants.DATA_KEY_LOGGER_IDENTIFIER, loggerIdentifier)
             .build()
 
-        val popup = JBPopupFactory.getInstance()
-            .createActionGroupPopup(
-                "Select an Option",
-                actionGroup,
-                dataContext,
-                JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
-                true
-            )
+        val popup = JBPopupFactory.getInstance().createActionGroupPopup(
+            /* title = */ "Select an Option",
+            /* actionGroup = */ actionGroup,
+            /* dataContext = */ dataContext,
+            /* selectionAidMethod = */ JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
+            /* showDisabledActions = */ true
+        )
 
         // Convert the point to a RelativePoint
         val relativePoint = if (event != null) RelativePoint(event)

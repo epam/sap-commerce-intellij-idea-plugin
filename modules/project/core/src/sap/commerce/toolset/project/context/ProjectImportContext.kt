@@ -30,6 +30,7 @@ import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
+import sap.commerce.toolset.project.settings.state.HostingEnvironment
 import java.nio.file.Path
 
 data class ProjectImportContext(
@@ -52,6 +53,7 @@ data class ProjectImportContext(
     val javadocUrl: String? = null,
 
     val platformVersion: String? = null,
+    val hostingEnvironment: HostingEnvironment? = null,
 
     val foundModules: Collection<ModuleDescriptor>,
 
@@ -127,6 +129,7 @@ data class ProjectImportContext(
         var externalDbDriversDirectory: Path? = null,
         var javadocUrl: String? = null,
         var platformVersion: String? = null,
+        var hostingEnvironment: HostingEnvironment = HostingEnvironment.ON_PREMISE,
 
         private val _foundModules: MutableCollection<ModuleDescriptor> = mutableListOf(),
         private val _chosenModuleDescriptors: MutableMap<ModuleGroup, Collection<ModuleDescriptor>> = mutableMapOf(),
@@ -181,6 +184,7 @@ data class ProjectImportContext(
             externalDbDriversDirectory = externalDbDriversDirectory,
             javadocUrl = javadocUrl,
             platformVersion = platformVersion,
+            hostingEnvironment = hostingEnvironment,
 
             foundModules = _foundModules.toImmutableList(),
             chosenHybrisModuleDescriptors = _chosenModuleDescriptors[ModuleGroup.HYBRIS]

@@ -43,6 +43,7 @@ import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.exceptions.ModuleNotFoundException
 import sap.commerce.toolset.project.exceptions.PlatformIsNotBuiltException
 import sap.commerce.toolset.project.exceptions.ProjectIsNotReadyForImportException
+import sap.commerce.toolset.project.settings.state.HostingEnvironment
 import sap.commerce.toolset.project.settings.ySettings
 import sap.commerce.toolset.project.tasks.LookupModuleDescriptorsTask
 import sap.commerce.toolset.project.tasks.LookupPlatformDirectoryTask
@@ -224,6 +225,9 @@ class ProjectImportCoreContextStep(context: WizardContext) : ProjectImportWizard
 
             this.platformVersion = platformVersion
                 ?: projectSettings.hybrisVersion
+            this.hostingEnvironment = projectSettings.hostingEnvironment
+                // it may be overridden via CCv2CoreCustomizeModuleRootResolver
+                ?: HostingEnvironment.ON_PREMISE
             this.javadocUrl = platformApiVersion
                 ?.let { getPlatformJavadocUrl(it) }
                 ?.takeIf { it.isNotBlank() }
