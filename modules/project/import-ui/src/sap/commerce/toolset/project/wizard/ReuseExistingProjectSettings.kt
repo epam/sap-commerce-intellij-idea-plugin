@@ -34,6 +34,7 @@ import sap.commerce.toolset.project.HybrisProjectImportBuilder
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.ui.italic
+import sap.commerce.toolset.ui.scrollRow
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
 import java.awt.Dimension
@@ -87,35 +88,14 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
 
             separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
 
-            checkBoxFile(ideaPath, ".name", "Project name") { path ->
-                runCatching {
-                    Files.readString(path, StandardCharsets.UTF_8)
-                }.onSuccess { projectName ->
-                    projectNameProperty.set(projectName)
-                    label(projectName).italic()
-                }
-            }
-            checkBoxFile(ideaPath, "icon.svg", "Project icon (light theme)") { path ->
-                IconLoader.findIcon(path.toUri().toURL(), false)
-                    ?.let { IconUtil.scale(it, null, 16f / it.iconWidth) }
-                    ?.let { icon(it) }
-            }
-            checkBoxFile(ideaPath, "icon_dark.svg", "Project icon (dark theme)") { path ->
-                IconLoader.findIcon(path.toUri().toURL(), false)
-                    ?.let { IconUtil.scale(it, null, 16f / it.iconWidth) }
-                    ?.let { icon(it) }
-            }
-            checkBoxFile(ideaPath, "hybrisDeveloperSpecificProjectSettings.xml", "Plugin developer specific project settings")
-            checkBoxFile(ideaPath, "vcs.xml", "Version control systems")
-            checkBoxFile(ideaPath, "externalDependencies.xml", "External dependencies on other plugins")
-
-            checkBoxDirectory(ideaPath, ".run", "Run configurations (modern format)")
-            checkBoxDirectory(ideaPath, "runConfigurations", "Run configurations (legacy format)")
-            checkBoxDirectory(ideaPath, "dictionaries", "Dictionaries")
-            checkBoxDirectory(ideaPath, "copyright", "Copyright profiles")
-            checkBoxDirectory(ideaPath, "codeStyles", "Project code styles")
+            scrollRow(
+                content = contentPane(ideaPath),
+                preferredSize = Dimension(JBUI.DialogSizes.large().width - 100, JBUI.DialogSizes.large().height - 125)
+            )
+                .bottomGap(BottomGap.SMALL)
         }
     }
+
 
     override fun getComponent() = JBScrollPane(_ui ?: JPanel()).apply {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
@@ -159,6 +139,36 @@ class ReuseExistingProjectSettings(context: WizardContext) : ProjectImportWizard
                 .firstOrNull { it.fileExists }
 
         return anyExists != null
+    }
+
+    private fun contentPane(ideaPath: Path) = panel {
+        checkBoxFile(ideaPath, ".name", "Project name") { path ->
+            runCatching {
+                Files.readString(path, StandardCharsets.UTF_8)
+            }.onSuccess { projectName ->
+                projectNameProperty.set(projectName)
+                label(projectName).italic()
+            }
+        }
+        checkBoxFile(ideaPath, "icon.svg", "Project icon (light theme)") { path ->
+            IconLoader.findIcon(path.toUri().toURL(), false)
+                ?.let { IconUtil.scale(it, null, 16f / it.iconWidth) }
+                ?.let { icon(it) }
+        }
+        checkBoxFile(ideaPath, "icon_dark.svg", "Project icon (dark theme)") { path ->
+            IconLoader.findIcon(path.toUri().toURL(), false)
+                ?.let { IconUtil.scale(it, null, 16f / it.iconWidth) }
+                ?.let { icon(it) }
+        }
+        checkBoxFile(ideaPath, "hybrisDeveloperSpecificProjectSettings.xml", "Plugin developer specific project settings")
+        checkBoxFile(ideaPath, "vcs.xml", "Version control systems")
+        checkBoxFile(ideaPath, "externalDependencies.xml", "External dependencies on other plugins")
+
+        checkBoxDirectory(ideaPath, ".run", "Run configurations (modern format)")
+        checkBoxDirectory(ideaPath, "runConfigurations", "Run configurations (legacy format)")
+        checkBoxDirectory(ideaPath, "dictionaries", "Dictionaries")
+        checkBoxDirectory(ideaPath, "copyright", "Copyright profiles")
+        checkBoxDirectory(ideaPath, "codeStyles", "Project code styles")
     }
 
     private fun Panel.checkBoxFile(ideaPath: Path, childName: String, checkBoxText: String, preview: Row.(Path) -> Unit = {}) = checkbox(
