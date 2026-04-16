@@ -18,6 +18,7 @@
 package sap.commerce.toolset.project.configurator.entities
 
 import com.intellij.java.workspace.entities.javaSettings
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.jps.entities.ModuleEntity
 import com.intellij.platform.workspace.jps.entities.modifyModuleEntity
 import com.intellij.platform.workspace.jps.entities.sourceRoots
@@ -30,7 +31,7 @@ import sap.commerce.toolset.project.settings.ySettings
 class SaveModulesStorageConfigurator : ProjectStorageSaveConfigurator {
 
     override val name: String
-        get() = "Modules"
+        get() = "Modules Storage"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
         // idea module name <-> extension name
@@ -51,8 +52,9 @@ class SaveModulesStorageConfigurator : ProjectStorageSaveConfigurator {
             val currentEntity = currentEntities[moduleDescriptor.name]
 
             if (currentEntity != null) {
+                thisLogger().debug("Modified existing module: ${newEntity.name}")
+
                 storage.modifyModuleEntity(currentEntity) {
-                    this.entitySource = newEntity.entitySource
                     this.name = newEntity.name
                     this.type = newEntity.type
                     this.dependencies = newEntity.dependencies
@@ -62,6 +64,8 @@ class SaveModulesStorageConfigurator : ProjectStorageSaveConfigurator {
                     this.javaSettings = newEntity.javaSettings
                 }
             } else {
+                thisLogger().debug("Created new module: ${newEntity.name}")
+
                 storage.addEntity(newEntity)
             }
         }

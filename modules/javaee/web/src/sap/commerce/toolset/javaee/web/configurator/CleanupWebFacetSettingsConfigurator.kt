@@ -18,6 +18,7 @@
 package sap.commerce.toolset.javaee.web.configurator
 
 import com.intellij.javaee.web.workspaceModel.WebSettingsEntity
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.workspace.storage.MutableEntityStorage
 import com.intellij.platform.workspace.storage.entities
 import sap.commerce.toolset.project.configurator.ProjectStorageCleanupConfigurator
@@ -30,6 +31,9 @@ class CleanupWebFacetSettingsConfigurator : ProjectStorageCleanupConfigurator {
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
         storage.entities<WebSettingsEntity>()
-            .forEach { storage.removeEntity(it) }
+            .forEach {
+                thisLogger().debug("Removed loaded web settings: ${it.name}")
+                storage.removeEntity(it)
+            }
     }
 }

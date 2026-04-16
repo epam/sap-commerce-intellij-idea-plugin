@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 9 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 10 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 3 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -13,6 +13,7 @@
 - Preload registered SDK during project import [#1894](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1894)
 - Show `Reuse existing project settings` project import wizard step only when suitable [#1895](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1895)
 - Detect target hosting environment `CCv2` or `On Premise` [#1897](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1897)
+- Preserve the owner during the modification of the Workspace entity [#1898](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1898)
 
 ### `Welcome Screen` enhancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)

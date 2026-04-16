@@ -31,7 +31,7 @@ Example:
 class ModulesMappingConfigurator : ProjectStorageSaveConfigurator {
 
     override val name: String
-        get() = "Modules mapping"
+        get() = "Modules Mapping"
 
     override fun configure(context: ProjectImportContext, storage: MutableEntityStorage) {
         context.project.ySettings.module2extensionMapping = context.mutableStorage.modules.entries

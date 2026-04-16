@@ -41,7 +41,7 @@ class ModulesConfigurator : ProjectImportConfigurator {
                 moduleReporter.itemStep("Importing '${context.moduleDescriptor.name}' module...") {
                     checkCanceled()
 
-                    logger.debug("Configuring module [${context.moduleDescriptor.name}].")
+                    logger.debug("Configuring module [${context.moduleDescriptor.name}]...")
                     val duration = measureTime { configureModule(context) }
                     logger.debug("Configured module [${context.moduleDescriptor.name} | ${duration}].")
                 }
@@ -66,7 +66,6 @@ class ModulesConfigurator : ProjectImportConfigurator {
                 return@mapNotNull moduleReporter.itemStep("Creating '${moduleDescriptor.name}' module...") {
                     checkCanceled()
 
-                    logger.debug("Creating module [${moduleDescriptor.name}].")
                     val timedValue = measureTimedValue { provider.create(context, moduleDescriptor) }
                     val moduleEntity = timedValue.value
                     logger.debug("Created module [${moduleDescriptor.name} | ${timedValue.duration}].")
