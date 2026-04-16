@@ -24,7 +24,7 @@ import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
 import java.nio.file.Path
 import javax.swing.Icon
 
-data class SapCommerceProject(
+data class RecentSapCommerceProject(
     val location: String,
     val displayName: String,
     val projectName: String,
@@ -44,10 +44,10 @@ data class SapCommerceProject(
         get() = HybrisProjectSettingsCache.getInstance().get(location)?.hybrisVersion
 
     companion object {
-        fun of(location: String): SapCommerceProject {
+        fun of(location: String): RecentSapCommerceProject {
             val manager = RecentProjectsManagerBase.getInstanceEx()
             val projectName = manager.getProjectName(location)
-            return SapCommerceProject(
+            return RecentSapCommerceProject(
                 location = location,
                 displayName = manager.getDisplayName(location) ?: projectName,
                 projectName = projectName,

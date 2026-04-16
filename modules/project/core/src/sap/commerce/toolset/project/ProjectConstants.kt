@@ -18,10 +18,12 @@
 
 package sap.commerce.toolset.project
 
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.project.Project
 import com.intellij.platform.workspace.jps.entities.LibraryTypeId
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import kotlin.io.path.Path
 
 object ProjectConstants {
@@ -147,6 +149,10 @@ object ProjectConstants {
 
         val HYBRIS_SERVER_SHELL_SCRIPT_NAME = Path("bin", "platform", "hybrisserver.sh")
         val HYBRIS_SERVER_BASH_SCRIPT_NAME = Path("bin", "platform", "hybrisserver.bat")
+    }
+
+    object WelcomeScreen {
+        val DATA_KEY_SAP_COMMERCE_PROJECT = DataKey.create< RecentSapCommerceProject>("sap.commerce.welcomeTab.project")
     }
 
     val PLATFORM_EXTENSION_NAMES = setOf(

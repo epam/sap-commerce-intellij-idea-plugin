@@ -576,5 +576,10 @@ object HybrisIcons {
         }
     }
 
+    object WelcomeTab {
+        val PLUGIN_LOGO = PLUGIN_SETTINGS
+        val ACTION_MORE = AllIcons.Actions.More
+    }
+
     private fun getIcon(path: String): Icon = IconLoader.getIcon(path, HybrisIcons::class.java.classLoader)
 }

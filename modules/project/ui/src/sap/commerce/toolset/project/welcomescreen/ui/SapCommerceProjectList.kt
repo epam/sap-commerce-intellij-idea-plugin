@@ -19,6 +19,9 @@
 package sap.commerce.toolset.project.welcomescreen.ui
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataSink
+import com.intellij.openapi.actionSystem.UiDataProvider
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.util.Disposer
@@ -31,8 +34,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.welcomescreen.HybrisProjectSettingsCache
-import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.project.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.ui.addListSelectionListener
 import java.awt.event.MouseEvent
 import java.io.Serial
@@ -54,8 +59,9 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class)
 internal class SapCommerceProjectList(
     parentDisposable: Disposable,
-    private val model: CollectionListModel<SapCommerceProject>
-) : JBList<SapCommerceProject>(model) {
+    private val model: CollectionListModel<RecentSapCommerceProject>
+) : JBList<RecentSapCommerceProject>(model),
+    UiDataProvider {
 
     var hoveredIndex: Int = -1
         set(value) {
@@ -80,6 +86,9 @@ internal class SapCommerceProjectList(
             if (selectedIndex != -1) invokeLater { clearSelection() }
         }
 
+        ActionManager.getInstance().getAction(RemoveSapCommerceProjectAction.ACTION_ID)
+            ?.also { it.registerCustomShortcutSet(it.shortcutSet, this, parentDisposable) }
+
         // Subscribe to cache updates. Debouncing collapses bursts of cache fills
         // (typical at startup, when many projects warm up in parallel) into a
         // single repaint instead of one repaint per project.
@@ -95,6 +104,12 @@ internal class SapCommerceProjectList(
         }
 
         Disposer.register(parentDisposable) { scope.cancel() }
+    }
+
+    override fun uiDataSnapshot(sink: DataSink) {
+        if (hoveredIndex >= 0 && hoveredIndex < model.size) {
+            sink[ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT] = model.getElementAt(hoveredIndex)
+        }
     }
 
     override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit

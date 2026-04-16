@@ -22,25 +22,30 @@ import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.project.welcomescreen.presentation.SapCommerceProject
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.project.welcomescreen.presentation.RecentSapCommerceProject
 import java.awt.*
 import java.io.Serial
 import javax.swing.*
 
-internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommerceProject> {
+internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSapCommerceProject> {
 
     private val iconLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
     private val nameLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
     private val pathLabel = JLabel().apply {
         foreground = JBColor.GRAY
     }
-
     private val versionLabel = JLabel().apply {
         foreground = JBColor.GRAY
         font = JBUI.Fonts.smallFont()
         border = JBUI.Borders.empty(2, 8)
         isOpaque = false
     }
+    private val overflowLabel = JLabel(HybrisIcons.WelcomeTab.ACTION_MORE).apply {
+        border = JBUI.Borders.empty(2)
+        isOpaque = false
+    }
+
 
     private val pillColor: Color = UIManager.getColor("List.selectionBackground")
         ?: JBUI.CurrentTheme.List.Hover.background(true)
@@ -75,11 +80,13 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
             add(iconLabel)
         }
 
-        val rightPanel = JPanel(GridBagLayout()).apply {
+        val rightPanel = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.X_AXIS)
             isOpaque = false
-            add(versionLabel, GridBagConstraints().apply {
-                anchor = GridBagConstraints.CENTER
-            })
+            alignmentY = CENTER_ALIGNMENT
+            add(versionLabel)
+            add(Box.createHorizontalStrut(JBUI.scale(8)))
+            add(overflowLabel)
         }
 
         add(iconHolder, BorderLayout.WEST)
@@ -121,8 +128,8 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
     }
 
     override fun getListCellRendererComponent(
-        list: JList<out SapCommerceProject>,
-        value: SapCommerceProject,
+        list: JList<out RecentSapCommerceProject>,
+        value: RecentSapCommerceProject,
         index: Int,
         isSelected: Boolean,
         cellHasFocus: Boolean
@@ -131,6 +138,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<SapCommer
             iconLabel.icon = projectIcon
             nameLabel.text = displayName
             pathLabel.text = locationRelativeToUserHome
+            overflowLabel.isVisible = hovered
 
             when {
                 !isSettingsLoaded -> {
