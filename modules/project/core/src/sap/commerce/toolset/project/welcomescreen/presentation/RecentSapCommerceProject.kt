@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.welcomescreen.presentation
 
 import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.openapi.util.io.FileUtil
+import com.intellij.util.asSafely
 import sap.commerce.toolset.project.welcomescreen.cache.GitHeadCache
 import sap.commerce.toolset.project.welcomescreen.cache.HybrisProjectSettingsCache
 import java.nio.file.Path
@@ -45,7 +46,7 @@ data class RecentSapCommerceProject(
         get() = HybrisProjectSettingsCache.getInstance().get(location)?.hybrisVersion
 
     val gitBranch: String?
-        get() = (GitHeadCache.getInstance().get(location) as? RecentSapCommerceProjectGitBranch.Named)?.name
+        get() = GitHeadCache.getInstance().get(location).asSafely<RecentSapCommerceProjectGitBranch.Named>()?.name
 
     companion object {
         fun of(location: String): RecentSapCommerceProject {
