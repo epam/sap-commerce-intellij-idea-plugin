@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,7 +49,16 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     private val editable = AtomicBooleanProperty(true)
     private val canApply = AtomicBooleanProperty(false)
 
+    /**
+     * Per-render map of logger-name to per-row visibility toggle, plus a
+     * "some row matches" flag for the empty-state banner. Stable across
+     * renders by reference so the document listener wired up in
+     * [newLoggerPanel] keeps working without re-registration.
+     */
+    private val filterState = LoggerFilterState()
+
     private lateinit var dataScrollPane: JBScrollPane
+    private lateinit var loggerNameField: JBTextField
 
     private val lazyViewPanel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
@@ -95,6 +104,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
         if (loggers.isEmpty()) {
             val view = noLoggersView("Unable to get list of loggers for the connection.")
+            filterState.clear()
 
             withContext(Dispatchers.EDT) {
                 dataScrollPane.setViewportView(view)
@@ -103,7 +113,15 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             val lazyLoggerRows = mutableListOf<LazyLoggerRow>()
             val viewport = dataScrollPane.getViewport()
             val pos = viewport.getViewPosition()
+
+            // Rebuild the filter map for this render; the listener in
+            // newLoggerPanel keeps referencing `filterState` by identity,
+            // so preserving instance across renders is intentional.
+            filterState.clear()
             val view = loggersView(loggers, lazyLoggerRows)
+            // Re-apply the current filter text so rows come in filtered if
+            // the user already typed something before this render arrived.
+            filterState.apply(loggerNameField.text)
 
             lazyLoggerRows.forEach {
                 lazyLoggerDetails(project, coroutineScope, it)
@@ -127,9 +145,19 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
         .forEach { it.set(unhide.contains(it)) }
 
     private fun loggersView(loggers: Collection<CxLoggerPresentation>, lazyLoggerRows: MutableList<LazyLoggerRow>) = panel {
+        row {
+            text("No loggers match the current filter.")
+                .align(Align.CENTER)
+                .resizableColumn()
+        }
+            .visibleIf(filterState.showNoMatches)
+
         loggers
             .sortedBy { it.name }
             .forEach { cxLogger ->
+                val rowVisible = AtomicBooleanProperty(true)
+                filterState.track(cxLogger.name, rowVisible)
+
                 row {
                     logLevelComboBox()
                         .enabledIf(editable)
@@ -149,19 +177,22 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                     loggerDetailsPlaceholders(cxLogger).also { lazyLoggerRows.add(it) }
                 }
                     .layout(RowLayout.PARENT_GRID)
+                    .visibleIf(rowVisible)
             }
     }
 
     private fun newLoggerPanel(): DialogPanel {
         lateinit var dPanel: DialogPanel
         lateinit var loggerLevelField: ComboBox<CxLogLevel>
-        lateinit var loggerNameField: JBTextField
 
         return panel {
             row {
                 loggerLevelField = logLevelComboBox().component
 
-                loggerNameField = newLoggerTextField(this@CxRemoteLogStateView) {
+                loggerNameField = newLoggerTextField(
+                    parentDisposable = this@CxRemoteLogStateView,
+                    onFilterChanged = { filterState.apply(it) },
+                ) {
                     applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
                 }
                     .component

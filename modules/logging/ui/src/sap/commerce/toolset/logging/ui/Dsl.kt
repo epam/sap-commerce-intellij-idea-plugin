@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,12 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
+import sap.commerce.toolset.ui.addActionListener
+import sap.commerce.toolset.ui.addDocumentListener
+import java.util.concurrent.ConcurrentHashMap
 import javax.swing.JComponent
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 data class LazyLoggerRow(
     val cxLogger: CxLoggerPresentation,
@@ -51,6 +56,70 @@ data class LazyLoggerRow(
     val placeholderHelp: Placeholder,
     val placeholderName: Placeholder,
 )
+
+/**
+ * Holds per-row visibility state used for client-side filtering of the rendered
+ * logger list. Each entry maps a logger name to the [AtomicBooleanProperty] that
+ * the row was built with via `row { ... }.visibleIf(prop)`. Flipping the property
+ * hides or reveals the row without rebuilding the panel, so scroll position,
+ * lazy PSI resolution, and validation state are preserved.
+ *
+ * [hasMatches] is set to `true` whenever at least one row matches the current
+ * filter; [showNoMatches] is its inverse, convenient for binding to a
+ * "no results" row via `.visibleIf(showNoMatches)` without pulling in the
+ * observable-negation extension.
+ *
+ * Thread-safe without external locking: the backing map is a [ConcurrentHashMap]
+ * (weakly consistent iteration, never throws CME) and the boolean properties
+ * are themselves atomic. Writes happen on the background render coroutine
+ * while [apply] can be invoked concurrently from the EDT document listener.
+ */
+internal class LoggerFilterState {
+    private val rowVisibility = ConcurrentHashMap<String, AtomicBooleanProperty>()
+
+    val hasMatches: AtomicBooleanProperty = AtomicBooleanProperty(true)
+    val showNoMatches: AtomicBooleanProperty = AtomicBooleanProperty(false)
+
+    /**
+     * Register a row's visibility toggle under the given logger name. Called
+     * while building the panel on the background coroutine.
+     */
+    fun track(loggerName: String, visibility: AtomicBooleanProperty) {
+        rowVisibility[loggerName] = visibility
+    }
+
+    fun clear() {
+        rowVisibility.clear()
+        hasMatches.set(true)
+        showNoMatches.set(false)
+    }
+
+    fun apply(filterText: String) {
+        val needle = filterText.trim()
+
+        if (needle.isEmpty()) {
+            rowVisibility.values.forEach { it.set(true) }
+            hasMatches.set(rowVisibility.isNotEmpty())
+            // Empty filter never shows the "no matches" banner; the outer
+            // view already handles the "no loggers at all" case.
+            showNoMatches.set(false)
+            return
+        }
+
+        var anyMatch = false
+        // ConcurrentHashMap's iteration is weakly consistent: safe against
+        // concurrent puts/clears without CME. Entries added mid-iteration may
+        // or may not be seen — that's fine, they start visible=true and the
+        // next apply() call from render() or another keystroke will catch up.
+        rowVisibility.forEach { (name, visible) ->
+            val matches = name.contains(needle, ignoreCase = true)
+            if (matches) anyMatch = true
+            visible.set(matches)
+        }
+        hasMatches.set(anyMatch)
+        showNoMatches.set(rowVisibility.isNotEmpty() && !anyMatch)
+    }
+}
 
 internal fun Row.loggerDetailsPlaceholders(cxLogger: CxLoggerPresentation): LazyLoggerRow {
     val placeholderIcon = placeholder().gap(RightGap.SMALL)
@@ -155,7 +224,20 @@ internal fun Row.logLevelComboBox(): Cell<ComboBox<CxLogLevel>> = comboBox(
     }
 )
 
-internal fun Row.newLoggerTextField(parentDisposable: Disposable, apply: () -> Unit): Cell<JBTextField> = textField()
+/**
+ * Text field that serves a dual purpose: the user can type a logger name and
+ * press Enter (or click the associated Apply Logger button) to add it, and as
+ * they type the rendered logger list below is filtered by a case-insensitive
+ * substring match via [onFilterChanged].
+ *
+ * The blank-text validation only fires on apply (via `validateAll()` in the
+ * caller's apply handler), so it never flashes a red ring during filtering.
+ */
+internal fun Row.newLoggerTextField(
+    parentDisposable: Disposable,
+    onFilterChanged: (String) -> Unit = {},
+    apply: () -> Unit,
+): Cell<JBTextField> = textField()
     .resizableColumn()
     .align(AlignX.FILL)
     .validationOnApply {
@@ -163,9 +245,14 @@ internal fun Row.newLoggerTextField(parentDisposable: Disposable, apply: () -> U
         else null
     }
     .applyToComponent {
-        addActionListener {
+        addActionListener(parentDisposable) {
             apply()
         }
+        document.addDocumentListener(parentDisposable, object : DocumentListener {
+            override fun insertUpdate(e: DocumentEvent) = onFilterChanged(text)
+            override fun removeUpdate(e: DocumentEvent) = onFilterChanged(text)
+            override fun changedUpdate(e: DocumentEvent) = onFilterChanged(text)
+        })
     }
 
 internal fun noLoggersView(

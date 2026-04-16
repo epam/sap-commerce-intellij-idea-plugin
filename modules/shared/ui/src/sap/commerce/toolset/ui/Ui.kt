@@ -31,15 +31,19 @@ import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import java.awt.Component
+import java.awt.event.ActionListener
 import java.awt.event.KeyListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseListener
 import javax.swing.JComponent
 import javax.swing.JList
+import javax.swing.JTextField
 import javax.swing.JTree
+import javax.swing.event.DocumentListener
 import javax.swing.event.ListSelectionListener
 import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
+import javax.swing.text.Document
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 import kotlin.reflect.KClass
@@ -102,6 +106,18 @@ fun <T : MouseListener> JTree.addMouseListener(parentDisposable: Disposable? = n
     .apply {
         addMouseListener(listener)
         parentDisposable?.whenDisposed { removeMouseListener(listener) }
+    }
+
+fun <T : Document> T.addDocumentListener(parentDisposable: Disposable? = null, listener: DocumentListener): T = this
+    .apply {
+        addDocumentListener(listener)
+        parentDisposable?.whenDisposed { removeDocumentListener(listener) }
+    }
+
+fun <T : JTextField> T.addActionListener(parentDisposable: Disposable? = null, listener: ActionListener): T = this
+    .apply {
+        addActionListener(listener)
+        parentDisposable?.whenDisposed { removeActionListener(listener) }
     }
 
 private fun Disposable.whenDisposed(onDispose: () -> Unit) {
