@@ -102,15 +102,8 @@ internal class SapCommerceProjectList(
                 .drop(1)  // skip the initial empty-map emission
                 .debounce(50.milliseconds)
                 .distinctUntilChanged()
-                .collect { current ->
-                    val changedKeys = (current.keys - previous.keys) +
-                        current.filter { (k, v) -> previous[k] != v }.keys
-                    previous = current
-                    withContext(Dispatchers.EDT) {
-                        for (location in changedKeys) {
-                            repaintRowForLocation(location)
-                        }
-                    }
+                .collect {
+                    withContext(Dispatchers.EDT) { repaint() }
                 }
         }
 
@@ -120,15 +113,8 @@ internal class SapCommerceProjectList(
                 .data
                 .drop(1)
                 .debounce(50.milliseconds)
-                .collect { current ->
-                    val changedKeys = (current.keys - previous.keys) +
-                        current.filter { (k, v) -> previous[k] != v }.keys
-                    previous = current
-                    withContext(Dispatchers.EDT) {
-                        for (location in changedKeys) {
-                            repaintRowForLocation(location)
-                        }
-                    }
+                .collect {
+                    withContext(Dispatchers.EDT) { repaint() }
                 }
         }
         Disposer.register(parentDisposable) { scope.cancel() }
@@ -139,16 +125,6 @@ internal class SapCommerceProjectList(
             sink[ProjectConstants.WelcomeScreen.DATA_KEY_SAP_COMMERCE_PROJECT] = model.getElementAt(hoveredIndex)
         }
     }
-
-    private fun repaintRowForLocation(location: String) {
-        for (i in 0 until model.size) {
-            if (model.getElementAt(i).location == location) {
-                getCellBounds(i, i)?.let { repaint(it) }
-                return
-            }
-        }
-    }
-
 
     override fun processMouseEvent(e: MouseEvent) = if (isOnRow(e)) super.processMouseEvent(e) else Unit
 
