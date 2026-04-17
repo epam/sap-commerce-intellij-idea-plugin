@@ -108,6 +108,8 @@
             <option value="$PROJECT_DIR$/modules/typeSystem/core" />
             <option value="$PROJECT_DIR$/modules/typeSystem/diagram" />
             <option value="$PROJECT_DIR$/modules/typeSystem/ui" />
+            <option value="$PROJECT_DIR$/modules/welcomescreen/core" />
+            <option value="$PROJECT_DIR$/modules/welcomescreen/ui" />
           </set>
         </option>
       </GradleProjectSettings>

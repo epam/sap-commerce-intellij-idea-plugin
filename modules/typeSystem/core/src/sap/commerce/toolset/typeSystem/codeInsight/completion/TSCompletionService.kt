@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -52,33 +52,31 @@ class TSCompletionService(private val project: Project) {
     )
 
     fun getCompletions(vararg types: TSMetaType) = with(TSMetaModelAccess.getInstance(project)) {
-        types
-            .map { metaType ->
-                when (metaType) {
-                    TSMetaType.META_ITEM -> this
-                        .getAll<TSGlobalMetaItem>(metaType)
-                        .mapNotNull { TSLookupElementFactory.build(it) }
+        types.flatMap { metaType ->
+            when (metaType) {
+                TSMetaType.META_ITEM -> this
+                    .getAll<TSGlobalMetaItem>(metaType)
+                    .mapNotNull { TSLookupElementFactory.build(it) }
 
-                    TSMetaType.META_ENUM -> this
-                        .getAll<TSGlobalMetaEnum>(metaType)
-                        .mapNotNull { TSLookupElementFactory.build(it, it.name) }
+                TSMetaType.META_ENUM -> this
+                    .getAll<TSGlobalMetaEnum>(metaType)
+                    .mapNotNull { TSLookupElementFactory.build(it, it.name) }
 
-                    TSMetaType.META_RELATION -> this
-                        .getAll<TSGlobalMetaRelation>(metaType)
-                        .mapNotNull { TSLookupElementFactory.build(it) }
+                TSMetaType.META_RELATION -> this
+                    .getAll<TSGlobalMetaRelation>(metaType)
+                    .mapNotNull { TSLookupElementFactory.build(it) }
 
-                    TSMetaType.META_COLLECTION -> this
-                        .getAll<TSGlobalMetaCollection>(metaType)
-                        .mapNotNull { TSLookupElementFactory.build(it) }
+                TSMetaType.META_COLLECTION -> this
+                    .getAll<TSGlobalMetaCollection>(metaType)
+                    .mapNotNull { TSLookupElementFactory.build(it) }
 
-                    TSMetaType.META_MAP -> this
-                        .getAll<TSGlobalMetaMap>(metaType)
-                        .mapNotNull { TSLookupElementFactory.build(it) }
+                TSMetaType.META_MAP -> this
+                    .getAll<TSGlobalMetaMap>(metaType)
+                    .mapNotNull { TSLookupElementFactory.build(it) }
 
-                    else -> emptyList()
-                }
+                else -> emptyList()
             }
-            .flatten()
+        }
     }
 
     fun getCompletions(meta: TSGlobalMetaEnum) = meta.values.values

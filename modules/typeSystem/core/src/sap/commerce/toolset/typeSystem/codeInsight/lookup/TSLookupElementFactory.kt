@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -159,6 +159,7 @@ object TSLookupElementFactory {
     fun build(dom: AtomicType) = dom.clazz.stringValue
         ?.let {
             LookupElementBuilder.create(it)
+                .withLookupString(it.substringAfterLast("."))
                 .withIcon(HybrisIcons.TypeSystem.Types.ATOMIC)
         }
 
