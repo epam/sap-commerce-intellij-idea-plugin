@@ -129,7 +129,7 @@ class LeExtensionsCollector {
             val extensionName = extensionType.name.takeIf { it.isNotBlank() }
                 ?: return@mapNotNull null
             val extensionPath = extensionType.dir
-                .takeIf { it.isNotBlank() }
+                ?.takeIf { it.isNotBlank() }
                 ?.toNormalizedPath(expandedProperties)
                 ?: scanTypes.values
                     .firstNotNullOfOrNull { it.findExtensionDirectory(extensionName) }
