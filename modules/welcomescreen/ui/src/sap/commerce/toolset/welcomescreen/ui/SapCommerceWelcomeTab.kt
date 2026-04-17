@@ -137,6 +137,7 @@ class SapCommerceWelcomeTab(
 
     private fun loadProjects() {
         currentLoadJob?.cancel()
+        projectList.showLoading()
         currentLoadJob = scope.launch {
             val projects = RecentProjectsManager.getInstance()
                 .asSafely<RecentProjectsManagerBase>()
@@ -149,6 +150,7 @@ class SapCommerceWelcomeTab(
 
             withContext(Dispatchers.EDT) {
                 listModel.replaceAll(projects)
+                projectList.showLoaded()
             }
 
             // Kick off settings parsing for any project not yet cached.
