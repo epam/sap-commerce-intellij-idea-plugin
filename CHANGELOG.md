@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 13 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -15,6 +15,9 @@
 - Detect target hosting environment `CCv2` or `On Premise` [#1897](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1897)
 - Preserve the owner during the modification of the Workspace entity [#1898](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1898)
 - Use sticky headers for `Project Details` & `Reuse settings` wizard steps [#1899](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1899)
+
+### `Project View` enhancements
+- Show `.github` as a project node [#1907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1907)
 
 ### `Welcome Screen` enhancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
@@ -1621,10 +1624,12 @@ Due severe API changes it is highly advised to backup the project and import it 
 - 1 PR by [Yury Bich](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2024.1.0+author%3Ayurybich+is%3Apr)
 
 ### Features
-- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel [#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967) | [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975) | [#980](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/980)
-- Use blue logo for custom module groups in the project view [#973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/973)
 - Show globe icon for localized attributes in the code completion pane [#999](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/999)
 - Added custom icon for `hybrislicence.jar` [#1000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1000)
+
+### `Project View` enhancements
+- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel [#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967) | [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975) | [#980](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/980)
+- Use blue logo for custom module groups in the project view [#973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/973)
 
 ### `CCv2` enhancements
 - Added new extension pack `hybris-datahub-integration-suite` [#1013](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009)
@@ -2316,8 +2321,17 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Common `java.lang` package can be omitted in the Bean property **type** [#596](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/596)
 - Validate DOM structure and references [#601](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/601)
 
-### Features
+### `Type System` enhancements
+- Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
+
+### `Project View` enhancements
 - Added configurable possibility to hide full Module name in the Project View [#590](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/590)
+- Fixed Compact Middle Packages in the Project View [#568](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/568)
+- Also hide full Module name for `web` sub-module in the Project View [#622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/622)
+- Hide custom module libraries in the Project View [#569](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/569)
+- Do not show `resources` folders in the `External Libraries` [#589](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/589)
+
+### Features
 - Added possibility to import Gradle KTS projects as modules [#534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/534)
 - Improved folding for Relation tags in the `items.xml` [#555](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/555)
 - Improved support of the Bean System `extends` and `generics` for beans [#570](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/570)
@@ -2332,7 +2346,6 @@ Due severe API changes it is highly advised to backup the project and import it 
 - `ImpEx` functional reference type validation does not work [#546](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/546)
 - Fixed `ImpEx` context actions [#551](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/551)
 - Reset `ImpEx` highlighting cache on moving columns [#567](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/567)
-- Fixed Compact Middle Packages in the Project View [#568](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/568)
 - Fixed `commonweb` sources attaching [#572](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/572), [#573](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/573)
 - Added `hmc` sub-module dependency on `hmc.web` [#574](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/574)
 - Improved detection of the Gradle modules [#575](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/575)
@@ -2346,13 +2359,9 @@ Due severe API changes it is highly advised to backup the project and import it 
 - Properties defined in the `advanced.properties` are not available [#612](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/612)
 - Dependant modules are not imported [#614](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/614)
 - Ensure that `Properties` Plugin dependant code works only when corresponding Plugin is enabled [#618](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/618)
-- Also hide full Module name for `web` sub-module in the Project View [#622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/622)
 
 ### Other
-- Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
-- Hide custom module libraries in the Project View [#569](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/569)
 - Added Slack badge to README.md [#577](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/577)
-- Do not show `resources` folders in the `External Libraries` [#589](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/589)
 - Use `hAC` project properties during first project import for remote connections [#623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/623)
 
 ## [2023.2.5]

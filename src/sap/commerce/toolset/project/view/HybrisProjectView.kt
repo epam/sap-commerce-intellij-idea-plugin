@@ -177,6 +177,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
     private fun isNodeVisible(parent: AbstractTreeNode<*>, node: AbstractTreeNode<*>): Boolean {
         if (node !is PsiDirectoryNode) return true
+        if (ProjectConstants.Directory.GITHUB == node.value.name) return true
 
         val vf = node.virtualFile
             ?: return true

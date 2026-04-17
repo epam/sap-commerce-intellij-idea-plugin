@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.view.nodes
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
+import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.module.ModuleUtilCore
@@ -30,6 +31,7 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiManager
 import sap.commerce.toolset.directory
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.view.HybrisProjectViewDirectoryHelper
 
 // TODO: remove this class and migrate to new Workspace Model API
@@ -51,19 +53,24 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
             ?.let { LocalFileSystem.getInstance().findFileByPath(it) }
             ?.let { baseDir ->
                 val psiManager = PsiManager.getInstance(project)
-                val files = baseDir.children
+                val virtualFiles = baseDir.children
                 var projectFileIndex: ProjectFileIndex? = null
-                for (file in files) {
-                    if (!file.isDirectory) {
+                for (vf in virtualFiles) {
+                    if (!vf.isDirectory) {
                         if (projectFileIndex == null) {
                             projectFileIndex = ProjectFileIndex.getInstance(getProject())
                         }
-                        if (projectFileIndex.getModuleForFile(file, false) == null) {
-                            val psiFile = psiManager.findFile(file)
+                        if (projectFileIndex.getModuleForFile(vf, false) == null) {
+                            val psiFile = psiManager.findFile(vf)
                             if (psiFile != null) {
                                 nodes.add(PsiFileNode(getProject(), psiFile, settings))
                             }
                         }
+                    } else if (ProjectConstants.Directory.GITHUB == vf.name) {
+                        psiManager.findDirectory(vf)
+                            ?.let {
+                                nodes.add(PsiDirectoryNode(getProject(), it, settings))
+                            }
                     }
                 }
             }
