@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.name
 import kotlin.io.path.pathString
 
 @Service
@@ -62,7 +61,7 @@ class LeExtensionsCollector {
             // declared via:
             // 1. `extension name="myextension" dir="someDir"`
             // 2. `extension name="myextension"`
-            processExtensions(hybrisConfig, scanTypes, expandedProperties).forEach { leExtension ->
+            processExtensions(foundExtensions, scanTypes, hybrisConfig, expandedProperties).forEach { leExtension ->
                 if (!this.contains(leExtension.name)) {
                     put(leExtension.name, leExtension)
                 }
@@ -111,40 +110,44 @@ class LeExtensionsCollector {
         .takeIf { it.isNotEmpty() }
         ?.let { autoloadScanTypes ->
             foundExtensions.filter { extension ->
-                autoloadScanTypes
-                    .firstOrNull { scanType ->
-                        val moduleDir = extension.directory.normalize().pathString
-                        moduleDir.startsWith(scanType.normalizedPath.pathString)
-                            && Paths.get(moduleDir.substring(scanType.dir.length)).nameCount <= scanType.depth
-                    } != null
+                autoloadScanTypes.firstOrNull { scanType ->
+                    val moduleDir = extension.directory.normalize().pathString
+                    moduleDir.startsWith(scanType.normalizedPath.pathString)
+                        && Paths.get(moduleDir.substring(scanType.dir.length)).nameCount <= scanType.depth
+                } != null
             }
         }
         ?: emptyList()
 
     private fun processExtensions(
-        hybrisConfig: Hybrisconfig,
+        foundExtensions: Collection<LeExtension>,
         scanTypes: Map<String, ScanType>,
+        hybrisConfig: Hybrisconfig,
         expandedProperties: Map<String, String>,
     ) = hybrisConfig.getExtensions().getExtension()
         .mapNotNull { extensionType ->
             val extensionName = extensionType.name.takeIf { it.isNotBlank() }
                 ?: return@mapNotNull null
+
+            val suitableFoundExtensions = foundExtensions.filter { it.name == extensionName }
+
             val extensionPath = extensionType.dir
                 ?.takeIf { it.isNotBlank() }
                 ?.toNormalizedPath(expandedProperties)
                 ?: scanTypes.values
-                    .firstNotNullOfOrNull { it.findExtensionDirectory(extensionName) }
+                    .filterNot { it.autoload }
+                    .firstNotNullOfOrNull { scanType ->
+                        suitableFoundExtensions.firstOrNull { extension ->
+                            val moduleDir = extension.directory.normalize().pathString
+                            moduleDir.startsWith(scanType.normalizedPath.pathString)
+                                && Paths.get(moduleDir.substring(scanType.dir.length)).nameCount <= scanType.depth
+                        }
+                    }
+                    ?.directory
                 ?: return@mapNotNull null
 
             LeExtension(extensionName, extensionPath)
         }
-
-    fun ScanType.findExtensionDirectory(
-        targetName: String,
-    ): Path? = Files.walk(this.normalizedPath, this.depth)
-        .filter { it.directoryExists && it.name == targetName && it.resolve("extensioninfo.xml").fileExists }
-        .findFirst()
-        .orElse(null)
 
     private fun String.toNormalizedPath(expandedProperties: Map<String, String>): Path {
         val key = expandedProperties.entries
