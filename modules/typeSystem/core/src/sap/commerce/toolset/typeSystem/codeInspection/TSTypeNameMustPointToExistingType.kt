@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -56,16 +56,12 @@ class TSTypeNameMustPointToExistingType : TSInspection() {
         severity: HighlightSeverity,
         project: Project
     ) {
-        val typeCode = dom.stringValue
-            ?.replace(TSConstants.Attribute.LOCALIZED_PREFIX, "")
-            ?: return
+        val typeCode = dom.stringValue ?: return
 
         // If type code is Primitive - skip, it is not registered via TS, but available in Service Layer
         if (TSConstants.Type.PRIMITIVES.contains(typeCode)) return
-        if (typeCode.startsWith("HYBRIS.")) return
-        if ("String" == typeCode) return
-        if ("java.io.Serializable" == typeCode) return
         if ("java.math.BigDecimal" == typeCode) return
+        if ("java.math.BigInteger" == typeCode) return
         if ("java.util.Date" == typeCode) return
 
         val meta = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(typeCode)

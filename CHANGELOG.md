@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 11 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 12 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 6 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -26,6 +26,9 @@
 
 ### `SAP CX Logging` enhancements
 - Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)
+
+### `Type System` enhancements
+- Improved inspection & code completion for attribute types [#1902](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1902)
 
 ## [2026.0.8]
 
