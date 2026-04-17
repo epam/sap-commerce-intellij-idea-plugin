@@ -26,6 +26,8 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.project.ex.ProjectManagerEx
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.JBPopupListener
+import com.intellij.openapi.ui.popup.LightweightWindowEvent
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.ui.JBUI
@@ -87,24 +89,54 @@ internal class SapCommerceProjectMouseHandler(
             .add(PlatformDataKeys.CONTEXT_COMPONENT, list)
             .build()
 
-        JBPopupFactory.getInstance().createActionGroupPopup(
+        // Pin the hover highlight to the row the popup belongs to, so moving
+        // the cursor across other rows while the menu is open doesn't shift
+        // the highlight and create an action-target mismatch.
+        list.hoveredIndex = list.locationToIndex(e.point)
+        list.hoverFrozen = true
+
+        val popup = JBPopupFactory.getInstance().createActionGroupPopup(
             /* title = */ null,
             /* actionGroup = */ group,
             /* dataContext = */ dataContext,
             /* selectionAidMethod = */ JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
             /* showDisabledActions = */ true
         )
-            .show(RelativePoint(e))
+
+        popup.addListener(object : JBPopupListener {
+            override fun onClosed(event: LightweightWindowEvent) {
+                list.hoverFrozen = false
+                // Re-sync hover to the cursor's current location. If the cursor
+                // is over a different row now, the highlight follows it; if it
+                // left the list entirely, clear it.
+                val mousePos = list.mousePosition
+                if (mousePos != null) {
+                    val index = list.locationToIndex(mousePos)
+                    val onRow = index >= 0 && list.getCellBounds(index, index)?.contains(mousePos) == true
+                    list.hoveredIndex = if (onRow) index else -1
+                    list.cursor = if (onRow) HAND_CURSOR else DEFAULT_CURSOR
+                } else {
+                    list.hoveredIndex = -1
+                    list.cursor = DEFAULT_CURSOR
+                }
+            }
+        })
+
+        popup.show(RelativePoint(e))
     }
 
     override fun mouseMoved(e: MouseEvent) {
         val onRow = list.isOnRow(e)
-        list.hoveredIndex = if (onRow) list.locationToIndex(e.point) else -1
+        if (!list.hoverFrozen) {
+            list.hoveredIndex = if (onRow) list.locationToIndex(e.point) else -1
+        }
         list.cursor = if (onRow) HAND_CURSOR else DEFAULT_CURSOR
     }
 
     override fun mouseExited(e: MouseEvent) {
-        list.hoveredIndex = -1
+        if (!list.hoverFrozen) {
+            list.hoveredIndex = -1
+        }
         list.cursor = DEFAULT_CURSOR
     }
 
