@@ -27,6 +27,7 @@ import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
 import sap.commerce.toolset.util.directoryExists
+import sap.commerce.toolset.util.fileExists
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -160,7 +161,7 @@ class LeExtensionsCollector {
     fun ScanType.findExtensionDirectory(
         targetName: String,
     ): Path? = Files.walk(this.normalizedPath, this.depth)
-        .filter { it.directoryExists && it.name == targetName }
+        .filter { it.directoryExists && it.name == targetName && it.resolve("extensioninfo.xml").fileExists }
         .findFirst()
         .orElse(null)
 
