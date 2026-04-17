@@ -69,11 +69,20 @@ internal class SapCommerceProjectList(
 
     var hoveredIndex: Int = -1
         set(value) {
+            if (hoverFrozen) return
             if (field != value) {
                 field = value
                 repaint()
             }
         }
+
+    /**
+     * While `true`, writes to [hoveredIndex] are ignored. Used by
+     * [SapCommerceProjectMouseHandler] to pin the hover highlight to the row
+     * that owns an open context-menu popup, so moving the cursor over other
+     * rows doesn't shift the highlight and make the action target ambiguous.
+     */
+    var hoverFrozen: Boolean = false
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 

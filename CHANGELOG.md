@@ -2,7 +2,7 @@
 
 <cite>Release contributors</code>
 - 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
-- 9 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
+- 10 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
 - Enable `externalDependencies.xml` as a restoration entry on project reimport [#1884](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1884)
@@ -29,6 +29,7 @@
 - Added a pointer cursor over Recent Project Row [#1904](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1904)
 - Display the message "Loading recent projects" [#1906](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1906)
 - Shorten a long project path to fit the popup size [#1908](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1908)
+- Show a pointer cursor above unselected row if a context menu is shown [#1909](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1909)
 
 ### `SAP CX Logging` enhancements
 - Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)
