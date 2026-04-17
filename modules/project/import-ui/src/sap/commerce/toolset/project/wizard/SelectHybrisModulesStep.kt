@@ -45,6 +45,18 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
     init {
         fileChooser.addElementsMarkListener(ElementsChooser.ElementsMarkListener { element, isMarked ->
             if (element is YModuleDescriptor) {
+                if (!isMarked && element !is YSubModuleDescriptor) {
+                    val duplicates = this.context.list
+                        .filter { it.name == element.name }
+
+                    if (duplicates.any { it.importStatus == ModuleDescriptorImportStatus.MANDATORY }
+                        && duplicates.none { fileChooser.isElementMarked(it) }) {
+                        fileChooser.setElementMarked(element, true)
+                        fileChooser.repaint()
+                        return@ElementsMarkListener
+                    }
+                }
+
                 if (isMarked) {
                     val elementMarkStates = fileChooser.elementMarkStates
                     element.getAllDependencies()
@@ -69,10 +81,6 @@ class SelectHybrisModulesStep(context: WizardContext) : AbstractSelectModulesSte
 
         // init the tree
         super.updateStep()
-
-        context.list
-            .filter { it.importStatus == ModuleDescriptorImportStatus.MANDATORY }
-            .forEach { if (!isInConflict(it)) fileChooser.disableElement(it) }
 
         fileChooser.sort(compareBy<ModuleDescriptor> { orderByType[it.type] ?: Integer.MAX_VALUE }
             .thenComparing { it.name }
