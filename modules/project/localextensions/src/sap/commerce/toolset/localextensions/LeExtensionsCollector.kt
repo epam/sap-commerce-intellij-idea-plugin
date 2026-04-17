@@ -139,6 +139,28 @@ class LeExtensionsCollector {
             LeExtension(extensionName, extensionPath)
         }
 
+    fun ScanType.findExtensionDirectory(
+        targetName: String,
+    ): Path? = Files.walk(this.normalizedPath, this.depth)
+        .filter { it.directoryExists && it.name == targetName && it.resolve("extensioninfo.xml").fileExists }
+        .findFirst()
+        .orElse(null)
+
+    private fun String.toNormalizedPath(expandedProperties: Map<String, String>): Path {
+        val key = expandedProperties.entries
+            .filter { property -> contains("\${" + property.key + '}') }
+            .firstNotNullOfOrNull { property -> replace("\${" + property.key + '}', property.value) }
+            ?: this
+        val path = Path.of(key)
+            .takeIf { it.directoryExists }
+            ?: expandedProperties["platformhome"]
+                ?.let { Path.of(it) }
+                ?.resolve(this)
+                ?.takeIf { it.resolve("extensioninfo.xml").fileExists }
+            ?: Path.of(key)
+        return path.normalize()
+    }
+
     private fun getExpandedProperties(platformDirectory: Path): Map<String, String>? {
         val platformPath = platformDirectory.resolve("bin").resolve("platform")
         val envPropertiesPath = platformPath.resolve("env.properties")
@@ -156,21 +178,6 @@ class LeExtensionsCollector {
                 }
             }
         }.getOrNull()
-    }
-
-    fun ScanType.findExtensionDirectory(
-        targetName: String,
-    ): Path? = Files.walk(this.normalizedPath, this.depth)
-        .filter { it.directoryExists && it.name == targetName && it.resolve("extensioninfo.xml").fileExists }
-        .findFirst()
-        .orElse(null)
-
-    private fun String.toNormalizedPath(expandedProperties: Map<String, String>): Path {
-        val key = expandedProperties.entries
-            .filter { property -> contains("\${" + property.key + '}') }
-            .firstNotNullOfOrNull { property -> replace("\${" + property.key + '}', property.value) }
-            ?: this
-        return Paths.get(key).normalize()
     }
 
     companion object {
