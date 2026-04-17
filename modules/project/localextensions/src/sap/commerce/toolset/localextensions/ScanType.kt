@@ -16,8 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.settings.state
+package sap.commerce.toolset.localextensions
 
-enum class CCv2AuthenticationMode(val presentationTitle: String) {
-    TECHNICAL_USER("Technical User"),
-}
+import java.nio.file.Path
+import kotlin.io.path.Path
+
+data class ScanType(
+    val dir: String,
+    val autoload: Boolean,
+    var depth: Int,
+    var normalizedPath: Path = Path(dir),
+)

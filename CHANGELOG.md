@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 14 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 10 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -15,6 +15,7 @@
 - Detect target hosting environment `CCv2` or `On Premise` [#1897](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1897)
 - Preserve the owner during the modification of the Workspace entity [#1898](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1898)
 - Use sticky headers for `Project Details` & `Reuse settings` wizard steps [#1899](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1899)
+- Enhanced extensions load & preselection order based on `localextensions.xml` [#1911](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1911)
 
 ### `Project View` enhancements
 - Show `.github` as a project node [#1907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1907)
