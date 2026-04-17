@@ -28,6 +28,7 @@
 - Extracted code into the dedicated modules [#1900](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1900)
 - Added a pointer cursor over Recent Project Row [#1904](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1904)
 - Display the message "Loading recent projects" [#1906](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1906)
+- Shorten a long project path to fit the popup size [#1908](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1908)
 
 ### `SAP CX Logging` enhancements
 - Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)
