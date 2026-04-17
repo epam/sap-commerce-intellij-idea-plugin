@@ -31,7 +31,14 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
 
     private val iconLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
     private val nameLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
-    private val pathLabel = JLabel().apply {
+    private val pathLabel = object : JLabel() {
+        // BoxLayout(Y_AXIS) sizes the column to each child's preferredSize.width,
+        // which for a long path stretches the panel and prevents truncation.
+        // Returning zero from minimumSize lets BoxLayout shrink this label freely;
+        // JLabel's own paint then clips the text with a trailing "…" automatically.
+        override fun getMinimumSize(): Dimension = Dimension(0, super.getMinimumSize().height)
+        override fun getPreferredSize(): Dimension = Dimension(0, super.getPreferredSize().height)
+    }.apply {
         foreground = JBColor.GRAY
     }
     private val versionLabel = JLabel().apply {
