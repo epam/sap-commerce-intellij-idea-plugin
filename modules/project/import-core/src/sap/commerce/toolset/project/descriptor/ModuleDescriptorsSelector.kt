@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.util.application
 import sap.commerce.toolset.localextensions.LeExtension
 import sap.commerce.toolset.localextensions.LeExtensionsCollector
@@ -29,13 +30,15 @@ import sap.commerce.toolset.project.settings.ProjectSettings
 @Service
 class ModuleDescriptorsSelector {
 
-    fun preselect(context: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
+    suspend fun preselect(context: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
         val foundExtensions = context.foundModules
             .map { LeExtension(it.name, it.moduleRootPath) }
+        val platformDirectory = context.platformDistributionPath
+            ?: run { thisLogger().warn("Unable to preselect modules, platform directory is not detected"); return }
         val extensionsInLocalExtensions = LeExtensionsCollector.getInstance().collect(
             foundExtensions,
             configModuleDescriptor.moduleRootPath,
-            context.platformDistributionPath
+            platformDirectory
         )
         val preselectedExtensionNames = mutableSetOf<String>()
 
@@ -44,6 +47,10 @@ class ModuleDescriptorsSelector {
             .filterNot { preselectedExtensionNames.contains(it.name) }
             .filter { extensionsInLocalExtensions.contains(it.name) }
             .filterIsInstance<YRegularModuleDescriptor>()
+            .filter { moduleDescriptor ->
+                val preferredLoadPath = extensionsInLocalExtensions[moduleDescriptor.name]?.directory
+                moduleDescriptor.moduleRootPath.normalize().equals(preferredLoadPath)
+            }
             .forEach { moduleDescriptor ->
                 preselectedExtensionNames.add(moduleDescriptor.name)
 
