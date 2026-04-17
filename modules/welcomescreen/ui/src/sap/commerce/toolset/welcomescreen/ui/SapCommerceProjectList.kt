@@ -34,6 +34,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.addListSelectionListener
 import sap.commerce.toolset.welcomescreen.WelcomeScreenConstants
 import sap.commerce.toolset.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
@@ -82,6 +83,10 @@ internal class SapCommerceProjectList(
         border = JBUI.Borders.empty(0, 4)
         selectionMode = ListSelectionModel.SINGLE_SELECTION
 
+        // Start in the "loading" state; SapCommerceWelcomeTab flips this to the
+        // empty-state text once the first load completes.
+        showLoading()
+
         // Tell JBList to drive AnimatedIcon repaints inside the cell renderer.
         putClientProperty(AnimatedIcon.ANIMATION_IN_RENDERER_ALLOWED, true)
 
@@ -118,6 +123,26 @@ internal class SapCommerceProjectList(
                 }
         }
         Disposer.register(parentDisposable) { scope.cancel() }
+    }
+
+    /**
+     * Switches the empty-state message to "loading". Shown while the background
+     * coroutine in [SapCommerceWelcomeTab] is filtering recent paths and building
+     * [RecentSapCommerceProject] instances. Has no visual effect once the model
+     * is non-empty — [com.intellij.util.ui.StatusText] only paints when the list
+     * has no rows.
+     */
+    fun showLoading() {
+        emptyText.text = i18n("hybris.welcometab.list.loading")
+    }
+
+    /**
+     * Switches the empty-state message to "no recent projects". Called once
+     * the first load completes; if projects are present, the text is hidden
+     * automatically by [com.intellij.util.ui.StatusText].
+     */
+    fun showLoaded() {
+        emptyText.text = i18n("hybris.welcometab.list.empty")
     }
 
     override fun uiDataSnapshot(sink: DataSink) {
