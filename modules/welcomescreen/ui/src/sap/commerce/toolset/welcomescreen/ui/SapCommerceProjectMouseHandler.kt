@@ -34,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.welcomescreen.WelcomeScreenConstants
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+import java.awt.Cursor
 import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -43,8 +44,9 @@ import java.awt.event.MouseEvent
  * Handles mouse interaction for [SapCommerceProjectList]:
  *
  * - Single left-click on a row opens the project.
- * - Cursor movement updates the list's [SapCommerceProjectList.hoveredIndex].
- * - Cursor leaving the list clears the hover.
+ * - Cursor movement updates the list's [SapCommerceProjectList.hoveredIndex] and
+ *   switches the pointer to [Cursor.HAND_CURSOR] over a row.
+ * - Cursor leaving the list clears the hover and restores the default cursor.
  */
 internal class SapCommerceProjectMouseHandler(
     private val list: SapCommerceProjectList,
@@ -96,14 +98,19 @@ internal class SapCommerceProjectMouseHandler(
     }
 
     override fun mouseMoved(e: MouseEvent) {
-        list.hoveredIndex = if (list.isOnRow(e)) list.locationToIndex(e.point) else -1
+        val onRow = list.isOnRow(e)
+        list.hoveredIndex = if (onRow) list.locationToIndex(e.point) else -1
+        list.cursor = if (onRow) HAND_CURSOR else DEFAULT_CURSOR
     }
 
     override fun mouseExited(e: MouseEvent) {
         list.hoveredIndex = -1
+        list.cursor = DEFAULT_CURSOR
     }
 
     companion object {
-        private const val OVERFLOW_HIT_WIDTH = 36  // overflow icon + padding
+        private const val OVERFLOW_HIT_WIDTH = 36
+        private val HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+        private val DEFAULT_CURSOR = Cursor.getDefaultCursor()
     }
 }
