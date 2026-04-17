@@ -19,5 +19,19 @@
 package sap.commerce.toolset.welcomescreen.presentation
 
 data class RecentSapCommerceProjectSettings(
-    val hybrisVersion: String? = null
+    val hybrisVersion: String? = null,
+    val hostingEnvironment: HostingEnvironment? = null
 )
+
+enum class HostingEnvironment {
+    CCV2,
+    ON_PREMISE;
+
+    companion object {
+        fun of(value: String?): HostingEnvironment? = when (value?.trim()) {
+            "CCV2" -> CCV2
+            "ON_PREMISE" -> ON_PREMISE
+            else -> null
+        }
+    }
+}

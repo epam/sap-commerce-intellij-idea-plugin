@@ -33,6 +33,7 @@
 - Display the message "Loading recent projects" [#1906](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1906)
 - Shorten a long project path to fit the popup size [#1908](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1908)
 - Show a pointer cursor above unselected row if a context menu is shown [#1909](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1909)
+- Display a type of hosting environment [#1910](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1910)
 
 ### `SAP CX Logging` enhancements
 - Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)

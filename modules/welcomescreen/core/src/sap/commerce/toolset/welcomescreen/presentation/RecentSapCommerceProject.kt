@@ -45,6 +45,10 @@ data class RecentSapCommerceProject(
     val hybrisVersion: String?
         get() = HybrisProjectSettingsCache.getInstance().get(location)?.hybrisVersion
 
+    /** Returns the hosting environment if cached, or `null` while loading or when absent. */
+    val hostingEnvironment: HostingEnvironment?
+        get() = HybrisProjectSettingsCache.getInstance().get(location)?.hostingEnvironment
+
     val gitBranch: String?
         get() = GitHeadCache.getInstance().get(location).asSafely<RecentSapCommerceProjectGitBranch.Named>()?.name
 

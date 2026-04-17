@@ -22,6 +22,8 @@ import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.welcomescreen.presentation.HostingEnvironment
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import java.awt.*
 import java.io.Serial
@@ -47,6 +49,12 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         border = JBUI.Borders.empty(2, 8)
         isOpaque = false
     }
+    private val hostingLabel = JLabel().apply {
+        foreground = JBColor.GRAY
+        font = JBUI.Fonts.smallFont()
+        border = JBUI.Borders.empty(2, 8)
+        isOpaque = false
+    }
     private val overflowLabel = JLabel(HybrisIcons.WelcomeTab.ACTION_MORE).apply {
         border = JBUI.Borders.empty(2)
         isOpaque = false
@@ -65,6 +73,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
 
     private var hovered = false
     private var showVersionTagBorder = false
+    private var showHostingTagBorder = false
 
     init {
         layout = BorderLayout(JBUI.scale(ICON_TEXT_GAP), 0)
@@ -100,6 +109,8 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             isOpaque = false
             alignmentY = CENTER_ALIGNMENT
+            add(hostingLabel)
+            add(Box.createHorizontalStrut(JBUI.scale(8)))
             add(versionLabel)
             add(Box.createHorizontalStrut(JBUI.scale(8)))
             add(overflowLabel)
@@ -129,6 +140,17 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
 
             if (showVersionTagBorder) {
                 val bounds = SwingUtilities.convertRectangle(versionLabel.parent, versionLabel.bounds, this)
+                g2.color = tagBorderColor
+                g2.stroke = BasicStroke(JBUI.scale(1).toFloat())
+                g2.drawRoundRect(
+                    bounds.x, bounds.y,
+                    bounds.width - 1, bounds.height - 1,
+                    JBUI.scale(TAG_ARC), JBUI.scale(TAG_ARC)
+                )
+            }
+
+            if (showHostingTagBorder) {
+                val bounds = SwingUtilities.convertRectangle(hostingLabel.parent, hostingLabel.bounds, this)
                 g2.color = tagBorderColor
                 g2.stroke = BasicStroke(JBUI.scale(1).toFloat())
                 g2.drawRoundRect(
@@ -184,6 +206,20 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             } else {
                 branchLabel.text = ""
                 branchLabel.isVisible = false
+            }
+
+            val env = hostingEnvironment
+            if (env != null) {
+                hostingLabel.text = when (env) {
+                    HostingEnvironment.CCV2 -> i18n("hybris.welcometab.hosting.environment.ccv2")
+                    HostingEnvironment.ON_PREMISE -> i18n("hybris.welcometab.hosting.environment.on.premise")
+                }
+                hostingLabel.isVisible = true
+                showHostingTagBorder = true
+            } else {
+                hostingLabel.text = ""
+                hostingLabel.isVisible = false
+                showHostingTagBorder = false
             }
         }
 
