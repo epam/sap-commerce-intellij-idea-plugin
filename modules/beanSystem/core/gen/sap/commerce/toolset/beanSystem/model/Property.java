@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@
 
 package sap.commerce.toolset.beanSystem.model;
 
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.xml.FalseAttributeValue;
@@ -49,6 +50,7 @@ public interface Property extends DomElement {
     @Attribute(NAME)
     @Stubbed
     @NameValue
+    @NoSpellchecking
     //NOTE: We have to avoid @Convert since PsiField is in the read-only file and thus can't be renamed by platform
     //NOTE: Instead we are renaming the attribute value itself, see BeansRenamePsiElementProcessor
     //@Convert(soft = true, value = BeansPropertyNameConverter.class)
