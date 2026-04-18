@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 15 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 16 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 10 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -19,6 +19,7 @@
 
 ### `Project View` enhancements
 - Show `.github` as a project node [#1907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1907)
+- Show grouped `Ai Skills` for `.claude`, `.cursor`, `.gemini`, `.junie` & `.agents` [#1912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1912)
 
 ### `Welcome Screen` enhancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)

@@ -29,10 +29,14 @@ import com.intellij.openapi.module.impl.LoadedModuleDescriptionImpl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.directory
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.view.HybrisProjectViewDirectoryHelper
+import javax.swing.Icon
 
 // TODO: remove this class and migrate to new Workspace Model API
 class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings) : ProjectViewProjectNode(project, viewSettings) {
@@ -55,6 +59,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                 val psiManager = PsiManager.getInstance(project)
                 val virtualFiles = baseDir.children
                 var projectFileIndex: ProjectFileIndex? = null
+                val aiSkillDirectories = mutableListOf<PsiDirectoryNode>()
                 for (vf in virtualFiles) {
                     if (!vf.isDirectory) {
                         if (projectFileIndex == null) {
@@ -66,12 +71,32 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                                 nodes.add(PsiFileNode(getProject(), psiFile, settings))
                             }
                         }
-                    } else if (ProjectConstants.Directory.GITHUB == vf.name) {
-                        psiManager.findDirectory(vf)
-                            ?.let {
-                                nodes.add(PsiDirectoryNode(getProject(), it, settings))
-                            }
+                    } else {
+                        when (vf.name) {
+                            ProjectConstants.Directory.GITHUB -> psiManager.findDirectory(vf)
+                                ?.let { PsiDirectoryNode(getProject(), it, settings) }
+                                ?.let { nodes.add(it) }
+
+                            HybrisConstants.AiAgents.CLAUDE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CLAUDE)
+                                ?.let { aiSkillDirectories.add(it) }
+
+                            HybrisConstants.AiAgents.GEMINI -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_GEMINI)
+                                ?.let { aiSkillDirectories.add(it) }
+
+                            HybrisConstants.AiAgents.JUNIE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_JUNIE)
+                                ?.let { aiSkillDirectories.add(it) }
+
+                            HybrisConstants.AiAgents.CURSOR -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CURSOR)
+                                ?.let { aiSkillDirectories.add(it) }
+
+                            HybrisConstants.AiAgents.AGENTS -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENTS)
+                                ?.let { aiSkillDirectories.add(it) }
+                        }
                     }
+                }
+
+                if (aiSkillDirectories.isNotEmpty()) {
+                    nodes.add(AiSkillsProjectViewNode(getProject(), aiSkillDirectories, settings))
                 }
             }
 
@@ -80,4 +105,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
         }
         return nodes
     }
+
+    private fun aiAgentNode(psiManager: PsiManager, vf: VirtualFile, icon: Icon) = psiManager.findDirectory(vf)
+        ?.let { AiAgentPsiDirectoryNode(project, it, settings, icon) }
 }

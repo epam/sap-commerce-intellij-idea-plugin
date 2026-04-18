@@ -157,6 +157,14 @@ object HybrisConstants {
     // see: de.hybris.bootstrap.config.PlatformConfig -> readMaxDepthAttribute(..)
     const val DEFAULT_EXTENSIONS_PATH_DEPTH = 10
 
+    object AiAgents {
+        const val CLAUDE = ".claude"
+        const val GEMINI = ".gemini"
+        const val JUNIE = ".junie"
+        const val CURSOR = ".cursor"
+        const val AGENTS = ".agents"
+    }
+
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
         ".directory",

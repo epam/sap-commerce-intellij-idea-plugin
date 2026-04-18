@@ -39,10 +39,7 @@ import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.context.ModuleGroup
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ySettings
-import sap.commerce.toolset.project.view.nodes.ExternalProjectViewNode
-import sap.commerce.toolset.project.view.nodes.HybrisProjectViewProjectNode
-import sap.commerce.toolset.project.view.nodes.JunkProjectViewNode
-import sap.commerce.toolset.project.view.nodes.YProjectViewModuleGroupNode
+import sap.commerce.toolset.project.view.nodes.*
 import sap.commerce.toolset.project.yExtensionDescriptor
 import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.settings.ApplicationSettings
