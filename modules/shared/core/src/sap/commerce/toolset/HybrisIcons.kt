@@ -521,6 +521,15 @@ object HybrisIcons {
         val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
     }
 
+    object AI {
+        val SKILLS = getIcon("/icons/ai/skills.svg")
+        val AGENTS = getIcon("/icons/ai/agents.svg")
+        val AGENT_CLAUDE = getIcon("/icons/ai/agent-claude.svg")
+        val AGENT_GEMINI = getIcon("/icons/ai/agent-gemini.svg")
+        val AGENT_JUNIE = getIcon("/icons/ai/agent-junie.svg")
+        val AGENT_CURSOR = getIcon("/icons/ai/agent-cursor.svg")
+    }
+
     object Actions {
         val COLLAPSE_ALL = AllIcons.Actions.Collapseall
         val EXPAND_ALL = AllIcons.Actions.Expandall
