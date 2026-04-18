@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@
 
 package sap.commerce.toolset.typeSystem.model;
 
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import sap.commerce.toolset.typeSystem.util.xml.AttributeReferenceConverter;
 import sap.commerce.toolset.typeSystem.util.xml.CompositeConverter;
 import sap.commerce.toolset.typeSystem.util.xml.ItemAttributeMetaTypeReferenceConverter;
@@ -80,6 +81,7 @@ public interface Attribute extends DomElement {
     @com.intellij.util.xml.Attribute(QUALIFIER)
     @Required
     @Referencing(AttributeReferenceConverter.class)
+    @NoSpellchecking
     GenericAttributeValue<String> getQualifier();
 
 
@@ -95,6 +97,7 @@ public interface Attribute extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute(TYPE)
     @Required
+    @NoSpellchecking
     @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getType();
 
