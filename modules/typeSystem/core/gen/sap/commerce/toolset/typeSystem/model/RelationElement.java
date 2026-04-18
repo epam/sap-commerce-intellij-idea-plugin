@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@
 
 package sap.commerce.toolset.typeSystem.model;
 
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import sap.commerce.toolset.typeSystem.util.xml.ItemTypeReferenceConverter;
 import sap.commerce.toolset.typeSystem.util.xml.RelationElementMetaTypeReferenceConverter;
 import sap.commerce.toolset.xml.FalseAttributeValue;
@@ -59,6 +60,7 @@ public interface RelationElement extends DomElement {
     @com.intellij.util.xml.Attribute(TYPE)
     @Required
     @Referencing(ItemTypeReferenceConverter.class)
+    @NoSpellchecking
     GenericAttributeValue<String> getType();
 
 
@@ -73,6 +75,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(QUALIFIER)
+    @NoSpellchecking
     GenericAttributeValue<String> getQualifier();
 
 
@@ -88,6 +91,7 @@ public interface RelationElement extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute(META_TYPE)
     @Referencing(RelationElementMetaTypeReferenceConverter.class)
+    @NoSpellchecking
     GenericAttributeValue<String> getMetaType();
 
 
