@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 17 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 10 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -40,6 +40,9 @@
 - Improved inspection & code completion for attribute types [#1902](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1902)
 - Show parent for item type in the `items.xml` code completion items [#1903](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1903)
 - Disable spell checking for various `items.xml` elements [#1913](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1913)
+
+### `Bean System` enhancements
+- Disable spell checking for various `beans.xml` elements [#1914](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1914)
 
 ## [2026.0.8]
 
