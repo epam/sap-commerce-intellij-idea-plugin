@@ -19,7 +19,7 @@
 
 ### `Project View` enhancements
 - Show `.github` as a project node [#1907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1907)
-- Show grouped `AI Agents` for `.claude`, `.cursor`, `.gemini`, `.junie` & `.agents` [#1912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1912)
+- Show grouped `Ai Skills` for `.claude`, `.cursor`, `.gemini`, `.junie` & `.agents` [#1912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1912)
 
 ### `Welcome Screen` enhancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
