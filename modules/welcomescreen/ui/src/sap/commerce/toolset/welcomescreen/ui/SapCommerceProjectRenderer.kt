@@ -23,8 +23,10 @@ import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.welcomescreen.WelcomeScreenUiConstants
 import sap.commerce.toolset.welcomescreen.presentation.HostingEnvironment
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.welcomescreen.ui.tags.TagLabel
 import java.awt.*
 import java.io.Serial
 import javax.swing.*
@@ -33,32 +35,14 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
 
     private val iconLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
     private val nameLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
+
+    /** Path label with zero preferred/minimum width so BoxLayout can shrink it freely;
+     *  JLabel then clips overflowing text with a trailing "…" automatically. */
     private val pathLabel = object : JLabel() {
-        // BoxLayout(Y_AXIS) sizes the column to each child's preferredSize.width,
-        // which for a long path stretches the panel and prevents truncation.
-        // Returning zero from minimumSize lets BoxLayout shrink this label freely;
-        // JLabel's own paint then clips the text with a trailing "…" automatically.
         override fun getMinimumSize(): Dimension = Dimension(0, super.getMinimumSize().height)
         override fun getPreferredSize(): Dimension = Dimension(0, super.getPreferredSize().height)
-    }.apply {
-        foreground = JBColor.GRAY
-    }
-    private val versionLabel = JLabel().apply {
-        foreground = JBColor.GRAY
-        font = JBUI.Fonts.smallFont()
-        border = JBUI.Borders.empty(2, 8)
-        isOpaque = false
-    }
-    private val hostingLabel = JLabel().apply {
-        foreground = JBColor.GRAY
-        font = JBUI.Fonts.smallFont()
-        border = JBUI.Borders.empty(2, 8)
-        isOpaque = false
-    }
-    private val overflowLabel = JLabel(HybrisIcons.WelcomeTab.ACTION_MORE).apply {
-        border = JBUI.Borders.empty(2)
-        isOpaque = false
-    }
+    }.apply { foreground = JBColor.GRAY }
+
     private val branchLabel = JLabel().apply {
         foreground = JBColor.GRAY
         font = JBUI.Fonts.smallFont()
@@ -66,14 +50,32 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         iconTextGap = JBUI.scale(4)
     }
 
+    /** Version badge — colors swap between resting/hovered; cleared while loading. */
+    private val versionLabel = TagLabel()
 
-    private val pillColor: Color = UIManager.getColor("List.selectionBackground")
-        ?: JBUI.CurrentTheme.List.Hover.background(true)
-    private val tagBorderColor: Color = JBColor.border()
+    /** CCV2 hosting badge — fixed colors, toggled visible/invisible per row. */
+    private val hostingCcv2Label = TagLabel(i18n("hybris.welcometab.hosting.environment.ccv2")).apply {
+        colors = WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2
+        isVisible = false
+    }
+
+    /** On-Premise hosting badge — fixed colors, toggled visible/invisible per row. */
+    private val hostingOnPremiseLabel = TagLabel(i18n("hybris.welcometab.hosting.environment.on.premise")).apply {
+        colors = WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE
+        isVisible = false
+    }
+
+    private val overflowLabel = JLabel(HybrisIcons.WelcomeTab.ACTION_MORE).apply {
+        border = JBUI.Borders.empty(2)
+        isOpaque = false
+    }
+
+    // Not cached — resolved at paint time so theme switches are reflected immediately.
+    private val pillColor: Color
+        get() = UIManager.getColor("List.selectionBackground")
+            ?: JBUI.CurrentTheme.List.Hover.background(true)
 
     private var hovered = false
-    private var showVersionTagBorder = false
-    private var showHostingTagBorder = false
 
     init {
         layout = BorderLayout(JBUI.scale(ICON_TEXT_GAP), 0)
@@ -81,7 +83,16 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         isFocusable = false
         isOpaque = false
 
-        // BoxLayout with matching TOP_ALIGNMENT — icon top edge lines up with name top edge.
+        // Icon column — top-aligned so the icon's top edge lines up with the project name.
+        val iconHolder = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
+            isOpaque = false
+            alignmentY = TOP_ALIGNMENT
+            iconLabel.alignmentX = LEFT_ALIGNMENT
+            add(iconLabel)
+        }
+
+        // Text column — name / path / branch stacked vertically.
         val textPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
             isOpaque = false
@@ -96,22 +107,25 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             add(branchLabel)
         }
 
-
-        val iconHolder = JPanel().apply {
+        // Tags column — version on top, then the two hosting labels (only one visible at a time).
+        val tagsPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
             isOpaque = false
-            alignmentY = TOP_ALIGNMENT
-            iconLabel.alignmentX = LEFT_ALIGNMENT
-            add(iconLabel)
+            alignmentY = CENTER_ALIGNMENT
+            versionLabel.alignmentX = RIGHT_ALIGNMENT
+            hostingCcv2Label.alignmentX = RIGHT_ALIGNMENT
+            hostingOnPremiseLabel.alignmentX = RIGHT_ALIGNMENT
+            add(versionLabel)
+            add(Box.createVerticalStrut(JBUI.scale(TEXT_LINE_GAP)))
+            add(hostingCcv2Label)
+            add(hostingOnPremiseLabel)
         }
 
         val rightPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             isOpaque = false
             alignmentY = CENTER_ALIGNMENT
-            add(hostingLabel)
-            add(Box.createHorizontalStrut(JBUI.scale(8)))
-            add(versionLabel)
+            add(tagsPanel)
             add(Box.createHorizontalStrut(JBUI.scale(8)))
             add(overflowLabel)
         }
@@ -125,38 +139,17 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         val g2 = g.create() as Graphics2D
         try {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-
-            // Cover the whole cell with the panel background — hides any default
-            // selection paint from BasicListUI so only our rounded pill is visible.
+            // Always fill the entire cell with the list background to suppress
+            // any default selection painting from BasicListUI underneath.
             g2.color = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
             g2.fillRect(0, 0, width, height)
 
             if (hovered) {
                 g2.color = pillColor
-                val arc = JBUI.scale(PILL_ARC)
-                val inset = JBUI.scale(PILL_HORIZONTAL_INSET)
-                g2.fillRoundRect(inset, 0, width - 2 * inset, height, arc, arc)
-            }
-
-            if (showVersionTagBorder) {
-                val bounds = SwingUtilities.convertRectangle(versionLabel.parent, versionLabel.bounds, this)
-                g2.color = tagBorderColor
-                g2.stroke = BasicStroke(JBUI.scale(1).toFloat())
-                g2.drawRoundRect(
-                    bounds.x, bounds.y,
-                    bounds.width - 1, bounds.height - 1,
-                    JBUI.scale(TAG_ARC), JBUI.scale(TAG_ARC)
-                )
-            }
-
-            if (showHostingTagBorder) {
-                val bounds = SwingUtilities.convertRectangle(hostingLabel.parent, hostingLabel.bounds, this)
-                g2.color = tagBorderColor
-                g2.stroke = BasicStroke(JBUI.scale(1).toFloat())
-                g2.drawRoundRect(
-                    bounds.x, bounds.y,
-                    bounds.width - 1, bounds.height - 1,
-                    JBUI.scale(TAG_ARC), JBUI.scale(TAG_ARC)
+                g2.fillRoundRect(
+                    JBUI.scale(PILL_HORIZONTAL_INSET), 0,
+                    width - 2 * JBUI.scale(PILL_HORIZONTAL_INSET), height,
+                    JBUI.scale(PILL_ARC), JBUI.scale(PILL_ARC)
                 )
             }
         } finally {
@@ -172,58 +165,37 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         isSelected: Boolean,
         cellHasFocus: Boolean
     ): Component {
+        val isHovered = (list as? SapCommerceProjectList)?.hoveredIndex == index
+
         with(value) {
             iconLabel.icon = projectIcon
             nameLabel.text = displayName
             pathLabel.text = locationRelativeToUserHome
-            overflowLabel.isVisible = hovered
+            overflowLabel.isVisible = isHovered
 
             when {
                 !isSettingsLoaded -> {
-                    // Still loading — show spinner, no border.
                     versionLabel.icon = HybrisIcons.WelcomeTab.LOADING
                     versionLabel.text = ""
-                    showVersionTagBorder = false
-                }
-                hybrisVersion != null -> {
-                    // Loaded with value — show version, with border.
-                    versionLabel.icon = null
-                    versionLabel.text = hybrisVersion
-                    showVersionTagBorder = true
+                    versionLabel.colors = null
+                    versionLabel.foreground = WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION.foreground
                 }
                 else -> {
-                    // Loaded but no value — show "n/a", with border.
                     versionLabel.icon = null
-                    versionLabel.text = NOT_AVAILABLE_TEXT
-                    showVersionTagBorder = true
+                    versionLabel.text = hybrisVersion ?: NOT_AVAILABLE_TEXT
+                    versionLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION_HOVERED else WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION
                 }
             }
 
-            val branch = gitBranch
-            if (branch != null) {
-                branchLabel.text = branch
-                branchLabel.isVisible = true
-            } else {
-                branchLabel.text = ""
-                branchLabel.isVisible = false
-            }
+            branchLabel.text = gitBranch ?: ""
+            branchLabel.isVisible = gitBranch != null
 
-            val env = hostingEnvironment
-            if (env != null) {
-                hostingLabel.text = when (env) {
-                    HostingEnvironment.CCV2 -> i18n("hybris.welcometab.hosting.environment.ccv2")
-                    HostingEnvironment.ON_PREMISE -> i18n("hybris.welcometab.hosting.environment.on.premise")
-                }
-                hostingLabel.isVisible = true
-                showHostingTagBorder = true
-            } else {
-                hostingLabel.text = ""
-                hostingLabel.isVisible = false
-                showHostingTagBorder = false
-            }
+            // Show exactly one hosting label; hide the other.
+            hostingCcv2Label.isVisible = hostingEnvironment == HostingEnvironment.CCV2
+            hostingOnPremiseLabel.isVisible = hostingEnvironment == HostingEnvironment.ON_PREMISE
         }
 
-        hovered = (list as? SapCommerceProjectList)?.hoveredIndex == index
+        hovered = isHovered
         return this
     }
 
@@ -236,8 +208,7 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         private const val TEXT_LINE_GAP = 4
         private const val PILL_ARC = 12
         private const val PILL_HORIZONTAL_INSET = 8
-        private const val TAG_ARC = 8
         private const val NOT_AVAILABLE_TEXT = "n/a"
-
     }
 }
+
