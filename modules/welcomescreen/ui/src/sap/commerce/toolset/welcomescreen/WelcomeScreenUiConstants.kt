@@ -45,6 +45,11 @@ object WelcomeScreenUiConstants {
         // Dark:  dark navy bg, steel blue border, sky-blue text.
         val TAG_COLORS_CCV2 = TagColors(
             background = JBColor(0xDCEEFD, 0x1F3A55),
+            border = JBColor(0xCADFF5, 0x263D52),
+            foreground = JBColor(0x1A5E8F, 0x6CACE4)
+        )
+        val TAG_COLORS_CCV2_HOVERED = TagColors(
+            background = JBColor(0xDCEEFD, 0x1F3A55),
             border = JBColor(0x6CACE4, 0x3D7FAD),
             foreground = JBColor(0x1A5E8F, 0x6CACE4)
         )
@@ -53,6 +58,11 @@ object WelcomeScreenUiConstants {
         // Light: pale amber bg, warm ochre border, dark brown text.
         // Dark:  dark brown bg, golden border, soft gold text.
         val TAG_COLORS_ON_PREMISE = TagColors(
+            background = JBColor(0xFDF3DC, 0x3D2E10),
+            border = JBColor(0xF0DEAD, 0x4A3318),
+            foreground = JBColor(0x7A5000, 0xD4960A)
+        )
+        val TAG_COLORS_ON_PREMISE_HOVERED = TagColors(
             background = JBColor(0xFDF3DC, 0x3D2E10),
             border = JBColor(0xD4960A, 0x9A6700),
             foreground = JBColor(0x7A5000, 0xD4960A)
