@@ -26,12 +26,12 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionListModel
-import com.intellij.ui.ListenerUtil.addMouseListener
-import com.intellij.ui.ListenerUtil.addMouseMotionListener
 import com.intellij.ui.components.JBList
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.addListSelectionListener
+import sap.commerce.toolset.ui.addMouseListener
+import sap.commerce.toolset.ui.addMouseMotionListener
 import sap.commerce.toolset.welcomescreen.WelcomeScreenConstants
 import sap.commerce.toolset.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
@@ -100,8 +100,8 @@ internal class SapCommerceProjectList(
             ?.also { it.registerCustomShortcutSet(it.shortcutSet, this, parentDisposable) }
 
         val mouseHandler = SapCommerceProjectMouseHandler(this, model)
-        addMouseListener(this, mouseHandler)
-        addMouseMotionListener(this, mouseHandler)
+        this.addMouseListener(parentDisposable, mouseHandler)
+        this.addMouseMotionListener(parentDisposable, mouseHandler)
         cellRenderer = SapCommerceProjectRenderer()
     }
 
