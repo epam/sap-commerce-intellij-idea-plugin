@@ -26,6 +26,8 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionListModel
+import com.intellij.ui.ListenerUtil.addMouseListener
+import com.intellij.ui.ListenerUtil.addMouseMotionListener
 import com.intellij.ui.components.JBList
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.i18n
@@ -96,6 +98,11 @@ internal class SapCommerceProjectList(
 
         ActionManager.getInstance().getAction(RemoveSapCommerceProjectAction.ACTION_ID)
             ?.also { it.registerCustomShortcutSet(it.shortcutSet, this, parentDisposable) }
+
+        val mouseHandler = SapCommerceProjectMouseHandler(this, model)
+        addMouseListener(this, mouseHandler)
+        addMouseMotionListener(this, mouseHandler)
+        cellRenderer = SapCommerceProjectRenderer()
     }
 
     /**

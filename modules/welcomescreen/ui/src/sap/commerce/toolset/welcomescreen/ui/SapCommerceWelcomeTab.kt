@@ -48,8 +48,6 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.ui.addMouseListener
-import sap.commerce.toolset.ui.addMouseMotionListener
 import sap.commerce.toolset.util.fileExists
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import java.nio.file.Path
@@ -86,15 +84,12 @@ class SapCommerceWelcomeTab(
      * subscriptions for the previous set are removed in a single step, and the new set
      * attaches its own. Always a child of `this`, so plugin teardown cleans everything up.
      *
-     * `lateinit` because construction is finalized inside [init] — `this` must first be
-     * registered with its parent disposable before it's legal to use as a parent itself.
      */
-    private lateinit var projectsDisposable: Disposable
+    private var projectsDisposable: Disposable
 
     init {
         Disposer.register(parentDisposable, this)
         projectsDisposable = newProjectsDisposable()
-        initList()
         startRepaintCollector()
         subscribeToRecentProjectsChanges()
         loadProjects()
@@ -140,15 +135,6 @@ class SapCommerceWelcomeTab(
     }.apply {
         border = JBUI.Borders.empty(PANEL_VERTICAL_PADDING, PANEL_HORIZONTAL_PADDING)
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
-    }
-
-    private fun initList() {
-        //TODO move inside projectList
-        val mouseHandler = SapCommerceProjectMouseHandler(projectList, listModel)
-        projectList
-            .addMouseListener(this, mouseHandler)
-            .addMouseMotionListener(this, mouseHandler)
-            .cellRenderer = SapCommerceProjectRenderer()
     }
 
     private fun startRepaintCollector() {
