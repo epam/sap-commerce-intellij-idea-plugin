@@ -25,6 +25,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.PropertiesUtil
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
@@ -126,14 +127,19 @@ class LeExtensionsCollector {
         expandedProperties: Map<String, String>,
     ) = hybrisConfig.getExtensions().getExtension()
         .mapNotNull { extensionType ->
-            val extensionName = extensionType.name.takeIf { it.isNotBlank() }
+            val normalizedDir = extensionType.dir
+                ?.takeIf { it.isNotBlank() }
+                ?.toNormalizedPath(expandedProperties)
+            val extensionName = extensionType.name
+                ?.takeIf { it.isNotBlank() }
+                ?: normalizedDir
+                    ?.let { EiModelAccess.getInstance().getContext(it) }
+                    ?.name
                 ?: return@mapNotNull null
 
             val suitableFoundExtensions = foundExtensions.filter { it.name == extensionName }
 
-            val extensionPath = extensionType.dir
-                ?.takeIf { it.isNotBlank() }
-                ?.toNormalizedPath(expandedProperties)
+            val extensionPath = normalizedDir
                 ?: scanTypes.values
                     .filterNot { it.autoload }
                     .firstNotNullOfOrNull { scanType ->

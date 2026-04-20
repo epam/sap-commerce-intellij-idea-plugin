@@ -1,7 +1,7 @@
 ## [2026.0.9]
 
 <cite>Release contributors</code>
-- 18 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
+- 19 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Amlytvyn+is%3Apr)
 - 10 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.9+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -16,10 +16,11 @@
 - Preserve the owner during the modification of the Workspace entity [#1898](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1898)
 - Use sticky headers for `Project Details` & `Reuse settings` wizard steps [#1899](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1899)
 - Enhanced extensions load & preselection order based on `localextensions.xml` [#1911](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1911)
+- Support `dir`-only dependency declaration via `localextensions.xml` [#1915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1915)
 
 ### `Project View` enhancements
 - Show `.github` as a project node [#1907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1907)
-- Show grouped `Ai Skills` for `.claude`, `.cursor`, `.gemini`, `.junie` & `.agents` [#1912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1912)
+- Show grouped `AI Skills` for `.claude`, `.cursor`, `.gemini`, `.junie` & `.agents` [#1912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1912)
 
 ### `Welcome Screen` enhancements
 - Introduced the new `Welcome Screen` tab with the list of SAP Commerce projects [#1882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1882)
