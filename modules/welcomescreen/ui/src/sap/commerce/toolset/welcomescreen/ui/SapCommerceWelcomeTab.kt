@@ -48,8 +48,10 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.ui.addHierarchyListener
 import sap.commerce.toolset.util.fileExists
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+import java.awt.event.HierarchyEvent
 import java.nio.file.Path
 import javax.swing.JComponent
 import javax.swing.plaf.FontUIResource
@@ -95,7 +97,20 @@ class SapCommerceWelcomeTab(
         loadProjects()
     }
 
-    override fun buildComponent(): JComponent = panel {
+    /**
+     * `true` between the constructor-time [loadProjects] call and the *first*
+     * `SHOWING_CHANGED` event. Suppresses the redundant reload that would otherwise
+     * fire when the tab's panel becomes showing for the first time — construction
+     * has already kicked off a load and we don't need a second one 50 ms later.
+     */
+    private var suppressNextShowReload: Boolean = true
+
+    override fun buildComponent(): JComponent = builtComponent
+
+    /** Built once and reused on every `buildComponent` call, so the hierarchy listener stays attached. */
+    private val builtComponent: JComponent by lazy { createComponent() }
+
+    private fun createComponent(): JComponent = panel {
         row {
             icon(IconUtil.scale(HybrisIcons.WelcomeTab.PLUGIN_LOGO, null, HEADER_ICON_SCALE))
 
@@ -135,6 +150,21 @@ class SapCommerceWelcomeTab(
     }.apply {
         border = JBUI.Borders.empty(PANEL_VERTICAL_PADDING, PANEL_HORIZONTAL_PADDING)
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
+
+        // Reload project settings whenever the welcome screen switches to this tab.
+        // TabbedWelcomeScreen uses a card layout that toggles panel visibility via
+        // setVisible(true/false); HierarchyEvent.SHOWING_CHANGED is the corresponding
+        // signal. The first such event after construction is suppressed because
+        // `init` already triggered a load.
+        addHierarchyListener(this@SapCommerceWelcomeTab) { e ->
+            if ((e.changeFlags and HierarchyEvent.SHOWING_CHANGED.toLong()) == 0L) return@addHierarchyListener
+            if (!isShowing) return@addHierarchyListener
+            if (suppressNextShowReload) {
+                suppressNextShowReload = false
+                return@addHierarchyListener
+            }
+            loadProjects()
+        }
     }
 
     private fun startRepaintCollector() {
