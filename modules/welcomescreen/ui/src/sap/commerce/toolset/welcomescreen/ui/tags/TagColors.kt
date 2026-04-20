@@ -16,22 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.welcomescreen.presentation
+package sap.commerce.toolset.welcomescreen.ui.tags
 
-data class RecentSapCommerceProjectSettings(
-    val hybrisVersion: String? = null,
-    val hostingEnvironment: HostingEnvironment? = null
-)
+import java.awt.Color
 
-enum class HostingEnvironment {
-    CCV2,
-    ON_PREMISE;
-
-    companion object {
-        fun of(value: String?): HostingEnvironment? = when (value?.trim()) {
-            "CCV2" -> CCV2
-            "ON_PREMISE" -> ON_PREMISE
-            else -> null
-        }
-    }
-}
+/** Immutable color triplet for a [TagLabel]. */
+data class TagColors(val background: Color, val border: Color, val foreground: Color)

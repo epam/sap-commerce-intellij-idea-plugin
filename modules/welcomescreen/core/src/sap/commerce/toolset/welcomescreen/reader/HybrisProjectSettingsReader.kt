@@ -21,6 +21,7 @@ package sap.commerce.toolset.welcomescreen.reader
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.welcomescreen.presentation.HostingEnvironment
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import java.nio.file.Files
 import java.nio.file.Path
@@ -49,19 +50,24 @@ object HybrisProjectSettingsReader {
         if (!settingsFile.fileExists) return RecentSapCommerceProjectSettings()
 
         var hybrisVersion: String? = null
+        var hostingEnvironment: String? = null
 
         runCatching {
             Files.newBufferedReader(settingsFile).use { reader ->
                 for (line in reader.lineSequence()) {
-                    if (HYBRIS_VERSION_MARKER in line) {
-                        hybrisVersion = extractValue(line)
-                        break  // only field we care about — stop reading
+                    when {
+                        HYBRIS_VERSION_MARKER in line -> hybrisVersion = extractValue(line)
+                        HOSTING_ENVIRONMENT_MARKER in line -> hostingEnvironment = extractValue(line)
                     }
+                    if (hybrisVersion != null && hostingEnvironment != null) break
                 }
             }
         }
 
-        return RecentSapCommerceProjectSettings(hybrisVersion = hybrisVersion)
+        return RecentSapCommerceProjectSettings(
+            hybrisVersion = hybrisVersion,
+            hostingEnvironment = HostingEnvironment.of(hostingEnvironment)
+        )
     }
 
     /** Extracts the contents of `value="..."` from a line, or `null` if absent/blank. */
@@ -73,5 +79,6 @@ object HybrisProjectSettingsReader {
     }
 
     private const val HYBRIS_VERSION_MARKER = "name=\"hybrisVersion\""
+    private const val HOSTING_ENVIRONMENT_MARKER = "name=\"hostingEnvironment\""
     private const val VALUE_ATTR = "value=\""
 }

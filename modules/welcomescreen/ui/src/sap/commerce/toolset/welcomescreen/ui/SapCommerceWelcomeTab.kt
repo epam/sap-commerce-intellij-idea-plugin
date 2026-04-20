@@ -137,16 +137,18 @@ class SapCommerceWelcomeTab(
 
     private fun loadProjects() {
         currentLoadJob?.cancel()
-        projectList.showLoading()
+        invokeLater { projectList.showLoading() }
         currentLoadJob = scope.launch {
-            val projects = RecentProjectsManager.getInstance()
-                .asSafely<RecentProjectsManagerBase>()
-                ?.getRecentPaths()
-                ?.asSequence()
-                ?.filter { isSapCommerceProject(it) }
-                ?.map { RecentSapCommerceProject.of(it) }
-                ?.toList()
-                ?: emptyList()
+            val projects = runCatching {
+                RecentProjectsManager.getInstance()
+                    .asSafely<RecentProjectsManagerBase>()
+                    ?.getRecentPaths()
+                    ?.asSequence()
+                    ?.filter { isSapCommerceProject(it) }
+                    ?.map { RecentSapCommerceProject.of(it) }
+                    ?.toList()
+                    ?: emptyList()
+            }.getOrElse { emptyList() }
 
             withContext(Dispatchers.EDT) {
                 listModel.replaceAll(projects)
