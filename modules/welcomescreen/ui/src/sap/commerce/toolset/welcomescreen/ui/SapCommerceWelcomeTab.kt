@@ -41,6 +41,9 @@ import com.intellij.util.IconUtil
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
@@ -48,12 +51,11 @@ import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addMouseMotionListener
 import sap.commerce.toolset.util.fileExists
-import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
-import sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import java.nio.file.Path
 import javax.swing.JComponent
 import javax.swing.plaf.FontUIResource
+import kotlin.time.Duration.Companion.milliseconds
 
 class SapCommerceWelcomeTab(
     parentDisposable: Disposable
@@ -63,12 +65,37 @@ class SapCommerceWelcomeTab(
     private val projectList = SapCommerceProjectList(this, listModel)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    /**
+     * A "something changed" signal fed by every `afterChange` callback on every project
+     * currently in the list. The collector below debounces bursts (typical at startup,
+     * when many projects resolve near-simultaneously) into a single EDT repaint.
+     * [BufferOverflow.DROP_OLDEST] keeps this strictly non-blocking on the emitter side —
+     * property setters never wait on UI.
+     */
+    private val repaintSignal = MutableSharedFlow<Unit>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+
     @Volatile
     private var currentLoadJob: Job? = null
 
+    /**
+     * Disposable scoped to the lifetime of the *currently displayed* list of projects.
+     * Each reload disposes this and allocates a fresh one: all per-project property
+     * subscriptions for the previous set are removed in a single step, and the new set
+     * attaches its own. Always a child of `this`, so plugin teardown cleans everything up.
+     *
+     * `lateinit` because construction is finalized inside [init] — `this` must first be
+     * registered with its parent disposable before it's legal to use as a parent itself.
+     */
+    private lateinit var projectsDisposable: Disposable
+
     init {
         Disposer.register(parentDisposable, this)
+        projectsDisposable = newProjectsDisposable()
         initList()
+        startRepaintCollector()
         subscribeToRecentProjectsChanges()
         loadProjects()
     }
@@ -124,6 +151,16 @@ class SapCommerceWelcomeTab(
             .cellRenderer = SapCommerceProjectRenderer()
     }
 
+    private fun startRepaintCollector() {
+        scope.launch {
+            repaintSignal
+                .debounce(REPAINT_DEBOUNCE_MS.milliseconds)
+                .collect {
+                    withContext(Dispatchers.EDT) { projectList.repaint() }
+                }
+        }
+    }
+
     private fun subscribeToRecentProjectsChanges() = ApplicationManager.getApplication().messageBus
         .connect(this)
         .subscribe(
@@ -139,33 +176,55 @@ class SapCommerceWelcomeTab(
         currentLoadJob?.cancel()
         invokeLater { projectList.showLoading() }
         currentLoadJob = scope.launch {
+            // Allocate a fresh disposable *before* building new project instances, and
+            // dispose the previous one so its observable-property subscriptions are
+            // detached in one shot. Projects created by the previous reload are about
+            // to become unreachable via the list model; their background coroutines
+            // simply finish and their results are discarded.
+            val newDisposable = swapProjectsDisposable()
+
             val projects = runCatching {
                 RecentProjectsManager.getInstance()
                     .asSafely<RecentProjectsManagerBase>()
                     ?.getRecentPaths()
                     ?.asSequence()
                     ?.filter { isSapCommerceProject(it) }
-                    ?.map { RecentSapCommerceProject.of(it) }
+                    ?.map { RecentSapCommerceProject.of(it, scope) }
                     ?.toList()
                     ?: emptyList()
             }.getOrElse { emptyList() }
+
+            // Wire each new project's observable properties to the shared repaint signal.
+            // Subscriptions are tied to `newDisposable`, which lives until the next reload.
+            for (project in projects) {
+                project.hybrisVersionProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
+                project.hostingEnvironmentProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
+                project.gitBranchProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
+                project.settingsLoadedProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
+            }
 
             withContext(Dispatchers.EDT) {
                 listModel.replaceAll(projects)
                 projectList.showLoaded()
             }
-
-            // Kick off settings parsing for any project not yet cached.
-            // The cache deduplicates concurrent and repeat requests, so this is safe
-            // to call on every reload (including those triggered by RECENT_PROJECTS_CHANGE_TOPIC).
-            val cache = HybrisProjectSettingsCache.getInstance()
-            val gitCache = GitHeadCache.getInstance()
-            for (project in projects) {
-                cache.warmUp(project.location)
-                gitCache.warmUp(project.location)
-            }
         }
     }
+
+    /**
+     * Atomically replaces [projectsDisposable] with a fresh one, disposing the previous.
+     * `@Synchronized` because [loadProjects]'s launch-and-cancel flow means the outgoing
+     * reload's coroutine and the incoming one may overlap briefly at this point; the
+     * lock ensures the swap is observed as a single step.
+     */
+    @Synchronized
+    private fun swapProjectsDisposable(): Disposable {
+        Disposer.dispose(projectsDisposable)
+        val next = newProjectsDisposable()
+        projectsDisposable = next
+        return next
+    }
+
+    private fun newProjectsDisposable(): Disposable = Disposer.newDisposable(this, "SapCommerceProjectsDisposable")
 
     private fun isSapCommerceProject(location: String): Boolean = runCatching {
         Path.of(location)
@@ -182,5 +241,6 @@ class SapCommerceWelcomeTab(
         private const val HEADER_FONT_BUMP = 3
         private const val PANEL_VERTICAL_PADDING = 13
         private const val PANEL_HORIZONTAL_PADDING = 12
+        private const val REPAINT_DEBOUNCE_MS = 50L
     }
 }
