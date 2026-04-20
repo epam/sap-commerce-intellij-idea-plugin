@@ -55,13 +55,11 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
 
     /** CCV2 hosting badge — fixed colors, toggled visible/invisible per row. */
     private val hostingCcv2Label = TagLabel(i18n("hybris.welcometab.hosting.environment.ccv2")).apply {
-        colors = WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2
         isVisible = false
     }
 
     /** On-Premise hosting badge — fixed colors, toggled visible/invisible per row. */
     private val hostingOnPremiseLabel = TagLabel(i18n("hybris.welcometab.hosting.environment.on.premise")).apply {
-        colors = WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE
         isVisible = false
     }
 
@@ -191,7 +189,13 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             branchLabel.isVisible = gitBranch != null
 
             // Show exactly one hosting label; hide the other.
+            // On hover, switch to the brighter border variant.
+            hostingCcv2Label.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2_HOVERED
+                                      else WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2
             hostingCcv2Label.isVisible = hostingEnvironment == HostingEnvironment.CCV2
+
+            hostingOnPremiseLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE_HOVERED
+                                           else WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE
             hostingOnPremiseLabel.isVisible = hostingEnvironment == HostingEnvironment.ON_PREMISE
         }
 
@@ -211,4 +215,3 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
         private const val NOT_AVAILABLE_TEXT = "n/a"
     }
 }
-
