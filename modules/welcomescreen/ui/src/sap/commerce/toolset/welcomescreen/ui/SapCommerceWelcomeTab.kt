@@ -80,18 +80,8 @@ class SapCommerceWelcomeTab(
     @Volatile
     private var currentLoadJob: Job? = null
 
-    /**
-     * Disposable scoped to the lifetime of the *currently displayed* list of projects.
-     * Each reload disposes this and allocates a fresh one: all per-project property
-     * subscriptions for the previous set are removed in a single step, and the new set
-     * attaches its own. Always a child of `this`, so plugin teardown cleans everything up.
-     *
-     */
-    private var projectsDisposable: Disposable
-
     init {
         Disposer.register(parentDisposable, this)
-        projectsDisposable = newProjectsDisposable()
         startRepaintCollector()
         subscribeToRecentProjectsChanges()
         loadProjects()
@@ -191,33 +181,24 @@ class SapCommerceWelcomeTab(
     private fun loadProjects() {
         currentLoadJob?.cancel()
         invokeLater { projectList.showLoading() }
-        currentLoadJob = scope.launch {
-            // Allocate a fresh disposable *before* building new project instances, and
-            // dispose the previous one so its observable-property subscriptions are
-            // detached in one shot. Projects created by the previous reload are about
-            // to become unreachable via the list model; their background coroutines
-            // simply finish and their results are discarded.
-            val newDisposable = swapProjectsDisposable()
 
+        val localDisposable = Disposer.newDisposable(this)
+
+        val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+            localDisposable.dispose()
+        }
+
+        currentLoadJob = scope.launch(exceptionHandler) {
             val projects = runCatching {
                 RecentProjectsManager.getInstance()
                     .asSafely<RecentProjectsManagerBase>()
                     ?.getRecentPaths()
                     ?.asSequence()
                     ?.filter { isSapCommerceProject(it) }
-                    ?.map { RecentSapCommerceProject.of(it, scope) }
+                    ?.map { RecentSapCommerceProject.of(it, scope, localDisposable) { repaintSignal.tryEmit(Unit) } }
                     ?.toList()
                     ?: emptyList()
             }.getOrElse { emptyList() }
-
-            // Wire each new project's observable properties to the shared repaint signal.
-            // Subscriptions are tied to `newDisposable`, which lives until the next reload.
-            for (project in projects) {
-                project.hybrisVersionProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
-                project.hostingEnvironmentProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
-                project.gitBranchProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
-                project.settingsLoadedProperty.afterChange(newDisposable) { repaintSignal.tryEmit(Unit) }
-            }
 
             withContext(Dispatchers.EDT) {
                 listModel.replaceAll(projects)
@@ -226,21 +207,6 @@ class SapCommerceWelcomeTab(
         }
     }
 
-    /**
-     * Atomically replaces [projectsDisposable] with a fresh one, disposing the previous.
-     * `@Synchronized` because [loadProjects]'s launch-and-cancel flow means the outgoing
-     * reload's coroutine and the incoming one may overlap briefly at this point; the
-     * lock ensures the swap is observed as a single step.
-     */
-    @Synchronized
-    private fun swapProjectsDisposable(): Disposable {
-        Disposer.dispose(projectsDisposable)
-        val next = newProjectsDisposable()
-        projectsDisposable = next
-        return next
-    }
-
-    private fun newProjectsDisposable(): Disposable = Disposer.newDisposable(this, "SapCommerceProjectsDisposable")
 
     private fun isSapCommerceProject(location: String): Boolean = runCatching {
         Path.of(location)

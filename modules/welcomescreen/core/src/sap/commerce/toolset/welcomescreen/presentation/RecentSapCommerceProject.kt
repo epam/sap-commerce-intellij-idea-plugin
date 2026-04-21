@@ -19,8 +19,10 @@
 package sap.commerce.toolset.welcomescreen.presentation
 
 import com.intellij.ide.RecentProjectsManagerBase
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.ObservableProperty
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
@@ -54,7 +56,7 @@ data class RecentSapCommerceProject(
     val hostingEnvironmentProperty: ObservableProperty<HostingEnvironment?>,
     val gitBranchProperty: ObservableProperty<RecentSapCommerceProjectGitBranch?>,
     val settingsLoadedProperty: ObservableProperty<Boolean>,
-) {
+) : Disposable {
     val path: Path get() = Path.of(location)
 
     val locationRelativeToUserHome: String
@@ -76,6 +78,9 @@ data class RecentSapCommerceProject(
     val gitBranch: String?
         get() = gitBranchProperty.get().asSafely<RecentSapCommerceProjectGitBranch.Named>()?.name
 
+    override fun dispose() {
+    }
+
     companion object {
         /**
          * Builds a [RecentSapCommerceProject] and schedules asynchronous population of its
@@ -83,7 +88,7 @@ data class RecentSapCommerceProject(
          * instance is discarded, so callers don't need to cancel anything explicitly —
          * [scope]'s own lifecycle is sufficient.
          */
-        fun of(location: String, scope: CoroutineScope): RecentSapCommerceProject {
+        fun of(location: String, scope: CoroutineScope, parentDisposable: Disposable, onPropertyChange: () -> Unit): RecentSapCommerceProject {
             val manager = RecentProjectsManagerBase.getInstanceEx()
             val projectName = manager.getProjectName(location)
 
@@ -101,7 +106,13 @@ data class RecentSapCommerceProject(
                 hostingEnvironmentProperty = hostingEnvironmentProperty,
                 gitBranchProperty = gitBranchProperty,
                 settingsLoadedProperty = settingsLoadedProperty,
-            )
+            ).apply {
+                Disposer.register(parentDisposable, this)
+                hybrisVersionProperty.afterChange(this) { onPropertyChange() }
+                hostingEnvironmentProperty.afterChange(this) { onPropertyChange() }
+                gitBranchProperty.afterChange(this) { onPropertyChange() }
+                settingsLoadedProperty.afterChange(this) { onPropertyChange() }
+            }
 
             scope.launch {
                 val settings = runCatching { HybrisProjectSettingsReader.read(location) }.getOrNull()
