@@ -25,27 +25,22 @@ import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject.Companion.of
-import sap.commerce.toolset.welcomescreen.reader.GitHeadReader
-import sap.commerce.toolset.welcomescreen.reader.HybrisProjectSettingsReader
 import java.nio.file.Path
 import javax.swing.Icon
 
 /**
  * Presentation model for a SAP Commerce project row on the welcome tab.
  *
- * Slow-to-read attributes (hybris version, hosting environment, git branch) are
- * exposed as [ObservableProperty] instances and populated asynchronously via a
- * coroutine kicked off by [of]. There is no separate cache: each project owns
- * its own properties and initializes them once on creation. The UI subscribes
- * via [ObservableProperty.afterChange] and receives updates as values arrive.
+ * Slow-to-read attributes (hybris version, hosting environment, git branch) are exposed as
+ * [ObservableProperty] instances and populated asynchronously by whoever constructs this project —
+ * typically the service that builds the batch. There is no separate cache: each project owns its
+ * own properties and is initialized once on creation. The UI subscribes via
+ * [ObservableProperty.afterChange] and receives updates as values arrive.
  *
- * While a property is still loading, its value is `null`. For the renderer's
- * convenience there is also a dedicated [settingsLoadedProperty] that flips to
- * `true` exactly when `.idea/hybrisProjectSettings.xml` finishes parsing — this
- * drives the "spinner vs. version badge" switch in the cell.
+ * While a property is still loading, its value is `null`. For the renderer's convenience there is
+ * also a dedicated [settingsLoadedProperty] that flips to `true` exactly when
+ * `.idea/hybrisProjectSettings.xml` finishes parsing — this drives the "spinner vs. version badge"
+ * switch in the cell.
  */
 data class RecentSapCommerceProject(
     val location: String,
@@ -83,12 +78,20 @@ data class RecentSapCommerceProject(
 
     companion object {
         /**
-         * Builds a [RecentSapCommerceProject] and schedules asynchronous population of its
-         * observable properties on [scope]. The coroutine's work is throwaway once the
-         * instance is discarded, so callers don't need to cancel anything explicitly —
-         * [scope]'s own lifecycle is sufficient.
+         * Builds a [RecentSapCommerceProject] and registers it against [parentDisposable]. The
+         * supplied [initializationCallback] is invoked synchronously after registration is
+         * complete; it is expected to start whatever background work populates the observable
+         * properties and to tie that work's cancellation to the project's own disposable.
+         *
+         * [onPropertyChange] is invoked once per observable-property change; it is used by the UI
+         * layer to coalesce repaints via a debouncing signal.
          */
-        fun of(location: String, scope: CoroutineScope, parentDisposable: Disposable, onPropertyChange: () -> Unit): RecentSapCommerceProject {
+        fun of(
+            location: String,
+            parentDisposable: Disposable,
+            onPropertyChange: () -> Unit,
+            initializationCallback: (project: RecentSapCommerceProject) -> Unit,
+        ): RecentSapCommerceProject {
             val manager = RecentProjectsManagerBase.getInstanceEx()
             val projectName = manager.getProjectName(location)
 
@@ -114,21 +117,7 @@ data class RecentSapCommerceProject(
                 settingsLoadedProperty.afterChange(this) { onPropertyChange() }
             }
 
-            scope.launch {
-                val settings = runCatching { HybrisProjectSettingsReader.read(location) }.getOrNull()
-                hybrisVersionProperty.set(settings?.hybrisVersion)
-                hostingEnvironmentProperty.set(settings?.hostingEnvironment)
-                settingsLoadedProperty.set(true)
-            }
-
-            scope.launch {
-                val branch = runCatching { GitHeadReader.read(location) }.getOrNull()
-                gitBranchProperty.set(
-                    branch
-                        ?.let { RecentSapCommerceProjectGitBranch.Named(it) }
-                        ?: RecentSapCommerceProjectGitBranch.NotAGitRepo
-                )
-            }
+            initializationCallback(project)
 
             return project
         }
