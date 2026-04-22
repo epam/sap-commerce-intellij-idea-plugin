@@ -16,15 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.welcomescreen.listeners
+package sap.commerce.toolset.welcomescreen.reader
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectCloseListener
-import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 
-class GitCacheInvalidatorOnProjectCloseListener : ProjectCloseListener {
-    override fun projectClosed(project: Project) {
-        val location = project.basePath ?: return
-        GitHeadCache.getInstance().invalidate(location)
-    }
+interface LazyRecentProjectDetailsReader<T> {
+
+    suspend fun read(recentProject: RecentSapCommerceProject): T?
+
 }

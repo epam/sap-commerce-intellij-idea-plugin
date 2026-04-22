@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.welcomescreen.presentation
 
-sealed interface RecentSapCommerceProjectGitBranch {
-    data class Named(val name: String) : RecentSapCommerceProjectGitBranch
-    data object NotAGitRepo : RecentSapCommerceProjectGitBranch
+sealed interface RecentSapCommerceProjectVcsDetails {
+    data object NotAGitRepo : RecentSapCommerceProjectVcsDetails
+    data class Named(val name: String) : RecentSapCommerceProjectVcsDetails
 }

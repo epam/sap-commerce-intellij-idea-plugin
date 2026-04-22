@@ -22,31 +22,22 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.UiDataProvider
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBList
 import com.intellij.util.ui.JBUI
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.ui.addListSelectionListener
+import sap.commerce.toolset.ui.addMouseListener
+import sap.commerce.toolset.ui.addMouseMotionListener
 import sap.commerce.toolset.welcomescreen.WelcomeScreenConstants
 import sap.commerce.toolset.welcomescreen.actionSystem.RemoveSapCommerceProjectAction
-import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
-import sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
-import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectGitBranch
-import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.ListSelectionModel
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A non-selectable, hover-only list of SAP Commerce projects.
@@ -58,9 +49,13 @@ import kotlin.time.Duration.Companion.milliseconds
  *   tracking can clear its state when the cursor leaves a row.
  * - Exposes [hoveredIndex] as a typed property; changing it repaints the list.
  * - Drives `AnimatedIcon` repaints in renderers via `ANIMATION_IN_RENDERER_ALLOWED`.
- * - Collects from [sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache.settings] and repaints when entries arrive.
+ *
+ * Repaints driven by async data arrival (hybris version, hosting environment, git
+ * branch) are orchestrated by [SapCommerceWelcomeTab], which subscribes to each
+ * project's [com.intellij.openapi.observable.properties.ObservableProperty]s and
+ * fires a debounced `repaint()` when any of them change. This list class no longer
+ * owns any background work of its own.
  */
-@OptIn(FlowPreview::class)
 internal class SapCommerceProjectList(
     parentDisposable: Disposable,
     private val model: CollectionListModel<RecentSapCommerceProject>
@@ -84,8 +79,6 @@ internal class SapCommerceProjectList(
      */
     var hoverFrozen: Boolean = false
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
     init {
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
         selectionBackground = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
@@ -106,32 +99,10 @@ internal class SapCommerceProjectList(
         ActionManager.getInstance().getAction(RemoveSapCommerceProjectAction.ACTION_ID)
             ?.also { it.registerCustomShortcutSet(it.shortcutSet, this, parentDisposable) }
 
-        // Subscribe to cache updates. Debouncing collapses bursts of cache fills
-        // (typical at startup, when many projects warm up in parallel) into a
-        // single repaint instead of one repaint per project.
-        scope.launch {
-            var previous = emptyMap<String, RecentSapCommerceProjectSettings>()
-            HybrisProjectSettingsCache.getInstance()
-                .data
-                .drop(1)  // skip the initial empty-map emission
-                .debounce(50.milliseconds)
-                .distinctUntilChanged()
-                .collect {
-                    withContext(Dispatchers.EDT) { repaint() }
-                }
-        }
-
-        scope.launch {
-            var previous = emptyMap<String, RecentSapCommerceProjectGitBranch>()
-            GitHeadCache.getInstance()
-                .data
-                .drop(1)
-                .debounce(50.milliseconds)
-                .collect {
-                    withContext(Dispatchers.EDT) { repaint() }
-                }
-        }
-        Disposer.register(parentDisposable) { scope.cancel() }
+        val mouseHandler = SapCommerceProjectMouseHandler(this, model)
+        this.addMouseListener(parentDisposable, mouseHandler)
+        this.addMouseMotionListener(parentDisposable, mouseHandler)
+        cellRenderer = SapCommerceProjectRenderer()
     }
 
     /**

@@ -31,10 +31,7 @@ import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import java.awt.Component
-import java.awt.event.ActionListener
-import java.awt.event.KeyListener
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseListener
+import java.awt.event.*
 import javax.swing.JComponent
 import javax.swing.JList
 import javax.swing.JTextField
@@ -82,6 +79,12 @@ fun <T : Component> T.addMouseListener(parentDisposable: Disposable? = null, lis
     .apply {
         addMouseListener(listener)
         parentDisposable?.whenDisposed { removeMouseListener(listener) }
+    }
+
+fun <T : Component> T.addHierarchyListener(parentDisposable: Disposable?, listener: HierarchyListener): T = this
+    .apply {
+        addHierarchyListener(listener)
+        parentDisposable?.whenDisposed { removeHierarchyListener(listener) }
     }
 
 fun <T : Component> T.addMouseMotionListener(parentDisposable: Disposable? = null, listener: MouseAdapter): T = this

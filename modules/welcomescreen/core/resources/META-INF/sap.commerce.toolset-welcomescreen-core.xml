@@ -16,9 +16,4 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <idea-plugin>
-
-    <applicationListeners>
-        <listener class="sap.commerce.toolset.welcomescreen.listeners.GitCacheInvalidatorOnProjectCloseListener"
-                  topic="com.intellij.openapi.project.ProjectCloseListener"/>
-    </applicationListeners>
 </idea-plugin>

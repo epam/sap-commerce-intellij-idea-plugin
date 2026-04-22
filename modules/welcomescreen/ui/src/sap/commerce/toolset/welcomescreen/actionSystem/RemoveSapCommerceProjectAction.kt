@@ -41,7 +41,6 @@ class RemoveSapCommerceProjectAction : AnAction(), DumbAware {
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = e.getData(WelcomeScreenConstants.DATA_KEY_SAP_COMMERCE_PROJECT) != null
-        e.presentation.text = i18n("hybris.welcometab.button.remove.from.recent.projects")
     }
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -50,7 +49,7 @@ class RemoveSapCommerceProjectAction : AnAction(), DumbAware {
         val confirmed = MessageDialogBuilder
             .yesNo(
                 title = i18n("hybris.welcometab.remove.popup.title"),
-                message = i18n("hybris.welcometab.remove.popup.body", "'${project.displayName}'")
+                message = i18n("hybris.welcometab.remove.popup.body", project.displayName)
             )
             .yesText(i18n("hybris.welcometab.remove.popup.yes"))
             .noText(Messages.getCancelButton())
@@ -63,7 +62,7 @@ class RemoveSapCommerceProjectAction : AnAction(), DumbAware {
     }
 
     companion object {
-        const val ACTION_ID = "sap.developers.toolset.removeFromRecentProjects"
+        const val ACTION_ID = "sap.commerce.toolset.removeFromRecentProjects"
     }
 }
 

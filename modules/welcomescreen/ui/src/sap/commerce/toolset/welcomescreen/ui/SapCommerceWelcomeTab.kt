@@ -18,15 +18,10 @@
 
 package sap.commerce.toolset.welcomescreen.ui
 
-import com.intellij.ide.RecentProjectsManager
-import com.intellij.ide.RecentProjectsManagerBase
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUiKind
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.impl.welcomeScreen.TabbedWelcomeScreen.DefaultWelcomeScreenTab
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
@@ -36,56 +31,46 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.IconUtil
-import com.intellij.util.asSafely
+import com.intellij.util.application
+import com.intellij.util.ui.JBFont
 import com.intellij.util.ui.JBUI
-import kotlinx.coroutines.*
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.ui.addMouseListener
-import sap.commerce.toolset.ui.addMouseMotionListener
-import sap.commerce.toolset.util.fileExists
-import sap.commerce.toolset.welcomescreen.cache.GitHeadCache
-import sap.commerce.toolset.welcomescreen.cache.HybrisProjectSettingsCache
+import sap.commerce.toolset.ui.font
+import sap.commerce.toolset.welcomescreen.RecentSapCommerceProjectsManager
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
-import java.nio.file.Path
+import java.awt.Font
 import javax.swing.JComponent
-import javax.swing.plaf.FontUIResource
 
-class SapCommerceWelcomeTab(
-    parentDisposable: Disposable
-) : DefaultWelcomeScreenTab("SAP Commerce"), Disposable {
+class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreenTab(i18n("hybris.welcometab.name")), Disposable {
 
     private val listModel = CollectionListModel<RecentSapCommerceProject>()
     private val projectList = SapCommerceProjectList(this, listModel)
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    @Volatile
-    private var currentLoadJob: Job? = null
+    /** Built once and reused on every `buildComponent` call, so the hierarchy listener stays attached. */
+    private val builtComponent: JComponent by lazy { createComponent() }
 
     init {
         Disposer.register(parentDisposable, this)
-        initList()
         subscribeToRecentProjectsChanges()
-        loadProjects()
+
+        invokeLater {
+            RecentSapCommerceProjectsManager.getInstance().loadRecentProjects()
+        }
     }
 
-    override fun buildComponent(): JComponent = panel {
+    override fun buildComponent(): JComponent = builtComponent
+
+    private fun createComponent(): JComponent = panel {
         row {
             icon(IconUtil.scale(HybrisIcons.WelcomeTab.PLUGIN_LOGO, null, HEADER_ICON_SCALE))
 
-            label(i18n("hybris.welcometab.text"))
-                .bold()
+            label(i18n("hybris.welcometab.header"))
                 .resizableColumn()
                 .align(AlignX.LEFT)
-                .applyToComponent {
-                    font = FontUIResource(
-                        font.deriveFont(font.size2D + JBUIScale.scale(HEADER_FONT_BUMP))
-                    )
-                }
+                .font { JBFont.h2().deriveFont(Font.BOLD) }
 
             button(i18n("hybris.welcometab.button.import.project")) {
                 invokeLater {
@@ -115,71 +100,30 @@ class SapCommerceWelcomeTab(
         background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
     }
 
-    private fun initList() {
-        //TODO move inside projectList
-        val mouseHandler = SapCommerceProjectMouseHandler(projectList, listModel)
-        projectList
-            .addMouseListener(this, mouseHandler)
-            .addMouseMotionListener(this, mouseHandler)
-            .cellRenderer = SapCommerceProjectRenderer()
-    }
+    private fun subscribeToRecentProjectsChanges() = application.messageBus.connect(this).subscribe(
+        topic = RecentSapCommerceProjectsManager.TOPIC,
+        handler = object : RecentSapCommerceProjectsManager.RecentSapCommerceProjectsListener {
+            override fun loading() = projectList.showLoading()
 
-    private fun subscribeToRecentProjectsChanges() = ApplicationManager.getApplication().messageBus
-        .connect(this)
-        .subscribe(
-            RecentProjectsManager.RECENT_PROJECTS_CHANGE_TOPIC,
-            object : RecentProjectsManager.RecentProjectsChange {
-                override fun change() {
-                    loadProjects()
-                }
-            }
-        )
-
-    private fun loadProjects() {
-        currentLoadJob?.cancel()
-        invokeLater { projectList.showLoading() }
-        currentLoadJob = scope.launch {
-            val projects = runCatching {
-                RecentProjectsManager.getInstance()
-                    .asSafely<RecentProjectsManagerBase>()
-                    ?.getRecentPaths()
-                    ?.asSequence()
-                    ?.filter { isSapCommerceProject(it) }
-                    ?.map { RecentSapCommerceProject.of(it) }
-                    ?.toList()
-                    ?: emptyList()
-            }.getOrElse { emptyList() }
-
-            withContext(Dispatchers.EDT) {
-                listModel.replaceAll(projects)
+            override fun loaded(recentProjects: List<RecentSapCommerceProject>) {
+                listModel.replaceAll(recentProjects)
                 projectList.showLoaded()
             }
 
-            // Kick off settings parsing for any project not yet cached.
-            // The cache deduplicates concurrent and repeat requests, so this is safe
-            // to call on every reload (including those triggered by RECENT_PROJECTS_CHANGE_TOPIC).
-            val cache = HybrisProjectSettingsCache.getInstance()
-            val gitCache = GitHeadCache.getInstance()
-            for (project in projects) {
-                cache.warmUp(project.location)
-                gitCache.warmUp(project.location)
+            override fun changed(recentProject: RecentSapCommerceProject) {
+                val projectIndex = listModel.items
+                    .indexOfFirst { it.path == recentProject.path }
+                    .takeIf { it != -1 }
+                    ?: return
+                // triggers repaint of the recent project row
+                listModel.setElementAt(recentProject, projectIndex)
             }
-        }
-    }
+        })
 
-    private fun isSapCommerceProject(location: String): Boolean = runCatching {
-        Path.of(location)
-            .resolve(Project.DIRECTORY_STORE_FOLDER)
-            .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
-            .fileExists
-    }
-        .getOrElse { false }
-
-    override fun dispose() = scope.cancel()
+    override fun dispose() = Unit
 
     companion object {
         private const val HEADER_ICON_SCALE = 3.125f
-        private const val HEADER_FONT_BUMP = 3
         private const val PANEL_VERTICAL_PADDING = 13
         private const val PANEL_HORIZONTAL_PADDING = 12
     }

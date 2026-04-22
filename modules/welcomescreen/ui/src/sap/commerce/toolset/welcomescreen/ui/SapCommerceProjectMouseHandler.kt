@@ -81,7 +81,7 @@ internal class SapCommerceProjectMouseHandler(
     }
 
     private fun showContextMenu(e: MouseEvent, project: RecentSapCommerceProject) {
-        val group = ActionManager.getInstance().getAction("sap.developers.toolset.welcomeTab.projectContextMenu") as? ActionGroup
+        val group = ActionManager.getInstance().getAction("sap.commerce.toolset.welcomeTab.projectContextMenu") as? ActionGroup
             ?: return
 
         val dataContext = SimpleDataContext.builder()
