@@ -20,35 +20,24 @@ package sap.commerce.toolset.project.descriptor
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.util.application
-import sap.commerce.toolset.localextensions.LeExtension
-import sap.commerce.toolset.localextensions.LeExtensionsCollector
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 @Service
 class ModuleDescriptorsSelector {
 
-    suspend fun preselect(context: ProjectImportContext.Mutable, configModuleDescriptor: ConfigModuleDescriptor) {
-        val foundExtensions = context.foundModules
-            .map { LeExtension(it.name, it.moduleRootPath) }
-        val platformDirectory = context.platformDistributionPath
-            ?: run { thisLogger().warn("Unable to preselect modules, platform directory is not detected"); return }
-        val extensionsInLocalExtensions = LeExtensionsCollector.getInstance().collect(
-            foundExtensions,
-            configModuleDescriptor.moduleRootPath,
-            platformDirectory
-        )
+    fun preselect(context: ProjectImportContext.Mutable) {
+        val localExtensions = context.localExtensionsContext.extensions
         val preselectedExtensionNames = mutableSetOf<String>()
 
         context.foundModules
             .asSequence()
             .filterNot { preselectedExtensionNames.contains(it.name) }
-            .filter { extensionsInLocalExtensions.contains(it.name) }
+            .filter { localExtensions.contains(it.name) }
             .filterIsInstance<YRegularModuleDescriptor>()
             .filter { moduleDescriptor ->
-                val preferredLoadPath = extensionsInLocalExtensions[moduleDescriptor.name]?.directory
+                val preferredLoadPath = localExtensions[moduleDescriptor.name]?.path
                 moduleDescriptor.moduleRootPath.normalize().equals(preferredLoadPath)
             }
             .forEach { moduleDescriptor ->
@@ -58,7 +47,7 @@ class ModuleDescriptorsSelector {
                 moduleDescriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
                 moduleDescriptor.getSubModules()
                     .forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
-                moduleDescriptor.getAllDependencies()
+                moduleDescriptor.getRecursiveDependencies()
                     .asSequence()
                     .filterIsInstance<YRegularModuleDescriptor>()
                     .filterNot { preselectedExtensionNames.contains(it.name) }
@@ -111,7 +100,7 @@ class ModuleDescriptorsSelector {
         while (!moduleToCheck.isEmpty()) {
             val currentModule = moduleToCheck.iterator().next()
             if (currentModule is YModuleDescriptor) {
-                for (moduleDescriptor in currentModule.getAllDependencies()) {
+                for (moduleDescriptor in currentModule.getRecursiveDependencies()) {
                     if (!moduleToImport.contains(moduleDescriptor)) {
                         moduleToImport.add(moduleDescriptor)
                         moduleDescriptor.importStatus = selectionMode

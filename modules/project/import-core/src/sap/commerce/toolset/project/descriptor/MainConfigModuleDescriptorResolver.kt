@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,10 @@ import kotlin.io.path.pathString
 class MainConfigModuleDescriptorResolver {
 
     @Throws(HybrisConfigurationException::class)
-    fun resolve(context: ProjectImportContext.Mutable) = find(context)
+    fun resolve(context: ProjectImportContext.Mutable, foundModuleDescriptors: Collection<ModuleDescriptor>) = find(
+        context = context,
+        foundModuleDescriptors = foundModuleDescriptors
+    )
         ?.apply {
             importStatus = ModuleDescriptorImportStatus.MANDATORY
             isMainConfig = true
@@ -58,10 +61,10 @@ class MainConfigModuleDescriptorResolver {
                  """.trimIndent()
         )
 
-    private fun find(context: ProjectImportContext.Mutable): ConfigModuleDescriptor? {
-        val foundConfigModules = context.foundModules
+    private fun find(context: ProjectImportContext.Mutable, foundModuleDescriptors: Collection<ModuleDescriptor>): ConfigModuleDescriptor? {
+        val foundConfigModules = foundModuleDescriptors
             .filterIsInstance<ConfigModuleDescriptor>()
-        val platformHybrisModuleDescriptor = context.foundModules
+        val platformHybrisModuleDescriptor = foundModuleDescriptors
             .filterIsInstance<PlatformModuleDescriptor>()
             .firstOrNull() ?: return null
 

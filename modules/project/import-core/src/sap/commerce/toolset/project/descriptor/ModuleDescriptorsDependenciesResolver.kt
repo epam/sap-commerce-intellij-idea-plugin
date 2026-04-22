@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,9 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.util.application
 import sap.commerce.toolset.extensioninfo.EiConstants
+import sap.commerce.toolset.localextensions.LocalExtensionsProcessor
+import sap.commerce.toolset.localextensions.context.FoundExtension
+import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.impl.*
 
 @Service
@@ -30,10 +33,10 @@ class ModuleDescriptorsDependenciesResolver {
 
     private val logger = thisLogger()
 
-    fun resolve(foundModuleDescriptors: Collection<ModuleDescriptor>): Collection<ModuleDescriptor> {
+    fun resolve(context: ProjectImportContext.Mutable, foundModuleDescriptors: Collection<ModuleDescriptor>): Collection<ModuleDescriptor> {
         val moduleDescriptors = foundModuleDescriptors.toMutableList()
 
-        buildDependencies(moduleDescriptors)
+        buildDependencies(context, moduleDescriptors)
         processWebSubModules(moduleDescriptors)
         val addons = processAddons(moduleDescriptors)
         removeNotInstalledAddons(moduleDescriptors, addons)
@@ -42,9 +45,18 @@ class ModuleDescriptorsDependenciesResolver {
         return moduleDescriptors
     }
 
-    private fun buildDependencies(moduleDescriptors: MutableCollection<ModuleDescriptor>) {
+    private fun buildDependencies(context: ProjectImportContext.Mutable, moduleDescriptors: MutableCollection<ModuleDescriptor>) {
+        val localExtensionsProcessor = LocalExtensionsProcessor.getInstance()
         val moduleDescriptorsMap = moduleDescriptors
             .groupBy { it.name }
+            .mapValues { (_, group) ->
+                val foundExtensions = group.map { FoundExtension(it.name, it.moduleRootPath) }
+
+                if (foundExtensions.size == 1) foundExtensions.first()
+                else localExtensionsProcessor.getSuitableExtension(foundExtensions, context.localExtensionsContext)
+            }
+            .filterValues { it != null }
+            .mapValues { (_, suitableExtension) -> moduleDescriptors.first { it.moduleRootPath == suitableExtension?.moduleRootPath } }
         for (moduleDescriptor in moduleDescriptors) {
             val dependencies = buildDependencies(moduleDescriptor, moduleDescriptorsMap)
             moduleDescriptor.addDirectDependencies(dependencies)
@@ -53,7 +65,7 @@ class ModuleDescriptorsDependenciesResolver {
 
     private fun buildDependencies(
         moduleDescriptor: ModuleDescriptor,
-        moduleDescriptors: Map<String, Collection<ModuleDescriptor>>
+        moduleDescriptors: Map<String, ModuleDescriptor>
     ) = moduleDescriptor
         .apply { computeRequiredExtensionNames(moduleDescriptors) }
         .getRequiredExtensionNames()
@@ -67,7 +79,6 @@ class ModuleDescriptorsDependenciesResolver {
                     logger.trace("Module '${moduleDescriptor.name}' contains unsatisfied dependency '$requiresExtensionName'.")
                 }
         }
-        ?.mapNotNull { it.firstOrNull() }
         ?: emptyList()
 
     private fun processWebSubModules(moduleDescriptors: Collection<ModuleDescriptor>) {
@@ -77,11 +88,10 @@ class ModuleDescriptorsDependenciesResolver {
                 webSubModuleDescriptor.getDirectDependencies()
                     .asSequence()
                     .filterIsInstance<YModuleDescriptor>()
-                    .flatMap { it.getAllDependencies() }
+                    .flatMap { it.getRecursiveDependencies() }
                     .filterIsInstance<YCustomRegularModuleDescriptor>()
                     .flatMap { it.getSubModules() }
                     .filterIsInstance<YCommonWebSubModuleDescriptor>()
-                    .toList()
                     .forEach { it.addDependantWebExtension(webSubModuleDescriptor) }
             }
     }

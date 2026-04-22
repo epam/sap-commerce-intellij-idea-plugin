@@ -26,6 +26,7 @@ import com.intellij.platform.workspace.jps.entities.ModuleEntityBuilder
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
+import sap.commerce.toolset.localextensions.context.LocalExtensionsContext
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
@@ -129,6 +130,7 @@ data class ProjectImportContext(
         var externalDbDriversDirectory: Path? = null,
         var javadocUrl: String? = null,
         var platformVersion: String? = null,
+        var localExtensionsContext: LocalExtensionsContext = LocalExtensionsContext.EMPTY,
         var hostingEnvironment: HostingEnvironment = HostingEnvironment.ON_PREMISE,
 
         private val _foundModules: MutableCollection<ModuleDescriptor> = mutableListOf(),

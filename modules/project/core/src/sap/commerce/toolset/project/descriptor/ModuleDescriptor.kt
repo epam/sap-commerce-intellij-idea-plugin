@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,8 +42,8 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun getRelativePath(rootDirectory: Path): String
     fun getRequiredExtensionNames(): Set<String>
     fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>): Boolean
-    fun computeRequiredExtensionNames(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>)
-    fun getAllDependencies(): Set<ModuleDescriptor>
+    fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
+    fun getRecursiveDependencies(): Set<ModuleDescriptor>
     fun getDirectDependencies(): Set<ModuleDescriptor>
     fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>): Boolean
 }
