@@ -24,4 +24,9 @@ import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 object WelcomeScreenConstants {
 
     val DATA_KEY_SAP_COMMERCE_PROJECT = DataKey.create<RecentSapCommerceProject>("sap.commerce.welcomeTab.project")
+
+    object Vcs {
+        const val GIT = ".git"
+        const val COMMIT_HEAD = "HEAD"
+    }
 }

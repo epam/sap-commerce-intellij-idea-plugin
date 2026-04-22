@@ -20,12 +20,15 @@ package sap.commerce.toolset.welcomescreen.ui
 
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.JBColor
+import com.intellij.ui.components.JBLabel
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.welcomescreen.WelcomeScreenUiConstants
 import sap.commerce.toolset.welcomescreen.presentation.HostingEnvironment
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import sap.commerce.toolset.welcomescreen.ui.tags.TagLabel
 import java.awt.*
 import java.io.Serial
@@ -33,17 +36,17 @@ import javax.swing.*
 
 internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSapCommerceProject> {
 
-    private val iconLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
-    private val nameLabel = JLabel().apply { verticalAlignment = SwingConstants.TOP }
+    private val iconLabel = JBLabel().apply { verticalAlignment = SwingConstants.TOP }
+    private val nameLabel = JBLabel().apply { verticalAlignment = SwingConstants.TOP }
 
     /** Path label with zero preferred/minimum width so BoxLayout can shrink it freely;
      *  JLabel then clips overflowing text with a trailing "…" automatically. */
-    private val pathLabel = object : JLabel() {
+    private val pathLabel = object : JBLabel() {
         override fun getMinimumSize(): Dimension = Dimension(0, super.getMinimumSize().height)
         override fun getPreferredSize(): Dimension = Dimension(0, super.getPreferredSize().height)
     }.apply { foreground = JBColor.GRAY }
 
-    private val branchLabel = JLabel().apply {
+    private val branchLabel = JBLabel().apply {
         foreground = JBColor.GRAY
         font = JBUI.Fonts.smallFont()
         icon = HybrisIcons.WelcomeTab.VCS_BRANCH
@@ -53,17 +56,11 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
     /** Version badge — colors swap between resting/hovered; cleared while loading. */
     private val versionLabel = TagLabel()
 
-    /** CCV2 hosting badge — fixed colors, toggled visible/invisible per row. */
-    private val hostingCcv2Label = TagLabel(i18n("hybris.welcometab.hosting.environment.ccv2")).apply {
+    private val hostingLabel = TagLabel(i18n("hybris.welcometab.hosting.environment.ccv2")).apply {
         isVisible = false
     }
 
-    /** On-Premise hosting badge — fixed colors, toggled visible/invisible per row. */
-    private val hostingOnPremiseLabel = TagLabel(i18n("hybris.welcometab.hosting.environment.on.premise")).apply {
-        isVisible = false
-    }
-
-    private val overflowLabel = JLabel(HybrisIcons.WelcomeTab.ACTION_MORE).apply {
+    private val overflowLabel = JBLabel(HybrisIcons.WelcomeTab.ACTION_MORE).apply {
         border = JBUI.Borders.empty(2)
         isOpaque = false
     }
@@ -111,12 +108,10 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
             isOpaque = false
             alignmentY = CENTER_ALIGNMENT
             versionLabel.alignmentX = RIGHT_ALIGNMENT
-            hostingCcv2Label.alignmentX = RIGHT_ALIGNMENT
-            hostingOnPremiseLabel.alignmentX = RIGHT_ALIGNMENT
+            hostingLabel.alignmentX = RIGHT_ALIGNMENT
             add(versionLabel)
             add(Box.createVerticalStrut(JBUI.scale(TEXT_LINE_GAP)))
-            add(hostingCcv2Label)
-            add(hostingOnPremiseLabel)
+            add(hostingLabel)
         }
 
         val rightPanel = JPanel().apply {
@@ -158,48 +153,67 @@ internal class SapCommerceProjectRenderer : JPanel(), ListCellRenderer<RecentSap
 
     override fun getListCellRendererComponent(
         list: JList<out RecentSapCommerceProject>,
-        value: RecentSapCommerceProject,
+        recentProject: RecentSapCommerceProject,
         index: Int,
         isSelected: Boolean,
         cellHasFocus: Boolean
     ): Component {
-        val isHovered = (list as? SapCommerceProjectList)?.hoveredIndex == index
-
-        with(value) {
-            iconLabel.icon = projectIcon
-            nameLabel.text = displayName
-            pathLabel.text = locationRelativeToUserHome
-            overflowLabel.isVisible = isHovered
-
-            when {
-                !isSettingsLoaded -> {
-                    versionLabel.icon = HybrisIcons.WelcomeTab.LOADING
-                    versionLabel.text = ""
-                    versionLabel.colors = null
-                    versionLabel.foreground = WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION.foreground
-                }
-                else -> {
-                    versionLabel.icon = null
-                    versionLabel.text = hybrisVersion ?: NOT_AVAILABLE_TEXT
-                    versionLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION_HOVERED else WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION
-                }
-            }
-
-            branchLabel.text = gitBranch ?: ""
-            branchLabel.isVisible = gitBranch != null
-
-            // Show exactly one hosting label; hide the other.
-            // On hover, switch to the brighter border variant.
-            hostingCcv2Label.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2_HOVERED
-                                      else WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2
-            hostingCcv2Label.isVisible = hostingEnvironment == HostingEnvironment.CCV2
-
-            hostingOnPremiseLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE_HOVERED
-                                           else WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE
-            hostingOnPremiseLabel.isVisible = hostingEnvironment == HostingEnvironment.ON_PREMISE
-        }
+        val isHovered = list.asSafely<SapCommerceProjectList>()?.hoveredIndex == index
 
         hovered = isHovered
+
+        iconLabel.icon = recentProject.projectIcon
+        nameLabel.text = recentProject.displayName
+        pathLabel.text = recentProject.locationRelativeToUserHome
+        overflowLabel.isVisible = isHovered
+
+        branchLabel.text = recentProject.gitBranch ?: ""
+        branchLabel.isVisible = recentProject.gitBranch != null
+
+        when (val settings = recentProject.settings) {
+            is RecentSapCommerceProjectSettings.Loading -> {
+                versionLabel.icon = HybrisIcons.WelcomeTab.LOADING
+                versionLabel.text = ""
+                versionLabel.colors = null
+                versionLabel.foreground = WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION.foreground
+
+                hostingLabel.isVisible = false
+            }
+
+            is RecentSapCommerceProjectSettings.NotLoaded -> {
+                versionLabel.icon = null
+                versionLabel.text = NOT_AVAILABLE_TEXT
+                versionLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION_HOVERED
+                else WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION
+
+                hostingLabel.isVisible = false
+            }
+
+            is RecentSapCommerceProjectSettings.Loaded -> {
+                versionLabel.icon = null
+                versionLabel.text = settings.hybrisVersion
+                versionLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION_HOVERED
+                else WelcomeScreenUiConstants.Tags.TAG_COLORS_VERSION
+
+                when (settings.hostingEnvironment) {
+                    HostingEnvironment.CCV2 -> {
+                        hostingLabel.isVisible = true
+                        hostingLabel.text = i18n("hybris.welcometab.hosting.environment.ccv2")
+                        hostingLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2_HOVERED
+                        else WelcomeScreenUiConstants.Tags.TAG_COLORS_CCV2
+                    }
+
+                    HostingEnvironment.ON_PREMISE -> {
+                        hostingLabel.isVisible = true
+                        hostingLabel.text = i18n("hybris.welcometab.hosting.environment.on.premise")
+                        hostingLabel.colors = if (isHovered) WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE_HOVERED
+                        else WelcomeScreenUiConstants.Tags.TAG_COLORS_ON_PREMISE
+                    }
+
+                    HostingEnvironment.UNKNOWN -> hostingLabel.isVisible = false
+                }
+            }
+        }
         return this
     }
 

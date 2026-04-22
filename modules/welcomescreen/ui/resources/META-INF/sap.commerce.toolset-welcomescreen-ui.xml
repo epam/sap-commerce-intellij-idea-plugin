@@ -17,15 +17,14 @@
   -->
 <idea-plugin>
 
-    <actions>
-        <action id="sap.developers.toolset.removeFromRecentProjects"
-                class="sap.commerce.toolset.welcomescreen.actionSystem.RemoveSapCommerceProjectAction"
-                text="hybris.welcometab.button.remove.from.recent.projects">
+    <actions resource-bundle="i18n.HybrisBundle">
+        <action id="sap.commerce.toolset.removeFromRecentProjects"
+                class="sap.commerce.toolset.welcomescreen.actionSystem.RemoveSapCommerceProjectAction">
             <keyboard-shortcut keymap="$default" first-keystroke="DELETE"/>
         </action>
 
-        <group id="sap.developers.toolset.welcomeTab.projectContextMenu">
-            <reference ref="sap.developers.toolset.removeFromRecentProjects"/>
+        <group id="sap.commerce.toolset.welcomeTab.projectContextMenu">
+            <reference ref="sap.commerce.toolset.removeFromRecentProjects"/>
         </group>
     </actions>
 

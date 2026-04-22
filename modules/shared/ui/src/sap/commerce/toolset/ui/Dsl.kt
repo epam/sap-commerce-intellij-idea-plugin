@@ -259,6 +259,6 @@ fun Panel.scrollRow(
 fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
 fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }
 fun <J : JComponent> Cell<J>.opaque(opaque: Boolean): Cell<J> = this.apply { component.isOpaque = opaque }
-fun <J : JComponent> Cell<J>.font(font: Font): Cell<J> = this.apply { component.font = font }
+fun <J : JComponent> Cell<J>.font(fontProvider: (Font) -> Font): Cell<J> = this.apply { component.font = fontProvider(component.font) }
 fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
     .apply { component.addItemListener(parentDisposable, listener) }

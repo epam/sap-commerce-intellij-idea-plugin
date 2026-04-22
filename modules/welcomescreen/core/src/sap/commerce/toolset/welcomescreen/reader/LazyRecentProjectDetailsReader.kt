@@ -16,9 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.welcomescreen.presentation
+package sap.commerce.toolset.welcomescreen.reader
 
-sealed interface RecentSapCommerceProjectGitBranch {
-    data class Named(val name: String) : RecentSapCommerceProjectGitBranch
-    data object NotAGitRepo : RecentSapCommerceProjectGitBranch
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+
+interface LazyRecentProjectDetailsReader<T> {
+
+    suspend fun read(recentProject: RecentSapCommerceProject): T?
+
 }

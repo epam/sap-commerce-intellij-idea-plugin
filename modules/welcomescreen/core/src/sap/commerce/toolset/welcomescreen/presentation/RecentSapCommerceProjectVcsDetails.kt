@@ -18,11 +18,7 @@
 
 package sap.commerce.toolset.welcomescreen.presentation
 
-sealed interface RecentSapCommerceProjectSettings {
-    data object Loading : RecentSapCommerceProjectSettings
-    data object NotLoaded : RecentSapCommerceProjectSettings
-    data class Loaded(
-        val hybrisVersion: String? = null,
-        val hostingEnvironment: HostingEnvironment
-    ) : RecentSapCommerceProjectSettings
+sealed interface RecentSapCommerceProjectVcsDetails {
+    data object NotAGitRepo : RecentSapCommerceProjectVcsDetails
+    data class Named(val name: String) : RecentSapCommerceProjectVcsDetails
 }

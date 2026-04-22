@@ -18,13 +18,18 @@
 
 package sap.commerce.toolset.welcomescreen.reader
 
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.util.application
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.util.fileExists
 import sap.commerce.toolset.welcomescreen.presentation.HostingEnvironment
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import java.nio.file.Files
-import java.nio.file.Path
 
 /**
  * Stateless reader for `.idea/hybrisProjectSettings.xml`.
@@ -40,31 +45,34 @@ import java.nio.file.Path
  *
  * Callers treat `null` fields as "unknown" — UI shows a placeholder.
  */
-object HybrisProjectSettingsReader {
+@Service
+internal class SapCommerceProjectSettingsReader : LazyRecentProjectDetailsReader<RecentSapCommerceProjectSettings> {
 
-    fun read(projectLocation: String): RecentSapCommerceProjectSettings {
-        val settingsFile = Path.of(projectLocation)
+    override suspend fun read(recentProject: RecentSapCommerceProject): RecentSapCommerceProjectSettings {
+        val settingsFile = recentProject.path
             .resolve(Project.DIRECTORY_STORE_FOLDER)
             .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
-
-        if (!settingsFile.fileExists) return RecentSapCommerceProjectSettings()
+            .takeIf { it.fileExists }
+            ?: return RecentSapCommerceProjectSettings.NotLoaded
 
         var hybrisVersion: String? = null
         var hostingEnvironment: String? = null
 
-        runCatching {
-            Files.newBufferedReader(settingsFile).use { reader ->
-                for (line in reader.lineSequence()) {
-                    when {
-                        HYBRIS_VERSION_MARKER in line -> hybrisVersion = extractValue(line)
-                        HOSTING_ENVIRONMENT_MARKER in line -> hostingEnvironment = extractValue(line)
+        withContext(Dispatchers.IO) {
+            runCatching {
+                Files.newBufferedReader(settingsFile).use { reader ->
+                    for (line in reader.lineSequence()) {
+                        when {
+                            HYBRIS_VERSION_MARKER in line -> hybrisVersion = extractValue(line)
+                            HOSTING_ENVIRONMENT_MARKER in line -> hostingEnvironment = extractValue(line)
+                        }
+                        if (hybrisVersion != null && hostingEnvironment != null) break
                     }
-                    if (hybrisVersion != null && hostingEnvironment != null) break
                 }
             }
         }
 
-        return RecentSapCommerceProjectSettings(
+        return RecentSapCommerceProjectSettings.Loaded(
             hybrisVersion = hybrisVersion,
             hostingEnvironment = HostingEnvironment.of(hostingEnvironment)
         )
@@ -75,10 +83,16 @@ object HybrisProjectSettingsReader {
         val start = line.indexOf(VALUE_ATTR).takeIf { it >= 0 } ?: return null
         val openQuote = start + VALUE_ATTR.length
         val closeQuote = line.indexOf('"', openQuote).takeIf { it > openQuote } ?: return null
-        return line.substring(openQuote, closeQuote).trim().takeIf { it.isNotEmpty() }
+        return line.substring(openQuote, closeQuote)
+            .trim()
+            .takeIf { it.isNotEmpty() }
     }
 
-    private const val HYBRIS_VERSION_MARKER = "name=\"hybrisVersion\""
-    private const val HOSTING_ENVIRONMENT_MARKER = "name=\"hostingEnvironment\""
-    private const val VALUE_ATTR = "value=\""
+    companion object {
+        private const val HYBRIS_VERSION_MARKER = "name=\"hybrisVersion\""
+        private const val HOSTING_ENVIRONMENT_MARKER = "name=\"hostingEnvironment\""
+        private const val VALUE_ATTR = "value=\""
+
+        fun getInstance(): SapCommerceProjectSettingsReader = application.service()
+    }
 }

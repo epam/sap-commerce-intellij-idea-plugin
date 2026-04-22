@@ -18,5 +18,137 @@
 
 package sap.commerce.toolset.welcomescreen
 
-interface RecentSapCommerceProjectsManager {
+import com.intellij.ide.RecentProjectsManager
+import com.intellij.ide.RecentProjectsManager.RecentProjectsChange
+import com.intellij.ide.RecentProjectsManagerBase
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.checkCanceled
+import com.intellij.openapi.project.Project
+import com.intellij.util.application
+import com.intellij.util.asSafely
+import com.intellij.util.concurrency.annotations.RequiresEdt
+import com.intellij.util.messages.Topic
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.util.fileExists
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
+import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectVcsDetails
+import sap.commerce.toolset.welcomescreen.reader.SapCommerceProjectSettingsReader
+import sap.commerce.toolset.welcomescreen.reader.SapCommerceProjectVcsDetailsReader
+import java.nio.file.Path
+
+@Service
+class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScope) {
+
+    private val stateLock = Any()
+
+    init {
+        application.messageBus.connect(coroutineScope).subscribe(
+            topic = RecentProjectsManager.RECENT_PROJECTS_CHANGE_TOPIC,
+            handler = object : RecentProjectsChange {
+                override fun change() = loadRecentProjects()
+            })
+    }
+
+    fun loadRecentProjects() {
+        invokeLater {
+            application.messageBus.syncPublisher(TOPIC).loading()
+        }
+
+        synchronized(stateLock) {
+            val recentProjects = RecentProjectsManager.getInstance()
+                .asSafely<RecentProjectsManagerBase>()
+                ?.getRecentPaths()
+                ?.asSequence()
+                ?.filter { isSapCommerceProject(it) }
+                ?.map { location -> RecentSapCommerceProject.of(location) }
+                ?.toList()
+                ?: emptyList()
+
+            invokeLater { application.messageBus.syncPublisher(TOPIC).loaded(recentProjects) }
+
+            for (recentProject in recentProjects) {
+                coroutineScope.launch {
+                    supervisorScope {
+                        launch { loadSettings(recentProject) }
+                        launch { loadVcsDetails(recentProject) }
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun loadSettings(recentProject: RecentSapCommerceProject) = lazyLoad(
+        recentProject = recentProject,
+        onError = {
+            thisLogger().debug("Failed to read hybris settings for ${recentProject.location}", it)
+            recentProject.settingsProperty.set(RecentSapCommerceProjectSettings.NotLoaded)
+        }) {
+        checkCanceled()
+
+        val settings = SapCommerceProjectSettingsReader.getInstance().read(recentProject)
+        recentProject.settingsProperty.set(settings)
+    }
+
+    private suspend fun loadVcsDetails(recentProject: RecentSapCommerceProject) = lazyLoad(
+        recentProject = recentProject,
+        onError = {
+            thisLogger().debug("Failed to read git HEAD for ${recentProject.location}", it)
+            recentProject.vcsDetailsProperty.set(RecentSapCommerceProjectVcsDetails.NotAGitRepo)
+        }) {
+        checkCanceled()
+
+        val vcsDetails = SapCommerceProjectVcsDetailsReader.getInstance().read(recentProject)
+        recentProject.vcsDetailsProperty.set(vcsDetails)
+    }
+
+    private suspend fun lazyLoad(
+        recentProject: RecentSapCommerceProject,
+        onError: (Throwable) -> Unit,
+        loadLazily: suspend () -> Unit
+    ) = try {
+        loadLazily()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Throwable) {
+        onError(e)
+    } finally {
+        invokeLater { application.messageBus.syncPublisher(TOPIC).changed(recentProject) }
+    }
+
+    private fun isSapCommerceProject(location: String): Boolean = runCatching {
+        Path.of(location)
+            .resolve(Project.DIRECTORY_STORE_FOLDER)
+            .resolve(HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS)
+            .fileExists
+    }.getOrElse { false }
+
+    interface RecentSapCommerceProjectsListener {
+        @RequiresEdt
+        fun loading() = Unit
+
+        @RequiresEdt
+        fun loaded(recentProjects: List<RecentSapCommerceProject>) = Unit
+
+        @RequiresEdt
+        fun changed(recentProject: RecentSapCommerceProject) = Unit
+    }
+
+    companion object {
+        @Topic.AppLevel
+        val TOPIC = Topic(
+            RecentSapCommerceProjectsListener::class.java,
+            Topic.BroadcastDirection.NONE
+        )
+
+        @JvmStatic
+        fun getInstance(): RecentSapCommerceProjectsManager = service<RecentSapCommerceProjectsManager>()
+    }
 }
