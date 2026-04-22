@@ -77,7 +77,8 @@ class LeExtensionsCollector {
         val scanTypes = mutableMapOf<String, ScanType>()
 
         hybrisConfig.getExtensions().getPath().forEach { scanType ->
-            val dir = scanType.dir ?: return@forEach
+            val normalizedPath = scanType.dir.toNormalizedPath(expandedProperties)
+            val dir = normalizedPath.pathString ?: return@forEach
             val depth = scanType.depth ?: HybrisConstants.DEFAULT_EXTENSIONS_PATH_DEPTH
 
             scanTypes.getOrPut(dir) {
@@ -85,7 +86,7 @@ class LeExtensionsCollector {
                     dir = dir,
                     autoload = scanType.isAutoload,
                     depth = HybrisConstants.DEFAULT_EXTENSIONS_PATH_DEPTH,
-                    normalizedPath = dir.toNormalizedPath(expandedProperties),
+                    normalizedPath = normalizedPath,
                 )
             }.apply {
                 if (this.depth < depth) {
