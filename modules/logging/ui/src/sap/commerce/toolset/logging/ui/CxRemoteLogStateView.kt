@@ -27,9 +27,9 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
+import com.intellij.util.textCompletion.TextFieldWithCompletion
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +58,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     private val filterState = LoggerFilterState()
 
     private lateinit var dataScrollPane: JBScrollPane
-    private lateinit var loggerNameField: JBTextField
+    private lateinit var loggerNameField: TextFieldWithCompletion
 
     private val lazyViewPanel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
@@ -98,15 +98,19 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     suspend fun render(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>?): JComponent {
         val viewPanel = lazyViewPanel.value
         if (loggers == null) {
-            toggleView(showFetchLoggers)
+            withContext(Dispatchers.EDT) { toggleView(showFetchLoggers) }
             return viewPanel
         }
 
         if (loggers.isEmpty()) {
             val view = noLoggersView("Unable to get list of loggers for the connection.")
-            filterState.clear()
 
             withContext(Dispatchers.EDT) {
+                // filterState.clear() flips AtomicBooleanProperty values that
+                // drive .visibleIf(...) bindings — those listeners call
+                // Swing setVisible, so the mutation must run on the EDT.
+                // Grouping it with the viewport swap keeps a single EDT hop.
+                filterState.clear()
                 dataScrollPane.setViewportView(view)
             }
         } else {
@@ -117,11 +121,17 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             // Rebuild the filter map for this render; the listener in
             // newLoggerPanel keeps referencing `filterState` by identity,
             // so preserving instance across renders is intentional.
-            filterState.clear()
-            val view = loggersView(loggers, lazyLoggerRows)
-            // Re-apply the current filter text so rows come in filtered if
-            // the user already typed something before this render arrived.
-            filterState.apply(loggerNameField.text)
+            //
+            // Must happen on EDT because row .visibleIf(...) listeners
+            // fire component.setVisible synchronously.
+            val view = withContext(Dispatchers.EDT) {
+                filterState.clear()
+                val panel = loggersView(loggers, lazyLoggerRows)
+                // Re-apply current filter text so rows come in filtered if
+                // the user already typed something before this render arrived.
+                filterState.apply(loggerNameField.text)
+                panel
+            }
 
             lazyLoggerRows.forEach {
                 lazyLoggerDetails(project, coroutineScope, it)
@@ -136,7 +146,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             }
         }
 
-        toggleView(showDataPanel)
+        withContext(Dispatchers.EDT) { toggleView(showDataPanel) }
 
         return viewPanel
     }
@@ -190,6 +200,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                 loggerLevelField = logLevelComboBox().component
 
                 loggerNameField = newLoggerTextField(
+                    project = project,
                     parentDisposable = this@CxRemoteLogStateView,
                     onFilterChanged = { filterState.apply(it) },
                 ) {

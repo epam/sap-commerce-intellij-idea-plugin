@@ -30,10 +30,10 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
+import com.intellij.util.textCompletion.TextFieldWithCompletion
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +67,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
     private lateinit var dPanel: DialogPanel
     private lateinit var loggerLevelField: ComboBox<CxLogLevel>
-    private lateinit var loggerNameField: JBTextField
+    private lateinit var loggerNameField: TextFieldWithCompletion
     private lateinit var dataScrollPane: JBScrollPane
 
     private val lazyViewPanel by lazy {
@@ -113,14 +113,20 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     override fun dispose() = lazyViewPanel.drop()
 
     suspend fun render(coroutineScope: CoroutineScope, templateUUID: String, loggers: Collection<CxLoggerPresentation>): JComponent {
-        initialized.set(false)
         val viewPanel = lazyViewPanel.value
 
         this.templateUUID = templateUUID
 
-        loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findTemplate(templateUUID)
-            ?.defaultEffectiveLevel
-            ?: CxLogLevel.ALL
+        // All AtomicBooleanProperty mutations and Swing calls must happen on
+        // the EDT — .visibleIf(...) listeners call component.setVisible
+        // synchronously when the property fires, and the completion editor's
+        // HierarchyListener (on ScrollingModelImpl) asserts EDT.
+        withContext(Dispatchers.EDT) {
+            initialized.set(false)
+            loggerLevelField.selectedItem = CxCustomLogTemplateService.getInstance(project).findTemplate(templateUUID)
+                ?.defaultEffectiveLevel
+                ?: CxLogLevel.ALL
+        }
 
         if (loggers.isEmpty()) {
             val view = noLoggersView(
@@ -139,11 +145,18 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             // Rebuild filter map for this render; listener in newLoggerPanel
             // keeps referencing filterState by identity, so preserving the
             // instance across renders is intentional.
-            filterState.clear()
-            val view = createLoggersPanel(loggers, lazyLoggerRows)
-            // Re-apply current filter text so rows come in filtered if the
-            // user had typed something before this render arrived.
-            filterState.apply(loggerNameField.text)
+            //
+            // Panel construction + filter mutation grouped on EDT so the
+            // .visibleIf(...) listeners that fire component.setVisible see
+            // a consistent state and run on the right thread.
+            val view = withContext(Dispatchers.EDT) {
+                filterState.clear()
+                val panel = createLoggersPanel(loggers, lazyLoggerRows)
+                // Re-apply current filter text so rows come in filtered if the
+                // user had typed something before this render arrived.
+                filterState.apply(loggerNameField.text)
+                panel
+            }
 
             lazyLoggerRows.forEach {
                 lazyLoggerDetails(project, coroutineScope, it)
@@ -158,7 +171,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             }
         }
 
-        toggleView(showDataPanel, initialized)
+        withContext(Dispatchers.EDT) { toggleView(showDataPanel, initialized) }
 
         return viewPanel
     }
@@ -202,6 +215,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             loggerLevelField = logLevelComboBox().component
 
             loggerNameField = newLoggerTextField(
+                project = project,
                 parentDisposable = this@CxCustomLogTemplatesView,
                 onFilterChanged = { filterState.apply(it) },
             ) {
