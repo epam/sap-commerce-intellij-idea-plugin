@@ -20,6 +20,7 @@ package sap.commerce.toolset.welcomescreen.reader
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ import sap.commerce.toolset.welcomescreen.presentation.HostingEnvironment
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectSettings
 import java.nio.file.Files
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Stateless reader for `.idea/hybrisProjectSettings.xml`.
@@ -59,7 +61,7 @@ internal class SapCommerceProjectSettingsReader : LazyRecentProjectDetailsReader
         var hostingEnvironment: String? = null
 
         withContext(Dispatchers.IO) {
-            runCatching {
+            try {
                 Files.newBufferedReader(settingsFile).use { reader ->
                     for (line in reader.lineSequence()) {
                         when {
@@ -69,6 +71,10 @@ internal class SapCommerceProjectSettingsReader : LazyRecentProjectDetailsReader
                         if (hybrisVersion != null && hostingEnvironment != null) break
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                thisLogger().debug(e)
             }
         }
 
