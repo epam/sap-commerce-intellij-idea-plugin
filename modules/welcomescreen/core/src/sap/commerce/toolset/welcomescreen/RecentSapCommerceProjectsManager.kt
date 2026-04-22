@@ -25,7 +25,6 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import com.intellij.util.asSafely
@@ -90,10 +89,9 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
             thisLogger().debug("Failed to read hybris settings for ${recentProject.location}", it)
             recentProject.settingsProperty.set(RecentSapCommerceProjectSettings.NotLoaded)
         }) {
-        checkCanceled()
-
-        val settings = SapCommerceProjectSettingsReader.getInstance().read(recentProject)
-        recentProject.settingsProperty.set(settings)
+        SapCommerceProjectSettingsReader.getInstance().read(recentProject).apply {
+            recentProject.settingsProperty.set(this)
+        }
     }
 
     private suspend fun loadVcsDetails(recentProject: RecentSapCommerceProject) = lazyLoad(
@@ -102,10 +100,9 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
             thisLogger().debug("Failed to read git HEAD for ${recentProject.location}", it)
             recentProject.vcsDetailsProperty.set(RecentSapCommerceProjectVcsDetails.NotAGitRepo)
         }) {
-        checkCanceled()
-
-        val vcsDetails = SapCommerceProjectVcsDetailsReader.getInstance().read(recentProject)
-        recentProject.vcsDetailsProperty.set(vcsDetails)
+        SapCommerceProjectVcsDetailsReader.getInstance().read(recentProject).apply {
+            recentProject.vcsDetailsProperty.set(this)
+        }
     }
 
     private suspend fun lazyLoad(
