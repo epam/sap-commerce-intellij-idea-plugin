@@ -40,8 +40,6 @@ import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectV
 import sap.commerce.toolset.welcomescreen.reader.SapCommerceProjectSettingsReader
 import sap.commerce.toolset.welcomescreen.reader.SapCommerceProjectVcsDetailsReader
 import java.nio.file.Path
-import kotlin.random.Random
-import kotlin.time.Duration.Companion.seconds
 
 @Service
 class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScope) {
@@ -92,8 +90,6 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
             thisLogger().debug("Failed to read hybris settings for ${recentProject.location}", it)
             recentProject.settingsProperty.set(RecentSapCommerceProjectSettings.NotLoaded)
         }) {
-        delay(Random.nextInt(5, 10).seconds)
-
         checkCanceled()
 
         val settings = SapCommerceProjectSettingsReader.getInstance().read(recentProject)
@@ -106,8 +102,6 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
             thisLogger().debug("Failed to read git HEAD for ${recentProject.location}", it)
             recentProject.vcsDetailsProperty.set(RecentSapCommerceProjectVcsDetails.NotAGitRepo)
         }) {
-        delay(Random.nextInt(5, 10).seconds)
-
         checkCanceled()
 
         val vcsDetails = SapCommerceProjectVcsDetailsReader.getInstance().read(recentProject)
