@@ -55,7 +55,10 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
     init {
         Disposer.register(parentDisposable, this)
         subscribeToRecentProjectsChanges()
-        RecentSapCommerceProjectsManager.getInstance().loadRecentProjects()
+
+        invokeLater {
+            RecentSapCommerceProjectsManager.getInstance().loadRecentProjects()
+        }
     }
 
     override fun buildComponent(): JComponent = builtComponent

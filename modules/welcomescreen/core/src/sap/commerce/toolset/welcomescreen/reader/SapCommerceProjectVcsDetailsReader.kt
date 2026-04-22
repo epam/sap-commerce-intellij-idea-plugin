@@ -47,34 +47,32 @@ import java.nio.file.Files
 @Service
 internal class SapCommerceProjectVcsDetailsReader : LazyRecentProjectDetailsReader<RecentSapCommerceProjectVcsDetails> {
 
-    override suspend fun read(recentProject: RecentSapCommerceProject): RecentSapCommerceProjectVcsDetails {
-        return try {
-            val headFile = recentProject.path
-                .resolve(WelcomeScreenConstants.Vcs.GIT)
-                .resolve(WelcomeScreenConstants.Vcs.COMMIT_HEAD)
-                .takeIf { it.fileExists }
-                ?: return RecentSapCommerceProjectVcsDetails.NotAGitRepo
+    override suspend fun read(recentProject: RecentSapCommerceProject): RecentSapCommerceProjectVcsDetails = try {
+        val headFile = recentProject.path
+            .resolve(WelcomeScreenConstants.Vcs.GIT)
+            .resolve(WelcomeScreenConstants.Vcs.COMMIT_HEAD)
+            .takeIf { it.fileExists }
+            ?: return RecentSapCommerceProjectVcsDetails.NotAGitRepo
 
-            val contents = withContext(Dispatchers.IO) { Files.readString(headFile).trim() }
-            when {
-                contents.startsWith(REF_PREFIX) -> contents
-                    .removePrefix(REF_PREFIX)
-                    .takeIf { it.isNotBlank() }
-                    ?.let { RecentSapCommerceProjectVcsDetails.Named(it) }
-                    ?: RecentSapCommerceProjectVcsDetails.NotAGitRepo
+        val contents = withContext(Dispatchers.IO) { Files.readString(headFile).trim() }
+        when {
+            contents.startsWith(REF_PREFIX) -> contents
+                .removePrefix(REF_PREFIX)
+                .takeIf { it.isNotBlank() }
+                ?.let { RecentSapCommerceProjectVcsDetails.Named(it) }
+                ?: RecentSapCommerceProjectVcsDetails.NotAGitRepo
 
-                contents.matches(SHA_REGEX) -> contents
-                    .substring(0, SHORT_SHA_LENGTH)
-                    .let { RecentSapCommerceProjectVcsDetails.Named(it) }
+            contents.matches(SHA_REGEX) -> contents
+                .substring(0, SHORT_SHA_LENGTH)
+                .let { RecentSapCommerceProjectVcsDetails.Named(it) }
 
-                else -> RecentSapCommerceProjectVcsDetails.NotAGitRepo
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            thisLogger().debug(e)
-            RecentSapCommerceProjectVcsDetails.NotAGitRepo
+            else -> RecentSapCommerceProjectVcsDetails.NotAGitRepo
         }
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        thisLogger().debug(e)
+        RecentSapCommerceProjectVcsDetails.NotAGitRepo
     }
 
     companion object {

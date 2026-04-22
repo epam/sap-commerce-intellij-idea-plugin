@@ -60,8 +60,8 @@ internal class SapCommerceProjectSettingsReader : LazyRecentProjectDetailsReader
         var hybrisVersion: String? = null
         var hostingEnvironment: String? = null
 
-        withContext(Dispatchers.IO) {
-            try {
+        try {
+            withContext(Dispatchers.IO) {
                 Files.newBufferedReader(settingsFile).use { reader ->
                     for (line in reader.lineSequence()) {
                         when {
@@ -71,11 +71,11 @@ internal class SapCommerceProjectSettingsReader : LazyRecentProjectDetailsReader
                         if (hybrisVersion != null && hostingEnvironment != null) break
                     }
                 }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                thisLogger().debug(e)
             }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            thisLogger().debug(e)
         }
 
         return RecentSapCommerceProjectSettings.Loaded(

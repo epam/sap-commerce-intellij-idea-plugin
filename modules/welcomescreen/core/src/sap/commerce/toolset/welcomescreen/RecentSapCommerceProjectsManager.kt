@@ -31,10 +31,7 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.annotations.RequiresEdt
 import com.intellij.util.messages.Topic
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.util.fileExists
 import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProject
@@ -43,11 +40,14 @@ import sap.commerce.toolset.welcomescreen.presentation.RecentSapCommerceProjectV
 import sap.commerce.toolset.welcomescreen.reader.SapCommerceProjectSettingsReader
 import sap.commerce.toolset.welcomescreen.reader.SapCommerceProjectVcsDetailsReader
 import java.nio.file.Path
+import kotlin.random.Random
+import kotlin.time.Duration.Companion.seconds
 
 @Service
 class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScope) {
 
     private val stateLock = Any()
+    private var lazyEvaluationJob: Job? = null
 
     init {
         application.messageBus.connect(coroutineScope).subscribe(
@@ -74,8 +74,9 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
 
             invokeLater { application.messageBus.syncPublisher(TOPIC).loaded(recentProjects) }
 
-            for (recentProject in recentProjects) {
-                coroutineScope.launch {
+            lazyEvaluationJob?.cancel()
+            lazyEvaluationJob = coroutineScope.launch {
+                for (recentProject in recentProjects) {
                     supervisorScope {
                         launch { loadSettings(recentProject) }
                         launch { loadVcsDetails(recentProject) }
@@ -91,6 +92,8 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
             thisLogger().debug("Failed to read hybris settings for ${recentProject.location}", it)
             recentProject.settingsProperty.set(RecentSapCommerceProjectSettings.NotLoaded)
         }) {
+        delay(Random.nextInt(5, 10).seconds)
+
         checkCanceled()
 
         val settings = SapCommerceProjectSettingsReader.getInstance().read(recentProject)
@@ -103,6 +106,8 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
             thisLogger().debug("Failed to read git HEAD for ${recentProject.location}", it)
             recentProject.vcsDetailsProperty.set(RecentSapCommerceProjectVcsDetails.NotAGitRepo)
         }) {
+        delay(Random.nextInt(5, 10).seconds)
+
         checkCanceled()
 
         val vcsDetails = SapCommerceProjectVcsDetailsReader.getInstance().read(recentProject)
