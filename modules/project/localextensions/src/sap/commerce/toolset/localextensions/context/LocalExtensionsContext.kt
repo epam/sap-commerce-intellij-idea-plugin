@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,11 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.localextensions
+package sap.commerce.toolset.localextensions.context
 
+import sap.commerce.toolset.localextensions.ScanType
 import java.nio.file.Path
 
-data class LeExtension(
+data class LocalExtensionsContext(
+    val expandedProperties: Map<String, String> = emptyMap(),
+    val scanTypes: Map<String, ScanType> = emptyMap(),
+    val extensions: Map<String, Extension> = emptyMap(),
+) {
+    data class Extension(
+        val name: String,
+        val path: Path,
+    )
+
+    companion object {
+        val EMPTY = LocalExtensionsContext()
+    }
+}
+
+data class FoundExtension(
     val name: String,
-    val directory: Path,
+    val moduleRootPath: Path,
 )

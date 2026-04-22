@@ -26,6 +26,8 @@ import com.intellij.openapi.util.PropertiesUtil
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiModelAccess
+import sap.commerce.toolset.localextensions.context.FoundExtension
+import sap.commerce.toolset.localextensions.context.LocalExtensionsContext
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig
 import sap.commerce.toolset.util.directoryExists
 import sap.commerce.toolset.util.fileExists
@@ -36,27 +38,28 @@ import java.nio.file.Paths
 import kotlin.io.path.pathString
 
 @Service
-class LeExtensionsCollector {
+class LocalExtensionsProcessor {
 
-    suspend fun collect(
-        foundExtensions: Collection<LeExtension>,
+    suspend fun getContext(
         configDirectory: Path,
-        platformDirectory: Path
-    ): Map<String, LeExtension> = readAction {
+        platformDirectory: Path,
+        foundExtensions: List<FoundExtension>
+    ): LocalExtensionsContext? = readAction {
         val hybrisConfig = LeUnmarshaller.getInstance().unmarshal(configDirectory)
-            ?: return@readAction mapOf()
+            ?: return@readAction null
         val expandedProperties = getExpandedProperties(platformDirectory)
-            ?: return@readAction mapOf()
+            ?: return@readAction null
+
         val scanTypes = getScanTypes(hybrisConfig, expandedProperties)
             ?: run {
                 thisLogger().warn("No scan types defined in the localextensions.xml.")
-                return@readAction mapOf()
+                return@readAction null
             }
 
-        buildMap {
+        val extensions = buildMap {
             // declared via `path autoload="true"`
-            processAutoloadPaths(foundExtensions, scanTypes).forEach { leExtension ->
-                put(leExtension.name, leExtension)
+            processAutoloadPaths(foundExtensions, scanTypes).forEach { extension ->
+                put(extension.name, extension)
             }
 
             // declared via:
@@ -68,7 +71,27 @@ class LeExtensionsCollector {
                 }
             }
         }
+
+        LocalExtensionsContext(expandedProperties, scanTypes, extensions)
     }
+
+    /*
+    This method accepts several extensions of the same name and returns only 1,
+    which will be loaded according to the order logic defined by the scan types.
+    null returns if extension will not be loaded at all
+     */
+    fun getSuitableExtension(
+        foundExtensions: Collection<FoundExtension>,
+        context: LocalExtensionsContext,
+    ): FoundExtension? = context.scanTypes.values
+        .firstNotNullOfOrNull { scanType ->
+            foundExtensions.firstOrNull { extension ->
+                val moduleDir = extension.moduleRootPath.normalize().pathString
+                val scanTypeNormalizedPath = scanType.normalizedPath.pathString
+                moduleDir.startsWith(scanTypeNormalizedPath)
+                    && Paths.get(moduleDir.substring(scanTypeNormalizedPath.length)).nameCount <= scanType.depth
+            }
+        }
 
     private fun getScanTypes(
         hybrisConfig: Hybrisconfig,
@@ -104,24 +127,25 @@ class LeExtensionsCollector {
     }
 
     private fun processAutoloadPaths(
-        foundExtensions: Collection<LeExtension>,
+        foundExtensions: Collection<FoundExtension>,
         scanTypes: Map<String, ScanType>,
-    ): Collection<LeExtension> = scanTypes.values
+    ): Collection<LocalExtensionsContext.Extension> = scanTypes.values
         .filter { it.autoload }
         .takeIf { it.isNotEmpty() }
         ?.let { autoloadScanTypes ->
             foundExtensions.filter { extension ->
                 autoloadScanTypes.firstOrNull { scanType ->
-                    val moduleDir = extension.directory.normalize().pathString
+                    val moduleDir = extension.moduleRootPath.normalize().pathString
                     moduleDir.startsWith(scanType.normalizedPath.pathString)
                         && Paths.get(moduleDir.substring(scanType.dir.length)).nameCount <= scanType.depth
                 } != null
             }
         }
+        ?.map { LocalExtensionsContext.Extension(it.name, it.moduleRootPath) }
         ?: emptyList()
 
     private fun processExtensions(
-        foundExtensions: Collection<LeExtension>,
+        foundExtensions: Collection<FoundExtension>,
         scanTypes: Map<String, ScanType>,
         hybrisConfig: Hybrisconfig,
         expandedProperties: Map<String, String>,
@@ -144,15 +168,16 @@ class LeExtensionsCollector {
                     .filterNot { it.autoload }
                     .firstNotNullOfOrNull { scanType ->
                         suitableFoundExtensions.firstOrNull { extension ->
-                            val moduleDir = extension.directory.normalize().pathString
-                            moduleDir.startsWith(scanType.normalizedPath.pathString)
-                                && Paths.get(moduleDir.substring(scanType.dir.length)).nameCount <= scanType.depth
+                            val moduleDir = extension.moduleRootPath.normalize().pathString
+                            val scanTypeNormalizedPath = scanType.normalizedPath.pathString
+                            moduleDir.startsWith(scanTypeNormalizedPath)
+                                && Paths.get(moduleDir.substring(scanTypeNormalizedPath.length)).nameCount <= scanType.depth
                         }
                     }
-                    ?.directory
+                    ?.moduleRootPath
                 ?: return@mapNotNull null
 
-            LeExtension(extensionName, extensionPath)
+            LocalExtensionsContext.Extension(extensionName, extensionPath)
         }
 
     private fun String.toNormalizedPath(expandedProperties: Map<String, String>): Path {
@@ -190,6 +215,6 @@ class LeExtensionsCollector {
     }
 
     companion object {
-        fun getInstance(): LeExtensionsCollector = application.service()
+        fun getInstance(): LocalExtensionsProcessor = application.service()
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -44,7 +44,7 @@ abstract class AbstractModuleDescriptor(
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
     private lateinit var requiredExtensionNames: MutableSet<String>
     private val directDependencies = mutableSetOf<ModuleDescriptor>()
-    private val dependencies: Set<ModuleDescriptor> by lazy {
+    private val _recursiveDependencies: Set<ModuleDescriptor> by lazy {
         recursivelyCollectDependenciesPlainSet(this, TreeSet())
             .toImmutableSet()
     }
@@ -101,21 +101,21 @@ abstract class AbstractModuleDescriptor(
         ?.getRelativePath(rootDirectory, moduleRootPath)
         ?: moduleRootPath.pathString
 
-    override fun getAllDependencies() = dependencies
+    override fun getRecursiveDependencies() = _recursiveDependencies
 
     override fun getRequiredExtensionNames() = requiredExtensionNames
     override fun addRequiredExtensionNames(extensions: Collection<YModuleDescriptor>) = extensions
         .map { it.name }
         .let { requiredExtensionNames.addAll(it) }
 
-    override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>) {
+    override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
         requiredExtensionNames = initDependencies(moduleDescriptors).toMutableSet()
     }
 
     override fun getDirectDependencies() = directDependencies
 
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>) = this.directDependencies.addAll(dependencies)
-    open fun initDependencies(moduleDescriptors: Map<String, Collection<ModuleDescriptor>>): Set<String> = emptySet()
+    open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
 
     override fun toString() = "${javaClass.simpleName} {name=$name, path=$moduleRootPath}"
 

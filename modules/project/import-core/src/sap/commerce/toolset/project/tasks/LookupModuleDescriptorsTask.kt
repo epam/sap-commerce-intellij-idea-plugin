@@ -20,11 +20,14 @@ package sap.commerce.toolset.project.tasks
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.application
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.localextensions.LocalExtensionsProcessor
+import sap.commerce.toolset.localextensions.context.FoundExtension
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.descriptor.MainConfigModuleDescriptorResolver
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorsCollector
@@ -41,12 +44,25 @@ class LookupModuleDescriptorsTask() {
         title = i18n("hybris.project.import.scanning"),
     ) {
         val foundModuleDescriptors = ModuleDescriptorsCollector.getInstance().collect(context)
-        val moduleDescriptors = ModuleDescriptorsDependenciesResolver.getInstance().resolve(foundModuleDescriptors)
+        val mainConfigModuleDescriptor = MainConfigModuleDescriptorResolver.getInstance().resolve(context, foundModuleDescriptors)
+
+        val platformDirectory = context.platformDistributionPath
+            ?: run { thisLogger().warn("Unable to preselect modules, platform directory is not detected"); return@runWithModalProgressBlocking }
+        val foundExtensions = foundModuleDescriptors
+            .map { FoundExtension(it.name, it.moduleRootPath) }
+
+        LocalExtensionsProcessor.getInstance().getContext(
+            mainConfigModuleDescriptor.moduleRootPath,
+            platformDirectory,
+            foundExtensions
+        )
+            ?.let { context.localExtensionsContext = it }
+            ?: return@runWithModalProgressBlocking
+
+        val moduleDescriptors = ModuleDescriptorsDependenciesResolver.getInstance().resolve(context, foundModuleDescriptors)
         moduleDescriptors.forEach { context.addModule(it) }
 
-        val mainConfigModuleDescriptor = MainConfigModuleDescriptorResolver.getInstance().resolve(context)
-
-        ModuleDescriptorsSelector.getInstance().preselect(context, mainConfigModuleDescriptor)
+        ModuleDescriptorsSelector.getInstance().preselect(context)
     }
 
     companion object {
