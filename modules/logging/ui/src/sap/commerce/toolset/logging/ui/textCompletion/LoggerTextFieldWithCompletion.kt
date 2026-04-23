@@ -24,19 +24,25 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.keymap.KeymapUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.util.textCompletion.TextFieldWithCompletion
+import sap.commerce.toolset.i18n
+import java.awt.event.InputEvent
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.io.Serial
+import javax.swing.KeyStroke
 
 /**
  * Text field that serves a dual purpose: the user can type a logger name and
- * press Enter (or click the associated Apply Logger button) to add it, and as
- * they type the rendered logger list below is filtered by a case-insensitive
- * substring match via [onFilterChanged].
+ * click the associated Apply Logger button or press the platform shortcut
+ * (`Cmd+Enter` on macOS, `Ctrl+Enter` elsewhere) to add it. As they type, the
+ * rendered logger list below is filtered by a case-insensitive substring match
+ * via [onFilterChanged].
  *
  * The field is a [TextFieldWithCompletion] wired to a [sap.commerce.toolset.logging.ui.textCompletion.LoggerCompletionProvider]
  * that queries [PsiShortNamesCache] on demand for each popup refresh. There is
@@ -54,10 +60,11 @@ import java.io.Serial
  * The blank-text validation only fires on apply (via `validateAll()` in the
  * caller's apply handler), so it never flashes a red ring during filtering.
  *
- * Enter-to-apply is wired through a key listener on the editor's content
- * component and is intentionally suppressed while the completion lookup is
- * showing, so pressing Enter in the popup picks the highlighted suggestion
- * instead of applying a partial string.
+ * Plain Enter is reserved for the completion interaction: when the lookup is
+ * visible it is dismissed instead of inserting/applying, and when the lookup is
+ * hidden it leaves the current filter text untouched. Applying is explicitly
+ * gated behind the platform shortcut to avoid accidental logger creation while
+ * the field is being used primarily as a filter.
  */
 internal class LoggerTextFieldWithCompletion(
     project: Project,
@@ -71,9 +78,11 @@ internal class LoggerTextFieldWithCompletion(
     /* oneLineMode = */ true,
     /* autoPopup = */ true,
     /* forceAutoPopup = */ false,
-    /* showHint = */ true,
+    /* showHint = */ false,
 ) {
     init {
+        toolTipText = TOOLTIP_TEXT
+
         // Document listener on the editor document drives two things on every
         // keystroke (including backspace and other deletions):
         //
@@ -105,14 +114,22 @@ internal class LoggerTextFieldWithCompletion(
 
     override fun createEditor(): EditorEx {
         val editor = super.createEditor()
-        // Enter-to-apply. Suppressed while the completion lookup is
-        // visible so Enter there picks the highlighted suggestion
-        // instead of applying a partial string.
+        editor.contentComponent.toolTipText = TOOLTIP_TEXT
+
+        // Plain Enter only dismisses completion; apply requires the platform
+        // shortcut to avoid accidental logger creation from a filter action.
         editor.contentComponent.addKeyListener(object : KeyAdapter() {
             override fun keyPressed(e: KeyEvent) {
                 if (e.keyCode != KeyEvent.VK_ENTER) return
-                if (e.isShiftDown || e.isControlDown || e.isAltDown || e.isMetaDown) return
-                if (LookupManager.getActiveLookup(editor) != null) return
+
+                val lookup = LookupManager.getActiveLookup(editor)
+                if (lookup != null && !isApplyShortcut(e)) {
+                    e.consume()
+                    lookup.hideLookup(false)
+                    return
+                }
+
+                if (!isApplyShortcut(e)) return
 
                 e.consume()
                 apply()
@@ -124,5 +141,30 @@ internal class LoggerTextFieldWithCompletion(
     companion object {
         @Serial
         private const val serialVersionUID: Long = 117007143781896069L
+
+        private val FILTER_SHORTCUT_LABEL = KeymapUtil.getKeystrokeText(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0))
+        private const val CLOSE_SUGGESTIONS_SHORTCUT_LABEL = "Esc"
+        private val APPLY_SHORTCUT_LABEL = KeymapUtil.getKeystrokeText(
+            KeyStroke.getKeyStroke(
+                KeyEvent.VK_ENTER,
+                if (SystemInfo.isMac) InputEvent.META_DOWN_MASK else InputEvent.CTRL_DOWN_MASK,
+            )
+        )
+        private val TOOLTIP_TEXT = i18n(
+            "hybris.cx.loggers.logger.completion.component.tooltip",
+            FILTER_SHORTCUT_LABEL,
+            CLOSE_SUGGESTIONS_SHORTCUT_LABEL,
+            APPLY_SHORTCUT_LABEL,
+        )
+
+        private fun isApplyShortcut(event: KeyEvent): Boolean {
+            if (event.isShiftDown || event.isAltDown) return false
+
+            return if (SystemInfo.isMac) {
+                event.isMetaDown && !event.isControlDown
+            } else {
+                event.isControlDown && !event.isMetaDown
+            }
+        }
     }
 }
