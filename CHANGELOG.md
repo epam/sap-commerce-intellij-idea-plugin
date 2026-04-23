@@ -51,6 +51,7 @@
 
 ### `SAP CX Logging` enhancements
 - Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)
+- Improve log level inlay hints by using actual logger declarations [#1921](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1921)
 
 ### `Type System` enhancements
 - Improved inspection & code completion for attribute types [#1902](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1902)
