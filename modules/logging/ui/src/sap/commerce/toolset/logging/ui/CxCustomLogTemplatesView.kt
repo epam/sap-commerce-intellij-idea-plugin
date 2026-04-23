@@ -38,6 +38,7 @@ import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxLogUiConstants
 import sap.commerce.toolset.logging.custom.CxCustomLogTemplateService
@@ -65,7 +66,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
      */
     private val filterState = LoggerFilterState()
 
-    private lateinit var dPanel: DialogPanel
     private lateinit var loggerLevelField: ComboBox<CxLogLevel>
     private lateinit var loggerNameField: JBTextField
     private lateinit var dataScrollPane: JBScrollPane
@@ -100,12 +100,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
                     .resizableRow()
             }.apply {
                 border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
-                dPanel = this
                 editable.set(true)
-
-                registerValidators(this@CxCustomLogTemplatesView) { validations ->
-                    canApply.set(validations.values.all { it.okEnabled })
-                }
             }
         }
     }
@@ -177,6 +172,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
             row {
                 logLevelComboBox()
+                    .enabled(cxLogger.name != CxLogConstants.ROOT_LOGGER_NAME)
                     .bindItem({ cxLogger.level }, { _ -> })
                     .addItemListener(this@CxCustomLogTemplatesView) { event ->
                         val newLevel = event.item.asSafely<CxLogLevel>() ?: return@addItemListener
@@ -197,34 +193,44 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         }
     }
 
-    private fun newLoggerPanel(): DialogPanel = panel {
-        row {
-            loggerLevelField = logLevelComboBox().component
+    private fun newLoggerPanel(): DialogPanel {
+        lateinit var dPanel: DialogPanel
 
-            loggerNameField = newLoggerTextField(
-                parentDisposable = this@CxCustomLogTemplatesView,
-                onFilterChanged = { filterState.apply(it) },
-            ) {
-                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+        return panel {
+            row {
+                loggerLevelField = logLevelComboBox().component
+
+                loggerNameField = newLoggerTextField(
+                    parentDisposable = this@CxCustomLogTemplatesView,
+                    onFilterChanged = { filterState.apply(it) },
+                ) {
+                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+                }
+                    .component
+
+                button("Apply Logger") {
+                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+                }
             }
-                .component
+                .visibleIf(showDataPanel)
+                .layout(RowLayout.PARENT_GRID)
 
-            button("Apply Logger") {
-                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
+            row {
+                label("Effective level")
+                    .bold()
+                label("Logger (package or class name)")
+                    .bold()
+                    .align(AlignX.FILL)
             }
+                .layout(RowLayout.PARENT_GRID)
+                .visibleIf(showDataPanel)
         }
-            .visibleIf(showDataPanel)
-            .layout(RowLayout.PARENT_GRID)
-
-        row {
-            label("Effective level")
-                .bold()
-            label("Logger (package or class name)")
-                .bold()
-                .align(AlignX.FILL)
-        }
-            .layout(RowLayout.PARENT_GRID)
-            .visibleIf(showDataPanel)
+            .apply {
+                registerValidators(this@CxCustomLogTemplatesView) { validations ->
+                    canApply.set(validations.values.all { it.okEnabled })
+                }
+                dPanel = this
+            }
     }
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) = listOf(showNoLoggerTemplates, showDataPanel, initialized)
@@ -235,7 +241,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
         if (!canApply.get()) return
 
-        CxCustomLogTemplateService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
+        CxCustomLogTemplateService.getInstance(project).addLogger(templateUUID, logger.trim(), effectiveLevel)
         resetInputs()
     }
 

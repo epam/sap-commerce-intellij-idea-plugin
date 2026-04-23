@@ -29,12 +29,14 @@ import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.ComponentPredicate
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
@@ -160,7 +162,11 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
                 row {
                     logLevelComboBox()
-                        .enabledIf(editable)
+                        .enabledIf(object : ComponentPredicate() {
+                            override fun invoke(): Boolean = editable.get() && cxLogger.name != CxLogConstants.ROOT_LOGGER_NAME
+
+                            override fun addListener(listener: (Boolean) -> Unit) = editable.afterChange { listener(invoke()) }
+                        })
                         .bindItem({ cxLogger.level }, { _ -> })
                         .addItemListener(this@CxRemoteLogStateView) { event ->
                             event.item.asSafely<CxLogLevel>()
@@ -228,7 +234,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
         editable.set(false)
 
-        CxRemoteLogStateService.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
+        CxRemoteLogStateService.getInstance(project).setLogger(logger.trim(), level) { coroutineScope, _ ->
             coroutineScope.launch {
                 withContext(Dispatchers.EDT) {
                     editable.set(true)

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -82,11 +82,14 @@ class CxRemoteLogStateService(private val project: Project, private val coroutin
     } else null
 
     fun setLogger(loggerName: String, logLevel: CxLogLevel, callback: (CoroutineScope, CxRemoteLogExecResult) -> Unit = { _, _ -> }) {
+        val normalizedLoggerName = loggerName.trim()
+        if (!isMutableLoggerName(normalizedLoggerName)) return
+
         val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
         val context = CxRemoteLogExecContext(
             connection = activeConnection,
             executionTitle = "Update Log Level Status for SAP Commerce [${activeConnection.shortenConnectionName}]...",
-            loggerName = loggerName,
+            loggerName = normalizedLoggerName,
             logLevel = logLevel,
             timeout = activeConnection.timeout,
         )
@@ -105,7 +108,7 @@ class CxRemoteLogStateService(private val project: Project, private val coroutin
             else notify(NotificationType.INFORMATION, "Log Level Updated") {
                 """
                 <p>Level : $logLevel</p>
-                <p>Logger: $loggerName</p>
+                <p>Logger: $normalizedLoggerName</p>
                 <p>Server: ${activeConnection.shortenConnectionName}</p>
             """.trimIndent()
             }
@@ -259,6 +262,9 @@ class CxRemoteLogStateService(private val project: Project, private val coroutin
         }
     }
 
+    private fun isMutableLoggerName(loggerName: String): Boolean =
+        loggerName.isNotBlank() && loggerName != CxLogConstants.ROOT_LOGGER_NAME
+
     private fun notify(type: NotificationType, title: String, contentProvider: () -> String) = Notifications
         .create(type, title, contentProvider.invoke())
         .hideAfter(5)
@@ -298,4 +304,3 @@ class CxRemoteLogStateService(private val project: Project, private val coroutin
         fun getInstance(project: Project): CxRemoteLogStateService = project.service()
     }
 }
-

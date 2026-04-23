@@ -27,6 +27,7 @@ import com.intellij.openapi.application.smartReadAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.Iconable
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
@@ -41,6 +42,7 @@ import com.intellij.ui.dsl.builder.Cell
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.ui.addActionListener
@@ -230,8 +232,8 @@ internal fun Row.logLevelComboBox(): Cell<ComboBox<CxLogLevel>> = comboBox(
  * they type the rendered logger list below is filtered by a case-insensitive
  * substring match via [onFilterChanged].
  *
- * The blank-text validation only fires on apply (via `validateAll()` in the
- * caller's apply handler), so it never flashes a red ring during filtering.
+ * Validation runs on input and apply, so invalid names get immediate visual
+ * feedback while the typed text still drives filtering below.
  */
 internal fun Row.newLoggerTextField(
     parentDisposable: Disposable,
@@ -240,9 +242,11 @@ internal fun Row.newLoggerTextField(
 ): Cell<JBTextField> = textField()
     .resizableColumn()
     .align(AlignX.FILL)
+    .validationOnInput {
+        validateLoggerName(it.text)
+    }
     .validationOnApply {
-        if (it.text.isBlank()) error("Please enter a logger name")
-        else null
+        validateLoggerName(it.text)
     }
     .applyToComponent {
         addActionListener(parentDisposable) {
@@ -253,6 +257,15 @@ internal fun Row.newLoggerTextField(
             override fun removeUpdate(e: DocumentEvent) = onFilterChanged(text)
             override fun changedUpdate(e: DocumentEvent) = onFilterChanged(text)
         })
+    }
+
+private fun validateLoggerName(
+    value: String,
+): ValidationInfo? =
+    when {
+        value.isBlank() -> ValidationInfo("Empty logger name is not allowed")
+        value.trim() == CxLogConstants.ROOT_LOGGER_NAME -> ValidationInfo("Logger name 'root' is not allowed")
+        else -> null
     }
 
 internal fun noLoggersView(

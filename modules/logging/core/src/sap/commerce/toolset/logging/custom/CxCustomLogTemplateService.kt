@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.custom.settings.CxCustomLogTemplatesSettings
 import sap.commerce.toolset.logging.custom.settings.event.CxCustomLogTemplateStateListener
@@ -61,11 +62,14 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
     }
 
     fun addLogger(templateUUID: String, logger: String, effectiveLevel: CxLogLevel) {
+        val normalizedLogger = logger.trim()
+        if (!isValidCustomLoggerName(normalizedLogger)) return
+
         val loggerTemplateState = CxCustomLogTemplatesSettings.getInstance(project).templates
             .find { it.uuid == templateUUID }
             ?.mutable()
             ?.apply {
-                val newItem = CxCustomLoggerState(effectiveLevel, logger).mutable()
+                val newItem = CxCustomLoggerState(effectiveLevel, normalizedLogger).mutable()
                 val newLoggerConfigs = loggers.get().toMutableList()
                     .apply { add(newItem) }
 
@@ -146,6 +150,8 @@ class CxCustomLogTemplateService(private val project: Project, private val corou
             }
         }
     }
+
+    private fun isValidCustomLoggerName(logger: String): Boolean = logger.isNotBlank() && logger != CxLogConstants.ROOT_LOGGER_NAME
 
     companion object {
         fun getInstance(project: Project): CxCustomLogTemplateService = project.getService(CxCustomLogTemplateService::class.java)
