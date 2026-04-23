@@ -35,6 +35,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import com.intellij.psi.impl.JavaConstantExpressionEvaluator
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
@@ -46,6 +47,18 @@ import sap.commerce.toolset.logging.CxRemoteLogStateService
 import java.awt.event.MouseEvent
 
 class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
+
+    private companion object {
+        private val LOGGER_FACTORY_CLASS_NAMES = setOf(
+            "org.slf4j.LoggerFactory",
+            "org.apache.logging.log4j.LogManager",
+            "org.apache.log4j.Logger",
+        )
+        private val LOGGER_FACTORY_METHOD_NAMES = setOf(
+            "getLogger",
+            "getFormatterLogger",
+        )
+    }
 
     override val defaultAnchor: CodeVisionAnchorKind = CodeVisionAnchorKind.Default
     override val id: String = "SAPCxLoggerInlayHintsProvider"
@@ -61,8 +74,9 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                 when (psiElement) {
                     is PsiClass -> psiElement.nameIdentifier
                         ?.let { psiClassIdentifier ->
-                            FqnUtil.elementToFqn(psiElement, editor)
-                                ?.let { fqn -> psiClassIdentifier to fqn }
+                            val loggerIdentifier = resolveLoggerIdentifier(psiElement)
+                                ?: FqnUtil.elementToFqn(psiElement, editor)
+                            loggerIdentifier?.let { psiClassIdentifier to it }
                         }
 
                     is PsiPackageStatement -> psiElement to psiElement.packageName
@@ -134,5 +148,64 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
         // Show the popup at the calculated relative point
         popup.show(relativePoint)
+    }
+
+    private fun resolveLoggerIdentifier(psiClass: PsiClass): String? {
+        val ownFields = psiClass.fields.asSequence()
+        val inheritedFields = psiClass.allFields
+            .asSequence()
+            .filter { it.containingClass != psiClass }
+
+        return (ownFields + inheritedFields)
+            .mapNotNull { resolveLoggerIdentifier(it, psiClass) }
+            .firstOrNull()
+    }
+
+    private fun resolveLoggerIdentifier(field: PsiField, contextClass: PsiClass): String? {
+        val initializer = field.initializer ?: return null
+        return when (initializer) {
+            is PsiMethodCallExpression -> resolveLoggerIdentifier(initializer, contextClass)
+            else -> null
+        }
+    }
+
+    private fun resolveLoggerIdentifier(expression: PsiMethodCallExpression, contextClass: PsiClass): String? {
+        val methodName = expression.methodExpression.referenceName
+        if (methodName !in LOGGER_FACTORY_METHOD_NAMES) return null
+
+        val containingClassName = expression.resolveMethod()
+            ?.containingClass
+            ?.qualifiedName
+        if (containingClassName !in LOGGER_FACTORY_CLASS_NAMES) return null
+
+        val arguments = expression.argumentList.expressions
+        if (arguments.isEmpty()) {
+            return contextClass.qualifiedName
+        }
+
+        return resolveLoggerIdentifier(arguments.first(), contextClass)
+    }
+
+    private fun resolveLoggerIdentifier(expression: PsiExpression, contextClass: PsiClass): String? = when (expression) {
+        is PsiClassObjectAccessExpression -> expression.operand.type.canonicalText
+        else -> JavaConstantExpressionEvaluator.computeConstantExpression(expression, true) as? String
+            ?: if (expression is PsiReferenceExpression && expression.resolve() is PsiClass) {
+                (expression.resolve() as? PsiClass)?.qualifiedName
+            } else if (expression is PsiMethodCallExpression) {
+                resolveClassReferenceFromMethodCall(expression, contextClass)
+            } else null
+    }
+
+    private fun resolveClassReferenceFromMethodCall(expression: PsiMethodCallExpression, contextClass: PsiClass): String? {
+        val methodName = expression.methodExpression.referenceName ?: return null
+        return when (methodName) {
+            "getName" -> {
+                val qualifier = expression.methodExpression.qualifierExpression ?: return null
+                resolveLoggerIdentifier(qualifier, contextClass)
+            }
+
+            "getClass" -> contextClass.qualifiedName
+            else -> null
+        }
     }
 }
