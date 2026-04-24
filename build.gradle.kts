@@ -162,6 +162,10 @@ tasks {
         branch.set("main")
         outputFile.set(file("resources/prs.json"))
         metadataFile.set(file("build/.pr-fetch-metadata.json"))
+
+        onlyIf {
+            System.getenv("GITHUB_SKIP_TASK_FETCH_PRS") != "true"
+        }
     }
 
     patchPluginXml {
