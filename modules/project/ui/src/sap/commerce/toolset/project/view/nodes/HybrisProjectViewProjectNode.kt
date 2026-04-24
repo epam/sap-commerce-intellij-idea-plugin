@@ -59,7 +59,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                 val psiManager = PsiManager.getInstance(project)
                 val virtualFiles = baseDir.children
                 var projectFileIndex: ProjectFileIndex? = null
-                val aiSkillDirectories = mutableListOf<PsiDirectoryNode>()
+                val aiDirectories = mutableListOf<PsiDirectoryNode>()
                 for (vf in virtualFiles) {
                     if (!vf.isDirectory) {
                         if (projectFileIndex == null) {
@@ -77,26 +77,29 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
                                 ?.let { PsiDirectoryNode(getProject(), it, settings) }
                                 ?.let { nodes.add(it) }
 
-                            HybrisConstants.AiAgents.CLAUDE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CLAUDE)
-                                ?.let { aiSkillDirectories.add(it) }
+                            HybrisConstants.Ai.CLAUDE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CLAUDE)
+                                ?.let { aiDirectories.add(it) }
 
-                            HybrisConstants.AiAgents.GEMINI -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_GEMINI)
-                                ?.let { aiSkillDirectories.add(it) }
+                            HybrisConstants.Ai.GEMINI -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_GEMINI)
+                                ?.let { aiDirectories.add(it) }
 
-                            HybrisConstants.AiAgents.JUNIE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_JUNIE)
-                                ?.let { aiSkillDirectories.add(it) }
+                            HybrisConstants.Ai.JUNIE -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_JUNIE)
+                                ?.let { aiDirectories.add(it) }
 
-                            HybrisConstants.AiAgents.CURSOR -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CURSOR)
-                                ?.let { aiSkillDirectories.add(it) }
+                            HybrisConstants.Ai.CURSOR -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENT_CURSOR)
+                                ?.let { aiDirectories.add(it) }
 
-                            HybrisConstants.AiAgents.AGENTS -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENTS)
-                                ?.let { aiSkillDirectories.add(it) }
+                            HybrisConstants.Ai.AGENTS -> aiAgentNode(psiManager, vf, HybrisIcons.AI.AGENTS)
+                                ?.let { aiDirectories.add(it) }
+
+                            HybrisConstants.Ai.ASSISTANT -> aiAgentNode(psiManager, vf, HybrisIcons.AI.ASSISTANT)
+                                ?.let { aiDirectories.add(it) }
                         }
                     }
                 }
 
-                if (aiSkillDirectories.isNotEmpty()) {
-                    nodes.add(AiSkillsProjectViewNode(getProject(), aiSkillDirectories, settings))
+                if (aiDirectories.isNotEmpty()) {
+                    nodes.add(AiProjectViewNode(getProject(), aiDirectories, settings))
                 }
             }
 
