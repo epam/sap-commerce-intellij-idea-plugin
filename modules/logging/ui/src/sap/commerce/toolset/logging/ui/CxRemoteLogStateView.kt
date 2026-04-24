@@ -179,6 +179,10 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                                     }
                                 }
                         }
+                        .apply {
+                            if (cxLogger.name == CxLogConstants.ROOT_LOGGER_NAME) enabled(false)
+                            else enabledIf(editable)
+                        }
 
                     loggerDetailsPlaceholders(cxLogger).also { lazyLoggerRows.add(it) }
                 }

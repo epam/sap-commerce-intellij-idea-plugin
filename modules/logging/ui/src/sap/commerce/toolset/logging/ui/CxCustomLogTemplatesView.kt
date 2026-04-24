@@ -241,7 +241,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
 
         if (!canApply.get()) return
 
-        CxCustomLogTemplateService.getInstance(project).addLogger(templateUUID, logger.trim(), effectiveLevel)
+        CxCustomLogTemplateService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
         resetInputs()
     }
 

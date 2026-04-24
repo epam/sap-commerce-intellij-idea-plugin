@@ -262,8 +262,8 @@ class CxRemoteLogStateService(private val project: Project, private val coroutin
         }
     }
 
-    private fun isMutableLoggerName(loggerName: String): Boolean =
-        loggerName.isNotBlank() && loggerName != CxLogConstants.ROOT_LOGGER_NAME
+    private fun isMutableLoggerName(loggerName: String): Boolean = loggerName.isNotBlank()
+        && loggerName != CxLogConstants.ROOT_LOGGER_NAME
 
     private fun notify(type: NotificationType, title: String, contentProvider: () -> String) = Notifications
         .create(type, title, contentProvider.invoke())
