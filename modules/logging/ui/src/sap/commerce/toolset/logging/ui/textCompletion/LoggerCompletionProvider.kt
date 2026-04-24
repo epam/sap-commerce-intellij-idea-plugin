@@ -27,7 +27,6 @@ import com.intellij.codeInsight.lookup.CharFilter
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
@@ -38,6 +37,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiPackage
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
+import com.intellij.util.application
 import com.intellij.util.indexing.IdFilter
 import com.intellij.util.textCompletion.TextCompletionProvider
 import sap.commerce.toolset.logging.ui.textCompletion.LoggerCompletionProvider.Companion.MAX_VISIBLE_SUGGESTIONS
@@ -77,13 +77,11 @@ internal class LoggerCompletionProvider(
     override fun acceptChar(c: Char): CharFilter.Result = CharFilter.Result.ADD_TO_PREFIX
 
     override fun applyPrefixMatcher(result: CompletionResultSet, prefix: String): CompletionResultSet =
-        // caseInsensitive() makes the platform's post-filter of addAllElements
-        // match regardless of letter case; without it, typing `serv` would
-        // fail to match lookup strings starting with `Serv`.
-        result.caseInsensitive().withPrefixMatcher(PlainPrefixMatcher(prefix))
+        result
+            .caseInsensitive()
+            .withPrefixMatcher(PlainPrefixMatcher(prefix))
 
-    override fun getPrefix(text: String, offset: Int): String =
-        text.substring(0, offset.coerceIn(0, text.length))
+    override fun getPrefix(text: String, offset: Int): String = text.substring(0, offset.coerceIn(0, text.length))
 
     override fun fillCompletionVariants(
         parameters: CompletionParameters,
@@ -111,45 +109,9 @@ internal class LoggerCompletionProvider(
         val matchOnShortName = !prefix.contains('.')
 
         // Shared collection state: the processors below write here.
-        val matched = ArrayList<LookupElement>(MAX_VISIBLE_SUGGESTIONS)
-        var overflow = 0
-        var overflowCapped = false
+        val state = CompletionState()
 
-        fun buildElement(fqn: String, shortName: String?, icon: Icon): LookupElement {
-            val builder = LookupElementBuilder.create(fqn)
-                .withIcon(icon)
-            return if (matchOnShortName && shortName != null) builder.withLookupString(shortName)
-            else builder
-        }
-
-        /**
-         * [iconSupplier] is a lazy producer so that callers which had to
-         * resolve PSI to determine the icon (e.g. the class phase) don't
-         * pay that cost for items that turn out not to match the prefix
-         * or that fall past the cap. Packages pass a constant supplier.
-         */
-        fun accept(fqn: String, shortName: String? = null, iconSupplier: () -> Icon): Boolean {
-            // Matching is done with plain case-insensitive startsWith —
-            // same semantics as the PlainPrefixMatcher we set in
-            // applyPrefixMatcher with caseInsensitive(), but evaluated here
-            // so we can cheaply filter before allocating a LookupElement.
-            val matches = fqn.startsWith(prefix, ignoreCase = true) ||
-                (matchOnShortName && shortName != null && shortName.startsWith(prefix, ignoreCase = true))
-            if (!matches) return true
-
-            if (matched.size < MAX_VISIBLE_SUGGESTIONS) {
-                matched += buildElement(fqn, shortName, iconSupplier())
-            } else {
-                overflow++
-                if (overflow >= OVERFLOW_PROBE_BUDGET) {
-                    overflowCapped = true
-                    return false  // stop — we have enough to show "N+".
-                }
-            }
-            return true
-        }
-
-        ApplicationManager.getApplication().runReadAction {
+        application.runReadAction {
             // Packages first: cheaper to iterate, users often want a package
             // FQN as a logger name. Walk from the root, pruning subtrees that
             // can't possibly match the prefix.
@@ -157,10 +119,16 @@ internal class LoggerCompletionProvider(
             // All packages render with the same icon, so we pass a shared
             // constant — no per-package PsiPackage.getIcon() call.
             walkPackages(project, scope, prefix) { pkgFqn ->
-                accept(pkgFqn) { AllIcons.Nodes.Package }
+                accept(
+                    fqn = pkgFqn,
+                    prefix = prefix,
+                    matchOnShortName = matchOnShortName,
+                    state = state,
+                    iconSupplier = { AllIcons.Nodes.Package },
+                )
             }
 
-            if (overflowCapped) return@runReadAction
+            if (state.overflowCapped) return@runReadAction
 
             // Classes: two phases to avoid a stub-index deadlock.
             //
@@ -192,7 +160,7 @@ internal class LoggerCompletionProvider(
             // table before we've even started resolving. Each short name
             // typically resolves to 1–2 classes, so a few hundred collected
             // names is more than enough to fill the cap and measure overflow.
-            val matchingShortNames = ArrayList<String>()
+            val matchingShortNames = mutableListOf<String>()
             val phase1Budget = (MAX_VISIBLE_SUGGESTIONS + OVERFLOW_PROBE_BUDGET) * 2
             shortNames.processAllClassNames({ shortName ->
                 ProgressManager.checkCanceled()
@@ -222,32 +190,34 @@ internal class LoggerCompletionProvider(
             // the class-kind icon (C / I / E / @) plus the public/private
             // marker dot; we skip ICON_FLAG_READ_STATUS, which triggers a
             // VFS writability check per class.
-            outer@ for (shortName in matchingShortNames) {
+            for (shortName in matchingShortNames) {
                 ProgressManager.checkCanceled()
-                var keepGoing = true
-                shortNames.processClassesWithName(shortName, { psiClass ->
-                    ProgressManager.checkCanceled()
-                    val fqn = psiClass.qualifiedName
-                    if (fqn != null) {
-                        keepGoing = accept(fqn, shortName) { psiClass.safeIcon() }
-                    }
-                    keepGoing
-                }, scope, idFilter)
-                if (!keepGoing) break@outer
+                if (!processClassesWithShortName(
+                        shortNames = shortNames,
+                        shortName = shortName,
+                        scope = scope,
+                        idFilter = idFilter,
+                        prefix = prefix,
+                        matchOnShortName = matchOnShortName,
+                        state = state,
+                    )
+                ) {
+                    break
+                }
             }
         }
 
         // Batch-add so the platform treats these as one sort group — the
         // "freeze top results" behaviour doesn't fragment our display.
-        result.addAllElements(matched)
+        result.addAllElements(state.matched)
 
-        if (overflow > 0) {
+        if (state.overflow > 0) {
             // Bypass the prefix matcher for the hint so it's visible
             // regardless of what the user typed: the hint itself doesn't
             // look anything like a logger FQN, so a normal matcher would
             // filter it out.
             val hintResult = result.withPrefixMatcher(PlainPrefixMatcher(""))
-            hintResult.addElement(buildMoreHintElement(overflow, overflowCapped))
+            hintResult.addElement(buildMoreHintElement(state.overflow, state.overflowCapped))
         }
     }
 
@@ -286,6 +256,79 @@ internal class LoggerCompletionProvider(
         }
     }
 
+    private fun buildElement(
+        fqn: String,
+        shortName: String?,
+        matchOnShortName: Boolean,
+        icon: Icon,
+    ): LookupElement {
+        val builder = LookupElementBuilder.create(fqn)
+            .withIcon(icon)
+        return if (matchOnShortName && shortName != null) builder.withLookupString(shortName)
+        else builder
+    }
+
+    /**
+     * [iconSupplier] is a lazy producer so that callers which had to
+     * resolve PSI to determine the icon (e.g. the class phase) don't
+     * pay that cost for items that turn out not to match the prefix
+     * or that fall past the cap. Packages pass a constant supplier.
+     */
+    private fun accept(
+        fqn: String,
+        prefix: String,
+        matchOnShortName: Boolean,
+        state: CompletionState,
+        shortName: String? = null,
+        iconSupplier: () -> Icon,
+    ): Boolean {
+        // Matching is done with plain case-insensitive startsWith —
+        // same semantics as the PlainPrefixMatcher we set in
+        // applyPrefixMatcher with caseInsensitive(), but evaluated here
+        // so we can cheaply filter before allocating a LookupElement.
+        val matches = fqn.startsWith(prefix, ignoreCase = true) ||
+            (matchOnShortName && shortName != null && shortName.startsWith(prefix, ignoreCase = true))
+        if (!matches) return true
+
+        if (state.matched.size < MAX_VISIBLE_SUGGESTIONS) {
+            state.matched += buildElement(fqn, shortName, matchOnShortName, iconSupplier())
+            return true
+        }
+
+        state.overflow++
+        if (state.overflow >= OVERFLOW_PROBE_BUDGET) {
+            state.overflowCapped = true
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Resolve all classes for one short name and stop early when [accept]
+     * reaches its cap. Returning the processor result makes the stop
+     * condition explicit and avoids cross-scope mutable state in the caller.
+     */
+    private fun processClassesWithShortName(
+        shortNames: PsiShortNamesCache,
+        shortName: String,
+        scope: GlobalSearchScope,
+        idFilter: IdFilter?,
+        prefix: String,
+        matchOnShortName: Boolean,
+        state: CompletionState,
+    ): Boolean = shortNames.processClassesWithName(shortName, { psiClass ->
+        ProgressManager.checkCanceled()
+        val fqn = psiClass.qualifiedName ?: return@processClassesWithName true
+        accept(
+            fqn = fqn,
+            prefix = prefix,
+            matchOnShortName = matchOnShortName,
+            state = state,
+            shortName = shortName,
+            iconSupplier = { psiClass.safeIcon() },
+        )
+    }, scope, idFilter)
+
     private fun buildMoreHintElement(overflow: Int, capped: Boolean): LookupElement {
         val label = if (capped) "$overflow+" else "$overflow"
         val text = "… $label more match${if (overflow == 1 && !capped) "" else "es"} — refine search"
@@ -308,6 +351,12 @@ internal class LoggerCompletionProvider(
     }
 }
 
+private class CompletionState(
+    val matched: MutableList<LookupElement> = mutableListOf(),
+    var overflow: Int = 0,
+    var overflowCapped: Boolean = false,
+)
+
 /**
  * Resolve the presentation icon for a class without letting an IconProvider
  * failure take down the completion popup. A third-party IconProvider that
@@ -327,4 +376,3 @@ private fun PsiClass.safeIcon(): Icon = try {
 } catch (_: Throwable) {
     AllIcons.Nodes.Class
 }
-

@@ -142,8 +142,9 @@ internal class LoggerTextFieldWithCompletion(
         @Serial
         private const val serialVersionUID: Long = 117007143781896069L
 
-        private val FILTER_SHORTCUT_LABEL = KeymapUtil.getKeystrokeText(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0))
         private const val CLOSE_SUGGESTIONS_SHORTCUT_LABEL = "Esc"
+
+        private val FILTER_SHORTCUT_LABEL = KeymapUtil.getKeystrokeText(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0))
         private val APPLY_SHORTCUT_LABEL = KeymapUtil.getKeystrokeText(
             KeyStroke.getKeyStroke(
                 KeyEvent.VK_ENTER,
@@ -160,11 +161,8 @@ internal class LoggerTextFieldWithCompletion(
         private fun isApplyShortcut(event: KeyEvent): Boolean {
             if (event.isShiftDown || event.isAltDown) return false
 
-            return if (SystemInfo.isMac) {
-                event.isMetaDown && !event.isControlDown
-            } else {
-                event.isControlDown && !event.isMetaDown
-            }
+            return if (SystemInfo.isMac) event.isMetaDown && !event.isControlDown
+            else event.isControlDown && !event.isMetaDown
         }
     }
 }

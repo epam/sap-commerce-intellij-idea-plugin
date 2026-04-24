@@ -126,11 +126,10 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             // fire component.setVisible synchronously.
             val view = withContext(Dispatchers.EDT) {
                 filterState.clear()
-                val panel = loggersView(loggers, lazyLoggerRows)
                 // Re-apply current filter text so rows come in filtered if
                 // the user already typed something before this render arrived.
                 filterState.apply(loggerNameField.text)
-                panel
+                loggersView(loggers, lazyLoggerRows)
             }
 
             lazyLoggerRows.forEach {
