@@ -29,7 +29,7 @@ import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
 
-class AiSkillsProjectViewNode(
+class AiProjectViewNode(
     project: Project,
     children: List<AbstractTreeNode<*>>,
     viewSettings: ViewSettings?
