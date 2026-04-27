@@ -42,6 +42,13 @@ import sap.commerce.toolset.ui.addItemListener
 import javax.swing.JComponent
 import javax.swing.JPanel
 
+/**
+ * Displays the remote logger state and lets the user add or update loggers inline.
+ *
+ * The filter state is preserved across renders so the logger input keeps controlling row visibility with
+ * the existing listeners. Rendering and visibility updates are performed on the EDT because the panel uses
+ * Swing bindings backed by `AtomicBooleanProperty`.
+ */
 class CxRemoteLogStateView(private val project: Project) : Disposable {
 
     private val showFetchLoggers = AtomicBooleanProperty(false)
@@ -49,12 +56,6 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     private val editable = AtomicBooleanProperty(true)
     private val canApply = AtomicBooleanProperty(false)
 
-    /**
-     * Per-render map of logger-name to per-row visibility toggle, plus a
-     * "some row matches" flag for the empty-state banner. Stable across
-     * renders by reference so the document listener wired up in
-     * [newLoggerPanel] keeps working without re-registration.
-     */
     private val filterState = LoggerFilterState()
 
     private lateinit var dataScrollPane: JBScrollPane
@@ -106,10 +107,6 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             val view = noLoggersView("Unable to get list of loggers for the connection.")
 
             withContext(Dispatchers.EDT) {
-                // filterState.clear() flips AtomicBooleanProperty values that
-                // drive .visibleIf(...) bindings — those listeners call
-                // Swing setVisible, so the mutation must run on the EDT.
-                // Grouping it with the viewport swap keeps a single EDT hop.
                 filterState.clear()
                 dataScrollPane.setViewportView(view)
             }
@@ -118,16 +115,8 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             val viewport = dataScrollPane.getViewport()
             val pos = viewport.getViewPosition()
 
-            // Rebuild the filter map for this render; the listener in
-            // newLoggerPanel keeps referencing `filterState` by identity,
-            // so preserving instance across renders is intentional.
-            //
-            // Must happen on EDT because row .visibleIf(...) listeners
-            // fire component.setVisible synchronously.
             val view = withContext(Dispatchers.EDT) {
                 filterState.clear()
-                // Re-apply current filter text so rows come in filtered if
-                // the user already typed something before this render arrived.
                 filterState.apply(loggerNameField.text)
                 loggersView(loggers, lazyLoggerRows)
             }
