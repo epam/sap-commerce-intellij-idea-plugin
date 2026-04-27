@@ -6,6 +6,9 @@
 ### `Project View` enhancements
 - Show `.aiassistant` under `AI Capabilities` project view node [#1924](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1924)
 
+### `SAP CX Logging` enhancements
+- Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)
+
 ### Other
 - Do not fetch PRs statistics via GitHub actions [#1925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1925)
 
@@ -51,7 +54,6 @@
 
 ### `SAP CX Logging` enhancements
 - Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)
-- Improve log level inlay hints by using actual logger declarations [#1921](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1921)
 
 ### `Type System` enhancements
 - Improved inspection & code completion for attribute types [#1902](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1902)
