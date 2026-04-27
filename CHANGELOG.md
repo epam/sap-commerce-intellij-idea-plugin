@@ -9,6 +9,7 @@
 
 ### `SAP CX Logging` enhancements
 - Enhanced logger validation and root logger protection [#1922](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1922)
+- Improve log level inlay hints by using actual logger declarations [#1921](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1921)
 
 ### `Groovy` enhancements
 - Show & fetch available web application contexts [#1926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1926)
@@ -58,7 +59,6 @@
 
 ### `SAP CX Logging` enhancements
 - Add filtering for custom and remote loggers [#1896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1896)
-- Improve log level inlay hints by using actual logger declarations [#1921](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1921)
 
 ### `Type System` enhancements
 - Improved inspection & code completion for attribute types [#1902](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1902)
