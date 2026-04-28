@@ -35,20 +35,17 @@ import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.*
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
+import com.intellij.util.textCompletion.TextFieldWithCompletion
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import sap.commerce.toolset.ui.addActionListener
-import sap.commerce.toolset.ui.addDocumentListener
+import sap.commerce.toolset.logging.ui.textCompletion.LoggerTextFieldWithCompletion
 import java.util.concurrent.ConcurrentHashMap
 import javax.swing.JComponent
-import javax.swing.event.DocumentEvent
-import javax.swing.event.DocumentListener
 
 data class LazyLoggerRow(
     val cxLogger: CxLoggerPresentation,
@@ -224,36 +221,21 @@ internal fun Row.logLevelComboBox(): Cell<ComboBox<CxLogLevel>> = comboBox(
     }
 )
 
-/**
- * Text field that serves a dual purpose: the user can type a logger name and
- * press Enter (or click the associated Apply Logger button) to add it, and as
- * they type the rendered logger list below is filtered by a case-insensitive
- * substring match via [onFilterChanged].
- *
- * The blank-text validation only fires on apply (via `validateAll()` in the
- * caller's apply handler), so it never flashes a red ring during filtering.
- */
 internal fun Row.newLoggerTextField(
+    project: Project,
     parentDisposable: Disposable,
     onFilterChanged: (String) -> Unit = {},
     apply: () -> Unit,
-): Cell<JBTextField> = textField()
-    .resizableColumn()
-    .align(AlignX.FILL)
-    .validationOnApply {
-        if (it.text.isBlank()) error("Please enter a logger name")
-        else null
-    }
-    .applyToComponent {
-        addActionListener(parentDisposable) {
-            apply()
+): Cell<TextFieldWithCompletion> {
+    val field = LoggerTextFieldWithCompletion(project, parentDisposable, apply, onFilterChanged)
+    return cell(field)
+        .resizableColumn()
+        .align(AlignX.FILL)
+        .validationOnApply {
+            if (it.text.isBlank()) error("Please enter a logger name")
+            else null
         }
-        document.addDocumentListener(parentDisposable, object : DocumentListener {
-            override fun insertUpdate(e: DocumentEvent) = onFilterChanged(text)
-            override fun removeUpdate(e: DocumentEvent) = onFilterChanged(text)
-            override fun changedUpdate(e: DocumentEvent) = onFilterChanged(text)
-        })
-    }
+}
 
 internal fun noLoggersView(
     messageText: String,

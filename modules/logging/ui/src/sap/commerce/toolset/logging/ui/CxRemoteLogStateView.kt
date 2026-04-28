@@ -27,9 +27,9 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
+import com.intellij.util.textCompletion.TextFieldWithCompletion
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +42,13 @@ import sap.commerce.toolset.ui.addItemListener
 import javax.swing.JComponent
 import javax.swing.JPanel
 
+/**
+ * Displays the remote logger state and lets the user add or update loggers inline.
+ *
+ * The filter state is preserved across renders so the logger input keeps controlling row visibility with
+ * the existing listeners. Rendering and visibility updates are performed on the EDT because the panel uses
+ * Swing bindings backed by `AtomicBooleanProperty`.
+ */
 class CxRemoteLogStateView(private val project: Project) : Disposable {
 
     private val showFetchLoggers = AtomicBooleanProperty(false)
@@ -49,16 +56,10 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     private val editable = AtomicBooleanProperty(true)
     private val canApply = AtomicBooleanProperty(false)
 
-    /**
-     * Per-render map of logger-name to per-row visibility toggle, plus a
-     * "some row matches" flag for the empty-state banner. Stable across
-     * renders by reference so the document listener wired up in
-     * [newLoggerPanel] keeps working without re-registration.
-     */
     private val filterState = LoggerFilterState()
 
     private lateinit var dataScrollPane: JBScrollPane
-    private lateinit var loggerNameField: JBTextField
+    private lateinit var loggerNameField: TextFieldWithCompletion
 
     private val lazyViewPanel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
@@ -98,15 +99,15 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     suspend fun render(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>?): JComponent {
         val viewPanel = lazyViewPanel.value
         if (loggers == null) {
-            toggleView(showFetchLoggers)
+            withContext(Dispatchers.EDT) { toggleView(showFetchLoggers) }
             return viewPanel
         }
 
         if (loggers.isEmpty()) {
             val view = noLoggersView("Unable to get list of loggers for the connection.")
-            filterState.clear()
 
             withContext(Dispatchers.EDT) {
+                filterState.clear()
                 dataScrollPane.setViewportView(view)
             }
         } else {
@@ -114,14 +115,11 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             val viewport = dataScrollPane.getViewport()
             val pos = viewport.getViewPosition()
 
-            // Rebuild the filter map for this render; the listener in
-            // newLoggerPanel keeps referencing `filterState` by identity,
-            // so preserving instance across renders is intentional.
-            filterState.clear()
-            val view = loggersView(loggers, lazyLoggerRows)
-            // Re-apply the current filter text so rows come in filtered if
-            // the user already typed something before this render arrived.
-            filterState.apply(loggerNameField.text)
+            val view = withContext(Dispatchers.EDT) {
+                filterState.clear()
+                filterState.apply(loggerNameField.text)
+                loggersView(loggers, lazyLoggerRows)
+            }
 
             lazyLoggerRows.forEach {
                 lazyLoggerDetails(project, coroutineScope, it)
@@ -136,7 +134,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             }
         }
 
-        toggleView(showDataPanel)
+        withContext(Dispatchers.EDT) { toggleView(showDataPanel) }
 
         return viewPanel
     }
@@ -190,6 +188,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                 loggerLevelField = logLevelComboBox().component
 
                 loggerNameField = newLoggerTextField(
+                    project = project,
                     parentDisposable = this@CxRemoteLogStateView,
                     onFilterChanged = { filterState.apply(it) },
                 ) {

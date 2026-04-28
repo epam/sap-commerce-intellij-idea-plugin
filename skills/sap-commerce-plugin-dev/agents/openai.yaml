@@ -1,0 +1,4 @@
+interface:
+  display_name: "SAP Commerce Plugin Dev"
+  short_description: "Work on the SAP Commerce IntelliJ plugin"
+  default_prompt: "Use $sap-commerce-plugin-dev to work safely in the SAP Commerce IntelliJ plugin repository."
