@@ -16,10 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.ui.tree.nodes
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.hac.exec.HacExecConnectionService
+
+class CxRemoteHacInstancesNode(project: Project) : CxPropertiesNode(
+    project = project,
+    presentationName = "Remote hAC Instances",
+    icon = HybrisIcons.Y.REMOTES,
+) {
+    override fun getNewChildren(): Map<String, CxPropertiesNode> = HacExecConnectionService.getInstance(project)
+        .connections
+        .filter { it == HacExecConnectionService.getInstance(project).activeConnection }
+        .map { CxRemotePropertyStateNode(it, project) }
+        .associateBy { it.connection.uuid }
 }

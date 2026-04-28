@@ -16,10 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+fun properties(key: String) = providers.gradleProperty(key)
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin)
+}
+
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
+
+dependencies {
+    implementation(project(":shared-core"))
+
+    intellijPlatform {
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
+
+        bundledPlugins(
+            "com.intellij.java",
+        )
+    }
 }
