@@ -16,10 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.custom.settings.state
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.properties.ObservableMutableProperty
+import com.intellij.util.xmlb.annotations.OptionTag
+
+data class CxCustomPropertyState(
+    @OptionTag val key: String = "",
+    @OptionTag val value: String = "",
+) {
+    fun mutable() = Mutable(
+        key = AtomicProperty(key),
+        value = AtomicProperty(value),
+    )
+
+    data class Mutable(
+        val key: ObservableMutableProperty<String>,
+        val value: ObservableMutableProperty<String>,
+    ) {
+        fun immutable() = CxCustomPropertyState(
+            key = key.get(),
+            value = value.get(),
+        )
+    }
 }
