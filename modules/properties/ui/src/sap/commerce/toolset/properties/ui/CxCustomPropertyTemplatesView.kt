@@ -50,7 +50,8 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     private val canApply = AtomicBooleanProperty(false)
 
     private lateinit var dataScrollPane: JBScrollPane
-    private lateinit var filterField: JBTextField
+    private lateinit var keyFilterField: JBTextField
+    private lateinit var valueFilterField: JBTextField
     private lateinit var addKeyField: JBTextField
     private lateinit var addValueField: JBTextField
 
@@ -64,11 +65,24 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                 lateinit var dPanel: DialogPanel
                 return panel {
                     row {
-                        filterField = textField()
-                            .label("Filter:")
+                        keyFilterField = textField()
                             .align(AlignX.FILL)
                             .resizableColumn()
                             .applyToComponent {
+                                emptyText.text = "Filter by key"
+                                document.addDocumentListener(object : javax.swing.event.DocumentListener {
+                                    override fun insertUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
+                                    override fun removeUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
+                                    override fun changedUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
+                                })
+                            }
+                            .component
+
+                        valueFilterField = textField()
+                            .align(AlignX.FILL)
+                            .resizableColumn()
+                            .applyToComponent {
+                                emptyText.text = "Filter by value"
                                 document.addDocumentListener(object : javax.swing.event.DocumentListener {
                                     override fun insertUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
                                     override fun removeUpdate(e: javax.swing.event.DocumentEvent?) = refreshDataView()
@@ -80,17 +94,21 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
 
                     row {
                         addKeyField = textField()
-                            .label("Key:")
                             .align(AlignX.FILL)
                             .resizableColumn()
                             .validationOnInput { validatePropertyKey(it.text) }
                             .validationOnApply { validatePropertyKey(it.text) }
+                            .applyToComponent {
+                                emptyText.text = "Key"
+                            }
                             .component
 
                         addValueField = textField()
-                            .label("Value:")
                             .align(AlignX.FILL)
                             .resizableColumn()
+                            .applyToComponent {
+                                emptyText.text = "Value"
+                            }
                             .component
 
                         button("Apply Property") {
@@ -141,11 +159,11 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     }
 
     private fun renderData() {
+        val keyNeedle = keyFilterField.text.trim()
+        val valueNeedle = valueFilterField.text.trim()
         val filtered = properties.filter { property ->
-            val needle = filterField.text.trim()
-            needle.isBlank() ||
-                property.key.contains(needle, ignoreCase = true) ||
-                property.value.contains(needle, ignoreCase = true)
+            (keyNeedle.isBlank() || property.key.contains(keyNeedle, ignoreCase = true)) &&
+                (valueNeedle.isBlank() || property.value.contains(valueNeedle, ignoreCase = true))
         }
 
         val view = if (filtered.isEmpty()) {
