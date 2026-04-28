@@ -35,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.CxRemoteLogStateService
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
@@ -59,6 +60,8 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
     private lateinit var dataScrollPane: JBScrollPane
     private lateinit var loggerNameField: JBTextField
+    private lateinit var loggerLevelField: ComboBox<CxLogLevel>
+    private lateinit var newLoggerPanel: DialogPanel
 
     private val lazyViewPanel by lazy {
         object : ClearableLazyValue<DialogPanel>() {
@@ -73,6 +76,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                     cell(newLoggerPanel())
                         .visibleIf(showDataPanel)
                         .align(AlignX.FILL)
+                        .applyToComponent { newLoggerPanel = this }
                 }
 
                 separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
@@ -160,7 +164,6 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
 
                 row {
                     logLevelComboBox()
-                        .enabledIf(editable)
                         .bindItem({ cxLogger.level }, { _ -> })
                         .addItemListener(this@CxRemoteLogStateView) { event ->
                             event.item.asSafely<CxLogLevel>()
@@ -173,6 +176,10 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                                     }
                                 }
                         }
+                        .apply {
+                            if (cxLogger.name == CxLogConstants.ROOT_LOGGER_NAME) enabled(false)
+                            else enabledIf(editable)
+                        }
 
                     loggerDetailsPlaceholders(cxLogger).also { lazyLoggerRows.add(it) }
                 }
@@ -181,60 +188,47 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             }
     }
 
-    private fun newLoggerPanel(): DialogPanel {
-        lateinit var dPanel: DialogPanel
-        lateinit var loggerLevelField: ComboBox<CxLogLevel>
+    private fun newLoggerPanel(): DialogPanel = panel {
+        row {
+            loggerLevelField = logLevelComboBox().component
 
-        return panel {
-            row {
-                loggerLevelField = logLevelComboBox().component
+            loggerNameField = newLoggerTextField(
+                parentDisposable = this@CxRemoteLogStateView,
+                onFilterChanged = { filterState.apply(it) },
+            ) { applyNewLogger() }
+                .component
 
-                loggerNameField = newLoggerTextField(
-                    parentDisposable = this@CxRemoteLogStateView,
-                    onFilterChanged = { filterState.apply(it) },
-                ) {
-                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                }
-                    .component
-
-                button("Apply Logger") {
-                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as CxLogLevel)
-                }
-            }
-                .layout(RowLayout.PARENT_GRID)
-
-            row {
-                label("Effective level")
-                    .bold()
-                label("Logger (package or class name)")
-                    .bold()
-                    .align(AlignX.FILL)
-
-            }
-                .layout(RowLayout.PARENT_GRID)
+            button("Apply Logger") { applyNewLogger() }
         }
-            .apply {
-                registerValidators(this@CxRemoteLogStateView) { validations ->
-                    canApply.set(validations.values.all { it.okEnabled })
-                }
-                dPanel = this
-            }
+            .layout(RowLayout.PARENT_GRID)
+
+        row {
+            label("Effective level")
+                .bold()
+            label("Logger (package or class name)")
+                .bold()
+                .align(AlignX.FILL)
+
+        }
+            .layout(RowLayout.PARENT_GRID)
     }
+        .apply { registerValidators(this@CxRemoteLogStateView) {} }
 
-    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, level: CxLogLevel) {
-        canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
+    private fun applyNewLogger() {
+        if (newLoggerPanel.validateAll().isNotEmpty()) return
 
-        if (!canApply.get()) return
+        val logger = loggerNameField.text
+        val effectiveLevel = loggerLevelField.selectedItem as CxLogLevel
 
         editable.set(false)
 
-        CxRemoteLogStateService.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
+        CxRemoteLogStateService.getInstance(project).setLogger(logger.trim(), effectiveLevel) { coroutineScope, _ ->
             coroutineScope.launch {
                 withContext(Dispatchers.EDT) {
+                    filterState.apply(loggerNameField.text)
                     editable.set(true)
                 }
             }
         }
     }
-
 }

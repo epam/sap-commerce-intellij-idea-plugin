@@ -2,9 +2,13 @@
 
 <cite>Release contributors</code>
 - 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Amlytvyn+is%3Apr)
+- 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Aekalenchuk+is%3Apr)
 
 ### `Project View` enhancements
 - Show `.aiassistant` under `AI Capabilities` project view node [#1924](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1924)
+
+### `SAP CX Logging` enhancements
+- Enhanced logger validation and root logger protection [#1922](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1922)
 
 ### Other
 - Do not fetch PRs statistics via GitHub actions [#1925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1925)
