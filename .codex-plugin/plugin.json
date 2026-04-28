@@ -1,0 +1,21 @@
+{
+  "name": "sap-commerce-intellij-idea-plugin",
+  "version": "0.1.0",
+  "description": "Repository-local Codex plugin metadata for the SAP Commerce IntelliJ IDEA plugin project.",
+  "author": {
+    "name": "Local Repository",
+    "email": "hybrisideaplugin@epam.com",
+    "url": "https://github.com/epam/sap-commerce-intellij-idea-plugin"
+  },
+  "homepage": "https://github.com/epam/sap-commerce-intellij-idea-plugin",
+  "repository": "https://github.com/epam/sap-commerce-intellij-idea-plugin",
+  "license": "LGPL-3.0-or-later",
+  "keywords": [
+    "intellij",
+    "plugin",
+    "sap-commerce",
+    "hybris",
+    "gradle"
+  ],
+  "skills": "./skills/"
+}
