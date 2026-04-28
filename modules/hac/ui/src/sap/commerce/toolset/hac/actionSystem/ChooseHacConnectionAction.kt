@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -83,9 +83,14 @@ class ChooseHacConnectionAction : DefaultActionGroup(), CustomComponentAction {
             ActionPlaces.EDITOR_TOOLBAR -> hacSettings.presentationName
             ConsoleUiConstants.PLACE_TOOLBAR -> null
             HybrisActionPlaces.LOGGERS_TOOLBAR -> null
+            HybrisActionPlaces.PROPERTIES_TOOLBAR -> null
             else -> hacSettings.shortenConnectionName
         }
-        if (e.place == ConsoleUiConstants.PLACE_TOOLBAR || e.place == HybrisActionPlaces.LOGGERS_TOOLBAR) {
+        if (
+            e.place == ConsoleUiConstants.PLACE_TOOLBAR ||
+            e.place == HybrisActionPlaces.LOGGERS_TOOLBAR ||
+            e.place == HybrisActionPlaces.PROPERTIES_TOOLBAR
+        ) {
             presentation.putClientProperty(ActionUtil.HIDE_DROPDOWN_ICON, true)
         }
 
