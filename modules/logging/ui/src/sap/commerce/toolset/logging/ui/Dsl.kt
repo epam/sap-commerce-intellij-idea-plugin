@@ -242,12 +242,10 @@ internal fun Row.newLoggerTextField(
 ): Cell<JBTextField> = textField()
     .resizableColumn()
     .align(AlignX.FILL)
-    .validationOnInput { validateLoggerName(it.text) }
     .validationOnApply { validateLoggerName(it.text) }
     .applyToComponent {
-        addActionListener(parentDisposable) {
-            apply()
-        }
+        addActionListener(parentDisposable) { apply() }
+
         document.addDocumentListener(parentDisposable, object : DocumentListener {
             override fun insertUpdate(e: DocumentEvent) = onFilterChanged(text)
             override fun removeUpdate(e: DocumentEvent) = onFilterChanged(text)
@@ -255,11 +253,9 @@ internal fun Row.newLoggerTextField(
         })
     }
 
-private fun validateLoggerName(
-    value: String,
-): ValidationInfo? = when {
-    value.isBlank() -> ValidationInfo("Empty logger name is not allowed")
-    value.trim() == CxLogConstants.ROOT_LOGGER_NAME -> ValidationInfo("Logger name 'root' is not allowed")
+private fun validateLoggerName(loggerName: String): ValidationInfo? = when {
+    loggerName.isBlank() -> ValidationInfo("Empty logger name is not allowed")
+    loggerName.trim() == CxLogConstants.ROOT_LOGGER_NAME -> ValidationInfo("Logger name 'root' is not allowed")
     else -> null
 }
 
