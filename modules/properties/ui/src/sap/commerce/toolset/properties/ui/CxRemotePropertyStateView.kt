@@ -165,7 +165,6 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
 
                 row {
                     addKeyField = textField()
-                        .label("Key:")
                         .align(AlignX.FILL)
                         .resizableColumn()
                         .validationOnInput {
@@ -174,12 +173,17 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                         .validationOnApply {
                             validatePropertyKey(it.text)
                         }
+                        .applyToComponent {
+                            emptyText.text = "Key"
+                        }
                         .component
 
                     addValueField = textField()
-                        .label("Value:")
                         .align(AlignX.FILL)
                         .resizableColumn()
+                        .applyToComponent {
+                            emptyText.text = "Value"
+                        }
                         .component
 
                     button("Apply Property") {
