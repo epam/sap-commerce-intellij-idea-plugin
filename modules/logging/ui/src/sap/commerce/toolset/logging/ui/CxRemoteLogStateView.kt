@@ -188,33 +188,31 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             }
     }
 
-    private fun newLoggerPanel(): DialogPanel {
-        return panel {
-            row {
-                loggerLevelField = logLevelComboBox().component
+    private fun newLoggerPanel(): DialogPanel = panel {
+        row {
+            loggerLevelField = logLevelComboBox().component
 
-                loggerNameField = newLoggerTextField(
-                    parentDisposable = this@CxRemoteLogStateView,
-                    onFilterChanged = { filterState.apply(it) },
-                ) { applyNewLogger() }
-                    .component
+            loggerNameField = newLoggerTextField(
+                parentDisposable = this@CxRemoteLogStateView,
+                onFilterChanged = { filterState.apply(it) },
+            ) { applyNewLogger() }
+                .component
 
-                button("Apply Logger") { applyNewLogger() }
-            }
-                .layout(RowLayout.PARENT_GRID)
-
-            row {
-                label("Effective level")
-                    .bold()
-                label("Logger (package or class name)")
-                    .bold()
-                    .align(AlignX.FILL)
-
-            }
-                .layout(RowLayout.PARENT_GRID)
+            button("Apply Logger") { applyNewLogger() }
         }
-            .apply { registerValidators(this@CxRemoteLogStateView) {} }
+            .layout(RowLayout.PARENT_GRID)
+
+        row {
+            label("Effective level")
+                .bold()
+            label("Logger (package or class name)")
+                .bold()
+                .align(AlignX.FILL)
+
+        }
+            .layout(RowLayout.PARENT_GRID)
     }
+        .apply { registerValidators(this@CxRemoteLogStateView) {} }
 
     private fun applyNewLogger() {
         if (newLoggerPanel.validateAll().isNotEmpty()) return
