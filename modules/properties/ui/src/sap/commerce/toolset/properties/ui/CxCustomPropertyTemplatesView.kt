@@ -25,6 +25,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
@@ -41,8 +42,11 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.properties.custom.CxCustomPropertyTemplateService
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.actionButton
+import java.awt.BorderLayout
+import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.ScrollPaneConstants
 
 class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
     private var templateUUID: String = ""
@@ -179,18 +183,17 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
             }
         } else panel {
             row {
-                label("Key").bold()
-                label("Value").bold().align(AlignX.FILL)
+                cell(createPropertyColumns(createPropertyCell("Key"), createPropertyCell("Value")))
+                    .align(AlignX.FILL)
+                    .resizableColumn()
             }.layout(RowLayout.PARENT_GRID)
 
             filtered.forEach { property ->
                 row {
-                    label(property.key)
+                    val keyCell = createPropertyCell(property.key)
 
                     if (editingPropertyKey == property.key) {
                         val valueField = textField()
-                            .align(AlignX.FILL)
-                            .resizableColumn()
                             .applyToComponent { text = editingPropertyValue }
                             .applyToComponent {
                                 document.addDocumentListener(object : javax.swing.event.DocumentListener {
@@ -201,6 +204,10 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                             }
                             .component
 
+                        cell(createPropertyColumns(keyCell, valueField))
+                            .align(AlignX.FILL)
+                            .resizableColumn()
+
                         button("Apply") {
                             editingPropertyKey = null
                             editingPropertyValue = ""
@@ -208,7 +215,9 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
                                 .updateProperty(templateUUID, property.key, valueField.text)
                         }
                     } else {
-                        label(property.value).align(AlignX.FILL).resizableColumn()
+                        cell(createPropertyColumns(keyCell, createPropertyCell(property.value)))
+                            .align(AlignX.FILL)
+                            .resizableColumn()
 
                         actionButton(object : AnAction(null, "Edit property", HybrisIcons.Connection.EDIT) {
                             override fun actionPerformed(e: AnActionEvent) {
@@ -221,6 +230,14 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
 
                     actionButton(object : AnAction(null, "Delete property", HybrisIcons.Log.Action.DELETE) {
                         override fun actionPerformed(e: AnActionEvent) {
+                            val confirmed = Messages.showYesNoDialog(
+                                project,
+                                "Delete property '${property.key}' from this template?",
+                                "Delete Property",
+                                Messages.getQuestionIcon(),
+                            ) == Messages.YES
+                            if (!confirmed) return
+
                             if (editingPropertyKey == property.key) {
                                 editingPropertyKey = null
                                 editingPropertyValue = ""
@@ -236,6 +253,40 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
         dataScrollPane.setViewportView(view)
     }
 
+    private fun createPropertyColumns(left: JComponent, right: JComponent): JComponent = JPanel(java.awt.GridLayout(1, 2, JBUI.scale(COLUMN_GAP), 0)).apply {
+        isOpaque = false
+        add(wrapContentCell(left))
+        add(wrapContentCell(right))
+    }
+
+    private fun wrapContentCell(component: JComponent): JComponent = JPanel(BorderLayout()).apply {
+        isOpaque = false
+        add(component, BorderLayout.CENTER)
+    }
+
+    private fun createPropertyCell(text: String): JComponent {
+        val field = JBTextField(text).apply {
+            isEditable = false
+            isFocusable = true
+            isOpaque = false
+            border = JBUI.Borders.empty(0, 0)
+            toolTipText = text
+            caretPosition = 0
+        }
+
+        return JBScrollPane(
+            field,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED,
+        ).apply {
+            border = JBUI.Borders.empty()
+            preferredSize = Dimension(JBUI.scale(COLUMN_WIDTH), field.preferredSize.height)
+            minimumSize = preferredSize
+            maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
+            horizontalScrollBar.unitIncrement = JBUI.scale(16)
+        }
+    }
+
     private fun validatePropertyKey(value: String): ValidationInfo? = when {
         value.isBlank() -> ValidationInfo("Property key is not allowed to be empty")
         value.any(Char::isWhitespace) -> ValidationInfo("Property key cannot contain whitespace")
@@ -248,4 +299,9 @@ class CxCustomPropertyTemplatesView(private val project: Project) : Disposable {
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) = listOf(showDataPanel)
         .forEach { it.set(unhide.contains(it)) }
+
+    companion object {
+        private const val COLUMN_WIDTH = 340
+        private const val COLUMN_GAP = 8
+    }
 }

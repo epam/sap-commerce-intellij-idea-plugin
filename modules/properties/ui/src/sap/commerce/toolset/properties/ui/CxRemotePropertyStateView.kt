@@ -25,6 +25,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.AnimatedIcon
@@ -44,11 +45,10 @@ import sap.commerce.toolset.properties.CxRemotePropertyStateService
 import sap.commerce.toolset.properties.exec.CxRemotePropertyStatePage
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 import sap.commerce.toolset.ui.actionButton
+import java.awt.BorderLayout
+import java.awt.Dimension
 import java.awt.event.ActionListener
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.Timer
+import javax.swing.*
 
 class CxRemotePropertyStateView(private val project: Project) : Disposable {
     private val showFetchProperties = AtomicBooleanProperty(false)
@@ -289,18 +289,17 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
             )
         } else panel {
             row {
-                label("Key").bold()
-                label("Value").bold().align(AlignX.FILL)
+                cell(createPropertyColumns(createPropertyCell("Key"), createPropertyCell("Value")))
+                    .align(AlignX.FILL)
+                    .resizableColumn()
             }.layout(RowLayout.PARENT_GRID)
 
             filtered.forEach { property ->
                 row {
-                    label(property.key)
+                    val keyCell = createPropertyCell(property.key)
 
                     if (editingPropertyKey == property.key) {
                         val valueField = textField()
-                            .align(AlignX.FILL)
-                            .resizableColumn()
                             .applyToComponent { text = editingPropertyValue }
                             .applyToComponent {
                                 document.addDocumentListener(object : javax.swing.event.DocumentListener {
@@ -311,6 +310,10 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                             }
                             .component
 
+                        cell(createPropertyColumns(keyCell, valueField))
+                            .align(AlignX.FILL)
+                            .resizableColumn()
+
                         button("Apply") {
                             setFetching(true)
                             editingPropertyKey = null
@@ -318,7 +321,9 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
                             CxRemotePropertyStateService.getInstance(project).upsertProperty(currentConnection, property.key, valueField.text)
                         }
                     } else {
-                        label(property.value).align(AlignX.FILL).resizableColumn()
+                        cell(createPropertyColumns(keyCell, createPropertyCell(property.value)))
+                            .align(AlignX.FILL)
+                            .resizableColumn()
 
                         actionButton(object : AnAction(null, "Edit property", HybrisIcons.Connection.EDIT) {
                             override fun actionPerformed(e: AnActionEvent) {
@@ -331,6 +336,14 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
 
                     actionButton(object : AnAction(null, "Delete property", HybrisIcons.Log.Action.DELETE) {
                         override fun actionPerformed(e: AnActionEvent) {
+                            val confirmed = Messages.showYesNoDialog(
+                                project,
+                                "Delete property '${property.key}' from '${currentConnection.shortenConnectionName}'?",
+                                "Delete Property",
+                                Messages.getQuestionIcon(),
+                            ) == Messages.YES
+                            if (!confirmed) return
+
                             if (editingPropertyKey == property.key) {
                                 editingPropertyKey = null
                                 editingPropertyValue = ""
@@ -358,6 +371,65 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
         value.isBlank() -> ValidationInfo("Property key is not allowed to be empty")
         value.any(Char::isWhitespace) -> ValidationInfo("Property key cannot contain whitespace")
         else -> null
+    }
+
+    private fun createPropertyColumns(left: JComponent, right: JComponent): JComponent = JPanel(java.awt.GridBagLayout()).apply {
+        isOpaque = false
+        val gap = JBUI.scale(COLUMN_GAP)
+        val leftConstraints = java.awt.GridBagConstraints().apply {
+            gridx = 0
+            gridy = 0
+            weightx = 0.5
+            weighty = 1.0
+            fill = java.awt.GridBagConstraints.BOTH
+            insets = JBUI.insets(0, 0, 0, gap / 2)
+        }
+        val rightConstraints = java.awt.GridBagConstraints().apply {
+            gridx = 1
+            gridy = 0
+            weightx = 0.5
+            weighty = 1.0
+            fill = java.awt.GridBagConstraints.BOTH
+            insets = JBUI.insets(0, gap / 2, 0, 0)
+        }
+        add(wrapContentCell(left), leftConstraints)
+        add(wrapContentCell(right), rightConstraints)
+    }
+
+    private fun wrapContentCell(component: JComponent): JComponent = JPanel(BorderLayout()).apply {
+        isOpaque = false
+        // Zero minimum width so GridBagLayout's equal weights actually produce a 50/50 split
+        // even when the inner content (long keys vs long values) would otherwise prefer different widths.
+        minimumSize = Dimension(0, 0)
+        add(component, BorderLayout.CENTER)
+    }
+
+    private fun createPropertyCell(text: String): JComponent {
+        val field = JBTextField(text).apply {
+            isEditable = false
+            isFocusable = true
+            isOpaque = false
+            border = JBUI.Borders.empty(0, 0)
+            toolTipText = text
+            caretPosition = 0
+            // Don't let the field's content-driven preferred width influence the column split.
+            // The parent (createPropertyColumns) decides the width; the field just renders inside.
+            minimumSize = Dimension(0, preferredSize.height)
+        }
+
+        return JBScrollPane(
+            field,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED,
+        ).apply {
+            border = JBUI.Borders.empty()
+            // Zero minimum width: the GridBagLayout in createPropertyColumns owns the column width
+            // via equal weightx values, and any non-zero minimum here would skew the 50/50 split
+            // when one side's preferred content width differs from the other.
+            minimumSize = Dimension(0, field.preferredSize.height)
+            preferredSize = Dimension(0, field.preferredSize.height)
+            horizontalScrollBar.unitIncrement = JBUI.scale(16)
+        }
     }
 
     private fun fetchFilteredPage() {
@@ -391,5 +463,6 @@ class CxRemotePropertyStateView(private val project: Project) : Disposable {
 
     companion object {
         private const val FILTER_DEBOUNCE_MS = 500
+        private const val COLUMN_GAP = 8
     }
 }
