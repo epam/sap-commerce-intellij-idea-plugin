@@ -111,21 +111,19 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         popup.show(relativePoint)
     }
 
-    private fun collectHintTargets(psiFile: PsiFile): List<LoggerHintTarget> {
-        val resolver = CxLoggerIdentifierResolver.getInstance(psiFile.project)
-        return PsiTreeUtil.findChildrenOfAnyType(psiFile, PsiPackageStatement::class.java, PsiField::class.java)
-            .mapNotNull { element ->
-                when (element) {
-                    is PsiPackageStatement -> LoggerHintTarget(element, element.packageName)
-                    is PsiField -> {
-                        val loggerIdentifier = resolver.resolve(element) ?: return@mapNotNull null
-                        LoggerHintTarget(element, loggerIdentifier)
-                    }
-
-                    else -> null
+    private fun collectHintTargets(psiFile: PsiFile): List<LoggerHintTarget> = PsiTreeUtil
+        .findChildrenOfAnyType(psiFile, PsiPackageStatement::class.java, PsiField::class.java)
+        .mapNotNull { element ->
+            when (element) {
+                is PsiPackageStatement -> LoggerHintTarget(element, element.packageName)
+                is PsiField -> {
+                    val loggerIdentifier = CxLoggerIdentifierResolver.getInstance(psiFile.project).resolve(element) ?: return@mapNotNull null
+                    LoggerHintTarget(element, loggerIdentifier)
                 }
+
+                else -> null
             }
-    }
+        }
 
     private fun buildHintText(logger: CxLoggerPresentation?): RichText {
         if (logger == null) return RichText("[y] log level")
