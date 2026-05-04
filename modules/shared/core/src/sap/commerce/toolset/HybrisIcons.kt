@@ -78,6 +78,10 @@ object HybrisIcons {
     object Groovy {
         val COMMIT = getIcon("icons/groovy/commit.svg")
         val ROLLBACK = getIcon("icons/groovy/rollback.svg")
+        val WEB_CONTEXT = getIcon("icons/groovy/webContext.svg")
+        val WEB_CONTEXT_ACTIVE = getIcon("icons/groovy/webContextActive.svg")
+        val WEB_CONTEXTS_LOAD = AllIcons.Vcs.Fetch
+        val WEB_CONTEXTS_RELOAD = AllIcons.General.Refresh
     }
 
     object Tools {
