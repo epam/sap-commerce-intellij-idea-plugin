@@ -19,12 +19,14 @@
 package sap.commerce.toolset.logging.codeInsight.hints
 
 import com.intellij.psi.*
+import fleet.util.safeAs
 import sap.commerce.toolset.logging.CxLogConstants
 import java.util.*
 
 class CxLoggerIdentifierResolver(private val contextClass: PsiClass) {
 
     private val visited = mutableSetOf<PsiElement>()
+    private val helper = JavaPsiFacade.getInstance(contextClass.project).constantEvaluationHelper
 
     fun resolve(field: PsiField): String? {
         if (!visited.add(field)) return null
@@ -33,8 +35,7 @@ class CxLoggerIdentifierResolver(private val contextClass: PsiClass) {
     }
 
     private fun resolveExpression(expression: PsiExpression): String? {
-        val constant = JavaPsiFacade.getInstance(expression.project).constantEvaluationHelper
-            .computeConstantExpression(expression, false)
+        val constant = helper.computeConstantExpression(expression, false)
         if (constant is String) return constant
 
         return when (expression) {
@@ -74,7 +75,10 @@ class CxLoggerIdentifierResolver(private val contextClass: PsiClass) {
 
         if (methodName in CxLogConstants.LOGGER_FACTORY_METHOD_NAMES) {
             val containingClass = expression.resolveMethod()?.containingClass?.qualifiedName
-                ?: (qualifier as? PsiReferenceExpression)?.resolve()?.let { (it as? PsiClass)?.qualifiedName }
+                ?: qualifier.safeAs<PsiReferenceExpression>()
+                    ?.resolve()
+                    ?.safeAs<PsiClass>()
+                    ?.qualifiedName
             if (containingClass in CxLogConstants.LOGGER_FACTORY_CLASS_NAMES) {
                 return if (args.isEmpty()) contextClass.qualifiedName
                 else resolveExpression(args.first())
@@ -92,9 +96,7 @@ class CxLoggerIdentifierResolver(private val contextClass: PsiClass) {
             "format", "formatted" -> {
                 val formatStr = qualifier?.let { resolveExpression(it) } ?: return null
                 val arguments = args.map { arg ->
-                    JavaPsiFacade.getInstance(arg.project).constantEvaluationHelper
-                        .computeConstantExpression(arg, false)
-                        ?: resolveExpression(arg)
+                    helper.computeConstantExpression(arg, false) ?: resolveExpression(arg)
                 }.toTypedArray()
                 return runCatching { java.lang.String.format(Locale.ROOT, formatStr, *arguments) }.getOrNull()
             }
@@ -118,9 +120,8 @@ class CxLoggerIdentifierResolver(private val contextClass: PsiClass) {
         val s2 = resolveExpression(arguments[1])
         if (s1 != null && s2 != null) return base.replace(s1, s2)
 
-        val helper = JavaPsiFacade.getInstance(arguments[0].project).constantEvaluationHelper
-        val c1 = helper.computeConstantExpression(arguments[0], false) as? Char
-        val c2 = helper.computeConstantExpression(arguments[1], false) as? Char
+        val c1 = helper.computeConstantExpression(arguments[0], false).safeAs<Char>()
+        val c2 = helper.computeConstantExpression(arguments[1], false).safeAs<Char>()
         if (c1 != null && c2 != null) return base.replace(c1, c2)
 
         return null
