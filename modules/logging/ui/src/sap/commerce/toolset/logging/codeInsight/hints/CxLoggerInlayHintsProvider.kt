@@ -59,6 +59,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         val loggerIdentifier: String,
         val kind: LoggerHintKind,
         val overriddenByField: LoggerFieldInfo? = null,
+        val hasLoggerFields: Boolean = false,
     )
 
     private enum class LoggerHintKind {
@@ -77,19 +78,18 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         val project = psiFile.project
 
         return collectHintTargets(psiFile, editor)
-            .map { target ->
+            .mapNotNull { target ->
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(target.element)
                 val logger = CxRemoteLogStateService.getInstance(project).logger(target.loggerIdentifier)
-                if (target.kind == LoggerHintKind.CLASS && shouldSuppressClassHint(target, logger, editor)) {
-                    return@map null
+                if (target.kind == LoggerHintKind.CLASS && logger != null && shouldSuppressClassHint(target, logger)) {
+                    return@mapNotNull null
                 }
                 val text = buildHintText(logger, target.overriddenByField != null)
                 val handler = ClickHandler(target.element, target.loggerIdentifier)
                 val tooltip = buildTooltip(logger, target.overriddenByField)
 
-                return@map range to ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
+                range to ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
             }
-            .filterNotNull()
     }
 
     private inner class ClickHandler(
@@ -106,7 +106,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         }
     }
 
-    fun handleClick(editor: Editor, loggerIdentifier: String, event: MouseEvent?) {
+    private fun handleClick(editor: Editor, loggerIdentifier: String, event: MouseEvent?) {
         val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions") as ActionGroup
         val project = editor.project ?: return
         val dataContext = SimpleDataContext.builder()
@@ -123,11 +123,9 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             /* showDisabledActions = */ true
         )
 
-        // Convert the point to a RelativePoint
         val relativePoint = if (event != null) RelativePoint(event)
         else JBPopupFactory.getInstance().guessBestPopupLocation(editor)
 
-        // Show the popup at the calculated relative point
         popup.show(relativePoint)
     }
 
@@ -152,7 +150,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             .toList()
         val overridingField = loggerFields.firstOrNull { it.loggerIdentifier != classFqn }
 
-        return LoggerHintTarget(classIdentifier, classFqn, LoggerHintKind.CLASS, overridingField)
+        return LoggerHintTarget(classIdentifier, classFqn, LoggerHintKind.CLASS, overridingField, loggerFields.isNotEmpty())
     }
 
     private fun createFieldHintTarget(field: PsiField): LoggerHintTarget? {
@@ -164,25 +162,10 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
     private fun shouldSuppressClassHint(
         target: LoggerHintTarget,
-        logger: CxLoggerPresentation?,
-        editor: Editor,
+        logger: CxLoggerPresentation,
     ): Boolean {
-        logger ?: return false
         if (target.overriddenByField != null) return true
-        val psiClass = target.element.parent as? PsiClass ?: return false
-        val classFqn = FqnUtil.elementToFqn(psiClass, editor) ?: return false
-        val hasLoggerField = psiClass.allFields
-            .asSequence()
-            .mapNotNull { resolveLoggerFieldInfo(it, psiClass) }
-            .any()
-
-        if (target.loggerIdentifier != classFqn) return false
-
-        return when {
-            !logger.inherited -> false
-            hasLoggerField -> true
-            else -> true
-        }
+        return logger.inherited && target.hasLoggerFields
     }
 
     private fun buildHintText(logger: CxLoggerPresentation?, overridden: Boolean): RichText {
@@ -329,11 +312,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         } ?: return null
 
         val rawArguments = expression.argumentList.expressions
-        val arguments = when (methodName) {
-            "format" -> rawArguments.map { resolveFormatArgument(it, contextClass, visited) }.toTypedArray()
-            "formatted" -> rawArguments.map { resolveFormatArgument(it, contextClass, visited) }.toTypedArray()
-            else -> emptyArray()
-        }
+        val arguments = rawArguments.map { resolveFormatArgument(it, contextClass, visited) }.toTypedArray()
 
         return runCatching {
             java.lang.String.format(Locale.ROOT, formatString, *arguments)
