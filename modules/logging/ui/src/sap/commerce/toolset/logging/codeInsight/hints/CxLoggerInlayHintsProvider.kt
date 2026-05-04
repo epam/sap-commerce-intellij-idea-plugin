@@ -110,13 +110,13 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     }
 
     private fun collectHintTargets(psiFile: PsiFile): List<LoggerHintTarget> {
+        val resolver = CxLoggerIdentifierResolver.getInstance(psiFile.project)
         return PsiTreeUtil.findChildrenOfAnyType(psiFile, PsiPackageStatement::class.java, PsiField::class.java)
             .mapNotNull { element ->
                 when (element) {
                     is PsiPackageStatement -> LoggerHintTarget(element, element.packageName)
                     is PsiField -> {
-                        val contextClass = element.containingClass ?: return@mapNotNull null
-                        val loggerIdentifier = CxLoggerIdentifierResolver(contextClass).resolve(element) ?: return@mapNotNull null
+                        val loggerIdentifier = resolver.resolve(element) ?: return@mapNotNull null
                         LoggerHintTarget(element, loggerIdentifier)
                     }
 
