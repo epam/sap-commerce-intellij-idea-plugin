@@ -32,11 +32,7 @@ class CxLoggerIdentifierResolver(private val project: Project) {
     fun resolve(field: PsiField): String? {
         val contextClass = field.containingClass ?: return null
         val initializer = field.initializer ?: return null
-        val visited = mutableSetOf<PsiElement>()
-
-        if (!visited.add(field)) return null
-
-        return resolveExpression(initializer, contextClass, visited)
+        return resolveExpression(initializer, contextClass, mutableSetOf())
     }
 
     private fun resolveExpression(expression: PsiExpression, contextClass: PsiClass, visited: MutableSet<PsiElement>): String? {
@@ -79,44 +75,40 @@ class CxLoggerIdentifierResolver(private val project: Project) {
         val qualifier = expression.methodExpression.qualifierExpression
         val args = expression.argumentList.expressions
 
-        if (methodName in CxLogConstants.LOGGER_FACTORY_METHOD_NAMES) {
-            val containingClass = expression.resolveMethod()?.containingClass?.qualifiedName
-                ?: qualifier.asSafely<PsiReferenceExpression>()
-                    ?.resolve()
-                    ?.asSafely<PsiClass>()
-                    ?.qualifiedName
-            if (containingClass in CxLogConstants.LOGGER_FACTORY_CLASS_NAMES) {
-                return if (args.isEmpty()) contextClass.qualifiedName
+        val base by lazy { qualifier?.let { resolveExpression(it, contextClass, visited) } }
+
+        return when (methodName) {
+            in CxLogConstants.LOGGER_FACTORY_METHOD_NAMES -> {
+                val containingClass = expression.resolveMethod()?.containingClass?.qualifiedName
+                    ?: qualifier.asSafely<PsiReferenceExpression>()
+                        ?.resolve()
+                        ?.asSafely<PsiClass>()
+                        ?.qualifiedName
+                if (containingClass !in CxLogConstants.LOGGER_FACTORY_CLASS_NAMES) return null
+                if (args.isEmpty()) contextClass.qualifiedName
                 else resolveExpression(args.first(), contextClass, visited)
             }
-        }
-
-        when (methodName) {
-            "getName", "getCanonicalName", "getTypeName" -> return qualifier?.let { resolveExpression(it, contextClass, visited) }
-            "getSimpleName" -> return qualifier?.let { resolveExpression(it, contextClass, visited)?.substringAfterLast('.') }
-            "getClass" -> return contextClass.qualifiedName
-            "getPackageName" -> return qualifier?.let { resolveExpression(it, contextClass, visited)?.substringBeforeLast('.', "") }
-        }
-
-        when (methodName) {
+            "getName", "getCanonicalName", "getTypeName" -> base
+            "getSimpleName" -> base?.substringAfterLast('.')
+            "getClass" -> contextClass.qualifiedName
+            "getPackageName" -> base?.substringBeforeLast('.', "")
             "format", "formatted" -> {
-                val formatStr = qualifier?.let { resolveExpression(it, contextClass, visited) } ?: return null
+                val formatStr = base ?: return null
                 val arguments = args.map { arg ->
                     JavaPsiFacade.getInstance(project).constantEvaluationHelper
                         .computeConstantExpression(arg, false)
                         ?: resolveExpression(arg, contextClass, visited)
                 }.toTypedArray()
-                return runCatching { java.lang.String.format(Locale.ROOT, formatStr, *arguments) }.getOrNull()
+                runCatching { java.lang.String.format(Locale.ROOT, formatStr, *arguments) }.getOrNull()
             }
-        }
-
-        val base = qualifier?.let { resolveExpression(it, contextClass, visited) } ?: return null
-        return when (methodName) {
-            "replace" -> resolveReplaceCall(base, args, contextClass, visited)
-            "concat" -> args.singleOrNull()?.let { resolveExpression(it, contextClass, visited) }?.let { base + it }
-            "toLowerCase" -> if (args.isEmpty()) base.lowercase(Locale.ROOT) else null
-            "toUpperCase" -> if (args.isEmpty()) base.uppercase(Locale.ROOT) else null
-            "trim" -> if (args.isEmpty()) base.trim() else null
+            "replace" -> resolveReplaceCall(base ?: return null, args, contextClass, visited)
+            "concat" -> {
+                val b = base ?: return null
+                args.singleOrNull()?.let { resolveExpression(it, contextClass, visited) }?.let { b + it }
+            }
+            "toLowerCase" -> if (args.isEmpty()) base?.lowercase(Locale.ROOT) else null
+            "toUpperCase" -> if (args.isEmpty()) base?.uppercase(Locale.ROOT) else null
+            "trim" -> if (args.isEmpty()) base?.trim() else null
             else -> null
         }
     }

@@ -38,6 +38,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.awt.RelativePoint
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.logging.CxLogConstants
@@ -60,11 +61,12 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
         if (psiFile.isNotHybrisProject) return emptyList()
         val project = psiFile.project
+        val logStateService = CxRemoteLogStateService.getInstance(project)
 
         return collectHintTargets(psiFile)
             .map { target ->
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(target.element)
-                val logger = CxRemoteLogStateService.getInstance(project).logger(target.loggerIdentifier)
+                val logger = logStateService.logger(target.loggerIdentifier)
                 val text = buildHintText(logger)
                 val handler = ClickHandler(target.element, target.loggerIdentifier)
                 val tooltip = buildTooltip(logger)
@@ -87,7 +89,7 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     }
 
     private fun handleClick(editor: Editor, loggerIdentifier: String, event: MouseEvent?) {
-        val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions") as ActionGroup
+        val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions").asSafely<ActionGroup>() ?: return
         val project = editor.project ?: return
         val dataContext = SimpleDataContext.builder()
             .add(CommonDataKeys.PROJECT, project)
