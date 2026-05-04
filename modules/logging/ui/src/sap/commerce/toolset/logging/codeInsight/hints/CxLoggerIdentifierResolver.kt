@@ -24,7 +24,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.logging.CxLogConstants
-import java.util.*
 
 @Service(Service.Level.PROJECT)
 class CxLoggerIdentifierResolver(private val project: Project) {
@@ -92,40 +91,8 @@ class CxLoggerIdentifierResolver(private val project: Project) {
             "getSimpleName" -> base?.substringAfterLast('.')
             "getClass" -> contextClass.qualifiedName
             "getPackageName" -> base?.substringBeforeLast('.', "")
-            "format", "formatted" -> {
-                val formatStr = base ?: return null
-                val arguments = args.map { arg ->
-                    JavaPsiFacade.getInstance(project).constantEvaluationHelper
-                        .computeConstantExpression(arg, false)
-                        ?: resolveExpression(arg, contextClass, visited)
-                }.toTypedArray()
-                runCatching { java.lang.String.format(Locale.ROOT, formatStr, *arguments) }.getOrNull()
-            }
-            "replace" -> resolveReplaceCall(base ?: return null, args, contextClass, visited)
-            "concat" -> {
-                val b = base ?: return null
-                args.singleOrNull()?.let { resolveExpression(it, contextClass, visited) }?.let { b + it }
-            }
-            "toLowerCase" -> if (args.isEmpty()) base?.lowercase(Locale.ROOT) else null
-            "toUpperCase" -> if (args.isEmpty()) base?.uppercase(Locale.ROOT) else null
-            "trim" -> if (args.isEmpty()) base?.trim() else null
             else -> null
         }
-    }
-
-    private fun resolveReplaceCall(base: String, arguments: Array<PsiExpression>, contextClass: PsiClass, visited: MutableSet<PsiElement>): String? {
-        if (arguments.size != 2) return null
-
-        val s1 = resolveExpression(arguments[0], contextClass, visited)
-        val s2 = resolveExpression(arguments[1], contextClass, visited)
-        if (s1 != null && s2 != null) return base.replace(s1, s2)
-
-        val helper = JavaPsiFacade.getInstance(project).constantEvaluationHelper
-        val c1 = helper.computeConstantExpression(arguments[0], false).asSafely<Char>()
-        val c2 = helper.computeConstantExpression(arguments[1], false).asSafely<Char>()
-        if (c1 != null && c2 != null) return base.replace(c1, c2)
-
-        return null
     }
 
     companion object {
