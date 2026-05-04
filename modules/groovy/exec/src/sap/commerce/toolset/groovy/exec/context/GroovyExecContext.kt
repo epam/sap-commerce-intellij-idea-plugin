@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,6 +32,7 @@ data class GroovyExecContext(
     private val content: String,
     val timeout: Int,
     val transactionMode: TransactionMode,
+    val webContext: String? = null,
     val replicaContext: ReplicaContext? = null
 ) : ExecContext {
 
@@ -47,6 +48,7 @@ data class GroovyExecContext(
         content = content,
         timeout = settings.timeout,
         transactionMode = settings.transactionMode,
+        webContext = settings.webContext,
         replicaContext = replicaContext,
     )
 
@@ -58,6 +60,7 @@ data class GroovyExecContext(
 
     data class Settings(
         override val timeout: Int,
+        val webContext: String? = null,
         val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
         val replicaContext: GroovyReplicaAwareContext = GroovyReplicaAwareContext.auto()
     ) : ExecContext.Settings {
@@ -65,23 +68,27 @@ data class GroovyExecContext(
             timeout = timeout,
             transactionMode = transactionMode,
             replicaContext = replicaContext,
+            webContext = webContext,
         )
 
         data class Mutable(
             override var timeout: Int,
             var transactionMode: TransactionMode,
-            var replicaContext: GroovyReplicaAwareContext
+            var replicaContext: GroovyReplicaAwareContext,
+            var webContext: String?
         ) : ExecContext.Settings.Mutable {
             override fun immutable() = Settings(
                 timeout = timeout,
                 transactionMode = transactionMode,
                 replicaContext = replicaContext,
+                webContext = webContext,
             )
         }
     }
 
     companion object {
         val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.groovy.execution.settings")
+        val KEY_WEB_CONTEXTS = Key.create<Collection<String>>("sap.cx.groovy.execution.webContexts")
         const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce instance..."
 
         fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null) = Settings(

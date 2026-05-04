@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -58,6 +58,12 @@ var Editor.groovyExecContextSettings
     get() = this.getUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS)
     set(value) {
         this.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, value)
+    }
+
+var Editor.groovyWebContexts
+    get() = this.getUserData(GroovyExecContext.KEY_WEB_CONTEXTS)
+    set(value) {
+        this.putUserData(GroovyExecContext.KEY_WEB_CONTEXTS, value)
     }
 
 class GroovySplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
