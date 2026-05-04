@@ -139,7 +139,8 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             else -> SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)
         }
 
-        return RichText("[").apply {
+        return RichText().apply {
+            append("[", SimpleTextAttributes.REGULAR_ATTRIBUTES)
             append(logger.level.name, style)
             append("] log level", SimpleTextAttributes.REGULAR_ATTRIBUTES)
         }
