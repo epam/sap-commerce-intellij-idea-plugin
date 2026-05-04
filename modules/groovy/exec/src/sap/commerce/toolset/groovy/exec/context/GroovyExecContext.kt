@@ -48,6 +48,7 @@ data class GroovyExecContext(
         content = content,
         timeout = settings.timeout,
         transactionMode = settings.transactionMode,
+        webContext = settings.webContext,
         replicaContext = replicaContext,
     )
 
