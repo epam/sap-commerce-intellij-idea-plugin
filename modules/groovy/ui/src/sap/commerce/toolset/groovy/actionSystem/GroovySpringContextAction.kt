@@ -132,9 +132,15 @@ class GroovyRemoteSpringContextAction : GroovySpringContextAction(
                 }
             }
 
-            Notifications
-                .info("Found ${beans?.size ?: 0} Spring beans")
-                .notify(project)
+            if (beans == null) {
+                Notifications
+                    .warning("Unable to fetch Spring beans", result.errorMessage ?: "")
+                    .notify(project)
+            } else {
+                Notifications
+                    .info("Found ${beans?.size ?: 0} Spring beans")
+                    .notify(project)
+            }
         }
     }
 }
