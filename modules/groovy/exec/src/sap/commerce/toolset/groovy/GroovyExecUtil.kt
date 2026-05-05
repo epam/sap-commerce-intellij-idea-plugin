@@ -23,6 +23,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
+import sap.commerce.toolset.settings.state.TransactionMode
 
 fun VirtualFile?.getCurrentSpringContextMode(project: Project?) = this
     ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
@@ -47,6 +48,16 @@ var VirtualFile.groovyExecContextSettings
     set(value) {
         this.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, value)
     }
+
+val VirtualFile.groovyWebContext
+    get() = this.groovyExecContextSettings
+        ?.webContext
+        ?: GroovyExecConstants.DEFAULT_WEB_CONTEXT
+
+val VirtualFile.groovyTransactionMode
+    get() = this.groovyExecContextSettings
+        ?.transactionMode
+        ?: TransactionMode.ROLLBACK
 
 fun VirtualFile.groovyExecContextSettings(fallback: () -> GroovyExecContext.Settings) = this
     .getUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS)

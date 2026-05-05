@@ -41,8 +41,7 @@ class GroovyExecService(private val project: Project) {
     private var fetching = false
 
     fun fetchRemoteSpringBeans(virtualFile: VirtualFile) {
-        val webContext = virtualFile.groovyExecContextSettings?.webContext
-            ?: GroovyExecConstants.DEFAULT_WEB_CONTEXT
+        val webContext = virtualFile.groovyWebContext
 
         val server = HacExecConnectionService.getInstance(project).activeConnection
         val groovyScript = readResource("scripts/groovy-fetchSpringBeans.groovy")

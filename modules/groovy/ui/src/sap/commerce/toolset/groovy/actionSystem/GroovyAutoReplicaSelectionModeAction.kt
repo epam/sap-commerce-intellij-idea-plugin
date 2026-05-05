@@ -35,8 +35,6 @@ class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Gr
         virtualFile.groovyExecContextSettings = e.groovyExecContextSettings {
             val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
             GroovyExecContext.defaultSettings(activeConnection)
-        }.copy(
-            replicaContext = GroovyReplicaAwareContext.auto()
-        )
+        }.copy(replicaContext = GroovyReplicaAwareContext.auto())
     }
 }

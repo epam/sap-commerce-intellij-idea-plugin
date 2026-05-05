@@ -23,7 +23,7 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.groovyWebContext
 import sap.commerce.toolset.groovy.groovyWebContexts
 import sap.commerce.toolset.groovy.groovyWebContextsFetching
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
@@ -61,8 +61,7 @@ class GroovyWebContextActionGroup : DefaultActionGroup(
 
     override fun update(e: AnActionEvent) {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        val activeWebContext = virtualFile.groovyExecContextSettings?.webContext
-            ?: GroovyExecConstants.DEFAULT_WEB_CONTEXT
+        val activeWebContext = virtualFile.groovyWebContext
 
         e.presentation.text = "Context: $activeWebContext"
         e.presentation.description = "Web application context"

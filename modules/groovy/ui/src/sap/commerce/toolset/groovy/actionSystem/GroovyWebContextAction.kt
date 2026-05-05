@@ -22,9 +22,8 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import sap.commerce.toolset.groovy.GroovyExecConstants
 import sap.commerce.toolset.groovy.GroovyExecService
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.groovyWebContext
 
 class GroovyWebContextAction(private val webContext: String) : CheckboxAction(webContext) {
 
@@ -32,8 +31,7 @@ class GroovyWebContextAction(private val webContext: String) : CheckboxAction(we
 
     override fun isSelected(e: AnActionEvent): Boolean {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-        val activeWebContext = virtualFile.groovyExecContextSettings?.webContext
-            ?: GroovyExecConstants.DEFAULT_WEB_CONTEXT
+        val activeWebContext = virtualFile.groovyWebContext
 
         return activeWebContext == webContext
     }

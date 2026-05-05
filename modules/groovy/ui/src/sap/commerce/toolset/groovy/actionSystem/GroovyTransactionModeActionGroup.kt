@@ -25,7 +25,7 @@ import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import com.intellij.ui.GotItTooltip
 import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.actionSystem.triggerAction
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.groovyTransactionMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
@@ -40,9 +40,7 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup(), CustomComponentAc
 
     override fun update(e: AnActionEvent) {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        val currentTransactionMode = virtualFile.groovyExecContextSettings
-            ?.transactionMode
-            ?: TransactionMode.ROLLBACK
+        val currentTransactionMode = virtualFile.groovyTransactionMode
 
         e.presentation.icon = currentTransactionMode.icon
         e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", currentTransactionMode.presentationText)

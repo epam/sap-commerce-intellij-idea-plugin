@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.groovyTransactionMode
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -35,9 +36,7 @@ abstract class GroovyTransactionAction(private val transactionMode: TransactionM
 
     override fun isSelected(e: AnActionEvent): Boolean {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-        val currentTransactionMode = virtualFile.groovyExecContextSettings
-            ?.transactionMode
-            ?: TransactionMode.ROLLBACK
+        val currentTransactionMode = virtualFile.groovyTransactionMode
         return currentTransactionMode == transactionMode
     }
 

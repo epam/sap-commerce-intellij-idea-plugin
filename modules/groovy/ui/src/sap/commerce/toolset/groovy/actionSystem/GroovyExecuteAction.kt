@@ -33,7 +33,7 @@ import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.groovyTransactionMode
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -119,9 +119,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
-        val transactionMode = virtualFile.groovyExecContextSettings
-            ?.transactionMode
-            ?: TransactionMode.ROLLBACK
+        val transactionMode = virtualFile.groovyTransactionMode
 
         when (transactionMode) {
             TransactionMode.ROLLBACK -> {
