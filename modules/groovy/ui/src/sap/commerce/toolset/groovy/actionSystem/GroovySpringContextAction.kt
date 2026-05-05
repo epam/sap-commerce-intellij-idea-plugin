@@ -87,6 +87,8 @@ class GroovyRemoteSpringContextAction : GroovySpringContextAction(
     private var fetching = false
 
     override fun update(e: AnActionEvent) {
+        super.update(e)
+
         e.presentation.isEnabled = !fetching
         e.presentation.text = if (fetching) "${SpringContextMode.REMOTE.presentationText} | Fetching..."
         else SpringContextMode.REMOTE.presentationText
