@@ -35,8 +35,7 @@ class CxLoggerIdentifierResolver(private val project: Project) {
     }
 
     private fun resolveExpression(expression: PsiExpression, contextClass: PsiClass, visited: MutableSet<PsiElement>): String? {
-        val constant = JavaPsiFacade.getInstance(project).constantEvaluationHelper
-            .computeConstantExpression(expression, false)
+        val constant = JavaPsiFacade.getInstance(project).constantEvaluationHelper.computeConstantExpression(expression, false)
         if (constant is String) return constant
 
         return when (expression) {
