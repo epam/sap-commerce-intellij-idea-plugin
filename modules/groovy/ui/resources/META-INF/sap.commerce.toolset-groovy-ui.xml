@@ -56,7 +56,7 @@
             </group>
 
             <group id="hybris.groovy.toolbar.mode" popup="true"
-                   class="sap.commerce.toolset.groovy.actionSystem.GroovyExecutionModeActionGroup">
+                   class="sap.commerce.toolset.groovy.actionSystem.GroovyReplicaExecutionModeActionGroup">
                 <action class="sap.commerce.toolset.groovy.actionSystem.GroovyAutoReplicaSelectionModeAction"/>
                 <action class="sap.commerce.toolset.groovy.actionSystem.GroovyManualReplicaSelectionModeAction"/>
             </group>

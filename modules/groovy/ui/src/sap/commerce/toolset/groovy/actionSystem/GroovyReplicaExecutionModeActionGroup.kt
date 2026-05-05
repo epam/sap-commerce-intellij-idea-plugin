@@ -22,11 +22,11 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
-class GroovyExecutionModeActionGroup : DefaultActionGroup(), CustomComponentAction {
+class GroovyReplicaExecutionModeActionGroup : DefaultActionGroup(), CustomComponentAction {
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
@@ -45,6 +45,7 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup(), CustomComponentActi
         e.presentation.icon = connectionContext.replicaSelectionMode.icon
         e.presentation.text = connectionContext.previewText
         e.presentation.description = connectionContext.description
+            ?: "Replica selection mode"
     }
 
     override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(

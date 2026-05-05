@@ -22,8 +22,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.groovyExecContextSettings
-import sap.commerce.toolset.groovy.groovyTransactionMode
+import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.groovyTransactionMode
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode

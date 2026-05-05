@@ -42,7 +42,7 @@ import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 import sap.commerce.toolset.ui.banner
 import java.awt.BorderLayout
 import java.awt.Component

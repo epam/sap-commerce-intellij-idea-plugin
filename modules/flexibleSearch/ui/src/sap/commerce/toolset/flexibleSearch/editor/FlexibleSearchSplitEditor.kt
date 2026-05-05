@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,6 +38,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecResult
+import sap.commerce.toolset.flexibleSearch.exec.flexibleSearchExecContextSettings
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout
@@ -51,8 +52,8 @@ import kotlin.time.Duration.Companion.milliseconds
 fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<FlexibleSearchSplitEditorEx>()
 
-fun AnActionEvent.flexibleSearchExecutionContextSettings(fallback: () -> FlexibleSearchExecContext.Settings) = this.getData(CommonDataKeys.EDITOR)
-    ?.getUserData(FlexibleSearchExecContext.KEY_EXECUTION_SETTINGS)
+fun AnActionEvent.flexibleSearchExecutionContextSettings(fallback: () -> FlexibleSearchExecContext.Settings) = this.getData(CommonDataKeys.VIRTUAL_FILE)
+    ?.flexibleSearchExecContextSettings(fallback)
     ?: fallback()
 
 class FlexibleSearchSplitEditorEx(override val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FlexibleSearchSplitEditor {

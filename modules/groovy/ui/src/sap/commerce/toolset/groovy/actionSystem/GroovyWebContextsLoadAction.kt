@@ -24,9 +24,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.groovy.GroovyExecService
-import sap.commerce.toolset.groovy.groovyWebContexts
-import sap.commerce.toolset.groovy.groovyWebContextsFetching
+import sap.commerce.toolset.groovy.exec.GroovyExecService
+import sap.commerce.toolset.groovy.exec.groovyWebContexts
+import sap.commerce.toolset.groovy.exec.groovyWebContextsFetching
 
 class GroovyWebContextsLoadAction : AnAction() {
 

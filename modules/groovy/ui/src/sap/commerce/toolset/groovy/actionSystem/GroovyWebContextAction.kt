@@ -22,8 +22,8 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import sap.commerce.toolset.groovy.GroovyExecService
-import sap.commerce.toolset.groovy.groovyWebContext
+import sap.commerce.toolset.groovy.exec.GroovyExecService
+import sap.commerce.toolset.groovy.exec.groovyWebContext
 
 class GroovyWebContextAction(private val webContext: String) : CheckboxAction(webContext) {
 

@@ -37,7 +37,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
