@@ -24,31 +24,25 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
-import sap.commerce.toolset.groovy.editor.groovyWebContexts
-import sap.commerce.toolset.groovy.editor.groovyWebContextsFetching
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.readResource
-import sap.commerce.toolset.settings.state.TransactionMode
+import sap.commerce.toolset.groovy.GroovyExecService
+import sap.commerce.toolset.groovy.groovyWebContexts
+import sap.commerce.toolset.groovy.groovyWebContextsFetching
 
 class GroovyWebContextsLoadAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
-        if (editor.groovyWebContextsFetching) {
+        if (virtualFile.groovyWebContextsFetching) {
             e.presentation.isEnabled = false
             e.presentation.disabledIcon = HybrisIcons.Groovy.WEB_CONTEXTS_LOAD
             e.presentation.text = "Loading Web Contexts..."
             return
         }
 
-        val webContexts = editor.groovyWebContexts
+        val webContexts = virtualFile.groovyWebContexts
 
         e.presentation.text = "${if (webContexts == null) "Load" else "Reload"} Web Contexts"
         e.presentation.icon = if (webContexts == null) HybrisIcons.Groovy.WEB_CONTEXTS_LOAD
@@ -58,42 +52,8 @@ class GroovyWebContextsLoadAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val server = HacExecConnectionService.getInstance(project).activeConnection
-        val groovyScript = readResource("scripts/groovy-loadWebContexts.groovy")
-        val context = GroovyExecContext(
-            connection = server,
-            executionTitle = "Fetching web contexts...",
-            content = groovyScript,
-            transactionMode = TransactionMode.ROLLBACK,
-            timeout = server.timeout,
-        )
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
-        GroovyExecClient.getInstance(project).execute(
-            context,
-            beforeCallback = {
-                editor.groovyWebContextsFetching = true
-                editor.groovyExecContextSettings = editor.groovyExecContextSettings
-                    ?.copy(webContext = null)
-            },
-            onError = { _, ex ->
-                editor.groovyWebContextsFetching = false
-                Notifications
-                    .error("Unable to load web contexts", ex.message ?: "")
-                    .notify(project)
-            }
-        ) { _, result ->
-            val contexts = result.result
-                ?.split("|")
-                ?.filter { it.isNotBlank() }
-                ?.sorted()
-
-            editor.groovyWebContextsFetching = false
-            editor.groovyWebContexts = contexts
-
-            Notifications
-                .info("Found ${contexts?.size ?: 0} web contexts")
-                .notify(project)
-        }
+        GroovyExecService.getInstance(project).fetchWebApplicationContexts(virtualFile)
     }
 }

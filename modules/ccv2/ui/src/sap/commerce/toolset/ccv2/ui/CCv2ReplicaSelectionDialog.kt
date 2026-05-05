@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,12 +22,12 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
@@ -40,9 +40,9 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
+import sap.commerce.toolset.groovy.groovyExecContextSettings
 import sap.commerce.toolset.ui.banner
 import java.awt.BorderLayout
 import java.awt.Component
@@ -50,7 +50,7 @@ import javax.swing.JComponent
 
 class CCv2ReplicaSelectionDialog(
     private val project: Project,
-    private val editor: Editor,
+    private val virtualFile: VirtualFile,
     private val currentSettings: GroovyExecContext.Settings,
     parentComponent: Component,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
@@ -161,7 +161,7 @@ class CCv2ReplicaSelectionDialog(
             ?.let { replicas -> GroovyReplicaAwareContext(CCv2ExecConstants.ccv2, replicas.map { ReplicaContext(it) }) }
             ?: GroovyReplicaAwareContext.auto()
 
-        editor.groovyExecContextSettings = currentSettings.copy(replicaContext = context)
+        virtualFile.groovyExecContextSettings = currentSettings.copy(replicaContext = context)
     }
 
     override fun dispose() {

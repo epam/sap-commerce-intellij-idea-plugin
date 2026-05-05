@@ -25,7 +25,7 @@ import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import com.intellij.ui.GotItTooltip
 import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.actionSystem.triggerAction
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.groovyTransactionMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
@@ -39,10 +39,8 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup(), CustomComponentAc
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val currentTransactionMode = editor.groovyExecContextSettings
-            ?.transactionMode
-            ?: TransactionMode.ROLLBACK
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        val currentTransactionMode = virtualFile.groovyTransactionMode
 
         e.presentation.icon = currentTransactionMode.icon
         e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", currentTransactionMode.presentationText)

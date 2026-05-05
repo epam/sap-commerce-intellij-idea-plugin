@@ -1,7 +1,7 @@
 ## [2026.0.10]
 
 <cite>Release contributors</code>
-- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Amlytvyn+is%3Apr)
+- 5 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Aekalenchuk+is%3Apr)
 
 ### `Project View` enhancements
@@ -14,6 +14,7 @@
 ### `Groovy` enhancements
 - Show & fetch available web application contexts [#1926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1926)
 - New `Remote` Spring Beans resolution mode [#1928](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1928)
+- Refetch remove Spring Beans on web application context change [#1929](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1929)
 
 ### Other
 - Do not fetch PRs statistics via GitHub actions [#1925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1925)

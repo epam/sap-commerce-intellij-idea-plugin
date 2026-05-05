@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,6 +33,7 @@ import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.groovyTransactionMode
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -116,11 +117,9 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
     override fun update(e: AnActionEvent) {
         super.update(e)
 
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
-        val transactionMode = (editor.groovyExecContextSettings
-            ?.transactionMode
-            ?: TransactionMode.ROLLBACK)
+        val transactionMode = virtualFile.groovyTransactionMode
 
         when (transactionMode) {
             TransactionMode.ROLLBACK -> {
