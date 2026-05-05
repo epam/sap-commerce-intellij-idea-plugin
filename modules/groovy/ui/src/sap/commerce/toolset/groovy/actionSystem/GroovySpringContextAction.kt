@@ -138,7 +138,7 @@ class GroovyRemoteSpringContextAction : GroovySpringContextAction(
                     .notify(project)
             } else {
                 Notifications
-                    .info("Found ${beans?.size ?: 0} Spring beans")
+                    .info("Found ${beans.size} Spring beans")
                     .notify(project)
             }
         }
