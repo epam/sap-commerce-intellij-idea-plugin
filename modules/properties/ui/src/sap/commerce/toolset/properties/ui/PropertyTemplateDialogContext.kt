@@ -16,10 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.ui
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
-}
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.properties.MutableBooleanProperty
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.properties.custom.settings.state.CxCustomPropertyTemplateState
+
+data class PropertyTemplateDialogContext(
+    val project: Project,
+    val mutable: CxCustomPropertyTemplateState.Mutable,
+    val title: String,
+    val removeSourceTemplates: MutableBooleanProperty = AtomicBooleanProperty(false),
+    val showRemoveSourceTemplates: Boolean = false,
+)

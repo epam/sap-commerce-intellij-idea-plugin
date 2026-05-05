@@ -16,10 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.exec.event
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+import com.intellij.util.messages.Topic
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+
+interface CxRemotePropertyStateListener {
+    fun onPropertiesStateChanged(remoteConnection: HacConnectionSettingsState)
+
+    companion object {
+        @Topic.ProjectLevel
+        val TOPIC = Topic(CxRemotePropertyStateListener::class.java, Topic.BroadcastDirection.NONE)
+    }
 }
