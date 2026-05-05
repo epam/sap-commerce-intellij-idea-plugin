@@ -41,20 +41,10 @@ class CxLoggerIdentifierResolver(private val project: Project) {
 
         return when (expression) {
             is PsiClassObjectAccessExpression -> expression.operand.type.canonicalText
-            is PsiParenthesizedExpression -> expression.expression?.let { resolveExpression(it, contextClass, visited) }
-            is PsiPolyadicExpression -> resolvePolyadicExpression(expression, contextClass, visited)
             is PsiReferenceExpression -> resolveReference(expression, contextClass, visited)
             is PsiMethodCallExpression -> resolveMethodCall(expression, contextClass, visited)
             else -> null
         }
-    }
-
-    private fun resolvePolyadicExpression(expression: PsiPolyadicExpression, contextClass: PsiClass, visited: MutableSet<PsiElement>): String? {
-        if (expression.operationTokenType != JavaTokenType.PLUS) return null
-        return expression.operands.fold(StringBuilder()) { acc, operand ->
-            val value = resolveExpression(operand, contextClass, visited) ?: return null
-            acc.append(value)
-        }.toString()
     }
 
     private fun resolveReference(expression: PsiReferenceExpression, contextClass: PsiClass, visited: MutableSet<PsiElement>): String? {
