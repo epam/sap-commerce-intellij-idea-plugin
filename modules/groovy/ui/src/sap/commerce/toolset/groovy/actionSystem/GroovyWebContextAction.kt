@@ -19,30 +19,27 @@
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import sap.commerce.toolset.HybrisIcons
+import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import sap.commerce.toolset.groovy.GroovyExecConstants
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 
-class GroovyWebContextAction(private val webContext: String) : AnAction() {
+class GroovyWebContextAction(private val webContext: String) : CheckboxAction(webContext) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+    override fun isSelected(e: AnActionEvent): Boolean {
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return false
         val activeWebContext = editor.groovyExecContextSettings?.webContext
             ?: GroovyExecConstants.DEFAULT_WEB_CONTEXT
 
-        e.presentation.text = webContext
-        e.presentation.icon = if (activeWebContext == webContext) HybrisIcons.Groovy.WEB_CONTEXT
-        else null
+        return activeWebContext == webContext
     }
 
-    override fun actionPerformed(e: AnActionEvent) {
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
 

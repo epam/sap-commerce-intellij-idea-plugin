@@ -45,20 +45,18 @@
 
             <group id="hybris.groovy.toolbar.springResolutionMode" popup="true"
                    class="sap.commerce.toolset.groovy.actionSystem.GroovySpringContextModeActionGroup">
-                <separator key="hybris.groovy.actions.springContext.mode.separator"/>
                 <action id="hybris.groovy.springResolutionMode.disabled" class="sap.commerce.toolset.groovy.actionSystem.GroovyDisabledSpringContextAction"/>
                 <action id="hybris.groovy.springResolutionMode.local" class="sap.commerce.toolset.groovy.actionSystem.GroovyLocalSpringContextAction"/>
+                <action id="hybris.groovy.springResolutionMode.remove" class="sap.commerce.toolset.groovy.actionSystem.GroovyRemoteSpringContextAction"/>
             </group>
             <group id="hybris.groovy.toolbar.tx" popup="true"
                    class="sap.commerce.toolset.groovy.actionSystem.GroovyTransactionModeActionGroup">
-                <separator key="hybris.groovy.actions.transaction.mode.separator"/>
                 <action id="hybris.groovy.tx.commit" class="sap.commerce.toolset.groovy.actionSystem.GroovyCommitTransactionAction"/>
                 <action id="hybris.groovy.tx.execute" class="sap.commerce.toolset.groovy.actionSystem.GroovyRollbackTransactionAction"/>
             </group>
 
             <group id="hybris.groovy.toolbar.mode" popup="true"
                    class="sap.commerce.toolset.groovy.actionSystem.GroovyExecutionModeActionGroup">
-                <separator key="hybris.groovy.actions.executionMode.separator"/>
                 <action class="sap.commerce.toolset.groovy.actionSystem.GroovyAutoReplicaSelectionModeAction"/>
                 <action class="sap.commerce.toolset.groovy.actionSystem.GroovyManualReplicaSelectionModeAction"/>
             </group>

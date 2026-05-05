@@ -20,32 +20,40 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.GroovyExecConstants
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.editor.groovyWebContexts
+import sap.commerce.toolset.groovy.editor.groovyWebContextsFetching
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
 class GroovyWebContextActionGroup : DefaultActionGroup(
     "Choose Spring Web Context",
     true
-) {
+), CustomComponentAction {
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
     }
 
     override fun getChildren(e: AnActionEvent?): Array<out AnAction> {
-        val webContexts = e
-            ?.getData(CommonDataKeys.EDITOR)
-            ?.groovyWebContexts
-            ?: emptyList()
+        val editor = e?.getData(CommonDataKeys.EDITOR) ?: return emptyArray()
+        val webContexts = editor.groovyWebContexts
 
         return buildList {
-            add(Separator.create("Web Application Context"))
             add(GroovyWebContextAction(GroovyExecConstants.DEFAULT_WEB_CONTEXT))
-            add(Separator.create(""))
-            webContexts.forEach { webContext -> add(GroovyWebContextAction(webContext)) }
             add(Separator.create())
+
+            if (!editor.groovyWebContextsFetching) {
+                add(Separator.create())
+
+                if (webContexts != null) {
+                    webContexts.forEach { webContext -> add(GroovyWebContextAction(webContext)) }
+                    add(Separator.create())
+                }
+            }
+
             add(ActionManager.getInstance().getAction("yGroovyWebContextsLoad"))
         }
             .toTypedArray()
@@ -60,6 +68,13 @@ class GroovyWebContextActionGroup : DefaultActionGroup(
         e.presentation.description = "Web application context"
         e.presentation.icon = HybrisIcons.Groovy.WEB_CONTEXT_ACTIVE
     }
+
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(
+        actionGroup = this,
+        presentation = presentation,
+        place = place,
+        title = "Web Application Context"
+    )
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }

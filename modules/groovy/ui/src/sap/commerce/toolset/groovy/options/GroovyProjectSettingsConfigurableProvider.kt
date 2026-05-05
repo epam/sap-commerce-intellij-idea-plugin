@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,6 +65,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                         """
                         Defines default mode for each new Editor.<br>
                         <cod>${SpringContextMode.LOCAL.presentationText}</code> mode enables direct resolution of the Spring beans, so it will be possible to enable code completion for such statements <code>productService.getProduct(..)</code>. 
+                        <cod>${SpringContextMode.REMOTE.presentationText}</code> mode enables resolution of the Spring beans from the remote HAC</code>. 
                     """.trimIndent()
                     )
                     .bindItem(mutable::springContextMode.toNullableProperty(SpringContextMode.DISABLED))
