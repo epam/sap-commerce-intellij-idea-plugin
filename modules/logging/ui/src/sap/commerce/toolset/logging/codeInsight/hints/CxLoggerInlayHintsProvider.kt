@@ -26,7 +26,6 @@ import com.intellij.codeInsight.codeVision.ui.model.richText.RichText
 import com.intellij.codeInsight.daemon.impl.JavaCodeVisionProviderBase
 import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
-import com.intellij.ide.actions.FqnUtil
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -39,10 +38,12 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.awt.RelativePoint
+import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxRemoteLogStateService
+import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import java.awt.event.MouseEvent
 
 class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
@@ -52,48 +53,25 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     override val name: String = "SAP CX Logger"
     override val relativeOrderings: List<CodeVisionRelativeOrdering> = emptyList()
 
+    private data class LoggerHintTarget(
+        val element: PsiElement,
+        val loggerIdentifier: String,
+    )
+
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
         if (psiFile.isNotHybrisProject) return emptyList()
         val project = psiFile.project
+        val logStateService = CxRemoteLogStateService.getInstance(project)
 
-        return PsiTreeUtil.findChildrenOfAnyType(psiFile, PsiClass::class.java, PsiPackageStatement::class.java)
-            .mapNotNull { psiElement ->
-                when (psiElement) {
-                    is PsiClass -> psiElement.nameIdentifier
-                        ?.let { psiClassIdentifier ->
-                            FqnUtil.elementToFqn(psiElement, editor)
-                                ?.let { fqn -> psiClassIdentifier to fqn }
-                        }
+        return collectHintTargets(psiFile)
+            .map { target ->
+                val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(target.element)
+                val logger = logStateService.logger(target.loggerIdentifier)
+                val text = buildHintText(logger)
+                val handler = ClickHandler(target.element, target.loggerIdentifier)
+                val tooltip = buildTooltip(logger)
 
-                    is PsiPackageStatement -> psiElement to psiElement.packageName
-                    else -> null
-                }
-            }
-            .map { (psiElement, loggerIdentifier) ->
-                val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(psiElement)
-                val logger = CxRemoteLogStateService.getInstance(project).logger(loggerIdentifier)
-                val text = if (logger == null) RichText("[y] log level")
-                else {
-                    val style = if (logger.inherited) SimpleTextAttributes(
-                        SimpleTextAttributes.STYLE_UNDERLINE or SimpleTextAttributes.STYLE_BOLD or SimpleTextAttributes.STYLE_ITALIC,
-                        JBColor.GRAY
-                    )
-                    else SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)
-
-                    RichText("[").apply {
-                        append(logger.level.name, style)
-                        append("] log level", SimpleTextAttributes.REGULAR_ATTRIBUTES)
-                    }
-                }
-
-                val handler = ClickHandler(psiElement, loggerIdentifier)
-                val tooltip = when {
-                    logger == null -> "Fetch or Define the logger for SAP Commerce"
-                    logger.inherited -> "Inherited from: ${logger.parentName}"
-                    else -> "Setup the logger for SAP Commerce"
-                }
-
-                return@map range to ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
+                range to ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
             }
     }
 
@@ -105,14 +83,13 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
         override fun invoke(event: MouseEvent?, editor: Editor) {
             if (isInlaySettingsEditor(editor)) return
-            val element = elementPointer.element ?: return
-
+            elementPointer.element ?: return
             handleClick(editor, loggerIdentifier, event)
         }
     }
 
-    fun handleClick(editor: Editor, loggerIdentifier: String, event: MouseEvent?) {
-        val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions") as ActionGroup
+    private fun handleClick(editor: Editor, loggerIdentifier: String, event: MouseEvent?) {
+        val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions").asSafely<ActionGroup>() ?: return
         val project = editor.project ?: return
         val dataContext = SimpleDataContext.builder()
             .add(CommonDataKeys.PROJECT, project)
@@ -128,11 +105,48 @@ class CxLoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             /* showDisabledActions = */ true
         )
 
-        // Convert the point to a RelativePoint
         val relativePoint = if (event != null) RelativePoint(event)
         else JBPopupFactory.getInstance().guessBestPopupLocation(editor)
 
-        // Show the popup at the calculated relative point
         popup.show(relativePoint)
+    }
+
+    private fun collectHintTargets(psiFile: PsiFile): List<LoggerHintTarget> = PsiTreeUtil
+        .findChildrenOfAnyType(psiFile, PsiPackageStatement::class.java, PsiField::class.java)
+        .mapNotNull { element ->
+            when (element) {
+                is PsiPackageStatement -> LoggerHintTarget(element, element.packageName)
+                is PsiField -> {
+                    val loggerIdentifier = CxLoggerIdentifierResolver.getInstance(psiFile.project).resolve(element) ?: return@mapNotNull null
+                    LoggerHintTarget(element, loggerIdentifier)
+                }
+
+                else -> null
+            }
+        }
+
+    private fun buildHintText(logger: CxLoggerPresentation?): RichText {
+        if (logger == null) return RichText("[y] log level")
+
+        val style = when {
+            logger.inherited -> SimpleTextAttributes(
+                SimpleTextAttributes.STYLE_UNDERLINE or SimpleTextAttributes.STYLE_BOLD or SimpleTextAttributes.STYLE_ITALIC,
+                JBColor.GRAY
+            )
+
+            else -> SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)
+        }
+
+        return RichText().apply {
+            append("[", SimpleTextAttributes.REGULAR_ATTRIBUTES)
+            append(logger.level.name, style)
+            append("] log level", SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        }
+    }
+
+    private fun buildTooltip(logger: CxLoggerPresentation?): String = when {
+        logger == null -> "Fetch or Define the logger for SAP Commerce"
+        logger.inherited -> "Inherited from: ${logger.parentName}"
+        else -> "Setup the logger for SAP Commerce"
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,5 +25,17 @@ object CxLogConstants {
     const val ROOT_LOGGER_NAME = "root"
     const val EXTENSION_STATE_SCRIPT = "cx-loggers-state.groovy"
     const val UPDATE_CX_LOGGERS_STATE = "update-cx-loggers-state.groovy"
+
+    val LOGGER_FACTORY_CLASS_NAMES = setOf(
+        "org.slf4j.LoggerFactory",
+        "org.apache.logging.log4j.LogManager",
+        "org.apache.log4j.Logger",
+    )
+
+    val LOGGER_FACTORY_METHOD_NAMES = setOf(
+        "getLogger",
+        "getFormatterLogger",
+    )
+
     val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
 }
