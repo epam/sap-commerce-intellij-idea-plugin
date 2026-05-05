@@ -16,13 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.groovy.lang.resolve
 
-import sap.commerce.toolset.HybrisIcons
-import javax.swing.Icon
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-enum class SpringContextMode(val icon: Icon, val presentationText: String) {
-    DISABLED(HybrisIcons.Spring.DISABLED, "Disabled"),
-    LOCAL(HybrisIcons.Spring.LOCAL, "Local"),
-    REMOTE(HybrisIcons.Spring.REMOTE, "Remote"),
-}
+@Serializable
+data class RemoteSpringBean(
+    val level: Int,
+    val id: String,
+    @SerialName("class")
+    val className: String,
+    val aliases: List<String>? = null
+)

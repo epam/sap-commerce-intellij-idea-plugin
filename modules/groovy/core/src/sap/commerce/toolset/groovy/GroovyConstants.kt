@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,10 +19,12 @@
 package sap.commerce.toolset.groovy
 
 import com.intellij.openapi.util.Key
+import sap.commerce.toolset.groovy.lang.resolve.RemoteSpringBean
 import sap.commerce.toolset.settings.state.SpringContextMode
 
 object GroovyConstants {
     val KEY_SPRING_CONTEXT_MODE = Key<SpringContextMode>("sap.cx.groovy.spring.context.mode")
+    val KEY_REMOTE_SPRING_BEANS = Key.create<Collection<RemoteSpringBean>>("sap.cx.groovy.execution.remoteSpringBeans")
 
     const val PATH_CONSOLES_GROOVY = "consoles/groovy/"
 }

@@ -22,9 +22,12 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.editor.groovyWebContexts
+import sap.commerce.toolset.groovy.editor.groovyWebContextsFetching
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
@@ -37,19 +40,27 @@ class GroovyWebContextsLoadAction : AnAction() {
 
     override fun update(e: AnActionEvent) {
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+
+        if (editor.groovyWebContextsFetching) {
+            e.presentation.isEnabled = false
+            e.presentation.disabledIcon = HybrisIcons.Groovy.WEB_CONTEXTS_LOAD
+            e.presentation.text = "Loading Web Contexts..."
+            return
+        }
+
         val webContexts = editor.groovyWebContexts
 
         e.presentation.text = "${if (webContexts == null) "Load" else "Reload"} Web Contexts"
-        e.presentation.description = "${if (webContexts == null) "Load" else "Reload"} the list of context"
         e.presentation.icon = if (webContexts == null) HybrisIcons.Groovy.WEB_CONTEXTS_LOAD
         else HybrisIcons.Groovy.WEB_CONTEXTS_RELOAD
+        e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
         val server = HacExecConnectionService.getInstance(project).activeConnection
-        val groovyScript = readResource("scripts/webContext-load.groovy")
+        val groovyScript = readResource("scripts/groovy-loadWebContexts.groovy")
         val context = GroovyExecContext(
             connection = server,
             executionTitle = "Fetching web contexts...",
@@ -60,9 +71,15 @@ class GroovyWebContextsLoadAction : AnAction() {
 
         GroovyExecClient.getInstance(project).execute(
             context,
+            beforeCallback = {
+                editor.groovyWebContextsFetching = true
+                editor.groovyExecContextSettings = editor.groovyExecContextSettings
+                    ?.copy(webContext = null)
+            },
             onError = { _, ex ->
+                editor.groovyWebContextsFetching = false
                 Notifications
-                    .error("Unable to load web contexts: ${ex.message}")
+                    .error("Unable to load web contexts", ex.message ?: "")
                     .notify(project)
             }
         ) { _, result ->
@@ -71,6 +88,7 @@ class GroovyWebContextsLoadAction : AnAction() {
                 ?.filter { it.isNotBlank() }
                 ?.sorted()
 
+            editor.groovyWebContextsFetching = false
             editor.groovyWebContexts = contexts
 
             Notifications

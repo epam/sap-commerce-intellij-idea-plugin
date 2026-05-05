@@ -89,6 +89,7 @@ data class GroovyExecContext(
     companion object {
         val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.groovy.execution.settings")
         val KEY_WEB_CONTEXTS = Key.create<Collection<String>>("sap.cx.groovy.execution.webContexts")
+        val KEY_WEB_CONTEXTS_FETCHING = Key.create<Boolean>("sap.cx.groovy.execution.webContexts.fetching")
         const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce instance..."
 
         fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null) = Settings(

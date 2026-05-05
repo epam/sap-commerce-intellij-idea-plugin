@@ -66,6 +66,12 @@ var Editor.groovyWebContexts
         this.putUserData(GroovyExecContext.KEY_WEB_CONTEXTS, value)
     }
 
+var Editor.groovyWebContextsFetching
+    get() = this.getUserData(GroovyExecContext.KEY_WEB_CONTEXTS_FETCHING) ?: false
+    set(value) {
+        this.putUserData(GroovyExecContext.KEY_WEB_CONTEXTS_FETCHING, value)
+    }
+
 class GroovySplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
     companion object {

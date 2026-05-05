@@ -21,12 +21,14 @@ import com.intellij.psi.*
 import com.intellij.psi.scope.ElementClassHint
 import com.intellij.psi.scope.NameHint
 import com.intellij.psi.scope.PsiScopeProcessor
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightField
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
+import sap.commerce.toolset.groovy.groovyRemoteSpringBeans
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
@@ -63,9 +65,15 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
             ?.takeIf { it.isEnabled(project, vf) }
             ?: return
 
-        val resolveBeanClass = SpringHelper.resolveBeanClass(place, name, fallback = SpringFallbackScope.CUSTOM_MODULES) ?: return
-        val fqn = resolveBeanClass.qualifiedName ?: return
+        val resolveBeanClass = when (contextMode) {
+            SpringContextMode.LOCAL -> SpringHelper.resolveBeanClass(place, name, fallback = SpringFallbackScope.CUSTOM_MODULES)
+            SpringContextMode.REMOTE -> vf.groovyRemoteSpringBeans
+                ?.find { it.id == name || it.aliases?.contains(name) == true }
+                ?.className
+                ?.let { JavaPsiFacade.getInstance(project).findClass(it, GlobalSearchScope.allScope(project)) }
+        } ?: return
 
+        val fqn = resolveBeanClass.qualifiedName ?: return
         val declaration = GrLightField(resolveBeanClass, name, fqn)
 
         if (!processor.execute(declaration, state)) return

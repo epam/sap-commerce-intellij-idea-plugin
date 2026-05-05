@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,7 +51,12 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponent
         e.presentation.description = "Spring context resolution mode"
     }
 
-    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(this, presentation, place)
+    override fun createCustomComponent(presentation: Presentation, place: String) = ActionButtonWithTextAndDescriptionComponent(
+        actionGroup = this,
+        presentation = presentation,
+        place = place,
+        title = "Spring Context Mode"
+    )
         .also {
             val before = """<pre class="code">
                 import de.hybris.platform.core.Registry
@@ -69,6 +74,7 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponent
                 textSupplier = {
                     """
                     You can enable Spring Context within your groovy scripts by switching to ${icon(SpringContextMode.LOCAL.icon)} ${code(SpringContextMode.LOCAL.presentationText)} resolution mode.
+                    <br>${icon(SpringContextMode.REMOTE.icon)} ${code(SpringContextMode.REMOTE.presentationText)} resolves beans by fetching them from the remote HAC.
                     <br>Resolution of the Spring Context is a heavy operation, that's why it is ${icon(SpringContextMode.DISABLED.icon)} ${code(SpringContextMode.DISABLED.presentationText)} by default for every new Editor, but it can be changed via ${
                         link("Groovy settings") {
                             DataManager.getInstance().getDataContext(it).getData(CommonDataKeys.PROJECT)

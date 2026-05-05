@@ -16,13 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.groovy
 
-import sap.commerce.toolset.HybrisIcons
-import javax.swing.Icon
+import com.intellij.openapi.vfs.VirtualFile
 
-enum class SpringContextMode(val icon: Icon, val presentationText: String) {
-    DISABLED(HybrisIcons.Spring.DISABLED, "Disabled"),
-    LOCAL(HybrisIcons.Spring.LOCAL, "Local"),
-    REMOTE(HybrisIcons.Spring.REMOTE, "Remote"),
-}
+var VirtualFile.groovyRemoteSpringBeans
+    get() = this.getUserData(GroovyConstants.KEY_REMOTE_SPRING_BEANS)
+    set(value) {
+        this.putUserData(GroovyConstants.KEY_REMOTE_SPRING_BEANS, value)
+    }
