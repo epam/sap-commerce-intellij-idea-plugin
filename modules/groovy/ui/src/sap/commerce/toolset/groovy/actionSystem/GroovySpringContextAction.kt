@@ -26,19 +26,11 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.groovyRemoteSpringBeans
-import sap.commerce.toolset.groovy.lang.resolve.RemoteSpringBean
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.groovy.GroovyExecService
+import sap.commerce.toolset.groovy.getCurrentSpringContextMode
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.readResource
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
-import sap.commerce.toolset.settings.state.TransactionMode
 
 abstract class GroovySpringContextAction(private val contextMode: SpringContextMode, description: String) : CheckboxAction(
     contextMode.presentationText, description, null
@@ -47,10 +39,8 @@ abstract class GroovySpringContextAction(private val contextMode: SpringContextM
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        val currentMode = e.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
-            ?: e.project?.let { DeveloperSettings.getInstance(it).groovySettings.springContextMode }
-            ?: SpringContextMode.DISABLED
+        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val currentMode = vf.getCurrentSpringContextMode(e.project)
 
         return currentMode == contextMode
     }
@@ -99,48 +89,6 @@ class GroovyRemoteSpringContextAction : GroovySpringContextAction(
         val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         vf.putUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE, SpringContextMode.REMOTE)
 
-        val server = HacExecConnectionService.getInstance(project).activeConnection
-        val groovyScript = readResource("scripts/groovy-fetchSpringBeans.groovy")
-        val context = GroovyExecContext(
-            connection = server,
-            executionTitle = "Fetching Spring beans...",
-            content = groovyScript,
-            transactionMode = TransactionMode.ROLLBACK,
-            timeout = server.timeout,
-        )
-
-        GroovyExecClient.getInstance(project).execute(
-            context,
-            beforeCallback = { fetching = true },
-            onError = { _, ex ->
-                fetching = false
-                Notifications
-                    .error("Unable to fetch Spring beans", ex.message ?: "")
-                    .notify(project)
-            }
-        ) { it, result ->
-            val beans: Collection<RemoteSpringBean>? = result.result
-                ?.let { Json.decodeFromString(it) }
-
-            fetching = false
-            vf.groovyRemoteSpringBeans = beans
-
-            it.launch {
-                if (project.isDisposed) return@launch
-                edtWriteAction {
-                    PsiDocumentManager.getInstance(project).reparseFiles(listOf(vf), false)
-                }
-            }
-
-            if (beans == null) {
-                Notifications
-                    .warning("Unable to fetch Spring beans", result.errorMessage ?: "")
-                    .notify(project)
-            } else {
-                Notifications
-                    .info("Found ${beans.size} Spring beans")
-                    .notify(project)
-            }
-        }
+        GroovyExecService.getInstance(project).fetchRemoteSpringBeans(vf)
     }
 }

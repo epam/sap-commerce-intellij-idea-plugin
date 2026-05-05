@@ -21,8 +21,8 @@ package sap.commerce.toolset.groovy.actionSystem
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.groovyExecContextSettings
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
@@ -36,8 +36,8 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup(), CustomComponentActi
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val connectionContext = editor.groovyExecContextSettings {
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        val connectionContext = virtualFile.groovyExecContextSettings {
             val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
             GroovyExecContext.defaultSettings(activeConnection)
         }.replicaContext

@@ -23,9 +23,9 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
-import sap.commerce.toolset.groovy.editor.groovyWebContexts
-import sap.commerce.toolset.groovy.editor.groovyWebContextsFetching
+import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.groovyWebContexts
+import sap.commerce.toolset.groovy.groovyWebContextsFetching
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
 class GroovyWebContextActionGroup : DefaultActionGroup(
@@ -38,14 +38,14 @@ class GroovyWebContextActionGroup : DefaultActionGroup(
     }
 
     override fun getChildren(e: AnActionEvent?): Array<out AnAction> {
-        val editor = e?.getData(CommonDataKeys.EDITOR) ?: return emptyArray()
-        val webContexts = editor.groovyWebContexts
+        val virtualFile = e?.getData(CommonDataKeys.VIRTUAL_FILE) ?: return emptyArray()
+        val webContexts = virtualFile.groovyWebContexts
 
         return buildList {
             add(GroovyWebContextAction(GroovyExecConstants.DEFAULT_WEB_CONTEXT))
             add(Separator.create())
 
-            if (!editor.groovyWebContextsFetching) {
+            if (!virtualFile.groovyWebContextsFetching) {
                 add(Separator.create())
 
                 if (webContexts != null) {
@@ -60,8 +60,8 @@ class GroovyWebContextActionGroup : DefaultActionGroup(
     }
 
     override fun update(e: AnActionEvent) {
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val activeWebContext = editor.groovyExecContextSettings?.webContext
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        val activeWebContext = virtualFile.groovyExecContextSettings?.webContext
             ?: GroovyExecConstants.DEFAULT_WEB_CONTEXT
 
         e.presentation.text = "Context: $activeWebContext"

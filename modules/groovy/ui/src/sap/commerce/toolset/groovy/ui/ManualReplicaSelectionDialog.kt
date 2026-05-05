@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,24 +19,24 @@
 package sap.commerce.toolset.groovy.ui
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
+import sap.commerce.toolset.groovy.groovyExecContextSettings
 import java.awt.Component
 import javax.swing.JComponent
 
 class ManualReplicaSelectionDialog(
-    private val project: Project,
-    private val editor: Editor,
+    project: Project,
+    private val virtualFile: VirtualFile,
     private val currentSettings: GroovyExecContext.Settings,
     parentComponent: Component,
     private val replicaContext: GroovyReplicaAwareContext.Mutable = currentSettings.replicaContext
@@ -102,6 +102,6 @@ class ManualReplicaSelectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        editor.groovyExecContextSettings = currentSettings.copy(replicaContext = replicaContext.immutable())
+        virtualFile.groovyExecContextSettings = currentSettings.copy(replicaContext = replicaContext.immutable())
     }
 }

@@ -23,17 +23,16 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.groovy.GroovyExecService
+import sap.commerce.toolset.groovy.groovyExecContextSettings
 
 class GroovyWebContextAction(private val webContext: String) : CheckboxAction(webContext) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return false
-        val activeWebContext = editor.groovyExecContextSettings?.webContext
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
+        val activeWebContext = virtualFile.groovyExecContextSettings?.webContext
             ?: GroovyExecConstants.DEFAULT_WEB_CONTEXT
 
         return activeWebContext == webContext
@@ -41,14 +40,8 @@ class GroovyWebContextAction(private val webContext: String) : CheckboxAction(we
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
-        val activeWebContext = if (webContext != GroovyExecConstants.DEFAULT_WEB_CONTEXT) webContext
-        else null
-
-        editor.groovyExecContextSettings = editor.groovyExecContextSettings {
-            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
-            GroovyExecContext.defaultSettings(activeConnection)
-        }.copy(webContext = activeWebContext)
+        GroovyExecService.getInstance(project).activateWebContext(virtualFile, webContext)
     }
 }

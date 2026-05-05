@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,14 +40,14 @@ class CCv2GroovyReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(CC
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val component = e.inputEvent?.source?.asSafely<Component>() ?: return
         val execSettings = e.groovyExecContextSettings {
             val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
             GroovyExecContext.defaultSettings(activeConnection)
         }
 
-        val dialog = CCv2ReplicaSelectionDialog(project, editor, execSettings, component)
+        val dialog = CCv2ReplicaSelectionDialog(project, virtualFile, execSettings, component)
         dialog.showAndGet()
         Disposer.dispose(dialog)
     }

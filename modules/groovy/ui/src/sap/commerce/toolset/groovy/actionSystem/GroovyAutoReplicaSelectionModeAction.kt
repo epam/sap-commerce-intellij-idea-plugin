@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,14 +24,15 @@ import sap.commerce.toolset.groovy.GroovyExecConstants
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
+import sap.commerce.toolset.groovy.groovyExecContextSettings
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 
 class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(GroovyExecConstants.auto) {
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        editor.groovyExecContextSettings = e.groovyExecContextSettings {
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        virtualFile.groovyExecContextSettings = e.groovyExecContextSettings {
             val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
             GroovyExecContext.defaultSettings(activeConnection)
         }.copy(
