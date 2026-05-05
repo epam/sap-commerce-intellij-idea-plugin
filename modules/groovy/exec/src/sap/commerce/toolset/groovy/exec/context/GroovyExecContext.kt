@@ -29,7 +29,7 @@ import sap.commerce.toolset.settings.state.TransactionMode
 data class GroovyExecContext(
     val connection: HacConnectionSettingsState,
     override val executionTitle: String = DEFAULT_TITLE,
-    private val content: String,
+    val content: String,
     val timeout: Int,
     val exceptionHandling: GroovyExecExceptionHandling = GroovyExecExceptionHandling.FULL_STACKTRACE,
     val transactionMode: TransactionMode,
