@@ -26,9 +26,8 @@ import com.intellij.ui.GotItTooltip
 import com.intellij.ui.scale.JBUIScale
 import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.actionSystem.triggerAction
-import sap.commerce.toolset.groovy.GroovyConstants
+import sap.commerce.toolset.groovy.getSpringContextMode
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
@@ -41,10 +40,9 @@ class GroovySpringContextModeActionGroup : DefaultActionGroup(), CustomComponent
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val project = e.project ?: return
-        val currentMode = vf.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
-            ?: DeveloperSettings.getInstance(project).groovySettings.springContextMode
+        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        val currentMode = vf.getSpringContextMode(project)
 
         e.presentation.icon = currentMode.icon
         e.presentation.text = i18n("hybris.groovy.actions.springContext.mode", currentMode.presentationText)

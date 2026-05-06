@@ -41,7 +41,7 @@ import javax.swing.LayoutFocusTraversalPolicy
 
 class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecContext.Settings.Mutable>() {
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings() }
+    override fun previewSettings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): String = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecContext.defaultSettings() }
         .let {
             """<pre>
  · rows:    ${it.maxCount}
@@ -52,7 +52,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                 """.trimIndent()
         }
 
-    override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecContext.Settings.Mutable {
+    override fun settings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): FlexibleSearchExecContext.Settings.Mutable {
         val settings = e.flexibleSearchExecutionContextSettings {
             val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
             val credentials = HacExecConnectionService.getInstance(project).getCredentials(connectionSettings)
@@ -62,7 +62,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
         return settings.mutable()
     }
 
-    override fun applySettings(virtualFile: VirtualFile, settings: FlexibleSearchExecContext.Settings.Mutable) {
+    override fun applySettings(project: Project, virtualFile: VirtualFile, settings: FlexibleSearchExecContext.Settings.Mutable) {
         virtualFile.flexibleSearchExecContextSettings = settings.immutable()
     }
 

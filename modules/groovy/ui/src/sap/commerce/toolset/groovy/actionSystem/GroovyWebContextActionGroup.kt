@@ -23,9 +23,7 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.exec.GroovyExecConstants
-import sap.commerce.toolset.groovy.exec.groovyWebContext
-import sap.commerce.toolset.groovy.exec.groovyWebContexts
-import sap.commerce.toolset.groovy.exec.groovyWebContextsFetching
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
 class GroovyWebContextActionGroup : DefaultActionGroup(
@@ -38,14 +36,16 @@ class GroovyWebContextActionGroup : DefaultActionGroup(
     }
 
     override fun getChildren(e: AnActionEvent?): Array<out AnAction> {
-        val virtualFile = e?.getData(CommonDataKeys.VIRTUAL_FILE) ?: return emptyArray()
-        val webContexts = virtualFile.groovyWebContexts
+        val project = e?.project ?: return emptyArray()
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return emptyArray()
+        val groovyExecService = GroovyExecService.getInstance(project)
+        val webContexts = groovyExecService.getWebContexts(virtualFile)
 
         return buildList {
             add(GroovyWebContextAction(GroovyExecConstants.DEFAULT_WEB_CONTEXT))
             add(Separator.create())
 
-            if (!virtualFile.groovyWebContextsFetching) {
+            if (!groovyExecService.isFetchingWebContexts(virtualFile)) {
                 add(Separator.create())
 
                 if (webContexts != null) {
@@ -60,8 +60,9 @@ class GroovyWebContextActionGroup : DefaultActionGroup(
     }
 
     override fun update(e: AnActionEvent) {
+        val project = e.project ?: return
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        val activeWebContext = virtualFile.groovyWebContext
+        val activeWebContext = GroovyExecService.getInstance(project).getActiveWebContext(virtualFile)
 
         e.presentation.text = "Context: $activeWebContext"
         e.presentation.description = "Web application context"

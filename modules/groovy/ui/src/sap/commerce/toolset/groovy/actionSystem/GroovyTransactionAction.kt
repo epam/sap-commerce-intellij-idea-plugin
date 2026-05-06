@@ -21,10 +21,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
-import sap.commerce.toolset.groovy.exec.groovyTransactionMode
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
 
@@ -35,8 +32,9 @@ abstract class GroovyTransactionAction(private val transactionMode: TransactionM
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
+        val project = e.project ?: return false
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-        val currentTransactionMode = virtualFile.groovyTransactionMode
+        val currentTransactionMode = GroovyExecService.getInstance(project).getTransactionMode(virtualFile, project)
         return currentTransactionMode == transactionMode
     }
 
@@ -44,10 +42,7 @@ abstract class GroovyTransactionAction(private val transactionMode: TransactionM
         val project = e.project ?: return
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
-        virtualFile.groovyExecContextSettings = virtualFile.groovyExecContextSettings {
-            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
-            GroovyExecContext.defaultSettings(activeConnection)
-        }.copy(transactionMode = transactionMode)
+        GroovyExecService.getInstance(project).setTransactionMode(virtualFile, transactionMode)
     }
 }
 

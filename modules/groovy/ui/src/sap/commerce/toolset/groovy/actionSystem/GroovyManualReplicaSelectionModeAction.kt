@@ -21,11 +21,9 @@ package sap.commerce.toolset.groovy.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.util.asSafely
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.GroovyExecConstants
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.ui.ManualReplicaSelectionDialog
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import java.awt.Component
 
 class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(GroovyExecConstants.manual) {
@@ -34,10 +32,7 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
         val project = e.project ?: return
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val component = e.inputEvent?.source?.asSafely<Component>() ?: return
-        val execSettings = e.groovyExecContextSettings {
-            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
-            GroovyExecContext.defaultSettings(activeConnection)
-        }
+        val execSettings = GroovyExecService.getInstance(project).getSettings(virtualFile)
 
         ManualReplicaSelectionDialog(project, virtualFile, execSettings, component).showAndGet()
     }

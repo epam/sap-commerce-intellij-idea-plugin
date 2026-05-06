@@ -30,6 +30,9 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
 import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
+import sap.commerce.toolset.groovy.groovySettings
+import sap.commerce.toolset.groovy.settings.state.GroovyExecExceptionHandling
+import sap.commerce.toolset.groovy.settings.state.GroovyExecMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
@@ -47,8 +50,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
         i18n("hybris.settings.project.groovy.title"), "hybris.groovy.settings"
     ) {
 
-        private val developerSettings = project.yDeveloperSettings
-        private val mutable = developerSettings.groovySettings.mutable()
+        private val groovySettings = project.yDeveloperSettings.groovySettings
         private lateinit var enableActionToolbar: JCheckBox
         private val toolbarProvider by lazy {
             HybrisEditorToolbarProvider.EP.findExtensionOrFail(GroovyEditorToolbarProvider::class.java)
@@ -68,7 +70,7 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                         <cod>${SpringContextMode.REMOTE.presentationText}</code> mode enables resolution of the Spring beans from the remote HAC</code>. 
                     """.trimIndent()
                     )
-                    .bindItem(mutable::springContextMode.toNullableProperty(SpringContextMode.DISABLED))
+                    .bindItem(groovySettings::springContextMode.toNullableProperty(SpringContextMode.DISABLED))
             }
                 .layout(RowLayout.PARENT_GRID)
 
@@ -78,12 +80,36 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
                     renderer = SimpleListCellRenderer.create("?") { it.presentationText }
                 )
                     .label("Transaction mode:")
+                    .comment("Defines default transaction mode for each new Editor.")
+                    .bindItem(groovySettings::transactionMode.toNullableProperty(TransactionMode.ROLLBACK))
+            }
+                .layout(RowLayout.PARENT_GRID)
+
+            row {
+                comboBox(
+                    EnumComboBoxModel(GroovyExecMode::class.java),
+                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                )
+                    .label("Exec mode:")
                     .comment(
                         """
-                        Defines default mode for each new Editor. 
-                    """.trimIndent()
+                            Defines default exec mode for each new Editor.<br>
+                            In Template mode script will be executed via Plugin's internal template script with possibility to manage exception handling.<br>
+                            Template mode is always used for non-`default` web context.
+                        """.trimIndent()
                     )
-                    .bindItem(mutable::transactionMode.toNullableProperty(TransactionMode.ROLLBACK))
+                    .bindItem(groovySettings::execMode.toNullableProperty(GroovyExecMode.TEMPLATE))
+            }
+                .layout(RowLayout.PARENT_GRID)
+
+            row {
+                comboBox(
+                    EnumComboBoxModel(GroovyExecExceptionHandling::class.java),
+                    renderer = SimpleListCellRenderer.create("?") { it.presentationText }
+                )
+                    .label("Exception handling:")
+                    .comment("Defines default exception handling mode for each new Editor.")
+                    .bindItem(groovySettings::exceptionHandling.toNullableProperty(GroovyExecExceptionHandling.FULL_STACKTRACE))
             }
                 .layout(RowLayout.PARENT_GRID)
 
@@ -91,19 +117,19 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
 
             row {
                 enableActionToolbar = checkBox("Enable actions toolbar for each Groovy file")
-                    .bindSelected(mutable::enableActionsToolbar)
+                    .bindSelected(groovySettings::enableActionsToolbar)
                     .comment("Actions toolbar enables possibility to change current remote SAP Commerce session and perform operations on current file, such as `Execute on remote server`")
                     .component
             }
             row {
                 checkBox("Enable actions toolbar for a Test Groovy file")
-                    .bindSelected(mutable::enableActionsToolbarForGroovyTest)
+                    .bindSelected(groovySettings::enableActionsToolbarForGroovyTest)
                     .comment("Enables Actions toolbar for the groovy files located in the <code>${ProjectConstants.Directory.TEST_SRC}</code> or <code>${ProjectConstants.Directory.GROOVY_TEST_SRC}</code> directory.")
                     .enabledIf(enableActionToolbar.selected)
             }
             row {
                 checkBox("Enable actions toolbar for a IDE Groovy scripts")
-                    .bindSelected(mutable::enableActionsToolbarForGroovyIdeConsole)
+                    .bindSelected(groovySettings::enableActionsToolbarForGroovyIdeConsole)
                     .comment("Enables Actions toolbar for the groovy files located in the <code>${HybrisConstants.PATH_IDE_CONSOLES}</code> or <code>${GroovyConstants.PATH_CONSOLES_GROOVY}</code> (Scratches and Consoles -> IDE Consoles)")
                     .enabledIf(enableActionToolbar.selected)
             }
@@ -111,7 +137,6 @@ class GroovyProjectSettingsConfigurableProvider(private val project: Project) : 
 
         override fun apply() {
             super.apply()
-            developerSettings.groovySettings = mutable.immutable()
             toolbarProvider.toggle(project)
         }
     }

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy.exec
+package sap.commerce.toolset.groovy.settings.state
 
 enum class GroovyExecMode(val presentationText: String) {
     DIRECT("Direct"),

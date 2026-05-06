@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings.state
+package sap.commerce.toolset.groovy.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.settings.state.SpringContextMode
+import sap.commerce.toolset.settings.state.TransactionMode
 
 @Tag("GroovySettings")
 data class GroovySettingsState(
@@ -28,6 +30,8 @@ data class GroovySettingsState(
     @JvmField @OptionTag val enableActionsToolbarForGroovyIdeConsole: Boolean = false,
     @JvmField @OptionTag val springContextMode: SpringContextMode = SpringContextMode.DISABLED,
     @JvmField @OptionTag val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
+    @JvmField @OptionTag val execMode: GroovyExecMode = GroovyExecMode.TEMPLATE,
+    @JvmField @OptionTag val exceptionHandling: GroovyExecExceptionHandling = GroovyExecExceptionHandling.FULL_STACKTRACE,
 ) {
     fun mutable() = Mutable(
         enableActionsToolbar = enableActionsToolbar,
@@ -35,6 +39,8 @@ data class GroovySettingsState(
         enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
         springContextMode = springContextMode,
         transactionMode = transactionMode,
+        execMode = execMode,
+        exceptionHandling = exceptionHandling,
     )
 
     data class Mutable(
@@ -43,6 +49,8 @@ data class GroovySettingsState(
         var enableActionsToolbarForGroovyIdeConsole: Boolean,
         var springContextMode: SpringContextMode,
         var transactionMode: TransactionMode,
+        var execMode: GroovyExecMode,
+        var exceptionHandling: GroovyExecExceptionHandling,
     ) {
         fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
@@ -50,6 +58,8 @@ data class GroovySettingsState(
             enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,
             springContextMode = springContextMode,
             transactionMode = transactionMode,
+            execMode = execMode,
+            exceptionHandling = exceptionHandling,
         )
     }
 }

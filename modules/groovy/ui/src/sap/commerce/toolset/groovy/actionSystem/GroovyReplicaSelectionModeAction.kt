@@ -23,9 +23,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.exec.context.ReplicaSelectionMode
-import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 
 abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode: ReplicaSelectionMode) : CheckboxAction(
     replicaSelectionMode.presentationText,
@@ -42,11 +41,10 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
+        val project = e.project ?: return false
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-        val currentReplicaSelectionMode = virtualFile.groovyExecContextSettings
-            ?.replicaContext
-            ?.replicaSelectionMode
-            ?: GroovyReplicaAwareContext.auto().replicaSelectionMode
+        val currentReplicaSelectionMode = GroovyExecService.getInstance(project).getReplicaAwareContext(virtualFile)
+            .replicaSelectionMode
 
         return currentReplicaSelectionMode == replicaSelectionMode
     }

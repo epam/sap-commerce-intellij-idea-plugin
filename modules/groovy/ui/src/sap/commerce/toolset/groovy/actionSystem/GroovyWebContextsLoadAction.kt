@@ -25,24 +25,24 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.exec.GroovyExecService
-import sap.commerce.toolset.groovy.exec.groovyWebContexts
-import sap.commerce.toolset.groovy.exec.groovyWebContextsFetching
 
 class GroovyWebContextsLoadAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
+        val project = e.project ?: return
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        val groovyExecService = GroovyExecService.getInstance(project)
 
-        if (virtualFile.groovyWebContextsFetching) {
+        if (groovyExecService.isFetchingWebContexts(virtualFile)) {
             e.presentation.isEnabled = false
             e.presentation.disabledIcon = HybrisIcons.Groovy.WEB_CONTEXTS_LOAD
             e.presentation.text = "Loading Web Contexts..."
             return
         }
 
-        val webContexts = virtualFile.groovyWebContexts
+        val webContexts = groovyExecService.getWebContexts(virtualFile)
 
         e.presentation.text = "${if (webContexts == null) "Load" else "Reload"} Web Contexts"
         e.presentation.icon = if (webContexts == null) HybrisIcons.Groovy.WEB_CONTEXTS_LOAD

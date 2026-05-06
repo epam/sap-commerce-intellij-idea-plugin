@@ -20,21 +20,16 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.exec.GroovyExecConstants
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
-import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
 
 class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(GroovyExecConstants.auto) {
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        virtualFile.groovyExecContextSettings = e.groovyExecContextSettings {
-            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
-            GroovyExecContext.defaultSettings(activeConnection)
-        }.copy(replicaContext = GroovyReplicaAwareContext.auto())
+
+        GroovyExecService.getInstance(project).setReplicaAwareContext(virtualFile, GroovyReplicaAwareContext.auto())
     }
 }

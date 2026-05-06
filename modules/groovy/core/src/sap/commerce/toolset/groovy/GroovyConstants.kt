@@ -18,13 +18,6 @@
 
 package sap.commerce.toolset.groovy
 
-import com.intellij.openapi.util.Key
-import sap.commerce.toolset.groovy.lang.resolve.RemoteSpringBean
-import sap.commerce.toolset.settings.state.SpringContextMode
-
 object GroovyConstants {
-    val KEY_SPRING_CONTEXT_MODE = Key<SpringContextMode>("sap.cx.groovy.spring.context.mode")
-    val KEY_REMOTE_SPRING_BEANS = Key.create<Collection<RemoteSpringBean>>("sap.cx.groovy.execution.remoteSpringBeans")
-
     const val PATH_CONSOLES_GROOVY = "consoles/groovy/"
 }
