@@ -22,10 +22,10 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.groovyWebContext
-import sap.commerce.toolset.groovy.groovyWebContexts
-import sap.commerce.toolset.groovy.groovyWebContextsFetching
+import sap.commerce.toolset.groovy.exec.GroovyExecConstants
+import sap.commerce.toolset.groovy.exec.groovyWebContext
+import sap.commerce.toolset.groovy.exec.groovyWebContexts
+import sap.commerce.toolset.groovy.exec.groovyWebContextsFetching
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent
 
 class GroovyWebContextActionGroup : DefaultActionGroup(

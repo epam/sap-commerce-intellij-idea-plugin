@@ -18,10 +18,11 @@
 
 package sap.commerce.toolset.groovy.exec.context
 
-import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.groovy.exec.GroovyExecExceptionHandling
+import sap.commerce.toolset.groovy.exec.GroovyExecMode
 import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -29,11 +30,13 @@ import sap.commerce.toolset.settings.state.TransactionMode
 data class GroovyExecContext(
     val connection: HacConnectionSettingsState,
     override val executionTitle: String = DEFAULT_TITLE,
-    private val content: String,
+    val content: String,
     val timeout: Int,
+    val exceptionHandling: GroovyExecExceptionHandling = GroovyExecExceptionHandling.FULL_STACKTRACE,
     val transactionMode: TransactionMode,
     val webContext: String? = null,
-    val replicaContext: ReplicaContext? = null
+    val replicaContext: ReplicaContext? = null,
+    val executionMode: GroovyExecMode = GroovyExecMode.DIRECT
 ) : ExecContext {
 
     constructor(
@@ -47,6 +50,7 @@ data class GroovyExecContext(
         executionTitle = executionTitle,
         content = content,
         timeout = settings.timeout,
+        exceptionHandling = settings.exceptionHandling,
         transactionMode = settings.transactionMode,
         webContext = settings.webContext,
         replicaContext = replicaContext,
@@ -60,6 +64,7 @@ data class GroovyExecContext(
 
     data class Settings(
         override val timeout: Int,
+        val exceptionHandling: GroovyExecExceptionHandling,
         val webContext: String? = null,
         val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
         val replicaContext: GroovyReplicaAwareContext = GroovyReplicaAwareContext.auto()
@@ -69,10 +74,12 @@ data class GroovyExecContext(
             transactionMode = transactionMode,
             replicaContext = replicaContext,
             webContext = webContext,
+            exceptionHandling = exceptionHandling,
         )
 
         data class Mutable(
             override var timeout: Int,
+            var exceptionHandling: GroovyExecExceptionHandling,
             var transactionMode: TransactionMode,
             var replicaContext: GroovyReplicaAwareContext,
             var webContext: String?
@@ -82,19 +89,18 @@ data class GroovyExecContext(
                 transactionMode = transactionMode,
                 replicaContext = replicaContext,
                 webContext = webContext,
+                exceptionHandling = exceptionHandling,
             )
         }
     }
 
     companion object {
-        val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.groovy.execution.settings")
-        val KEY_WEB_CONTEXTS = Key.create<Collection<String>>("sap.cx.groovy.execution.webContexts")
-        val KEY_WEB_CONTEXTS_FETCHING = Key.create<Boolean>("sap.cx.groovy.execution.webContexts.fetching")
         const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce instance..."
 
         fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null) = Settings(
             timeout = connectionSettings?.timeout ?: HacExecConstants.DEFAULT_TIMEOUT,
-            transactionMode = TransactionMode.ROLLBACK
+            transactionMode = TransactionMode.ROLLBACK,
+            exceptionHandling = GroovyExecExceptionHandling.FULL_STACKTRACE,
         )
     }
 }

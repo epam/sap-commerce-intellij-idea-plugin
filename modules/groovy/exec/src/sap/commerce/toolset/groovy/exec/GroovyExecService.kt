@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy
+package sap.commerce.toolset.groovy.exec
 
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
@@ -27,8 +27,8 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.groovyRemoteSpringBeans
 import sap.commerce.toolset.groovy.lang.resolve.RemoteSpringBean
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.readResource

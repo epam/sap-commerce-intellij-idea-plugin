@@ -27,10 +27,10 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.groovy.GroovyExecConstants
+import sap.commerce.toolset.groovy.exec.GroovyExecConstants
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
-import sap.commerce.toolset.groovy.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 import java.awt.Component
 import javax.swing.JComponent
 

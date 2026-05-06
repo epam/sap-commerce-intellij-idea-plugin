@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,16 +18,17 @@
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.bindIntText
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.GroovyExecExceptionHandling
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import javax.swing.LayoutFocusTraversalPolicy
@@ -37,7 +38,8 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
     override fun previewSettings(e: AnActionEvent, project: Project): String = e.groovyExecContextSettings { GroovyExecContext.defaultSettings() }
         .let {
             """<pre>
- · timeout: ${it.timeout} ms</pre>
+ · timeout           : ${it.timeout} ms</pre>
+ · exception handling: ${it.exceptionHandling.presentationText}</pre>
                 """.trimIndent()
         }
 
@@ -50,11 +52,21 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
         return settings.mutable()
     }
 
-    override fun applySettings(editor: Editor, settings: GroovyExecContext.Settings.Mutable) {
-        editor.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
+    override fun applySettings(virtualFile: VirtualFile, settings: GroovyExecContext.Settings.Mutable) {
+        virtualFile.groovyExecContextSettings = settings.immutable()
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: GroovyExecContext.Settings.Mutable) = panel {
+        row {
+            comboBox(
+                model = EnumComboBoxModel(GroovyExecExceptionHandling::class.java),
+                renderer = SimpleListCellRenderer.create("...") { value -> value.presentationText }
+            )
+                .label("Exception handling:")
+                .comment("Used in case of non-default Web Context.")
+                .bindItem(settings::exceptionHandling.toNullableProperty())
+        }.layout(RowLayout.PARENT_GRID)
+
         row {
             textField()
                 .align(AlignX.FILL)

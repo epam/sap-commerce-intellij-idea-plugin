@@ -27,8 +27,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.groovy.GroovyConstants
-import sap.commerce.toolset.groovy.GroovyExecService
-import sap.commerce.toolset.groovy.getCurrentSpringContextMode
+import sap.commerce.toolset.groovy.exec.GroovyExecService
+import sap.commerce.toolset.groovy.exec.getCurrentSpringContextMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.SpringContextMode
 

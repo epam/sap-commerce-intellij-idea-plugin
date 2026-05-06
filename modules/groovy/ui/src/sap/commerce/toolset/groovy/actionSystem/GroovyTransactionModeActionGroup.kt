@@ -25,7 +25,7 @@ import com.intellij.openapi.actionSystem.ex.CustomComponentAction
 import com.intellij.ui.GotItTooltip
 import sap.commerce.toolset.GotItTooltips
 import sap.commerce.toolset.actionSystem.triggerAction
-import sap.commerce.toolset.groovy.groovyTransactionMode
+import sap.commerce.toolset.groovy.exec.groovyTransactionMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescriptionComponent

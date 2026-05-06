@@ -21,8 +21,8 @@ package sap.commerce.toolset.groovy.actionSystem
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.util.asSafely
-import sap.commerce.toolset.groovy.GroovyExecConstants
 import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
+import sap.commerce.toolset.groovy.exec.GroovyExecConstants
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.ui.ManualReplicaSelectionDialog
 import sap.commerce.toolset.hac.exec.HacExecConnectionService

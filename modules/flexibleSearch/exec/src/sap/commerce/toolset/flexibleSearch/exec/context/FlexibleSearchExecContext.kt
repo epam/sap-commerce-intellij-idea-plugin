@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.flexibleSearch.exec.context
 
-import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.hac.HacExecConstants
@@ -109,8 +108,6 @@ data class FlexibleSearchExecContext(
     }
 
     companion object {
-        val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.fxs.execution.settings")
-
         fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null, user: String? = null) = Settings(
             maxCount = 200,
             locale = "en",

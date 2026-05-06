@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,8 +19,8 @@ package sap.commerce.toolset.impex.actionSystem
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
@@ -32,6 +32,7 @@ import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.exec.context.ImpExToggle
 import sap.commerce.toolset.impex.exec.context.ImpExValidationMode
+import sap.commerce.toolset.impex.exec.impexExecContextSettings
 import javax.swing.LayoutFocusTraversalPolicy
 
 class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecContext.Settings.Mutable>() {
@@ -60,8 +61,8 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         }
         .mutable()
 
-    override fun applySettings(editor: Editor, settings: ImpExExecContext.Settings.Mutable) {
-        editor.putUserData(ImpExExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
+    override fun applySettings(virtualFile: VirtualFile, settings: ImpExExecContext.Settings.Mutable) {
+        virtualFile.impexExecContextSettings = settings.immutable()
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecContext.Settings.Mutable) = panel {

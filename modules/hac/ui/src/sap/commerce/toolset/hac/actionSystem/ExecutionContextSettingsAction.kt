@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,11 +21,11 @@ package sap.commerce.toolset.hac.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.popup.*
+import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.ifNotFromSearchPopup
@@ -36,7 +36,7 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
     protected abstract fun previewSettings(e: AnActionEvent, project: Project): String
     protected abstract fun settings(e: AnActionEvent, project: Project): M
     protected abstract fun settingsPanel(e: AnActionEvent, project: Project, settings: M): DialogPanel
-    protected abstract fun applySettings(editor: Editor, settings: M)
+    protected abstract fun applySettings(virtualFile: VirtualFile, settings: M)
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -50,6 +50,7 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val inputEvent = e.inputEvent ?: return
         val settings = settings(e, project)
         val settingsPanel = settingsPanel(e, project, settings)
@@ -84,7 +85,7 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
                     override fun onClosed(event: LightweightWindowEvent) {
                         if (isFormValid) {
                             settingsPanel.apply()
-                            applySettings(editor, settings)
+                            applySettings(virtualFile, settings)
                         }
                     }
                 })

@@ -16,37 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy
+package sap.commerce.toolset.groovy.exec
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.GroovyConstants
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext.Settings
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.settings.state.TransactionMode
+
+private val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.groovy.execution.settings")
+private val KEY_WEB_CONTEXTS = Key.create<Collection<String>>("sap.cx.groovy.execution.webContexts")
+private val KEY_WEB_CONTEXTS_FETCHING = Key.create<Boolean>("sap.cx.groovy.execution.webContexts.fetching")
 
 fun VirtualFile?.getCurrentSpringContextMode(project: Project?) = this
     ?.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
     ?: project?.let { DeveloperSettings.getInstance(project).groovySettings.springContextMode }
     ?: SpringContextMode.DISABLED
 
-
 var VirtualFile.groovyWebContexts
-    get() = this.getUserData(GroovyExecContext.KEY_WEB_CONTEXTS)
+    get() = this.getUserData(KEY_WEB_CONTEXTS)
     set(value) {
-        this.putUserData(GroovyExecContext.KEY_WEB_CONTEXTS, value)
+        this.putUserData(KEY_WEB_CONTEXTS, value)
     }
 
 var VirtualFile.groovyWebContextsFetching
-    get() = this.getUserData(GroovyExecContext.KEY_WEB_CONTEXTS_FETCHING) ?: false
+    get() = this.getUserData(KEY_WEB_CONTEXTS_FETCHING) ?: false
     set(value) {
-        this.putUserData(GroovyExecContext.KEY_WEB_CONTEXTS_FETCHING, value)
+        this.putUserData(KEY_WEB_CONTEXTS_FETCHING, value)
     }
 
 var VirtualFile.groovyExecContextSettings
-    get() = this.getUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS)
+    get() = this.getUserData(KEY_EXECUTION_SETTINGS)
     set(value) {
-        this.putUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS, value)
+        this.putUserData(KEY_EXECUTION_SETTINGS, value)
     }
 
 val VirtualFile.groovyWebContext
@@ -59,6 +64,6 @@ val VirtualFile.groovyTransactionMode
         ?.transactionMode
         ?: TransactionMode.ROLLBACK
 
-fun VirtualFile.groovyExecContextSettings(fallback: () -> GroovyExecContext.Settings) = this
-    .getUserData(GroovyExecContext.KEY_EXECUTION_SETTINGS)
+fun VirtualFile.groovyExecContextSettings(fallback: () -> Settings) = this
+    .getUserData(KEY_EXECUTION_SETTINGS)
     ?: fallback()

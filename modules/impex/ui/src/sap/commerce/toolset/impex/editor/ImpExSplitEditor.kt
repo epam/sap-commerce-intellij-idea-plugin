@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,6 +39,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
+import sap.commerce.toolset.impex.exec.impexExecContextSettings
 import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
@@ -50,8 +51,8 @@ import kotlin.time.Duration
 fun AnActionEvent.impexSplitEditorEx() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<ImpExSplitEditorEx>()
 
-fun AnActionEvent.impexExecutionContextSettings(fallback: () -> ImpExExecContext.Settings) = this.getData(CommonDataKeys.EDITOR)
-    ?.getUserData(ImpExExecContext.KEY_EXECUTION_SETTINGS)
+fun AnActionEvent.impexExecutionContextSettings(fallback: () -> ImpExExecContext.Settings) = this.getData(CommonDataKeys.VIRTUAL_FILE)
+    ?.impexExecContextSettings(fallback)
     ?: fallback()
 
 class ImpExSplitEditorBase(override val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), ImpExSplitEditorEx {

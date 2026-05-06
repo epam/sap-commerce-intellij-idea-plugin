@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,9 @@
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
@@ -30,6 +30,7 @@ import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.flexibleSearch.exec.flexibleSearchExecContextSettings
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.project.PropertyService
@@ -61,8 +62,8 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
         return settings.mutable()
     }
 
-    override fun applySettings(editor: Editor, settings: FlexibleSearchExecContext.Settings.Mutable) {
-        editor.putUserData(FlexibleSearchExecContext.KEY_EXECUTION_SETTINGS, settings.immutable())
+    override fun applySettings(virtualFile: VirtualFile, settings: FlexibleSearchExecContext.Settings.Mutable) {
+        virtualFile.flexibleSearchExecContextSettings = settings.immutable()
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecContext.Settings.Mutable): DialogPanel {
