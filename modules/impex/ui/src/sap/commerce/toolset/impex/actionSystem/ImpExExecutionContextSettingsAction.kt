@@ -61,7 +61,7 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         }
         .mutable()
 
-    override fun applySettings(project1: Project, virtualFile: VirtualFile, settings: ImpExExecContext.Settings.Mutable) {
+    override fun applySettings(project: Project, virtualFile: VirtualFile, settings: ImpExExecContext.Settings.Mutable) {
         virtualFile.impexExecContextSettings = settings.immutable()
     }
 
