@@ -36,7 +36,6 @@ import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.*
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import kotlinx.coroutines.*
@@ -45,12 +44,8 @@ import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import sap.commerce.toolset.ui.addActionListener
-import sap.commerce.toolset.ui.addDocumentListener
 import java.util.concurrent.ConcurrentHashMap
 import javax.swing.JComponent
-import javax.swing.event.DocumentEvent
-import javax.swing.event.DocumentListener
 
 data class LazyLoggerRow(
     val cxLogger: CxLoggerPresentation,
@@ -226,32 +221,22 @@ internal fun Row.logLevelComboBox(): Cell<ComboBox<CxLogLevel>> = comboBox(
     }
 )
 
-/**
- * Text field that serves a dual purpose: the user can type a logger name and
- * press Enter (or click the associated Apply Logger button) to add it, and as
- * they type the rendered logger list below is filtered by a case-insensitive
- * substring match via [onFilterChanged].
- *
- * Validation runs on input and apply, so invalid names get immediate visual
- * feedback while the typed text still drives filtering below.
- */
 internal fun Row.newLoggerTextField(
+    project: Project,
     parentDisposable: Disposable,
     onFilterChanged: (String) -> Unit = {},
-    apply: () -> Unit,
-): Cell<JBTextField> = textField()
+    onApplyLogger: () -> Unit,
+): Cell<LoggerNameTextField> = cell(
+    LoggerNameTextField(
+        project = project,
+        parentDisposable = parentDisposable,
+        onApplyLogger = onApplyLogger,
+        onFilterChanged = onFilterChanged,
+    )
+)
     .resizableColumn()
     .align(AlignX.FILL)
     .validationOnApply { validateLoggerName(it.text) }
-    .applyToComponent {
-        addActionListener(parentDisposable) { apply() }
-
-        document.addDocumentListener(parentDisposable, object : DocumentListener {
-            override fun insertUpdate(e: DocumentEvent) = onFilterChanged(text)
-            override fun removeUpdate(e: DocumentEvent) = onFilterChanged(text)
-            override fun changedUpdate(e: DocumentEvent) = onFilterChanged(text)
-        })
-    }
 
 private fun validateLoggerName(loggerName: String): ValidationInfo? = when {
     loggerName.isBlank() -> ValidationInfo("Empty logger name is not allowed")

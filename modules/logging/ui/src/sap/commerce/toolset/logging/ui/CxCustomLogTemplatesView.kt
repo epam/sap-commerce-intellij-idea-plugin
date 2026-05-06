@@ -30,7 +30,6 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
@@ -66,7 +65,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     private val filterState = LoggerFilterState()
 
     private lateinit var loggerLevelField: ComboBox<CxLogLevel>
-    private lateinit var loggerNameField: JBTextField
+    private lateinit var loggerNameField: LoggerNameTextField
     private lateinit var dataScrollPane: JBScrollPane
     private lateinit var newLoggerPanel: DialogPanel
 
@@ -154,7 +153,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             }
         }
 
-        toggleView(showDataPanel, initialized)
+        withContext(Dispatchers.EDT) { toggleView(showDataPanel, initialized) }
 
         return viewPanel
     }
@@ -199,9 +198,11 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             loggerLevelField = logLevelComboBox().component
 
             loggerNameField = newLoggerTextField(
+                project = project,
                 parentDisposable = this@CxCustomLogTemplatesView,
                 onFilterChanged = { filterState.apply(it) },
-            ) { applyNewLogger() }
+                onApplyLogger = { applyNewLogger() },
+            )
                 .component
 
             button("Apply Logger") { applyNewLogger() }
