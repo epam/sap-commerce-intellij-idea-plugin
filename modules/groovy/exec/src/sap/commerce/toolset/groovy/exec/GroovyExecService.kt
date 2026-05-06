@@ -151,12 +151,17 @@ class GroovyExecService(private val project: Project) {
         }
     }
 
-    fun getSettings(virtualFile: VirtualFile, fallback: (() -> Settings)? = null): Settings = virtualFile.groovyExecContextSettings
-        ?: fallback?.invoke()
-        ?: run {
-            val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
-            GroovyExecContext.defaultSettings(activeConnection)
+    fun initSettings(virtualFile: VirtualFile): Settings {
+        val activeConnection = HacExecConnectionService.getInstance(project).activeConnection
+        val groovySettings = project.yDeveloperSettings.groovySettings
+
+        return GroovyExecContext.defaultSettings(activeConnection, groovySettings).also {
+            virtualFile.groovyExecContextSettings = it
         }
+    }
+
+    fun getSettings(virtualFile: VirtualFile): Settings = virtualFile.groovyExecContextSettings
+        ?: initSettings(virtualFile)
 
     fun setSettings(virtualFile: VirtualFile, settings: Settings) {
         virtualFile.groovyExecContextSettings = settings

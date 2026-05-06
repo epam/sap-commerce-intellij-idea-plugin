@@ -35,6 +35,7 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.exec.context.DefaultExecResult
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -76,6 +77,11 @@ class GroovySplitEditor(internal val textEditor: TextEditor, private val project
 
     private val rootPanel = JPanel(BorderLayout()).apply {
         add(verticalSplitter, BorderLayout.CENTER)
+    }
+
+    init {
+        textEditor.editor.virtualFile
+            ?.let { GroovyExecService.getInstance(project).initSettings(it) }
     }
 
     fun renderExecutionResults(results: Collection<DefaultExecResult>) = GroovyInEditorResultsView.getInstance(project).resultView(this, results) { coroutineScope, view ->

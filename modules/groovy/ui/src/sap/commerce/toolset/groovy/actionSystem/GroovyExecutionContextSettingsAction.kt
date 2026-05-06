@@ -35,7 +35,7 @@ import javax.swing.LayoutFocusTraversalPolicy
 class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<GroovyExecContext.Settings.Mutable>() {
 
     override fun previewSettings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): String =
-        GroovyExecService.getInstance(project).getSettings(virtualFile) { GroovyExecContext.defaultSettings() }
+        GroovyExecService.getInstance(project).getSettings(virtualFile)
             .let {
                 """<pre>
  · timeout           : ${it.timeout} ms
@@ -60,11 +60,13 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
                 .align(AlignX.FILL)
                 .bindItem(settings::execMode.toNullableProperty())
 
-            contextHelp("""
+            contextHelp(
+                """
                     In Template mode script will be executed via Plugin's<br>
                     internal template script with possibility to manage exception handling.<br>
                     Template mode is always used for non-`default` web context.
-            """.trimIndent())
+            """.trimIndent()
+            )
         }.layout(RowLayout.PARENT_GRID)
 
         row {
