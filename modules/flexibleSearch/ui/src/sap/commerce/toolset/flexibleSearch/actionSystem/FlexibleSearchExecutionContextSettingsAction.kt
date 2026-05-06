@@ -62,7 +62,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
         return settings.mutable()
     }
 
-    override fun applySettings(project1: Project, virtualFile: VirtualFile, settings: FlexibleSearchExecContext.Settings.Mutable) {
+    override fun applySettings(project: Project, virtualFile: VirtualFile, settings: FlexibleSearchExecContext.Settings.Mutable) {
         virtualFile.flexibleSearchExecContextSettings = settings.immutable()
     }
 
