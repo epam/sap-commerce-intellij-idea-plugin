@@ -25,13 +25,15 @@ import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.keymap.KeymapUtil
+import com.intellij.openapi.observable.util.addKeyListener
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.textCompletion.TextFieldWithCompletion
+import sap.commerce.toolset.logging.lookup.CxLoggerNameCompletionProvider
 import java.awt.event.InputEvent
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
+import java.io.Serial
 import javax.swing.KeyStroke
 
 /**
@@ -66,7 +68,7 @@ import javax.swing.KeyStroke
  */
 internal class LoggerNameTextField(
     project: Project,
-    parentDisposable: Disposable,
+    private val parentDisposable: Disposable,
     private val onApplyLogger: () -> Unit,
     onFilterChanged: (String) -> Unit = {},
 ) : TextFieldWithCompletion(
@@ -91,14 +93,12 @@ internal class LoggerNameTextField(
             }
         }
         document.addDocumentListener(docListener, parentDisposable)
-        Disposer.register(parentDisposable) { document.removeDocumentListener(docListener) }
     }
 
-    override fun createEditor(): EditorEx {
-        val editor = super.createEditor()
-        editor.putUserData(AutoPopupController.NO_ADS, true)
-        editor.contentComponent.toolTipText = TOOLTIP_TEXT
-        editor.contentComponent.addKeyListener(object : KeyAdapter() {
+    override fun createEditor(): EditorEx = super.createEditor().apply {
+        putUserData(AutoPopupController.NO_ADS, true)
+        contentComponent.toolTipText = TOOLTIP_TEXT
+        contentComponent.addKeyListener(parentDisposable, object : KeyAdapter() {
             override fun keyPressed(e: KeyEvent) {
                 if (e.keyCode != KeyEvent.VK_ENTER) return
 
@@ -113,10 +113,11 @@ internal class LoggerNameTextField(
                 onApplyLogger()
             }
         })
-        return editor
     }
 
     companion object {
+        @Serial
+        private const val serialVersionUID: Long = -9073268281468971227L
         private const val ESC_KEYSTROKE = "Esc"
 
         private val FILTER_KEYSTROKE = KeymapUtil.getKeystrokeText(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0))
@@ -127,10 +128,6 @@ internal class LoggerNameTextField(
                 if (SystemInfo.isMac) InputEvent.META_DOWN_MASK else InputEvent.CTRL_DOWN_MASK,
             )
         )
-
-        private val LOOKUP_AD_TEXT = "Press $FILTER_KEYSTROKE to filter out loggers · " +
-            "Press $ESC_KEYSTROKE to close the suggestion list · " +
-            "Press $APPLY_KEYSTROKE to apply a logger"
 
         private val TOOLTIP_TEXT = "<html>" +
             "Press $FILTER_KEYSTROKE to filter out loggers.<br>" +

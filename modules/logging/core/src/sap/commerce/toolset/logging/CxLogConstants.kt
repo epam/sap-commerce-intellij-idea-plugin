@@ -38,4 +38,11 @@ object CxLogConstants {
     )
 
     val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
+
+    object Lookup {
+        const val MIN_PREFIX_LENGTH = 2
+        const val MAX_VISIBLE_SUGGESTIONS = 50
+        const val OVERFLOW_PROBE_BUDGET = 50
+        const val SHORT_NAME_PHASE_BUDGET = (MAX_VISIBLE_SUGGESTIONS + OVERFLOW_PROBE_BUDGET) * 2
+    }
 }

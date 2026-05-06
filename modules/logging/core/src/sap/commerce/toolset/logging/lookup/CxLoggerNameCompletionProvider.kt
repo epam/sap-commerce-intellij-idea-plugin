@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.ui
+package sap.commerce.toolset.logging.lookup
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
@@ -39,10 +39,9 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.util.indexing.IdFilter
 import com.intellij.util.textCompletion.TextCompletionProvider
-import sap.commerce.toolset.logging.ui.CxLoggerConstants.MAX_VISIBLE_SUGGESTIONS
-import sap.commerce.toolset.logging.ui.CxLoggerConstants.MIN_PREFIX_LENGTH
-import sap.commerce.toolset.logging.ui.CxLoggerConstants.OVERFLOW_PROBE_BUDGET
-import sap.commerce.toolset.logging.ui.CxLoggerConstants.SHORT_NAME_PHASE_BUDGET
+import sap.commerce.toolset.logging.CxLogConstants.Lookup.MAX_VISIBLE_SUGGESTIONS
+import sap.commerce.toolset.logging.CxLogConstants.Lookup.MIN_PREFIX_LENGTH
+import sap.commerce.toolset.logging.CxLogConstants.Lookup.SHORT_NAME_PHASE_BUDGET
 import javax.swing.Icon
 
 /**
@@ -69,7 +68,7 @@ import javax.swing.Icon
  * fully qualified names keeps the lookup open instead of being
  * closed by the platform's default identifier-only [CharFilter].
  */
-internal class CxLoggerNameCompletionProvider(
+class CxLoggerNameCompletionProvider(
     private val project: Project,
 ) : TextCompletionProvider {
 
@@ -90,7 +89,7 @@ internal class CxLoggerNameCompletionProvider(
         if (prefix.length < MIN_PREFIX_LENGTH) return
         if (DumbService.isDumb(project)) return
 
-        val state = CompletionState(prefix)
+        val state = CxLoggerCompletionState(prefix)
 
         runReadAction {
             val scope = GlobalSearchScope.allScope(project)
@@ -136,7 +135,7 @@ internal class CxLoggerNameCompletionProvider(
     private fun collectMatchingClasses(
         prefix: String,
         scope: GlobalSearchScope,
-        state: CompletionState,
+        state: CxLoggerCompletionState,
     ) {
         val shortNamePrefix = prefix.substringAfterLast('.', prefix)
         val cache = PsiShortNamesCache.getInstance(project)
@@ -179,51 +178,14 @@ internal class CxLoggerNameCompletionProvider(
         return PrioritizedLookupElement.withPriority(element, Double.NEGATIVE_INFINITY)
     }
 
-}
+    private fun String.isOnSamePathAs(prefix: String): Boolean = startsWith(prefix, ignoreCase = true) || prefix.startsWith(this, ignoreCase = true)
 
-private object CxLoggerConstants {
-    const val MIN_PREFIX_LENGTH = 2
-    const val MAX_VISIBLE_SUGGESTIONS = 50
-    const val OVERFLOW_PROBE_BUDGET = 50
-    const val SHORT_NAME_PHASE_BUDGET = (MAX_VISIBLE_SUGGESTIONS + OVERFLOW_PROBE_BUDGET) * 2
-}
-
-private class CompletionState(private val prefix: String) {
-    val matched: MutableList<LookupElement> = mutableListOf()
-    var overflow: Int = 0
-        private set
-    var overflowCapped: Boolean = false
-        private set
-
-    fun tryAdd(fqn: String, shortName: String?, icon: () -> Icon): Boolean {
-        if (!matches(fqn, shortName)) return true
-        if (matched.size < MAX_VISIBLE_SUGGESTIONS) {
-            matched += buildElement(fqn, shortName, icon())
-            return true
-        }
-        overflow++
-        if (overflow >= OVERFLOW_PROBE_BUDGET) {
-            overflowCapped = true
-            return false
-        }
-        return true
+    private fun PsiClass.safeIcon(): Icon = try {
+        getIcon(Iconable.ICON_FLAG_VISIBILITY) ?: AllIcons.Nodes.Class
+    } catch (e: ProcessCanceledException) {
+        throw e
+    } catch (_: Throwable) {
+        AllIcons.Nodes.Class
     }
 
-    private fun matches(fqn: String, shortName: String?): Boolean = fqn.startsWith(prefix, ignoreCase = true)
-        || (shortName != null && shortName.startsWith(prefix, ignoreCase = true))
-
-    private fun buildElement(fqn: String, shortName: String?, icon: Icon): LookupElement {
-        val builder = LookupElementBuilder.create(fqn).withIcon(icon)
-        return if (shortName != null) builder.withLookupString(shortName) else builder
-    }
-}
-
-private fun String.isOnSamePathAs(prefix: String): Boolean = startsWith(prefix, ignoreCase = true) || prefix.startsWith(this, ignoreCase = true)
-
-private fun PsiClass.safeIcon(): Icon = try {
-    getIcon(Iconable.ICON_FLAG_VISIBILITY) ?: AllIcons.Nodes.Class
-} catch (e: ProcessCanceledException) {
-    throw e
-} catch (_: Throwable) {
-    AllIcons.Nodes.Class
 }
