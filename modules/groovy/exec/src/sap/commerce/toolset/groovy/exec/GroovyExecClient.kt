@@ -44,20 +44,20 @@ import kotlin.io.encoding.Base64
 class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecClient<GroovyExecContext>(project, coroutineScope) {
 
     override suspend fun execute(context: GroovyExecContext): DefaultExecResult {
-        val webContext = context.webContext
-        val executableContext = if (webContext == null) context
-        else {
-            val encodedScript = Base64.encode(context.content.toByteArray(StandardCharsets.UTF_8))
-            val webContextGroovyScript = readResource("scripts/groovy-executeOnWebContext.groovy")
-                .replace($$"$hacEncodedScript", encodedScript)
-                .replace($$"$hacSpringWebContext", webContext)
-                .replace($$"$exceptionHandling", context.exceptionHandling.name)
+        val executableContext = context.webContext
+            ?.let { webContext ->
+                val encodedScript = Base64.encode(context.content.toByteArray(StandardCharsets.UTF_8))
+                val webContextGroovyScript = readResource("scripts/groovy-executeOnWebContext.groovy")
+                    .replace($$"$hacEncodedScript", encodedScript)
+                    .replace($$"$hacSpringWebContext", webContext)
+                    .replace($$"$exceptionHandling", context.exceptionHandling.name)
 
-            context.copy(
-                content = webContextGroovyScript,
-                executionMode = GroovyExecMode.TEMPLATE,
-            )
-        }
+                context.copy(
+                    content = webContextGroovyScript,
+                    executionMode = GroovyExecMode.TEMPLATE,
+                )
+            }
+            ?: context
 
         return executeInternally(executableContext)
     }
