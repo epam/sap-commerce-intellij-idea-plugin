@@ -22,6 +22,7 @@ import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.exec.GroovyExecExceptionHandling
+import sap.commerce.toolset.groovy.exec.GroovyExecMode
 import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -34,7 +35,8 @@ data class GroovyExecContext(
     val exceptionHandling: GroovyExecExceptionHandling = GroovyExecExceptionHandling.FULL_STACKTRACE,
     val transactionMode: TransactionMode,
     val webContext: String? = null,
-    val replicaContext: ReplicaContext? = null
+    val replicaContext: ReplicaContext? = null,
+    val executionMode: GroovyExecMode = GroovyExecMode.DIRECT
 ) : ExecContext {
 
     constructor(

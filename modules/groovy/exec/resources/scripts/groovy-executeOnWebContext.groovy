@@ -33,9 +33,10 @@ import static de.hybris.platform.hac.scripting.impl.DefaultScriptingLanguageExec
 
 /*
     Script variables to be set via GroovyExecClient:
-        - $hacEncodedScript     - Actual Base64 encoded Groovy script to be executed on the target Web Context
-        - $hacSpringWebContext  - Active Web Context taken from the groovyExecContextSettings.webContext
-        - $exceptionHandling    - Exception Handling taken from the enum code `GroovyExecExceptionHandling`
+        - $hacEncodedScript       - Actual Base64 encoded Groovy script to be executed on the target Web Context
+        - $hacSpringWebContext    - Active Web Context taken from the groovyExecContextSettings.webContext
+        - $exceptionHandling      - Exception Handling taken from the enum code `GroovyExecExceptionHandling`
+        - $__WEB_CONTEXT_MARKER__ - Unique script execution identifier, returned as a "__WEB_CONTEXT_MARKER__" Json field
  */
 
 static Map<String,WebApplicationContext> getSpringWeb() {
@@ -74,7 +75,9 @@ static Map<String,WebApplicationContext> getSpringWeb() {
 def result = [:]
 def outputStream = new ByteArrayOutputStream()
 def stackTraceWriter = new StringWriter()
+def hacSpringWebContext = '$hacSpringWebContext'
 def exceptionHandling = '$exceptionHandling'
+def encodedScript = '$hacEncodedScript'
 
 try {
 
@@ -89,13 +92,11 @@ try {
     ScriptExecutionResult scriptExecutionResult = null
     String stackTraceText = null
 
-    def decodedScript = new String(Base64.decoder.decode('$hacEncodedScript'), StandardCharsets.UTF_8)
+    def decodedScript = new String(Base64.decoder.decode(encodedScript), StandardCharsets.UTF_8)
 
     try {
 
         def scriptContent = new SimpleScriptContent('groovy', decodedScript)
-
-        def hacSpringWebContext = '$hacSpringWebContext'
         def applicationContext = springWeb[hacSpringWebContext]
 
         if (hacSpringWebContext != 'default' && !applicationContext) {
