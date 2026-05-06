@@ -24,7 +24,6 @@ import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.settings.GroovyDeveloperSettings
 import sap.commerce.toolset.groovy.settings.state.GroovyExecExceptionHandling
 import sap.commerce.toolset.groovy.settings.state.GroovyExecMode
-import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
 
@@ -103,8 +102,8 @@ data class GroovyExecContext(
     companion object {
         const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce instance..."
 
-        fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null, groovySettings: GroovyDeveloperSettings) = Settings(
-            timeout = connectionSettings?.timeout ?: HacExecConstants.DEFAULT_TIMEOUT,
+        fun defaultSettings(connectionSettings: HacConnectionSettingsState, groovySettings: GroovyDeveloperSettings) = Settings(
+            timeout = connectionSettings.timeout,
             transactionMode = groovySettings.transactionMode,
             execMode = groovySettings.execMode,
             exceptionHandling = groovySettings.exceptionHandling,
