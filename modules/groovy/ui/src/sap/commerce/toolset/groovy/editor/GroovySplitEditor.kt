@@ -36,6 +36,8 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.exec.GroovyExecService
+import sap.commerce.toolset.groovy.getSpringContextMode
+import sap.commerce.toolset.groovy.setSpringContextMode
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -81,7 +83,10 @@ class GroovySplitEditor(internal val textEditor: TextEditor, private val project
 
     init {
         textEditor.editor.virtualFile
-            ?.let { GroovyExecService.getInstance(project).initSettings(it) }
+            ?.let {
+                it.setSpringContextMode(it.getSpringContextMode(project))
+                GroovyExecService.getInstance(project).initSettings(it)
+            }
     }
 
     fun renderExecutionResults(results: Collection<DefaultExecResult>) = GroovyInEditorResultsView.getInstance(project).resultView(this, results) { coroutineScope, view ->
