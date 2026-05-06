@@ -53,6 +53,8 @@ object GroovyExecConstants {
     }
 
     const val DEFAULT_WEB_CONTEXT = "default"
+
+    // See: de.hybris.platform.hac.scripting.impl.DefaultScriptingLanguageExecutor
     const val RESPONSE_OUTPUT_TEXT = "outputText"
     const val RESPONSE_EXECUTION_RESULT = "executionResult"
     const val RESPONSE_STACKTRACE_TEXT = "stacktraceText"
