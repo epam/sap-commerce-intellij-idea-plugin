@@ -19,10 +19,7 @@
 package sap.commerce.toolset.logging.ui
 
 import com.intellij.codeInsight.AutoPopupController
-import com.intellij.codeInsight.lookup.Lookup
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.codeInsight.lookup.LookupManagerListener
-import com.intellij.codeInsight.lookup.impl.LookupImpl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
@@ -31,7 +28,6 @@ import com.intellij.openapi.keymap.KeymapUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.util.asSafely
 import com.intellij.util.textCompletion.TextFieldWithCompletion
 import java.awt.event.InputEvent
 import java.awt.event.KeyAdapter
@@ -96,18 +92,6 @@ internal class LoggerNameTextField(
         }
         document.addDocumentListener(docListener, parentDisposable)
         Disposer.register(parentDisposable) { document.removeDocumentListener(docListener) }
-
-        project.messageBus.connect(parentDisposable).subscribe(
-            LookupManagerListener.TOPIC,
-            object : LookupManagerListener {
-                override fun activeLookupChanged(oldLookup: Lookup?, newLookup: Lookup?) {
-                    newLookup ?: return
-                    val ownEditor = editor ?: return
-                    if (newLookup.editor !== ownEditor) return
-                    newLookup.asSafely<LookupImpl>()?.addAdvertisement(LOOKUP_AD_TEXT, null)
-                }
-            }
-        )
     }
 
     override fun createEditor(): EditorEx {
