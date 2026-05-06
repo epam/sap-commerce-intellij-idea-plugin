@@ -77,8 +77,7 @@ internal class CxLoggerNameCompletionProvider(
 
     override fun acceptChar(c: Char): CharFilter.Result = CharFilter.Result.ADD_TO_PREFIX
 
-    override fun applyPrefixMatcher(result: CompletionResultSet, prefix: String): CompletionResultSet = result
-        .caseInsensitive()
+    override fun applyPrefixMatcher(result: CompletionResultSet, prefix: String): CompletionResultSet = result.caseInsensitive()
         .withPrefixMatcher(PlainPrefixMatcher(prefix))
 
     override fun getPrefix(text: String, offset: Int): String = text.substring(0, offset.coerceIn(0, text.length))
@@ -187,11 +186,9 @@ private object CxLoggerConstants {
     const val MAX_VISIBLE_SUGGESTIONS = 50
     const val OVERFLOW_PROBE_BUDGET = 50
     const val SHORT_NAME_PHASE_BUDGET = (MAX_VISIBLE_SUGGESTIONS + OVERFLOW_PROBE_BUDGET) * 2
-
 }
 
 private class CompletionState(private val prefix: String) {
-
     val matched: MutableList<LookupElement> = mutableListOf()
     var overflow: Int = 0
         private set
@@ -212,9 +209,8 @@ private class CompletionState(private val prefix: String) {
         return true
     }
 
-    private fun matches(fqn: String, shortName: String?): Boolean =
-        fqn.startsWith(prefix, ignoreCase = true) ||
-            (shortName != null && shortName.startsWith(prefix, ignoreCase = true))
+    private fun matches(fqn: String, shortName: String?): Boolean = fqn.startsWith(prefix, ignoreCase = true)
+        || (shortName != null && shortName.startsWith(prefix, ignoreCase = true))
 
     private fun buildElement(fqn: String, shortName: String?, icon: Icon): LookupElement {
         val builder = LookupElementBuilder.create(fqn).withIcon(icon)
@@ -222,8 +218,7 @@ private class CompletionState(private val prefix: String) {
     }
 }
 
-private fun String.isOnSamePathAs(prefix: String): Boolean =
-    startsWith(prefix, ignoreCase = true) || prefix.startsWith(this, ignoreCase = true)
+private fun String.isOnSamePathAs(prefix: String): Boolean = startsWith(prefix, ignoreCase = true) || prefix.startsWith(this, ignoreCase = true)
 
 private fun PsiClass.safeIcon(): Icon = try {
     getIcon(Iconable.ICON_FLAG_VISIBILITY) ?: AllIcons.Nodes.Class
