@@ -33,6 +33,7 @@ import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.exec.DefaultExecClient
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.groovy.settings.state.GroovyExecMode
 import sap.commerce.toolset.hac.exec.http.HacHttpClient
 import sap.commerce.toolset.readResource
 import java.io.IOException
@@ -45,21 +46,24 @@ class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : Defau
 
     override suspend fun execute(context: GroovyExecContext): DefaultExecResult {
         val executableContext = context.webContext
-            ?.let { webContext ->
-                val encodedScript = Base64.encode(context.content.toByteArray(StandardCharsets.UTF_8))
-                val webContextGroovyScript = readResource("scripts/groovy-executeOnWebContext.groovy")
-                    .replace($$"$hacEncodedScript", encodedScript)
-                    .replace($$"$hacSpringWebContext", webContext)
-                    .replace($$"$exceptionHandling", context.exceptionHandling.name)
-
-                context.copy(
-                    content = webContextGroovyScript,
-                    executionMode = GroovyExecMode.TEMPLATE,
-                )
-            }
-            ?: context
+            ?.let { webContext -> createTemplateContext(context, webContext) }
+            ?: if (context.execMode == GroovyExecMode.TEMPLATE) createTemplateContext(context,  GroovyExecConstants.DEFAULT_WEB_CONTEXT)
+            else context
 
         return executeInternally(executableContext)
+    }
+
+    private fun createTemplateContext(context: GroovyExecContext, webContext: String): GroovyExecContext {
+        val encodedScript = Base64.encode(context.content.toByteArray(StandardCharsets.UTF_8))
+        val webContextGroovyScript = readResource("scripts/groovy-executeOnWebContext.groovy")
+            .replace($$"$hacEncodedScript", encodedScript)
+            .replace($$"$hacSpringWebContext", webContext)
+            .replace($$"$exceptionHandling", context.exceptionHandling.name)
+
+        return context.copy(
+            content = webContextGroovyScript,
+            execMode = GroovyExecMode.TEMPLATE,
+        )
     }
 
     private suspend fun executeInternally(context: GroovyExecContext): DefaultExecResult {
@@ -82,7 +86,7 @@ class GroovyExecClient(project: Project, coroutineScope: CoroutineScope) : Defau
         try {
             val response = response.entity.content.readBytes().toString(Charsets.UTF_8)
             val responseWrapperJson = Json.parseToJsonElement(response)
-            val json = when (context.executionMode) {
+            val json = when (context.execMode) {
                 GroovyExecMode.DIRECT -> responseWrapperJson
                 GroovyExecMode.TEMPLATE -> responseWrapperJson.jsonObject[GroovyExecConstants.RESPONSE_EXECUTION_RESULT]
                     ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }

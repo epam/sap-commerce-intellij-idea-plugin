@@ -33,26 +33,26 @@ import java.awt.event.KeyEvent
 
 abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> : DumbAwareAction() {
 
-    protected abstract fun previewSettings(e: AnActionEvent, project: Project): String
-    protected abstract fun settings(e: AnActionEvent, project: Project): M
+    protected abstract fun previewSettings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): String
+    protected abstract fun settings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): M
     protected abstract fun settingsPanel(e: AnActionEvent, project: Project, settings: M): DialogPanel
-    protected abstract fun applySettings(virtualFile: VirtualFile, settings: M)
+    protected abstract fun applySettings(project: Project, virtualFile: VirtualFile, settings: M)
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) = e.ifNotFromSearchPopup {
         val project = e.project ?: return@ifNotFromSearchPopup
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return@ifNotFromSearchPopup
 
         e.presentation.icon = HybrisIcons.Connection.CONTEXT
-        e.presentation.text = "Execution Context Settings<br>" + previewSettings(e, project)
+        e.presentation.text = "Execution Context Settings<br>" + previewSettings(e, project, virtualFile)
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val inputEvent = e.inputEvent ?: return
-        val settings = settings(e, project)
+        val settings = settings(e, project, virtualFile)
         val settingsPanel = settingsPanel(e, project, settings)
 
         var isFormValid = true
@@ -85,7 +85,7 @@ abstract class ExecutionContextSettingsAction<M : ExecContext.Settings.Mutable> 
                     override fun onClosed(event: LightweightWindowEvent) {
                         if (isFormValid) {
                             settingsPanel.apply()
-                            applySettings(virtualFile, settings)
+                            applySettings(project, virtualFile, settings)
                         }
                     }
                 })

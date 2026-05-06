@@ -37,7 +37,7 @@ import javax.swing.LayoutFocusTraversalPolicy
 
 class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecContext.Settings.Mutable>() {
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings {
+    override fun previewSettings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): String = e.impexExecutionContextSettings {
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
         ImpExExecContext.defaultSettings(connectionSettings)
     }
@@ -54,14 +54,14 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
                 """.trimIndent()
         }
 
-    override fun settings(e: AnActionEvent, project: Project) = e
+    override fun settings(e: AnActionEvent, project: Project, virtualFile: VirtualFile) = e
         .impexExecutionContextSettings {
             val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
             ImpExExecContext.defaultSettings(connectionSettings)
         }
         .mutable()
 
-    override fun applySettings(virtualFile: VirtualFile, settings: ImpExExecContext.Settings.Mutable) {
+    override fun applySettings(project1: Project, virtualFile: VirtualFile, settings: ImpExExecContext.Settings.Mutable) {
         virtualFile.impexExecContextSettings = settings.immutable()
     }
 

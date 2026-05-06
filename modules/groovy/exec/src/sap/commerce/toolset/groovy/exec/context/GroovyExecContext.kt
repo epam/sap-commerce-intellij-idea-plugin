@@ -21,8 +21,8 @@ package sap.commerce.toolset.groovy.exec.context
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.groovy.exec.GroovyExecExceptionHandling
-import sap.commerce.toolset.groovy.exec.GroovyExecMode
+import sap.commerce.toolset.groovy.settings.state.GroovyExecExceptionHandling
+import sap.commerce.toolset.groovy.settings.state.GroovyExecMode
 import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -36,7 +36,7 @@ data class GroovyExecContext(
     val transactionMode: TransactionMode,
     val webContext: String? = null,
     val replicaContext: ReplicaContext? = null,
-    val executionMode: GroovyExecMode = GroovyExecMode.DIRECT
+    val execMode: GroovyExecMode = GroovyExecMode.DIRECT
 ) : ExecContext {
 
     constructor(
@@ -51,6 +51,7 @@ data class GroovyExecContext(
         content = content,
         timeout = settings.timeout,
         exceptionHandling = settings.exceptionHandling,
+        execMode = settings.execMode,
         transactionMode = settings.transactionMode,
         webContext = settings.webContext,
         replicaContext = replicaContext,
@@ -64,8 +65,9 @@ data class GroovyExecContext(
 
     data class Settings(
         override val timeout: Int,
-        val exceptionHandling: GroovyExecExceptionHandling,
         val webContext: String? = null,
+        val exceptionHandling: GroovyExecExceptionHandling = GroovyExecExceptionHandling.FULL_STACKTRACE,
+        val execMode: GroovyExecMode = GroovyExecMode.DIRECT,
         val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
         val replicaContext: GroovyReplicaAwareContext = GroovyReplicaAwareContext.auto()
     ) : ExecContext.Settings {
@@ -75,11 +77,13 @@ data class GroovyExecContext(
             replicaContext = replicaContext,
             webContext = webContext,
             exceptionHandling = exceptionHandling,
+            execMode = this@Settings.execMode,
         )
 
         data class Mutable(
             override var timeout: Int,
             var exceptionHandling: GroovyExecExceptionHandling,
+            var execMode: GroovyExecMode,
             var transactionMode: TransactionMode,
             var replicaContext: GroovyReplicaAwareContext,
             var webContext: String?
@@ -90,6 +94,7 @@ data class GroovyExecContext(
                 replicaContext = replicaContext,
                 webContext = webContext,
                 exceptionHandling = exceptionHandling,
+                execMode = execMode,
             )
         }
     }
@@ -99,8 +104,6 @@ data class GroovyExecContext(
 
         fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null) = Settings(
             timeout = connectionSettings?.timeout ?: HacExecConstants.DEFAULT_TIMEOUT,
-            transactionMode = TransactionMode.ROLLBACK,
-            exceptionHandling = GroovyExecExceptionHandling.FULL_STACKTRACE,
         )
     }
 }

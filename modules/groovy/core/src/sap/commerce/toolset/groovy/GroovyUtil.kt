@@ -18,10 +18,29 @@
 
 package sap.commerce.toolset.groovy
 
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
+import sap.commerce.toolset.groovy.lang.resolve.RemoteSpringBean
+import sap.commerce.toolset.groovy.settings.GroovyDeveloperSettings
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.state.SpringContextMode
+import sap.commerce.toolset.settings.yDeveloperSettings
+
+private val KEY_SPRING_CONTEXT_MODE = Key<SpringContextMode>("sap.cx.groovy.spring.context.mode")
+private val KEY_REMOTE_SPRING_BEANS = Key.create<Collection<RemoteSpringBean>>("sap.cx.groovy.execution.remoteSpringBeans")
 
 var VirtualFile.groovyRemoteSpringBeans
-    get() = this.getUserData(GroovyConstants.KEY_REMOTE_SPRING_BEANS)
+    get() = this.getUserData(KEY_REMOTE_SPRING_BEANS)
     set(value) {
-        this.putUserData(GroovyConstants.KEY_REMOTE_SPRING_BEANS, value)
+        this.putUserData(KEY_REMOTE_SPRING_BEANS, value)
     }
+
+fun VirtualFile.getSpringContextMode(project: Project): SpringContextMode = this.getUserData(KEY_SPRING_CONTEXT_MODE)
+    ?: project.yDeveloperSettings.groovySettings.springContextMode
+
+fun VirtualFile.setSpringContextMode(mode: SpringContextMode) = this
+    .putUserData(KEY_SPRING_CONTEXT_MODE, mode)
+
+val DeveloperSettings.groovySettings
+    get() = GroovyDeveloperSettings.getInstance(this.project)

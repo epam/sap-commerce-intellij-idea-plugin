@@ -28,14 +28,14 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.exec.GroovyExecConstants
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
-import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 import java.awt.Component
 import javax.swing.JComponent
 
 class ManualReplicaSelectionDialog(
-    project: Project,
+    private val project: Project,
     private val virtualFile: VirtualFile,
     private val currentSettings: GroovyExecContext.Settings,
     parentComponent: Component,
@@ -102,6 +102,6 @@ class ManualReplicaSelectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        virtualFile.groovyExecContextSettings = currentSettings.copy(replicaContext = replicaContext.immutable())
+        GroovyExecService.getInstance(project).setReplicaAwareContext(virtualFile, replicaContext.immutable())
     }
 }

@@ -25,45 +25,56 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
-import sap.commerce.toolset.groovy.exec.GroovyExecExceptionHandling
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
+import sap.commerce.toolset.groovy.settings.state.GroovyExecExceptionHandling
+import sap.commerce.toolset.groovy.settings.state.GroovyExecMode
 import sap.commerce.toolset.hac.actionSystem.ExecutionContextSettingsAction
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import javax.swing.LayoutFocusTraversalPolicy
 
 class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<GroovyExecContext.Settings.Mutable>() {
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.groovyExecContextSettings { GroovyExecContext.defaultSettings() }
-        .let {
-            """<pre>
- · timeout           : ${it.timeout} ms</pre>
+    override fun previewSettings(e: AnActionEvent, project: Project, virtualFile: VirtualFile): String =
+        GroovyExecService.getInstance(project).getSettings(virtualFile) { GroovyExecContext.defaultSettings() }
+            .let {
+                """<pre>
+ · timeout           : ${it.timeout} ms
+ · exec mode         : ${it.execMode.presentationText}
  · exception handling: ${it.exceptionHandling.presentationText}</pre>
                 """.trimIndent()
-        }
+            }
 
-    override fun settings(e: AnActionEvent, project: Project): GroovyExecContext.Settings.Mutable {
-        val settings = e.groovyExecContextSettings {
-            val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-            GroovyExecContext.defaultSettings(connectionSettings)
-        }
+    override fun settings(e: AnActionEvent, project: Project, virtualFile: VirtualFile) = GroovyExecService.getInstance(project)
+        .getSettings(virtualFile).mutable()
 
-        return settings.mutable()
-    }
-
-    override fun applySettings(virtualFile: VirtualFile, settings: GroovyExecContext.Settings.Mutable) {
-        virtualFile.groovyExecContextSettings = settings.immutable()
-    }
+    override fun applySettings(project: Project, virtualFile: VirtualFile, settings: GroovyExecContext.Settings.Mutable) = GroovyExecService.getInstance(project)
+        .setSettings(virtualFile, settings.immutable())
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: GroovyExecContext.Settings.Mutable) = panel {
+        row {
+            comboBox(
+                model = EnumComboBoxModel(GroovyExecMode::class.java),
+                renderer = SimpleListCellRenderer.create("...") { value -> value.presentationText }
+            )
+                .label("Exec mode:")
+                .align(AlignX.FILL)
+                .bindItem(settings::execMode.toNullableProperty())
+
+            contextHelp("""
+                    In Template mode script will be executed via Plugin's<br>
+                    internal template script with possibility to manage exception handling.<br>
+                    Template mode is always used for non-`default` web context.
+            """.trimIndent())
+        }.layout(RowLayout.PARENT_GRID)
+
         row {
             comboBox(
                 model = EnumComboBoxModel(GroovyExecExceptionHandling::class.java),
                 renderer = SimpleListCellRenderer.create("...") { value -> value.presentationText }
             )
                 .label("Exception handling:")
-                .comment("Used in case of non-default Web Context.")
+                .comment("Used in case of Template exec mode.")
+                .align(AlignX.FILL)
                 .bindItem(settings::exceptionHandling.toNullableProperty())
         }.layout(RowLayout.PARENT_GRID)
 

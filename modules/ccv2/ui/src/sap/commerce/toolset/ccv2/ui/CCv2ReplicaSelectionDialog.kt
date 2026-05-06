@@ -40,9 +40,9 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
-import sap.commerce.toolset.groovy.exec.groovyExecContextSettings
 import sap.commerce.toolset.ui.banner
 import java.awt.BorderLayout
 import java.awt.Component
@@ -161,7 +161,7 @@ class CCv2ReplicaSelectionDialog(
             ?.let { replicas -> GroovyReplicaAwareContext(CCv2ExecConstants.ccv2, replicas.map { ReplicaContext(it) }) }
             ?: GroovyReplicaAwareContext.auto()
 
-        virtualFile.groovyExecContextSettings = currentSettings.copy(replicaContext = context)
+        GroovyExecService.getInstance(project).setReplicaAwareContext(virtualFile, context)
     }
 
     override fun dispose() {

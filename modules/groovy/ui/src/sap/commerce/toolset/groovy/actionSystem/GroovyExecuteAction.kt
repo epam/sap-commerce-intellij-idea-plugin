@@ -29,11 +29,10 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.context.DefaultExecResult
 import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
-import sap.commerce.toolset.groovy.editor.groovyExecContextSettings
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.exec.GroovyExecService
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.groovy.exec.groovyTransactionMode
 import sap.commerce.toolset.hac.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -51,10 +50,11 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val prefix = fileName ?: "script"
         val execClient = GroovyExecClient.getInstance(project)
         val connectionSettings = HacExecConnectionService.getInstance(project).activeConnection
-        val execContextSettings = e.groovyExecContextSettings { GroovyExecContext.defaultSettings(connectionSettings) }
+        val execContextSettings = GroovyExecService.getInstance(project).getSettings(virtualFile)
 
         val contexts = execContextSettings.replicaContext.replicaContexts
             .map {
@@ -94,12 +94,14 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 onError = { _, e ->
                     thisLogger().warn(e)
 
-                    fileEditor.renderExecutionResults(listOf(
-                        DefaultExecResult(
-                            errorMessage = e.message,
-                            errorDetailMessage = e.stackTraceToString()
+                    fileEditor.renderExecutionResults(
+                        listOf(
+                            DefaultExecResult(
+                                errorMessage = e.message,
+                                errorDetailMessage = e.stackTraceToString()
+                            )
                         )
-                    ))
+                    )
                     fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
                 }
             )
@@ -117,9 +119,9 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
     override fun update(e: AnActionEvent) {
         super.update(e)
 
+        val project = e.project ?: return
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-
-        val transactionMode = virtualFile.groovyTransactionMode
+        val transactionMode = GroovyExecService.getInstance(project).getTransactionMode(virtualFile, project)
 
         when (transactionMode) {
             TransactionMode.ROLLBACK -> {

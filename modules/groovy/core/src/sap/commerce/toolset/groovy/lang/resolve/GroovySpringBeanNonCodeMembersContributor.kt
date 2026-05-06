@@ -26,11 +26,10 @@ import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightField
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor
 import sap.commerce.toolset.actionSystem.HybrisEditorToolbarProvider
-import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.actionSystem.GroovyEditorToolbarProvider
+import sap.commerce.toolset.groovy.getSpringContextMode
 import sap.commerce.toolset.groovy.groovyRemoteSpringBeans
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.SpringContextMode
 import sap.commerce.toolset.spring.SpringFallbackScope
 import sap.commerce.toolset.spring.SpringHelper
@@ -56,8 +55,7 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
         processor.getHint(ElementClassHint.KEY)
             ?.takeIf { it.shouldProcess(ElementClassHint.DeclarationKind.FIELD) }
             ?: return
-        val contextMode = vf.getUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE)
-            ?: DeveloperSettings.getInstance(place.project).groovySettings.springContextMode
+        val contextMode = vf.getSpringContextMode(project)
 
         if (contextMode == SpringContextMode.DISABLED) return
 

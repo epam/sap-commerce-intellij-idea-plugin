@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,7 @@ import sap.commerce.toolset.settings.state.DeveloperSettingsState
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.LOCAL)]
 )
 @Service(Service.Level.PROJECT)
-class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
+class DeveloperSettings(val project: Project) : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
 
     var typeSystemDiagramSettings
         get() = state.typeSystemDiagramSettings
@@ -50,11 +50,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         get() = state.impexSettings
         set(value) {
             updateState { it.copy(impexSettings = value) }
-        }
-    var groovySettings
-        get() = state.groovySettings
-        set(value) {
-            updateState { it.copy(groovySettings = value) }
         }
 
     override fun getModificationCount() = stateModificationCount

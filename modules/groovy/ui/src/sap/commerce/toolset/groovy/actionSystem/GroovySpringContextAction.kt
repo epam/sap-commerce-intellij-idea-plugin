@@ -26,9 +26,9 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.groovy.GroovyConstants
 import sap.commerce.toolset.groovy.exec.GroovyExecService
-import sap.commerce.toolset.groovy.exec.getCurrentSpringContextMode
+import sap.commerce.toolset.groovy.getSpringContextMode
+import sap.commerce.toolset.groovy.setSpringContextMode
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.SpringContextMode
 
@@ -39,8 +39,9 @@ abstract class GroovySpringContextAction(private val contextMode: SpringContextM
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
-        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE)
-        val currentMode = vf.getCurrentSpringContextMode(e.project)
+        val project = e.project ?: return false
+        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
+        val currentMode = vf.getSpringContextMode(project)
 
         return currentMode == contextMode
     }
@@ -48,7 +49,7 @@ abstract class GroovySpringContextAction(private val contextMode: SpringContextM
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        vf.putUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE, contextMode)
+        vf.setSpringContextMode(contextMode)
 
         CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
@@ -87,8 +88,10 @@ class GroovyRemoteSpringContextAction : GroovySpringContextAction(
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val vf = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        vf.putUserData(GroovyConstants.KEY_SPRING_CONTEXT_MODE, SpringContextMode.REMOTE)
 
-        GroovyExecService.getInstance(project).fetchRemoteSpringBeans(vf)
+        GroovyExecService.getInstance(project).apply {
+            vf.setSpringContextMode(SpringContextMode.REMOTE)
+            fetchRemoteSpringBeans(vf)
+        }
     }
 }
