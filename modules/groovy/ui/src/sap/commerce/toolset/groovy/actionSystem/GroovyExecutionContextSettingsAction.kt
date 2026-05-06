@@ -58,6 +58,16 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: GroovyExecContext.Settings.Mutable) = panel {
         row {
+            comboBox(
+                model = EnumComboBoxModel(GroovyExecExceptionHandling::class.java),
+                renderer = SimpleListCellRenderer.create("...") { value -> value.presentationText }
+            )
+                .label("Exception handling:")
+                .comment("Used in case of non-default Web Context.")
+                .bindItem(settings::exceptionHandling.toNullableProperty())
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
             textField()
                 .align(AlignX.FILL)
                 .label("Timeout:")
@@ -68,16 +78,6 @@ class GroovyExecutionContextSettingsAction : ExecutionContextSettingsAction<Groo
                 .focused()
                 .commentRight("(ms)")
                 .bindIntText(settings::timeout)
-        }.layout(RowLayout.PARENT_GRID)
-
-        row {
-            comboBox(
-                model = EnumComboBoxModel(GroovyExecExceptionHandling::class.java),
-                renderer = SimpleListCellRenderer.create("...") { value -> value.presentationText }
-            )
-                .label("Exception handling:")
-                .comment("Used in case of non-default Web Context.")
-                .bindItem(settings::exceptionHandling.toNullableProperty())
         }.layout(RowLayout.PARENT_GRID)
     }
         .apply {
