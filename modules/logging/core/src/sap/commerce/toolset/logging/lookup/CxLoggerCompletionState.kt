@@ -24,7 +24,9 @@ import sap.commerce.toolset.logging.CxLogConstants
 import javax.swing.Icon
 
 internal class CxLoggerCompletionState(private val prefix: String) {
-    val matched: MutableList<LookupElement> = mutableListOf()
+    private val mutableMatched: MutableList<LookupElement> = mutableListOf()
+    val matched: List<LookupElement>
+        get() = mutableMatched.toList()
     var overflow: Int = 0
         private set
     var overflowCapped: Boolean = false
@@ -32,8 +34,8 @@ internal class CxLoggerCompletionState(private val prefix: String) {
 
     fun tryAdd(fqn: String, shortName: String?, icon: () -> Icon): Boolean {
         if (!matches(fqn, shortName)) return true
-        if (matched.size < CxLogConstants.Lookup.MAX_VISIBLE_SUGGESTIONS) {
-            matched += buildElement(fqn, shortName, icon())
+        if (mutableMatched.size < CxLogConstants.Lookup.MAX_VISIBLE_SUGGESTIONS) {
+            mutableMatched += buildElement(fqn, shortName, icon())
             return true
         }
         overflow++
