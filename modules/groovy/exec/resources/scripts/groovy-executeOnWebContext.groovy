@@ -36,7 +36,6 @@ import static de.hybris.platform.hac.scripting.impl.DefaultScriptingLanguageExec
         - $hacEncodedScript       - Actual Base64 encoded Groovy script to be executed on the target Web Context
         - $hacSpringWebContext    - Active Web Context taken from the groovyExecContextSettings.webContext
         - $exceptionHandling      - Exception Handling taken from the enum code `GroovyExecExceptionHandling`
-        - $__WEB_CONTEXT_MARKER__ - Unique script execution identifier, returned as a "__WEB_CONTEXT_MARKER__" Json field
  */
 
 static Map<String,WebApplicationContext> getSpringWeb() {
