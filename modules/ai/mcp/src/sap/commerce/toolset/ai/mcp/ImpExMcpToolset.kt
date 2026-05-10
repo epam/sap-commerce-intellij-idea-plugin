@@ -36,7 +36,7 @@ class ImpExMcpToolset : McpToolset {
         |Can either import data or validate the script without committing changes.
         |Requires a configured and authenticated HAC connection."""
     )
-    suspend fun executeImpex(
+    suspend fun executeImpEx(
         @McpDescription("ImpEx script content to execute on the SAP Commerce server")
         content: String,
         @McpDescription("Whether to only validate the ImpEx without importing. Default is false (import)")

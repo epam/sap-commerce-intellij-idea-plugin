@@ -19,9 +19,9 @@
 - Execute Groovy-script on the selected web application context [#1930](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1930)
 - Execute `default` web context via Template mode [#1931](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1931)
 
-### `MCP Server` enhancements
+### `AI` capabilities
 
-- Expose SAP Commerce HAC and Solr tools via IntelliJ MCP Server plugin [#1932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1932)
+- Expose SAP Commerce HAC and Solr tools via IntelliJ Idea MCP Server plugin [#1932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1932)
 
 ### Other
 - Do not fetch PRs statistics via GitHub actions [#1925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1925)
