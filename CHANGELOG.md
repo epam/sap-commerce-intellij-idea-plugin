@@ -3,6 +3,7 @@
 <cite>Release contributors</code>
 - 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Amlytvyn+is%3Apr)
 - 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Aekalenchuk+is%3Apr)
+- 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3AMihaiSprinceana+is%3Apr+)
 
 ### `Project View` enhancements
 - Show `.aiassistant` under `AI Capabilities` project view node [#1924](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1924)
@@ -17,6 +18,10 @@
 - Refetch remove Spring Beans on web application context change [#1929](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1929)
 - Execute Groovy-script on the selected web application context [#1930](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1930)
 - Execute `default` web context via Template mode [#1931](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1931)
+
+### `MCP Server` enhancements
+
+- Expose SAP Commerce HAC and Solr tools via IntelliJ MCP Server plugin [#1932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1932)
 
 ### Other
 - Do not fetch PRs statistics via GitHub actions [#1925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1925)

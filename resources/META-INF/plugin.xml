@@ -153,7 +153,7 @@
     <depends optional="true" config-file="sap.commerce.toolset-database-core.xml">com.intellij.database</depends>
     <depends optional="true" config-file="sap.commerce.toolset-cron-core.xml">com.intellij.cron</depends>
     <depends optional="true" config-file="sap.commerce.toolset-javascript-core.xml">JavaScript</depends>
-    <depends optional="true" config-file="sap.commerce.toolset-mcp-core.xml">com.intellij.mcpServer</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-ai-mcp.xml">com.intellij.mcpServer</depends>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

@@ -19,8 +19,11 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.SapCommerceHacToolset"/>
-        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.SapCommerceSolrToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.GroovyMcpToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.FlexibleSearchMcpToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.ImpExMcpToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.HacMcpToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.SolrMcpToolset"/>
     </extensions>
 
 </idea-plugin>

@@ -21,15 +21,13 @@ package sap.commerce.toolset.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.openapi.project.Project
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
-import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
 import kotlin.coroutines.coroutineContext
 
-class SapCommerceSolrToolset : McpToolset {
+class SolrMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_solr_query")
     @McpDescription(
@@ -127,19 +125,5 @@ class SapCommerceSolrToolset : McpToolset {
                 appendLine("  - ${connection.connectionName} (${connection.generatedURL})$active")
             }
         }.trim()
-    }
-
-    companion object {
-        fun resolveSolrConnection(project: Project, connectionName: String?): SolrConnectionSettingsState {
-            val connectionService = SolrExecConnectionService.getInstance(project)
-
-            if (connectionName.isNullOrBlank()) return connectionService.activeConnection
-
-            return connectionService.connections.find {
-                it.connectionName.equals(connectionName, ignoreCase = true)
-                    || it.name?.equals(connectionName, ignoreCase = true) == true
-            }
-                ?: error("Solr connection '$connectionName' not found. Available: ${connectionService.connections.joinToString { it.connectionName }}")
-        }
     }
 }
