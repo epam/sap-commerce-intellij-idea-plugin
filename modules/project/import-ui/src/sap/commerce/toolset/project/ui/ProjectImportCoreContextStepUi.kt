@@ -33,7 +33,6 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.context.ProjectImportCoreContext
 import sap.commerce.toolset.project.context.findSourceCodeFile
@@ -116,12 +115,11 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
     row {
         checkBox("Project icon:")
             .bindSelected(context.projectIcon)
-        val fileChooserDescriptor = Plugin.IMAGES.ifActive { FileChooserDescriptorFactory.createSingleFileDescriptor(SvgFileType.INSTANCE) }
-            ?: FileChooserDescriptorFactory.createSingleFileDescriptor("svg")
         cell(
             textFieldWithBrowseButton(
                 null,
-                fileChooserDescriptor.withTitle("Select Custom Project SVG Icon.")
+                FileChooserDescriptorFactory.createSingleFileDescriptor(SvgFileType.INSTANCE)
+                    .withTitle("Select Custom Project SVG Icon.")
             )
         )
             .bindText(context.projectIconFile)
