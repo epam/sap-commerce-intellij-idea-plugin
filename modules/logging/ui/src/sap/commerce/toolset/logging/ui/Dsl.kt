@@ -227,12 +227,7 @@ internal fun Row.newLoggerTextField(
     onFilterChanged: (String) -> Unit = {},
     onApplyLogger: () -> Unit,
 ): Cell<LoggerNameTextField> = cell(
-    LoggerNameTextField(
-        project = project,
-        parentDisposable = parentDisposable,
-        onApplyLogger = onApplyLogger,
-        onFilterChanged = onFilterChanged,
-    )
+    LoggerNameTextField.create(project, parentDisposable, onApplyLogger, onFilterChanged)
 )
     .resizableColumn()
     .align(AlignX.FILL)
