@@ -27,7 +27,6 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
@@ -59,7 +58,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     private val filterState = LoggerFilterState()
 
     private lateinit var dataScrollPane: JBScrollPane
-    private lateinit var loggerNameField: JBTextField
+    private lateinit var loggerNameField: LoggerNameTextField
     private lateinit var loggerLevelField: ComboBox<CxLogLevel>
     private lateinit var newLoggerPanel: DialogPanel
 
@@ -102,7 +101,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
     suspend fun render(coroutineScope: CoroutineScope, loggers: Collection<CxLoggerPresentation>?): JComponent {
         val viewPanel = lazyViewPanel.value
         if (loggers == null) {
-            toggleView(showFetchLoggers)
+            withContext(Dispatchers.EDT) { toggleView(showFetchLoggers) }
             return viewPanel
         }
 
@@ -140,7 +139,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             }
         }
 
-        toggleView(showDataPanel)
+        withContext(Dispatchers.EDT) { toggleView(showDataPanel) }
 
         return viewPanel
     }
@@ -193,9 +192,11 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
             loggerLevelField = logLevelComboBox().component
 
             loggerNameField = newLoggerTextField(
+                project = project,
                 parentDisposable = this@CxRemoteLogStateView,
                 onFilterChanged = { filterState.apply(it) },
-            ) { applyNewLogger() }
+                onApplyLogger = { applyNewLogger() },
+            )
                 .component
 
             button("Apply Logger") { applyNewLogger() }

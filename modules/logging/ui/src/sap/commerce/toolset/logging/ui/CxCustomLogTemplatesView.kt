@@ -27,10 +27,8 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
@@ -66,51 +64,49 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
     private val filterState = LoggerFilterState()
 
     private lateinit var loggerLevelField: ComboBox<CxLogLevel>
-    private lateinit var loggerNameField: JBTextField
+    private lateinit var loggerNameField: LoggerNameTextField
     private lateinit var dataScrollPane: JBScrollPane
     private lateinit var newLoggerPanel: DialogPanel
 
-    private val lazyViewPanel by lazy {
-        object : ClearableLazyValue<DialogPanel>() {
-            override fun compute() = panel {
-                row {
-                    cellNoData(showNoLoggerTemplates, "No Logger Templates")
-                }
-                    .visibleIf(showNoLoggerTemplates)
-                    .resizableRow()
-                    .topGap(TopGap.MEDIUM)
+    private fun createView(): DialogPanel {
+        newLoggerPanel = newLoggerPanel()
 
-                row {
-                    cell(newLoggerPanel())
-                        .visibleIf(showDataPanel)
-                        .align(AlignX.FILL)
-                        .applyToComponent { newLoggerPanel = this }
-                }
-
-                separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-                    .visibleIf(showDataPanel)
-
-                row {
-                    dataScrollPane = JBScrollPane(JPanel())
-                        .apply { border = null }
-
-                    cell(dataScrollPane)
-                        .align(Align.FILL)
-                        .visibleIf(showDataPanel)
-                }
-                    .resizableRow()
-            }.apply {
-                border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
-                editable.set(true)
+        return panel {
+            row {
+                cellNoData(showNoLoggerTemplates, "No Logger Templates")
             }
+                .visibleIf(showNoLoggerTemplates)
+                .resizableRow()
+                .topGap(TopGap.MEDIUM)
+
+            row {
+                cell(newLoggerPanel)
+                    .visibleIf(showDataPanel)
+                    .align(AlignX.FILL)
+                    .applyToComponent { newLoggerPanel = this }
+            }
+
+            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
+                .visibleIf(showDataPanel)
+
+            row {
+                dataScrollPane = JBScrollPane(JPanel())
+                    .apply { border = null }
+
+                cell(dataScrollPane)
+                    .align(Align.FILL)
+                    .visibleIf(showDataPanel)
+            }
+                .resizableRow()
+        }.apply {
+            border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
+            editable.set(true)
         }
     }
 
-    override fun dispose() = lazyViewPanel.drop()
-
     suspend fun render(coroutineScope: CoroutineScope, templateUUID: String, loggers: Collection<CxLoggerPresentation>): JComponent {
         initialized.set(false)
-        val viewPanel = lazyViewPanel.value
+        val viewPanel = createView()
 
         this.templateUUID = templateUUID
 
@@ -154,7 +150,7 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             }
         }
 
-        toggleView(showDataPanel, initialized)
+        withContext(Dispatchers.EDT) { toggleView(showDataPanel, initialized) }
 
         return viewPanel
     }
@@ -199,9 +195,11 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
             loggerLevelField = logLevelComboBox().component
 
             loggerNameField = newLoggerTextField(
+                project = project,
                 parentDisposable = this@CxCustomLogTemplatesView,
                 onFilterChanged = { filterState.apply(it) },
-            ) { applyNewLogger() }
+                onApplyLogger = { applyNewLogger() },
+            )
                 .component
 
             button("Apply Logger") { applyNewLogger() }
@@ -233,4 +231,6 @@ class CxCustomLogTemplatesView(private val project: Project) : Disposable {
         filterState.apply(loggerNameField.text)
         CxCustomLogTemplateService.getInstance(project).addLogger(templateUUID, logger, effectiveLevel)
     }
+
+    override fun dispose() = Unit
 }

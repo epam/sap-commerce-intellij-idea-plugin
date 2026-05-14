@@ -2,7 +2,7 @@
 
 <cite>Release contributors</code>
 - 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Amlytvyn+is%3Apr)
-- 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Aekalenchuk+is%3Apr)
+- 3 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3Aekalenchuk+is%3Apr)
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3AMihaiSprinceana+is%3Apr+)
 
 ### `Project View` enhancements
@@ -11,6 +11,7 @@
 ### `SAP CX Logging` enhancements
 - Enhanced logger validation and root logger protection [#1922](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1922)
 - Improve log level inlay hints by using actual logger declarations [#1921](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1921)
+- Add autocomplete search for logger class and package names [#1920](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1920)
 
 ### `Groovy` enhancements
 - Show & fetch available web application contexts [#1926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1926)
@@ -20,8 +21,7 @@
 - Execute `default` web context via Template mode [#1931](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1931)
 
 ### `AI` capabilities
-
-- Expose SAP Commerce HAC and Solr tools via IntelliJ Idea MCP Server plugin [#1932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1932)
+- Expose SAP Commerce HAC and Solr tools via IntelliJ IDEA MCP Server plugin [#1932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1932)
 
 ### Other
 - Do not fetch PRs statistics via GitHub actions [#1925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1925)
