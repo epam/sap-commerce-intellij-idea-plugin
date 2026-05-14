@@ -26,6 +26,7 @@
             <option value="$PROJECT_DIR$/jps-plugin" />
             <option value="$PROJECT_DIR$/modules/acl/core" />
             <option value="$PROJECT_DIR$/modules/acl/ui" />
+            <option value="$PROJECT_DIR$/modules/ai/mcp" />
             <option value="$PROJECT_DIR$/modules/angular/core" />
             <option value="$PROJECT_DIR$/modules/angular/project" />
             <option value="$PROJECT_DIR$/modules/ant/core" />

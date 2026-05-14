@@ -1,27 +1,27 @@
 [versions]
 # libraries
 # https://mvnrepository.com/artifact/org.jsoup/jsoup
-jsoup = "1.22.1"
+jsoup = "1.22.2"
 # https://mvnrepository.com/artifact/com.wutka/dtdparser
 dtdparser = "1.21"
 # https://mvnrepository.com/artifact/commons-io/commons-io
-commonsIO = "2.21.0"
+commonsIO = "2.22.0"
 # https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
 jsr305 = "3.0.2"
 # https://mvnrepository.com/artifact/org.apache.maven/maven-model
-mavenModel = "3.9.12"
+mavenModel = "3.9.15"
 # https://mvnrepository.com/artifact/commons-codec/commons-codec
-commonsCodec = "1.20.0"
+commonsCodec = "1.22.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 commonsLang3 = "3.20.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
 commonsCollections4 = "4.5.0"
 # https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-jakartaXmlBindApi = "4.0.4"
+jakartaXmlBindApi = "4.0.5"
 # https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
-jaxbImpl = "4.0.6"
+jaxbImpl = "4.0.8"
 # https://mvnrepository.com/artifact/org.apache.solr/solr-solrj
-# version 9.2.1 is already available but we stick to the version used by Hybris
+# version 9.2.1 is already available, but we stick to the version used by Hybris
 # see folder hybris\bin\modules\search-and-navigation\solrserver\resources\solr\
 # 9.9.0
 solrSolrj = "8.11.4"
@@ -29,19 +29,20 @@ solrSolrj = "8.11.4"
 moshi = "1.15.2"
 # https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/
 okhttp = "5.3.2"
-# https://central.sonatype.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-core/1.9.0
-serialization = "1.9.0"
+# https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
+serializationJson = "1.11.0"
 # https://mvnrepository.com/artifact/com.google.code.gson/gson
-gson = "2.13.2"
+gson = "2.14.0"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
-kotlin = "2.3.10"
+# see supported stdlib https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#bundled-stdlib-versions
+kotlin = "2.3.20"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.5.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
 # Generator: https://openapi-generator.tech/docs/generators/kotlin
-openAPIGenerator = "7.19.0"
+openAPIGenerator = "7.22.0"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }
@@ -59,7 +60,7 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshi" }
 moshi-kotin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-kotlinxJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+kotlinxJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationJson" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 [bundles]
@@ -69,6 +70,6 @@ openapi = ["moshi", "moshi-adapters", "moshi-kotin", "okhttp"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 openAPIGenerator = { id = "org.openapi.generator", version.ref = "openAPIGenerator" }
-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
