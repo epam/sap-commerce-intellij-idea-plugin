@@ -6,7 +6,7 @@
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3AMihaiSprinceana+is%3Apr+)
 
 ### `Project Import` enhancements
-- Declare explicit dependency on the bundled `platform-images` plugin [#1933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1933)
+- Declare explicit dependency on the bundled `platform-images` plugin [#1934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1934)
 
 ### `Project View` enhancements
 - Show `.aiassistant` under `AI Capabilities` project view node [#1924](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1924)
@@ -28,7 +28,7 @@
 
 ### Other
 - Do not fetch PRs statistics via GitHub actions [#1925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1925)
-- Updated project libraries & Gradle version [#1933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1933)
+- Updated project libraries & Gradle version [#1934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1934)
 
 ## [2026.0.9]
 
