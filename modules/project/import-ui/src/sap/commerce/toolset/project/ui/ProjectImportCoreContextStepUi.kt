@@ -27,6 +27,7 @@ import com.intellij.openapi.observable.util.and
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
@@ -86,7 +87,7 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
 
     row {
         cell(
-            com.intellij.ui.components.textFieldWithBrowseButton(
+            textFieldWithBrowseButton(
                 null,
                 FileChooserDescriptorFactory.createSingleFolderDescriptor()
                     .withTitle(i18n("hybris.import.label.select.hybris.distribution.directory"))
@@ -114,9 +115,8 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
     row {
         checkBox("Project icon:")
             .bindSelected(context.projectIcon)
-
         cell(
-            com.intellij.ui.components.textFieldWithBrowseButton(
+            textFieldWithBrowseButton(
                 null,
                 FileChooserDescriptorFactory.createSingleFileDescriptor(SvgFileType.INSTANCE)
                     .withTitle("Select Custom Project SVG Icon.")
@@ -136,7 +136,7 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
             .bindSelected(context.moduleFilesStorage)
 
         cell(
-            com.intellij.ui.components.textFieldWithBrowseButton(
+            textFieldWithBrowseButton(
                 null,
                 FileChooserDescriptorFactory.createSingleFolderDescriptor()
                     .withTitle(i18n("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"))
@@ -156,7 +156,7 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
             checkBox("Platform source code:")
                 .bindSelected(context.sourceCodePathOverride)
             cell(
-                com.intellij.ui.components.textFieldWithBrowseButton(
+                textFieldWithBrowseButton(
                     null,
                     FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor()
                         .withExtensionFilter("zip")
@@ -219,7 +219,7 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
             checkBox("Custom directory:")
                 .bindSelected(context.customDirectoryOverride)
             cell(
-                com.intellij.ui.components.textFieldWithBrowseButton(
+                textFieldWithBrowseButton(
                     null,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
                         .withTitle(i18n("hybris.import.label.select.custom.extensions.directory"))
@@ -238,7 +238,7 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
             checkBox("Config directory:")
                 .bindSelected(context.configDirectoryOverride)
             cell(
-                com.intellij.ui.components.textFieldWithBrowseButton(
+                textFieldWithBrowseButton(
                     null,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
                         .withTitle(i18n("hybris.import.label.select.config.extensions.directory"))
@@ -262,7 +262,7 @@ private fun contentPane(context: ProjectImportCoreContext, rightGaps: UnscaledGa
             checkBox("DB driver directory:")
                 .bindSelected(context.dbDriverDirectoryOverride)
             cell(
-                com.intellij.ui.components.textFieldWithBrowseButton(
+                textFieldWithBrowseButton(
                     null,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
                         .withTitle(i18n("hybris.import.label.select.dbdriver.extensions.directory"))
