@@ -6,7 +6,7 @@
 - 1 PR(s) by [Mihai Sprinceana](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.10+author%3AMihaiSprinceana+is%3Apr+)
 
 ### `Project Import` enhancements
-- Fallback to `svg` file extension if bundled `images` plugin is disabled [#1933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1933)
+- Declare explicit dependency on the bundled `platform-images` plugin [#1933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1933)
 
 ### `Project View` enhancements
 - Show `.aiassistant` under `AI Capabilities` project view node [#1924](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1924)
