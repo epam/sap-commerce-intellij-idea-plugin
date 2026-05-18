@@ -16,10 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.exec
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
+
+data class CxRemotePropertyStatePage(
+    val page: Int,
+    val pageSize: Int,
+    val totalItems: Int,
+    val keyFilter: String,
+    val valueFilter: String,
+    val properties: Map<String, CxPropertyPresentation>,
+) {
+    val totalPages: Int
+        get() = maxOf(1, (totalItems + pageSize - 1) / pageSize)
 }

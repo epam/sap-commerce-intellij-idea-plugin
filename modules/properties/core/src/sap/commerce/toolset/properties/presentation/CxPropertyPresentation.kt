@@ -16,10 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.presentation
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+data class CxPropertyPresentation(
+    val key: String,
+    val value: String,
+) {
+    companion object {
+        fun of(key: String, value: String?) = CxPropertyPresentation(
+            key = key,
+            value = value.orEmpty(),
+        )
+    }
 }

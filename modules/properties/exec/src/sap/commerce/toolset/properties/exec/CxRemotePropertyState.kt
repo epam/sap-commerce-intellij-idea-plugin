@@ -16,10 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actionSystem
+package sap.commerce.toolset.properties.exec
 
-object HybrisActionPlaces {
-    @Deprecated("review this usage, migrate to LoggersConstants")
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
-    const val PROPERTIES_TOOLBAR = "SAP.Properties.View"
+class CxRemotePropertyState(initial: CxRemotePropertyStatePage? = null) {
+    private var statePage = initial
+    private var initialized = initial != null
+
+    fun initialized(): Boolean = initialized
+
+    fun get(): CxRemotePropertyStatePage? = if (initialized) statePage else null
+
+    fun update(newState: CxRemotePropertyStatePage) {
+        synchronized(this) {
+            statePage = newState.copy(properties = newState.properties.toMap())
+            initialized = true
+        }
+    }
+
+    fun clear() {
+        synchronized(this) {
+            statePage = null
+            initialized = false
+        }
+    }
 }
