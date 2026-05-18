@@ -21,6 +21,7 @@ package sap.commerce.toolset.project.descriptor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import sap.commerce.toolset.localextensions.context.LocalExtensionsContext
 import sap.commerce.toolset.project.context.ProjectImportContext
 import sap.commerce.toolset.project.settings.ProjectSettings
 
@@ -30,35 +31,33 @@ class ModuleDescriptorsSelector {
     fun preselect(context: ProjectImportContext.Mutable) {
         val localExtensions = context.localExtensionsContext.extensions
         val preselectedExtensionNames = mutableSetOf<String>()
+        val explicitPreselectedModules = mutableSetOf<YRegularModuleDescriptor>()
 
-        context.foundModules
-            .asSequence()
-            .filterNot { preselectedExtensionNames.contains(it.name) }
-            .filter { localExtensions.contains(it.name) }
-            .filterIsInstance<YRegularModuleDescriptor>()
-            .filter { moduleDescriptor ->
-                val preferredLoadPath = localExtensions[moduleDescriptor.name]?.path
-                moduleDescriptor.moduleRootPath.normalize().equals(preferredLoadPath)
-            }
-            .forEach { moduleDescriptor ->
-                preselectedExtensionNames.add(moduleDescriptor.name)
+        context.foundModules.process(preselectedExtensionNames, localExtensions) {
+            preselectedExtensionNames.add(this.name)
+            explicitPreselectedModules.add(this)
 
-                moduleDescriptor.isInLocalExtensions = true
-                moduleDescriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
-                moduleDescriptor.getSubModules()
-                    .forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
-                moduleDescriptor.getRecursiveDependencies()
-                    .asSequence()
-                    .filterIsInstance<YRegularModuleDescriptor>()
-                    .filterNot { preselectedExtensionNames.contains(it.name) }
-                    .forEach {
-                        preselectedExtensionNames.add(it.name)
+            this.isInLocalExtensions = true
+            this.importStatus = ModuleDescriptorImportStatus.MANDATORY
+            this.getSubModules()
+                .forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
+        }
 
-                        it.isNeededDependency = true
-                        it.importStatus = ModuleDescriptorImportStatus.MANDATORY
-                        it.getSubModules().forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
-                    }
-            }
+        explicitPreselectedModules.process(preselectedExtensionNames, localExtensions) {
+            preselectedExtensionNames.add(this.name)
+
+            this.getRecursiveDependencies()
+                .asSequence()
+                .filterIsInstance<YRegularModuleDescriptor>()
+                .filterNot { preselectedExtensionNames.contains(it.name) }
+                .forEach {
+                    preselectedExtensionNames.add(it.name)
+
+                    it.isNeededDependency = true
+                    it.importStatus = ModuleDescriptorImportStatus.MANDATORY
+                    it.getSubModules().forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
+                }
+        }
 
         context.foundModules
             .filterIsInstance<ConfigModuleDescriptor>()
@@ -91,6 +90,20 @@ class ModuleDescriptorsSelector {
         return moduleToImport
             .filterNot { settings.modulesOnBlackList.contains(it.getRelativePath(context.rootDirectory)) }
     }
+
+    private fun Collection<ModuleDescriptor>.process(
+        preselectedExtensionNames: MutableSet<String>,
+        localExtensions: Map<String, LocalExtensionsContext.Extension>,
+        processor: YRegularModuleDescriptor.() -> Unit
+    ) = this
+        .filterNot { preselectedExtensionNames.contains(it.name) }
+        .filter { localExtensions.contains(it.name) }
+        .filterIsInstance<YRegularModuleDescriptor>()
+        .filter { moduleDescriptor ->
+            val preferredLoadPath = localExtensions[moduleDescriptor.name]?.path
+            moduleDescriptor.moduleRootPath.normalize().equals(preferredLoadPath)
+        }
+        .forEach { moduleDescriptor -> processor(moduleDescriptor) }
 
     private fun resolveDependencies(
         moduleToImport: MutableSet<ModuleDescriptor>,

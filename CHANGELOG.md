@@ -1,3 +1,11 @@
+## [2026.0.11]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.11+author%3Amlytvyn+is%3Apr)
+
+### `Project Import` enhancements
+- Prioritize preselection of the extensions based on the `localextensions.xml` [#1935](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1935)
+
 ## [2026.0.10]
 
 <cite>Release contributors</code>
