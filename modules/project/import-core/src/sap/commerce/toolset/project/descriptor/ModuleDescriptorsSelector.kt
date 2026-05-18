@@ -30,6 +30,7 @@ class ModuleDescriptorsSelector {
     fun preselect(context: ProjectImportContext.Mutable) {
         val localExtensions = context.localExtensionsContext.extensions
         val preselectedExtensionNames = mutableSetOf<String>()
+        val explicitPreselectedModules = mutableSetOf<YRegularModuleDescriptor>()
 
         context.foundModules
             .asSequence()
@@ -42,11 +43,24 @@ class ModuleDescriptorsSelector {
             }
             .forEach { moduleDescriptor ->
                 preselectedExtensionNames.add(moduleDescriptor.name)
+                explicitPreselectedModules.add(moduleDescriptor)
 
                 moduleDescriptor.isInLocalExtensions = true
                 moduleDescriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
                 moduleDescriptor.getSubModules()
                     .forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
+            }
+
+        explicitPreselectedModules
+            .asSequence()
+            .filterNot { preselectedExtensionNames.contains(it.name) }
+            .filter { localExtensions.contains(it.name) }
+            .filter { moduleDescriptor ->
+                val preferredLoadPath = localExtensions[moduleDescriptor.name]?.path
+                moduleDescriptor.moduleRootPath.normalize().equals(preferredLoadPath)
+            }
+            .forEach { moduleDescriptor ->
+                preselectedExtensionNames.add(moduleDescriptor.name)
                 moduleDescriptor.getRecursiveDependencies()
                     .asSequence()
                     .filterIsInstance<YRegularModuleDescriptor>()
