@@ -20,14 +20,24 @@ package sap.commerce.toolset.properties.exec
 
 import sap.commerce.toolset.properties.presentation.CxPropertyPresentation
 
+/**
+ * Cumulative snapshot of properties loaded so far from the backend for a given filter.
+ *
+ * The list grows as additional pages are fetched via infinite scroll. [lastLoadedPage]
+ * tracks the highest 1-indexed page that has been merged in. [totalItems] is the server's
+ * total count for the current filter, so [hasMore] = true means another page can be fetched.
+ */
 data class CxRemotePropertyStatePage(
-    val page: Int,
+    val lastLoadedPage: Int,
     val pageSize: Int,
     val totalItems: Int,
     val keyFilter: String,
     val valueFilter: String,
-    val properties: Map<String, CxPropertyPresentation>,
+    val properties: List<CxPropertyPresentation>,
 ) {
-    val totalPages: Int
-        get() = maxOf(1, (totalItems + pageSize - 1) / pageSize)
+    val hasMore: Boolean
+        get() = properties.size < totalItems
+
+    val loadedCount: Int
+        get() = properties.size
 }
