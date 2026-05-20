@@ -21,7 +21,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 plugins {
     id("org.jetbrains.intellij.platform.module")
     alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.serialization) // Kotlin support
+    alias(libs.plugins.serialization) // Kotlin serialization
 }
 
 sourceSets {
