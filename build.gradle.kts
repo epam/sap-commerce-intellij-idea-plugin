@@ -226,13 +226,6 @@ tasks {
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-    implementation(libs.bundles.openapi)
-    implementation(libs.bundles.commons)
-    implementation(libs.bundles.jaxb)
-    implementation(libs.jsr305)
-    implementation(libs.jsoup)
-    implementation(libs.dtdparser)
-    implementation(libs.maven.model)
     implementation(project(":jps-plugin"))
     testImplementation(kotlin("test"))
     testRuntimeOnly("junit:junit:4.13.2")

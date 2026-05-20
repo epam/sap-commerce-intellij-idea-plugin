@@ -29,15 +29,16 @@ solrSolrj = "8.11.4"
 moshi = "1.15.2"
 # https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/
 okhttp = "5.3.2"
-# https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
-serializationJson = "1.11.0"
 # https://mvnrepository.com/artifact/com.google.code.gson/gson
 gson = "2.14.0"
+# https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
+# validate kotlin-stdlib version before updating
+kotlinxJson = "1.9.0"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
-# see supported stdlib https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#bundled-stdlib-versions
-kotlin = "2.3.20"
+# https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#stdlib-miscellaneous
+kotlin = "2.2.20"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.5.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
@@ -60,7 +61,7 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshi" }
 moshi-kotin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-kotlinxJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationJson" }
+kotlinxJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxJson" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 [bundles]

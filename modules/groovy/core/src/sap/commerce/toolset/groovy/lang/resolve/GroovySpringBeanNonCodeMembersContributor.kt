@@ -69,6 +69,7 @@ class GroovySpringBeanNonCodeMembersContributor : NonCodeMembersContributor() {
                 ?.find { it.id == name || it.aliases?.contains(name) == true }
                 ?.className
                 ?.let { JavaPsiFacade.getInstance(project).findClass(it, GlobalSearchScope.allScope(project)) }
+            else -> null
         } ?: return
 
         val fqn = resolveBeanClass.qualifiedName ?: return
