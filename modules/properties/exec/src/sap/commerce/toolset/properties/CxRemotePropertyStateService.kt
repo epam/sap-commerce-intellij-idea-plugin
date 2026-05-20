@@ -77,20 +77,65 @@ class CxRemotePropertyStateService(
 
     fun fetch() = fetch(HacExecConnectionService.getInstance(project).activeConnection)
 
-    fun fetch(server: HacConnectionSettingsState) = fetch(
-        server = server,
-        page = state(server.uuid).get()?.page ?: 1,
-        pageSize = state(server.uuid).get()?.pageSize ?: CxPropertyConstants.DEFAULT_PAGE_SIZE,
-        keyFilter = state(server.uuid).get()?.keyFilter.orEmpty(),
-        valueFilter = state(server.uuid).get()?.valueFilter.orEmpty(),
-    )
+    /**
+     * Reloads the current accumulated view from page 1. Used by the manual "Fetch" action
+     * and by the post-mutation refresh helper [refetchLoaded].
+     */
+    fun fetch(server: HacConnectionSettingsState) {
+        val current = state(server.uuid).get()
+        // After a mutation we want to keep what the user has already scrolled into view.
+        // pageSize is set to the larger of the configured page size and the loaded count
+        // so a single fetch rehydrates the entire visible window in one request.
+        val pageSize = current?.let { maxOf(it.pageSize, it.loadedCount) } ?: CxPropertyConstants.DEFAULT_PAGE_SIZE
+        fetch(
+            server = server,
+            page = 1,
+            pageSize = pageSize,
+            keyFilter = current?.keyFilter.orEmpty(),
+            valueFilter = current?.valueFilter.orEmpty(),
+            append = false,
+        )
+    }
 
-    fun fetch(
+    /** Loads the next page and appends it to the current accumulated list. */
+    fun fetchNextPage(server: HacConnectionSettingsState) {
+        val current = state(server.uuid).get() ?: return
+        if (!current.hasMore) return
+        fetch(
+            server = server,
+            page = current.lastLoadedPage + 1,
+            pageSize = current.pageSize,
+            keyFilter = current.keyFilter,
+            valueFilter = current.valueFilter,
+            append = true,
+        )
+    }
+
+    /**
+     * Starts a fresh accumulated view with the given filter / page size. Always loads
+     * page 1 and replaces whatever is currently stored.
+     */
+    fun resetAndFetch(
         server: HacConnectionSettingsState,
-        page: Int,
         pageSize: Int = CxPropertyConstants.DEFAULT_PAGE_SIZE,
         keyFilter: String = "",
         valueFilter: String = "",
+    ) = fetch(
+        server = server,
+        page = 1,
+        pageSize = pageSize,
+        keyFilter = keyFilter,
+        valueFilter = valueFilter,
+        append = false,
+    )
+
+    private fun fetch(
+        server: HacConnectionSettingsState,
+        page: Int,
+        pageSize: Int,
+        keyFilter: String,
+        valueFilter: String,
+        append: Boolean,
     ) {
         fetchingConnections.add(server.uuid)
         project.messageBus.syncPublisher(CxRemotePropertyStateListener.TOPIC).onPropertiesStateChanged(server)
@@ -112,26 +157,23 @@ class CxRemotePropertyStateService(
             )
 
             GroovyExecClient.getInstance(project).execute(context) { _, result ->
-                val properties = result.result
+                val newPage = result.result
                     ?.takeIf { !result.hasError }
                     ?.let(::parseProperties)
 
-                if (properties == null || result.hasError) {
+                if (newPage == null || result.hasError) {
                     clearState(server)
                     notify(NotificationType.ERROR, "Failed to retrieve properties") {
                         result.errorMessage ?: "Unable to retrieve properties state."
                     }
                 } else {
-                    state(server.uuid).update(properties)
+                    val state = state(server.uuid)
+                    if (append) state.append(newPage) else state.replace(newPage)
                     fetchingConnections.remove(server.uuid)
                     project.messageBus.syncPublisher(CxRemotePropertyStateListener.TOPIC).onPropertiesStateChanged(server)
-                    notify(NotificationType.INFORMATION, "Properties fetched") {
-                        """
-                        <p>Declared properties: ${properties.totalItems}</p>
-                        <p>Page: ${properties.page} of ${properties.totalPages}</p>
-                        <p>Server: ${server.shortenConnectionName}</p>
-                    """.trimIndent()
-                    }
+                    // No success notification — the data lands in the panel's bottom toolbar
+                    // ("Loaded N of M total") which is sufficient feedback. The fetch errors
+                    // above still surface because failure is non-obvious.
                 }
             }
         }
@@ -165,7 +207,7 @@ class CxRemotePropertyStateService(
                 notify(NotificationType.INFORMATION, "Property stored") {
                     "<p>Property: $trimmedKey</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
-                refetchCurrentPage(server)
+                refetchLoaded(server)
                 callback(true)
             } else {
                 notify(NotificationType.ERROR, "Failed to store property") {
@@ -193,7 +235,7 @@ class CxRemotePropertyStateService(
                 }
             }
 
-            refetchCurrentPage(server)
+            refetchLoaded(server)
 
             val result = if (failed == null) {
                 notify(NotificationType.INFORMATION, "Properties template applied") {
@@ -235,7 +277,7 @@ class CxRemotePropertyStateService(
                 notify(NotificationType.INFORMATION, "Property deleted") {
                     "<p>Property: $trimmedKey</p><p>Server: ${server.shortenConnectionName}</p>"
                 }
-                refetchCurrentPage(server)
+                refetchLoaded(server)
                 callback(true)
             } else {
                 notify(NotificationType.ERROR, "Failed to delete property") {
@@ -272,7 +314,7 @@ class CxRemotePropertyStateService(
         val items = json["items"]?.jsonArray ?: return null
 
         return CxRemotePropertyStatePage(
-            page = page,
+            lastLoadedPage = page,
             pageSize = pageSize,
             totalItems = totalItems,
             keyFilter = json["keyFilter"]?.jsonPrimitive?.content.orEmpty(),
@@ -282,7 +324,7 @@ class CxRemotePropertyStateService(
     }
 
     private fun parseLegacyProperties(items: JsonArray): CxRemotePropertyStatePage = CxRemotePropertyStatePage(
-        page = 1,
+        lastLoadedPage = 1,
         pageSize = items.size.coerceAtLeast(1),
         totalItems = items.size,
         keyFilter = "",
@@ -290,14 +332,14 @@ class CxRemotePropertyStateService(
         properties = parsePropertyItems(items),
     )
 
-    private fun parsePropertyItems(items: Iterable<JsonElement>): Map<String, CxPropertyPresentation> = items
+    private fun parsePropertyItems(items: Iterable<JsonElement>): List<CxPropertyPresentation> = items
         .mapNotNull {
             val obj = it.jsonObject
             val key = obj["key"]?.jsonPrimitive?.content ?: return@mapNotNull null
             val value = obj["value"]?.jsonPrimitive?.content
-            key to CxPropertyPresentation.of(key, value)
+            CxPropertyPresentation.of(key, value)
         }
-        .toMap()
+        .sortedBy { it.key }
 
     private fun isValidPropertyKey(key: String): Boolean = key.isNotBlank() && !key.any(Char::isWhitespace)
 
@@ -317,16 +359,12 @@ class CxRemotePropertyStateService(
         return response.statusLine.statusCode == HttpStatus.SC_OK
     }
 
-    private fun refetchCurrentPage(server: HacConnectionSettingsState) {
-        val currentPage = state(server.uuid).get()
-        fetch(
-            server = server,
-            page = currentPage?.page ?: 1,
-            pageSize = currentPage?.pageSize ?: CxPropertyConstants.DEFAULT_PAGE_SIZE,
-            keyFilter = currentPage?.keyFilter.orEmpty(),
-            valueFilter = currentPage?.valueFilter.orEmpty(),
-        )
-    }
+    /**
+     * Reloads the current view after a mutation, preserving the scroll window: pages 1..N
+     * are fetched in a single request with an inflated pageSize equal to the previously
+     * loaded count, so the user sees no rows disappear.
+     */
+    private fun refetchLoaded(server: HacConnectionSettingsState) = fetch(server)
 
     private fun escapeForGroovyString(value: String): String = value
         .replace("\\", "\\\\")

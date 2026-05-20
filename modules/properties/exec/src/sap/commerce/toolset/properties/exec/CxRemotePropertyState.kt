@@ -26,9 +26,33 @@ class CxRemotePropertyState(initial: CxRemotePropertyStatePage? = null) {
 
     fun get(): CxRemotePropertyStatePage? = if (initialized) statePage else null
 
-    fun update(newState: CxRemotePropertyStatePage) {
+    /** Replaces the accumulated list. Used for the first page of a fresh filter. */
+    fun replace(newState: CxRemotePropertyStatePage) {
         synchronized(this) {
-            statePage = newState.copy(properties = newState.properties.toMap())
+            statePage = newState.copy(properties = newState.properties.toList())
+            initialized = true
+        }
+    }
+
+    /**
+     * Appends the newly fetched page to the accumulated list. If the filter/page-size of
+     * [newState] does not match the current snapshot, this falls back to [replace] — the
+     * old snapshot becomes stale once the filter changes mid-flight.
+     */
+    fun append(newState: CxRemotePropertyStatePage) {
+        synchronized(this) {
+            val current = statePage
+            statePage = if (current != null
+                && current.keyFilter == newState.keyFilter
+                && current.valueFilter == newState.valueFilter
+                && current.pageSize == newState.pageSize
+            ) {
+                val seenKeys = current.properties.mapTo(HashSet(current.properties.size)) { it.key }
+                val merged = current.properties + newState.properties.filter { it.key !in seenKeys }
+                newState.copy(properties = merged.sortedBy { it.key })
+            } else {
+                newState.copy(properties = newState.properties.toList())
+            }
             initialized = true
         }
     }

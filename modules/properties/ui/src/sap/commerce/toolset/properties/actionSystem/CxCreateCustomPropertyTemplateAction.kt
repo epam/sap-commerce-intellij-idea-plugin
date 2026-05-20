@@ -66,7 +66,7 @@ class CxCreateCustomPropertyTemplateAction : AnAction() {
     }
 
     private fun sourceProperties(project: com.intellij.openapi.project.Project, node: Any): Collection<CxPropertyPresentation>? = when (node) {
-        is CxRemotePropertyStateNode -> CxRemotePropertyStateService.getInstance(project).state(node.connection.uuid).get()?.properties?.values
+        is CxRemotePropertyStateNode -> CxRemotePropertyStateService.getInstance(project).state(node.connection.uuid).get()?.properties
         is CxCustomPropertyTemplateItemNode -> node.properties
         else -> null
     }
