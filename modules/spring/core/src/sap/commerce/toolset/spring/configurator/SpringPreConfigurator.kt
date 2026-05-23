@@ -162,20 +162,22 @@ class SpringPreConfigurator : ProjectImportConfigurator {
         moduleDescriptorMap: Map<String, YModuleDescriptor>,
         moduleDescriptor: YWebSubModuleDescriptor
     ) {
-        moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML)
+        val webXml = moduleDescriptor.moduleRootPath.resolve(ProjectConstants.Paths.WEBROOT_WEB_INF_WEB_XML)
             .takeIf { it.fileExists }
             ?.let { getDocumentRoot(it) }
             ?.takeUnless { it.isEmpty || it.name != "web-app" }
-            ?.children
-            ?.asSequence()
-            ?.filter { it.name == "context-param" }
-            ?.filter { it.children.any { p: Element -> p.name == "param-name" && p.value == "contextConfigLocation" } }
-            ?.mapNotNull { it.children.firstOrNull { p: Element -> p.name == "param-value" } }
-            ?.map { it.value }
-            ?.map { location -> location.trim { it <= ' ' } }
-            ?.firstOrNull()
-            ?.let { processContextParam(moduleDescriptorMap, moduleDescriptor, it) }
+            ?: return
 
+        webXml.children
+            .asSequence()
+            .filter { it.name == "context-param" }
+            .filter { it.children.any { p: Element -> p.name == "param-name" && p.value == "contextConfigLocation" } }
+            .mapNotNull { it.children.firstOrNull { p: Element -> p.name == "param-value" } }
+            .map { it.value }
+            .flatMap { it.split("\n") }
+            .map { it.trim() }
+            .mapNotNull { entry -> entry.takeIf { it.isNotBlank() } }
+            .forEach { contextConfigLocation -> processContextParam(moduleDescriptorMap, moduleDescriptor, contextConfigLocation) }
     }
 
     private fun processContextParam(
@@ -239,7 +241,7 @@ class SpringPreConfigurator : ProjectImportConfigurator {
             }
             return true
         } catch (e: Exception) {
-            thisLogger().error("unable scan file for spring imports " + springFile.name, e)
+            thisLogger().error("Unable to scan file for spring imports " + springFile.name, e)
         }
         return false
     }
