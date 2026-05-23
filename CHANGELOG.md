@@ -1,3 +1,11 @@
+## [2026.0.13]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.13+author%3Amlytvyn+is%3Apr)
+
+### `Spring` enhancements
+- Support multiple entries in the `contextConfigLocation` of the web.xml for web sub-modules [#1938](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1938)
+
 ## [2026.0.12]
 
 <cite>Release contributors</code>
