@@ -168,17 +168,29 @@ class SpringPreConfigurator : ProjectImportConfigurator {
             ?.takeUnless { it.isEmpty || it.name != "web-app" }
             ?: return
 
-        webXml.children
-            .asSequence()
+        val contextParamElement = webXml.children
             .filter { it.name == "context-param" }
-            .filter { it.children.any { p: Element -> p.name == "param-name" && p.value == "contextConfigLocation" } }
-            .mapNotNull { it.children.firstOrNull { p: Element -> p.name == "param-value" } }
-            .map { it.value }
-            .flatMap { it.split("\n") }
-            .map { it.trim() }
-            .mapNotNull { entry -> entry.takeIf { it.isNotBlank() } }
-            .forEach { contextConfigLocation -> processContextParam(moduleDescriptorMap, moduleDescriptor, contextConfigLocation) }
+        val servletElement = webXml.children
+            .filter { it.name == "servlet" }
+            .flatMap { it.children }
+            .filter { it.name == "init-param" }
+
+        process(moduleDescriptorMap, moduleDescriptor, contextParamElement)
+        process(moduleDescriptorMap, moduleDescriptor, servletElement)
     }
+
+    private fun process(
+        moduleDescriptorMap: Map<String, YModuleDescriptor>,
+        moduleDescriptor: YWebSubModuleDescriptor,
+        elements: List<Element>
+    ) = elements
+        .asSequence()
+        .filter { it.children.any { p: Element -> p.name == "param-name" && p.value == "contextConfigLocation" } }
+        .mapNotNull { it.children.firstOrNull { p: Element -> p.name == "param-value" } }
+        .flatMap { it.value.split("\n") }
+        .map { it.trim() }
+        .mapNotNull { entry -> entry.takeIf { it.isNotBlank() } }
+        .forEach { contextConfigLocation -> processContextParam(moduleDescriptorMap, moduleDescriptor, contextConfigLocation) }
 
     private fun processContextParam(
         moduleDescriptorMap: Map<String, YModuleDescriptor>,
