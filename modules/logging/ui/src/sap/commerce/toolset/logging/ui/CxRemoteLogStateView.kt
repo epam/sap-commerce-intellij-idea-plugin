@@ -20,7 +20,7 @@ package sap.commerce.toolset.logging.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -134,7 +134,7 @@ class CxRemoteLogStateView(private val project: Project) : Disposable {
                 dataScrollPane.setViewportView(view)
             }
 
-            invokeLater {
+            runInEdt {
                 viewport.viewPosition = pos
             }
         }

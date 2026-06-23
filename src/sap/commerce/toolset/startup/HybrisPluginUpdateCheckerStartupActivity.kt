@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.startup
 
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.updateSettings.impl.UpdateSettings
@@ -25,8 +25,8 @@ import com.intellij.openapi.updateSettings.impl.UpdateSettings
 class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        invokeLater {
-            if (project.isDisposed) return@invokeLater
+        runInEdt {
+            if (project.isDisposed) return@runInEdt
 
             UpdateSettings.getInstance().state.isCheckNeeded = true
             val checker = HybrisStandalonePluginUpdateChecker.getInstance(project)

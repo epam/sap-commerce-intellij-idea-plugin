@@ -1,3 +1,11 @@
+## [2026.0.14]
+
+<cite>Release contributors</code>
+- 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.14+author%3Amlytvyn+is%3Apr)
+
+### Other enhancements
+- Migrated obsolete `invokeLater` to `runInEdt` [#1940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1940)
+
 ## [2026.0.13]
 
 <cite>Release contributors</code>

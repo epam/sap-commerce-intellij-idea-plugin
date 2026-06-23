@@ -21,7 +21,7 @@ package sap.commerce.toolset.welcomescreen
 import com.intellij.ide.RecentProjectsManager
 import com.intellij.ide.RecentProjectsManager.RecentProjectsChange
 import com.intellij.ide.RecentProjectsManagerBase
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -55,7 +55,7 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
     }
 
     fun loadRecentProjects() {
-        invokeLater {
+        runInEdt {
             application.messageBus.syncPublisher(TOPIC).loading()
         }
 
@@ -69,7 +69,7 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
                 ?.toList()
                 ?: emptyList()
 
-            invokeLater { application.messageBus.syncPublisher(TOPIC).loaded(recentProjects) }
+            runInEdt { application.messageBus.syncPublisher(TOPIC).loaded(recentProjects) }
 
             lazyEvaluationJob?.cancel()
             lazyEvaluationJob = coroutineScope.launch {
@@ -116,7 +116,7 @@ class RecentSapCommerceProjectsManager(private val coroutineScope: CoroutineScop
     } catch (e: Throwable) {
         onError(e)
     } finally {
-        invokeLater { application.messageBus.syncPublisher(TOPIC).changed(recentProject) }
+        runInEdt { application.messageBus.syncPublisher(TOPIC).changed(recentProject) }
     }
 
     private fun isSapCommerceProject(location: String): Boolean = runCatching {

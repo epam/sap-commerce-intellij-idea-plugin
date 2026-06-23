@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package sap.commerce.toolset.java.configurator
 import com.intellij.ide.BrowserUtil
 import com.intellij.jarRepository.RemoteRepositoriesConfiguration
 import com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.checkCanceled
@@ -84,7 +84,7 @@ class JavaLibrarySourcesConfigurator : ProjectPostImportConfigurator {
                 "Maven repositories are not configured, please specify them via 'Remote Jar Repositories' project settings and try again."
             )
                 .addAction("Configure") { _, _ ->
-                    invokeLater {
+                    runInEdt {
                         ShowSettingsUtil.getInstance().showSettingsDialog(project, RemoteRepositoriesConfigurable::class.java)
                     }
                 }

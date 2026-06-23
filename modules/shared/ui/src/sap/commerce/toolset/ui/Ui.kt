@@ -19,7 +19,7 @@
 package sap.commerce.toolset.ui
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.observable.util.addKeyListener
@@ -50,7 +50,7 @@ fun <T> DialogWrapper.ifOk(onOk: () -> T): T? = if (this.showAndGet()) onOk()
 else null
 
 fun DialogWrapper.repackDialog() {
-    invokeLater {
+    runInEdt {
         peer.window?.pack()
     }
 }

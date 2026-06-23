@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
@@ -114,7 +114,7 @@ class CCv2BuildDetailsView(
             }
         ) { deployments ->
             if (deployments.isNotEmpty()) {
-                invokeLater {
+                runInEdt {
                     showBuildHistory.set(true)
 
                     val groupedDeployments = deployments
@@ -122,7 +122,7 @@ class CCv2BuildDetailsView(
                     deploymentHistoryPanel.add(buildDeploymentHistoryPanel(groupedDeployments))
                 }
             } else {
-                invokeLater {
+                runInEdt {
                     showBuildHistory.set(true)
                     deploymentHistoryPanel.add(panel {
                         row {

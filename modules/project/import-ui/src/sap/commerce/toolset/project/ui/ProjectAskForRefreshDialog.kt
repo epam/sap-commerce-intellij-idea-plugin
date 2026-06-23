@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.ui
 
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.MessageDialogBuilder
@@ -80,7 +80,7 @@ class ProjectAskForRefreshDialog(
     override fun createLeftSideActions() = arrayOf(skip)
 
     override fun applyFields() {
-        invokeLater { project.triggerAction("sap.commerce.toolset.yRefresh") }
+        runInEdt { project.triggerAction("sap.commerce.toolset.yRefresh") }
     }
 
     override fun createNorthPanel() = banner(

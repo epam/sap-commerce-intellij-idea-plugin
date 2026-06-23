@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package sap.commerce.toolset.typeSystem.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
@@ -39,7 +39,7 @@ class OpenSettingsDiagramAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        invokeLater {
+        runInEdt {
             ShowSettingsUtil.getInstance().showSettingsDialog(project, TSProjectConfigurableProvider.SettingsConfigurable::class.java)
         }
     }

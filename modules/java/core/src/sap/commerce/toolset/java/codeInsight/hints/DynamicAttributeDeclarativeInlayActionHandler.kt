@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package sap.commerce.toolset.java.codeInsight.hints
 import com.intellij.codeInsight.hints.declarative.InlayActionHandler
 import com.intellij.codeInsight.hints.declarative.InlayActionPayload
 import com.intellij.codeInsight.hints.declarative.PsiPointerInlayActionPayload
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiClass
@@ -34,7 +34,7 @@ class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
             ?.element
             ?.asSafely<PsiClass>()
             ?.let {
-                invokeLater {
+                runInEdt {
                     FileEditorManager.getInstance(it.project).openFile(it.containingFile.virtualFile, true)
                 }
             }

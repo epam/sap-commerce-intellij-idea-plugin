@@ -19,7 +19,7 @@ package sap.commerce.toolset.startup
 
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.util.RunOnceUtil
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.fileEditor.TextEditorWithPreview
 import com.intellij.openapi.fileEditor.impl.HTMLEditorProvider
 import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx
@@ -54,15 +54,15 @@ class WhatsNewStartupActivity : ProjectActivity {
                     it.isWritable = false
                 }
 
-                invokeLater {
+                runInEdt {
                     TextEditorWithPreview.openPreviewForFile(project, lvf)
                 }
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 if (!JBCefApp.isSupported()) return@runOnceForProject
 
                 val request = HTMLEditorProvider.Request.url("https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md#$version")
 
-                invokeLater {
+                runInEdt {
                     HTMLEditorProvider.openEditor(project, "What's New in SAP Commerce Developers Toolset - $version", request)
                 }
             }
