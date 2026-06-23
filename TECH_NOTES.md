@@ -74,7 +74,7 @@ ProjectRefreshDialog
 ### Resize Kotlin Dsl Dialog on content change
 
 ```kotlin
-invokeLater {
+runInEdt {
     peer.window?.pack()
 }
 ```

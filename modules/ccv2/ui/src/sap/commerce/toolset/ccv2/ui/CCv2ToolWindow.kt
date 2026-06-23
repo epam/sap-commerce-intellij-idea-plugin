@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package sap.commerce.toolset.ccv2.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
@@ -179,7 +179,7 @@ class CCv2ToolWindow(private val project: Project, parentDisposable: Disposable)
         createPanel.invoke()
     )
 
-    private fun onFetchingCompleted(tab: CCv2ToolWindowContentTab, createPanel: () -> DialogPanel) = invokeLater {
+    private fun onFetchingCompleted(tab: CCv2ToolWindowContentTab, createPanel: () -> DialogPanel) = runInEdt {
         tabbedPane.setComponentAt(
             getTabIndex(tab),
             createPanel.invoke()

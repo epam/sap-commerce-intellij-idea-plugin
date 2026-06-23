@@ -22,7 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.UiDataProvider
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionListModel
@@ -93,7 +93,7 @@ internal class SapCommerceProjectList(
         putClientProperty(AnimatedIcon.ANIMATION_IN_RENDERER_ALLOWED, true)
 
         addListSelectionListener(parentDisposable) {
-            if (selectedIndex != -1) invokeLater { clearSelection() }
+            if (selectedIndex != -1) runInEdt { clearSelection() }
         }
 
         ActionManager.getInstance().getAction(RemoveSapCommerceProjectAction.ACTION_ID)

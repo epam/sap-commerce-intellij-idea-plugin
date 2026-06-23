@@ -21,7 +21,7 @@ package sap.commerce.toolset.welcomescreen.ui
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUiKind
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.impl.welcomeScreen.TabbedWelcomeScreen.DefaultWelcomeScreenTab
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
@@ -56,7 +56,7 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
         Disposer.register(parentDisposable, this)
         subscribeToRecentProjectsChanges()
 
-        invokeLater {
+        runInEdt {
             RecentSapCommerceProjectsManager.getInstance().loadRecentProjects()
         }
     }
@@ -73,7 +73,7 @@ class SapCommerceWelcomeTab(parentDisposable: Disposable) : DefaultWelcomeScreen
                 .font { JBFont.h2().deriveFont(Font.BOLD) }
 
             button(i18n("hybris.welcometab.button.import.project")) {
-                invokeLater {
+                runInEdt {
                     triggerAction(
                         actionId = "sap.commerce.toolset.import",
                         place = ActionPlaces.WELCOME_SCREEN,

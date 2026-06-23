@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package sap.commerce.toolset.ccv2.actionSystem
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
@@ -50,7 +50,7 @@ class CCv2FetchEnvironmentAction : DumbAwareAction("Fetch Environment", null, Hy
             { response ->
                 fetching = false
 
-                invokeLater {
+                runInEdt {
                     val fetchedEnvironment = response[subscription]
                         ?.find { it.code == environment.code }
 

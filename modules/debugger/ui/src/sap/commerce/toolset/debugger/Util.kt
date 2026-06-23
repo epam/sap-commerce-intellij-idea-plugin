@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +18,12 @@
 
 package sap.commerce.toolset.debugger
 
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.ui.popup.Balloon
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.awt.RelativePoint
-import com.intellij.util.application
 import sap.commerce.toolset.typeSystem.TSConstants
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
@@ -44,8 +44,8 @@ internal fun getMeta(project: Project, classNameFqn: String): TSGlobalMetaItem? 
 }
 
 private fun notifyError(errorMessage: String) {
-    application.invokeLater {
-        val mouseLoc = MouseInfo.getPointerInfo()?.location ?: return@invokeLater
+    runInEdt {
+        val mouseLoc = MouseInfo.getPointerInfo()?.location ?: return@runInEdt
         val balloon = JBPopupFactory.getInstance()
             .createHtmlTextBalloonBuilder(errorMessage, MessageType.ERROR, null)
             .setFadeoutTime(5000)

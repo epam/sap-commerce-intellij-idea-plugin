@@ -25,7 +25,7 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.not
@@ -186,7 +186,7 @@ class CCv2EnvironmentDetailsView(
             { build ->
                 environment.deployedBuild = build
 
-                invokeLater {
+                runInEdt {
                     val panel = if (build != null) buildPanel(build)
                     else CCv2ToolWindowUtil.noDataPanel("No build found")
 
@@ -213,7 +213,7 @@ class CCv2EnvironmentDetailsView(
             {
                 environment.services = it
 
-                invokeLater {
+                runInEdt {
                     val panel = if (it != null) servicesPanel(environment, it)
                     else CCv2ToolWindowUtil.noDataPanel("No services found")
 
@@ -238,7 +238,7 @@ class CCv2EnvironmentDetailsView(
         CCv2Service.getInstance(project).fetchEnvironmentEndpoints(subscription, environment) {
             environment.endpoints = it
 
-            invokeLater {
+            runInEdt {
                 val panel = if (it != null) endpointsPanel(it)
                 else CCv2ToolWindowUtil.noDataPanel("No public endpoints found")
 
@@ -262,7 +262,7 @@ class CCv2EnvironmentDetailsView(
         CCv2Service.getInstance(project).fetchEnvironmentDataBackups(subscription, environment) {
             environment.dataBackups = it
 
-            invokeLater {
+            runInEdt {
                 val panel = if (it != null) dataBackupsPanel(it)
                 else CCv2ToolWindowUtil.noDataPanel("No data backups found")
 
@@ -286,7 +286,7 @@ class CCv2EnvironmentDetailsView(
         CCv2Service.getInstance(project).fetchEnvironmentScheduledActivities(subscription, environment) {
             environment.scheduledActivities = it
 
-            invokeLater {
+            runInEdt {
                 val panel = if (it != null) scheduledActivitiesPanel(it)
                 else CCv2ToolWindowUtil.noDataPanel("No scheduled activities found")
 
@@ -740,7 +740,7 @@ class CCv2EnvironmentDetailsView(
                                                     publicKeyActionLink.text = "Retrieving..."
                                                 },
                                                 { publicKey ->
-                                                    invokeLater {
+                                                    runInEdt {
                                                         retrieving = false
                                                         publicKeyActionLink.text = "Copy public key"
 

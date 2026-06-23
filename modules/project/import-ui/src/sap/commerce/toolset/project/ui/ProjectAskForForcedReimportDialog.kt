@@ -22,7 +22,7 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUiKind
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EditorNotificationPanel
@@ -51,7 +51,7 @@ class ProjectAskForForcedReimportDialog(
     override fun applyFields() {
         project.triggerAction("CloseProject")
 
-        invokeLater {
+        runInEdt {
             triggerAction(
                 actionId = "sap.commerce.toolset.reimport",
                 place = ActionPlaces.NEW_PROJECT_WIZARD,
@@ -65,7 +65,7 @@ class ProjectAskForForcedReimportDialog(
     }
 
     override fun doCancelAction() {
-        invokeLater { project.triggerAction("CloseProject") }
+        runInEdt { project.triggerAction("CloseProject") }
     }
 
     override fun createNorthPanel() = banner(
