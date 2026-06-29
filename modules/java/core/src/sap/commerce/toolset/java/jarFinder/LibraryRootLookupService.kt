@@ -31,6 +31,7 @@ import com.intellij.util.io.HttpRequests
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import sap.commerce.toolset.util.fileExists
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -81,7 +82,11 @@ class LibraryRootLookupService {
     private suspend fun getExternalMavenCoords(libraryJar: VirtualFile): SolrMavenArtifactCoords? {
         checkCanceled()
 
-        val sha1 = libraryJar.toNioPath().toFile().sha1()
+        val sha1 = libraryJar.toNioPath()
+            .takeIf { it.fileExists }
+            ?.toFile()
+            ?.sha1()
+            ?: return null
         val url = "https://central.sonatype.com/solrsearch/select?rows=1&wt=json&q=1:$sha1"
 
         try {
