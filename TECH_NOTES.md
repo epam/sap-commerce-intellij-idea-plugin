@@ -39,6 +39,13 @@ project.directory
 PathMacroManager.getInstance(project).expandPath("\$PROJECT_DIR$")
 ```
 
+### Do not init plugin extensions
+```kotlin
+init {
+    if (project.isNotHybrisProject) throw ExtensionNotApplicableException.create()
+}
+```
+
 ### Invoke AnAction
 
 ```kotlin
