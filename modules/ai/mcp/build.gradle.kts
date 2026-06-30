@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":flexibleSearch-exec"))
     implementation(project(":impex-exec"))
     implementation(project(":solr-exec"))
+    implementation(project(":logging-core"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

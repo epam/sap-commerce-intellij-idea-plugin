@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.mcp
+package sap.commerce.toolset.ai.mcp
 
 import com.intellij.mcpserver.project
 import com.intellij.openapi.project.Project
