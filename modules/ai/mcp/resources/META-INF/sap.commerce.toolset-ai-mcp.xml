@@ -24,6 +24,7 @@
         <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.ImpExMcpToolset"/>
         <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.HacMcpToolset"/>
         <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.SolrMcpToolset"/>
+        <mcpServer.mcpToolset implementation="sap.commerce.toolset.mcp.LoggingMcpToolset"/>
     </extensions>
 
 </idea-plugin>
