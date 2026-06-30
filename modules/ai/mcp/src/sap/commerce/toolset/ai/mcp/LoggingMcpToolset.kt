@@ -52,10 +52,11 @@ class LoggingMcpToolset : McpToolset {
     @McpDescription(
         """Lists all loggers declared on a SAP Commerce (Hybris) server via the HAC.
         |For every logger returns its fully-qualified name, the currently effective log level and its parent logger.
-        |Requires a configured and authenticated HAC connection."""
+        |Requires a configured and authenticated HAC connection.
+        |PRECONDITION: only call this tool against a connection whose authMode is AUTOMATIC (supportedByMcp = true in sap_commerce_list_hac_connections). If the user asks to use a connection that uses MANUAL (browser) authentication, do NOT call this tool — instead tell the user that connection is not supported by MCP tools yet and offer an AUTOMATIC one. Calling it against a MANUAL connection will fail."""
     )
     suspend fun listLoggers(
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
     ): String {
         val project = currentCoroutineContext().mcpProject
@@ -85,14 +86,15 @@ class LoggingMcpToolset : McpToolset {
         |Creates the logger override if it does not exist yet, otherwise updates the existing one.
         |Valid levels: ALL, OFF, TRACE, DEBUG, INFO, WARN, ERROR, FATAL.
         |Returns the resulting effective level of the logger.
-        |Requires a configured and authenticated HAC connection."""
+        |Requires a configured and authenticated HAC connection.
+        |PRECONDITION: only call this tool against a connection whose authMode is AUTOMATIC (supportedByMcp = true in sap_commerce_list_hac_connections). If the user asks to use a connection that uses MANUAL (browser) authentication, do NOT call this tool — instead tell the user that connection is not supported by MCP tools yet and offer an AUTOMATIC one. Calling it against a MANUAL connection will fail."""
     )
     suspend fun updateLoggerLevel(
         @McpDescription("Fully-qualified logger name (package or class), e.g. 'org.springframework' or 'de.hybris.platform'")
         loggerName: String,
         @McpDescription("New log level. One of: ALL, OFF, TRACE, DEBUG, INFO, WARN, ERROR, FATAL")
         level: String,
-        @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
+        @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
     ): String {
         val project = currentCoroutineContext().mcpProject

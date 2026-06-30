@@ -22,28 +22,43 @@ import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import kotlinx.coroutines.currentCoroutineContext
-import sap.commerce.toolset.ai.mcp.mcpProject
+import kotlinx.serialization.json.*
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import kotlin.coroutines.coroutineContext
+import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 
 class HacMcpToolset : McpToolset {
 
+    private val json = Json { prettyPrint = true }
+
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
-        """Lists all configured HAC (Hybris Administration Console) connections for the current project.
-        |Returns connection names and URLs. Use a connection name with other HAC tools to target a specific server."""
+        """Lists all configured HAC (Hybris Administration Console) connections for the current project as a JSON object.
+        |Shape: {"connections": [{"name": String, "url": String, "active": Boolean, "authMode": "AUTOMATIC" | "MANUAL", "supportedByMcp": Boolean}]}.
+        | - name: pass it to other HAC tools to target a specific server;
+        | - active: whether it is the currently active connection;
+        | - authMode: AUTOMATIC (credentials persisted in the IDE) or MANUAL (interactive browser-based authentication);
+        | - supportedByMcp: whether this connection can currently be used by MCP tools.
+        |IMPORTANT: connections with authMode "MANUAL" are NOT supported for LLM/MCP usage right now (supportedByMcp = false), because they require an interactive browser login that the model cannot perform; calling other HAC tools against such a connection will fail. Support for MANUAL authentication is planned for a later version of the plugin."""
     )
     suspend fun listHacConnections(): String {
         val project = currentCoroutineContext().mcpProject
         val connectionService = HacExecConnectionService.getInstance(project)
         val activeConnection = connectionService.activeConnection
 
-        return buildString {
-            appendLine("HAC Connections:")
-            connectionService.connections.forEach { connection ->
-                val active = if (connection.uuid == activeConnection.uuid) " (active)" else ""
-                appendLine("  - ${connection.connectionName} (${connection.generatedURL})$active")
+        val payload = buildJsonObject {
+            putJsonArray("connections") {
+                connectionService.connections.forEach { connection ->
+                    addJsonObject {
+                        put("name", connection.connectionName)
+                        put("url", connection.generatedURL)
+                        put("active", connection.uuid == activeConnection.uuid)
+                        put("authMode", connection.authMode.name)
+                        put("supportedByMcp", connection.authMode == AuthMode.AUTOMATIC)
+                    }
+                }
             }
-        }.trim()
+        }
+
+        return json.encodeToString(JsonObject.serializer(), payload)
     }
 }
