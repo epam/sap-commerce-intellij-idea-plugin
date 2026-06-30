@@ -6,6 +6,9 @@
 ### `Project Import` enhancements
 - Check if file exists before generating `sha1` for maven coordinates [#1941](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1941)
 
+### `AI` capabilities
+- Exposed Cx loggers API via MCP server [#1942](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1942)
+
 ### Other enhancements
 - Migrated obsolete `invokeLater` to `runInEdt` [#1940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1940)
 
