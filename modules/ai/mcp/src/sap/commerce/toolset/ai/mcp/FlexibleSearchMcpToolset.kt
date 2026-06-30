@@ -16,16 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.mcp
+package sap.commerce.toolset.ai.mcp
 
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
-import kotlin.coroutines.coroutineContext
 
 class FlexibleSearchMcpToolset : McpToolset {
 
@@ -50,7 +50,7 @@ class FlexibleSearchMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = coroutineContext.mcpProject
+        val project = currentCoroutineContext().mcpProject
         val connection = resolveHacConnection(project, connectionName)
 
         val context = FlexibleSearchExecContext(
@@ -102,7 +102,7 @@ class FlexibleSearchMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = coroutineContext.mcpProject
+        val project = currentCoroutineContext().mcpProject
         val connection = resolveHacConnection(project, connectionName)
 
         val context = FlexibleSearchExecContext(

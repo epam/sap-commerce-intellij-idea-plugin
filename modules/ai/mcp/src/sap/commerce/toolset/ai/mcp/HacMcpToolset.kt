@@ -16,11 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.mcp
+package sap.commerce.toolset.ai.mcp
 
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import kotlinx.coroutines.currentCoroutineContext
+import sap.commerce.toolset.ai.mcp.mcpProject
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import kotlin.coroutines.coroutineContext
 
@@ -32,7 +34,7 @@ class HacMcpToolset : McpToolset {
         |Returns connection names and URLs. Use a connection name with other HAC tools to target a specific server."""
     )
     suspend fun listHacConnections(): String {
-        val project = coroutineContext.mcpProject
+        val project = currentCoroutineContext().mcpProject
         val connectionService = HacExecConnectionService.getInstance(project)
         val activeConnection = connectionService.activeConnection
 

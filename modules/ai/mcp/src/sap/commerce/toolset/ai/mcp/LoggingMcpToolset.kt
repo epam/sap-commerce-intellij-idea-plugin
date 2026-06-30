@@ -16,17 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.mcp
+package sap.commerce.toolset.ai.mcp
 
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
+import sap.commerce.toolset.ai.mcp.mcpProject
+import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
@@ -54,8 +58,9 @@ class LoggingMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = coroutineContext.mcpProject
+        val project = currentCoroutineContext().mcpProject
         val connection = resolveHacConnection(project, connectionName)
+        requireAutomaticAuth(connection)
 
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.EXTENSION_STATE_SCRIPT) }
         val loggers = runLoggersScript(project, connection, scriptContent)
@@ -90,8 +95,9 @@ class LoggingMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = coroutineContext.mcpProject
+        val project = currentCoroutineContext().mcpProject
         val connection = resolveHacConnection(project, connectionName)
+        requireAutomaticAuth(connection)
 
         val normalizedLoggerName = loggerName.trim()
         if (normalizedLoggerName.isBlank()) error("Logger name must not be blank.")
@@ -110,6 +116,24 @@ class LoggingMcpToolset : McpToolset {
             ?: logLevel.name
 
         return "Logger '$normalizedLoggerName' set to $effectiveLevel on ${connection.connectionName}."
+    }
+
+    /**
+     * The logger MCP tools talk to the server through the Groovy console, which currently cannot
+     * drive the external browser-based authentication used by [AuthMode.MANUAL] connections.
+     * Until that is supported, reject such connections with an actionable message.
+     *
+     * Note: this guard is intentionally limited to the logger tools — the other toolsets will be
+     * updated in a separate PR.
+     */
+    private fun requireAutomaticAuth(connection: HacConnectionSettingsState) {
+        if (connection.authMode == AuthMode.MANUAL) {
+            error(
+                "HAC connection '${connection.connectionName}' uses Manual (browser) authentication, " +
+                    "which is not yet supported by the logger MCP tools. " +
+                    "Switch the connection to '${AuthMode.AUTOMATIC.title}' to use this tool."
+            )
+        }
     }
 
     /**
