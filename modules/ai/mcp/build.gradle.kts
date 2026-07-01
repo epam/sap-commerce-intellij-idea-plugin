@@ -43,6 +43,8 @@ dependencies {
     implementation(project(":impex-exec"))
     implementation(project(":solr-exec"))
     implementation(project(":logging-core"))
+    implementation(project(":meta-core"))
+    implementation(project(":typeSystem-core"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

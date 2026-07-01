@@ -2,7 +2,7 @@
 
 <cite>Release contributors</code>
 - 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.14+author%3Amlytvyn+is%3Apr)
-- 3 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.14+author%3Aekalenchuk+is%3Apr)
+- 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.14+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
 - Check if file exists before generating `sha1` for maven coordinates [#1941](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1941)
@@ -11,6 +11,7 @@
 - Exposed Cx loggers API via MCP server [#1942](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1942)
 - Reject HAC connections with Manual authentication in logger MCP tools [#1943](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1943)
 - Add an optional logger-name filter (regex or substring) to list loggers tool [#1944](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1944)
+- Expose type system Item types as MCP tool (name/extension filters, TYPES/ATTRIBUTES/FULL detail)  [#1945](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1945)
 
 ### Other enhancements
 - Migrated obsolete `invokeLater` to `runInEdt` [#1940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1940)
