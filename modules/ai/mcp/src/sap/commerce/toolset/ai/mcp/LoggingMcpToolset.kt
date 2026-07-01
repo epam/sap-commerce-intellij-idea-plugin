@@ -57,10 +57,9 @@ class LoggingMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
         @McpDescription(
-            "Optional logger-name filter used to shrink the response and save tokens. " +
-                "If the value is a valid regular expression it is matched against each logger name with a regex search " +
-                "(e.g. '^de\\.hybris\\.platform\\.' or 'spring|hibernate'; prefix with '(?i)' for case-insensitivity); " +
-                "otherwise it is treated as a plain, case-insensitive substring ('contains'). Omit to return all loggers."
+            """Optional logger-name filter used to shrink the response and save tokens.
+            |If the value is a valid regular expression it is matched against each logger name with a regex search (e.g. '^de\.hybris\.platform\.' or 'spring|hibernate'; prefix with '(?i)' for case-insensitivity);
+            |otherwise it is treated as a plain, case-insensitive substring ('contains'). Omit to return all loggers."""
         )
         filter: String? = null,
     ): String {
