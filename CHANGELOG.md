@@ -13,6 +13,7 @@
 - Add an optional logger-name filter (regex or substring) to list loggers tool [#1944](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1944)
 - Expose type system Item types as MCP tool (name/extension filters, TYPES/ATTRIBUTES/FULL detail) [#1945](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1945)
 - Expose type system Atomic types as MCP tool (name/extension filters, JSON) [#1946](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1946)
+- Expose type system Collection types as MCP tool (name/extension filters, JSON) [#1946](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1946)
 
 ### Other enhancements
 - Migrated obsolete `invokeLater` to `runInEdt` [#1940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1940)
