@@ -25,8 +25,6 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
@@ -36,7 +34,6 @@ import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.settings.state.TransactionMode
-import kotlin.coroutines.coroutineContext
 
 /**
  * Exposes the remote SAP Commerce logger operations available in the "SAP Loggers" tool window
