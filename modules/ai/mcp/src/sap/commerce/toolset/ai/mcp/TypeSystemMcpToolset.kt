@@ -142,21 +142,19 @@ class TypeSystemMcpToolset : McpToolset {
         if (detail != ItemTypeDetail.FULL) return@buildJsonObject
 
         // Which extension originally declares the attribute, and which ones redeclare it.
-        val declaredIn = attribute.declarations
-            .filterNot { it.isRedeclare }
-            .map { it.extensionName }
-            .firstOrNull { it.isNotBlank() }
+        val (redeclared, declared) = attribute.declarations
+            .filter { it.extensionName.isNotBlank() }
+            .partition { it.isRedeclare }
+
+        val declaredIn = declared.firstOrNull()?.extensionName
             ?: attribute.extensionName.takeIf { it.isNotBlank() }
         declaredIn?.let { put("declaredIn", it) }
 
-        attribute.declarations
-            .filter { it.isRedeclare }
-            .map { it.extensionName }
-            .filter { it.isNotBlank() }
+        redeclared.map { it.extensionName }
             .distinct()
             .sorted()
             .takeIf { it.isNotEmpty() }
-            ?.let { redeclared -> putJsonArray("redeclaredIn") { redeclared.forEach { add(it) } } }
+            ?.let { exts -> putJsonArray("redeclaredIn") { exts.forEach { add(it) } } }
 
         put("mandatory", !attribute.modifiers.isOptional)
         if (attribute.isLocalized) put("localized", true)
