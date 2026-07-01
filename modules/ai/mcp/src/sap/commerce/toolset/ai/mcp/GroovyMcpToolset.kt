@@ -26,7 +26,6 @@ import org.apache.http.HttpStatus
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.settings.state.TransactionMode
-import kotlin.coroutines.coroutineContext
 
 class GroovyMcpToolset : McpToolset {
 
