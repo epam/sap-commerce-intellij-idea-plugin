@@ -28,10 +28,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.*
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaPersistence
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import sap.commerce.toolset.typeSystem.meta.model.*
 
 /**
  * Exposes the SAP Commerce Type System — as shown in the "Type System" tool window — as MCP tools.
@@ -177,6 +174,74 @@ class TypeSystemMcpToolset : McpToolset {
         ?.filter { it.isNotEmpty() }
         ?.toSet()
         ?.takeIf { it.isNotEmpty() }
+
+    @McpTool(name = "sap_commerce_list_collection_types")
+    @McpDescription(
+        """Lists the Collection types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
+        |A collection type wraps an element type as a 'collection', 'list' or 'set' (its 'kind').
+        |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"filter", "extensions", "matched", "total", "collectionTypes": [{"name", "kind", "elementType", "extension", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
+        |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result and keep the response (and token usage) small."""
+    )
+    suspend fun listCollectionTypes(
+        @McpDescription(
+            """Optional collection-type-name filter used to shrink the response and save tokens.
+            |If the value is a valid regular expression it is matched against each collection type name with a regex search (e.g. '(?i)product'); otherwise it is treated as a plain, case-insensitive substring ('contains').
+            |Omit to return all collection types."""
+        )
+        filter: String? = null,
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict the result to collection types owned by those extensions (e.g. 'core,basecommerce').
+            |Matched case-insensitively and exactly against each collection type's owning 'extension'. Combined with 'filter' using AND (both must match).
+            |Omit to include collection types from all extensions."""
+        )
+        extensions: String? = null,
+    ): String {
+        val project = currentCoroutineContext().mcpProject
+
+        val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
+        val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
+
+        val extensionFilter = extensions
+            ?.split(',')
+            ?.map { it.trim().lowercase() }
+            ?.filter { it.isNotEmpty() }
+            ?.toSet()
+            ?.takeIf { it.isNotEmpty() }
+
+        ensureTypeSystemReady(project)
+
+        val payload = readAction {
+            val allCollections = TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION)
+                .filter { it.name != null }
+            val matched = allCollections
+                .filter { collection -> matcher?.invoke(collection.name!!) ?: true }
+                .filter { collection -> extensionFilter == null || collection.extensionName.lowercase() in extensionFilter }
+                .sortedBy { it.name }
+
+            buildJsonObject {
+                normalizedFilter?.let { put("filter", it) }
+                extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
+                put("matched", matched.size)
+                put("total", allCollections.size)
+                putJsonArray("collectionTypes") {
+                    matched.forEach { add(collectionTypeJson(it)) }
+                }
+            }
+        }
+
+        return json.encodeToString(JsonObject.serializer(), payload)
+    }
+
+    private fun collectionTypeJson(collection: TSGlobalMetaCollection): JsonObject = buildJsonObject {
+        put("name", collection.name!!)
+        put("kind", collection.type.value)
+        collection.elementType.takeIf { it.isNotBlank() }?.let { put("elementType", it) }
+        collection.extensionName.takeIf { it.isNotBlank() }?.let { put("extension", it) }
+        if (collection.isCustom) put("custom", true)
+        if (collection.isAutoCreate) put("autoCreate", true)
+        if (collection.isGenerate) put("generate", true)
+    }
 
     private fun itemTypeJson(item: TSGlobalMetaItem, detail: ItemTypeDetail): JsonObject = buildJsonObject {
         put("name", item.name!!)
