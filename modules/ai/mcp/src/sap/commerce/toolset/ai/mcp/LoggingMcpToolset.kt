@@ -47,24 +47,44 @@ class LoggingMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_list_loggers")
     @McpDescription(
-        """Lists all loggers declared on a SAP Commerce (Hybris) server via the HAC.
+        """Lists loggers declared on a SAP Commerce (Hybris) server via the HAC.
         |For every logger returns its fully-qualified name, the currently effective log level and its parent logger.
+        |A remote instance can declare hundreds or thousands of loggers, so prefer the optional 'filter' parameter to return only the loggers you need and keep the response (and token usage) small.
         |Requires a configured and authenticated HAC connection.
         |PRECONDITION: only call this tool against a connection whose authMode is AUTOMATIC (supportedByMcp = true in sap_commerce_list_hac_connections). If the user asks to use a connection that uses MANUAL (browser) authentication, do NOT call this tool — instead tell the user that connection is not supported by MCP tools yet and offer an AUTOMATIC one. Calling it against a MANUAL connection will fail."""
     )
     suspend fun listLoggers(
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
+        @McpDescription(
+            "Optional logger-name filter used to shrink the response and save tokens. " +
+                "If the value is a valid regular expression it is matched against each logger name with a regex search " +
+                "(e.g. '^de\\.hybris\\.platform\\.' or 'spring|hibernate'; prefix with '(?i)' for case-insensitivity); " +
+                "otherwise it is treated as a plain, case-insensitive substring ('contains'). Omit to return all loggers."
+        )
+        filter: String? = null,
     ): String {
         val project = currentCoroutineContext().mcpProject
         val connection = resolveHacConnection(project, connectionName)
         requireAutomaticAuth(connection)
 
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.EXTENSION_STATE_SCRIPT) }
-        val loggers = runLoggersScript(project, connection, scriptContent)
+        val allLoggers = runLoggersScript(project, connection, scriptContent)
+
+        val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
+        val loggers = normalizedFilter
+            ?.let { loggerNameMatcher(it) }
+            ?.let { matches -> allLoggers.filter { matches(it.name) } }
+            ?: allLoggers
 
         return buildString {
-            appendLine("Loggers on ${connection.connectionName} (${loggers.size}):")
+            if (normalizedFilter == null) {
+                appendLine("Loggers on ${connection.connectionName} (${loggers.size}):")
+            } else {
+                appendLine("Loggers on ${connection.connectionName} matching \"$normalizedFilter\" (${loggers.size} of ${allLoggers.size}):")
+                if (loggers.isEmpty()) appendLine("  (no logger name matched the filter)")
+            }
+
             loggers
                 .sortedBy { it.name }
                 .forEach { logger ->
@@ -134,6 +154,15 @@ class LoggingMcpToolset : McpToolset {
             )
         }
     }
+
+    /**
+     * Builds a logger-name predicate from a user-supplied [filter]: a regex search when [filter]
+     * is a valid regular expression, otherwise a case-insensitive substring ('contains') match.
+     */
+    private fun loggerNameMatcher(filter: String): (String) -> Boolean =
+        runCatching { filter.toRegex() }.getOrNull()
+            ?.let { regex -> regex::containsMatchIn }
+            ?: { name -> name.contains(filter, ignoreCase = true) }
 
     /**
      * Executes one of the bundled loggers Groovy scripts against [connection] and parses the
