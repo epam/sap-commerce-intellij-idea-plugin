@@ -83,13 +83,7 @@ class TypeSystemMcpToolset : McpToolset {
 
         val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
-
-        val extensionFilter = extensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
+        val extensionFilter = parseExtensionFilter(extensions)
 
         ensureTypeSystemReady(project)
 
@@ -115,6 +109,73 @@ class TypeSystemMcpToolset : McpToolset {
 
         return json.encodeToString(JsonObject.serializer(), payload)
     }
+
+    @McpTool(name = "sap_commerce_list_atomic_types")
+    @McpDescription(
+        """Lists the Atomic types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
+        |Atomic types are the primitive/scalar building blocks (e.g. 'java.lang.String', 'java.lang.Boolean', 'java.util.Date'); their name and 'extends' are fully-qualified Java class names.
+        |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"filter", "extensions", "matched", "total", "atomicTypes": [{"name", "extends", "extension", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
+        |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result and keep the response (and token usage) small."""
+    )
+    suspend fun listAtomicTypes(
+        @McpDescription(
+            """Optional atomic-type-name filter used to shrink the response and save tokens.
+            |If the value is a valid regular expression it is matched against each atomic type name with a regex search (e.g. '^java\.lang\.' or '(?i)date'); otherwise it is treated as a plain, case-insensitive substring ('contains').
+            |Omit to return all atomic types."""
+        )
+        filter: String? = null,
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict the result to atomic types owned by those extensions (e.g. 'core,basecommerce').
+            |Matched case-insensitively and exactly against each atomic type's owning 'extension'. Combined with 'filter' using AND (both must match).
+            |Omit to include atomic types from all extensions."""
+        )
+        extensions: String? = null,
+    ): String {
+        val project = currentCoroutineContext().mcpProject
+
+        val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
+        val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
+        val extensionFilter = parseExtensionFilter(extensions)
+
+        ensureTypeSystemReady(project)
+
+        val payload = readAction {
+            val allAtomics = TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC)
+            val matched = allAtomics
+                .filter { atomic -> matcher?.invoke(atomic.name) ?: true }
+                .filter { atomic -> extensionFilter == null || atomic.extensionName.lowercase() in extensionFilter }
+                .sortedBy { it.name }
+
+            buildJsonObject {
+                normalizedFilter?.let { put("filter", it) }
+                extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
+                put("matched", matched.size)
+                put("total", allAtomics.size)
+                putJsonArray("atomicTypes") {
+                    matched.forEach { add(atomicTypeJson(it)) }
+                }
+            }
+        }
+
+        return json.encodeToString(JsonObject.serializer(), payload)
+    }
+
+    private fun atomicTypeJson(atomic: TSGlobalMetaAtomic): JsonObject = buildJsonObject {
+        put("name", atomic.name)
+        atomic.extends.takeIf { it.isNotBlank() }?.let { put("extends", it) }
+        atomic.extensionName.takeIf { it.isNotBlank() }?.let { put("extension", it) }
+        if (atomic.isCustom) put("custom", true)
+        if (atomic.isAutoCreate) put("autoCreate", true)
+        if (atomic.isGenerate) put("generate", true)
+    }
+
+    private fun parseExtensionFilter(extensions: String?): Set<String>? = extensions
+        ?.split(',')
+        ?.map { it.trim().lowercase() }
+        ?.filter { it.isNotEmpty() }
+        ?.toSet()
+        ?.takeIf { it.isNotEmpty() }
 
     private fun itemTypeJson(item: TSGlobalMetaItem, detail: ItemTypeDetail): JsonObject = buildJsonObject {
         put("name", item.name!!)
