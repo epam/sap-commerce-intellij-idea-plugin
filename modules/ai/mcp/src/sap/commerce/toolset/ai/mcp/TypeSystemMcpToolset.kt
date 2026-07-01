@@ -29,7 +29,6 @@ import kotlinx.serialization.json.*
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaModifiers
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaPersistence
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
@@ -72,7 +71,7 @@ class TypeSystemMcpToolset : McpToolset {
             """Controls how much information is returned per item type, to balance completeness against token usage:
             |- TYPES: item type identity only (name, extends, typeCode, extension, and the custom/abstract/deprecated flags). No attributes.
             |- ATTRIBUTES: the above plus each type's declared attributes as {name, type}.
-            |- FULL: the above plus all available attribute meta-information: the extension it is 'declaredIn' and any extensions it is 'redeclaredIn', 'mandatory' and the localized/dynamic/deprecated/autoCreate/generate flags, defaultValue, selectionOf, flattenType, description, the active 'modifiers' and 'persistence' details. Only non-empty values are included.
+            |- FULL: the above plus all available attribute meta-information: the extension it is 'declaredIn' and any extensions it is 'redeclaredIn', the localized/dynamic/deprecated/autoCreate/generate flags, defaultValue, selectionOf, flattenType, description, the active 'modifiers' (which include 'optional' — a mandatory attribute is simply one without it) and 'persistence' details. Only non-empty values are included.
             |Default: TYPES. Prefer the smallest level that answers the question. Attributes are the type's DECLARED attributes, not inherited ones."""
         )
         detail: String = "TYPES",
@@ -156,7 +155,6 @@ class TypeSystemMcpToolset : McpToolset {
             .takeIf { it.isNotEmpty() }
             ?.let { exts -> putJsonArray("redeclaredIn") { exts.forEach { add(it) } } }
 
-        put("mandatory", !attribute.modifiers.isOptional)
         if (attribute.isLocalized) put("localized", true)
         if (attribute.isDynamic) put("dynamic", true)
         if (attribute.isDeprecated) put("deprecated", true)
@@ -168,27 +166,13 @@ class TypeSystemMcpToolset : McpToolset {
         attribute.flattenType?.takeIf { it.isNotBlank() }?.let { put("flattenType", it) }
         attribute.description?.takeIf { it.isNotBlank() }?.let { put("description", it) }
 
-        attributeModifiers(attribute.modifiers)
+        attribute.modifiers.activeModifiers()
             .takeIf { it.isNotEmpty() }
             ?.let { modifiers -> putJsonArray("modifiers") { modifiers.forEach { add(it) } } }
 
         persistenceJson(attribute.persistence)
             .takeIf { it.isNotEmpty() }
             ?.let { put("persistence", it) }
-    }
-
-    /** Active (true) attribute modifiers, as a compact list; 'optional' is omitted as it is conveyed by 'mandatory'. */
-    private fun attributeModifiers(modifiers: TSMetaModifiers): List<String> = buildList {
-        if (modifiers.isUnique) add("unique")
-        if (modifiers.isInitial) add("initial")
-        if (modifiers.isPrivate) add("private")
-        if (modifiers.isRemovable) add("removable")
-        if (modifiers.isPartOf) add("partOf")
-        if (modifiers.isRead) add("read")
-        if (modifiers.isWrite) add("write")
-        if (modifiers.isSearch) add("search")
-        if (modifiers.isDoNotOptimize) add("doNotOptimize")
-        if (modifiers.isEncrypted) add("encrypted")
     }
 
     private fun persistenceJson(persistence: TSMetaPersistence): JsonObject = buildJsonObject {

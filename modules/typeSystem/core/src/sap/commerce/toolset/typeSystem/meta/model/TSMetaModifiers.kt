@@ -33,19 +33,28 @@ interface TSMetaModifiers : TSMetaClassifier<Modifiers> {
     val isDoNotOptimize: Boolean
     val isEncrypted: Boolean
 
-    override fun documentation() = listOfNotNull(
-        if (isInitial) "initial" else null,
-        if (isOptional) "optional" else null,
-        if (isRead) "read" else null,
-        if (isWrite) "write" else null,
-        if (isRemovable) "removable" else null,
-        if (isPartOf) "partOf" else null,
-        if (isUnique) "unique" else null,
-        if (isPrivate) "private" else null,
-        if (isSearch) "search" else null,
-        if (isDoNotOptimize) "doNotOptimize" else null,
-        if (isEncrypted) "encrypted" else null
-    ).joinToString(",&nbsp;")
+    /**
+     * The active (enabled) modifiers as their canonical `items.xml` names, in a stable display order,
+     * e.g. `["initial", "unique", "read"]`; empty when none are set.
+     *
+     * Single source of truth for the human-readable modifier list: [documentation] renders it for
+     * tooltips, and other callers (e.g. JSON serialization) can consume the raw list directly.
+     */
+    fun activeModifiers(): List<String> = listOfNotNull(
+        "initial".takeIf { isInitial },
+        "optional".takeIf { isOptional },
+        "read".takeIf { isRead },
+        "write".takeIf { isWrite },
+        "removable".takeIf { isRemovable },
+        "partOf".takeIf { isPartOf },
+        "unique".takeIf { isUnique },
+        "private".takeIf { isPrivate },
+        "search".takeIf { isSearch },
+        "doNotOptimize".takeIf { isDoNotOptimize },
+        "encrypted".takeIf { isEncrypted },
+    )
+
+    override fun documentation() = activeModifiers().joinToString(",&nbsp;")
 
     override fun inlineDocumentation(): String {
         val meta = this
