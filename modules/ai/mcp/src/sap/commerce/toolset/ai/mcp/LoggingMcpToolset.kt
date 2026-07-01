@@ -59,7 +59,8 @@ class LoggingMcpToolset : McpToolset {
         @McpDescription(
             """Optional logger-name filter used to shrink the response and save tokens.
             |If the value is a valid regular expression it is matched against each logger name with a regex search (e.g. '^de\.hybris\.platform\.' or 'spring|hibernate'; prefix with '(?i)' for case-insensitivity);
-            |otherwise it is treated as a plain, case-insensitive substring ('contains'). Omit to return all loggers."""
+            |otherwise it is treated as a plain, case-insensitive substring ('contains'). 
+            |Omit to return all loggers."""
         )
         filter: String? = null,
     ): String {
