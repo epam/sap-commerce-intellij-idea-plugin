@@ -23,9 +23,12 @@ import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonArray
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.exec.settings.state.AuthMode
+import sap.commerce.toolset.hac.mcp.json.HacConnectionJsonBuilder
 
 class HacMcpToolset : McpToolset {
 
@@ -44,19 +47,11 @@ class HacMcpToolset : McpToolset {
     suspend fun listHacConnections(): String {
         val project = currentCoroutineContext().project
         val connectionService = HacExecConnectionService.getInstance(project)
-        val activeConnection = connectionService.activeConnection
+        val connectionJson = HacConnectionJsonBuilder(connectionService.activeConnection)
 
         val payload = buildJsonObject {
             putJsonArray("connections") {
-                connectionService.connections.forEach { connection ->
-                    addJsonObject {
-                        put("name", connection.connectionName)
-                        put("url", connection.generatedURL)
-                        put("active", connection.uuid == activeConnection.uuid)
-                        put("authMode", connection.authMode.name)
-                        put("supportedByMcp", connection.authMode == AuthMode.AUTOMATIC)
-                    }
-                }
+                connectionService.connections.forEach { add(connectionJson.build(it)) }
             }
         }
 
