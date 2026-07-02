@@ -41,9 +41,6 @@ import sap.commerce.toolset.typeSystem.meta.model.*
  */
 class TypeSystemMcpToolset : McpToolset {
 
-    /** How much information [listItemTypes] returns per item type. */
-    private enum class ItemTypeDetail { TYPES, ATTRIBUTES, FULL }
-
     private val json = Json { prettyPrint = false }
 
     @McpTool(name = "sap_commerce_list_item_types")
