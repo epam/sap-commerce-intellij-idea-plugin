@@ -47,11 +47,16 @@ fun resolveHacConnection(project: Project, connectionName: String?): HacConnecti
 }
 
 /**
- * Builds a name predicate from a user-supplied [filter]: a regex search when [filter] is a valid
- * regular expression ([Regex.containsMatchIn]), otherwise a case-insensitive substring ('contains') match.
+ * Builds a name predicate from a user-supplied [filter]: a case-insensitive regex search when
+ * [filter] is a valid regular expression ([Regex.containsMatchIn]), otherwise a case-insensitive
+ * substring ('contains') match.
+ *
+ * Matching is case-insensitive in BOTH branches: because almost any plain search word (e.g.
+ * 'product') is itself a valid regex, it takes the regex branch — so that branch must ignore case
+ * too, otherwise a lowercase query would fail to match capitalized names like 'ProductCollection'.
  */
 fun regexOrContainsMatcher(filter: String): (String) -> Boolean =
-    runCatching { filter.toRegex() }.getOrNull()
+    runCatching { filter.toRegex(RegexOption.IGNORE_CASE) }.getOrNull()
         ?.let { regex -> regex::containsMatchIn }
         ?: { name -> name.contains(filter, ignoreCase = true) }
 
