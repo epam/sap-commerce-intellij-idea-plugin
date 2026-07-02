@@ -18,8 +18,14 @@
 
 package sap.commerce.toolset.typeSystem.mcp.json
 
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
 import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
+import sap.commerce.toolset.ai.mcp.json.putFlag
+import sap.commerce.toolset.ai.mcp.json.putIfNotBlank
+import sap.commerce.toolset.ai.mcp.json.putStringArrayIfNotEmpty
 import sap.commerce.toolset.typeSystem.mcp.ItemTypeDetail
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaPersistence
@@ -37,25 +43,26 @@ class ItemTypeJsonBuilder(private val detail: ItemTypeDetail) : McpJsonBuilder<T
 
     override fun build(item: TSGlobalMetaItem): JsonObject = buildJsonObject {
         put("name", item.name!!)
-        item.extendedMetaItemName?.let { put("extends", it) }
-        item.deployment?.typeCode?.let { put("typeCode", it) }
-        item.extensionName.takeIf { it.isNotBlank() }?.let { put("extension", it) }
-        if (item.isAbstract) put("abstract", true)
-        if (item.isCustom) put("custom", true)
-        if (item.isDeprecated) put("deprecated", true)
+        putIfNotBlank("extends", item.extendedMetaItemName)
+        putIfNotBlank("typeCode", item.deployment?.typeCode)
+        putIfNotBlank("extension", item.extensionName)
+        putFlag("abstract", item.isAbstract)
+        putFlag("custom", item.isCustom)
+        putFlag("deprecated", item.isDeprecated)
 
-        if (detail != ItemTypeDetail.TYPES) {
-            putJsonArray("attributes") {
-                item.attributes.values
-                    .sortedBy { it.name }
-                    .forEach { add(attributeJson(it)) }
-            }
+        if (detail == ItemTypeDetail.TYPES) return@buildJsonObject
+
+        putJsonArray("attributes") {
+            item.attributes.values
+                .sortedBy { it.name }
+                .forEach { add(attributeJson(it)) }
         }
+
     }
 
     private fun attributeJson(attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute): JsonObject = buildJsonObject {
         put("name", attribute.name)
-        attribute.type?.let { put("type", it) }
+        putIfNotBlank("type", attribute.type)
 
         if (detail != ItemTypeDetail.FULL) return@buildJsonObject
 
@@ -64,30 +71,21 @@ class ItemTypeJsonBuilder(private val detail: ItemTypeDetail) : McpJsonBuilder<T
             .filter { it.extensionName.isNotBlank() }
             .partition { it.isRedeclare }
 
-        val declaredIn = declared.firstOrNull()?.extensionName
-            ?: attribute.extensionName.takeIf { it.isNotBlank() }
-        declaredIn?.let { put("declaredIn", it) }
+        putIfNotBlank("declaredIn", declared.firstOrNull()?.extensionName ?: attribute.extensionName)
+        putStringArrayIfNotEmpty("redeclaredIn", redeclared.map { it.extensionName }.distinct().sorted())
 
-        redeclared.map { it.extensionName }
-            .distinct()
-            .sorted()
-            .takeIf { it.isNotEmpty() }
-            ?.let { exts -> putJsonArray("redeclaredIn") { exts.forEach { add(it) } } }
+        putFlag("localized", attribute.isLocalized)
+        putFlag("dynamic", attribute.isDynamic)
+        putFlag("deprecated", attribute.isDeprecated)
+        putFlag("autoCreate", attribute.isAutoCreate)
+        putFlag("generate", attribute.isGenerate)
 
-        if (attribute.isLocalized) put("localized", true)
-        if (attribute.isDynamic) put("dynamic", true)
-        if (attribute.isDeprecated) put("deprecated", true)
-        if (attribute.isAutoCreate) put("autoCreate", true)
-        if (attribute.isGenerate) put("generate", true)
+        putIfNotBlank("defaultValue", attribute.defaultValue)
+        putIfNotBlank("selectionOf", attribute.isSelectionOf)
+        putIfNotBlank("flattenType", attribute.flattenType)
+        putIfNotBlank("description", attribute.description)
 
-        attribute.defaultValue?.takeIf { it.isNotBlank() }?.let { put("defaultValue", it) }
-        attribute.isSelectionOf?.takeIf { it.isNotBlank() }?.let { put("selectionOf", it) }
-        attribute.flattenType?.takeIf { it.isNotBlank() }?.let { put("flattenType", it) }
-        attribute.description?.takeIf { it.isNotBlank() }?.let { put("description", it) }
-
-        attribute.modifiers.activeModifiers()
-            .takeIf { it.isNotEmpty() }
-            ?.let { modifiers -> putJsonArray("modifiers") { modifiers.forEach { add(it) } } }
+        putStringArrayIfNotEmpty("modifiers", attribute.modifiers.activeModifiers())
 
         persistenceJson(attribute.persistence)
             .takeIf { it.isNotEmpty() }
@@ -95,8 +93,8 @@ class ItemTypeJsonBuilder(private val detail: ItemTypeDetail) : McpJsonBuilder<T
     }
 
     private fun persistenceJson(persistence: TSMetaPersistence): JsonObject = buildJsonObject {
-        persistence.type?.let { put("type", it.name) }
-        persistence.qualifier?.takeIf { it.isNotBlank() }?.let { put("qualifier", it) }
-        persistence.attributeHandler?.takeIf { it.isNotBlank() }?.let { put("attributeHandler", it) }
+        putIfNotBlank("type", persistence.type?.name)
+        putIfNotBlank("qualifier", persistence.qualifier)
+        putIfNotBlank("attributeHandler", persistence.attributeHandler)
     }
 }

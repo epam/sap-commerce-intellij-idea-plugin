@@ -20,6 +20,7 @@ package sap.commerce.toolset.typeSystem.mcp.json
 
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.put
+import sap.commerce.toolset.ai.mcp.json.putIfNotBlank
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
 
 /**
@@ -31,7 +32,7 @@ object CollectionTypeJsonBuilder : TSClassifierJsonBuilder<TSGlobalMetaCollectio
     override fun JsonObjectBuilder.putIdentity(item: TSGlobalMetaCollection) {
         put("name", item.name!!)
         put("kind", item.type.value)
-        item.elementType.takeIf { it.isNotBlank() }?.let { put("elementType", it) }
+        putIfNotBlank("elementType", item.elementType)
     }
 
     override fun isAutoCreate(item: TSGlobalMetaCollection) = item.isAutoCreate

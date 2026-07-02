@@ -21,8 +21,9 @@ package sap.commerce.toolset.typeSystem.mcp.json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
+import sap.commerce.toolset.ai.mcp.json.putFlag
+import sap.commerce.toolset.ai.mcp.json.putIfNotBlank
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaClassifier
 
 /**
@@ -38,10 +39,10 @@ abstract class TSClassifierJsonBuilder<T : TSMetaClassifier<*>> : McpJsonBuilder
 
     final override fun build(item: T): JsonObject = buildJsonObject {
         putIdentity(item)
-        item.extensionName.takeIf { it.isNotBlank() }?.let { put("extension", it) }
-        if (item.isCustom) put("custom", true)
-        if (isAutoCreate(item)) put("autoCreate", true)
-        if (isGenerate(item)) put("generate", true)
+        putIfNotBlank("extension", item.extensionName)
+        putFlag("custom", item.isCustom)
+        putFlag("autoCreate", isAutoCreate(item))
+        putFlag("generate", isGenerate(item))
     }
 
     /** Emits the type-specific leading fields (`name` and, e.g., `extends`/`kind`/`elementType`). */
