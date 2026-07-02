@@ -16,36 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.ai.mcp.json
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import kotlinx.serialization.json.JsonObject
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+/**
+ * Strategy for rendering a single domain object [T] into a [JsonObject] for an MCP tool response.
+ *
+ * Each implementation owns the JSON shape of exactly ONE kind of entity (an item type, an atomic
+ * type, a HAC connection, …). Keeping the shape in a dedicated, independently testable strategy lets
+ * a toolset render a homogeneous collection through the same [buildListResponse] plumbing without
+ * baking the per-entity shape into the toolset itself — and lets a different toolset reuse that same
+ * plumbing simply by supplying its own builder.
+ */
+fun interface McpJsonBuilder<in T> {
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":meta-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":ai-mcp"))
-
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.mcpServer",
-        )
-    }
+    /** Renders [item] as a standalone JSON object. */
+    fun build(item: T): JsonObject
 }

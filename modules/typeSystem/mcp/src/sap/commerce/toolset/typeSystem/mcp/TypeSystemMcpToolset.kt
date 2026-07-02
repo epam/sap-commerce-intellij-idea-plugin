@@ -27,9 +27,18 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.*
+import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
+import sap.commerce.toolset.ai.mcp.json.buildListResponse
+import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
+import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
+import sap.commerce.toolset.typeSystem.mcp.json.CollectionTypeJsonBuilder
+import sap.commerce.toolset.typeSystem.mcp.json.ItemTypeJsonBuilder
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
-import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 /**
  * Exposes the SAP Commerce Type System — as shown in the "Type System" tool window — as MCP tools.
@@ -83,7 +92,7 @@ class TypeSystemMcpToolset : McpToolset {
             nameOf = { it.name },
             extensionOf = { it.extensionName },
             envelope = { put("detail", detailLevel.name) },
-            itemJson = { itemTypeJson(it, detailLevel) },
+            itemBuilder = ItemTypeJsonBuilder(detailLevel),
         )
     }
 
@@ -115,7 +124,7 @@ class TypeSystemMcpToolset : McpToolset {
         fetch = { getAll<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC) },
         nameOf = { it.name },
         extensionOf = { it.extensionName },
-        itemJson = { atomicTypeJson(it) },
+        itemBuilder = AtomicTypeJsonBuilder,
     )
 
     @McpTool(name = "sap_commerce_list_collection_types")
@@ -146,14 +155,15 @@ class TypeSystemMcpToolset : McpToolset {
         fetch = { getAll<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION) },
         nameOf = { it.name },
         extensionOf = { it.extensionName },
-        itemJson = { collectionTypeJson(it) },
+        itemBuilder = CollectionTypeJsonBuilder,
     )
 
     /**
      * Shared implementation behind the `list*` tools: normalizes the name [filter] and [extensions]
-     * filter, ensures the type-system model is ready, then (inside a read action) fetches the types,
-     * applies both filters, sorts by name and renders the standard response envelope
-     * ({filter, extensions, matched, total, <arrayKey>}) plus any tool-specific [envelope] entries.
+     * filter, ensures the type-system model is ready, then (inside a read action) fetches the types
+     * via [fetch] and hands them to [buildListResponse], which applies both filters, sorts by name
+     * and renders the standard `{detail?, filter?, extensions?, matched, total, <arrayKey>}` envelope
+     * using the supplied per-type [itemBuilder] strategy.
      *
      * [fetch] runs against [TSMetaModelAccess]; [nameOf] may return null (such entries are dropped).
      */
@@ -164,8 +174,8 @@ class TypeSystemMcpToolset : McpToolset {
         fetch: TSMetaModelAccess.() -> Collection<T>,
         nameOf: (T) -> String?,
         extensionOf: (T) -> String,
+        itemBuilder: McpJsonBuilder<T>,
         envelope: JsonObjectBuilder.() -> Unit = {},
-        itemJson: (T) -> JsonObject,
     ): String {
         val project = currentCoroutineContext().project
 
@@ -176,117 +186,24 @@ class TypeSystemMcpToolset : McpToolset {
         ensureTypeSystemReady(project)
 
         val payload = readAction {
-            val all = TSMetaModelAccess.getInstance(project).fetch()
-                .filter { nameOf(it) != null }
-            val matched = all
-                .filter { matcher?.invoke(nameOf(it)!!) ?: true }
-                .filter { extensionFilter == null || extensionOf(it).lowercase() in extensionFilter }
-                .sortedBy { nameOf(it) }
-
-            buildJsonObject {
-                envelope()
-                normalizedFilter?.let { put("filter", it) }
-                extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
-                put("matched", matched.size)
-                put("total", all.size)
-                putJsonArray(arrayKey) {
-                    matched.forEach { add(itemJson(it)) }
-                }
-            }
+            buildListResponse(
+                items = TSMetaModelAccess.getInstance(project).fetch(),
+                arrayKey = arrayKey,
+                nameOf = nameOf,
+                itemBuilder = itemBuilder,
+                matcher = matcher,
+                filters = listOfNotNull(
+                    extensionFilter?.let { exts -> { item: T -> extensionOf(item).lowercase() in exts } }
+                ),
+                filterText = normalizedFilter,
+                envelope = {
+                    envelope()
+                    extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
+                },
+            )
         }
 
         return json.encodeToString(JsonObject.serializer(), payload)
-    }
-
-    private fun itemTypeJson(item: TSGlobalMetaItem, detail: ItemTypeDetail): JsonObject = buildJsonObject {
-        put("name", item.name!!)
-        item.extendedMetaItemName?.let { put("extends", it) }
-        item.deployment?.typeCode?.let { put("typeCode", it) }
-        item.extensionName.takeIf { it.isNotBlank() }?.let { put("extension", it) }
-        if (item.isAbstract) put("abstract", true)
-        if (item.isCustom) put("custom", true)
-        if (item.isDeprecated) put("deprecated", true)
-
-        if (detail != ItemTypeDetail.TYPES) {
-            putJsonArray("attributes") {
-                item.attributes.values
-                    .sortedBy { it.name }
-                    .forEach { add(attributeJson(it, detail)) }
-            }
-        }
-    }
-
-    private fun attributeJson(attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute, detail: ItemTypeDetail): JsonObject = buildJsonObject {
-        put("name", attribute.name)
-        attribute.type?.let { put("type", it) }
-
-        if (detail != ItemTypeDetail.FULL) return@buildJsonObject
-
-        // Which extension originally declares the attribute, and which ones redeclare it.
-        val (redeclared, declared) = attribute.declarations
-            .filter { it.extensionName.isNotBlank() }
-            .partition { it.isRedeclare }
-
-        val declaredIn = declared.firstOrNull()?.extensionName
-            ?: attribute.extensionName.takeIf { it.isNotBlank() }
-        declaredIn?.let { put("declaredIn", it) }
-
-        redeclared.map { it.extensionName }
-            .distinct()
-            .sorted()
-            .takeIf { it.isNotEmpty() }
-            ?.let { exts -> putJsonArray("redeclaredIn") { exts.forEach { add(it) } } }
-
-        if (attribute.isLocalized) put("localized", true)
-        if (attribute.isDynamic) put("dynamic", true)
-        if (attribute.isDeprecated) put("deprecated", true)
-        if (attribute.isAutoCreate) put("autoCreate", true)
-        if (attribute.isGenerate) put("generate", true)
-
-        attribute.defaultValue?.takeIf { it.isNotBlank() }?.let { put("defaultValue", it) }
-        attribute.isSelectionOf?.takeIf { it.isNotBlank() }?.let { put("selectionOf", it) }
-        attribute.flattenType?.takeIf { it.isNotBlank() }?.let { put("flattenType", it) }
-        attribute.description?.takeIf { it.isNotBlank() }?.let { put("description", it) }
-
-        attribute.modifiers.activeModifiers()
-            .takeIf { it.isNotEmpty() }
-            ?.let { modifiers -> putJsonArray("modifiers") { modifiers.forEach { add(it) } } }
-
-        persistenceJson(attribute.persistence)
-            .takeIf { it.isNotEmpty() }
-            ?.let { put("persistence", it) }
-    }
-
-    private fun persistenceJson(persistence: TSMetaPersistence): JsonObject = buildJsonObject {
-        persistence.type?.let { put("type", it.name) }
-        persistence.qualifier?.takeIf { it.isNotBlank() }?.let { put("qualifier", it) }
-        persistence.attributeHandler?.takeIf { it.isNotBlank() }?.let { put("attributeHandler", it) }
-    }
-
-    private fun atomicTypeJson(atomic: TSGlobalMetaAtomic): JsonObject = buildJsonObject {
-        put("name", atomic.name)
-        atomic.extends.takeIf { it.isNotBlank() && atomic.name != it }?.let { put("extends", it) }
-        putExtensionAndFlags(atomic, atomic.isAutoCreate, atomic.isGenerate)
-    }
-
-    private fun collectionTypeJson(collection: TSGlobalMetaCollection): JsonObject = buildJsonObject {
-        put("name", collection.name!!)
-        put("kind", collection.type.value)
-        collection.elementType.takeIf { it.isNotBlank() }?.let { put("elementType", it) }
-        putExtensionAndFlags(collection, collection.isAutoCreate, collection.isGenerate)
-    }
-
-    /**
-     * Emits the trailing block shared by the atomic/collection renderers: the owning 'extension'
-     * (when set) and the 'custom'/'autoCreate'/'generate' flags (each only when true). The
-     * autoCreate/generate flags are passed in because they are declared per meta-type rather than on
-     * the shared [TSMetaClassifier].
-     */
-    private fun JsonObjectBuilder.putExtensionAndFlags(classifier: TSMetaClassifier<*>, autoCreate: Boolean, generate: Boolean) {
-        classifier.extensionName.takeIf { it.isNotBlank() }?.let { put("extension", it) }
-        if (classifier.isCustom) put("custom", true)
-        if (autoCreate) put("autoCreate", true)
-        if (generate) put("generate", true)
     }
 
     private fun parseExtensionFilter(extensions: String?): Set<String>? = extensions

@@ -16,18 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp
+fun properties(key: String) = providers.gradleProperty(key)
 
-/**
- * Builds a name predicate from a user-supplied [filter]: a case-insensitive regex search when
- * [filter] is a valid regular expression ([Regex.containsMatchIn]), otherwise a case-insensitive
- * substring ('contains') match.
- *
- * Matching is case-insensitive in BOTH branches: because almost any plain search word (e.g.
- * 'product') is itself a valid regex, it takes the regex branch — so that branch must ignore case
- * too, otherwise a lowercase query would fail to match capitalized names like 'ProductCollection'.
- */
-fun regexOrContainsMatcher(filter: String): (String) -> Boolean =
-    runCatching { filter.toRegex(RegexOption.IGNORE_CASE) }.getOrNull()
-        ?.let { regex -> regex::containsMatchIn }
-        ?: { name -> name.contains(filter, ignoreCase = true) }
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
+
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
+
+dependencies {
+    implementation(project(":shared-core"))
+
+    intellijPlatform {
+        intellijIdea(properties("intellij.version")) {
+            useInstaller = false
+        }
+
+        bundledPlugins(
+            "com.intellij.mcpServer",
+        )
+    }
+}
