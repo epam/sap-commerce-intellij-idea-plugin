@@ -21,13 +21,13 @@ package sap.commerce.toolset.flexibleSearch.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
+import sap.commerce.toolset.hac.mcp.resolveHacConnection
 
 class FlexibleSearchMcpToolset : McpToolset {
 
@@ -52,7 +52,7 @@ class FlexibleSearchMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
 
         val context = FlexibleSearchExecContext(
@@ -104,7 +104,7 @@ class FlexibleSearchMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
 
         val context = FlexibleSearchExecContext(

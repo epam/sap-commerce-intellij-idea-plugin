@@ -38,7 +38,7 @@ dependencies {
     implementation(project(":hac-exec"))
     implementation(project(":impex-exec"))
     implementation(project(":exec-core"))
-    implementation(project(":ai-mcp"))
+    implementation(project(":hac-mcp"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

@@ -21,9 +21,9 @@ package sap.commerce.toolset.hac.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.*
-import sap.commerce.toolset.ai.mcp.mcpProject
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 
@@ -42,7 +42,7 @@ class HacMcpToolset : McpToolset {
         |IMPORTANT: connections with authMode "MANUAL" are NOT supported for LLM/MCP usage right now (supportedByMcp = false), because they require an interactive browser login that the model cannot perform; calling other HAC tools against such a connection will fail. Support for MANUAL authentication is planned for a later version of the plugin."""
     )
     suspend fun listHacConnections(): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
         val connectionService = HacExecConnectionService.getInstance(project)
         val activeConnection = connectionService.activeConnection
 

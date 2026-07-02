@@ -37,7 +37,6 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":solr-exec"))
     implementation(project(":exec-core"))
-    implementation(project(":ai-mcp"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

@@ -21,10 +21,10 @@ package sap.commerce.toolset.impex.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
+import sap.commerce.toolset.hac.mcp.resolveHacConnection
 import sap.commerce.toolset.impex.exec.ImpExExecClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecContext
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
@@ -46,7 +46,7 @@ class ImpExMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
 
         val defaultSettings = ImpExExecContext.defaultSettings(connection)

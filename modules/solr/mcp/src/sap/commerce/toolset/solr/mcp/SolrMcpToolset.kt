@@ -21,10 +21,9 @@ package sap.commerce.toolset.solr.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.resolveSolrConnection
 import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
@@ -48,7 +47,7 @@ class SolrMcpToolset : McpToolset {
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
         val connection = resolveSolrConnection(project, connectionName)
 
         val context = SolrQueryExecContext(
@@ -86,7 +85,7 @@ class SolrMcpToolset : McpToolset {
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = coroutineContext.mcpProject
+        val project = coroutineContext.project
         val connection = resolveSolrConnection(project, connectionName)
         val connectionService = SolrExecConnectionService.getInstance(project)
         val credentials = connectionService.getCredentials(connection)
@@ -117,7 +116,7 @@ class SolrMcpToolset : McpToolset {
         |Returns connection names and URLs. Use a connection name with other Solr tools to target a specific server."""
     )
     suspend fun listSolrConnections(): String {
-        val project = coroutineContext.mcpProject
+        val project = coroutineContext.project
         val connectionService = SolrExecConnectionService.getInstance(project)
         val activeConnection = connectionService.activeConnection
 

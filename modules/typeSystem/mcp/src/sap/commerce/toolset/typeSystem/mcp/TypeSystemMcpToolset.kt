@@ -21,13 +21,12 @@ package sap.commerce.toolset.typeSystem.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.*
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.model.*
@@ -168,7 +167,7 @@ class TypeSystemMcpToolset : McpToolset {
         envelope: JsonObjectBuilder.() -> Unit = {},
         itemJson: (T) -> JsonObject,
     ): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
 
         val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }

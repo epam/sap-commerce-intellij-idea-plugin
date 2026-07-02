@@ -39,7 +39,7 @@ dependencies {
     implementation(project(":groovy-exec"))
     implementation(project(":logging-core"))
     implementation(project(":exec-core"))
-    implementation(project(":ai-mcp"))
+    implementation(project(":hac-mcp"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

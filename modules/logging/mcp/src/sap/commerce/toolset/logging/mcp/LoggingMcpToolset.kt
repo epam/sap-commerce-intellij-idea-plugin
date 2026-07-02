@@ -21,17 +21,17 @@ package sap.commerce.toolset.logging.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.mcp.resolveHacConnection
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
@@ -66,7 +66,7 @@ class LoggingMcpToolset : McpToolset {
         )
         filter: String? = null,
     ): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
         requireAutomaticAuth(connection)
 
@@ -116,7 +116,7 @@ class LoggingMcpToolset : McpToolset {
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
     ): String {
-        val project = currentCoroutineContext().mcpProject
+        val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
         requireAutomaticAuth(connection)
 
