@@ -35,9 +35,9 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":exec-core"))
-    implementation(project(":hac-exec"))
     implementation(project(":solr-exec"))
+    implementation(project(":exec-core"))
+    implementation(project(":ai-mcp"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {
@@ -49,4 +49,3 @@ dependencies {
         )
     }
 }
-

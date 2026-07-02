@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.typeSystem.mcp
 
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
@@ -26,6 +26,8 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.*
+import sap.commerce.toolset.ai.mcp.mcpProject
+import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.model.*
@@ -38,9 +40,6 @@ import sap.commerce.toolset.typeSystem.meta.model.*
  * not require (or use) a HAC connection.
  */
 class TypeSystemMcpToolset : McpToolset {
-
-    /** How much information [listItemTypes] returns per item type. */
-    private enum class ItemTypeDetail { TYPES, ATTRIBUTES, FULL }
 
     private val json = Json { prettyPrint = false }
 
