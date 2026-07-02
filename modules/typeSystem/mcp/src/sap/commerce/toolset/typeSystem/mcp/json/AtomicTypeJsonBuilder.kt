@@ -18,10 +18,8 @@
 
 package sap.commerce.toolset.typeSystem.mcp.json
 
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.put
-import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
 
 /**
@@ -29,11 +27,14 @@ import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
  * Atomic types are the primitive/scalar building blocks; `name`/`extends` are fully-qualified Java
  * class names, so `extends` is omitted when it is blank or equal to `name`.
  */
-object AtomicTypeJsonBuilder : McpJsonBuilder<TSGlobalMetaAtomic> {
+object AtomicTypeJsonBuilder : TSClassifierJsonBuilder<TSGlobalMetaAtomic>() {
 
-    override fun build(item: TSGlobalMetaAtomic): JsonObject = buildJsonObject {
+    override fun JsonObjectBuilder.putIdentity(item: TSGlobalMetaAtomic) {
         put("name", item.name)
         item.extends.takeIf { it.isNotBlank() && item.name != it }?.let { put("extends", it) }
-        putExtensionAndFlags(item, item.isAutoCreate, item.isGenerate)
     }
+
+    override fun isAutoCreate(item: TSGlobalMetaAtomic) = item.isAutoCreate
+
+    override fun isGenerate(item: TSGlobalMetaAtomic) = item.isGenerate
 }

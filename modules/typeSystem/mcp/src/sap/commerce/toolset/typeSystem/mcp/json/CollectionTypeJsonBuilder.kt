@@ -18,22 +18,23 @@
 
 package sap.commerce.toolset.typeSystem.mcp.json
 
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.put
-import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
 
 /**
  * Renders a collection type as `{name, kind, elementType?, extension?, custom?, autoCreate?,
  * generate?}`, where `kind` is the wrapping kind (`collection`, `list` or `set`).
  */
-object CollectionTypeJsonBuilder : McpJsonBuilder<TSGlobalMetaCollection> {
+object CollectionTypeJsonBuilder : TSClassifierJsonBuilder<TSGlobalMetaCollection>() {
 
-    override fun build(item: TSGlobalMetaCollection): JsonObject = buildJsonObject {
+    override fun JsonObjectBuilder.putIdentity(item: TSGlobalMetaCollection) {
         put("name", item.name!!)
         put("kind", item.type.value)
         item.elementType.takeIf { it.isNotBlank() }?.let { put("elementType", it) }
-        putExtensionAndFlags(item, item.isAutoCreate, item.isGenerate)
     }
+
+    override fun isAutoCreate(item: TSGlobalMetaCollection) = item.isAutoCreate
+
+    override fun isGenerate(item: TSGlobalMetaCollection) = item.isGenerate
 }
