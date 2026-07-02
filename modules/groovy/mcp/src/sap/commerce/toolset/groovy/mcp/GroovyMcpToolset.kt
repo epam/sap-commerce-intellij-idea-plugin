@@ -16,60 +16,64 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.groovy.mcp
 
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.impex.exec.ImpExExecClient
-import sap.commerce.toolset.impex.exec.context.ImpExExecContext
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
+import sap.commerce.toolset.ai.mcp.mcpProject
+import sap.commerce.toolset.ai.mcp.resolveHacConnection
+import sap.commerce.toolset.groovy.exec.GroovyExecClient
+import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.settings.state.TransactionMode
 
-class ImpExMcpToolset : McpToolset {
+class GroovyMcpToolset : McpToolset {
 
-    @McpTool(name = "sap_commerce_execute_impex")
+    @McpTool(name = "sap_commerce_execute_groovy")
     @McpDescription(
-        """Executes an ImpEx script on a SAP Commerce (Hybris) server via the HAC.
-        |ImpEx is the SAP Commerce import/export language for data manipulation.
-        |Can either import data or validate the script without committing changes.
+        """Executes a Groovy script on a SAP Commerce (Hybris) server via the HAC (Hybris Administration Console).
+        |Returns the script's console output and execution result.
+        |The script runs in the server's context with access to all SAP Commerce APIs and Spring beans.
         |Requires a configured and authenticated HAC connection."""
     )
-    suspend fun executeImpEx(
-        @McpDescription("ImpEx script content to execute on the SAP Commerce server")
-        content: String,
-        @McpDescription("Whether to only validate the ImpEx without importing. Default is false (import)")
-        validate: Boolean = false,
+    suspend fun executeGroovy(
+        @McpDescription("Groovy script source code to execute on the SAP Commerce server")
+        script: String,
+        @McpDescription("Whether to commit the transaction after execution. Default is false (rollback)")
+        commit: Boolean = false,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
         val project = currentCoroutineContext().mcpProject
         val connection = resolveHacConnection(project, connectionName)
 
-        val defaultSettings = ImpExExecContext.defaultSettings(connection)
-        val context = ImpExExecContext(
+        val context = GroovyExecContext(
             connection = connection,
-            content = content,
-            executionMode = if (validate) ImpExExecutionMode.VALIDATE else ImpExExecutionMode.IMPORT,
-            settings = defaultSettings,
+            content = script,
+            timeout = connection.timeout,
+            transactionMode = if (commit) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         )
 
-        val result = ImpExExecClient.getInstance(project).execute(context)
+        val result = GroovyExecClient.getInstance(project).execute(context)
 
-        val action = if (validate) "Validation" else "Import"
         return buildString {
             if (result.statusCode != HttpStatus.SC_OK) {
-                appendLine("$action Error (${result.statusCode}):")
+                appendLine("Error (${result.statusCode}):")
                 result.errorMessage?.let { appendLine(it) }
                 result.errorDetailMessage?.let { appendLine(it) }
             } else {
                 result.output?.takeIf { it.isNotBlank() }?.let {
-                    appendLine("$action Result:")
+                    appendLine("Output:")
                     appendLine(it)
                 }
-                if (result.output.isNullOrBlank()) {
-                    appendLine("$action completed successfully.")
+                result.result?.takeIf { it.isNotBlank() }?.let {
+                    appendLine("Result:")
+                    appendLine(it)
+                }
+                if (result.output.isNullOrBlank() && result.result.isNullOrBlank()) {
+                    appendLine("Script executed successfully with no output.")
                 }
             }
         }.trim()
