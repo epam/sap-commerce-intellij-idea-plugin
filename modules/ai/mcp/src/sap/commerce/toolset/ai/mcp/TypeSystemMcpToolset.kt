@@ -28,6 +28,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.*
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaPersistence
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
