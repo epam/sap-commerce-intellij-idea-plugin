@@ -25,17 +25,13 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.add
-import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
 import sap.commerce.toolset.ai.mcp.json.buildListResponse
 import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
-import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.json.CollectionTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.json.ItemTypeJsonBuilder
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
-import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 
 /**
  * Strategy behind the `sap_commerce_list_*` type-system tools. Each subclass owns the parts that
@@ -110,22 +106,4 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
             error("The type system model has not been built yet — a build has been triggered. Retry in a few seconds.")
         }
     }
-}
-
-/** Lists Item types; carries the requested [detail] level, echoed as `detail` and driving the builder. */
-class ItemTypeLister(private val detail: ItemTypeDetail) : TSTypeLister<TSGlobalMetaItem>(ItemTypeJsonBuilder(detail)) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaItem> = meta.getAll(TSMetaType.META_ITEM)
-    override fun JsonObjectBuilder.additionalFields() {
-        put("detail", detail.name)
-    }
-}
-
-/** Lists Atomic types. */
-object AtomicTypeLister : TSTypeLister<TSGlobalMetaAtomic>(AtomicTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaAtomic> = meta.getAll(TSMetaType.META_ATOMIC)
-}
-
-/** Lists Collection types. */
-object CollectionTypeLister : TSTypeLister<TSGlobalMetaCollection>(CollectionTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaCollection> = meta.getAll(TSMetaType.META_COLLECTION)
 }
