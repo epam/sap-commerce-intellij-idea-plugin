@@ -31,7 +31,7 @@ import sap.commerce.toolset.hac.mcp.json.HacConnectionJsonBuilder
 
 class HacMcpToolset : McpToolset {
 
-    private val json = Json { prettyPrint = true }
+    private val json = Json { prettyPrint = false }
 
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
