@@ -73,13 +73,13 @@ class TypeSystemMcpToolset : SapCxMcpToolset<TSMcpResponseFactory> {
         val detailLevel = ItemTypeDetail.entries.find { it.name.equals(detail.trim(), ignoreCase = true) }
             ?: error("Invalid detail '$detail'. Valid values: ${ItemTypeDetail.entries.joinToString { it.name }}")
 
-        val searchContext = TSMcpSearchContext(TSMetaType.META_ITEM, filter, extensions)
+        val searchContext = TSMcpSearchContext(TSMetaType.META_ITEM, detailLevel, filter, extensions)
         val items = TSMcpService.getInstance().search<TSGlobalMetaItem>(searchContext)
 
         return factory
             .itemJson(detailLevel)
             .build(
-                items = items,
+                content = items,
                 filterText = filter,
             )
     }

@@ -23,6 +23,7 @@ import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.SapCxMcpToolset
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilderContext
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 
 class HacMcpToolset : SapCxMcpToolset<HacMcpResponseFactory> {
@@ -44,13 +45,10 @@ class HacMcpToolset : SapCxMcpToolset<HacMcpResponseFactory> {
     suspend fun listHacConnections(): String {
         val project = currentCoroutineContext().project
         val connectionService = HacExecConnectionService.getInstance(project)
-        val connections = connectionService.connections
+        val content = McpJsonResponseBuilderContext(items = connectionService.connections)
 
         return factory
             .json(connectionService.activeConnection)
-            .build(
-                items = connections,
-                total = connections.size,
-            )
+            .build(content = content)
     }
 }

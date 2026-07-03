@@ -16,21 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp
+package sap.commerce.toolset.ai.mcp.json
 
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import kotlinx.serialization.json.JsonObjectBuilder
+import sap.commerce.toolset.ai.mcp.McpResponseBuilderContent
 
-data class TSMcpSearchContext(
-    val metaType: TSMetaType,
-    val detailLevel: ItemTypeDetail,
-    val filter: String? = null,
-    private val _extensions: String? = null
-) {
-    val extensions: Set<String>?
-        get() = _extensions
-            ?.split(',')
-            ?.map { it.trim().lowercase() }
-            ?.filter { it.isNotEmpty() }
-            ?.toSet()
-            ?.takeIf { it.isNotEmpty() }
-}
+data class McpJsonResponseBuilderContext<T>(
+    override val items: Collection<T>,
+    override val total: Int = items.size,
+    val additionalFieldsProvider: JsonObjectBuilder.() -> Unit = {},
+) : McpResponseBuilderContent<T>

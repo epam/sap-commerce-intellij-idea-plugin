@@ -18,15 +18,10 @@
 
 package sap.commerce.toolset.ai.mcp
 
-import kotlinx.serialization.json.JsonObjectBuilder
-
-interface McpResponseBuilder<T, R> {
+interface McpResponseBuilder<T, R, B : McpResponseBuilderContent<T>> {
 
     fun build(
-        items: Collection<T>,
-        total: Int = items.size,
-        // TODO: PaginationDTO
+        content: B,
         filterText: String? = null,
-        additionalFields: JsonObjectBuilder.() -> Unit = {},
     ): R
 }

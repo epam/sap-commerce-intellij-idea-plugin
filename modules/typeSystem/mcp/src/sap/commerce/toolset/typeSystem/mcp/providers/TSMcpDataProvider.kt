@@ -45,7 +45,7 @@ class TSMcpDataProvider(private val project: Project) {
     suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): Collection<T> {
         val normalizedFilter = context.filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
-        val extensionFilter = parseExtensionFilter(context)
+        val extensions = context.extensions
 
         ensureTypeSystemReady(project)
 
@@ -54,7 +54,7 @@ class TSMcpDataProvider(private val project: Project) {
                 .filter { it.name != null }
                 .filter { item ->
                     (matcher == null || matcher(item.name!!))
-                        && (extensionFilter == null || item.extensionName.lowercase() in extensionFilter)
+                        && (extensions == null || item.extensionName.lowercase() in extensions)
                 }
 //            buildListResponse(
 //                items = matched,
@@ -68,13 +68,6 @@ class TSMcpDataProvider(private val project: Project) {
 //            )
         }
     }
-
-    private fun parseExtensionFilter(context: TSMcpSearchContext): Set<String>? = context.extensions
-        ?.split(',')
-        ?.map { it.trim().lowercase() }
-        ?.filter { it.isNotEmpty() }
-        ?.toSet()
-        ?.takeIf { it.isNotEmpty() }
 
     /**
      * Turns the common "not ready" states of the type-system model (indexing / not-yet-built) into

@@ -23,28 +23,21 @@ import sap.commerce.toolset.ai.mcp.McpResponseBuilder
 
 private val json = Json { prettyPrint = false }
 
-abstract class McpJsonResponseBuilder<T> : McpResponseBuilder<T, String> {
+abstract class McpJsonResponseBuilder<T> : McpResponseBuilder<T, String, McpJsonResponseBuilderContext<T>> {
 
     protected abstract val itemBuilder: McpJsonResponseElementBuilder<T>
 
-    override fun build(
-        items: Collection<T>,
-        total: Int,
-        // TODO: remove
-        filterText: String?,
-        // TODO: remove
-        additionalFields: JsonObjectBuilder.() -> Unit
-    ): String {
+    override fun build(content: McpJsonResponseBuilderContext<T>, filterText: String?): String {
         val payload = buildJsonObject {
-            additionalFields()
+            content.additionalFieldsProvider.invoke(this)
 
             putIfNotBlank("filter", filterText)
 
-            put("matched", items.size)
-            put("total", total)
+            put("matched", content.items.size)
+            put("total", content.total)
 
             putJsonArray("items") {
-                items.forEach { add(itemBuilder.build(it)) }
+                content.items.forEach { add(itemBuilder.build(it)) }
             }
         }
         return json.encodeToString(JsonObject.serializer(), payload)

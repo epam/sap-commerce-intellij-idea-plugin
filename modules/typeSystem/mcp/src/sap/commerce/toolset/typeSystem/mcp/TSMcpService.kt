@@ -23,14 +23,28 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilderContext
 import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 
 @Service(Service.Level.PROJECT)
 class TSMcpService(private val project: Project) {
 
-    suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): Collection<T> = TSMcpDataProvider.getInstance(project)
-        .search(context)
+    suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): McpJsonResponseBuilderContext<T> {
+        val search = TSMcpDataProvider.getInstance(project).search<T>(context)
+
+        return McpJsonResponseBuilderContext(
+            items = search,
+            additionalFieldsProvider = {
+                put("detail", context.detailLevel.name)
+
+                context.extensions?.let { extensions -> putJsonArray("extensions") { extensions.sorted().forEach { add(it) } } }
+            }
+        )
+    }
 
     companion object {
         fun getInstance(project: Project): TSMcpService = project.service()
