@@ -26,12 +26,12 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
+import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.hac.mcp.resolveHacConnection
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation

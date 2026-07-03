@@ -35,6 +35,8 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":exec-core"))
+    implementation(project(":hac-exec"))
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

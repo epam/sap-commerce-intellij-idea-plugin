@@ -24,9 +24,9 @@ import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import org.apache.http.HttpStatus
+import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.hac.mcp.resolveHacConnection
 import sap.commerce.toolset.settings.state.TransactionMode
 
 class GroovyMcpToolset : McpToolset {
