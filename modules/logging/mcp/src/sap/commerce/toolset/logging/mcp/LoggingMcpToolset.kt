@@ -88,7 +88,7 @@ class LoggingMcpToolset : McpToolset {
             itemBuilder = LoggerJsonBuilder,
             matcher = normalizedFilter?.let { regexOrContainsMatcher(it) },
             filterText = normalizedFilter,
-            envelope = { put("connection", connection.connectionName) },
+            additionalFields = { put("connection", connection.connectionName) },
         )
 
         return json.encodeToString(JsonObject.serializer(), payload)

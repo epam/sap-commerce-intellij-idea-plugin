@@ -21,8 +21,8 @@ package sap.commerce.toolset.ai.mcp.json
 import kotlinx.serialization.json.*
 
 /**
- * Builds the standard MCP "list" response envelope shared by the `list*` tools:
- * `{<envelope entries>, "filter"?, "matched", "total", <arrayKey>: [...]}`.
+ * Builds the standard MCP "list" response object shared by the `list*` tools:
+ * `{<additionalFields>, "filter"?, "matched", "total", <arrayKey>: [...]}`.
  *
  * [items] is the full, unfiltered candidate set. An item is dropped when [nameOf] returns `null`;
  * the survivors form the reported `total`. Each remaining item is kept when it passes the optional
@@ -31,8 +31,8 @@ import kotlinx.serialization.json.*
  * [itemBuilder].
  *
  * [filterText] — when non-null — is echoed back as `"filter"` so the caller can see the effective
- * name filter. [envelope] contributes tool-specific leading entries (e.g. a `"detail"` level or an
- * echoed `"extensions"` list).
+ * name filter. [additionalFields] contributes tool-specific leading entries (e.g. a `"detail"` level
+ * or an echoed `"extensions"` list).
  */
 fun <T> buildListResponse(
     items: Collection<T>,
@@ -42,7 +42,7 @@ fun <T> buildListResponse(
     matcher: ((String) -> Boolean)? = null,
     filters: List<(T) -> Boolean> = emptyList(),
     filterText: String? = null,
-    envelope: JsonObjectBuilder.() -> Unit = {},
+    additionalFields: JsonObjectBuilder.() -> Unit = {},
 ): JsonObject {
     val candidates = items.filter { nameOf(it) != null }
     val matched = candidates
@@ -51,7 +51,7 @@ fun <T> buildListResponse(
         .sortedBy { nameOf(it) }
 
     return buildJsonObject {
-        envelope()
+        additionalFields()
         filterText?.let { put("filter", it) }
         put("matched", matched.size)
         put("total", candidates.size)

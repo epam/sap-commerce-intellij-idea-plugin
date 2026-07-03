@@ -21,35 +21,16 @@ package sap.commerce.toolset.typeSystem.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.mcpserver.project
-import com.intellij.openapi.application.readAction
-import com.intellij.openapi.project.DumbService
-import com.intellij.openapi.project.Project
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.*
-import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
-import sap.commerce.toolset.ai.mcp.json.buildListResponse
-import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
-import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.json.CollectionTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.json.ItemTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 /**
  * Exposes the SAP Commerce Type System — as shown in the "Type System" tool window — as MCP tools.
  *
  * The type system is the project's LOCAL model: it is parsed from the `*-items.xml` definitions in
- * the project (via [TSMetaModelStateService]), not fetched from a remote server, so these tools do
- * not require (or use) a HAC connection.
+ * the project, not fetched from a remote server, so these tools do not require (or use) a HAC
+ * connection. Each tool delegates to the matching [TSTypeLister], which holds the shared listing
+ * pipeline.
  */
 class TypeSystemMcpToolset : McpToolset {
-
-    private val json = Json { prettyPrint = false }
 
     @McpTool(name = "sap_commerce_list_item_types")
     @McpDescription(
@@ -84,16 +65,7 @@ class TypeSystemMcpToolset : McpToolset {
         val detailLevel = ItemTypeDetail.entries.find { it.name.equals(detail.trim(), ignoreCase = true) }
             ?: error("Invalid detail '$detail'. Valid values: ${ItemTypeDetail.entries.joinToString { it.name }}")
 
-        return listTypes(
-            filter = filter,
-            extensions = extensions,
-            arrayKey = "itemTypes",
-            fetch = { getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM) },
-            nameOf = { it.name },
-            extensionOf = { it.extensionName },
-            envelope = { put("detail", detailLevel.name) },
-            itemBuilder = ItemTypeJsonBuilder(detailLevel),
-        )
+        return ItemTypeLister(detailLevel).list(filter, extensions)
     }
 
     @McpTool(name = "sap_commerce_list_atomic_types")
@@ -117,15 +89,7 @@ class TypeSystemMcpToolset : McpToolset {
             |Omit to include atomic types from all extensions."""
         )
         extensions: String? = null,
-    ): String = listTypes(
-        filter = filter,
-        extensions = extensions,
-        arrayKey = "atomicTypes",
-        fetch = { getAll<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC) },
-        nameOf = { it.name },
-        extensionOf = { it.extensionName },
-        itemBuilder = AtomicTypeJsonBuilder,
-    )
+    ): String = AtomicTypeLister.list(filter, extensions)
 
     @McpTool(name = "sap_commerce_list_collection_types")
     @McpDescription(
@@ -148,86 +112,5 @@ class TypeSystemMcpToolset : McpToolset {
             |Omit to include collection types from all extensions."""
         )
         extensions: String? = null,
-    ): String = listTypes(
-        filter = filter,
-        extensions = extensions,
-        arrayKey = "collectionTypes",
-        fetch = { getAll<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION) },
-        nameOf = { it.name },
-        extensionOf = { it.extensionName },
-        itemBuilder = CollectionTypeJsonBuilder,
-    )
-
-    /**
-     * Shared implementation behind the `list*` tools: normalizes the name [filter] and [extensions]
-     * filter, ensures the type-system model is ready, then (inside a read action) fetches the types
-     * via [fetch] and hands them to [buildListResponse], which applies both filters, sorts by name
-     * and renders the standard `{detail?, filter?, extensions?, matched, total, <arrayKey>}` envelope
-     * using the supplied per-type [itemBuilder] strategy.
-     *
-     * [fetch] runs against [TSMetaModelAccess]; [nameOf] may return null (such entries are dropped).
-     */
-    private suspend fun <T> listTypes(
-        filter: String?,
-        extensions: String?,
-        arrayKey: String,
-        fetch: TSMetaModelAccess.() -> Collection<T>,
-        nameOf: (T) -> String?,
-        extensionOf: (T) -> String,
-        itemBuilder: McpJsonBuilder<T>,
-        envelope: JsonObjectBuilder.() -> Unit = {},
-    ): String {
-        val project = currentCoroutineContext().project
-
-        val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
-        val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
-        val extensionFilter = parseExtensionFilter(extensions)
-
-        ensureTypeSystemReady(project)
-
-        val payload = readAction {
-            buildListResponse(
-                items = TSMetaModelAccess.getInstance(project).fetch(),
-                arrayKey = arrayKey,
-                nameOf = nameOf,
-                itemBuilder = itemBuilder,
-                matcher = matcher,
-                filters = listOfNotNull(
-                    extensionFilter?.let { exts -> { item: T -> extensionOf(item).lowercase() in exts } }
-                ),
-                filterText = normalizedFilter,
-                envelope = {
-                    envelope()
-                    extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
-                },
-            )
-        }
-
-        return json.encodeToString(JsonObject.serializer(), payload)
-    }
-
-    private fun parseExtensionFilter(extensions: String?): Set<String>? = extensions
-        ?.split(',')
-        ?.map { it.trim().lowercase() }
-        ?.filter { it.isNotEmpty() }
-        ?.toSet()
-        ?.takeIf { it.isNotEmpty() }
-
-    /**
-     * Turns the common "not ready" states of the type-system model (indexing / not-yet-built) into
-     * actionable tool errors up front, before the model is queried via [TSMetaModelAccess].
-     *
-     * Retrieval still resolves through [TSMetaModelStateService.state], which may throw
-     * [com.intellij.openapi.progress.ProcessCanceledException] if a rebuild is in flight; that must
-     * NOT be swallowed, so it is intentionally left to propagate.
-     */
-    private fun ensureTypeSystemReady(project: Project) {
-        if (DumbService.isDumb(project)) error("Project indexing is in progress; retry once indexing completes.")
-
-        val service = TSMetaModelStateService.getInstance(project)
-        if (!service.initialized()) {
-            service.init()
-            error("The type system model has not been built yet — a build has been triggered. Retry in a few seconds.")
-        }
-    }
+    ): String = CollectionTypeLister.list(filter, extensions)
 }
