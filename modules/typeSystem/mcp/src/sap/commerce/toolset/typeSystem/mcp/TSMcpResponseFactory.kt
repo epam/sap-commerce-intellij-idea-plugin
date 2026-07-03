@@ -18,13 +18,14 @@
 
 package sap.commerce.toolset.typeSystem.mcp
 
-import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import sap.commerce.toolset.ai.mcp.McpResponseFactory
+import sap.commerce.toolset.typeSystem.mcp.json.TSAtomicMcpJsonResponseBuilder
+import sap.commerce.toolset.typeSystem.mcp.json.TSItemMcpJsonResponseBuilder
 
-/** Lists Atomic types. */
-object AtomicTypeLister : TSMcpDataProvider<TSGlobalMetaAtomic>(AtomicTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaAtomic> = meta.getAll(TSMetaType.META_ATOMIC)
+class TSMcpResponseFactory : McpResponseFactory {
+
+    fun atomicJson(detail: ItemTypeDetail) = TSAtomicMcpJsonResponseBuilder(detail)
+
+    fun itemJson(detail: ItemTypeDetail) = TSItemMcpJsonResponseBuilder(detail)
+
 }

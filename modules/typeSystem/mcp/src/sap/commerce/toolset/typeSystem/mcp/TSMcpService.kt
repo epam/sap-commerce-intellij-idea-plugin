@@ -18,13 +18,22 @@
 
 package sap.commerce.toolset.typeSystem.mcp
 
-import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
+import com.intellij.mcpserver.project
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
+import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 
-/** Lists Atomic types. */
-object AtomicTypeLister : TSMcpDataProvider<TSGlobalMetaAtomic>(AtomicTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaAtomic> = meta.getAll(TSMetaType.META_ATOMIC)
+@Service(Service.Level.PROJECT)
+class TSMcpService(private val project: Project) {
+
+    suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): Collection<T> = TSMcpDataProvider.getInstance(project)
+        .search(context)
+
+    companion object {
+        fun getInstance(project: Project): TSMcpService = project.service()
+        suspend fun getInstance(): TSMcpService = currentCoroutineContext().project.service()
+    }
 }

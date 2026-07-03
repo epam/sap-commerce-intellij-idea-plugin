@@ -16,25 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.logging.mcp.json
+package sap.commerce.toolset.ai.mcp.json
 
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
-import sap.commerce.toolset.ai.mcp.json.putIfNotBlank
-import sap.commerce.toolset.logging.CxLogConstants
-import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
+import sap.commerce.toolset.ai.mcp.McpResponseElementBuilder
 
 /**
- * Renders a logger as `{name, level, parent?}`. `parent` is omitted for root-level loggers (a blank
- * parent, or the root logger itself).
+ * Strategy for rendering a single domain object [T] into a [JsonObject] for an MCP tool response.
+ *
+ * Each implementation owns the JSON shape of exactly ONE kind of entity (an item type, an atomic
+ * type, a HAC connection, …). Keeping the shape in a dedicated, independently testable strategy lets
+ * a toolset render a homogeneous collection through the same [buildListResponse] plumbing without
+ * baking the per-entity shape into the toolset itself — and lets a different toolset reuse that same
+ * plumbing simply by supplying its own builder.
  */
-object LoggerJsonBuilder : McpJsonResponseElementBuilder<CxLoggerPresentation> {
-
-    override fun build(item: CxLoggerPresentation): JsonObject = buildJsonObject {
-        put("name", item.name)
-        put("level", item.level.name)
-        putIfNotBlank("parent", item.parentName?.takeIf { it != CxLogConstants.ROOT_LOGGER_NAME })
-    }
-}
+interface McpJsonResponseElementBuilder<in T> : McpResponseElementBuilder<T, JsonElement> {}

@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.hac.mcp.json
 
-package sap.commerce.toolset.typeSystem.mcp
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilder
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
+import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
-import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+class HacMcpJsonResponseBuilder(
+    private val activeConnection: HacConnectionSettingsState
+) : McpJsonResponseBuilder<HacConnectionSettingsState>() {
 
-/** Lists Atomic types. */
-object AtomicTypeLister : TSMcpDataProvider<TSGlobalMetaAtomic>(AtomicTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaAtomic> = meta.getAll(TSMetaType.META_ATOMIC)
+    private val _itemBuilder by lazy { HacConnectionJsonResponseElementBuilder(activeConnection) }
+    override val itemBuilder: McpJsonResponseElementBuilder<HacConnectionSettingsState>
+        get() = _itemBuilder
 }

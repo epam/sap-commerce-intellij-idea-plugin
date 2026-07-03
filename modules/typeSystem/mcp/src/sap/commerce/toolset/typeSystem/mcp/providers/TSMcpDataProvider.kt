@@ -16,19 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp
+package sap.commerce.toolset.typeSystem.mcp.providers
 
-import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.JsonObjectBuilder
-import kotlinx.serialization.json.add
-import kotlinx.serialization.json.putJsonArray
-import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
-import sap.commerce.toolset.ai.mcp.json.buildListResponse
 import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
+import sap.commerce.toolset.typeSystem.mcp.TSMcpSearchContext
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
@@ -36,53 +32,44 @@ import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 /**
  * Strategy behind the `sap_commerce_list_*` type-system tools. Each subclass owns the parts that
  * vary per type — the per-type JSON [itemBuilder] and how the types are [fetched][fetch] — while
- * [list] holds the shared pipeline: normalize the name/extension filters, ensure the model is ready,
+ * [search] holds the shared pipeline: normalize the name/extension filters, ensure the model is ready,
  * then (inside a read action) fetch, drop nameless types, apply the filters and render the standard
  * `{<additionalFields>, filter?, extensions?, matched, total, items}` response.
  *
- * `name`/`extensionName` are read directly from [TSGlobalMetaClassifier], so only genuinely
+ * `name`/`extensionName` are read directly from [sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier], so only genuinely
  * type-specific behaviour is left to subclasses.
  */
-sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
-    private val itemBuilder: McpJsonBuilder<T>,
-) {
+@Service(Service.Level.PROJECT)
+class TSMcpDataProvider(private val project: Project) {
 
-    /** Retrieves all types of this kind from the local type-system model. */
-    protected abstract fun fetch(meta: TSMetaModelAccess): Collection<T>
-
-    /** Contributes tool-specific leading fields (e.g. the item-type `detail` level). */
-    protected open fun JsonObjectBuilder.additionalFields() {}
-
-    suspend fun list(filter: String?, extensions: String?): String {
-        val project = currentCoroutineContext().project
-
-        val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
+    suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): Collection<T> {
+        val normalizedFilter = context.filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
-        val extensionFilter = parseExtensionFilter(extensions)
+        val extensionFilter = parseExtensionFilter(context)
 
         ensureTypeSystemReady(project)
 
         return readAction {
-            val candidates = fetch(TSMetaModelAccess.getInstance(project))
+            TSMetaModelAccess.getInstance(project).getAll<T>(context.metaType)
                 .filter { it.name != null }
-            val matched = candidates.filter { item ->
-                (matcher == null || matcher(item.name!!)) &&
-                    (extensionFilter == null || item.extensionName.lowercase() in extensionFilter)
-            }
-            buildListResponse(
-                items = matched,
-                total = candidates.size,
-                itemBuilder = itemBuilder,
-                filterText = normalizedFilter,
-                additionalFields = {
-                    additionalFields()
-                    extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
-                },
-            )
+                .filter { item ->
+                    (matcher == null || matcher(item.name!!))
+                        && (extensionFilter == null || item.extensionName.lowercase() in extensionFilter)
+                }
+//            buildListResponse(
+//                items = matched,
+//                total = candidates.size,
+//                itemBuilder = itemBuilder,
+//                filterText = normalizedFilter,
+//                additionalFields = {
+//                    additionalFields()
+//                    extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
+//                },
+//            )
         }
     }
 
-    private fun parseExtensionFilter(extensions: String?): Set<String>? = extensions
+    private fun parseExtensionFilter(context: TSMcpSearchContext): Set<String>? = context.extensions
         ?.split(',')
         ?.map { it.trim().lowercase() }
         ?.filter { it.isNotEmpty() }
@@ -93,7 +80,7 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
      * Turns the common "not ready" states of the type-system model (indexing / not-yet-built) into
      * actionable tool errors up front, before the model is queried via [TSMetaModelAccess].
      *
-     * Retrieval still resolves through [TSMetaModelStateService.state], which may throw
+     * Retrieval still resolves through [sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService.Companion.state], which may throw
      * [com.intellij.openapi.progress.ProcessCanceledException] if a rebuild is in flight; that must
      * NOT be swallowed, so it is intentionally left to propagate.
      */
@@ -105,5 +92,9 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
             service.init()
             error("The type system model has not been built yet — a build has been triggered. Retry in a few seconds.")
         }
+    }
+
+    companion object {
+        fun getInstance(project: Project): TSMcpDataProvider = project.service()
     }
 }

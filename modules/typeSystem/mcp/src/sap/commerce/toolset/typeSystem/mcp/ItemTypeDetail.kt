@@ -19,4 +19,8 @@
 package sap.commerce.toolset.typeSystem.mcp
 
 /** How much information [TypeSystemMcpToolset.listItemTypes] returns per item type. */
-enum class ItemTypeDetail { TYPES, ATTRIBUTES, FULL }
+enum class ItemTypeDetail {
+    TYPES,
+    ATTRIBUTES,
+    FULL
+}

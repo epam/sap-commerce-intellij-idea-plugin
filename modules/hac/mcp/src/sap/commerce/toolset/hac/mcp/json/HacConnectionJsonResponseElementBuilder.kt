@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.hac.mcp.json
 
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
@@ -34,9 +34,9 @@ import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
  *
  * The active connection is passed in (rather than a global) so the builder stays a pure strategy.
  */
-class HacConnectionJsonBuilder(private val activeConnection: HacConnectionSettingsState) : McpJsonBuilder<HacConnectionSettingsState> {
+class HacConnectionJsonResponseElementBuilder(private val activeConnection: HacConnectionSettingsState) : McpJsonResponseElementBuilder<HacConnectionSettingsState> {
 
-    override fun build(item: HacConnectionSettingsState): JsonObject = buildJsonObject {
+    override fun build(item: HacConnectionSettingsState): JsonElement = buildJsonObject {
         put("name", item.connectionName)
         put("url", item.generatedURL)
         put("active", item.uuid == activeConnection.uuid)

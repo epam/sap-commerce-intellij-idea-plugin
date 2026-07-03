@@ -16,15 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp
+package sap.commerce.toolset.typeSystem.mcp.json
 
-import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilder
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
+import sap.commerce.toolset.typeSystem.mcp.ItemTypeDetail
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 
-/** Lists Atomic types. */
-object AtomicTypeLister : TSMcpDataProvider<TSGlobalMetaAtomic>(AtomicTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaAtomic> = meta.getAll(TSMetaType.META_ATOMIC)
+class TSAtomicMcpJsonResponseBuilder(private val detail: ItemTypeDetail) : McpJsonResponseBuilder<TSGlobalMetaAtomic>() {
+
+    private val _itemBuilder by lazy { TSAtomicMcpJsonResponseElementBuilder(detail) }
+    override val itemBuilder: McpJsonResponseElementBuilder<TSGlobalMetaAtomic>
+        get() = _itemBuilder
 }

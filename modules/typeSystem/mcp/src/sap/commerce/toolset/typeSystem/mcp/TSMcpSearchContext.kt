@@ -18,13 +18,10 @@
 
 package sap.commerce.toolset.typeSystem.mcp
 
-import sap.commerce.toolset.typeSystem.mcp.json.AtomicTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
-/** Lists Atomic types. */
-object AtomicTypeLister : TSMcpDataProvider<TSGlobalMetaAtomic>(AtomicTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaAtomic> = meta.getAll(TSMetaType.META_ATOMIC)
-}
+data class TSMcpSearchContext(
+    val metaType: TSMetaType,
+    val filter: String? = null,
+    val extensions: String? = null
+)

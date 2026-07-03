@@ -22,7 +22,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
-import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
 import sap.commerce.toolset.ai.mcp.json.putFlag
 import sap.commerce.toolset.ai.mcp.json.putIfNotBlank
 import sap.commerce.toolset.ai.mcp.json.putStringArrayIfNotEmpty
@@ -39,7 +39,7 @@ import sap.commerce.toolset.typeSystem.meta.model.TSMetaPersistence
  *
  * A distinct instance is used per detail level (the level is the strategy's only state).
  */
-class ItemTypeJsonBuilder(private val detail: ItemTypeDetail) : McpJsonBuilder<TSGlobalMetaItem> {
+class TSItemMcpJsonResponseElementBuilder(private val detail: ItemTypeDetail) : McpJsonResponseElementBuilder<TSGlobalMetaItem> {
 
     override fun build(item: TSGlobalMetaItem): JsonObject = buildJsonObject {
         put("name", item.name!!)

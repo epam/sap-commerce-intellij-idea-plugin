@@ -16,19 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp
+package sap.commerce.toolset.typeSystem.mcp.json
 
-import kotlinx.serialization.json.JsonObjectBuilder
-import kotlinx.serialization.json.put
-import sap.commerce.toolset.typeSystem.mcp.json.ItemTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilder
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
+import sap.commerce.toolset.typeSystem.mcp.ItemTypeDetail
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
-/** Lists Item types; carries the requested [detail] level, echoed as `detail` and driving the builder. */
-class ItemTypeLister(private val detail: ItemTypeDetail) : TSTypeLister<TSGlobalMetaItem>(ItemTypeJsonBuilder(detail)) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaItem> = meta.getAll(TSMetaType.META_ITEM)
-    override fun JsonObjectBuilder.additionalFields() {
-        put("detail", detail.name)
-    }
+class TSItemMcpJsonResponseBuilder(private val detail: ItemTypeDetail) : McpJsonResponseBuilder<TSGlobalMetaItem>() {
+
+    private val _itemBuilder by lazy { TSItemMcpJsonResponseElementBuilder(detail) }
+    override val itemBuilder: McpJsonResponseElementBuilder<TSGlobalMetaItem>
+        get() = _itemBuilder
 }

@@ -19,11 +19,12 @@
 package sap.commerce.toolset.typeSystem.mcp
 
 import sap.commerce.toolset.typeSystem.mcp.json.CollectionTypeJsonBuilder
+import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 /** Lists Collection types. */
-object CollectionTypeLister : TSTypeLister<TSGlobalMetaCollection>(CollectionTypeJsonBuilder) {
+object CollectionTypeLister : TSMcpDataProvider<TSGlobalMetaCollection>(CollectionTypeJsonBuilder) {
     override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaCollection> = meta.getAll(TSMetaType.META_COLLECTION)
 }

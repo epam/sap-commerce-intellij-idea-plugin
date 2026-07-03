@@ -18,19 +18,25 @@
 
 package sap.commerce.toolset.typeSystem.mcp
 
-import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import sap.commerce.toolset.ai.mcp.SapCxMcpToolset
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 /**
  * Exposes the SAP Commerce Type System — as shown in the "Type System" tool window — as MCP tools.
  *
  * The type system is the project's LOCAL model: it is parsed from the `*-items.xml` definitions in
  * the project, not fetched from a remote server, so these tools do not require (or use) a HAC
- * connection. Each tool delegates to the matching [TSTypeLister], which holds the shared listing
+ * connection. Each tool delegates to the matching [sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider], which holds the shared listing
  * pipeline.
  */
-class TypeSystemMcpToolset : McpToolset {
+class TypeSystemMcpToolset : SapCxMcpToolset<TSMcpResponseFactory> {
+
+    private val _factory by lazy { TSMcpResponseFactory() }
+    override val factory: TSMcpResponseFactory
+        get() = _factory
 
     @McpTool(name = "sap_commerce_list_item_types")
     @McpDescription(
@@ -47,12 +53,14 @@ class TypeSystemMcpToolset : McpToolset {
             |Omit to return all item types."""
         )
         filter: String? = null,
+
         @McpDescription(
             """Optional comma-separated list of extension names to restrict the result to item types owned by those extensions (e.g. 'core,basecommerce' or 'myprojectcore').
             |Matched case-insensitively and exactly against each item type's owning 'extension'. Combined with 'filter' using AND (both must match).
             |Omit to include item types from all extensions."""
         )
         extensions: String? = null,
+
         @McpDescription(
             """Controls how much information is returned per item type, to balance completeness against token usage:
             |- TYPES: item type identity only (name, extends, typeCode, extension, and the custom/abstract/deprecated flags). No attributes.
@@ -60,12 +68,20 @@ class TypeSystemMcpToolset : McpToolset {
             |- FULL: the above plus all available attribute meta-information: the extension it is 'declaredIn' and any extensions it is 'redeclaredIn', the localized/dynamic/deprecated/autoCreate/generate flags, defaultValue, selectionOf, flattenType, description, the active 'modifiers' (which include 'optional' — a mandatory attribute is simply one without it) and 'persistence' details. Only non-empty values are included.
             |Default: TYPES. Prefer the smallest level that answers the question. Attributes are the type's DECLARED attributes, not inherited ones."""
         )
-        detail: String = "TYPES",
+        detail: String = ItemTypeDetail.TYPES.name,
     ): String {
         val detailLevel = ItemTypeDetail.entries.find { it.name.equals(detail.trim(), ignoreCase = true) }
             ?: error("Invalid detail '$detail'. Valid values: ${ItemTypeDetail.entries.joinToString { it.name }}")
 
-        return ItemTypeLister(detailLevel).list(filter, extensions)
+        val searchContext = TSMcpSearchContext(TSMetaType.META_ITEM, filter, extensions)
+        val items = TSMcpService.getInstance().search<TSGlobalMetaItem>(searchContext)
+
+        return factory
+            .itemJson(detailLevel)
+            .build(
+                items = items,
+                filterText = filter,
+            )
     }
 
     @McpTool(name = "sap_commerce_list_atomic_types")
@@ -83,13 +99,14 @@ class TypeSystemMcpToolset : McpToolset {
             |Omit to return all atomic types."""
         )
         filter: String? = null,
+
         @McpDescription(
             """Optional comma-separated list of extension names to restrict the result to atomic types owned by those extensions (e.g. 'core,basecommerce').
             |Matched case-insensitively and exactly against each atomic type's owning 'extension'. Combined with 'filter' using AND (both must match).
             |Omit to include atomic types from all extensions."""
         )
         extensions: String? = null,
-    ): String = AtomicTypeLister.list(filter, extensions)
+    ): String = AtomicTypeLister.search(filter, extensions)
 
     @McpTool(name = "sap_commerce_list_collection_types")
     @McpDescription(
@@ -106,11 +123,12 @@ class TypeSystemMcpToolset : McpToolset {
             |Omit to return all collection types."""
         )
         filter: String? = null,
+
         @McpDescription(
             """Optional comma-separated list of extension names to restrict the result to collection types owned by those extensions (e.g. 'core,basecommerce').
             |Matched case-insensitively and exactly against each collection type's owning 'extension'. Combined with 'filter' using AND (both must match).
             |Omit to include collection types from all extensions."""
         )
         extensions: String? = null,
-    ): String = CollectionTypeLister.list(filter, extensions)
+    ): String = CollectionTypeLister.search(filter, extensions)
 }

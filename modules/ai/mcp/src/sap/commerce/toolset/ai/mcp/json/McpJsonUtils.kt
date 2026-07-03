@@ -28,7 +28,7 @@ import kotlinx.serialization.json.putJsonArray
  * they carry information, so consumers never have to reason about `false`/empty/blank noise (which
  * also keeps the response, and its token cost, small).
  *
- * These centralize the emit-only-when-meaningful patterns that the per-entity [McpJsonBuilder]s
+ * These centralize the emit-only-when-meaningful patterns that the per-entity [McpJsonResponseElementBuilder]s
  * would otherwise repeat inline.
  */
 

@@ -18,16 +18,18 @@
 
 package sap.commerce.toolset.hac.mcp
 
-import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import sap.commerce.toolset.ai.mcp.json.buildListResponse
+import sap.commerce.toolset.ai.mcp.SapCxMcpToolset
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.mcp.json.HacConnectionJsonBuilder
 
-class HacMcpToolset : McpToolset {
+class HacMcpToolset : SapCxMcpToolset<HacMcpResponseFactory> {
+
+    private val _factory by lazy { HacMcpResponseFactory() }
+    override val factory: HacMcpResponseFactory
+        get() = _factory
 
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
@@ -44,10 +46,11 @@ class HacMcpToolset : McpToolset {
         val connectionService = HacExecConnectionService.getInstance(project)
         val connections = connectionService.connections
 
-        return buildListResponse(
-            items = connections,
-            total = connections.size,
-            itemBuilder = HacConnectionJsonBuilder(connectionService.activeConnection),
-        )
+        return factory
+            .json(connectionService.activeConnection)
+            .build(
+                items = connections,
+                total = connections.size,
+            )
     }
 }

@@ -21,13 +21,13 @@ package sap.commerce.toolset.typeSystem.mcp.json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.buildJsonObject
-import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
+import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
 import sap.commerce.toolset.ai.mcp.json.putFlag
 import sap.commerce.toolset.ai.mcp.json.putIfNotBlank
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaClassifier
 
 /**
- * Base [McpJsonBuilder] for the simple, single-object type renderers (atomic and collection types).
+ * Base [McpJsonResponseElementBuilder] for the simple, single-object type renderers (atomic and collection types).
  *
  * It renders the shape shared by those types: the subclass-specific leading fields (via
  * [putIdentity]) followed by the common trailing block — the owning `extension` (when set) and the
@@ -35,7 +35,7 @@ import sap.commerce.toolset.typeSystem.meta.model.TSMetaClassifier
  * through [isAutoCreate]/[isGenerate] because, unlike `extension`/`custom`, they are declared per
  * meta-type rather than on the shared [TSMetaClassifier].
  */
-abstract class TSClassifierJsonBuilder<T : TSMetaClassifier<*>> : McpJsonBuilder<T> {
+abstract class TSClassifierJsonBuilder<T : TSMetaClassifier<*>> : McpJsonResponseElementBuilder<T> {
 
     final override fun build(item: T): JsonObject = buildJsonObject {
         putIdentity(item)
