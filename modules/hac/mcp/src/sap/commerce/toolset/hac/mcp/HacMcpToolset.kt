@@ -23,15 +23,11 @@ import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import sap.commerce.toolset.ai.mcp.json.buildListResponse
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.mcp.json.HacConnectionJsonBuilder
 
 class HacMcpToolset : McpToolset {
-
-    private val json = Json { prettyPrint = false }
 
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
@@ -48,12 +44,10 @@ class HacMcpToolset : McpToolset {
         val connectionService = HacExecConnectionService.getInstance(project)
         val connections = connectionService.connections
 
-        val payload = buildListResponse(
+        return buildListResponse(
             items = connections,
             total = connections.size,
             itemBuilder = HacConnectionJsonBuilder(connectionService.activeConnection),
         )
-
-        return json.encodeToString(JsonObject.serializer(), payload)
     }
 }

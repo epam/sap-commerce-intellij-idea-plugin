@@ -25,8 +25,6 @@ import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.put
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.ai.mcp.json.buildListResponse
@@ -52,8 +50,6 @@ import sap.commerce.toolset.settings.state.TransactionMode
  * there is intentionally no "delete logger" tool — there is no such operation on the server.
  */
 class LoggingMcpToolset : McpToolset {
-
-    private val json = Json { prettyPrint = false }
 
     @McpTool(name = "sap_commerce_list_loggers")
     @McpDescription(
@@ -83,15 +79,13 @@ class LoggingMcpToolset : McpToolset {
         val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
         val matched = matcher?.let { match -> allLoggers.filter { match(it.name) } } ?: allLoggers
-        val payload = buildListResponse(
+        return buildListResponse(
             items = matched,
             total = allLoggers.size,
             itemBuilder = LoggerJsonBuilder,
             filterText = normalizedFilter,
             additionalFields = { put("connection", connection.connectionName) },
         )
-
-        return json.encodeToString(JsonObject.serializer(), payload)
     }
 
     @McpTool(name = "sap_commerce_update_logger_level")

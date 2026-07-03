@@ -23,7 +23,10 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObjectBuilder
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
 import sap.commerce.toolset.ai.mcp.json.McpJsonBuilder
 import sap.commerce.toolset.ai.mcp.json.buildListResponse
 import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
@@ -48,8 +51,6 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
     private val itemBuilder: McpJsonBuilder<T>,
 ) {
 
-    private val json = Json { prettyPrint = false }
-
     /** Retrieves all types of this kind from the local type-system model. */
     protected abstract fun fetch(meta: TSMetaModelAccess): Collection<T>
 
@@ -65,7 +66,7 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
 
         ensureTypeSystemReady(project)
 
-        val payload = readAction {
+        return readAction {
             val candidates = fetch(TSMetaModelAccess.getInstance(project))
                 .filter { it.name != null }
             val matched = candidates.filter { item ->
@@ -83,8 +84,6 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
                 },
             )
         }
-
-        return json.encodeToString(JsonObject.serializer(), payload)
     }
 
     private fun parseExtensionFilter(extensions: String?): Set<String>? = extensions

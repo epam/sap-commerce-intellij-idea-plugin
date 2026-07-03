@@ -20,8 +20,10 @@ package sap.commerce.toolset.ai.mcp.json
 
 import kotlinx.serialization.json.*
 
+private val json = Json { prettyPrint = false }
+
 /**
- * Renders the standard MCP "list" response object shared by the `list*` tools:
+ * Renders the standard MCP "list" response shared by the `list*` tools as a compact JSON string:
  * `{<additionalFields>, "filter"?, "matched", "total", "items": [...]}`.
  *
  * This is purely a formatter: the caller does the fetching and filtering and passes the already
@@ -38,12 +40,15 @@ fun <T> buildListResponse(
     itemBuilder: McpJsonBuilder<T>,
     filterText: String? = null,
     additionalFields: JsonObjectBuilder.() -> Unit = {},
-): JsonObject = buildJsonObject {
-    additionalFields()
-    putIfNotBlank("filter", filterText)
-    put("matched", items.size)
-    put("total", total)
-    putJsonArray("items") {
-        items.forEach { add(itemBuilder.build(it)) }
+): String {
+    val payload = buildJsonObject {
+        additionalFields()
+        putIfNotBlank("filter", filterText)
+        put("matched", items.size)
+        put("total", total)
+        putJsonArray("items") {
+            items.forEach { add(itemBuilder.build(it)) }
+        }
     }
+    return json.encodeToString(JsonObject.serializer(), payload)
 }
