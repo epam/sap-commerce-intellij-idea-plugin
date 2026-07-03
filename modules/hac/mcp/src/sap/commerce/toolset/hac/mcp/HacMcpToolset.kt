@@ -25,8 +25,7 @@ import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.putJsonArray
+import sap.commerce.toolset.ai.mcp.json.buildListResponse
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.mcp.json.HacConnectionJsonBuilder
 
@@ -37,7 +36,7 @@ class HacMcpToolset : McpToolset {
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
         """Lists all configured HAC (Hybris Administration Console) connections for the current project as a JSON object.
-        |Shape: {"connections": [{"name": String, "url": String, "active": Boolean, "authMode": "AUTOMATIC" | "MANUAL", "supportedByMcp": Boolean}]}.
+        |Shape: {"matched", "total", "items": [{"name": String, "url": String, "active": Boolean, "authMode": "AUTOMATIC" | "MANUAL", "supportedByMcp": Boolean}]}.
         | - name: pass it to other HAC tools to target a specific server;
         | - active: whether it is the currently active connection;
         | - authMode: AUTOMATIC (credentials persisted in the IDE) or MANUAL (interactive browser-based authentication);
@@ -47,13 +46,13 @@ class HacMcpToolset : McpToolset {
     suspend fun listHacConnections(): String {
         val project = currentCoroutineContext().project
         val connectionService = HacExecConnectionService.getInstance(project)
-        val connectionJson = HacConnectionJsonBuilder(connectionService.activeConnection)
+        val connections = connectionService.connections
 
-        val payload = buildJsonObject {
-            putJsonArray("connections") {
-                connectionService.connections.forEach { add(connectionJson.build(it)) }
-            }
-        }
+        val payload = buildListResponse(
+            items = connections,
+            total = connections.size,
+            itemBuilder = HacConnectionJsonBuilder(connectionService.activeConnection),
+        )
 
         return json.encodeToString(JsonObject.serializer(), payload)
     }
