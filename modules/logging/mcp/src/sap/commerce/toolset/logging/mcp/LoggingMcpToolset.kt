@@ -25,7 +25,12 @@ import com.intellij.mcpserver.project
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.put
 import org.apache.http.HttpStatus
+import sap.commerce.toolset.ai.mcp.json.buildListResponse
+import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
 import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
@@ -34,6 +39,7 @@ import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
+import sap.commerce.toolset.logging.mcp.json.LoggerJsonBuilder
 import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
 import sap.commerce.toolset.settings.state.TransactionMode
 
@@ -47,10 +53,12 @@ import sap.commerce.toolset.settings.state.TransactionMode
  */
 class LoggingMcpToolset : McpToolset {
 
+    private val json = Json { prettyPrint = false }
+
     @McpTool(name = "sap_commerce_list_loggers")
     @McpDescription(
         """Lists loggers declared on a SAP Commerce (Hybris) server via the HAC.
-        |For every logger returns its fully-qualified name, the currently effective log level and its parent logger.
+        |Returns a JSON object: {"connection", "filter"?, "matched", "total", "loggers": [{"name", "level", "parent"?}]}, where 'level' is the currently effective log level and 'parent' (the parent logger) is omitted for root-level loggers. 'filter' echoes the applied name filter and is present only when one was given.
         |A remote instance can declare hundreds or thousands of loggers, so prefer the optional 'filter' parameter to return only the loggers you need and keep the response (and token usage) small.
         |Requires a configured and authenticated HAC connection.
         |PRECONDITION: only call this tool against a connection whose authMode is AUTOMATIC (supportedByMcp = true in sap_commerce_list_hac_connections). If the user asks to use a connection that uses MANUAL (browser) authentication, do NOT call this tool — instead tell the user that connection is not supported by MCP tools yet and offer an AUTOMATIC one. Calling it against a MANUAL connection will fail."""
@@ -60,43 +68,30 @@ class LoggingMcpToolset : McpToolset {
         connectionName: String? = null,
         @McpDescription(
             """Optional logger-name filter used to shrink the response and save tokens.
-            |If the value is a valid regular expression it is matched against each logger name with a regex search (e.g. '^de\.hybris\.platform\.' or 'spring|hibernate'; prefix with '(?i)' for case-insensitivity);
-            |otherwise it is treated as a plain, case-insensitive substring ('contains'). 
+            |If the value is a valid regular expression it is matched against each logger name with a case-insensitive regex search (e.g. '^de\.hybris\.platform\.' or 'spring|hibernate');
+            |otherwise it is treated as a plain, case-insensitive substring ('contains').
             |Omit to return all loggers."""
         )
         filter: String? = null,
     ): String {
         val project = currentCoroutineContext().project
-        val connection = resolveHacConnection(project, connectionName)
-        requireAutomaticAuth(connection)
+        val connection = resolveAutomaticHacConnection(project, connectionName)
 
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.EXTENSION_STATE_SCRIPT) }
         val allLoggers = runLoggersScript(project, connection, scriptContent)
 
         val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
-        val loggers = normalizedFilter
-            ?.let { loggerNameMatcher(it) }
-            ?.let { matches -> allLoggers.filter { matches(it.name) } }
-            ?: allLoggers
+        val payload = buildListResponse(
+            items = allLoggers,
+            arrayKey = "loggers",
+            nameOf = { it.name },
+            itemBuilder = LoggerJsonBuilder,
+            matcher = normalizedFilter?.let { regexOrContainsMatcher(it) },
+            filterText = normalizedFilter,
+            envelope = { put("connection", connection.connectionName) },
+        )
 
-        return buildString {
-            if (normalizedFilter == null) {
-                appendLine("Loggers on ${connection.connectionName} (${loggers.size}):")
-            } else {
-                appendLine("Loggers on ${connection.connectionName} matching \"$normalizedFilter\" (${loggers.size} of ${allLoggers.size}):")
-                if (loggers.isEmpty()) appendLine("  (no logger name matched the filter)")
-            }
-
-            loggers
-                .sortedBy { it.name }
-                .forEach { logger ->
-                    val parent = logger.parentName
-                        ?.takeIf { it.isNotBlank() && it != CxLogConstants.ROOT_LOGGER_NAME }
-                        ?.let { " (parent: $it)" }
-                        ?: ""
-                    appendLine("  - ${logger.name} = ${logger.level}$parent")
-                }
-        }.trim()
+        return json.encodeToString(JsonObject.serializer(), payload)
     }
 
     @McpTool(name = "sap_commerce_update_logger_level")
@@ -117,8 +112,7 @@ class LoggingMcpToolset : McpToolset {
         connectionName: String? = null,
     ): String {
         val project = currentCoroutineContext().project
-        val connection = resolveHacConnection(project, connectionName)
-        requireAutomaticAuth(connection)
+        val connection = resolveAutomaticHacConnection(project, connectionName)
 
         val normalizedLoggerName = loggerName.trim()
         if (normalizedLoggerName.isBlank()) error("Logger name must not be blank.")
@@ -127,7 +121,7 @@ class LoggingMcpToolset : McpToolset {
         val logLevel = CxLogLevel.entries.find { it.name.equals(level.trim(), ignoreCase = true) }
             ?: error("Invalid log level '$level'. Valid levels: ${CxLogLevel.entries.joinToString { it.name }}")
 
-        val loggerEntry = "\"$normalizedLoggerName\" : \"${logLevel.name}\""
+        val loggerEntry = "\"${escapeGroovyString(normalizedLoggerName)}\" : \"${logLevel.name}\""
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.UPDATE_CX_LOGGERS_STATE) }
             .replace("[loggersMapToBeReplacedPlaceholder]", loggerEntry)
 
@@ -140,14 +134,18 @@ class LoggingMcpToolset : McpToolset {
     }
 
     /**
+     * Resolves the target HAC [connectionName] (or the active connection) and ensures it uses
+     * AUTOMATIC authentication.
+     *
      * The logger MCP tools talk to the server through the Groovy console, which currently cannot
-     * drive the external browser-based authentication used by [AuthMode.MANUAL] connections.
-     * Until that is supported, reject such connections with an actionable message.
+     * drive the external browser-based authentication used by [AuthMode.MANUAL] connections. Until
+     * that is supported, such connections are rejected with an actionable message.
      *
      * Note: this guard is intentionally limited to the logger tools — the other toolsets will be
      * updated in a separate PR.
      */
-    private fun requireAutomaticAuth(connection: HacConnectionSettingsState) {
+    private fun resolveAutomaticHacConnection(project: Project, connectionName: String?): HacConnectionSettingsState {
+        val connection = resolveHacConnection(project, connectionName)
         if (connection.authMode == AuthMode.MANUAL) {
             error(
                 "HAC connection '${connection.connectionName}' uses Manual (browser) authentication, " +
@@ -155,16 +153,26 @@ class LoggingMcpToolset : McpToolset {
                     "Switch the connection to '${AuthMode.AUTOMATIC.title}' to use this tool."
             )
         }
+        return connection
     }
 
     /**
-     * Builds a logger-name predicate from a user-supplied [filter]: a regex search when [filter]
-     * is a valid regular expression, otherwise a case-insensitive substring ('contains') match.
+     * Escapes [value] for safe embedding inside a Groovy double-quoted string literal (GString), so
+     * that a quote, backslash, `$` (GString interpolation) or newline in a user-supplied logger name
+     * cannot break — or inject Groovy into — the generated `update-cx-loggers-state.groovy` script.
      */
-    private fun loggerNameMatcher(filter: String): (String) -> Boolean =
-        runCatching { filter.toRegex() }.getOrNull()
-            ?.let { regex -> regex::containsMatchIn }
-            ?: { name -> name.contains(filter, ignoreCase = true) }
+    private fun escapeGroovyString(value: String): String = buildString {
+        value.forEach { ch ->
+            when (ch) {
+                '\\' -> append("\\\\")
+                '"' -> append("\\\"")
+                '$' -> append("\\$")
+                '\n' -> append("\\n")
+                '\r' -> append("\\r")
+                else -> append(ch)
+            }
+        }
+    }
 
     /**
      * Executes one of the bundled loggers Groovy scripts against [connection] and parses the
