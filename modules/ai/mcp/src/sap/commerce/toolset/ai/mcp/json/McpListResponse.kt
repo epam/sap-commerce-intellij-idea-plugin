@@ -21,42 +21,29 @@ package sap.commerce.toolset.ai.mcp.json
 import kotlinx.serialization.json.*
 
 /**
- * Builds the standard MCP "list" response object shared by the `list*` tools:
- * `{<additionalFields>, "filter"?, "matched", "total", <arrayKey>: [...]}`.
+ * Renders the standard MCP "list" response object shared by the `list*` tools:
+ * `{<additionalFields>, "filter"?, "matched", "total", "items": [...]}`.
  *
- * [items] is the full, unfiltered candidate set. An item is dropped when [nameOf] returns `null`;
- * the survivors form the reported `total`. Each remaining item is kept when it passes the optional
- * name [matcher] (see [sap.commerce.toolset.ai.mcp.regexOrContainsMatcher]) AND every predicate in
- * [filters]; the kept items form the reported `matched`, are sorted by [nameOf] and rendered through
- * [itemBuilder].
+ * This is purely a formatter: the caller does the fetching and filtering and passes the already
+ * matched [items] to render (their count is reported as `matched`) together with the [total] number
+ * of candidates considered before filtering.
  *
- * [filterText] — when non-null — is echoed back as `"filter"` so the caller can see the effective
+ * [filterText] — when non-blank — is echoed back as `"filter"` so the caller can see the effective
  * name filter. [additionalFields] contributes tool-specific leading entries (e.g. a `"detail"` level
  * or an echoed `"extensions"` list).
  */
 fun <T> buildListResponse(
     items: Collection<T>,
-    arrayKey: String,
-    nameOf: (T) -> String?,
+    total: Int,
     itemBuilder: McpJsonBuilder<T>,
-    matcher: ((String) -> Boolean)? = null,
-    filters: List<(T) -> Boolean> = emptyList(),
     filterText: String? = null,
     additionalFields: JsonObjectBuilder.() -> Unit = {},
-): JsonObject {
-    val candidates = items.filter { nameOf(it) != null }
-    val matched = candidates
-        .filter { item -> matcher?.invoke(nameOf(item)!!) ?: true }
-        .filter { item -> filters.all { it(item) } }
-        .sortedBy { nameOf(it) }
-
-    return buildJsonObject {
-        additionalFields()
-        filterText?.let { put("filter", it) }
-        put("matched", matched.size)
-        put("total", candidates.size)
-        putJsonArray(arrayKey) {
-            matched.forEach { add(itemBuilder.build(it)) }
-        }
+): JsonObject = buildJsonObject {
+    additionalFields()
+    putIfNotBlank("filter", filterText)
+    put("matched", items.size)
+    put("total", total)
+    putJsonArray("items") {
+        items.forEach { add(itemBuilder.build(it)) }
     }
 }

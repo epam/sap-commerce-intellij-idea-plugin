@@ -36,16 +36,15 @@ import sap.commerce.toolset.typeSystem.meta.model.*
 
 /**
  * Strategy behind the `sap_commerce_list_*` type-system tools. Each subclass owns the parts that
- * vary per type — the response [arrayKey], the per-type JSON [itemBuilder] and how the types are
- * [fetched][fetch] — while [list] holds the shared pipeline: normalize the name/extension filters,
- * ensure the model is ready, then (inside a read action) fetch, filter, sort and render the standard
- * `{<additionalFields>, filter?, extensions?, matched, total, <arrayKey>}` response.
+ * vary per type — the per-type JSON [itemBuilder] and how the types are [fetched][fetch] — while
+ * [list] holds the shared pipeline: normalize the name/extension filters, ensure the model is ready,
+ * then (inside a read action) fetch, drop nameless types, apply the filters and render the standard
+ * `{<additionalFields>, filter?, extensions?, matched, total, items}` response.
  *
  * `name`/`extensionName` are read directly from [TSGlobalMetaClassifier], so only genuinely
  * type-specific behaviour is left to subclasses.
  */
 sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
-    private val arrayKey: String,
     private val itemBuilder: McpJsonBuilder<T>,
 ) {
 
@@ -67,15 +66,16 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
         ensureTypeSystemReady(project)
 
         val payload = readAction {
+            val candidates = fetch(TSMetaModelAccess.getInstance(project))
+                .filter { it.name != null }
+            val matched = candidates.filter { item ->
+                (matcher == null || matcher(item.name!!)) &&
+                    (extensionFilter == null || item.extensionName.lowercase() in extensionFilter)
+            }
             buildListResponse(
-                items = fetch(TSMetaModelAccess.getInstance(project)),
-                arrayKey = arrayKey,
-                nameOf = { it.name },
+                items = matched,
+                total = candidates.size,
                 itemBuilder = itemBuilder,
-                matcher = matcher,
-                filters = listOfNotNull(
-                    extensionFilter?.let { exts -> { item: T -> item.extensionName.lowercase() in exts } }
-                ),
                 filterText = normalizedFilter,
                 additionalFields = {
                     additionalFields()
@@ -114,7 +114,7 @@ sealed class TSTypeLister<T : TSGlobalMetaClassifier<*>>(
 }
 
 /** Lists Item types; carries the requested [detail] level, echoed as `detail` and driving the builder. */
-class ItemTypeLister(private val detail: ItemTypeDetail) : TSTypeLister<TSGlobalMetaItem>("itemTypes", ItemTypeJsonBuilder(detail)) {
+class ItemTypeLister(private val detail: ItemTypeDetail) : TSTypeLister<TSGlobalMetaItem>(ItemTypeJsonBuilder(detail)) {
     override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaItem> = meta.getAll(TSMetaType.META_ITEM)
     override fun JsonObjectBuilder.additionalFields() {
         put("detail", detail.name)
@@ -122,11 +122,11 @@ class ItemTypeLister(private val detail: ItemTypeDetail) : TSTypeLister<TSGlobal
 }
 
 /** Lists Atomic types. */
-object AtomicTypeLister : TSTypeLister<TSGlobalMetaAtomic>("atomicTypes", AtomicTypeJsonBuilder) {
+object AtomicTypeLister : TSTypeLister<TSGlobalMetaAtomic>(AtomicTypeJsonBuilder) {
     override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaAtomic> = meta.getAll(TSMetaType.META_ATOMIC)
 }
 
 /** Lists Collection types. */
-object CollectionTypeLister : TSTypeLister<TSGlobalMetaCollection>("collectionTypes", CollectionTypeJsonBuilder) {
+object CollectionTypeLister : TSTypeLister<TSGlobalMetaCollection>(CollectionTypeJsonBuilder) {
     override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaCollection> = meta.getAll(TSMetaType.META_COLLECTION)
 }

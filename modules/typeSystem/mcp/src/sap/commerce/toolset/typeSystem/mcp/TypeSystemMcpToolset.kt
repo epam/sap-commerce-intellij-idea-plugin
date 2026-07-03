@@ -36,7 +36,7 @@ class TypeSystemMcpToolset : McpToolset {
     @McpDescription(
         """Lists the Item types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
         |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
-        |Returns a JSON object: {"detail", "filter", "matched", "total", "itemTypes": [...]}. Boolean flags (custom, abstract, deprecated) are present only when true and omitted otherwise.
+        |Returns a JSON object: {"detail", "filter", "matched", "total", "items": [...]}. Boolean flags (custom, abstract, deprecated) are present only when true and omitted otherwise.
         |A project can define thousands of item types, so narrow the result with 'filter' (by name) and/or 'extensions' (by owning extension), and use 'detail' to control how much per-type information is returned, keeping the response (and token usage) small."""
     )
     suspend fun listItemTypes(
@@ -73,7 +73,7 @@ class TypeSystemMcpToolset : McpToolset {
         """Lists the Atomic types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
         |Atomic types are the primitive/scalar building blocks (e.g. 'java.lang.String', 'java.lang.Boolean', 'java.util.Date'); their name and 'extends' are fully-qualified Java class names.
         |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
-        |Returns a JSON object: {"filter", "extensions", "matched", "total", "atomicTypes": [{"name", "extends", "extension", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
+        |Returns a JSON object: {"filter", "extensions", "matched", "total", "items": [{"name", "extends", "extension", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
         |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result and keep the response (and token usage) small."""
     )
     suspend fun listAtomicTypes(
@@ -96,7 +96,7 @@ class TypeSystemMcpToolset : McpToolset {
         """Lists the Collection types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
         |A collection type wraps an element type as a 'collection', 'list' or 'set' (its 'kind').
         |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
-        |Returns a JSON object: {"filter", "extensions", "matched", "total", "collectionTypes": [{"name", "kind", "elementType", "extension", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
+        |Returns a JSON object: {"filter", "extensions", "matched", "total", "items": [{"name", "kind", "elementType", "extension", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
         |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result and keep the response (and token usage) small."""
     )
     suspend fun listCollectionTypes(

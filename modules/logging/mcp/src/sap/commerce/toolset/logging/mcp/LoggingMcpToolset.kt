@@ -58,7 +58,7 @@ class LoggingMcpToolset : McpToolset {
     @McpTool(name = "sap_commerce_list_loggers")
     @McpDescription(
         """Lists loggers declared on a SAP Commerce (Hybris) server via the HAC.
-        |Returns a JSON object: {"connection", "filter"?, "matched", "total", "loggers": [{"name", "level", "parent"?}]}, where 'level' is the currently effective log level and 'parent' (the parent logger) is omitted for root-level loggers. 'filter' echoes the applied name filter and is present only when one was given.
+        |Returns a JSON object: {"connection", "filter"?, "matched", "total", "items": [{"name", "level", "parent"?}]}, where each item is a logger, 'level' is the currently effective log level and 'parent' (the parent logger) is omitted for root-level loggers. 'filter' echoes the applied name filter and is present only when one was given.
         |A remote instance can declare hundreds or thousands of loggers, so prefer the optional 'filter' parameter to return only the loggers you need and keep the response (and token usage) small.
         |Requires a configured and authenticated HAC connection.
         |PRECONDITION: only call this tool against a connection whose authMode is AUTOMATIC (supportedByMcp = true in sap_commerce_list_hac_connections). If the user asks to use a connection that uses MANUAL (browser) authentication, do NOT call this tool — instead tell the user that connection is not supported by MCP tools yet and offer an AUTOMATIC one. Calling it against a MANUAL connection will fail."""
@@ -81,12 +81,12 @@ class LoggingMcpToolset : McpToolset {
         val allLoggers = runLoggersScript(project, connection, scriptContent)
 
         val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
+        val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
+        val matched = matcher?.let { match -> allLoggers.filter { match(it.name) } } ?: allLoggers
         val payload = buildListResponse(
-            items = allLoggers,
-            arrayKey = "loggers",
-            nameOf = { it.name },
+            items = matched,
+            total = allLoggers.size,
             itemBuilder = LoggerJsonBuilder,
-            matcher = normalizedFilter?.let { regexOrContainsMatcher(it) },
             filterText = normalizedFilter,
             additionalFields = { put("connection", connection.connectionName) },
         )
