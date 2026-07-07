@@ -18,9 +18,11 @@
 
 package sap.commerce.toolset.ai.mcp
 
-import com.intellij.mcpserver.McpToolset
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
-interface SapCxMcpToolset<F : McpResponseFactory> : McpToolset {
-
-    val factory: F
+interface McpMapper {
+    fun <T> map(value: T, serializer: KSerializer<T>): String
 }
+
+inline fun <reified T> McpMapper.map(value: T): String = map(value, serializer())

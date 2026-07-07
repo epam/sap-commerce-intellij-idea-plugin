@@ -22,33 +22,16 @@ import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.put
-import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.json.buildListResponse
-import sap.commerce.toolset.ai.mcp.regexOrContainsMatcher
+import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveHacConnection
-import sap.commerce.toolset.extensions.ExtensionsService
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
+import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.hac.exec.settings.state.AuthMode
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
-import sap.commerce.toolset.logging.mcp.json.LoggerJsonBuilder
-import sap.commerce.toolset.logging.presentation.CxLoggerPresentation
-import sap.commerce.toolset.settings.state.TransactionMode
 
-/**
- * Exposes the remote SAP Commerce logger operations available in the "SAP Loggers" tool window
- * (module `logging`) as MCP tools: listing the loggers of a remote instance and changing a
- * logger's level via the hAC `HacLog4JFacade`.
- *
- * The underlying `HacLog4JFacade` only supports reading loggers and changing their level, so
- * there is intentionally no "delete logger" tool — there is no such operation on the server.
- */
 class LoggingMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_list_loggers")
@@ -69,23 +52,14 @@ class LoggingMcpToolset : McpToolset {
             |Omit to return all loggers."""
         )
         filter: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
+        val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = resolveAutomaticHacConnection(project, connectionName)
-
-        val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.EXTENSION_STATE_SCRIPT) }
-        val allLoggers = runLoggersScript(project, connection, scriptContent)
-
-        val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
-        val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
-        val matched = matcher?.let { match -> allLoggers.filter { match(it.name) } } ?: allLoggers
-        return buildListResponse(
-            items = matched,
-            total = allLoggers.size,
-            itemBuilder = LoggerJsonBuilder,
-            filterText = normalizedFilter,
-            additionalFields = { put("connection", connection.connectionName) },
-        )
+        val connection = getHacConnection(project, connectionName)
+        val loggers = LoggingMcpService.getInstance(project).listLoggers(connection, filter)
+        return mapper.map(loggers)
     }
 
     @McpTool(name = "sap_commerce_update_logger_level")
@@ -104,104 +78,37 @@ class LoggingMcpToolset : McpToolset {
         level: String,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified. Must refer to a connection with AUTOMATIC authentication; MANUAL (browser) connections are rejected")
         connectionName: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
+        val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = resolveAutomaticHacConnection(project, connectionName)
-
-        val normalizedLoggerName = loggerName.trim()
-        if (normalizedLoggerName.isBlank()) error("Logger name must not be blank.")
-        if (normalizedLoggerName == CxLogConstants.ROOT_LOGGER_NAME) error("The '${CxLogConstants.ROOT_LOGGER_NAME}' logger level cannot be changed.")
+        val connection = getHacConnection(project, connectionName)
+        val normalizedLoggerName = getNormalizedLoggerName(loggerName)
 
         val logLevel = CxLogLevel.entries.find { it.name.equals(level.trim(), ignoreCase = true) }
             ?: error("Invalid log level '$level'. Valid levels: ${CxLogLevel.entries.joinToString { it.name }}")
 
-        val loggerEntry = "\"${escapeGroovyString(normalizedLoggerName)}\" : \"${logLevel.name}\""
-        val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.UPDATE_CX_LOGGERS_STATE) }
-            .replace("[loggersMapToBeReplacedPlaceholder]", loggerEntry)
-
-        val loggers = runLoggersScript(project, connection, scriptContent)
-
-        val effectiveLevel = loggers.find { it.name == normalizedLoggerName }?.level?.name
-            ?: logLevel.name
-
-        return "Logger '$normalizedLoggerName' set to $effectiveLevel on ${connection.connectionName}."
+        val result = LoggingMcpService.getInstance(project).updateLoggerLevel(connection, normalizedLoggerName, logLevel)
+        return mapper.map(result)
     }
 
-    /**
-     * Resolves the target HAC [connectionName] (or the active connection) and ensures it uses
-     * AUTOMATIC authentication.
-     *
-     * The logger MCP tools talk to the server through the Groovy console, which currently cannot
-     * drive the external browser-based authentication used by [AuthMode.MANUAL] connections. Until
-     * that is supported, such connections are rejected with an actionable message.
-     *
-     * Note: this guard is intentionally limited to the logger tools — the other toolsets will be
-     * updated in a separate PR.
-     */
-    private fun resolveAutomaticHacConnection(project: Project, connectionName: String?): HacConnectionSettingsState {
+    private fun getNormalizedLoggerName(loggerName: String): String {
+        val normalizedLoggerName = loggerName.trim()
+        if (normalizedLoggerName.isBlank()) error("Logger name must not be blank.")
+        if (normalizedLoggerName == CxLogConstants.ROOT_LOGGER_NAME) error("The '${CxLogConstants.ROOT_LOGGER_NAME}' logger level cannot be changed.")
+        return normalizedLoggerName
+    }
+
+    private fun getHacConnection(project: Project, connectionName: String?): HacConnectionSettingsState {
         val connection = resolveHacConnection(project, connectionName)
-        if (connection.authMode == AuthMode.MANUAL) {
-            error(
-                "HAC connection '${connection.connectionName}' uses Manual (browser) authentication, " +
-                    "which is not yet supported by the logger MCP tools. " +
-                    "Switch the connection to '${AuthMode.AUTOMATIC.title}' to use this tool."
-            )
-        }
-        return connection
-    }
+        if (connection.authMode == AuthMode.AUTOMATIC) return connection
 
-    /**
-     * Escapes [value] for safe embedding inside a Groovy double-quoted string literal (GString), so
-     * that a quote, backslash, `$` (GString interpolation) or newline in a user-supplied logger name
-     * cannot break — or inject Groovy into — the generated `update-cx-loggers-state.groovy` script.
-     */
-    private fun escapeGroovyString(value: String): String = buildString {
-        value.forEach { ch ->
-            when (ch) {
-                '\\' -> append("\\\\")
-                '"' -> append("\\\"")
-                '$' -> append("\\$")
-                '\n' -> append("\\n")
-                '\r' -> append("\\r")
-                else -> append(ch)
-            }
-        }
-    }
-
-    /**
-     * Executes one of the bundled loggers Groovy scripts against [connection] and parses the
-     * `name | effectiveLevel | parentName` lines it returns into [CxLoggerPresentation]s.
-     * Mirrors the parsing performed by `CxRemoteLogStateService`.
-     */
-    private suspend fun runLoggersScript(
-        project: Project,
-        connection: HacConnectionSettingsState,
-        scriptContent: String,
-    ): List<CxLoggerPresentation> {
-        val context = GroovyExecContext(
-            connection = connection,
-            content = scriptContent,
-            transactionMode = TransactionMode.ROLLBACK,
-            timeout = connection.timeout,
+        error(
+            "HAC connection '${connection.connectionName}' uses Manual (browser) authentication, " +
+                "which is not yet supported by the logger MCP tools. " +
+                "Switch the connection to '${AuthMode.AUTOMATIC.title}' to use this tool."
         )
-
-        val result = GroovyExecClient.getInstance(project).execute(context)
-
-        if (result.statusCode != HttpStatus.SC_OK || result.errorMessage != null) {
-            error(
-                buildString {
-                    append("Failed to communicate with ${connection.connectionName}")
-                    result.errorMessage?.let { append(": $it") }
-                }
-            )
-        }
-
-        return result.result
-            ?.split("\n")
-            ?.map { it.split(" | ") }
-            ?.filter { it.size == 3 }
-            ?.map { CxLoggerPresentation.of(it[0], it[1], it[2], false) }
-            ?.distinctBy { it.name }
-            ?: emptyList()
     }
+
 }

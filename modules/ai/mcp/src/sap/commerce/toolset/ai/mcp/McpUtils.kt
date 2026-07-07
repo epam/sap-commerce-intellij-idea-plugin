@@ -19,8 +19,14 @@
 package sap.commerce.toolset.ai.mcp
 
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.ai.mcp.json.McpJsonMapper
 import sap.commerce.toolset.hac.exec.HacExecConnectionService
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+
+private val mappers = mapOf("JSON" to McpJsonMapper)
+
+fun resolveMapper(format: String): McpMapper = mappers[format.trim().uppercase()]
+    ?: error("Unsupported output format '$format'. Supported formats: ${mappers.keys.joinToString()}")
 
 /**
  * Builds a name predicate from a user-supplied [filter]: a case-insensitive regex search when

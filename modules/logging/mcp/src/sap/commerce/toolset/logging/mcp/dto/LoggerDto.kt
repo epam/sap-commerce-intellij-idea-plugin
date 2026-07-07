@@ -16,38 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.logging.mcp.dto
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.serialization) // Kotlin serialization
-}
+import kotlinx.serialization.Serializable
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":solr-exec"))
-    implementation(project(":exec-core"))
-    implementation(project(":ai-mcp"))
-    implementation(libs.kotlinxJson)
-
-    intellijPlatform {
-        intellijIdea(properties("intellij.version")) {
-            useInstaller = false
-        }
-
-        bundledPlugins(
-            "com.intellij.mcpServer",
-        )
-    }
-}
+@Serializable
+data class LoggerDto(
+    val name: String,
+    val level: String,
+    val parent: String? = null,
+)

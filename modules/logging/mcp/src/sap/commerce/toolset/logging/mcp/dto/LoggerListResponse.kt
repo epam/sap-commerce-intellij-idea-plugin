@@ -16,6 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.logging.mcp.dto
 
-interface McpResponseFactory
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class LoggerListResponse(
+    val connection: String,
+    val filter: String? = null,
+    val matched: Int,
+    val total: Int,
+    val items: List<LoggerDto>,
+)

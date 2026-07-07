@@ -16,16 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp.json
+package sap.commerce.toolset.logging.mcp.dto
 
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilder
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
-import sap.commerce.toolset.typeSystem.mcp.ItemTypeDetail
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import kotlinx.serialization.Serializable
 
-class TSItemMcpJsonResponseBuilder(private val detail: ItemTypeDetail) : McpJsonResponseBuilder<TSGlobalMetaItem>() {
-
-    private val _itemBuilder by lazy { TSItemMcpJsonResponseElementBuilder(detail) }
-    override val itemBuilder: McpJsonResponseElementBuilder<TSGlobalMetaItem>
-        get() = _itemBuilder
-}
+@Serializable
+data class LoggerUpdateResult(
+    val connection: String,
+    val logger: String,
+    val level: String,
+)

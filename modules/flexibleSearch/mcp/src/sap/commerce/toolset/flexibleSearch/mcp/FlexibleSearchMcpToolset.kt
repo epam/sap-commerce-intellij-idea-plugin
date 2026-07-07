@@ -23,10 +23,9 @@ import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import org.apache.http.HttpStatus
+import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveHacConnection
-import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
-import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
+import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 
 class FlexibleSearchMcpToolset : McpToolset {
@@ -51,36 +50,14 @@ class FlexibleSearchMcpToolset : McpToolset {
         user: String? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
+        val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
-
-        val context = FlexibleSearchExecContext(
-            connection = connection,
-            content = query,
-            maxCount = maxCount.coerceIn(1, 200),
-            locale = locale,
-            dataSource = dataSource,
-            user = user,
-            timeout = connection.timeout,
-        )
-
-        val result = FlexibleSearchExecClient.getInstance(project).execute(context)
-
-        return buildString {
-            if (result.statusCode != HttpStatus.SC_OK) {
-                appendLine("Error (${result.statusCode}):")
-                result.errorMessage?.let { appendLine(it) }
-                result.errorDetailMessage?.let { appendLine(it) }
-            } else {
-                result.output?.takeIf { it.isNotBlank() }?.let {
-                    appendLine(it)
-                }
-                if (result.output.isNullOrBlank()) {
-                    appendLine("Query executed successfully with no results.")
-                }
-            }
-        }.trim()
+        val result = FlexibleSearchMcpService.getInstance(project).execute(connection, query, QueryMode.FlexibleSearch, maxCount, locale, dataSource, user)
+        return mapper.map(result)
     }
 
     @McpTool(name = "sap_commerce_execute_sql")
@@ -103,36 +80,13 @@ class FlexibleSearchMcpToolset : McpToolset {
         user: String? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
+        val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
-
-        val context = FlexibleSearchExecContext(
-            connection = connection,
-            content = query,
-            queryMode = QueryMode.SQL,
-            maxCount = maxCount.coerceIn(1, 200),
-            locale = locale,
-            dataSource = dataSource,
-            user = user,
-            timeout = connection.timeout,
-        )
-
-        val result = FlexibleSearchExecClient.getInstance(project).execute(context)
-
-        return buildString {
-            if (result.statusCode != HttpStatus.SC_OK) {
-                appendLine("Error (${result.statusCode}):")
-                result.errorMessage?.let { appendLine(it) }
-                result.errorDetailMessage?.let { appendLine(it) }
-            } else {
-                result.output?.takeIf { it.isNotBlank() }?.let {
-                    appendLine(it)
-                }
-                if (result.output.isNullOrBlank()) {
-                    appendLine("Query executed successfully with no results.")
-                }
-            }
-        }.trim()
+        val result = FlexibleSearchMcpService.getInstance(project).execute(connection, query, QueryMode.SQL, maxCount, locale, dataSource, user)
+        return mapper.map(result)
     }
 }

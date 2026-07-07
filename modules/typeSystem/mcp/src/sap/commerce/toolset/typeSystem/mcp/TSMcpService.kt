@@ -23,28 +23,120 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.serialization.json.add
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilderContext
+import sap.commerce.toolset.typeSystem.mcp.dto.*
 import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 
 @Service(Service.Level.PROJECT)
 class TSMcpService(private val project: Project) {
 
-    suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): McpJsonResponseBuilderContext<T> {
-        val search = TSMcpDataProvider.getInstance(project).search<T>(context)
-
-        return McpJsonResponseBuilderContext(
-            items = search,
-            additionalFieldsProvider = {
-                put("detail", context.detailLevel.name)
-
-                context.extensions?.let { extensions -> putJsonArray("extensions") { extensions.sorted().forEach { add(it) } } }
-            }
+    suspend fun searchItemTypes(context: TSMcpSearchContext): TSItemListResponse {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaItem>(context)
+        val items = result.items.map { it.toDto(context.detailLevel) }
+        return TSItemListResponse(
+            detail = context.detailLevel.name,
+            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = context.extensions?.sorted(),
+            matched = items.size,
+            total = result.total,
+            items = items,
         )
     }
+
+    suspend fun searchAtomicTypes(context: TSMcpSearchContext): TSAtomicListResponse {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaAtomic>(context)
+        val items = result.items.map { it.toDto() }
+        return TSAtomicListResponse(
+            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = context.extensions?.sorted(),
+            matched = items.size,
+            total = result.total,
+            items = items,
+        )
+    }
+
+    suspend fun searchCollectionTypes(context: TSMcpSearchContext): TSCollectionListResponse {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaCollection>(context)
+        val items = result.items.map { it.toDto() }
+        return TSCollectionListResponse(
+            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = context.extensions?.sorted(),
+            matched = items.size,
+            total = result.total,
+            items = items,
+        )
+    }
+
+    private fun TSGlobalMetaItem.toDto(detail: ItemTypeDetail): TSItemDto {
+        val attrs = if (detail != ItemTypeDetail.TYPES) {
+            attributes.values.sortedBy { it.name }.map { it.toAttributeDto(detail) }
+        } else null
+
+        return TSItemDto(
+            name = name!!,
+            extends = extendedMetaItemName?.takeIf { it.isNotBlank() },
+            typeCode = deployment?.typeCode?.takeIf { it.isNotBlank() },
+            extension = extensionName.takeIf { it.isNotBlank() },
+            isAbstract = isAbstract.takeIf { it },
+            isCustom = isCustom.takeIf { it },
+            isDeprecated = isDeprecated.takeIf { it },
+            attributes = attrs,
+        )
+    }
+
+    private fun TSGlobalMetaItem.TSGlobalMetaItemAttribute.toAttributeDto(detail: ItemTypeDetail): TSItemAttributeDto {
+        val full = detail == ItemTypeDetail.FULL
+        val (redeclared, declared) = if (full) {
+            declarations.filter { it.extensionName.isNotBlank() }.partition { it.isRedeclare }
+        } else Pair(emptyList(), emptyList())
+
+        val persistence = if (full) {
+            TSAttributePersistenceDto(
+                type = persistence.type?.name?.takeIf { it.isNotBlank() },
+                qualifier = persistence.qualifier?.takeIf { it.isNotBlank() },
+                attributeHandler = persistence.attributeHandler?.takeIf { it.isNotBlank() },
+            ).takeIf { it.type != null || it.qualifier != null || it.attributeHandler != null }
+        } else null
+
+        return TSItemAttributeDto(
+            name = name,
+            type = type?.takeIf { it.isNotBlank() },
+            declaredIn = if (full) (declared.firstOrNull()?.extensionName ?: extensionName)?.takeIf { it.isNotBlank() } else null,
+            redeclaredIn = if (full) redeclared.map { it.extensionName }.distinct().sorted().takeIf { it.isNotEmpty() } else null,
+            localized = if (full) isLocalized.takeIf { it } else null,
+            dynamic = if (full) isDynamic.takeIf { it } else null,
+            deprecated = if (full) isDeprecated.takeIf { it } else null,
+            autoCreate = if (full) isAutoCreate.takeIf { it } else null,
+            generate = if (full) isGenerate.takeIf { it } else null,
+            defaultValue = if (full) defaultValue?.takeIf { it.isNotBlank() } else null,
+            selectionOf = if (full) isSelectionOf?.takeIf { it.isNotBlank() } else null,
+            flattenType = if (full) flattenType?.takeIf { it.isNotBlank() } else null,
+            description = if (full) description?.takeIf { it.isNotBlank() } else null,
+            modifiers = if (full) modifiers.activeModifiers().takeIf { it.isNotEmpty() } else null,
+            persistence = persistence,
+        )
+    }
+
+    private fun TSGlobalMetaAtomic.toDto() = TSAtomicDto(
+        name = name,
+        extends = extends?.takeIf { it.isNotBlank() && name != it },
+        extension = extensionName?.takeIf { it.isNotBlank() },
+        custom = isCustom.takeIf { it },
+        autoCreate = isAutoCreate.takeIf { it },
+        generate = isGenerate.takeIf { it },
+    )
+
+    private fun TSGlobalMetaCollection.toDto() = TSCollectionDto(
+        name = name!!,
+        kind = type.value,
+        elementType = elementType?.takeIf { it.isNotBlank() },
+        extension = extensionName?.takeIf { it.isNotBlank() },
+        custom = isCustom.takeIf { it },
+        autoCreate = isAutoCreate.takeIf { it },
+        generate = isGenerate.takeIf { it },
+    )
 
     companion object {
         fun getInstance(project: Project): TSMcpService = project.service()

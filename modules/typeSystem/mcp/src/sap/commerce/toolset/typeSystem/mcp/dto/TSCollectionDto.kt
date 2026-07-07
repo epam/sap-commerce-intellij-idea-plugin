@@ -16,15 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp
+package sap.commerce.toolset.typeSystem.mcp.dto
 
-import sap.commerce.toolset.typeSystem.mcp.json.CollectionTypeJsonBuilder
-import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import kotlinx.serialization.Serializable
 
-/** Lists Collection types. */
-object CollectionTypeLister : TSMcpDataProvider<TSGlobalMetaCollection>(CollectionTypeJsonBuilder) {
-    override fun fetch(meta: TSMetaModelAccess): Collection<TSGlobalMetaCollection> = meta.getAll(TSMetaType.META_COLLECTION)
-}
+@Serializable
+data class TSCollectionDto(
+    val name: String,
+    val kind: String,
+    val elementType: String? = null,
+    val extension: String? = null,
+    val custom: Boolean? = null,
+    val autoCreate: Boolean? = null,
+    val generate: Boolean? = null,
+)

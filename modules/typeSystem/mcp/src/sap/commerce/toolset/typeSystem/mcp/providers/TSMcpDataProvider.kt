@@ -29,6 +29,8 @@ import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 
+data class TSMcpSearchResult<out T>(val items: Collection<T>, val total: Int)
+
 /**
  * Strategy behind the `sap_commerce_list_*` type-system tools. Each subclass owns the parts that
  * vary per type — the per-type JSON [itemBuilder] and how the types are [fetched][fetch] — while
@@ -42,7 +44,7 @@ import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaClassifier
 @Service(Service.Level.PROJECT)
 class TSMcpDataProvider(private val project: Project) {
 
-    suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): Collection<T> {
+    suspend fun <T : TSGlobalMetaClassifier<*>> search(context: TSMcpSearchContext): TSMcpSearchResult<T> {
         val normalizedFilter = context.filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
         val extensions = context.extensions
@@ -50,22 +52,13 @@ class TSMcpDataProvider(private val project: Project) {
         ensureTypeSystemReady(project)
 
         return readAction {
-            TSMetaModelAccess.getInstance(project).getAll<T>(context.metaType)
+            val all = TSMetaModelAccess.getInstance(project).getAll<T>(context.metaType)
                 .filter { it.name != null }
-                .filter { item ->
-                    (matcher == null || matcher(item.name!!))
-                        && (extensions == null || item.extensionName.lowercase() in extensions)
-                }
-//            buildListResponse(
-//                items = matched,
-//                total = candidates.size,
-//                itemBuilder = itemBuilder,
-//                filterText = normalizedFilter,
-//                additionalFields = {
-//                    additionalFields()
-//                    extensionFilter?.let { exts -> putJsonArray("extensions") { exts.sorted().forEach { add(it) } } }
-//                },
-//            )
+            val matched = all.filter { item ->
+                (matcher == null || matcher(item.name!!))
+                    && (extensions == null || item.extensionName.lowercase() in extensions)
+            }
+            TSMcpSearchResult(items = matched, total = all.size)
         }
     }
 

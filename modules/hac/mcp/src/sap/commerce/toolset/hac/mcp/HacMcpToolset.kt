@@ -18,19 +18,15 @@
 
 package sap.commerce.toolset.hac.mcp
 
+import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import sap.commerce.toolset.ai.mcp.SapCxMcpToolset
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilderContext
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
+import sap.commerce.toolset.ai.mcp.map
+import sap.commerce.toolset.ai.mcp.resolveMapper
 
-class HacMcpToolset : SapCxMcpToolset<HacMcpResponseFactory> {
-
-    private val _factory by lazy { HacMcpResponseFactory() }
-    override val factory: HacMcpResponseFactory
-        get() = _factory
+class HacMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_list_hac_connections")
     @McpDescription(
@@ -42,13 +38,13 @@ class HacMcpToolset : SapCxMcpToolset<HacMcpResponseFactory> {
         | - supportedByMcp: whether this connection can currently be used by MCP tools.
         |IMPORTANT: connections with authMode "MANUAL" are NOT supported for LLM/MCP usage right now (supportedByMcp = false), because they require an interactive browser login that the model cannot perform; calling other HAC tools against such a connection will fail. Support for MANUAL authentication is planned for a later version of the plugin."""
     )
-    suspend fun listHacConnections(): String {
+    suspend fun listHacConnections(
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connectionService = HacExecConnectionService.getInstance(project)
-        val content = McpJsonResponseBuilderContext(items = connectionService.connections)
-
-        return factory
-            .json(connectionService.activeConnection)
-            .build(content = content)
+        val connections = HacMcpService.getInstance(project).listConnections()
+        return mapper.map(connections)
     }
 }

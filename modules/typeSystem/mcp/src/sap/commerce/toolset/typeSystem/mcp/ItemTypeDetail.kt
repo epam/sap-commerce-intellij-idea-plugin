@@ -18,9 +18,13 @@
 
 package sap.commerce.toolset.typeSystem.mcp
 
-/** How much information [TypeSystemMcpToolset.listItemTypes] returns per item type. */
 enum class ItemTypeDetail {
     TYPES,
     ATTRIBUTES,
-    FULL
+    FULL;
+
+    companion object {
+        fun resolve(detail: String) = entries.find { it.name.equals(detail.trim(), ignoreCase = true) }
+            ?: error("Invalid detail '$detail'. Valid values: ${ItemTypeDetail.entries.joinToString { it.name }}")
+    }
 }

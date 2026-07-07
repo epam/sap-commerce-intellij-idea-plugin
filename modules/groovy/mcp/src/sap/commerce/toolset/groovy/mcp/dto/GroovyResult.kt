@@ -16,13 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp.json
+package sap.commerce.toolset.groovy.mcp.dto
 
-import kotlinx.serialization.json.JsonObjectBuilder
-import sap.commerce.toolset.ai.mcp.McpResponseBuilderContent
+import kotlinx.serialization.Serializable
 
-data class McpJsonResponseBuilderContext<T>(
-    override val items: Collection<T>,
-    override val total: Int = items.size,
-    val additionalFieldsProvider: JsonObjectBuilder.() -> Unit = {},
-) : McpResponseBuilderContent<T>
+@Serializable
+data class GroovyResult(
+    val connection: String,
+    val success: Boolean,
+    val output: String? = null,
+    val result: String? = null,
+    val error: String? = null,
+    val errorDetail: String? = null,
+)

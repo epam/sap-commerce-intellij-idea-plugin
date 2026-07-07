@@ -16,15 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp.json
+package sap.commerce.toolset.hac.mcp.dto
 
-import kotlinx.serialization.json.JsonElement
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
-import sap.commerce.toolset.typeSystem.mcp.ItemTypeDetail
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import kotlinx.serialization.Serializable
 
-class TSAtomicMcpJsonResponseElementBuilder(private val detail: ItemTypeDetail) : McpJsonResponseElementBuilder<TSGlobalMetaItem> {
-    override fun build(item: TSGlobalMetaItem): JsonElement {
-        TODO("Not yet implemented")
-    }
-}
+@Serializable
+data class HacConnectionListResponse(
+    val matched: Int,
+    val total: Int,
+    val items: List<HacConnectionDto>,
+)

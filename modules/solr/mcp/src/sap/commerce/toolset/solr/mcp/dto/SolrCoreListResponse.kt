@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.hac.mcp
 
-import sap.commerce.toolset.ai.mcp.McpResponseFactory
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilder
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.hac.mcp.json.HacMcpJsonResponseBuilder
+package sap.commerce.toolset.solr.mcp.dto
 
-class HacMcpResponseFactory() : McpResponseFactory {
+import kotlinx.serialization.Serializable
 
-    fun json(activeConnection: HacConnectionSettingsState): McpJsonResponseBuilder<HacConnectionSettingsState> = HacMcpJsonResponseBuilder(activeConnection)
-
-}
+@Serializable
+data class SolrCoreListResponse(
+    val connection: String,
+    val matched: Int,
+    val total: Int,
+    val items: List<SolrCoreDto>,
+)

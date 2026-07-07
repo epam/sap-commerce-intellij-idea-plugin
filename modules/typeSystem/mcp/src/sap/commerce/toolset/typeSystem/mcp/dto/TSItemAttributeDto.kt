@@ -1,0 +1,47 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.typeSystem.mcp.dto
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class TSAttributePersistenceDto(
+    val type: String? = null,
+    val qualifier: String? = null,
+    val attributeHandler: String? = null,
+)
+
+@Serializable
+data class TSItemAttributeDto(
+    val name: String,
+    val type: String? = null,
+    val declaredIn: String? = null,
+    val redeclaredIn: List<String>? = null,
+    val localized: Boolean? = null,
+    val dynamic: Boolean? = null,
+    val deprecated: Boolean? = null,
+    val autoCreate: Boolean? = null,
+    val generate: Boolean? = null,
+    val defaultValue: String? = null,
+    val selectionOf: String? = null,
+    val flattenType: String? = null,
+    val description: String? = null,
+    val modifiers: List<String>? = null,
+    val persistence: TSAttributePersistenceDto? = null,
+)

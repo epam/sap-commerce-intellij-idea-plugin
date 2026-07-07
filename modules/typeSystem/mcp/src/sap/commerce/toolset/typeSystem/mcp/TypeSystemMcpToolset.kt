@@ -18,25 +18,14 @@
 
 package sap.commerce.toolset.typeSystem.mcp
 
+import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
-import sap.commerce.toolset.ai.mcp.SapCxMcpToolset
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.ai.mcp.map
+import sap.commerce.toolset.ai.mcp.resolveMapper
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
-/**
- * Exposes the SAP Commerce Type System — as shown in the "Type System" tool window — as MCP tools.
- *
- * The type system is the project's LOCAL model: it is parsed from the `*-items.xml` definitions in
- * the project, not fetched from a remote server, so these tools do not require (or use) a HAC
- * connection. Each tool delegates to the matching [sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider], which holds the shared listing
- * pipeline.
- */
-class TypeSystemMcpToolset : SapCxMcpToolset<TSMcpResponseFactory> {
-
-    private val _factory by lazy { TSMcpResponseFactory() }
-    override val factory: TSMcpResponseFactory
-        get() = _factory
+class TypeSystemMcpToolset : McpToolset {
 
     @McpTool(name = "sap_commerce_list_item_types")
     @McpDescription(
@@ -69,19 +58,15 @@ class TypeSystemMcpToolset : SapCxMcpToolset<TSMcpResponseFactory> {
             |Default: TYPES. Prefer the smallest level that answers the question. Attributes are the type's DECLARED attributes, not inherited ones."""
         )
         detail: String = ItemTypeDetail.TYPES.name,
+
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
-        val detailLevel = ItemTypeDetail.entries.find { it.name.equals(detail.trim(), ignoreCase = true) }
-            ?: error("Invalid detail '$detail'. Valid values: ${ItemTypeDetail.entries.joinToString { it.name }}")
-
-        val searchContext = TSMcpSearchContext(TSMetaType.META_ITEM, detailLevel, filter, extensions)
-        val items = TSMcpService.getInstance().search<TSGlobalMetaItem>(searchContext)
-
-        return factory
-            .itemJson(detailLevel)
-            .build(
-                content = items,
-                filterText = filter,
-            )
+        val mapper = resolveMapper(outputFormat)
+        val detailLevel = ItemTypeDetail.resolve(detail)
+        val context = TSMcpSearchContext(TSMetaType.META_ITEM, detailLevel, filter, extensions)
+        val itemTypes = TSMcpService.getInstance().searchItemTypes(context)
+        return mapper.map(itemTypes)
     }
 
     @McpTool(name = "sap_commerce_list_atomic_types")
@@ -106,7 +91,15 @@ class TypeSystemMcpToolset : SapCxMcpToolset<TSMcpResponseFactory> {
             |Omit to include atomic types from all extensions."""
         )
         extensions: String? = null,
-    ): String = AtomicTypeLister.search(filter, extensions)
+
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val context = TSMcpSearchContext(TSMetaType.META_ATOMIC, ItemTypeDetail.TYPES, filter, extensions)
+        val atomicTypes = TSMcpService.getInstance().searchAtomicTypes(context)
+        return mapper.map(atomicTypes)
+    }
 
     @McpTool(name = "sap_commerce_list_collection_types")
     @McpDescription(
@@ -130,5 +123,13 @@ class TypeSystemMcpToolset : SapCxMcpToolset<TSMcpResponseFactory> {
             |Omit to include collection types from all extensions."""
         )
         extensions: String? = null,
-    ): String = CollectionTypeLister.search(filter, extensions)
+
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val context = TSMcpSearchContext(TSMetaType.META_COLLECTION, ItemTypeDetail.TYPES, filter, extensions)
+        val collectionTypes = TSMcpService.getInstance().searchCollectionTypes(context)
+        return mapper.map(collectionTypes)
+    }
 }

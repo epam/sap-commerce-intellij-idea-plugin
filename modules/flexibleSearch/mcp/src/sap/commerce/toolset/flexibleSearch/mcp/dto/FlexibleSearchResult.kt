@@ -16,16 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp
+package sap.commerce.toolset.flexibleSearch.mcp.dto
 
-import sap.commerce.toolset.ai.mcp.McpResponseFactory
-import sap.commerce.toolset.typeSystem.mcp.json.TSAtomicMcpJsonResponseBuilder
-import sap.commerce.toolset.typeSystem.mcp.json.TSItemMcpJsonResponseBuilder
+import kotlinx.serialization.Serializable
 
-class TSMcpResponseFactory : McpResponseFactory {
-
-    fun atomicJson(detail: ItemTypeDetail) = TSAtomicMcpJsonResponseBuilder(detail)
-
-    fun itemJson(detail: ItemTypeDetail) = TSItemMcpJsonResponseBuilder(detail)
-
-}
+@Serializable
+data class FlexibleSearchResult(
+    val connection: String,
+    val success: Boolean,
+    val output: String? = null,
+    val error: String? = null,
+    val errorDetail: String? = null,
+)

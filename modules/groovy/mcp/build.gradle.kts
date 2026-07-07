@@ -21,6 +21,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 plugins {
     id("org.jetbrains.intellij.platform.module")
     alias(libs.plugins.kotlin) // Kotlin support
+    alias(libs.plugins.serialization)
 }
 
 sourceSets {
@@ -39,6 +40,7 @@ dependencies {
     implementation(project(":groovy-exec"))
     implementation(project(":exec-core"))
     implementation(project(":ai-mcp"))
+    implementation(libs.kotlinxJson)
 
     intellijPlatform {
         intellijIdea(properties("intellij.version")) {

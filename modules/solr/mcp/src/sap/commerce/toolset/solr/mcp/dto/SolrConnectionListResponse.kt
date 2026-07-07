@@ -16,9 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.solr.mcp.dto
 
-interface McpResponseElementBuilder<in T, out I> {
+import kotlinx.serialization.Serializable
 
-    fun build(item: T): I
-}
+@Serializable
+data class SolrConnectionListResponse(
+    val matched: Int,
+    val total: Int,
+    val items: List<SolrConnectionDto>,
+)

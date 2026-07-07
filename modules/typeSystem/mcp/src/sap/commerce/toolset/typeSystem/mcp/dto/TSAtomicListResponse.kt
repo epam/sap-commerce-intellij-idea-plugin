@@ -16,9 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ai.mcp
+package sap.commerce.toolset.typeSystem.mcp.dto
 
-interface McpResponseBuilderContent<T> {
-    val items: Collection<T>
-    val total: Int
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class TSAtomicListResponse(
+    val filter: String? = null,
+    val extensions: List<String>? = null,
+    val matched: Int,
+    val total: Int,
+    val items: List<TSAtomicDto>,
+)

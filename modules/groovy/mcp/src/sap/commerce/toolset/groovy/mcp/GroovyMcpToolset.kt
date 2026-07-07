@@ -23,11 +23,9 @@ import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import org.apache.http.HttpStatus
+import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveHacConnection
-import sap.commerce.toolset.groovy.exec.GroovyExecClient
-import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
-import sap.commerce.toolset.settings.state.TransactionMode
+import sap.commerce.toolset.ai.mcp.resolveMapper
 
 class GroovyMcpToolset : McpToolset {
 
@@ -45,37 +43,13 @@ class GroovyMcpToolset : McpToolset {
         commit: Boolean = false,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
+        val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
         val connection = resolveHacConnection(project, connectionName)
-
-        val context = GroovyExecContext(
-            connection = connection,
-            content = script,
-            timeout = connection.timeout,
-            transactionMode = if (commit) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
-        )
-
-        val result = GroovyExecClient.getInstance(project).execute(context)
-
-        return buildString {
-            if (result.statusCode != HttpStatus.SC_OK) {
-                appendLine("Error (${result.statusCode}):")
-                result.errorMessage?.let { appendLine(it) }
-                result.errorDetailMessage?.let { appendLine(it) }
-            } else {
-                result.output?.takeIf { it.isNotBlank() }?.let {
-                    appendLine("Output:")
-                    appendLine(it)
-                }
-                result.result?.takeIf { it.isNotBlank() }?.let {
-                    appendLine("Result:")
-                    appendLine(it)
-                }
-                if (result.output.isNullOrBlank() && result.result.isNullOrBlank()) {
-                    appendLine("Script executed successfully with no output.")
-                }
-            }
-        }.trim()
+        val result = GroovyMcpService.getInstance(project).execute(connection, script, commit)
+        return mapper.map(result)
     }
 }

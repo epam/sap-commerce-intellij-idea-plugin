@@ -25,7 +25,7 @@ All commands use the Gradle wrapper. The build uses the configuration cache and 
 
 ### Multi-module layout
 
-The plugin is split into ~87 Gradle subprojects under `modules/`. `settings.gradle.kts` auto-discovers every `modules/**/build.gradle.kts` (depth ≤ 4) and derives the Gradle project name by stripping the `modules/` prefix and replacing path separators with `-`. So `modules/impex/core` → project `:impex-core`, consumed as `project(":impex-core")`.
+The plugin is split into multiple Gradle subprojects under `modules/`. `settings.gradle.kts` auto-discovers every `modules/**/build.gradle.kts` (depth ≤ 4) and derives the Gradle project name by stripping the `modules/` prefix and replacing path separators with `-`. So `modules/impex/core` → project `:impex-core`, consumed as `project(":impex-core")`.
 
 Modules are grouped by **feature** (e.g. `impex`, `flexibleSearch`, `acl`, `polyglotQuery`, `typeSystem`, `beanSystem`, `cockpitNG`, `project`, `hac`, `solr`, `ccv2`, `spring`, `debugger`, …), and each feature is further split by **layer** by a consistent sub-module naming convention:
 

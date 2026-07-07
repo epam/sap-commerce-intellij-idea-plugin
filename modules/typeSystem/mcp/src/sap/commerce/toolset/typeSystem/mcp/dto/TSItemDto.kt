@@ -16,17 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.mcp.json
+package sap.commerce.toolset.typeSystem.mcp.dto
 
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseBuilder
-import sap.commerce.toolset.ai.mcp.json.McpJsonResponseElementBuilder
-import sap.commerce.toolset.typeSystem.mcp.ItemTypeDetail
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-class TSAtomicMcpJsonResponseBuilder(private val detail: ItemTypeDetail) : McpJsonResponseBuilder<TSGlobalMetaAtomic>() {
-
-    private val _itemBuilder by lazy { TSAtomicMcpJsonResponseElementBuilder(detail) }
-    override val itemBuilder: McpJsonResponseElementBuilder<TSGlobalMetaAtomic>
-        get() = _itemBuilder
-}
+@Serializable
+data class TSItemDto(
+    val name: String,
+    val extends: String? = null,
+    val typeCode: String? = null,
+    val extension: String? = null,
+    @SerialName("abstract") val isAbstract: Boolean? = null,
+    @SerialName("custom") val isCustom: Boolean? = null,
+    @SerialName("deprecated") val isDeprecated: Boolean? = null,
+    val attributes: List<TSItemAttributeDto>? = null,
+)

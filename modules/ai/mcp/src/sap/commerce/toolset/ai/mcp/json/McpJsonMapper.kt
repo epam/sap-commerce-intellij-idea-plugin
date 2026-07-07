@@ -18,28 +18,16 @@
 
 package sap.commerce.toolset.ai.mcp.json
 
-import kotlinx.serialization.json.*
-import sap.commerce.toolset.ai.mcp.McpResponseBuilder
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+import sap.commerce.toolset.ai.mcp.McpMapper
 
-private val json = Json { prettyPrint = false }
+object McpJsonMapper : McpMapper {
 
-abstract class McpJsonResponseBuilder<T> : McpResponseBuilder<T, String, McpJsonResponseBuilderContext<T>> {
-
-    protected abstract val itemBuilder: McpJsonResponseElementBuilder<T>
-
-    override fun build(content: McpJsonResponseBuilderContext<T>, filterText: String?): String {
-        val payload = buildJsonObject {
-            content.additionalFieldsProvider.invoke(this)
-
-            putIfNotBlank("filter", filterText)
-
-            put("matched", content.items.size)
-            put("total", content.total)
-
-            putJsonArray("items") {
-                content.items.forEach { add(itemBuilder.build(it)) }
-            }
-        }
-        return json.encodeToString(JsonObject.serializer(), payload)
+    internal val json = Json {
+        prettyPrint = false
+        explicitNulls = false
     }
+
+    override fun <T> map(value: T, serializer: KSerializer<T>): String = json.encodeToString(serializer, value)
 }
