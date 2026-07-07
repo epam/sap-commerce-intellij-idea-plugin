@@ -21,14 +21,10 @@ package sap.commerce.toolset.solr.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.resolveSolrConnection
-import sap.commerce.toolset.solr.exec.SolrExecClient
-import sap.commerce.toolset.solr.exec.SolrExecConnectionService
-import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
-import kotlin.coroutines.coroutineContext
+import sap.commerce.toolset.ai.mcp.map
+import sap.commerce.toolset.ai.mcp.resolveMapper
 
 class SolrMcpToolset : McpToolset {
 
@@ -48,85 +44,44 @@ class SolrMcpToolset : McpToolset {
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
     ): String {
-        val project = currentCoroutineContext().mcpProject
-        val connection = resolveSolrConnection(project, connectionName)
-
-        val context = SolrQueryExecContext(
-            connection = connection,
-            content = query,
-            core = core,
-            rows = rows.coerceIn(1, 500),
-        )
-
-        val result = SolrExecClient.getInstance(project).execute(context)
-
-        return buildString {
-            if (result.statusCode != HttpStatus.SC_OK) {
-                appendLine("Error (${result.statusCode}):")
-                result.errorMessage?.let { appendLine(it) }
-                result.errorDetailMessage?.let { appendLine(it) }
-            } else {
-                result.output?.takeIf { it.isNotBlank() }?.let {
-                    appendLine(it)
-                }
-                if (result.output.isNullOrBlank()) {
-                    appendLine("Query executed successfully with no results.")
-                }
-            }
-        }.trim()
+        val project = currentCoroutineContext().project
+        val context = SolrQueryMcpContext(connectionName, query, core, rows)
+        return SolrMcpService.getInstance(project).executeQuery(context)
     }
 
     @McpTool(name = "sap_commerce_solr_list_cores")
     @McpDescription(
         """Lists all available Solr cores on a SAP Commerce Solr server.
-        |Returns core names and document counts.
+        |Returns a JSON object: {"connection", "matched", "total", "items": [{"core", "docs"}]}.
         |Requires a configured Solr connection with valid credentials."""
     )
     suspend fun solrListCores(
         @McpDescription("Optional Solr connection name. Uses the active connection if not specified")
         connectionName: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
-        val project = coroutineContext.mcpProject
-        val connection = resolveSolrConnection(project, connectionName)
-        val connectionService = SolrExecConnectionService.getInstance(project)
-        val credentials = connectionService.getCredentials(connection)
-        val username = credentials.userName ?: ""
-        val password = credentials.getPasswordAsString() ?: ""
-
-        val cores = try {
-            SolrExecClient.getInstance(project).coresData(connection, username, password)
-        } catch (e: Exception) {
-            return "Error listing Solr cores: ${e.message}"
-        }
-
-        return buildString {
-            if (cores.isEmpty()) {
-                appendLine("No Solr cores found.")
-            } else {
-                appendLine("Solr Cores:")
-                cores.forEach { core ->
-                    appendLine("  - ${core.core} (${core.docs} documents)")
-                }
-            }
-        }.trim()
+        val mapper = resolveMapper(outputFormat)
+        val project = currentCoroutineContext().project
+        val context = SolrListCoresMcpContext(connectionName)
+        val cores = SolrMcpService.getInstance(project).listCores(context)
+        return mapper.map(cores)
     }
 
     @McpTool(name = "sap_commerce_list_solr_connections")
     @McpDescription(
-        """Lists all configured Solr connections for the current project.
-        |Returns connection names and URLs. Use a connection name with other Solr tools to target a specific server."""
+        """Lists all configured Solr connections for the current project as a JSON object.
+        |Shape: {"matched", "total", "items": [{"name", "url", "active"}]}.
+        | - name: pass it to other Solr tools to target a specific server;
+        | - active: whether it is the currently active connection."""
     )
-    suspend fun listSolrConnections(): String {
-        val project = coroutineContext.mcpProject
-        val connectionService = SolrExecConnectionService.getInstance(project)
-        val activeConnection = connectionService.activeConnection
-
-        return buildString {
-            appendLine("Solr Connections:")
-            connectionService.connections.forEach { connection ->
-                val active = if (connection.uuid == activeConnection.uuid) " (active)" else ""
-                appendLine("  - ${connection.connectionName} (${connection.generatedURL})$active")
-            }
-        }.trim()
+    suspend fun listSolrConnections(
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val project = currentCoroutineContext().project
+        val connections = SolrMcpService.getInstance(project).listConnections()
+        return mapper.map(connections)
     }
 }

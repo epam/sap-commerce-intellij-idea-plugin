@@ -21,13 +21,10 @@ package sap.commerce.toolset.impex.mcp
 import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
+import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import org.apache.http.HttpStatus
-import sap.commerce.toolset.ai.mcp.mcpProject
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
-import sap.commerce.toolset.impex.exec.ImpExExecClient
-import sap.commerce.toolset.impex.exec.context.ImpExExecContext
-import sap.commerce.toolset.impex.exec.context.ImpExExecutionMode
+import sap.commerce.toolset.ai.mcp.map
+import sap.commerce.toolset.ai.mcp.resolveMapper
 
 class ImpExMcpToolset : McpToolset {
 
@@ -45,35 +42,13 @@ class ImpExMcpToolset : McpToolset {
         validate: Boolean = false,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
         connectionName: String? = null,
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
     ): String {
-        val project = currentCoroutineContext().mcpProject
-        val connection = resolveHacConnection(project, connectionName)
-
-        val defaultSettings = ImpExExecContext.defaultSettings(connection)
-        val context = ImpExExecContext(
-            connection = connection,
-            content = content,
-            executionMode = if (validate) ImpExExecutionMode.VALIDATE else ImpExExecutionMode.IMPORT,
-            settings = defaultSettings,
-        )
-
-        val result = ImpExExecClient.getInstance(project).execute(context)
-
-        val action = if (validate) "Validation" else "Import"
-        return buildString {
-            if (result.statusCode != HttpStatus.SC_OK) {
-                appendLine("$action Error (${result.statusCode}):")
-                result.errorMessage?.let { appendLine(it) }
-                result.errorDetailMessage?.let { appendLine(it) }
-            } else {
-                result.output?.takeIf { it.isNotBlank() }?.let {
-                    appendLine("$action Result:")
-                    appendLine(it)
-                }
-                if (result.output.isNullOrBlank()) {
-                    appendLine("$action completed successfully.")
-                }
-            }
-        }.trim()
+        val mapper = resolveMapper(outputFormat)
+        val project = currentCoroutineContext().project
+        val context = ImpExMcpContext(connectionName, content, validate)
+        val result = ImpExMcpService.getInstance(project).execute(context)
+        return mapper.map(result)
     }
 }

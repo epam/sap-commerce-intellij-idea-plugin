@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,10 @@
 
 package sap.commerce.toolset.solr.exec.context
 
-class SolrCoreData(val core: String, val docs: Int) {
+data class SolrCoreData(
+    val core: String,
+    val docs: Int
+) {
 
     override fun toString() = core
 

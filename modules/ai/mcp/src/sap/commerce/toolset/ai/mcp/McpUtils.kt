@@ -18,33 +18,12 @@
 
 package sap.commerce.toolset.ai.mcp
 
-import com.intellij.mcpserver.project
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.solr.exec.SolrExecConnectionService
-import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
-import kotlin.coroutines.CoroutineContext
+import sap.commerce.toolset.ai.mcp.json.McpJsonMapper
 
-/**
- * Retrieves the current [Project] from the MCP coroutine context.
- * The project is resolved by the MCP framework from the `projectPath` parameter
- * that is automatically injected into every MCP tool call.
- */
-val CoroutineContext.mcpProject: Project
-    get() = this.project
+private val mappers = mapOf("JSON" to McpJsonMapper)
 
-fun resolveHacConnection(project: Project, connectionName: String?): HacConnectionSettingsState {
-    val connectionService = HacExecConnectionService.getInstance(project)
-
-    if (connectionName.isNullOrBlank()) return connectionService.activeConnection
-
-    return connectionService.connections.find {
-        it.connectionName.equals(connectionName, ignoreCase = true)
-            || it.name?.equals(connectionName, ignoreCase = true) == true
-    }
-        ?: error("HAC connection '$connectionName' not found. Available: ${connectionService.connections.joinToString { it.connectionName }}")
-}
+fun resolveMapper(format: String): McpMapper = mappers[format.trim().uppercase()]
+    ?: error("Unsupported output format '$format'. Supported formats: ${mappers.keys.joinToString()}")
 
 /**
  * Builds a name predicate from a user-supplied [filter]: a case-insensitive regex search when
@@ -59,15 +38,3 @@ fun regexOrContainsMatcher(filter: String): (String) -> Boolean =
     runCatching { filter.toRegex(RegexOption.IGNORE_CASE) }.getOrNull()
         ?.let { regex -> regex::containsMatchIn }
         ?: { name -> name.contains(filter, ignoreCase = true) }
-
-fun resolveSolrConnection(project: Project, connectionName: String?): SolrConnectionSettingsState {
-    val connectionService = SolrExecConnectionService.getInstance(project)
-
-    if (connectionName.isNullOrBlank()) return connectionService.activeConnection
-
-    return connectionService.connections.find {
-        it.connectionName.equals(connectionName, ignoreCase = true)
-            || it.name?.equals(connectionName, ignoreCase = true) == true
-    }
-        ?: error("Solr connection '$connectionName' not found. Available: ${connectionService.connections.joinToString { it.connectionName }}")
-}
