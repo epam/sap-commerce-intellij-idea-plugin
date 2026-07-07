@@ -22,13 +22,9 @@ import com.intellij.mcpserver.McpToolset
 import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
-import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.map
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.ai.mcp.resolveMapper
-import sap.commerce.toolset.hac.exec.settings.state.AuthMode
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.logging.CxLogConstants
 import sap.commerce.toolset.logging.CxLogLevel
 
@@ -57,8 +53,8 @@ class LoggingMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = getHacConnection(project, connectionName)
-        val loggers = LoggingMcpService.getInstance(project).listLoggers(connection, filter)
+        val context = LoggingListLoggersMcpContext(connectionName, filter)
+        val loggers = LoggingMcpService.getInstance(project).listLoggers(context)
         return mapper.map(loggers)
     }
 
@@ -83,13 +79,11 @@ class LoggingMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = getHacConnection(project, connectionName)
         val normalizedLoggerName = getNormalizedLoggerName(loggerName)
-
         val logLevel = CxLogLevel.entries.find { it.name.equals(level.trim(), ignoreCase = true) }
             ?: error("Invalid log level '$level'. Valid levels: ${CxLogLevel.entries.joinToString { it.name }}")
-
-        val result = LoggingMcpService.getInstance(project).updateLoggerLevel(connection, normalizedLoggerName, logLevel)
+        val context = LoggingUpdateLoggerLevelMcpContext(connectionName, normalizedLoggerName, logLevel)
+        val result = LoggingMcpService.getInstance(project).updateLoggerLevel(context)
         return mapper.map(result)
     }
 
@@ -99,16 +93,4 @@ class LoggingMcpToolset : McpToolset {
         if (normalizedLoggerName == CxLogConstants.ROOT_LOGGER_NAME) error("The '${CxLogConstants.ROOT_LOGGER_NAME}' logger level cannot be changed.")
         return normalizedLoggerName
     }
-
-    private fun getHacConnection(project: Project, connectionName: String?): HacConnectionSettingsState {
-        val connection = resolveHacConnection(project, connectionName)
-        if (connection.authMode == AuthMode.AUTOMATIC) return connection
-
-        error(
-            "HAC connection '${connection.connectionName}' uses Manual (browser) authentication, " +
-                "which is not yet supported by the logger MCP tools. " +
-                "Switch the connection to '${AuthMode.AUTOMATIC.title}' to use this tool."
-        )
-    }
-
 }

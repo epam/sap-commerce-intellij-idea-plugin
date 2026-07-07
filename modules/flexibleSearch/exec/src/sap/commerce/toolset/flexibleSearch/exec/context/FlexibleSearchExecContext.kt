@@ -20,6 +20,7 @@ package sap.commerce.toolset.flexibleSearch.exec.context
 
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecContext
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.hac.HacExecConstants
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -109,9 +110,9 @@ data class FlexibleSearchExecContext(
 
     companion object {
         fun defaultSettings(connectionSettings: HacConnectionSettingsState? = null, user: String? = null) = Settings(
-            maxCount = 200,
-            locale = "en",
-            dataSource = "master",
+            maxCount = FlexibleSearchExecConstants.Defaults.MAX_COUNT,
+            locale = FlexibleSearchExecConstants.Defaults.LOCALE,
+            dataSource = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
             user = user,
             timeout = connectionSettings?.timeout ?: HacExecConstants.DEFAULT_TIMEOUT,
         )

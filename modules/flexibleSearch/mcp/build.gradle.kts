@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":flexibleSearch-exec"))
     implementation(project(":exec-core"))
     implementation(project(":ai-mcp"))
+    implementation(project(":hac-mcp"))
     implementation(libs.kotlinxJson)
 
     intellijPlatform {

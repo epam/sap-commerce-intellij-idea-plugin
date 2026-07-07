@@ -24,7 +24,6 @@ import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.map
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.ai.mcp.resolveMapper
 
 class GroovyMcpToolset : McpToolset {
@@ -48,8 +47,8 @@ class GroovyMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = resolveHacConnection(project, connectionName)
-        val result = GroovyMcpService.getInstance(project).execute(connection, script, commit)
+        val context = GroovyMcpContext(connectionName, script, commit)
+        val result = GroovyMcpService.getInstance(project).execute(context)
         return mapper.map(result)
     }
 }

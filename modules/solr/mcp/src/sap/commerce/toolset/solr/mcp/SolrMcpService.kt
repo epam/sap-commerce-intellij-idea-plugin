@@ -21,9 +21,10 @@ package sap.commerce.toolset.solr.mcp
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import org.apache.http.HttpStatus
 import sap.commerce.toolset.solr.exec.SolrExecClient
 import sap.commerce.toolset.solr.exec.SolrExecConnectionService
-import sap.commerce.toolset.solr.exec.settings.state.SolrConnectionSettingsState
+import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
 import sap.commerce.toolset.solr.mcp.dto.SolrConnectionDto
 import sap.commerce.toolset.solr.mcp.dto.SolrConnectionListResponse
 import sap.commerce.toolset.solr.mcp.dto.SolrCoreDto
@@ -45,7 +46,8 @@ class SolrMcpService(private val project: Project) {
         )
     }
 
-    fun listCores(connection: SolrConnectionSettingsState): SolrCoreListResponse {
+    fun listCores(context: SolrListCoresMcpContext): SolrCoreListResponse {
+        val connection = resolveSolrConnection(project, context.connectionName)
         val connectionService = SolrExecConnectionService.getInstance(project)
         val credentials = connectionService.getCredentials(connection)
         val username = credentials.userName ?: ""
@@ -60,6 +62,29 @@ class SolrMcpService(private val project: Project) {
             total = items.size,
             items = items,
         )
+    }
+
+    suspend fun executeQuery(context: SolrQueryMcpContext): String {
+        val connection = resolveSolrConnection(project, context.connectionName)
+        val execContext = SolrQueryExecContext(
+            connection = connection,
+            content = context.query,
+            core = context.core,
+            rows = context.rows.coerceIn(1, 500),
+        )
+
+        val result = SolrExecClient.getInstance(project).execute(execContext)
+
+        return buildString {
+            if (result.statusCode != HttpStatus.SC_OK) {
+                appendLine("Error (${result.statusCode}):")
+                result.errorMessage?.let { appendLine(it) }
+                result.errorDetailMessage?.let { appendLine(it) }
+            } else {
+                result.output?.takeIf { it.isNotBlank() }?.let { appendLine(it) }
+                if (result.output.isNullOrBlank()) appendLine("Query executed successfully with no results.")
+            }
+        }.trim()
     }
 
     companion object {

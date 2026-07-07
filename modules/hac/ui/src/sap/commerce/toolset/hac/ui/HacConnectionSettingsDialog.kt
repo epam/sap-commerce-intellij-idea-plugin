@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -448,14 +448,14 @@ class HacConnectionSettingsDialog(
         GotItTooltip(
             id = GotItTooltips.Hac.AUTH_MODES,
             textSupplier = {
-                """
+                """?
                     You can choose one of the authentication modes for integration with ${code("HAC")}.
                     <br><br>With the ${icon(AuthMode.AUTOMATIC.icon)} ${code(AuthMode.AUTOMATIC.shortTitle)} the Plugin will rely on the specified persisted credentials to authenticate and renew connection to hAC.
                     <br><br>Whereas with the ${icon(AuthMode.MANUAL.icon)} ${code(AuthMode.MANUAL.shortTitle)} credentials will not be persisted and you will be asked for authentication via Browser every time when it is required.
                     This mode also supports http basic authorization of the connection (e.g. ${code("nginx")} reverse proxy). 
                 """.trimIndent()
             },
-            parentDisposable = null
+            parentDisposable = disposable,
         )
             .withHeader("Authentication modes for hAC!")
             .show(component, GotItTooltip.TOP_MIDDLE)

@@ -23,11 +23,8 @@ import com.intellij.mcpserver.annotations.McpDescription
 import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
-import org.apache.http.HttpStatus
 import sap.commerce.toolset.ai.mcp.map
 import sap.commerce.toolset.ai.mcp.resolveMapper
-import sap.commerce.toolset.solr.exec.SolrExecClient
-import sap.commerce.toolset.solr.exec.context.SolrQueryExecContext
 
 class SolrMcpToolset : McpToolset {
 
@@ -48,27 +45,8 @@ class SolrMcpToolset : McpToolset {
         connectionName: String? = null,
     ): String {
         val project = currentCoroutineContext().project
-        val connection = resolveSolrConnection(project, connectionName)
-
-        val context = SolrQueryExecContext(
-            connection = connection,
-            content = query,
-            core = core,
-            rows = rows.coerceIn(1, 500),
-        )
-
-        val result = SolrExecClient.getInstance(project).execute(context)
-
-        return buildString {
-            if (result.statusCode != HttpStatus.SC_OK) {
-                appendLine("Error (${result.statusCode}):")
-                result.errorMessage?.let { appendLine(it) }
-                result.errorDetailMessage?.let { appendLine(it) }
-            } else {
-                result.output?.takeIf { it.isNotBlank() }?.let { appendLine(it) }
-                if (result.output.isNullOrBlank()) appendLine("Query executed successfully with no results.")
-            }
-        }.trim()
+        val context = SolrQueryMcpContext(connectionName, query, core, rows)
+        return SolrMcpService.getInstance(project).executeQuery(context)
     }
 
     @McpTool(name = "sap_commerce_solr_list_cores")
@@ -85,8 +63,8 @@ class SolrMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = resolveSolrConnection(project, connectionName)
-        val cores = SolrMcpService.getInstance(project).listCores(connection)
+        val context = SolrListCoresMcpContext(connectionName)
+        val cores = SolrMcpService.getInstance(project).listCores(context)
         return mapper.map(cores)
     }
 

@@ -28,8 +28,8 @@ import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.mcp.HacMcpService
 import sap.commerce.toolset.logging.CxLogConstants
-import sap.commerce.toolset.logging.CxLogLevel
 import sap.commerce.toolset.logging.mcp.dto.LoggerDto
 import sap.commerce.toolset.logging.mcp.dto.LoggerListResponse
 import sap.commerce.toolset.logging.mcp.dto.LoggerUpdateResult
@@ -39,11 +39,12 @@ import sap.commerce.toolset.settings.state.TransactionMode
 @Service(Service.Level.PROJECT)
 class LoggingMcpService(private val project: Project) {
 
-    suspend fun listLoggers(connection: HacConnectionSettingsState, filter: String?): LoggerListResponse {
+    suspend fun listLoggers(context: LoggingListLoggersMcpContext): LoggerListResponse {
+        val connection = HacMcpService.getInstance(project).resolveConnection(context.connectionName)
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.EXTENSION_STATE_SCRIPT) }
         val allLoggers = runScript(connection, scriptContent)
 
-        val normalizedFilter = filter?.trim()?.takeIf { it.isNotEmpty() }
+        val normalizedFilter = context.filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
         val matched = matcher?.let { match -> allLoggers.filter { match(it.name) } } ?: allLoggers
 
@@ -84,21 +85,18 @@ class LoggingMcpService(private val project: Project) {
             ?: emptyList()
     }
 
-    suspend fun updateLoggerLevel(
-        connection: HacConnectionSettingsState,
-        loggerName: String,
-        logLevel: CxLogLevel,
-    ): LoggerUpdateResult {
-        val loggerEntry = "\"${escapeGroovyString(loggerName)}\" : \"${logLevel.name}\""
+    suspend fun updateLoggerLevel(context: LoggingUpdateLoggerLevelMcpContext): LoggerUpdateResult {
+        val connection = HacMcpService.getInstance(project).resolveConnection(context.connectionName)
+        val loggerEntry = "\"${escapeGroovyString(context.loggerName)}\" : \"${context.logLevel.name}\""
         val scriptContent = readAction { ExtensionsService.getInstance().findResource(CxLogConstants.UPDATE_CX_LOGGERS_STATE) }
             .replace("[loggersMapToBeReplacedPlaceholder]", loggerEntry)
 
         val loggers = runScript(connection, scriptContent)
-        val effectiveLevel = loggers.find { it.name == loggerName }?.level?.name ?: logLevel.name
+        val effectiveLevel = loggers.find { it.name == context.loggerName }?.level?.name ?: context.logLevel.name
 
         return LoggerUpdateResult(
             connection = connection.connectionName,
-            logger = loggerName,
+            logger = context.loggerName,
             level = effectiveLevel,
         )
     }

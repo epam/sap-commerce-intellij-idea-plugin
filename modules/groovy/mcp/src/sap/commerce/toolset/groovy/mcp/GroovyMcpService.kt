@@ -25,21 +25,21 @@ import org.apache.http.HttpStatus
 import sap.commerce.toolset.groovy.exec.GroovyExecClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecContext
 import sap.commerce.toolset.groovy.mcp.dto.GroovyResult
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
-import sap.commerce.toolset.settings.state.TransactionMode
+import sap.commerce.toolset.hac.mcp.HacMcpService
 
 @Service(Service.Level.PROJECT)
 class GroovyMcpService(private val project: Project) {
 
-    suspend fun execute(connection: HacConnectionSettingsState, script: String, commit: Boolean): GroovyResult {
-        val context = GroovyExecContext(
+    suspend fun execute(context: GroovyMcpContext): GroovyResult {
+        val connection = HacMcpService.getInstance(project).resolveConnection(context.connectionName)
+        val execContext = GroovyExecContext(
             connection = connection,
-            content = script,
+            content = context.script,
             timeout = connection.timeout,
-            transactionMode = if (commit) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
+            transactionMode = context.transactionMode,
         )
 
-        val result = GroovyExecClient.getInstance(project).execute(context)
+        val result = GroovyExecClient.getInstance(project).execute(execContext)
 
         return if (result.statusCode != HttpStatus.SC_OK) {
             GroovyResult(

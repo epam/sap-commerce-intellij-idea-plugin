@@ -24,34 +24,28 @@ import com.intellij.openapi.project.Project
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecContext
-import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.flexibleSearch.mcp.dto.FlexibleSearchResult
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
+import sap.commerce.toolset.hac.mcp.HacMcpService
 
 @Service(Service.Level.PROJECT)
 class FlexibleSearchMcpService(private val project: Project) {
 
     suspend fun execute(
-        connection: HacConnectionSettingsState,
-        query: String,
-        queryMode: QueryMode,
-        maxCount: Int,
-        locale: String,
-        dataSource: String,
-        user: String?,
+        context: FlexibleSearchMcpContext,
     ): FlexibleSearchResult {
-        val context = FlexibleSearchExecContext(
+        val connection = HacMcpService.getInstance(project).resolveConnection(context.connectionName)
+        val execContext = FlexibleSearchExecContext(
             connection = connection,
-            content = query,
-            queryMode = queryMode,
-            maxCount = maxCount.coerceIn(1, 200),
-            locale = locale,
-            dataSource = dataSource,
-            user = user,
+            content = context.query,
+            queryMode = context.queryMode,
+            maxCount = context.maxCount.coerceIn(1, 200),
+            locale = context.locale,
+            dataSource = context.dataSource,
+            user = context.user,
             timeout = connection.timeout,
         )
 
-        val result = FlexibleSearchExecClient.getInstance(project).execute(context)
+        val result = FlexibleSearchExecClient.getInstance(project).execute(execContext)
 
         return if (result.statusCode != HttpStatus.SC_OK) {
             FlexibleSearchResult(

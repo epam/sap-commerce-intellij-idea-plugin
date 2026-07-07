@@ -18,10 +18,7 @@
 
 package sap.commerce.toolset.ai.mcp
 
-import com.intellij.openapi.project.Project
 import sap.commerce.toolset.ai.mcp.json.McpJsonMapper
-import sap.commerce.toolset.hac.exec.HacExecConnectionService
-import sap.commerce.toolset.hac.exec.settings.state.HacConnectionSettingsState
 
 private val mappers = mapOf("JSON" to McpJsonMapper)
 
@@ -41,21 +38,3 @@ fun regexOrContainsMatcher(filter: String): (String) -> Boolean =
     runCatching { filter.toRegex(RegexOption.IGNORE_CASE) }.getOrNull()
         ?.let { regex -> regex::containsMatchIn }
         ?: { name -> name.contains(filter, ignoreCase = true) }
-
-/**
- * Resolves the HAC connection targeted by a HAC-backed MCP tool call: the connection whose name
- * matches [connectionName] (case-insensitively, against either the display or configured name), or
- * the active connection when [connectionName] is null/blank. Errors with the list of available
- * connection names when no match is found.
- */
-fun resolveHacConnection(project: Project, connectionName: String?): HacConnectionSettingsState {
-    val connectionService = HacExecConnectionService.getInstance(project)
-
-    if (connectionName.isNullOrBlank()) return connectionService.activeConnection
-
-    return connectionService.connections.find {
-        it.connectionName.equals(connectionName, ignoreCase = true)
-            || it.name?.equals(connectionName, ignoreCase = true) == true
-    }
-        ?: error("HAC connection '$connectionName' not found. Available: ${connectionService.connections.joinToString { it.connectionName }}")
-}

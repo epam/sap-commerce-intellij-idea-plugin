@@ -24,8 +24,8 @@ import com.intellij.mcpserver.annotations.McpTool
 import com.intellij.mcpserver.project
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.ai.mcp.map
-import sap.commerce.toolset.ai.mcp.resolveHacConnection
 import sap.commerce.toolset.ai.mcp.resolveMapper
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 
 class FlexibleSearchMcpToolset : McpToolset {
@@ -41,11 +41,11 @@ class FlexibleSearchMcpToolset : McpToolset {
         @McpDescription("FlexibleSearch query to execute, e.g. 'SELECT {pk}, {uid} FROM {User} WHERE {uid} = 'admin''")
         query: String,
         @McpDescription("Maximum number of result rows to return. Default is 200")
-        maxCount: Int = 200,
+        maxCount: Int = FlexibleSearchExecConstants.Defaults.MAX_COUNT,
         @McpDescription("Optional locale for the query. Default is 'en'")
-        locale: String = "en",
+        locale: String = FlexibleSearchExecConstants.Defaults.LOCALE,
         @McpDescription("Optional data source for the query. Default is 'master'")
-        dataSource: String = "master",
+        dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
         @McpDescription("Optional user to execute the query as. Default uses the current session user")
         user: String? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
@@ -55,8 +55,8 @@ class FlexibleSearchMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = resolveHacConnection(project, connectionName)
-        val result = FlexibleSearchMcpService.getInstance(project).execute(connection, query, QueryMode.FlexibleSearch, maxCount, locale, dataSource, user)
+        val context = FlexibleSearchMcpContext(connectionName, QueryMode.FlexibleSearch, query, maxCount, locale, dataSource, user)
+        val result = FlexibleSearchMcpService.getInstance(project).execute(context)
         return mapper.map(result)
     }
 
@@ -71,11 +71,11 @@ class FlexibleSearchMcpToolset : McpToolset {
         @McpDescription("SQL query to execute against the underlying database")
         query: String,
         @McpDescription("Maximum number of result rows to return. Default is 200")
-        maxCount: Int = 200,
+        maxCount: Int = FlexibleSearchExecConstants.Defaults.MAX_COUNT,
         @McpDescription("Optional locale for the query. Default is 'en'")
-        locale: String = "en",
+        locale: String = FlexibleSearchExecConstants.Defaults.LOCALE,
         @McpDescription("Optional data source for the query. Default is 'master'")
-        dataSource: String = "master",
+        dataSource: String = FlexibleSearchExecConstants.Defaults.DATA_SOURCE,
         @McpDescription("Optional user to execute the query as. Default uses the current session user")
         user: String? = null,
         @McpDescription("Optional HAC connection name. Uses the active connection if not specified")
@@ -85,8 +85,8 @@ class FlexibleSearchMcpToolset : McpToolset {
     ): String {
         val mapper = resolveMapper(outputFormat)
         val project = currentCoroutineContext().project
-        val connection = resolveHacConnection(project, connectionName)
-        val result = FlexibleSearchMcpService.getInstance(project).execute(connection, query, QueryMode.SQL, maxCount, locale, dataSource, user)
+        val context = FlexibleSearchMcpContext(connectionName, QueryMode.SQL, query, maxCount, locale, dataSource, user)
+        val result = FlexibleSearchMcpService.getInstance(project).execute(context)
         return mapper.map(result)
     }
 }
