@@ -20,4 +20,4 @@ package sap.commerce.toolset.impex.mcp
 
 import com.intellij.lang.annotation.HighlightSeverity
 
-data class Issue(val startOffset: Int, val severity: HighlightSeverity, val message: String, val line: Int, val column: Int, val endOffset: Int)
+data class ImpexIssue(val startOffset: Int, val severity: HighlightSeverity, val message: String, val line: Int, val column: Int, val endOffset: Int)

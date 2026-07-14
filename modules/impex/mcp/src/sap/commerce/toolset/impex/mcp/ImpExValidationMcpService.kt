@@ -73,21 +73,21 @@ class ImpExValidationMcpService(private val project: Project) {
         )
     }
 
-    private suspend fun collectIssues(psiFile: PsiFile, document: Document): List<Issue> {
+    private suspend fun collectIssues(psiFile: PsiFile, document: Document): List<ImpexIssue> {
         val syntaxIssues = collectSyntaxIssues(psiFile, document)
         val inspectionIssues = collectInspectionIssues(psiFile, document)
 
         return syntaxIssues + inspectionIssues
     }
 
-    private suspend fun collectSyntaxIssues(psiFile: PsiFile, document: Document): List<Issue> = readAction {
+    private suspend fun collectSyntaxIssues(psiFile: PsiFile, document: Document): List<ImpexIssue> = readAction {
         PsiTreeUtil
             .collectElementsOfType(psiFile, PsiErrorElement::class.java)
-            .map { it.toIssue(document, HighlightSeverity.ERROR, it.errorDescription) }
+            .map { it.toImpexIssue(document, HighlightSeverity.ERROR, it.errorDescription) }
     }
 
-    private suspend fun collectInspectionIssues(psiFile: PsiFile, document: Document): List<Issue> = coroutineToIndicator {
-        application.runReadAction<List<Issue>> {
+    private suspend fun collectInspectionIssues(psiFile: PsiFile, document: Document): List<ImpexIssue> = coroutineToIndicator {
+        application.runReadAction<List<ImpexIssue>> {
             val profile: InspectionProfile = InspectionProjectProfileManager.getInstance(project).currentProfile
             val manager = InspectionManager.getInstance(project)
             val severityRegistrar = SeverityRegistrar.getSeverityRegistrar(project)
@@ -102,17 +102,17 @@ class ImpExValidationMcpService(private val project: Project) {
                         val baseSeverity = profile.getErrorLevel(displayKey, psiFile).severity
                         val severity = ProblemDescriptorUtil.highlightTypeFromDescriptor(descriptor, baseSeverity, severityRegistrar)
                             .getSeverity(element)
-                        element.toIssue(document, severity, descriptor.descriptionTemplate)
+                        element.toImpexIssue(document, severity, descriptor.descriptionTemplate)
                     }
                 }
         }
     }
 
-    private fun PsiElement.toIssue(document: Document, severity: HighlightSeverity, message: String): Issue {
+    private fun PsiElement.toImpexIssue(document: Document, severity: HighlightSeverity, message: String): ImpexIssue {
         val line = document.getLineNumber(startOffset)
         val column = startOffset - document.getLineStartOffset(line)
 
-        return Issue(
+        return ImpexIssue(
             startOffset = startOffset,
             endOffset = endOffset,
             severity = severity,
