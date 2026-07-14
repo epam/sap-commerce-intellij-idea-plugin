@@ -2,9 +2,13 @@
 
 <cite>Release contributors</code>
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 1 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
 - Preselect recursive modules on project import [#1951](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1951)
+
+### `AI` capabilities
+- Expose local ImpEx syntax/inspection validation as MCP tool [#1950](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1950)
 
 ## [2026.0.14]
 
@@ -23,7 +27,6 @@
 - Expose type system Atomic types as MCP tool (name/extension filters, JSON) [#1946](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1946)
 - Expose type system Collection types as MCP tool (name/extension filters, JSON) [#1947](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1947)
 - Introduce JSON serialization mechanism for MCP tools [#1949](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1949)
-- Expose local ImpEx syntax/inspection validation as MCP tool [#1950](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1950)
 
 ### Other enhancements
 - Migrated obsolete `invokeLater` to `runInEdt` [#1940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1940)
