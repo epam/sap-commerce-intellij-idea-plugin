@@ -43,12 +43,14 @@ The **root project** (`src/`, `resources/`) is the assembling plugin module — 
 
 There is **no single monolithic plugin.xml**. `resources/META-INF/plugin.xml` declares the plugin id/dependencies and then `<xi:include>`s one descriptor per module (named `sap.commerce.toolset-<group>-<layer>.xml`, located in each module's `resources/META-INF/`). When you add an extension point / action / service in a module, register it in *that module's* descriptor, and add the corresponding `<xi:include>` to the root `plugin.xml` if the module is new.
 
-### Package & code conventions
+### Code conventions
 
-- All production code lives under the `sap.commerce.toolset` package namespace, sub-packaged per feature (e.g. `sap.commerce.toolset.impex...`).
-- Plugin extensions should bail out early on non-Hybris projects: `init { if (project.isNotHybrisProject) throw ExtensionNotApplicableException.create() }`.
-- Prefer `project.directory` (or `PathMacroManager...expandPath("\$PROJECT_DIR$")`) over the deprecated, possibly-null `project.basePath`.
-- See **`TECH_NOTES.md`** for established patterns: invoking actions, refreshing `AnAction` state from background threads, DSL form validators, resizing Kotlin DSL dialogs, and `GotItTooltip` registration (`modules/shared/core/.../GotItTooltips.kt`).
+All Kotlin code-style, file-organization, package, and IntelliJ Platform SDK-safety conventions for
+writing code in this plugin — including how to verify generated code follows them — live in
+**`skills/sap-commerce-plugin-dev/SKILL.md`**. Read it before adding or modifying Kotlin source.
+See **`TECH_NOTES.md`** for other established patterns: invoking actions, refreshing `AnAction`
+state from background threads, DSL form validators, resizing Kotlin DSL dialogs, and `GotItTooltip`
+registration (`modules/shared/core/.../GotItTooltips.kt`).
 
 ### Custom languages (Grammar-Kit / JFlex)
 

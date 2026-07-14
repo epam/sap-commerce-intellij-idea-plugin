@@ -37,6 +37,7 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":hac-exec"))
+    implementation(project(":impex-core"))
     implementation(project(":impex-exec"))
     implementation(project(":exec-core"))
     implementation(project(":ai-mcp"))
