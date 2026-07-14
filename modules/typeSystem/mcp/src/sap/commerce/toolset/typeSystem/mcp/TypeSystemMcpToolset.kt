@@ -132,4 +132,45 @@ class TypeSystemMcpToolset : McpToolset {
         val collectionTypes = TSMcpService.getInstance().searchCollectionTypes(context)
         return mapper.map(collectionTypes)
     }
+
+    @McpTool(name = "sap_commerce_list_enum_types")
+    @McpDescription(
+        """Lists the Enum types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
+        |An enum type is an enumeration whose members are its enum values (e.g. 'OrderStatus' with values 'CREATED', 'COMPLETED', ...). It may be 'dynamic' (values resolved at runtime rather than fixed in the model).
+        |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"detail", "filter", "extensions", "matched", "total", "items": [{"name", "extension", "dynamic", "custom", "autoCreate", "generate", "deprecated", "description"?, "values"?: [{"name", "description"?}]}]}. Boolean flags are present only when true and omitted otherwise.
+        |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result, and 'detail' to control whether each enum's values are returned, keeping the response (and token usage) small."""
+    )
+    suspend fun listEnumTypes(
+        @McpDescription(
+            """Optional enum-type-name filter used to shrink the response and save tokens.
+            |If the value is a valid regular expression it is matched against each enum type name with a regex search (e.g. '^OrderStatus$' for an exact match, '(?i)status' for case-insensitivity); otherwise it is treated as a plain, case-insensitive substring ('contains').
+            |Omit to return all enum types."""
+        )
+        filter: String? = null,
+
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict the result to enum types owned by those extensions (e.g. 'core,basecommerce').
+            |Matched case-insensitively and exactly against each enum type's owning 'extension'. Combined with 'filter' using AND (both must match).
+            |Omit to include enum types from all extensions."""
+        )
+        extensions: String? = null,
+
+        @McpDescription(
+            """Controls how much information is returned per enum type, to balance completeness against token usage:
+            |- TYPES: enum identity only (name, extension, and the dynamic/custom/autoCreate/generate/deprecated flags). No values or description.
+            |- VALUES: the above plus the enum's 'description' and its 'values' as {name, description}. Only non-empty values are included.
+            |Default: TYPES. Prefer the smallest level that answers the question. Dynamic enums may declare no values in the local model."""
+        )
+        detail: String = EnumTypeDetail.TYPES.name,
+
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val detailLevel = EnumTypeDetail.resolve(detail)
+        val context = TSMcpSearchContext(TSMetaType.META_ENUM, ItemTypeDetail.TYPES, filter, extensions)
+        val enumTypes = TSMcpService.getInstance().searchEnumTypes(context, detailLevel)
+        return mapper.map(enumTypes)
+    }
 }
