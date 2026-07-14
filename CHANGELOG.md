@@ -9,7 +9,7 @@
 
 ### `AI` capabilities
 - Expose local ImpEx syntax/inspection validation as MCP tool [#1950](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1950)
-- Expose type system Enum types as MCP tool (name/extension filters, TYPES/VALUES detail) [#1951](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1951)
+- Expose type system Enum types as MCP tool (name/extension filters, TYPES/VALUES detail) [#1952](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1952)
 
 ## [2026.0.14]
 
