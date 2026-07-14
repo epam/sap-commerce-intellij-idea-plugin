@@ -80,6 +80,18 @@ class TSMcpService(private val project: Project) {
         )
     }
 
+    suspend fun searchMapTypes(context: TSMcpSearchContext): TSMapListResponse {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaMap>(context)
+        val items = result.items.map { it.toDto() }
+        return TSMapListResponse(
+            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = context.extensions?.sorted(),
+            matched = items.size,
+            total = result.total,
+            items = items,
+        )
+    }
+
     private fun TSGlobalMetaItem.toDto(detail: ItemTypeDetail): TSItemDto {
         val attrs = if (detail != ItemTypeDetail.TYPES) {
             attributes.values.sortedBy { it.name }.map { it.toAttributeDto(detail) }
@@ -167,6 +179,17 @@ class TSMcpService(private val project: Project) {
     private fun TSMetaEnum.TSMetaEnumValue.toDto() = TSEnumValueDto(
         name = name,
         description = description?.takeIf { it.isNotBlank() },
+    )
+
+    private fun TSGlobalMetaMap.toDto() = TSMapDto(
+        name = name!!,
+        argumentType = argumentType?.takeIf { it.isNotBlank() },
+        returnType = returnType?.takeIf { it.isNotBlank() },
+        extension = extensionName?.takeIf { it.isNotBlank() },
+        custom = isCustom.takeIf { it },
+        autoCreate = isAutoCreate.takeIf { it },
+        generate = isGenerate.takeIf { it },
+        redeclare = isRedeclare.takeIf { it },
     )
 
     companion object {
