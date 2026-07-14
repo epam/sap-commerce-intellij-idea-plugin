@@ -33,7 +33,10 @@ class ModuleDescriptorsSelector {
         val preselectedExtensionNames = mutableSetOf<String>()
         val explicitPreselectedModules = mutableSetOf<YRegularModuleDescriptor>()
 
-        context.foundModules.process(preselectedExtensionNames, localExtensions) {
+        context.foundModules.process(
+            localExtensions = localExtensions,
+            filter = { !preselectedExtensionNames.contains(it.name) && localExtensions.contains(it.name) }
+        ) {
             preselectedExtensionNames.add(this.name)
             explicitPreselectedModules.add(this)
 
@@ -43,7 +46,7 @@ class ModuleDescriptorsSelector {
                 .forEach { subModule -> subModule.importStatus = ModuleDescriptorImportStatus.MANDATORY }
         }
 
-        explicitPreselectedModules.process(preselectedExtensionNames, localExtensions) {
+        explicitPreselectedModules.process(localExtensions) {
             preselectedExtensionNames.add(this.name)
 
             this.getRecursiveDependencies()
@@ -92,12 +95,11 @@ class ModuleDescriptorsSelector {
     }
 
     private fun Collection<ModuleDescriptor>.process(
-        preselectedExtensionNames: MutableSet<String>,
         localExtensions: Map<String, LocalExtensionsContext.Extension>,
+        filter: (ModuleDescriptor) -> Boolean = { true },
         processor: YRegularModuleDescriptor.() -> Unit
     ) = this
-        .filterNot { preselectedExtensionNames.contains(it.name) }
-        .filter { localExtensions.contains(it.name) }
+        .filter(filter)
         .filterIsInstance<YRegularModuleDescriptor>()
         .filter { moduleDescriptor ->
             val preferredLoadPath = localExtensions[moduleDescriptor.name]?.path
