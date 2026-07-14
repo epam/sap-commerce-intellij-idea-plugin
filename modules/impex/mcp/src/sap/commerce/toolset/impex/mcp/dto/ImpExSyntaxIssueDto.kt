@@ -26,4 +26,6 @@ data class ImpExSyntaxIssueDto(
     val message: String,
     val line: Int,
     val column: Int,
+    val startOffset: Int,
+    val endOffset: Int,
 )

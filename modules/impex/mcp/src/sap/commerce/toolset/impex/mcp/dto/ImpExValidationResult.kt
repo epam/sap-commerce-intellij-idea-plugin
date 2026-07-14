@@ -18,11 +18,12 @@
 
 package sap.commerce.toolset.impex.mcp.dto
 
+import com.intellij.lang.annotation.HighlightSeverity
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ImpExValidationResult(
     val file: String? = null,
-    val valid: Boolean,
     val issues: List<ImpExSyntaxIssueDto> = emptyList(),
+    val valid: Boolean = issues.none { it.severity == HighlightSeverity.ERROR.name },
 )
