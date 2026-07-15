@@ -23,7 +23,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.*
@@ -112,22 +111,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         )
     }, false)
 
-    private fun resolveMacros(element: PsiElement, depth: Int = 0): String {
-        if (depth >= MAX_MACRO_EXPANSION_DEPTH) return element.text
-
-        val children = element.children
-        if (children.isEmpty()) return element.text
-
-        return children.joinToString("") {
-            when (it) {
-                is ImpExMacroUsageDec -> it.resolveValue(HashSet())
-                else -> resolveMacros(it, depth + 1)
-            }
-        }
-    }
-
     companion object {
-        private const val MAX_MACRO_EXPANSION_DEPTH = 64
         val CACHE_KEY_VALUE_LINE = Key.create<CachedValue<ImpExValueLine?>>("SAP_CX_IMPEX_VALUE_LINE")
         val CACHE_KEY_FULL_HEADER_PARAMETER = Key.create<CachedValue<ImpExFullHeaderParameter?>>("SAP_CX_IMPEX_FULL_HEADER_PARAMETER")
         val CACHE_KEY_COLUMN_NUMBER = Key.create<CachedValue<Int>>("SAP_CX_IMPEX_COLUMN_NUMBER")
