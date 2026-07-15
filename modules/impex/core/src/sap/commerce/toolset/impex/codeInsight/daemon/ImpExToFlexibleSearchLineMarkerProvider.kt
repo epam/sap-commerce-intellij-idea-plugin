@@ -26,6 +26,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.firstLeaf
@@ -75,7 +76,7 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
         val rootType = header.fullHeaderType?.headerTypeName?.text ?: return null
         val project = header.project
 
-        val ctx = JoinBuilder()
+        val ctx = QueryContext()
         val rootAlias = ctx.nextAlias()
         val rootMeta = TSMetaModelAccess.getInstance(project).findMetaItemByName(rootType)
 
@@ -86,14 +87,26 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
 
         if (ctx.conditions.isEmpty()) return null
 
+        val hasJoins = ctx.joins.isNotEmpty()
+
         val selectColumns = (rootMeta?.selectableColumns() ?: listOf("pk"))
-            .joinToString(", ") { "{$rootAlias.$it}" }
+            .joinToString(", ") { if (hasJoins) "{$rootAlias.$it}" else "{$it}" }
 
         val fromClause = buildString {
-            append("$rootType AS $rootAlias")
-            ctx.joins.forEach { append(" $it") }
+            append(if (hasJoins) "$rootType AS $rootAlias" else rootType)
+            ctx.joins.forEach { append(" JOIN ${it.type} AS ${it.alias} ON {${it.alias}.pk} = {${it.ownerAlias}.${it.ownerAttr}}") }
         }
-        return "SELECT $selectColumns FROM {$fromClause} WHERE " + ctx.conditions.joinToString(" AND ")
+
+        val whereClause = ctx.conditions.joinToString(" AND ") { c ->
+            if (hasJoins) "{${c.alias}.${c.attribute}} ${c.predicate}"
+            else "{${c.attribute}} ${c.predicate}"
+        }
+
+        return """
+            SELECT $selectColumns
+            FROM {$fromClause}
+            WHERE $whereClause
+            """.trimIndent()
     }
 
     private fun TSGlobalMetaItem.selectableColumns(): List<String> = buildList {
@@ -108,8 +121,8 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
     }
 
     private fun addCondition(
-        ctx: JoinBuilder,
-        project: com.intellij.openapi.project.Project,
+        ctx: QueryContext,
+        project: Project,
         ownerAlias: String,
         ownerMeta: TSGlobalMetaItem?,
         param: ImpExFullHeaderParameter,
@@ -119,37 +132,30 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
         val qualifiers = param.parametersList.firstOrNull()?.parameterList.orEmpty()
         val attrType = ownerMeta?.allAttributes?.get(attrName)?.type
 
-        if (qualifiers.isEmpty()) {
-            ctx.conditions += "{$ownerAlias.$attrName} ${formatCondition(rawValue, attrType)}"
+        if (qualifiers.isEmpty() || attrType == null) {
+            ctx.conditions += Condition(ownerAlias, attrName, formatPredicate(rawValue, attrType))
             return
         }
 
         val targetMeta = TSMetaModelAccess.getInstance(project).findMetaItemByName(attrType)
-        if (attrType == null) {
-            ctx.conditions += "{$ownerAlias.$attrName} ${formatCondition(rawValue, attrType)}"
-            return
-        }
-
-        val alias = ctx.nextAlias()
-        ctx.joins += "JOIN $attrType AS $alias ON {$alias.pk} = {$ownerAlias.$attrName}"
+        val joinAlias = ctx.nextAlias()
+        ctx.joins += Join(attrType, joinAlias, ownerAlias, attrName)
 
         val qualifierNames = qualifiers.map { it.text }
         if (qualifierNames.size == 1) {
             val q = qualifierNames.first()
-            val qType = targetMeta?.allAttributes?.get(q)?.type
-            ctx.conditions += "{$alias.$q} ${formatCondition(rawValue, qType)}"
+            ctx.conditions += Condition(joinAlias, q, formatPredicate(rawValue, targetMeta?.allAttributes?.get(q)?.type))
         } else {
             val parts = rawValue.split(":")
             qualifierNames.forEachIndexed { i, q ->
                 val part = parts.getOrNull(i) ?: return@forEachIndexed
-                val qType = targetMeta?.allAttributes?.get(q)?.type
-                ctx.conditions += "{$alias.$q} ${formatCondition(part, qType)}"
+                ctx.conditions += Condition(joinAlias, q, formatPredicate(part, targetMeta?.allAttributes?.get(q)?.type))
             }
         }
     }
 
     /** Produces "= <literal>" respecting the attribute's declared type. */
-    private fun formatCondition(rawValue: String, type: String?): String {
+    private fun formatPredicate(rawValue: String, type: String?): String {
         val value = rawValue.trim().removeSurrounding("\"")
 
         return when (type) {
@@ -163,9 +169,12 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
         }
     }
 
-    private class JoinBuilder {
-        val joins = mutableListOf<String>()
-        val conditions = mutableListOf<String>()
+    private data class Condition(val alias: String, val attribute: String, val predicate: String)
+    private data class Join(val type: String, val alias: String, val ownerAlias: String, val ownerAttr: String)
+
+    private class QueryContext {
+        val joins = mutableListOf<Join>()
+        val conditions = mutableListOf<Condition>()
         var counter = 0
         fun nextAlias() = "t${counter++}"
     }
