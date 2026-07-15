@@ -173,4 +173,36 @@ class TypeSystemMcpToolset : McpToolset {
         val enumTypes = TSMcpService.getInstance().searchEnumTypes(context, detailLevel)
         return mapper.map(enumTypes)
     }
+
+    @McpTool(name = "sap_commerce_list_map_types")
+    @McpDescription(
+        """Lists the Map types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
+        |A map type associates a key type ('argumentType') with a value type ('returnType').
+        |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"filter", "extensions", "matched", "total", "items": [{"name", "argumentType", "returnType", "extension", "custom", "autoCreate", "generate", "redeclare"}]}. Boolean flags are present only when true and omitted otherwise.
+        |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result and keep the response (and token usage) small."""
+    )
+    suspend fun listMapTypes(
+        @McpDescription(
+            """Optional map-type-name filter used to shrink the response and save tokens.
+            |If the value is a valid regular expression it is matched against each map type name with a regex search (e.g. '(?i)localized'); otherwise it is treated as a plain, case-insensitive substring ('contains').
+            |Omit to return all map types."""
+        )
+        filter: String? = null,
+
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict the result to map types owned by those extensions (e.g. 'core,basecommerce').
+            |Matched case-insensitively and exactly against each map type's owning 'extension'. Combined with 'filter' using AND (both must match).
+            |Omit to include map types from all extensions."""
+        )
+        extensions: String? = null,
+
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val context = TSMcpSearchContext(TSMetaType.META_MAP, ItemTypeDetail.TYPES, filter, extensions)
+        val mapTypes = TSMcpService.getInstance().searchMapTypes(context)
+        return mapper.map(mapTypes)
+    }
 }
