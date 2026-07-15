@@ -161,6 +161,7 @@
     <depends optional="true" config-file="sap.commerce.toolset-solr-mcp.xml">com.intellij.mcpServer</depends>
     <depends optional="true" config-file="sap.commerce.toolset-logging-mcp.xml">com.intellij.mcpServer</depends>
     <depends optional="true" config-file="sap.commerce.toolset-typeSystem-mcp.xml">com.intellij.mcpServer</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-beanSystem-mcp.xml">com.intellij.mcpServer</depends>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>
