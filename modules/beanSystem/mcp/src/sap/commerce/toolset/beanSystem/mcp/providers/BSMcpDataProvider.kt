@@ -50,11 +50,12 @@ class BSMcpDataProvider(private val project: Project) {
         val extensions = context.extensions
 
         val all = readAction { BSMetaModelAccess.getInstance(project).getAll<T>(context.metaType) }
+        val matched = all
             .filter { it.name != null }
-        val matched = all.filter { item ->
-            (matcher == null || matcher(item.name!!))
-                && (extensions == null || item.extensionName.lowercase() in extensions)
-        }
+            .filter { item ->
+                (matcher == null || matcher(item.name!!))
+                    && (extensions == null || item.extensionName.lowercase() in extensions)
+            }
         return BSMcpSearchResult(items = matched, total = all.size)
     }
 
