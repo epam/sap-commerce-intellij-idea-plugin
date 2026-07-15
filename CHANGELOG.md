@@ -12,7 +12,7 @@
 - Expose type system Enum types as MCP tool (name/extension filters, TYPES/VALUES detail) [#1952](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1952)
 - Expose type system Map types as MCP tool (name/extension filters, JSON) [#1953](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1953)
 - Expose type system Relation types as MCP tool (name/extension filters, JSON) [#1954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1954)
-- Expose Bean System DTO beans as MCP tool (name/package/extension filters, configurable detail, JSON)
+- Expose Bean System DTO beans as MCP tool (name/package/extension filters, configurable detail, JSON) [#1956](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1956)
 
 ### `ImpEx` enhancements
 - Copy ImpEx value line into an executable FlexibleSearch query [#1960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1960)
