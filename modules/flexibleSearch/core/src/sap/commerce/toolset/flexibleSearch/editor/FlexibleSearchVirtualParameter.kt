@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,9 +65,11 @@ data class FlexibleSearchVirtualParameter(
     val presentationValue: String get() = lazyPresentationValue.get()
 
     private fun evaluateSqlValue(): String = when (type) {
-        Boolean::class -> rawValue?.asSafely<Boolean>()?.takeIf { it }
-            ?.let { "1" }
-            ?: "0"
+        Boolean::class -> when (val v = rawValue) {
+            is Boolean -> if (v) "1" else "0"
+            is String -> if (v == "1" || v.equals("true", ignoreCase = true)) "1" else "0"
+            else -> "0"
+        }
 
         Date::class -> rawValue?.asSafely<Date>()?.time?.toString()
             ?: ""
@@ -111,13 +113,17 @@ data class FlexibleSearchVirtualParameter(
 
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
 
-        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Map<String, FlexibleSearchVirtualParameter>) = FlexibleSearchVirtualParameter(
+        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Map<String, FlexibleSearchVirtualParameter>) = of(
+            bindParameter = bindParameter,
+            rawValue = currentParameters[bindParameter.value]?.rawValue
+        )
+
+        fun of(bindParameter: FlexibleSearchBindParameter, rawValue: Any?) = FlexibleSearchVirtualParameter(
             name = bindParameter.value,
             operand = bindParameter.expression?.elementType,
             rawType = bindParameter.itemType,
         ).apply {
-            rawValue = currentParameters[name]?.rawValue
+            this.rawValue = rawValue
         }
-
     }
 }
