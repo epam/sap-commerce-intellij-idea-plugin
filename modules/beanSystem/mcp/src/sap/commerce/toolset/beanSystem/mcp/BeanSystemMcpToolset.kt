@@ -110,4 +110,46 @@ class BeanSystemMcpToolset : McpToolset {
         val beans = BSMcpService.getInstance().searchBeans(context, beanDetail)
         return mapper.map(beans)
     }
+
+    @McpTool(name = "sap_commerce_list_event_beans")
+    @McpDescription(
+        """Lists the event beans defined in the current project's SAP Commerce (Hybris) bean system, as shown in the "Bean System" tool window.
+        |An event bean is a `<bean type='event'>` declared in a `*-beans.xml` file — an application event, NOT a plain DTO bean (see 'sap_commerce_list_dto_beans') and NOT a web-service bean (see 'sap_commerce_list_ws_beans').
+        |This is the project's LOCAL model, parsed from the `*-beans.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"detail", "filter", "extensions", "matched", "total", "items": [{"name", "shortName", "extends", "template", "extension", "custom", "abstract", "deprecated", ...}]}. Boolean flags are present only when true and omitted otherwise.
+        |Narrow the result with 'filter' (by name/package) and/or 'extensions' (by owning extension), and use 'detail' to control how much per-bean information is returned, keeping the response (and token usage) small."""
+    )
+    suspend fun listEventBeans(
+        @McpDescription(
+            """Optional event-bean-name filter used to shrink the response and save tokens. Matched against the bean's fully-qualified name (package + class), so it filters by name AND package.
+            |If the value is a valid regular expression it is matched with a regex search (e.g. '(?i)event' or '^de\.hybris\.platform\.'); otherwise it is treated as a plain, case-insensitive substring ('contains').
+            |Omit to return all event beans."""
+        )
+        filter: String? = null,
+
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict the result to event beans owned by those extensions (e.g. 'commerceservices,core').
+            |Matched case-insensitively and exactly against each bean's owning 'extension'. Combined with 'filter' using AND (both must match).
+            |Omit to include event beans from all extensions."""
+        )
+        extensions: String? = null,
+
+        @McpDescription(
+            """Controls how much information is returned per event bean, to balance completeness against token usage:
+            |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
+            |- PROPERTIES: the above plus each bean's declared properties as {name, type, referencedType}.
+            |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
+            |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
+        )
+        detail: String = BSBeanDetail.BASIC.name,
+
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val beanDetail = BSBeanDetail.resolve(detail)
+        val context = BSMcpSearchContext(BSMetaType.META_EVENT, filter, extensions)
+        val beans = BSMcpService.getInstance().searchBeans(context, beanDetail)
+        return mapper.map(beans)
+    }
 }
