@@ -27,12 +27,14 @@ import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.firstLeaf
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Function
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpExValueLine
 import sap.commerce.toolset.scratch.createScratchFile
@@ -48,12 +50,21 @@ class ImpExToFlexibleSearchLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (element !is ImpExValueLine) return null
+        if (element.headerLine?.uniqueFullHeaderParameters?.any { it.hasDocIdQualifier() } == true) return null
 
         return ImpExLineMarkerInfo(
             element.firstLeaf(),
             HybrisIcons.ImpEx.Actions.COPY_TO_FLEXIBLE_SEARCH
         )
     }
+
+    private fun ImpExFullHeaderParameter.hasDocIdQualifier(): Boolean = parametersList
+        .firstOrNull()
+        ?.parameterList
+        ?.takeIf { it.size == 1 }
+        ?.firstOrNull()
+        ?.childrenOfType<ImpExDocumentIdUsage>()
+        ?.firstOrNull() != null
 
     /**
      * Builds a FlexibleSearch SELECT with JOINs, resolving qualifier columns
