@@ -43,21 +43,19 @@ data class BSMcpSearchResult<out T>(val items: Collection<T>, val total: Int)
 class BSMcpDataProvider(private val project: Project) {
 
     suspend fun <T : BSGlobalMetaClassifier<*>> search(context: BSMcpSearchContext): BSMcpSearchResult<T> {
+        ensureBeanSystemReady(project)
+
         val normalizedFilter = context.filter?.trim()?.takeIf { it.isNotEmpty() }
         val matcher = normalizedFilter?.let { regexOrContainsMatcher(it) }
         val extensions = context.extensions
 
-        ensureBeanSystemReady(project)
-
-        return readAction {
-            val all = BSMetaModelAccess.getInstance(project).getAll<T>(context.metaType)
-                .filter { it.name != null }
-            val matched = all.filter { item ->
-                (matcher == null || matcher(item.name!!))
-                    && (extensions == null || item.extensionName.lowercase() in extensions)
-            }
-            BSMcpSearchResult(items = matched, total = all.size)
+        val all = readAction { BSMetaModelAccess.getInstance(project).getAll<T>(context.metaType) }
+            .filter { it.name != null }
+        val matched = all.filter { item ->
+            (matcher == null || matcher(item.name!!))
+                && (extensions == null || item.extensionName.lowercase() in extensions)
         }
+        return BSMcpSearchResult(items = matched, total = all.size)
     }
 
     /**
