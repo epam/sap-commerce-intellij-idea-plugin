@@ -1,7 +1,7 @@
 ## [2026.0.15]
 
 <cite>Release contributors</code>
-- 2 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
 - 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -12,6 +12,9 @@
 - Expose type system Enum types as MCP tool (name/extension filters, TYPES/VALUES detail) [#1952](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1952)
 - Expose type system Map types as MCP tool (name/extension filters, JSON) [#1953](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1953)
 - Expose type system Relation types as MCP tool (name/extension filters, JSON) [#1954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1954)
+
+### `ImpEx` enhancements
+- Copy ImpEx value line into an executable FlexibleSearch query [#1960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1960)
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)

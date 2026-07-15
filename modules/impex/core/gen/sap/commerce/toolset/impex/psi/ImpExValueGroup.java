@@ -40,4 +40,6 @@ public interface ImpExValueGroup extends PsiElement {
 
   @Nullable String computeValue();
 
+  @Nullable String resolveValue();
+
 }

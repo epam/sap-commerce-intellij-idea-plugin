@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.lang
+
+package sap.commerce.toolset.impex.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
@@ -40,7 +41,7 @@ import java.util.*
 import java.util.function.Supplier
 import javax.swing.Icon
 
-class ImpExLineMarkerProvider : LineMarkerProvider {
+class ImpExDataEditModeLineMarkerProvider : LineMarkerProvider {
 
     private val valueSeparator = ";"
 
@@ -49,13 +50,13 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
         if (Plugin.GRID.isDisabled()) return null
         if (element !is ImpExHeaderLine) return null
 
-        return ImpExDataEditModeLineMarkerInfo(
+        return ImpExLineMarkerInfo(
             element.anyHeaderMode.firstLeaf(),
             HybrisIcons.ImpEx.Actions.TABLE_FRAGMENT_MODE
         )
     }
 
-    private fun openEditMode(leaf: PsiElement?) {
+    private fun handler(leaf: PsiElement?) {
         val element = leaf?.parentOfType<ImpExHeaderLine>()
         val project = element?.project ?: return
         val tableRange = element.tableRange
@@ -88,18 +89,18 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
         return CsvFormat("ImpEx", dataFormat, headerFormat, "ImpEx", false)
     }
 
-    private inner class ImpExDataEditModeLineMarkerInfo(
+    private inner class ImpExLineMarkerInfo(
         leaf: PsiElement,
         icon: Icon,
     ) : MergeableLineMarkerInfo<PsiElement?>(
         leaf, leaf.textRange, icon,
         Function { "Enter Data Edit Mode" },
-        { _, e -> openEditMode(e) },
+        { _, e -> handler(e) },
         GutterIconRenderer.Alignment.CENTER,
         Supplier { "Enter Data Edit Mode" }
     ) {
         override fun getEditorFilter(): MarkupEditorFilter = MarkupEditorFilterFactory.createIsNotDiffFilter()
         override fun getCommonIcon(infos: List<MergeableLineMarkerInfo<*>?>): Icon = icon
-        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is ImpExDataEditModeLineMarkerInfo && info.icon === icon
+        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is ImpExLineMarkerInfo && info.icon === icon
     }
 }

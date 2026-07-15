@@ -78,7 +78,8 @@
 
         <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpExAnnotator"/>
 
-        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpExLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.daemon.ImpExDataEditModeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.daemon.ImpExToFlexibleSearchLineMarkerProvider"/>
         <codeInsight.declarativeInlayProvider language="ImpEx"
                                               implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
                                               isEnabledByDefault="true"

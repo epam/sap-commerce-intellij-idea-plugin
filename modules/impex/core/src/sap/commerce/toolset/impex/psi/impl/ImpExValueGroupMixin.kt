@@ -20,16 +20,12 @@ package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExValueGroup
-import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 import java.io.Serial
 
@@ -65,20 +61,52 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         )
     }, false)
 
-    override fun computeValue(): String? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_VALUE_OR_DEFAULT, {
-        val computedValue = this
-            .value
+    override fun computeValue(): String? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_RAW_VALUE_OR_DEFAULT, {
+        val computedValue = this.value
             ?.text
             ?: this.fullHeaderParameter
                 ?.getAttributeValue(AttributeModifier.DEFAULT, "")
                 ?.takeIf { it.isNotEmpty() }
 
-        val defaultValue = computedValue
+        val value = computedValue
             ?.let { StringUtil.unquoteString(it, '\'') }
             ?.trim()
 
         CachedValueProvider.Result.createSingleDependency(
-            defaultValue,
+            value,
+            this,
+        )
+    }, false)
+
+    override fun resolveValue(): String? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_RESOLVED_VALUE_OR_DEFAULT, {
+        var child = value?.lastLeaf()
+        val values = mutableListOf<String>()
+
+        while (child != null) {
+            if (child.elementType == ImpExTypes.MACRO_USAGE) {
+                child = child.parent
+            }
+
+            if (child is ImpExMacroUsageDec) values.add(child.resolveValue(HashSet()))
+            else values.add(child.text)
+
+            child = child.prevLeaf()
+
+            val parent = PsiTreeUtil.findFirstParent(child, Condition { it == value })
+            if (parent == null) break
+        }
+
+        val expanded = if (values.isNotEmpty()) values.reversed().joinToString("")
+        else fullHeaderParameter
+            ?.getAttributeValue(AttributeModifier.DEFAULT, "")
+            ?.takeIf { it.isNotEmpty() }
+
+        val value = expanded
+            ?.let { StringUtil.unquoteString(it, '\'') }
+            ?.trim()
+
+        CachedValueProvider.Result.createSingleDependency(
+            value,
             this,
         )
     }, false)
@@ -87,7 +115,8 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         val CACHE_KEY_VALUE_LINE = Key.create<CachedValue<ImpExValueLine?>>("SAP_CX_IMPEX_VALUE_LINE")
         val CACHE_KEY_FULL_HEADER_PARAMETER = Key.create<CachedValue<ImpExFullHeaderParameter?>>("SAP_CX_IMPEX_FULL_HEADER_PARAMETER")
         val CACHE_KEY_COLUMN_NUMBER = Key.create<CachedValue<Int>>("SAP_CX_IMPEX_COLUMN_NUMBER")
-        val CACHE_KEY_VALUE_OR_DEFAULT = Key.create<CachedValue<String>>("SAP_CX_IMPEX_VALUE_OR_DEFAULT")
+        val CACHE_KEY_RAW_VALUE_OR_DEFAULT = Key.create<CachedValue<String>>("SAP_CX_IMPEX_RAW_VALUE_OR_DEFAULT")
+        val CACHE_KEY_RESOLVED_VALUE_OR_DEFAULT = Key.create<CachedValue<String>>("SAP_CX_IMPEX_RESOLVED_VALUE_OR_DEFAULT")
 
         @Serial
         private val serialVersionUID: Long = -4491471414641409161L

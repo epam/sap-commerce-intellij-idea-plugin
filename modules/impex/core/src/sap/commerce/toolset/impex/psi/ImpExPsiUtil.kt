@@ -23,10 +23,10 @@ package sap.commerce.toolset.impex.psi
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.util.*
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExConstants
@@ -53,9 +53,6 @@ fun getAnyAttributeName(element: ImpExAnyAttributeValue): ImpExAnyAttributeName?
 fun getAnyAttributeValue(element: ImpExAnyAttributeName): ImpExAnyAttributeValue? = PsiTreeUtil
     .getNextSiblingOfType(element, ImpExAnyAttributeValue::class.java)
 
-fun getUniqueFullHeaderParameters(element: ImpExHeaderLine) = element.fullHeaderParameterList
-    .filter { it.isUnique }
-
 fun getColumnContexts(element: ImpExHeaderLine) = element.fullHeaderParameterList
     .map {
         ImpExColumnContext(
@@ -64,34 +61,6 @@ fun getColumnContexts(element: ImpExHeaderLine) = element.fullHeaderParameterLis
             unique = it.isUnique
         )
     }
-
-fun getTableRange(element: ImpExHeaderLine): TextRange {
-    val tableElements = ArrayDeque<PsiElement>()
-    var next = element.nextSibling
-
-    while (next != null) {
-        if (next is ImpExHeaderLine || next is ImpExUserRights) {
-
-            // once all lines processed, we have to go back till last value line
-            var lastElement = tableElements.lastOrNull()
-            while (lastElement != null && lastElement !is ImpExValueLine) {
-                tableElements.removeLastOrNull()
-                lastElement = tableElements.lastOrNull()
-            }
-
-            next = null
-        } else {
-            tableElements.add(next)
-            next = next.nextSibling
-        }
-    }
-
-    val endOffset = tableElements.lastOrNull()
-        ?.endOffset
-        ?: element.endOffset
-
-    return TextRange.create(element.startOffset, endOffset)
-}
 
 fun addValueGroups(element: ImpExValueLine, groupsToAdd: Int) {
     if (groupsToAdd <= 0) return
@@ -241,9 +210,6 @@ fun getHeaderParameter(element: ImpExUserRightsValue): ImpExUserRightsHeaderPara
 }
 
 fun getHeaderLine(element: ImpExHeaderTypeName): ImpExHeaderLine? = element.parentOfType<ImpExHeaderLine>()
-
-fun hasDocumentIdDec(element: ImpExHeaderLine): Boolean = element.fullHeaderParameterList
-    .any { it.anyHeaderParameterName.documentIdDec != null }
 
 fun getDocumentIdDeclarations(element: ImpExHeaderLine): List<ImpExDocumentIdDec> = element.fullHeaderParameterList
     .mapNotNull { it.anyHeaderParameterName.documentIdDec }
