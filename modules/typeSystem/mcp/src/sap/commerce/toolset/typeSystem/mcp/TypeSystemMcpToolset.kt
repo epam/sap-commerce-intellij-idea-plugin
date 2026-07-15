@@ -205,4 +205,36 @@ class TypeSystemMcpToolset : McpToolset {
         val mapTypes = TSMcpService.getInstance().searchMapTypes(context)
         return mapper.map(mapTypes)
     }
+
+    @McpTool(name = "sap_commerce_list_relation_types")
+    @McpDescription(
+        """Lists the Relation types defined in the current project's SAP Commerce (Hybris) type system, as shown in the "Type System" tool window.
+        |A relation type connects two item types via a 'source' and a 'target' end; each end has the referenced item 'type', its 'qualifier', 'cardinality' ('one'/'many'), the 'collectionType' used for a 'many' end ('collection'/'list'/'set'), and the 'ordered'/'navigable' flags.
+        |This is the project's LOCAL model, parsed from the `*-items.xml` definitions — it does NOT query a remote server and does NOT require a HAC connection.
+        |Returns a JSON object: {"filter", "extensions", "matched", "total", "items": [{"name", "typeCode", "source": {...}, "target": {...}, "extension", "localized", "custom", "autoCreate", "generate"}]}. Boolean flags are present only when true and omitted otherwise.
+        |Use 'filter' (by name) and/or 'extensions' (by owning extension) to narrow the result and keep the response (and token usage) small."""
+    )
+    suspend fun listRelationTypes(
+        @McpDescription(
+            """Optional relation-type-name filter used to shrink the response and save tokens.
+            |If the value is a valid regular expression it is matched against each relation type name with a regex search (e.g. '(?i)2catalog'); otherwise it is treated as a plain, case-insensitive substring ('contains').
+            |Omit to return all relation types."""
+        )
+        filter: String? = null,
+
+        @McpDescription(
+            """Optional comma-separated list of extension names to restrict the result to relation types owned by those extensions (e.g. 'core,catalog').
+            |Matched case-insensitively and exactly against each relation type's owning 'extension'. Combined with 'filter' using AND (both must match).
+            |Omit to include relation types from all extensions."""
+        )
+        extensions: String? = null,
+
+        @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
+        outputFormat: String = "JSON",
+    ): String {
+        val mapper = resolveMapper(outputFormat)
+        val context = TSMcpSearchContext(TSMetaType.META_RELATION, ItemTypeDetail.TYPES, filter, extensions)
+        val relationTypes = TSMcpService.getInstance().searchRelationTypes(context)
+        return mapper.map(relationTypes)
+    }
 }

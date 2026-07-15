@@ -67,6 +67,18 @@ class TSMcpService(private val project: Project) {
         )
     }
 
+    suspend fun searchRelationTypes(context: TSMcpSearchContext): TSRelationListResponse {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaRelation>(context)
+        val items = result.items.map { it.toDto() }
+        return TSRelationListResponse(
+            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = context.extensions?.sorted(),
+            matched = items.size,
+            total = result.total,
+            items = items,
+        )
+    }
+
     suspend fun searchEnumTypes(context: TSMcpSearchContext, detail: EnumTypeDetail): TSEnumListResponse {
         val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaEnum>(context)
         val items = result.items.map { it.toDto(detail) }
@@ -190,6 +202,27 @@ class TSMcpService(private val project: Project) {
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
         redeclare = isRedeclare.takeIf { it },
+    )
+
+    private fun TSGlobalMetaRelation.toDto() = TSRelationDto(
+        name = name!!,
+        typeCode = deployment?.typeCode?.takeIf { it.isNotBlank() },
+        source = source.toDto(),
+        target = target.toDto(),
+        extension = extensionName?.takeIf { it.isNotBlank() },
+        localized = isLocalized.takeIf { it },
+        custom = isCustom.takeIf { it },
+        autoCreate = isAutoCreate.takeIf { it },
+        generate = isGenerate.takeIf { it },
+    )
+
+    private fun TSMetaRelation.TSMetaRelationElement.toDto() = TSRelationEndDto(
+        type = type,
+        qualifier = qualifier?.takeIf { it.isNotBlank() },
+        cardinality = cardinality.value?.takeIf { it.isNotBlank() },
+        collectionType = collectionType.value?.takeIf { it.isNotBlank() },
+        ordered = isOrdered.takeIf { it },
+        navigable = isNavigable.takeIf { it },
     )
 
     companion object {
