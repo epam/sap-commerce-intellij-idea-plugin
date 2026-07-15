@@ -2,7 +2,7 @@
 
 <cite>Release contributors</code>
 - 1 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
-- 2 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
+- 4 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
 - Preselect recursive modules on project import [#1951](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1951)
