@@ -1,7 +1,7 @@
 ## [2026.0.15]
 
 <cite>Release contributors</code>
-- 3 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 4 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
 - 5 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -16,6 +16,7 @@
 
 ### `ImpEx` enhancements
 - Copy ImpEx value line into an executable FlexibleSearch query [#1960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1960)
+- New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1961](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1961)
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
