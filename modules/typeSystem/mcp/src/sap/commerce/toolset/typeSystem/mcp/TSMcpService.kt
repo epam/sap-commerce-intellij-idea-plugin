@@ -25,9 +25,7 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
 import sap.commerce.toolset.typeSystem.mcp.dto.*
 import sap.commerce.toolset.typeSystem.mcp.providers.TSMcpDataProvider
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaAtomic
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.*
 
 @Service(Service.Level.PROJECT)
 class TSMcpService(private val project: Project) {
@@ -61,6 +59,19 @@ class TSMcpService(private val project: Project) {
         val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaCollection>(context)
         val items = result.items.map { it.toDto() }
         return TSCollectionListResponse(
+            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = context.extensions?.sorted(),
+            matched = items.size,
+            total = result.total,
+            items = items,
+        )
+    }
+
+    suspend fun searchEnumTypes(context: TSMcpSearchContext, detail: EnumTypeDetail): TSEnumListResponse {
+        val result = TSMcpDataProvider.getInstance(project).search<TSGlobalMetaEnum>(context)
+        val items = result.items.map { it.toDto(detail) }
+        return TSEnumListResponse(
+            detail = detail.name,
             filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
             extensions = context.extensions?.sorted(),
             matched = items.size,
@@ -136,6 +147,26 @@ class TSMcpService(private val project: Project) {
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
+    )
+
+    private fun TSGlobalMetaEnum.toDto(detail: EnumTypeDetail): TSEnumDto {
+        val full = detail == EnumTypeDetail.VALUES
+        return TSEnumDto(
+            name = name!!,
+            extension = extensionName.takeIf { it.isNotBlank() },
+            dynamic = isDynamic.takeIf { it },
+            custom = isCustom.takeIf { it },
+            autoCreate = isAutoCreate.takeIf { it },
+            generate = isGenerate.takeIf { it },
+            deprecated = isDeprecated.takeIf { it },
+            description = if (full) description?.takeIf { it.isNotBlank() } else null,
+            values = if (full) values.values.map { it.toDto() } else null,
+        )
+    }
+
+    private fun TSMetaEnum.TSMetaEnumValue.toDto() = TSEnumValueDto(
+        name = name,
+        description = description?.takeIf { it.isNotBlank() },
     )
 
     companion object {

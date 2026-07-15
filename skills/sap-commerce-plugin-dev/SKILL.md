@@ -88,9 +88,11 @@ Formatting is governed by the committed IDE code style (`.idea/codeStyles/Projec
   (`modules/shared/core/src/sap/commerce/toolset/HybrisConstants.kt`); per-feature ones in an
   `object <Prefix>Constants` (`CngConstants`, `BSConstants`, ...). `const val`,
   SCREAMING_SNAKE_CASE, related constants grouped into nested objects.
-- **Extension functions** go in the `Util.kt` of the package matching the receiver's domain
-  (project/action guards in `shared/core/.../Util.kt`, PSI helpers in `psi/Util.kt`, etc.) — add to
-  the existing file, don't create parallel `*Extensions.kt` files.
+- **Extension functions**: reach for them whenever a receiver-based form shortens and simplifies the
+  code — e.g. turn a helper whose first argument is the thing it operates on into an extension on that
+  type. They go in the `Util.kt` of the package matching the receiver's domain (project/action guards
+  in `shared/core/.../Util.kt`, PSI helpers in `psi/Util.kt`, etc.) — add to the existing file, don't
+  create parallel `*Extensions.kt` files.
 - **Visibility**: `private` liberally; `internal` deliberately for module-internal API; never write
   explicit `public`. DTOs/value objects are `data class`es in a `dto/` package.
 - **Member ordering** within a class: constructor properties → computed properties → functions →
@@ -210,6 +212,15 @@ argument names and going to column style over a long unnamed inline call.
 - `runBlockingCancellable` is not used in this codebase; `coroutineToIndicator` only where a legacy
   indicator-based API is unavoidable from a `suspend` context (see the `@ApiStatus.Internal`
   section below).
+- **Scope read actions to the operation that needs them, not the whole method.** Wrap the narrowest
+  unit that actually requires the lock in its own `readAction { }` (and, only for legacy
+  indicator-based APIs like the inspection engine's `LocalInspectionToolWrapper.tool.processFile(...)`,
+  its own `coroutineToIndicator { application.runReadAction { … } }`) — push these down next to the
+  individual call rather than wrapping an entire method in one big block. `ImpExValidationMcpService`
+  splits collection into a `readAction`-wrapped syntax pass and an indicator-wrapped inspection pass,
+  and does each PSI/document lookup in `resolveTarget` in its own small `readAction`.
+- **Keep each read action side-effect-free**: it should return a nullable result; do `?: error(...)`
+  and object assembly *after* it returns — never `error(...)`/`throw` inside a read action.
 - Guard `if (project.isDisposed) return@launch` at the top of launched blocks that touch the
   project.
 
@@ -258,6 +269,9 @@ routing, SSL trust and timeouts. Pass `context.timeout`/`context.replicaContext`
   `json/McpJsonMapper.kt`; the shared `Json` is `prettyPrint = false, explicitNulls = false`).
   DTO fields that may be absent are nullable with default `null` so they're omitted from output;
   rename Kotlin `isX` flags with `@SerialName("x")`.
+- **Derive computed fields in the DTO**, not at the call site: declare them as defaulted constructor
+  properties referencing an earlier param (`val valid: Boolean = issues.none { it.severity == HighlightSeverity.ERROR.name }`),
+  ordered after that dependency, so callers construct the DTO with only the real inputs.
 - **Error handling**: no try/catch in tools — validate with `error("...")`/`require(...)` (the
   message surfaces to the MCP client), or model domain failure as DTO fields
   (`success = false`, `error`, `errorDetail`).
@@ -330,6 +344,11 @@ routing, SSL trust and timeouts. Pass `context.timeout`/`context.replicaContext`
   `@file:JvmName("<Lang>PsiUtil")`, wired via the BNF `psiImplUtilClass` attribute. Hand-written
   PSI behavior lives in `psi/impl/<Lang><Rule>Mixin.kt` abstract classes extending
   `ASTWrapperPsiElement` and attached per-rule via the BNF `mixin="..."` attribute.
+- **In-memory PSI files**: when the language provides a `psi/<Lang>ElementFactory` with a
+  `createFile(project, text)` helper (currently ImpEx, FlexibleSearch, Polyglot Query), build
+  throwaway files through it instead of hand-rolling
+  `PsiFileFactory.getInstance(project).createFileFromText(name, <Lang>FileType, …)`. Languages
+  without such a factory (e.g. ACL) use `PsiFileFactory` directly.
 - **References**: extend the per-language `<Lang>ReferenceBase` (a `PsiReferenceBase.Poly`);
   implement `multiResolve` through
   `CachedValuesManager.getManager(project).getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)`
