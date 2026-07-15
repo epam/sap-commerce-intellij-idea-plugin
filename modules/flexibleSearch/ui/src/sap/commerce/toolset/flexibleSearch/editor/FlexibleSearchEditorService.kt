@@ -29,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.psi.*
 import sap.commerce.toolset.i18n
 
@@ -58,7 +59,16 @@ class FlexibleSearchEditorService(
             }
                 .takeIf { it.isNotEmpty() }
                 ?.sortedByDescending { it.literal.textOffset }
-                ?: return@launch
+                ?: run {
+                    Notifications
+                        .info(
+                            i18n("hybris.fxs.actions.introduce_bind_parameters"),
+                            i18n("hybris.fxs.actions.introduce_bind_parameters.no_literals")
+                        )
+                        .hideAfter(10)
+                        .notify(project)
+                    return@launch
+                }
 
             // Phase 2: replace literals with bind parameters (undoable)
             val newVirtualParameters = writeCommandAction(project, i18n("hybris.fxs.actions.introduce_bind_parameters")) {
