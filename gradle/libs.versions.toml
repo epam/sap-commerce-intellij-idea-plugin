@@ -9,7 +9,7 @@ commonsIO = "2.22.0"
 # https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
 jsr305 = "3.0.2"
 # https://mvnrepository.com/artifact/org.apache.maven/maven-model
-mavenModel = "3.9.15"
+mavenModel = "3.9.16"
 # https://mvnrepository.com/artifact/commons-codec/commons-codec
 commonsCodec = "1.22.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
@@ -19,7 +19,7 @@ commonsCollections4 = "4.5.0"
 # https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
 jakartaXmlBindApi = "4.0.5"
 # https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
-jaxbImpl = "4.0.8"
+jaxbImpl = "4.0.9"
 # https://mvnrepository.com/artifact/org.apache.solr/solr-solrj
 # version 9.2.1 is already available, but we stick to the version used by Hybris
 # see folder hybris\bin\modules\search-and-navigation\solrserver\resources\solr\
@@ -28,7 +28,7 @@ solrSolrj = "8.11.4"
 # https://mvnrepository.com/artifact/com.squareup.moshi/moshi
 moshi = "1.15.2"
 # https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/
-okhttp = "5.3.2"
+okhttp = "5.4.0"
 # https://mvnrepository.com/artifact/com.google.code.gson/gson
 gson = "2.14.0"
 # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
@@ -43,7 +43,7 @@ kotlin = "2.2.20"
 changelog = "2.5.0"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
 # Generator: https://openapi-generator.tech/docs/generators/kotlin
-openAPIGenerator = "7.22.0"
+openAPIGenerator = "7.23.0"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }
