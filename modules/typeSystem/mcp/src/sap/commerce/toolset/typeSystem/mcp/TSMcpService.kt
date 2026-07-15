@@ -144,8 +144,8 @@ class TSMcpService(private val project: Project) {
 
     private fun TSGlobalMetaAtomic.toDto() = TSAtomicDto(
         name = name,
-        extends = extends?.takeIf { it.isNotBlank() && name != it },
-        extension = extensionName?.takeIf { it.isNotBlank() },
+        extends = extends.takeIf { it.isNotBlank() && name != it },
+        extension = extensionName.takeIf { it.isNotBlank() },
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
@@ -154,8 +154,8 @@ class TSMcpService(private val project: Project) {
     private fun TSGlobalMetaCollection.toDto() = TSCollectionDto(
         name = name!!,
         kind = type.value,
-        elementType = elementType?.takeIf { it.isNotBlank() },
-        extension = extensionName?.takeIf { it.isNotBlank() },
+        elementType = elementType.takeIf { it.isNotBlank() },
+        extension = extensionName.takeIf { it.isNotBlank() },
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
@@ -185,7 +185,7 @@ class TSMcpService(private val project: Project) {
         name = name!!,
         argumentType = argumentType?.takeIf { it.isNotBlank() },
         returnType = returnType?.takeIf { it.isNotBlank() },
-        extension = extensionName?.takeIf { it.isNotBlank() },
+        extension = extensionName.takeIf { it.isNotBlank() },
         custom = isCustom.takeIf { it },
         autoCreate = isAutoCreate.takeIf { it },
         generate = isGenerate.takeIf { it },
