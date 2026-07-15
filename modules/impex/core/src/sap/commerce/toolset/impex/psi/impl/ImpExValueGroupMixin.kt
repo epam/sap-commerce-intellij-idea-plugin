@@ -83,6 +83,10 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         val values = mutableListOf<String>()
 
         while (child != null) {
+            if (child.elementType == ImpExTypes.MACRO_USAGE) {
+                child = child.parent
+            }
+
             if (child is ImpExMacroUsageDec) values.add(child.resolveValue(HashSet()))
             else values.add(child.text)
 
@@ -90,10 +94,6 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
             val parent = PsiTreeUtil.findFirstParent(child, Condition { it == value })
             if (parent == null) break
-
-            if (child.elementType == ImpExTypes.MACRO_USAGE) {
-                child = child?.parent
-            }
         }
 
         val expanded = if (values.isNotEmpty()) values.reversed().joinToString("")
