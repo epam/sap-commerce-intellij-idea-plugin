@@ -14,7 +14,7 @@
 - Expose type system Relation types as MCP tool (name/extension filters, JSON) [#1954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1954)
 
 ### `ImpEx` enhancements
-- Copy ImpEx value line into an executable FlexibleSearch query [#1956](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1956)
+- Copy ImpEx value line into an executable FlexibleSearch query [#1960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1960)
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
