@@ -72,21 +72,6 @@ public class ImpExHeaderLineImpl extends ImpExHeaderLineMixin implements ImpExHe
   }
 
   @Override
-  public @NotNull TextRange getTableRange() {
-    return ImpExPsiUtil.getTableRange(this);
-  }
-
-  @Override
-  public @NotNull List<ImpExFullHeaderParameter> getUniqueFullHeaderParameters() {
-    return ImpExPsiUtil.getUniqueFullHeaderParameters(this);
-  }
-
-  @Override
-  public boolean hasDocumentIdDec() {
-    return ImpExPsiUtil.hasDocumentIdDec(this);
-  }
-
-  @Override
   public @NotNull List<@NotNull ImpExDocumentIdDec> getDocumentIdDeclarations() {
     return ImpExPsiUtil.getDocumentIdDeclarations(this);
   }

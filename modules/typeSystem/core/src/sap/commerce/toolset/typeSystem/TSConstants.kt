@@ -51,6 +51,7 @@ object TSConstants {
     object Type {
         const val OBJECT = "java.lang.Object"
         const val JAVA_CLASS = "java.lang.Class"
+        const val JAVA_BOOLEAN = "java.lang.Boolean"
         const val JAVA_STRING = "java.lang.String"
         const val ITEM = "Item"
         const val GENERIC_ITEM = "GenericItem"

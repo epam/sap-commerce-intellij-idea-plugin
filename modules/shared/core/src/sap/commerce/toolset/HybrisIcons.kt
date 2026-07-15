@@ -195,6 +195,7 @@ object HybrisIcons {
             val SPLIT_TABLE_VERTICALLY = getIcon("/icons/impex/actions/tableSplitVertically.svg")
 
             val TABLE_FRAGMENT_MODE = getIcon("/icons/impex/actions/tableFragment.svg")
+            val COPY_TO_FLEXIBLE_SEARCH = getIcon("/icons/fileTypes/flexibleSearchFile.svg")
             val GENERATE_DOC_ID = getIcon("/icons/impex/actions/generateDocId.svg")
         }
     }

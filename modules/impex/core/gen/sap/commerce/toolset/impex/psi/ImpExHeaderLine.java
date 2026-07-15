@@ -51,7 +51,7 @@ public interface ImpExHeaderLine extends PsiElement {
 
   @NotNull TextRange getTableRange();
 
-  @NotNull List<ImpExFullHeaderParameter> getUniqueFullHeaderParameters();
+  @NotNull List<@NotNull ImpExFullHeaderParameter> getUniqueFullHeaderParameters();
 
   boolean hasDocumentIdDec();
 

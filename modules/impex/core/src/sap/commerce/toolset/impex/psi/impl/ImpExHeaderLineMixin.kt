@@ -21,13 +21,12 @@ package sap.commerce.toolset.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationContext
 import sap.commerce.toolset.impex.codeInspection.context.ImpExDocIdGenerationMode
-import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpExHeaderLine
-import sap.commerce.toolset.impex.psi.ImpExTypes
-import sap.commerce.toolset.impex.psi.ImpExValueLine
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.psi.RangeAwareContent
 import java.io.Serial
 
@@ -118,6 +117,40 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
             content = newContent.toString()
         )
     }
+
+    override fun getUniqueFullHeaderParameters(): List<ImpExFullHeaderParameter> = fullHeaderParameterList
+        .filter { it.isUnique }
+
+    override fun getTableRange(): TextRange {
+        val tableElements = ArrayDeque<PsiElement>()
+        var next = nextSibling
+
+        while (next != null) {
+            if (next is ImpExHeaderLine || next is ImpExUserRights) {
+
+                // once all lines processed, we have to go back till last value line
+                var lastElement = tableElements.lastOrNull()
+                while (lastElement != null && lastElement !is ImpExValueLine) {
+                    tableElements.removeLastOrNull()
+                    lastElement = tableElements.lastOrNull()
+                }
+
+                next = null
+            } else {
+                tableElements.add(next)
+                next = next.nextSibling
+            }
+        }
+
+        val endOffset = tableElements.lastOrNull()
+            ?.endOffset
+            ?: endOffset
+
+        return TextRange.create(startOffset, endOffset)
+    }
+
+    override fun hasDocumentIdDec(): Boolean = fullHeaderParameterList
+        .any { it.anyHeaderParameterName.documentIdDec != null }
 
     companion object {
         val CACHE_KEY_BY_INDEX = Key.create<CachedValue<Map<Int, ImpExFullHeaderParameter>>>("SAP_CX_IMPEX_FHP_BY_INDEX")

@@ -314,7 +314,7 @@ value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
 {
     pin=1
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExValueGroupMixin"
-    methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
+    methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue resolveValue]
 }
 
 value ::= string
