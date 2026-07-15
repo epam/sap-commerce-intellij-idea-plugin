@@ -15,6 +15,7 @@
 - Expose Bean System DTO beans as MCP tool [#1956](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1956)
 - Expose Bean System WS beans as MCP tool [#1957](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1957)
 - Expose Bean System event beans as MCP tool [#1958](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1958)
+- Expose Bean System enums as MCP tool (name/package/extension filters, configurable detail, JSON)
 
 ### `ImpEx` enhancements
 - Copy ImpEx value line into an executable FlexibleSearch query [#1960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1960)

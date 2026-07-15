@@ -27,6 +27,7 @@ import sap.commerce.toolset.beanSystem.mcp.dto.*
 import sap.commerce.toolset.beanSystem.mcp.providers.BSMcpDataProvider
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
 
 @Service(Service.Level.PROJECT)
 class BSMcpService(private val project: Project) {
@@ -77,6 +78,35 @@ class BSMcpService(private val project: Project) {
         description = if (full) description?.takeIf { it.isNotBlank() } else null,
         deprecated = if (full) isDeprecated.takeIf { it } else null,
     )
+
+    suspend fun searchEnums(context: BSMcpSearchContext, detail: BSEnumDetail): BSEnumListResponse {
+        val result = BSMcpDataProvider.getInstance(project).search<BSGlobalMetaEnum>(context)
+        val items = result.items.map { it.toDto(detail) }
+        return BSEnumListResponse(
+            detail = detail.name,
+            filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
+            extensions = context.extensions?.sorted(),
+            matched = items.size,
+            total = result.total,
+            items = items,
+        )
+    }
+
+    private fun BSGlobalMetaEnum.toDto(detail: BSEnumDetail): BSEnumDto {
+        val full = detail == BSEnumDetail.FULL
+        val withValues = detail != BSEnumDetail.BASIC
+
+        return BSEnumDto(
+            name = name!!,
+            shortName = shortName?.takeIf { it.isNotBlank() },
+            extension = extensionName.takeIf { it.isNotBlank() },
+            custom = isCustom.takeIf { it },
+            deprecated = isDeprecated.takeIf { it },
+            deprecatedSince = if (full) deprecatedSince?.takeIf { it.isNotBlank() } else null,
+            description = if (full) description?.takeIf { it.isNotBlank() } else null,
+            values = if (withValues) values.values.mapNotNull { it.name }.takeIf { it.isNotEmpty() } else null,
+        )
+    }
 
     companion object {
         fun getInstance(project: Project): BSMcpService = project.service()
