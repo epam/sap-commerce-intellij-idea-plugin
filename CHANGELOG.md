@@ -16,7 +16,7 @@
 
 ### `ImpEx` enhancements
 - Copy ImpEx value line into an executable FlexibleSearch query [#1960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1960)
-- New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1961](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1961)
+- New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)
 
 ### Other enhancements
 - Updated project libraries [#1955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1955)
