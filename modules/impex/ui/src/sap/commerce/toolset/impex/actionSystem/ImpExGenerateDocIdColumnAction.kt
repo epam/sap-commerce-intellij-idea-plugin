@@ -80,7 +80,7 @@ class ImpExGenerateDocIdColumnAction : AbstractImpExTableAction() {
                         columns.associate { column ->
                             val value = valueLine
                                 .getValueGroup(column.number)
-                                ?.computeValue()
+                                ?.rawValue()
                                 ?: ""
                             column.number to value
                         }

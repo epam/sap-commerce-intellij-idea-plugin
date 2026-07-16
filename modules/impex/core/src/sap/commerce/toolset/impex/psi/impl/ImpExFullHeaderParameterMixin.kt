@@ -51,8 +51,13 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         )
     }, false)
 
-    override fun getTypeSystemContext(): ImpExFullHeaderParameterTSContext? {
-        val meta: TSMetaClassifier<out DomElement> = resolveTSAttribute()
+    override fun getTypeSystemContext(): ImpExHeaderParameterTSContext? {
+        val meta: TSMetaClassifier<out DomElement> = this
+            .anyHeaderParameterName
+            .reference
+            ?.asSafely<ImpExTSAttributeReference>()
+            ?.multiResolve(false)
+            ?.firstOrNull()
             .let {
                 when (it) {
                     is AttributeResolveResult -> it.meta
@@ -67,7 +72,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
             else -> null
         } ?: return null
 
-        return ImpExFullHeaderParameterTSContext(meta, attributeType)
+        return ImpExHeaderParameterTSContext(meta, attributeType)
     }
 
     override fun getValueGroups(): List<ImpExValueGroup> = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_VALUE_GROUPS, {
@@ -83,29 +88,22 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         )
     }, false)
 
-    override fun isUnique() = this.getExpandedAttributes()
-        .lastOrNull { it.anyAttributeName.textMatches(AttributeModifier.UNIQUE.modifierName) }
-        ?.anyAttributeValue?.textMatches("true") ?: false
+    override fun isUnique() = this.getParametersContext()
+        .rootParameter.attributes[AttributeModifier.UNIQUE.modifierName]
+        ?.resolvedValue == "true"
 
     override fun getAttribute(attributeModifier: AttributeModifier): ImpExAttribute? = this.modifiersList
         .flatMap { it.attributeList }
         .lastOrNull { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
 
-    override fun getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String): String = getExpandedAttributes()
-        .lastOrNull { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
-        ?.anyAttributeValue
-        ?.childLeafs()
-        ?.joinToString("") {
-            if (it.elementType == ImpExTypes.MACRO_USAGE) it.parentOfType<ImpExMacroUsageDec>()
-                ?.resolveValue(HashSet())
-                ?: it.text
-            else it.text
-        }
-        ?: defaultValue
+    override fun getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String) = getParametersContext().rootParameter.getAttributeValue(
+        attributeModifier,
+        defaultValue
+    )
 
     override fun collectDocIdReferences(
         targetElement: PsiElement,
-        tsContext: ImpExFullHeaderParameterTSContext,
+        tsContext: ImpExHeaderParameterTSContext,
     ): Array<PsiReference>? {
         val cardinality = when (tsContext.meta) {
             is TSMetaRelation.TSMetaRelationElement -> tsContext.meta.cardinality
@@ -153,7 +151,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
 
     override fun collectTSReferences(
         targetElement: PsiElement,
-        tsContext: ImpExFullHeaderParameterTSContext,
+        tsContext: ImpExHeaderParameterTSContext,
         valuesProvider: () -> Array<PsiElement>
     ): Array<PsiReference>? {
         val metaModelAccess = TSMetaModelAccess.getInstance(project)
@@ -170,11 +168,22 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
             }
     }
 
-    // In contrast to the "getAttribute" function, this function will expand any macros, create new temporary file and recreate FullHeaderParameter
-    // due that, it will NOT BE PART of the original PsiTree and MUST NOT be accesses outside of this internal logic.
-    private fun getExpandedAttributes(): List<ImpExAttribute> = CachedValuesManager.getManager(project)
+    override fun resolveDefaultValue(): String? {
+        val pathDelimiter = getAttributeValue(AttributeModifier.PATH_DELIMITER, ImpExConstants.PATH_DELIMITER)
+
+        return getAttributeValue(AttributeModifier.DEFAULT, "")
+            .takeIf { it.isNotEmpty() }
+            ?: getParametersContext().flattenSubParameters
+                .map { it.getAttributeValue(AttributeModifier.DEFAULT, "") }
+                .filter { it.isNotEmpty() }
+                .joinToString(pathDelimiter)
+    }
+
+    override fun getParametersContext(): ParametersContext = CachedValuesManager.getManager(project)
         .getCachedValue(this, CACHE_KEY_EXPANDED_ATTRIBUTES, {
-            val macroExpandedParameter = anyHeaderParameterName
+            val realParameter = this@ImpExFullHeaderParameterMixin
+            val headerTypeName = this.headerLine?.fullHeaderType?.headerTypeName?.text ?: "T"
+            val expandedParameter = anyHeaderParameterName
                 .takeIf { it.macroUsageDecList.isNotEmpty() }
                 ?.children
                 ?.joinToString("") {
@@ -191,27 +200,67 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                             return@processElements true
                         }
                     }
-                    val locallyExpandedParameterWithModifiers = locallyExpandedParameter + this.modifiersList
-                        .joinToString { it.text }
-                    ImpExElementFactory.createFullHeaderParameter(project, macros, locallyExpandedParameterWithModifiers)
+                    val locallyExpandedParameterWithModifiers = locallyExpandedParameter + realParameter.modifiersList
+                        .joinToString("") { it.text }
+                    ImpExElementFactory.createFullHeaderParameter(project,headerTypeName , macros, locallyExpandedParameterWithModifiers)
                 }
-                ?: this
+                ?: realParameter
 
-            val expandedAttribute = macroExpandedParameter.modifiersList
-                .flatMap { it.attributeList }
+            val expandedAttributes = ParametersContext(
+                rootParameter = parameter(
+                    name = expandedParameter.anyHeaderParameterName.text,
+                    modifiers = expandedParameter.modifiersList,
+                    tsContext = expandedParameter.typeSystemContext,
+                ),
+                subParameters = expandedParameter.parametersList
+                    .firstOrNull()
+                    ?.parameterList
+                    ?.map { parameter(it.attributeName, it.modifiersList, it.typeSystemContext, it.subParameters) }
+            )
 
             CachedValueProvider.Result.createSingleDependency(
-                expandedAttribute,
-                this@ImpExFullHeaderParameterMixin
+                expandedAttributes,
+                realParameter
             )
         }, false)
 
-    private fun resolveTSAttribute() = this
-        .anyHeaderParameterName
-        .reference
-        ?.asSafely<ImpExTSAttributeReference>()
-        ?.multiResolve(false)
-        ?.firstOrNull()
+    private fun parameter(
+        name: String,
+        modifiers: List<ImpExModifiers>,
+        tsContext: ImpExHeaderParameterTSContext?,
+        subParameters: ImpExSubParameters? = null
+    ): ParametersContext.Parameter {
+        val attributes = modifiers
+            .flatMap { it.attributeList }
+            .associate { attribute ->
+                val name = attribute.anyAttributeName.text
+                val rawValue = attribute.anyAttributeValue?.text
+                val resolvedValue = attribute.anyAttributeValue
+                    ?.childLeafs()
+                    ?.joinToString("") {
+                        if (it.elementType == ImpExTypes.MACRO_USAGE) it.parentOfType<ImpExMacroUsageDec>()
+                            ?.resolveValue(HashSet())
+                            ?: it.text
+                        else it.text
+                    }
+                name to ParametersContext.Attribute(
+                    name = name,
+                    rawValue = rawValue,
+                    resolvedValue = resolvedValue
+                )
+            }
+        return ParametersContext.Parameter(
+            name = name,
+            metaContext = tsContext,
+            attributes = attributes,
+            subParameters = subParameters?.parameterList
+                ?.map { parameter(it.attributeName, it.modifiersList, it.typeSystemContext, it.subParameters) }
+        )
+    }
+
+    private fun ParametersContext.Parameter.getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String): String = attributes[attributeModifier.modifierName]
+        ?.resolvedValue
+        ?: defaultValue
 
     private fun collectRanges(targetElement: PsiElement, modifier: AttributeModifier, defaultDelimiter: String): List<TextRange> {
         val delimiter = getAttributeValue(modifier, defaultDelimiter)
@@ -368,10 +417,35 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
     private fun TextRange.isMacro(text: String): Boolean = substring(text)
         .startsWith(ImpExConstants.MACRO_MARKER)
 
+
+    data class ParametersContext(
+        val rootParameter: Parameter,
+        val subParameters: List<Parameter>?
+    ) {
+        val flattenSubParameters: List<Parameter>
+            get() = subParameters.orEmpty().flatMap { it.flatten() }
+
+        data class Parameter(
+            val name: String,
+            val metaContext: ImpExHeaderParameterTSContext?,
+            val attributes: Map<String, Attribute>,
+            val subParameters: List<Parameter>?
+        ) {
+            fun flatten(): List<Parameter> =
+                listOf(this) + subParameters.orEmpty().flatMap { it.flatten() }
+        }
+
+        data class Attribute(
+            val name: String,
+            val rawValue: String?,
+            val resolvedValue: String?,
+        )
+    }
+
     companion object {
+        private val CACHE_KEY_EXPANDED_ATTRIBUTES = Key.create<CachedValue<ParametersContext>>("SAP_CX_IMPEX_EXPANDED_ATTRIBUTE")
         val CACHE_KEY_COLUMN_NUMBER = Key.create<CachedValue<Int>>("SAP_CX_IMPEX_COLUMN_NUMBER")
         val CACHE_KEY_VALUE_GROUPS = Key.create<CachedValue<List<ImpExValueGroup>>>("SAP_CX_IMPEX_VALUE_GROUPS")
-        val CACHE_KEY_EXPANDED_ATTRIBUTES = Key.create<CachedValue<List<ImpExAttribute>>>("SAP_CX_IMPEX_EXPANDED_ATTRIBUTE")
 
         @Serial
         private val serialVersionUID: Long = -4491471414641409161L

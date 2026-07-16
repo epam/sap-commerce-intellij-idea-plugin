@@ -47,7 +47,8 @@ object ImpExElementFactory {
         ?.childrenOfType<ImpExString>()
         ?.firstOrNull()
 
-    fun createValueGroup(project: Project, value: String? = "") = createFile(project, """
+    fun createValueGroup(project: Project, value: String? = "") = createFile(
+        project, """
      INSERT Product;
                    ;$value
     """.trimIndent()
@@ -57,11 +58,18 @@ object ImpExElementFactory {
         ?.valueGroupList
         ?.firstOrNull()
 
-    fun createFullHeaderParameter(project: Project, macros: String, parameterPlaceholder: String) = createFile(project, $$"""
+    fun createFullHeaderParameter(
+        project: Project,
+        headerTypeName: String,
+        macros: String,
+        parameterPlaceholder: String
+    ) = createFile(
+        project, $$"""
         UPDATE GenericItem[processor = de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor]; pk[unique = true]
         $$macros
-        UPDATE I;$$parameterPlaceholder
-    """.trimIndent())
+        UPDATE $$headerTypeName;$$parameterPlaceholder
+    """.trimIndent()
+    )
         .childrenOfType<ImpExHeaderLine>()
         .lastOrNull()
         ?.fullHeaderParameterList

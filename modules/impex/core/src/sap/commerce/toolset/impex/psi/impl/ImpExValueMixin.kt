@@ -27,7 +27,7 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
-import sap.commerce.toolset.impex.psi.ImpExFullHeaderParameterTSContext
+import sap.commerce.toolset.impex.psi.ImpExHeaderParameterTSContext
 import sap.commerce.toolset.impex.psi.ImpExTypes
 import sap.commerce.toolset.impex.psi.ImpExValue
 import sap.commerce.toolset.spring.SpringFallbackScope
@@ -81,7 +81,7 @@ abstract class ImpExValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             ?: emptyArray()
     }
 
-    private fun collectSpringReferences(tsContext: ImpExFullHeaderParameterTSContext): Array<PsiReference>? = tsContext.meta
+    private fun collectSpringReferences(tsContext: ImpExHeaderParameterTSContext): Array<PsiReference>? = tsContext.meta
         .asSafely<TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
         ?.takeIf { this.macroUsageDecList.isEmpty() }
         ?.takeIf { this.isImportable }
