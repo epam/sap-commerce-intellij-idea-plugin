@@ -27,12 +27,17 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.impex.psi.ImpExDocumentIdUsage
+import sap.commerce.toolset.impex.psi.ImpExHeaderParameterTSContext
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpExParameter
 import sap.commerce.toolset.impex.psi.references.ImpExFunctionTSAttributeReference
 import sap.commerce.toolset.impex.psi.references.ImpExFunctionTSItemReference
 import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
 import java.io.Serial
 
 abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpExParameter {
@@ -70,6 +75,30 @@ abstract class ImpExParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
         removeUserData(ImpExFunctionTSItemReference.CACHE_KEY)
         removeUserData(ImpExFunctionTSAttributeReference.CACHE_KEY)
         removeUserData(ImpExHeaderAbbreviationReference.CACHE_KEY)
+    }
+
+    override fun getTypeSystemContext(): ImpExHeaderParameterTSContext? {
+        val meta = references
+            .filterIsInstance<ImpExFunctionTSAttributeReference>()
+            .firstOrNull()
+            ?.multiResolve(false)
+            ?.firstOrNull()
+            ?.let {
+                when (it) {
+                    is AttributeResolveResult -> it.meta
+                    is RelationEndResolveResult -> it.meta
+                    else -> return null
+                }
+            }
+            ?: return null
+
+        val attributeType = when (meta) {
+            is TSGlobalMetaItem.TSGlobalMetaItemAttribute -> meta.type
+            is TSMetaRelation.TSMetaRelationElement -> meta.type
+            else -> null
+        } ?: return null
+
+        return ImpExHeaderParameterTSContext(meta, attributeType)
     }
 
     private fun getSuitableReference() = if (isHeaderAbbreviation()) ImpExHeaderAbbreviationReference(this)

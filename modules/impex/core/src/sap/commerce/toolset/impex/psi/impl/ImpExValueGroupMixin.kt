@@ -24,7 +24,6 @@ import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.util.*
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.utils.ImpExPsiUtils
 import java.io.Serial
@@ -61,14 +60,11 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         )
     }, false)
 
-    override fun computeValue(): String? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_RAW_VALUE_OR_DEFAULT, {
-        val computedValue = this.value
-            ?.text
-            ?: this.fullHeaderParameter
-                ?.getAttributeValue(AttributeModifier.DEFAULT, "")
-                ?.takeIf { it.isNotEmpty() }
+    override fun rawValue(): String? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_RAW_VALUE_OR_DEFAULT, {
+        val rawValue = this.value?.text
+            ?: this.fullHeaderParameter?.resolveDefaultValue()
 
-        val value = computedValue
+        val value = rawValue
             ?.let { StringUtil.unquoteString(it, '\'') }
             ?.trim()
 
@@ -97,9 +93,7 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         }
 
         val expanded = if (values.isNotEmpty()) values.reversed().joinToString("")
-        else fullHeaderParameter
-            ?.getAttributeValue(AttributeModifier.DEFAULT, "")
-            ?.takeIf { it.isNotEmpty() }
+        else fullHeaderParameter?.resolveDefaultValue()
 
         val value = expanded
             ?.let { StringUtil.unquoteString(it, '\'') }

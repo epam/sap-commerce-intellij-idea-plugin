@@ -53,4 +53,6 @@ public interface ImpExParameter extends PsiElement {
 
   boolean isHeaderAbbreviation();
 
+  @Nullable ImpExHeaderParameterTSContext getTypeSystemContext();
+
 }

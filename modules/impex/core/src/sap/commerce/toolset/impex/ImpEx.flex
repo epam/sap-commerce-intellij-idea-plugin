@@ -178,7 +178,7 @@ special_parameter_value = [^(\;\[\"\r\n\\\ \t\f$]+
 special_parameter_end = [(\;\[\"\r\n\\\$]
 
 attribute_name  = ({identifier}|[.])+
-attribute_value = [^, \t\f\]\r\n]+
+attribute_value = [^:, \t\f\]\r\n]+
 
 document_id = [&]{identifier}+
 
@@ -502,6 +502,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {boolean}                                               { return ImpExTypes.BOOLEAN; }
     {digit}                                                 { return ImpExTypes.DIGIT; }
     {double_quote}                                          { return ImpExTypes.DOUBLE_QUOTE; }
+    {default_path_delimiter}                                { return ImpExTypes.DEFAULT_PATH_DELIMITER; }
     {macro_usage}                                           { return resolveMacroUsage(WAITING_ATTR_OR_PARAM_VALUE, ImpExTypes.ATTRIBUTE_VALUE); }
     {comma}                                                 { yybegin(MODIFIERS_BLOCK); return ImpExTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpExTypes.ATTRIBUTE_VALUE; }

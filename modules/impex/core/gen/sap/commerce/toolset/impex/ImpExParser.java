@@ -90,6 +90,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
   // (
   //   ATTRIBUTE_VALUE
   //   | DIGIT
+  //   | DEFAULT_PATH_DELIMITER
   //   | BOOLEAN
   //   | DOUBLE_QUOTE
   //   | string
@@ -111,6 +112,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
 
   // ATTRIBUTE_VALUE
   //   | DIGIT
+  //   | DEFAULT_PATH_DELIMITER
   //   | BOOLEAN
   //   | DOUBLE_QUOTE
   //   | string
@@ -120,6 +122,7 @@ public class ImpExParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, ATTRIBUTE_VALUE);
     if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, DEFAULT_PATH_DELIMITER);
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DOUBLE_QUOTE);
     if (!r) r = string(b, l + 1);

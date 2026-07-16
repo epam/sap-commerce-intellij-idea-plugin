@@ -96,7 +96,7 @@ abstract class ImpExHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
                 else context.columns
                     .filter { it.include }
                     .mapNotNull { valueLine.getValueGroup(it.number) }
-                    .mapNotNull { it.computeValue() }
+                    .mapNotNull { it.rawValue() }
                     .joinToString("-", context.prefix, context.postfix)
                 val relativeOffset = injectAt - tableRange.startOffset
                 relativeOffset to ";$valueDocId"
