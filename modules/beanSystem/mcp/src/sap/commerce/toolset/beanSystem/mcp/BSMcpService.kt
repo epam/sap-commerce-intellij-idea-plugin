@@ -42,11 +42,6 @@ class BSMcpService(private val project: Project) {
     suspend fun searchEnums(context: BSMcpSearchContext, detail: BSDetail): BSListResponse<BSEnumDto> =
         search(context, detail) { enum: BSGlobalMetaEnum -> enum.toDto(detail) }
 
-    /**
-     * Shared body of the `sap_commerce_list_*` tools: run the search behind [BSMcpDataProvider],
-     * render each matched classifier with [toDto] and echo the normalized query back next to the
-     * counts. The bean kinds differ only in [toDto] and the [BSMcpSearchContext]'s meta type.
-     */
     private suspend fun <T : BSGlobalMetaClassifier<*>, D> search(
         context: BSMcpSearchContext,
         detail: BSDetail,
