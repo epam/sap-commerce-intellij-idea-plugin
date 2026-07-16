@@ -23,18 +23,34 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.currentCoroutineContext
-import sap.commerce.toolset.beanSystem.mcp.dto.*
+import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanDto
+import sap.commerce.toolset.beanSystem.mcp.dto.BSBeanPropertyDto
+import sap.commerce.toolset.beanSystem.mcp.dto.BSEnumDto
+import sap.commerce.toolset.beanSystem.mcp.dto.BSListResponse
 import sap.commerce.toolset.beanSystem.mcp.providers.BSMcpDataProvider
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
 
 @Service(Service.Level.PROJECT)
 class BSMcpService(private val project: Project) {
 
-    suspend fun searchBeans(context: BSMcpSearchContext, detail: BSBeanDetail): BSBeanListResponse {
-        val result = BSMcpDataProvider.getInstance(project).search<BSGlobalMetaBean>(context)
-        val items = result.items.map { it.toDto(detail) }
-        return BSBeanListResponse(
+    suspend fun searchBeans(context: BSMcpSearchContext, detail: BSDetail): BSListResponse<BSBeanDto> =
+        search(context, detail) { bean: BSGlobalMetaBean -> bean.toDto(detail) }
+
+    suspend fun searchEnums(context: BSMcpSearchContext, detail: BSDetail): BSListResponse<BSEnumDto> =
+        search(context, detail) { enum: BSGlobalMetaEnum -> enum.toDto(detail) }
+
+    private suspend fun <T : BSGlobalMetaClassifier<*>, D> search(
+        context: BSMcpSearchContext,
+        detail: BSDetail,
+        toDto: (T) -> D,
+    ): BSListResponse<D> {
+        val result = BSMcpDataProvider.getInstance(project).search<T>(context)
+        val items = result.items.map(toDto)
+
+        return BSListResponse(
             detail = detail.name,
             filter = context.filter?.trim()?.takeIf { it.isNotEmpty() },
             extensions = context.extensions?.sorted(),
@@ -44,31 +60,37 @@ class BSMcpService(private val project: Project) {
         )
     }
 
-    private fun BSGlobalMetaBean.toDto(detail: BSBeanDetail): BSBeanDto {
-        val full = detail == BSBeanDetail.FULL
-        val withProps = detail != BSBeanDetail.BASIC
+    private fun BSGlobalMetaBean.toDto(detail: BSDetail) = BSBeanDto(
+        name = name!!,
+        shortName = shortName?.takeIf { it.isNotBlank() },
+        extends = extends?.takeIf { it.isNotBlank() },
+        template = template?.takeIf { it.isNotBlank() },
+        extension = extensionName.takeIf { it.isNotBlank() },
+        custom = isCustom.takeIf { it },
+        abstract = isAbstract.takeIf { it },
+        deprecated = isDeprecated.takeIf { it },
+        deprecatedSince = if (detail.full) deprecatedSince?.takeIf { it.isNotBlank() } else null,
+        superEquals = if (detail.full) isSuperEquals.takeIf { it } else null,
+        description = if (detail.full) description?.takeIf { it.isNotBlank() } else null,
+        imports = if (detail.full) imports.mapNotNull { it.type?.takeIf { type -> type.isNotBlank() } }.takeIf { it.isNotEmpty() } else null,
+        annotations = if (detail.full) annotations.mapNotNull { it.value?.takeIf { value -> value.isNotBlank() } }.takeIf { it.isNotEmpty() } else null,
+        properties = if (detail.withMembers) properties.values
+            .filter { it.name != null }
+            .sortedBy { it.name }
+            .map { it.toDto(detail.full) }
+            .takeIf { it.isNotEmpty() } else null,
+    )
 
-        return BSBeanDto(
-            name = name!!,
-            shortName = shortName?.takeIf { it.isNotBlank() },
-            extends = extends?.takeIf { it.isNotBlank() },
-            template = template?.takeIf { it.isNotBlank() },
-            extension = extensionName.takeIf { it.isNotBlank() },
-            custom = isCustom.takeIf { it },
-            abstract = isAbstract.takeIf { it },
-            deprecated = isDeprecated.takeIf { it },
-            deprecatedSince = if (full) deprecatedSince?.takeIf { it.isNotBlank() } else null,
-            superEquals = if (full) isSuperEquals.takeIf { it } else null,
-            description = if (full) description?.takeIf { it.isNotBlank() } else null,
-            imports = if (full) imports.mapNotNull { it.type?.takeIf { type -> type.isNotBlank() } }.takeIf { it.isNotEmpty() } else null,
-            annotations = if (full) annotations.mapNotNull { it.value?.takeIf { value -> value.isNotBlank() } }.takeIf { it.isNotEmpty() } else null,
-            properties = if (withProps) properties.values
-                .filter { it.name != null }
-                .sortedBy { it.name }
-                .map { it.toDto(full) }
-                .takeIf { it.isNotEmpty() } else null,
-        )
-    }
+    private fun BSGlobalMetaEnum.toDto(detail: BSDetail) = BSEnumDto(
+        name = name!!,
+        shortName = shortName?.takeIf { it.isNotBlank() },
+        extension = extensionName.takeIf { it.isNotBlank() },
+        custom = isCustom.takeIf { it },
+        deprecated = isDeprecated.takeIf { it },
+        deprecatedSince = if (detail.full) deprecatedSince?.takeIf { it.isNotBlank() } else null,
+        description = if (detail.full) description?.takeIf { it.isNotBlank() } else null,
+        values = if (detail.withMembers) values.values.mapNotNull { it.name }.takeIf { it.isNotEmpty() } else null,
+    )
 
     private fun BSMetaProperty.toDto(full: Boolean) = BSBeanPropertyDto(
         name = name!!,

@@ -21,11 +21,13 @@ package sap.commerce.toolset.beanSystem.mcp.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BSBeanListResponse(
-    val detail: String,
-    val filter: String? = null,
-    val extensions: List<String>? = null,
-    val matched: Int,
-    val total: Int,
-    val items: List<BSBeanDto>,
+data class BSEnumDto(
+    val name: String,
+    val shortName: String? = null,
+    val extension: String? = null,
+    val custom: Boolean? = null,
+    val deprecated: Boolean? = null,
+    val deprecatedSince: String? = null,
+    val description: String? = null,
+    val values: List<String>? = null,
 )
