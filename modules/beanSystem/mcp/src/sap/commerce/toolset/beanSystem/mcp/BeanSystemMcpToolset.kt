@@ -53,17 +53,17 @@ class BeanSystemMcpToolset : McpToolset {
         @McpDescription(
             """Controls how much information is returned per bean, to balance completeness against token usage:
             |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
-            |- PROPERTIES: the above plus each bean's declared properties as {name, type, referencedType}.
+            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
             |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
             |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
         )
-        detail: String = BSBeanDetail.BASIC.name,
+        detail: String = BSDetail.BASIC.name,
 
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
         outputFormat: String = "JSON",
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val beanDetail = BSBeanDetail.resolve(detail)
+        val beanDetail = BSDetail.resolve(detail)
         val context = BSMcpSearchContext(BSMetaType.META_BEAN, filter, extensions)
         val beans = BSMcpService.getInstance().searchBeans(context, beanDetail)
         return mapper.map(beans)
@@ -95,17 +95,17 @@ class BeanSystemMcpToolset : McpToolset {
         @McpDescription(
             """Controls how much information is returned per bean, to balance completeness against token usage:
             |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
-            |- PROPERTIES: the above plus each bean's declared properties as {name, type, referencedType}.
+            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
             |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
             |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
         )
-        detail: String = BSBeanDetail.BASIC.name,
+        detail: String = BSDetail.BASIC.name,
 
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
         outputFormat: String = "JSON",
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val beanDetail = BSBeanDetail.resolve(detail)
+        val beanDetail = BSDetail.resolve(detail)
         val context = BSMcpSearchContext(BSMetaType.META_WS_BEAN, filter, extensions)
         val beans = BSMcpService.getInstance().searchBeans(context, beanDetail)
         return mapper.map(beans)
@@ -137,17 +137,17 @@ class BeanSystemMcpToolset : McpToolset {
         @McpDescription(
             """Controls how much information is returned per event bean, to balance completeness against token usage:
             |- BASIC: bean identity only (name, shortName, extends, template, extension, and the custom/abstract/deprecated flags). No properties.
-            |- PROPERTIES: the above plus each bean's declared properties as {name, type, referencedType}.
+            |- MEMBERS: the above plus each bean's declared properties as {name, type, referencedType}.
             |- FULL: the above plus description, deprecatedSince, superEquals, imports, annotations, and per-property description/deprecated. Only non-empty values are included.
             |Default: BASIC. Prefer the smallest level that answers the question. Properties are the bean's DECLARED properties, not inherited ones."""
         )
-        detail: String = BSBeanDetail.BASIC.name,
+        detail: String = BSDetail.BASIC.name,
 
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
         outputFormat: String = "JSON",
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val beanDetail = BSBeanDetail.resolve(detail)
+        val beanDetail = BSDetail.resolve(detail)
         val context = BSMcpSearchContext(BSMetaType.META_EVENT, filter, extensions)
         val beans = BSMcpService.getInstance().searchBeans(context, beanDetail)
         return mapper.map(beans)
@@ -179,17 +179,17 @@ class BeanSystemMcpToolset : McpToolset {
         @McpDescription(
             """Controls how much information is returned per enum, to balance completeness against token usage:
             |- BASIC: enum identity only (name, shortName, extension, and the custom/deprecated flags). No values.
-            |- VALUES: the above plus the enum's value names.
+            |- MEMBERS: the above plus the enum's value names.
             |- FULL: the above plus description and deprecatedSince. Only non-empty values are included.
             |Default: BASIC. Prefer the smallest level that answers the question."""
         )
-        detail: String = BSEnumDetail.BASIC.name,
+        detail: String = BSDetail.BASIC.name,
 
         @McpDescription("Output format for the response. Supported formats: JSON. Default: JSON.")
         outputFormat: String = "JSON",
     ): String {
         val mapper = resolveMapper(outputFormat)
-        val enumDetail = BSEnumDetail.resolve(detail)
+        val enumDetail = BSDetail.resolve(detail)
         val context = BSMcpSearchContext(BSMetaType.META_ENUM, filter, extensions)
         val enums = BSMcpService.getInstance().searchEnums(context, enumDetail)
         return mapper.map(enums)

@@ -20,12 +20,16 @@ package sap.commerce.toolset.beanSystem.mcp.dto
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Response envelope of the `sap_commerce_list_*` bean-system tools: the echoed query plus the
+ * matched [items], which are [BSBeanDto] for the bean tools and [BSEnumDto] for the enum tool.
+ */
 @Serializable
-data class BSEnumListResponse(
+data class BSListResponse<T>(
     val detail: String,
     val filter: String? = null,
     val extensions: List<String>? = null,
     val matched: Int,
     val total: Int,
-    val items: List<BSEnumDto>,
+    val items: List<T>,
 )

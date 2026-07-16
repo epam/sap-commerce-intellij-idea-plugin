@@ -18,10 +18,23 @@
 
 package sap.commerce.toolset.beanSystem.mcp
 
-enum class BSEnumDetail {
+/**
+ * How much information the `sap_commerce_list_*` bean-system tools return per classifier, in
+ * ascending order of verbosity — the ladder is the same for every bean kind, so all four tools
+ * share it.
+ *
+ * [MEMBERS] means whatever the classifier declares: properties for a bean, values for an enum.
+ */
+enum class BSDetail {
     BASIC,
-    VALUES,
+    MEMBERS,
     FULL;
+
+    val withMembers: Boolean
+        get() = this != BASIC
+
+    val full: Boolean
+        get() = this == FULL
 
     companion object {
         fun resolve(detail: String) = entries.find { it.name.equals(detail.trim(), ignoreCase = true) }
