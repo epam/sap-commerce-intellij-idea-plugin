@@ -105,13 +105,6 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 * Start the build via sandbox
 * Start `Debug - Build` run configuration via Plugin development IDE
 
-### Coding conventions
-
-* **Keep a `readAction { }` (or any scoped read-lock) block limited to the bare data retrieval.**
-  Assign its raw result to a value and perform all filtering/mapping afterwards as a single pipeline on
-  that value — never chain post-processing (not even a `.filter`) onto the block expression. This keeps
-  the read-lock boundary explicit and confines the locked work to the fetch.
-
 ### Contributors and Developers
 
 > [!NOTE]
