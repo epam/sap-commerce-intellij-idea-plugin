@@ -19,9 +19,14 @@
 package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.lang.ASTNode
+import com.intellij.lang.properties.psi.Property
+import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.ImpExMacroNameDec
 import sap.commerce.toolset.impex.psi.ImpExPossibleMacroUsageDec
 import sap.commerce.toolset.impex.psi.references.ImpExMacroReference
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
@@ -34,6 +39,26 @@ abstract class ImpExPossibleMacroUsageDecMixin(node: ASTNode) : ASTWrapperRefere
     } else {
         null
     }
+
+    override fun resolveValue(): String = CachedValuesManager.getManager(project).getCachedValue(
+        this,
+        Key.create("SAP_CX_IMPEX_RESOLVED_VALUE_" + this.text),
+        {
+            val resolvedValue = when (val targetPsi = reference?.resolve()) {
+                is ImpExMacroNameDec -> targetPsi.resolveValue(mutableSetOf())
+
+                is Property -> targetPsi.value
+                    ?: text
+
+                else -> text
+            }
+
+            CachedValueProvider.Result.create(
+                resolvedValue,
+                this
+            )
+        }, false
+    )
 
     companion object {
 

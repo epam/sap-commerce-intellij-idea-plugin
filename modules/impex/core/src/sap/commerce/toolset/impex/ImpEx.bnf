@@ -479,5 +479,5 @@ macro_usage_dec ::= MACRO_USAGE
 possible_macro_usage_dec ::= POSSIBLE_MACRO_USAGE
 {
     mixin="sap.commerce.toolset.impex.psi.impl.ImpExPossibleMacroUsageDecMixin"
-//    methods=[getNameIdentifier getConfigPropertyKey resolveValue]
+    methods=[resolveValue]
 }
