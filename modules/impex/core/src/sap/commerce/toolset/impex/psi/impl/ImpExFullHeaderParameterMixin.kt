@@ -189,6 +189,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                 ?.joinToString("") {
                     when (it) {
                         is ImpExMacroUsageDec -> it.resolveValue(HashSet())
+                        is ImpExPossibleMacroUsageDec -> it.resolveValue()
                         else -> it.text
                     }
                 }
@@ -240,6 +241,9 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                     ?.joinToString("") {
                         if (it.elementType == ImpExTypes.MACRO_USAGE) it.parentOfType<ImpExMacroUsageDec>()
                             ?.resolveValue(HashSet())
+                            ?: it.text
+                        else if (it.elementType == ImpExTypes.POSSIBLE_MACRO_USAGE) it.parentOfType<ImpExPossibleMacroUsageDec>()
+                            ?.resolveValue()
                             ?: it.text
                         else it.text
                     }
