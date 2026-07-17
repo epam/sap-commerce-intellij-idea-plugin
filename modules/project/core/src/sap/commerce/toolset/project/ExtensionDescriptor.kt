@@ -26,6 +26,7 @@ import com.intellij.util.xmlb.annotations.OptionTag
 import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.SourceAvailability
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 import java.io.Serial
 import kotlin.io.path.Path
@@ -38,6 +39,7 @@ data class ExtensionDescriptor(
     @OptionTag val name: String = "",
     @OptionTag val path: String = "",
     @OptionTag val type: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    @OptionTag val sourceAvailability: SourceAvailability = SourceAvailability.UNKNOWN,
     @OptionTag val subModuleType: SubModuleDescriptorType? = null,
     @OptionTag var readonly: Boolean = false,
     @OptionTag val addon: Boolean = false,
