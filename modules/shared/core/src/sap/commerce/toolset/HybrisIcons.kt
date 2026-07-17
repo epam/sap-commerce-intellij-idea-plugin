@@ -110,6 +110,14 @@ object HybrisIcons {
         val FILE = AllIcons.Toolwindows.ToolWindowBuild
     }
 
+    object SourceAvailability {
+        val SOURCES_ONLY = AllIcons.Modules.SourceRoot
+        val SOURCES_WITH_JAR = AllIcons.Modules.GeneratedSourceRoot
+        val EXTERNAL = AllIcons.Nodes.Models
+        val NONE = AllIcons.Nodes.Folder
+        val UNKNOWN = AllIcons.FileTypes.Unknown
+    }
+
     object Module {
         val ROOT = PLUGIN_SETTINGS
         val NONE = AllIcons.Modules.UnloadedModule

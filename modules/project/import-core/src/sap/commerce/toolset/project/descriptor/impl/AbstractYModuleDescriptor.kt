@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,13 +19,19 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import com.intellij.openapi.util.io.FileUtil
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.EiConstants
 import sap.commerce.toolset.extensioninfo.context.ExtensionInfoContext
 import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.SourceAvailability
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
+import sap.commerce.toolset.util.directoryExists
 import java.nio.file.Path
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 import kotlin.io.path.pathString
 
 abstract class AbstractYModuleDescriptor(
@@ -37,13 +43,21 @@ abstract class AbstractYModuleDescriptor(
 
     private val springFileSet = mutableSetOf<String>()
     override val extensionDescriptor by lazy {
+        val hasSources = moduleRootPath.resolve(ProjectConstants.Directory.SRC).directoryExists
+        val hasServerJar = moduleRootPath.resolve(ProjectConstants.Directory.BIN)
+            .takeIf { it.directoryExists }
+            ?.listDirectoryEntries()
+            ?.any { it.name.endsWith(HybrisConstants.SERVER_JAR_SUFFIX) }
+            ?: false
+
         ExtensionDescriptor(
             path = FileUtil.toSystemIndependentName(moduleRootPath.pathString),
             name = name,
             readonly = readonly,
             type = descriptorType,
             subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
-            addon = getRequiredExtensionNames().contains(EiConstants.Extension.ADDON_SUPPORT)
+            addon = getRequiredExtensionNames().contains(EiConstants.Extension.ADDON_SUPPORT),
+            sourceAvailability = SourceAvailability.of(hasSources, hasServerJar)
         )
     }
     private var ySubModules = mutableSetOf<YSubModuleDescriptor>()
