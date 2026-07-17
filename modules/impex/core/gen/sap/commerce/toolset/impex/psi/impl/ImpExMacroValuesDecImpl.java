@@ -61,4 +61,10 @@ public class ImpExMacroValuesDecImpl extends ASTWrapperPsiElement implements Imp
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExMacroValueDec.class);
   }
 
+  @Override
+  @NotNull
+  public List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExPossibleMacroUsageDec.class);
+  }
+
 }

@@ -67,6 +67,12 @@ public class ImpExParameterImpl extends ImpExParameterMixin implements ImpExPara
   }
 
   @Override
+  @NotNull
+  public List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExPossibleMacroUsageDec.class);
+  }
+
+  @Override
   @Nullable
   public ImpExSubParameters getSubParameters() {
     return findChildByClass(ImpExSubParameters.class);

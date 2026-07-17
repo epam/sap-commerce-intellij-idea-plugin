@@ -35,4 +35,7 @@ public interface ImpExMacroValuesDec extends PsiElement {
   @NotNull
   List<ImpExMacroValueDec> getMacroValueDecList();
 
+  @NotNull
+  List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList();
+
 }

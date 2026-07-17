@@ -202,7 +202,7 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                     }
                     val locallyExpandedParameterWithModifiers = locallyExpandedParameter + realParameter.modifiersList
                         .joinToString("") { it.text }
-                    ImpExElementFactory.createFullHeaderParameter(project,headerTypeName , macros, locallyExpandedParameterWithModifiers)
+                    ImpExElementFactory.createFullHeaderParameter(project, headerTypeName, macros, locallyExpandedParameterWithModifiers)
                 }
                 ?: realParameter
 
@@ -257,10 +257,6 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
                 ?.map { parameter(it.attributeName, it.modifiersList, it.typeSystemContext, it.subParameters) }
         )
     }
-
-    private fun ParametersContext.Parameter.getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String): String = attributes[attributeModifier.modifierName]
-        ?.resolvedValue
-        ?: defaultValue
 
     private fun collectRanges(targetElement: PsiElement, modifier: AttributeModifier, defaultDelimiter: String): List<TextRange> {
         val delimiter = getAttributeValue(modifier, defaultDelimiter)
@@ -433,6 +429,10 @@ abstract class ImpExFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         ) {
             fun flatten(): List<Parameter> =
                 listOf(this) + subParameters.orEmpty().flatMap { it.flatten() }
+
+            fun getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String): String = attributes[attributeModifier.modifierName]
+                ?.resolvedValue
+                ?: defaultValue
         }
 
         data class Attribute(

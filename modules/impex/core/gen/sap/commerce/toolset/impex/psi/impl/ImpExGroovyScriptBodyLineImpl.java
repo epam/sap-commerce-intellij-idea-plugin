@@ -56,6 +56,12 @@ public class ImpExGroovyScriptBodyLineImpl extends ImpExGroovyScriptBodyMixin im
 
   @Override
   @NotNull
+  public List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExPossibleMacroUsageDec.class);
+  }
+
+  @Override
+  @NotNull
   public List<ImpExString> getStringList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExString.class);
   }

@@ -56,6 +56,12 @@ public class ImpExStringImpl extends ImpExStringMixin implements ImpExString {
 
   @Override
   @NotNull
+  public List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExPossibleMacroUsageDec.class);
+  }
+
+  @Override
+  @NotNull
   public List<ImpExScriptMultiline> getScriptMultilineList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExScriptMultiline.class);
   }

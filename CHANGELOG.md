@@ -1,7 +1,7 @@
 ## [2026.0.15]
 
 <cite>Release contributors</code>
-- 7 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
+- 8 PR(s) by [Mykhailo Lytvyn](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Amlytvyn+is%3Apr)
 - 8 PR(s) by [Eugeni Kalenchuk](https://github.com/epam/sap-commerce-intellij-idea-plugin/pulls?q=milestone%3A2026.0.15+author%3Aekalenchuk+is%3Apr)
 
 ### `Project Import` enhancements
@@ -22,6 +22,7 @@
 - Hide `ImpEx to FlexibleSearch` for statements with unique docId columns [#1963](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1963)
 - Do not add alias in the `ImpEx to FlexibleSearch` when there are no joins [#1964](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1964)
 - Support complex nested parameters in the `ImpEx to FlexibleSearch` logic [#1965](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1965)
+- Resolve references to macros possible defined in the external ImpEx files imported via `impex.includeExtenalData` [#1967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1967)
 
 ### `FlexibleSearch` enhancements
 - New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)

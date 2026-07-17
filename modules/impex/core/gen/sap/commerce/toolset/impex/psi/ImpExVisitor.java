@@ -133,6 +133,10 @@ public class ImpExVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitPossibleMacroUsageDec(@NotNull ImpExPossibleMacroUsageDec o) {
+    visitPsiElement(o);
+  }
+
   public void visitRootMacroUsage(@NotNull ImpExRootMacroUsage o) {
     visitPsiElement(o);
   }

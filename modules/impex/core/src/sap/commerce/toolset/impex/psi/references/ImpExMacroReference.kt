@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2026 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@ import sap.commerce.toolset.impex.psi.ImpExMacroDeclaration
 import sap.commerce.toolset.impex.psi.util.getLineNumber
 import sap.commerce.toolset.psi.getValidResults
 
-class ImpExMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
+class ImpExMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(owner, false) {
 
     override fun calculateDefaultRangeInElement() = findMacroDeclaration()
         ?.let { TextRange.from(0, escapeName(it.macroNameDec.text).length) }

@@ -55,6 +55,12 @@ public class ImpExValueImpl extends ImpExValueMixin implements ImpExValue {
   }
 
   @Override
+  @NotNull
+  public List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpExPossibleMacroUsageDec.class);
+  }
+
+  @Override
   @Nullable
   public ImpExString getString() {
     return findChildByClass(ImpExString.class);

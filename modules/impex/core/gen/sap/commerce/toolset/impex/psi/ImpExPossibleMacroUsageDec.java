@@ -27,12 +27,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpExSpecialParameter extends PsiElement {
-
-  @NotNull
-  List<ImpExMacroUsageDec> getMacroUsageDecList();
-
-  @NotNull
-  List<ImpExPossibleMacroUsageDec> getPossibleMacroUsageDecList();
+public interface ImpExPossibleMacroUsageDec extends PsiElement {
 
 }

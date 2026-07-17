@@ -93,7 +93,7 @@ import java.util.HashSet;
 
       // 3. Completely undeclared — treat whole token as the caller's fallback type
       yybegin(returnState);
-      return fallbackType;
+      return ImpExTypes.POSSIBLE_MACRO_USAGE;
   }
 %}
 
@@ -151,7 +151,6 @@ double_quote          = [\"]
 double_quote_escaped  = [\"][\"]
 single_quote          = [']
 single_quote_escaped  = ['][']
-single_string_literal = ([^'\r\n])+
 string_literal =  ({not_crlf}|{identifier}+)
 
 // see - CollectionValueTranslator
