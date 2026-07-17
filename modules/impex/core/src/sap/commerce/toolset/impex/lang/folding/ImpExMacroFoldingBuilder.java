@@ -32,6 +32,7 @@ import sap.commerce.toolset.impex.ImpExConstants;
 import sap.commerce.toolset.impex.psi.ImpExFile;
 import sap.commerce.toolset.impex.psi.ImpExHeaderLine;
 import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec;
+import sap.commerce.toolset.impex.psi.ImpExPossibleMacroUsageDec;
 import sap.commerce.toolset.impex.settings.ImpExFoldingSettings;
 
 import java.util.HashSet;
@@ -55,7 +56,7 @@ public class ImpExMacroFoldingBuilder implements FoldingBuilder {
         final var foldMacroInParameters = foldingSettings
             .getFoldMacroInParameters();
 
-        final var macroUsages = PsiTreeUtil.findChildrenOfAnyType(root, ImpExMacroUsageDec.class).stream()
+        final var macroUsages = PsiTreeUtil.findChildrenOfAnyType(root, ImpExMacroUsageDec.class, ImpExPossibleMacroUsageDec.class).stream()
             .map(it -> acceptMacroUsage(it, foldMacroInParameters))
             .filter(Objects::nonNull)
             .toList();
@@ -67,12 +68,11 @@ public class ImpExMacroFoldingBuilder implements FoldingBuilder {
     }
 
     @Nullable
-    private ImpExMacroUsageDec acceptMacroUsage(final ImpExMacroUsageDec macroUsage, final boolean foldMacroInParameters) {
-        final var text = macroUsage.getText();
-
+    private PsiElement acceptMacroUsage(final PsiElement macroUsage, final boolean foldMacroInParameters) {
         // local macro needs to be resolved later when evaluating macro declarations
         final var parent = macroUsage.getParent();
         if (parent instanceof ImpExMacroUsageDec) return null;
+        if (parent instanceof ImpExPossibleMacroUsageDec) return null;
         if (!foldMacroInParameters && getRootPsi(parent) instanceof ImpExHeaderLine) return null;
 
         return macroUsage;
@@ -90,7 +90,7 @@ public class ImpExMacroFoldingBuilder implements FoldingBuilder {
     }
 
     @Nullable
-    private FoldingDescriptor buildFoldRegion(final ImpExMacroUsageDec macroUsage) {
+    private FoldingDescriptor buildFoldRegion(final PsiElement macroUsage) {
         final var configPropertyMacro = macroUsage.getText().startsWith(ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER);
 
         if (configPropertyMacro && macroUsage.getText().length() == ImpExConstants.MACRO_CONFIG_COMPLETE_MARKER.length()) return null;
@@ -112,9 +112,13 @@ public class ImpExMacroFoldingBuilder implements FoldingBuilder {
     public String getPlaceholderText(@NotNull final ASTNode node) {
         final var psi = node.getPsi();
 
-        if (!(psi instanceof final ImpExMacroUsageDec impexMacroUsageDec)) return node.getText();
+        final var resolvedValue = switch (psi) {
+            case final ImpExMacroUsageDec dec -> dec.resolveValue(new HashSet<>());
+            case final ImpExPossibleMacroUsageDec dec -> dec.resolveValue();
+            default -> null;
+        };
 
-        final var resolvedValue = impexMacroUsageDec.resolveValue(new HashSet<>());
+        if (resolvedValue == null) return node.getText();
 
         if (resolvedValue.startsWith("jar:")) {
             final var blocks = resolvedValue.substring("jar:".length()).split("&");

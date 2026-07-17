@@ -29,4 +29,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpExPossibleMacroUsageDec extends PsiElement {
 
+  @NotNull String resolveValue();
+
 }
