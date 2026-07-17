@@ -25,10 +25,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpExAnyAttributeName
-import sap.commerce.toolset.impex.psi.ImpExAnyAttributeValue
-import sap.commerce.toolset.impex.psi.ImpExMacroUsageDec
-import sap.commerce.toolset.impex.psi.ImpExVisitor
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.project.PropertyService
 
 class ImpExLanguageIsNotSupportedInspection : LocalInspectionTool() {
@@ -44,6 +41,8 @@ class ImpExLanguageIsNotSupportedInspection : LocalInspectionTool() {
             val language = psi.firstChild.asSafely<ImpExMacroUsageDec>()
                 ?.resolveValue(HashSet())
                 ?.trim()
+                ?: psi.firstChild.asSafely<ImpExPossibleMacroUsageDec>()
+                    ?.resolveValue()
                 ?: psi.text
 
             val propertyService = PropertyService.getInstance(psi.project)

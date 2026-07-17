@@ -24,6 +24,7 @@
 - Support complex nested parameters in the `ImpEx to FlexibleSearch` logic [#1965](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1965)
 - Resolve references to macros possible defined in the external ImpEx files imported via `impex.includeExtenalData` [#1967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1967)
 - Show resolved value of the possible external macro as folded region [#1968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1968)
+- Show resolved value of the possible external macro in the data cell inlay hint [#1969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1969)
 
 ### `FlexibleSearch` enhancements
 - New action to `Introduce Bind Parameters` for query with exact values in the expressions [#1962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1962)

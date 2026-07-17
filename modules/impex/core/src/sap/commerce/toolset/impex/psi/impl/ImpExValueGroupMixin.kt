@@ -83,8 +83,11 @@ abstract class ImpExValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node),
                 child = child.parent
             }
 
-            if (child is ImpExMacroUsageDec) values.add(child.resolveValue(HashSet()))
-            else values.add(child.text)
+            when (child) {
+                is ImpExMacroUsageDec -> values.add(child.resolveValue(HashSet()))
+                is ImpExPossibleMacroUsageDec -> values.add(child.resolveValue())
+                else -> values.add(child.text)
+            }
 
             child = child.prevLeaf()
 
